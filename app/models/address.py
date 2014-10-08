@@ -12,7 +12,7 @@ STATES_CHOICES = sorted([(item, item) for item in US_STATES])
 
 
 class Address(models.Model):
-    address_type = models.TextField()
+    address_type = models.TextField(null=True)
     street_1 = models.TextField()
     street_2 = models.TextField(blank=True)
     city = models.TextField()
