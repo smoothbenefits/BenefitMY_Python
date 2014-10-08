@@ -1,0 +1,19 @@
+Please follow the following steps to start the app
+
+1. install django
+pip install django
+pip install djangorestframework
+
+2. install postgres
+
+3. create DB "Benefits_DB"
+   user: "postgres"
+   password: ""
+
+4. get into the src directory
+python manage.py makemigrations app
+python manage.py migrate
+python syncdb
+
+5. start django server
+python manage.py runserver
