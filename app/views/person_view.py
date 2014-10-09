@@ -3,12 +3,10 @@ from django.http import Http404
 
 from app.models.person import Person
 from app.serializers.person_serializer import PersonSerializer
+from rest_framework.response import Response
 
 
 class PersonView(APIView):
-    """
-    Retrieve, update or delete a snippet instance.
-    """
     def get_object(self, pk):
         try:
             return Person.objects.get(pk=pk)
@@ -19,3 +17,4 @@ class PersonView(APIView):
         person = self.get_object(pk)
         serializer = PersonSerializer(person)
         return Response(serializer.data)
+
