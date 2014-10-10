@@ -3,6 +3,7 @@ from django.db import models
 
 
 class User(models.Model):
-    full_name = models.CharField(max_length=255)
+    full_name = models.TextField()
     email = models.EmailField(max_length=255)
-        
+    encrypted_password = models.TextField()
+    tz = models.TextField()
