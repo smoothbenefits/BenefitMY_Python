@@ -10,8 +10,8 @@ USER_TYPE = (("Employee", "Employee"),
 
 
 class CompanyUser(models.Model):
-    user_id = models.ForeignKey(User, related_name="company_user")
-    company_id = models.ForeignKey(Company, related_name="company_user")
+    user = models.ForeignKey(User)
+    company = models.ForeignKey(Company)
     company_user_type = models.TextField(choices=USER_TYPE)
 
     class Meta:

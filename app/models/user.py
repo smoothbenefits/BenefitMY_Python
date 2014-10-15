@@ -1,5 +1,6 @@
 from django.db import models
-#from company_users import company_users
+from company import Company
+from company_user import CompanyUser
 
 
 class User(models.Model):
@@ -7,3 +8,4 @@ class User(models.Model):
     email = models.EmailField(max_length=255)
     encrypted_password = models.TextField(null=True)
     tz = models.TextField(null=True)
+    company = models.ManyToManyField(Company, through='CompanyUser')

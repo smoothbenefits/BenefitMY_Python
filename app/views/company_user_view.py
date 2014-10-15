@@ -10,12 +10,11 @@ from app.serializers.company_user_serializer import CompanyUserSerializer
 class CompanyUsersView(APIView):
     def get_companies(self, pk):
         try:
-            return CompanyUser.objects.filter(company_id=pk)
+            return CompanyUser.objects.filter(company=pk)
         except CompanyUser.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        user_ids = [company.user_id for company in self.get_companies(pk)]
-        users = User.objects.filter(id__in=user_ids)
-        serializer = CompanyUserSerializer(users, many=True)
+        companies = self.get_companies(pk)
+        serializer = CompanyUserSerializer(companies, many=True)
         return Response(serializer.data)
