@@ -1,4 +1,6 @@
 from django.db import models
+from person import Person
+
 
 US_STATES =[
         'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL',
@@ -21,6 +23,5 @@ class Address(models.Model):
                              max_length=3)
 
     zipcode = models.TextField()
+    person = models.ForeignKey(Person, related_name="addresses")
 
-    class Meta:
-        app_label = 'app'

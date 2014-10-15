@@ -6,7 +6,5 @@ class PhoneSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Phone
-        fields = ('id',
-                  'phone_type',
-                  'number')
+        fields = ('id', 'phone_type', 'number')
 

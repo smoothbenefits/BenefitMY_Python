@@ -5,5 +5,5 @@ from django.db import models
 class User(models.Model):
     full_name = models.TextField()
     email = models.EmailField(max_length=255)
-    encrypted_password = models.TextField()
-    tz = models.TextField()
+    encrypted_password = models.TextField(null=True)
+    tz = models.TextField(null=True)

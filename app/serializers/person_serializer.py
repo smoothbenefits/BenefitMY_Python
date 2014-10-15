@@ -1,14 +1,21 @@
 from rest_framework import serializers
 from app.models.person import Person
 
+from phone_serializer import PhoneSerializer
+from address_serializer import AddressSerializer
 
 class PersonSerializer(serializers.ModelSerializer):
 
+    addresses = AddressSerializer(many=True)
+    phones = PhoneSerializer(many=True)
     class Meta:
+
         model = Person
         fields = ('id',
                   'person_type',
                   'relationship',
-                  'addresses',
-                  'phones')
-
+                  'ssn',
+                  'full_name',
+                  'email',
+                  'phones',
+                  'addresses')
