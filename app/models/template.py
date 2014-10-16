@@ -1,8 +1,10 @@
 from django.db import models
+from company import Company
+from document_type import DocumentType
 
 
 class Template(models.Model):
-    company_id = models.IntegerField()
-    document_type_id = models.IntegerField()
+    company = models.ForeignKey(Company)
+    document_type = models.ForeignKey(DocumentType)
     name = models.TextField()
     content = models.TextField()
