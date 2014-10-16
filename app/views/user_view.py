@@ -8,7 +8,7 @@ from app.serializers.user_serializer import UserSerializer
 from app.serializers.person_serializer import PersonSerializer
 
 
-class User_Detail(APIView):
+class UserView(APIView):
     def get_object(self, pk):
         try:
             return User.objects.get(pk=pk)
@@ -21,7 +21,7 @@ class User_Detail(APIView):
         return Response(serializer.data)
 
 
-class Users(APIView):
+class UsersView(APIView):
 
     def get(self, request, format=None):
         users = User.objects.all()
