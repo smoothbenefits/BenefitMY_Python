@@ -7,7 +7,7 @@ from app.serializers.company_benefit_plan_option_serializer import \
 from rest_framework.response import Response
 
 
-class PersonView(APIView):
+class CompanyBenefitPlanOptionView(APIView):
     def get_object(self, pk):
         try:
             return CompanyBenefitPlanOption.objects.get(pk=pk)
