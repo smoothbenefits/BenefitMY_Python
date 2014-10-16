@@ -19,3 +19,19 @@ class CompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
                   'benefit_option_type',
                   'company',
                   'benefit_plan')
+
+
+class CompanyBenefitPlanSerializer(serializers.ModelSerializer):
+
+    benefit_plan = BenefitPlanSerializer()
+
+    class Meta:
+
+        model = CompanyBenefitPlanOption
+        fields = ('id',
+                  'total_cost_per_period',
+                  'employ_cost_per_period',
+                  'benefit_option_type',
+                  'benefit_plan')
+
+

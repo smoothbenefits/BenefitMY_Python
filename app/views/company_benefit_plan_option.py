@@ -3,7 +3,7 @@ from django.http import Http404
 
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
 from app.serializers.company_benefit_plan_option_serializer import \
-    CompanyBenefitPlanOptionSerializer
+    CompanyBenefitPlanOptionSerializer, CompanyBenefitPlanSerializer
 from rest_framework.response import Response
 
 
@@ -17,4 +17,17 @@ class CompanyBenefitPlanOptionView(APIView):
     def get(self, request, pk, format=None):
         plan_option = self.get_object(pk)
         serializer = CompanyBenefitPlanOptionSerializer(plan_option)
+        return Response(serializer.data)
+
+
+class CompanyBenefitPlansView(APIView):
+    def get_object(self, pk):
+        try:
+            return CompanyBenefitPlanOption.objects.filter(company=pk)
+        except CompanyBenefitPlanOption.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        plans = self.get_object(pk)
+        serializer = CompanyBenefitPlanSerializer(plans, many=True)
         return Response(serializer.data)
