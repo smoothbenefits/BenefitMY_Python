@@ -7,19 +7,20 @@ from app.views.user_view import UserView, UsersView, UserFamilyView
 from app.views.company_user_view import CompanyUserView
 from app.view.company_benefit_plan_option_view import CompanyBenefitPlanOptionView
 
+PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
-    url(r'^api/v1/people/(?P<pk>[0-9]+)/$', PersonView.as_view()),
+    url(r'^%s/people/(?P<pk>[0-9]+)/$' % PREFIX, PersonView.as_view()),
 
-    url(r'^api/v1/users/(?P<pk>[0-9]+)/$', UserView.as_view()),
-    url(r'^api/v1/users/$', UsersView.as_view()),
+    url(r'^%s/users/(?P<pk>[0-9]+)/$' % PREFIX, UserView.as_view()),
+    url(r'^%s/users/$' % PREFIX, UsersView.as_view()),
 
 
-    url(r'^api/v1/companies/(?P<pk>[0-9]+)/users/$', CompanyUserView.as_view()),
+    url(r'^%s/companies/(?P<pk>[0-9]+)/users/$' % PREFIX, CompanyUserView.as_view()),
 
-    url(r'^api/v1/users/(?P<pk>[0-9]+)/family/$', UserFamilyView.as_view()),
+    url(r'^%s/users/(?P<pk>[0-9]+)/family/$' % PREFIX, UserFamilyView.as_view()),
 
-    url(r'^api/v1/benefits/(?P<pk>[0-9]+)/$', CompanyBenefitPlanOptionView.as_view()),
+    url(r'^%s/benefits/(?P<pk>[0-9]+)/$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
                        )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
