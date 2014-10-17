@@ -1,5 +1,6 @@
 from django.db import models
 from person import Person
+from company import Company
 
 
 US_STATES =[
@@ -24,4 +25,4 @@ class Address(models.Model):
 
     zipcode = models.TextField()
     person = models.ForeignKey(Person, related_name="addresses")
-
+    company = models.ForeignKey(Company)

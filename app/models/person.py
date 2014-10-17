@@ -1,5 +1,7 @@
 from django.db import models
 from user import User
+from company import Company
+
 
 class Person(models.Model):
     obj_type = models.TextField(null=True)
@@ -10,3 +12,4 @@ class Person(models.Model):
     ssn = models.TextField(null=True)
     birth_date = models.DateField(null=True)
     user = models.ForeignKey(User, related_field = 'persons')
+    company = models.ForeignKey(Company)
