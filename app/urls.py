@@ -32,6 +32,7 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/document_types/$' % PREFIX, DocumentType.as_view()),
 
+    url(r'^%s/benefit_types/$' % PREFIX, BenefitType.as_view()),
                        )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
