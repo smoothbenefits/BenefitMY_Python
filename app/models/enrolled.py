@@ -1,6 +1,9 @@
 from django.db import models
+from user_company_benefit_plan_option import UserCompanyBenefitPlanOption
+from person import Person
 
 
-class Document(models.Model):
-    user_company_benefit_plan_option_id = models.IntegerField()    
-    person_id = models.IntegerField()    
+class Enrolled(models.Model):
+    user_company_benefit_plan_option = models.ForeignKey(
+        UserCompanyBenefitPlanOption)
+    person = models.ForeignKey(Person)
