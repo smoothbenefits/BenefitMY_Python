@@ -11,9 +11,8 @@ pip install djangorestframework
    password: ""
 
 4. get into the src directory
-python manage.py makemigrations app
+python manage.py makemigrations
 python manage.py migrate
-python syncdb
 
 5. load default test data
 python manage.py loaddata app/fixtures/*.json
