@@ -1,7 +1,7 @@
 [
  
     {
-      "model": "address",
+      "model": "app.address",
       "pk": 1,
       "fields":{
       "address_type": "main",
@@ -13,8 +13,8 @@
       }
     },
     {
-      "model": "address",
-      "pk": 2
+      "model": "app.address",
+      "pk": 2,
       "fields":{
       "address_type": "main",
       "street_1": "3 Perfect Circle",
@@ -24,8 +24,8 @@
       }
     },
     {
-      "model": "address",
-      "pk": 3
+      "model": "app.address",
+      "pk": 3,
       "fields":{
       "address_type": "main",
       "street_1": "1000 Walker Drive",
@@ -35,8 +35,8 @@
       }
     },
     {
-      "model": "address",
-      "pk": 4
+      "model": "app.address",
+      "pk": 4,
       "fields":{
       "address_type": "home",
       "street_1": "10 Lois Lane",
@@ -46,8 +46,8 @@
       }
     },
     {
-      "model": "address",
-      "pk": 5
+      "model": "app.address",
+      "pk": 5,
       "fields":{
       "address_type": "home",
       "street_1": "5 No Way",
@@ -57,8 +57,8 @@
       }
     },
     {
-      "model": "address",
-      "pk": 6
+      "model": "app.address",
+      "pk": 6,
       "fields":{
       "address_type": "home",
       "street_1": "6 Above Ave",
@@ -68,8 +68,8 @@
       }
     },
     {
-      "model": "address",
-      "pk": 7
+      "model": "app.address",
+      "pk": 7,
       "fields":{
       "address_type": "home",
       "street_1": "10 Lois Lane",
@@ -79,8 +79,8 @@
       }
     },
     {
-      "model": "address",
-      "pk": 8
+      "model": "app.address",
+      "pk": 8,
       "fields":{
       "address_type": "home",
       "street_1": "10 Lois Lane",
@@ -90,8 +90,8 @@
       }
     },
     {
-      "model": "address",
-      "pk": 9
+      "model": "app.address",
+      "pk": 9,
       "fields":{
       "address_type": "home",
       "street_1": "10 Lois Lane",
@@ -101,8 +101,8 @@
       }
     },
     {
-      "model": "address",
-      "pk": 10
+      "model": "app.address",
+      "pk": 10,
       "fields":{
       "address_type": "home",
       "street_1": "5 No Way",

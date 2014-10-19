@@ -15,5 +15,8 @@ python manage.py makemigrations app
 python manage.py migrate
 python syncdb
 
-5. start django server
+5. load default test data
+python manage.py loaddata app/fixture/*.json
+
+6. start django server
 python manage.py runserver
