@@ -1,0 +1,24 @@
+[
+    {
+      "model": "app.Company",
+      "pk": 1,
+      "fields": {
+      "name": "Company1"
+      }
+    },
+    {
+      "model": "app.Company",
+      "pk": 2,
+      "fields": {
+      "name": "Company2"
+      }
+    },
+    {
+      "model": "app.Company",
+      "pk": 3,
+      "fields": { 
+      "name": "Company3"
+      }
+    }
+]
+

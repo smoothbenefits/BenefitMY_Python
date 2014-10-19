@@ -2,5 +2,4 @@ from django.db import models
 
 
 class Company(models.Model):
-    name = models.TextField()
-    default_tz = models.TextField()
+    name = models.CharField(max_length=255)
