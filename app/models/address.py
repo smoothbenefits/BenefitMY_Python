@@ -16,13 +16,19 @@ STATES_CHOICES = sorted([(item, item) for item in US_STATES])
 
 class Address(models.Model):
     address_type = models.CharField(max_length=255, null=True)
-    street_1 = models.TextField()
-    street_2 = models.TextField(blank=True)
+    street_1 = models.CharField(max_length=255)
+    street_2 = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=255)
     state = models.CharField(choices=STATES_CHOICES,
                              default='AL',
                              max_length=3)
 
-    zipcode = models.TextField()
-    person = models.ForeignKey(Person, related_name='addresses')
-    company = models.ForeignKey(Company)
+    zipcode = models.CharField(max_length=10)
+    person = models.ForeignKey(Person,
+                               related_name='addresses',
+                               blank=True,
+                               null=True)
+    company = models.ForeignKey(Company,
+                                related_name='addresses',
+                                blank=True,
+                                null=True)
