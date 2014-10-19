@@ -11,5 +11,5 @@ class Person(models.Model):
     relationship = models.CharField(max_length=30, null=True)
     ssn = models.TextField(null=True)
     birth_date = models.DateField(null=True)
-    user = models.ForeignKey(User, related_field = 'persons')
+    user = models.ForeignKey(User)
     company = models.ForeignKey(Company)
