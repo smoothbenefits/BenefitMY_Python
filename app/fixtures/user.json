@@ -1,0 +1,51 @@
+[
+    {
+      "model": "app.user",
+      "pk": 1,
+      "fields":{
+      "email": "user1@smoothbenefits.com",
+      "full_name": "User1 Name"
+      }
+    },
+    {
+      "model": "app.user",
+      "pk": 2,
+      "fields":{
+      "email": "user2@smoothbenefits.com",
+      "full_name": "User2 Name"
+      }
+    },
+    {
+      "model": "app.user",
+      "pk": 3,
+      "fields":{
+      "email": "user3@smoothbenefits.com",
+      "full_name": "User3 Name"
+      }
+    },
+    {
+      "model": "app.user",
+      "pk": 4,
+      "fields":{
+      "email": "user4@smoothbenefits.com",
+      "full_name": "User4 Name"
+      }
+    },
+    {
+      "model": "app.user",
+      "pk": 5,
+      "fields":{
+      "email": "user5@smoothbenefits.com",
+      "full_name": "User5 Name"
+      }
+    },
+    {
+      "model": "app.user",
+      "pk": 6,
+      "fields":{ 
+      "email": "user6@smoothbenefits.com",
+      "full_name": "User6 Name"
+      }
+    }
+]
+      
