@@ -9,6 +9,12 @@ class Person(models.Model):
     email = models.EmailField(max_length=255, null=True)
     relationship = models.CharField(max_length=30, null=True)
     ssn = models.CharField(max_length=30, null=True)
-    birth_date = models.DateField(null=True)
-    user = models.ForeignKey(User)
-    company = models.ForeignKey(Company)
+    birth_date = models.DateField(blank=True, null=True)
+    user = models.ForeignKey(User,
+                             related_name="person",
+                             null=True,
+                             blank=True)
+    company = models.ForeignKey(Company,
+                                related_name="person",
+                                null=True,
+                                blank=True)
