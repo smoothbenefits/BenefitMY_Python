@@ -15,4 +15,4 @@ class CompanyUser(models.Model):
     company_user_type = models.TextField(choices=USER_TYPE)
 
     class Meta:
-        order_with_respect_to = 'company_id'
+        order_with_respect_to = 'company'

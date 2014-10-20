@@ -4,7 +4,8 @@
       "pk": 1,
       "fields":{
       "email": "user1@smoothbenefits.com",
-      "full_name": "User1 Name"
+      "first_name": "first1",
+      "last_name": "last1"
       }
     },
     {
@@ -12,7 +13,8 @@
       "pk": 2,
       "fields":{
       "email": "user2@smoothbenefits.com",
-      "full_name": "User2 Name"
+      "first_name": "first2",
+      "last_name": "last2"
       }
     },
     {
@@ -20,7 +22,8 @@
       "pk": 3,
       "fields":{
       "email": "user3@smoothbenefits.com",
-      "full_name": "User3 Name"
+      "first_name": "first3",
+      "last_name": "last3"
       }
     },
     {
@@ -28,7 +31,8 @@
       "pk": 4,
       "fields":{
       "email": "user4@smoothbenefits.com",
-      "full_name": "User4 Name"
+      "first_name": "first4",
+      "last_name": "last4"
       }
     },
     {
@@ -36,7 +40,8 @@
       "pk": 5,
       "fields":{
       "email": "user5@smoothbenefits.com",
-      "full_name": "User5 Name"
+      "first_name": "first5",
+      "last_name": "last5"
       }
     },
     {
@@ -44,7 +49,8 @@
       "pk": 6,
       "fields":{ 
       "email": "user6@smoothbenefits.com",
-      "full_name": "User6 Name"
+      "first_name": "first6",
+      "last_name": "last6"
       }
     }
 ]

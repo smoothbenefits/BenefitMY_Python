@@ -3,4 +3,4 @@ from phone import Phone
 from person import Person
 from user import User
 from company import Company
-
+from company_user import CompanyUser
