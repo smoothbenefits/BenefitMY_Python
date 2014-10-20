@@ -6,5 +6,4 @@ TYPES = (('Medical', 'Medical'),
 
 
 class BenefitType(models.Model):
-    name = models.TextField(choices=TYPES)
-    display_priority = models.IntegerField()
+    name = models.CharField(max_length=255, choices=TYPES)
