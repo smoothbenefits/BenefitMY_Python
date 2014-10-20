@@ -1,6 +1,6 @@
-from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as AuthUser
 
 
-class User(models.Model):
-    user = models.OneToOneField(User)
+class User(AuthUser):
+    class Meta:
+        proxy = True
