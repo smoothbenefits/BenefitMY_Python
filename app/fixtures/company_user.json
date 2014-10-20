@@ -1,0 +1,84 @@
+[
+    {
+      "model": "app.CompanyUser",
+      "pk": 1,
+      "fields": {
+      "user": 1,
+      "company": 1,
+      "company_user_type": "broker"
+      }
+    },
+    {      
+      "model": "app.CompanyUser",
+      "pk": 2,
+      "fields": {
+      "user": 1,
+      "company": 2,
+      "company_user_type": "broker"
+      }
+    },
+    {
+      "model": "app.CompanyUser",
+      "pk": 3,
+      "fields": {
+      "user": 2,
+      "company": 3,
+      "company_user_type": "broker"
+      }
+    },
+    {      
+      "model": "app.CompanyUser",
+      "pk": 4,
+      "fields": {
+      "user": 2,
+      "company": 3,
+      "company_user_type": "admin"
+      }
+    },
+    { 
+      "model": "app.CompanyUser",
+      "pk": 5,
+      "fields": {
+      "user": 4,
+      "company": 1,
+      "company_user_type": "admin"
+      }
+    },
+    {      
+      "model": "app.CompanyUser",
+      "pk": 6,
+      "fields": {
+      "user": 4,
+      "company": 2,
+      "company_user_type": "admin"
+      }
+    },
+    {       
+      "model": "app.CompanyUser",
+      "pk": 7,
+      "fields": {
+      "user": 5,
+      "company": 2,
+      "company_user_type": "employee"
+      }
+    },
+    { 
+      "model": "app.CompanyUser",
+      "pk": 8,
+      "fields": {
+      "user": 5,
+      "company": 1,
+      "company_user_type": "employee"
+      }
+    },
+    {      
+      "model": "app.CompanyUser",
+      "pk": 9,
+      "fields": {
+      "user": 6,
+      "company": 1,
+      "company_user_type": "employee"
+      }
+    }
+ ]
+
