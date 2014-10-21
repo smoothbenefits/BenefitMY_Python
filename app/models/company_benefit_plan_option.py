@@ -17,5 +17,11 @@ class CompanyBenefitPlanOption(models.Model):
     employ_cost_per_period = models.DecimalField()
     benefit_option_type = models.TextField(choices=TYPES)
 
-    company = models.ForeignKey(Company)
-    benefit_plan = models.ForeignKey(BenefitPlan)
+    company = models.ForeignKey(Company,
+                                relate_name="company_benefit",
+                                blank=True,
+                                null=True)
+    benefit_plan = models.ForeignKey(BenefitPlan,
+                                     relate_name="company_benefit",
+                                     blank=True,
+                                     null=True)
