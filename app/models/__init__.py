@@ -7,3 +7,4 @@ from company_user import CompanyUser
 from benefit_type import BenefitType
 from benefit_plan import BenefitPlan
 from company_benefit_plan_option import CompanyBenefitPlanOption
+from user_company_benefit_plan_option import UserCompanyBenefitPlanOption
