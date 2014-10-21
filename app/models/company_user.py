@@ -14,5 +14,3 @@ class CompanyUser(models.Model):
     company = models.ForeignKey(Company)
     company_user_type = models.TextField(choices=USER_TYPE)
 
-    class Meta:
-        order_with_respect_to = 'company'

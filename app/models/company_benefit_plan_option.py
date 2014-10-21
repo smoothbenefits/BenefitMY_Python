@@ -13,15 +13,17 @@ TYPES = ([(item, item) for item in S])
 
 
 class CompanyBenefitPlanOption(models.Model):
-    total_cost_per_period = models.DecimalField()
-    employ_cost_per_period = models.DecimalField()
+    total_cost_per_period = models.DecimalField(
+        max_digits=20, decimal_places=2)
+    employee_cost_per_period = models.DecimalField(
+        max_digits=20, decimal_places=2)
     benefit_option_type = models.TextField(choices=TYPES)
 
     company = models.ForeignKey(Company,
-                                relate_name="company_benefit",
+                                related_name="company_benefit",
                                 blank=True,
                                 null=True)
     benefit_plan = models.ForeignKey(BenefitPlan,
-                                     relate_name="company_benefit",
+                                     related_name="company_benefit",
                                      blank=True,
                                      null=True)
