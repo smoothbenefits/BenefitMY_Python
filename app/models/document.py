@@ -10,6 +10,6 @@ class Document(models.Model):
     user = models.ForeignKey(User)
     template = models.ForeignKey(Template)
     document_type = models.ForeignKey(DocumentType)
-    name = models.TextField()
+    name = models.CharField(max_length=255)
     content = models.TextField()
     edited = models.BooleanField(default=False)

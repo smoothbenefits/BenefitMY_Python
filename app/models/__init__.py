@@ -10,3 +10,4 @@ from company_benefit_plan_option import CompanyBenefitPlanOption
 from user_company_benefit_plan_option import UserCompanyBenefitPlanOption
 from document_type import DocumentType
 from template import Template
+from document import Document
