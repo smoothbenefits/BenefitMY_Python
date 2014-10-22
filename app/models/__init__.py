@@ -12,3 +12,4 @@ from document_type import DocumentType
 from template import Template
 from document import Document
 from document_field import DocumentField
+from enrolled import Enrolled

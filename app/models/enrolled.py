@@ -5,5 +5,7 @@ from person import Person
 
 class Enrolled(models.Model):
     user_company_benefit_plan_option = models.ForeignKey(
-        UserCompanyBenefitPlanOption)
-    person = models.ForeignKey(Person)
+        UserCompanyBenefitPlanOption,
+        related_name="enrolled")
+    person = models.ForeignKey(Person,
+                               related_name="enrolled")
