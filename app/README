@@ -20,3 +20,6 @@ python manage.py loaddata app/fixture/*.json
 
 6. start django server
 python manage.py runserver
+
+7. test api in your web browser by
+http://localhost:8000/api/v1/people/1/
