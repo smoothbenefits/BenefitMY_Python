@@ -8,6 +8,9 @@ from app.views.company_user_view import CompanyUserView
 from app.views.benefit_type_view import BenefitTypeView
 
 from app.views.document_type_view import DocumentTypeView
+
+from app.views.company_view import CompanyView
+
 """
 from app.views.company_benefit_plan_option_view import (
     CompanyBenefitPlanOptionView,
@@ -15,7 +18,6 @@ from app.views.company_benefit_plan_option_view import (
     )
 
 from app.views.document_view import DocumentView
-from app.views.company_view import CompanyView
 from app.views.template_view import TemplateView
 """
 
@@ -27,6 +29,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/benefit_types/$' % PREFIX, BenefitTypeView.as_view()),
 
     url(r'^%s/document_types/$' % PREFIX, DocumentTypeView.as_view()),
+
+    url(r'^%s/companies/(?P<pk>[0-9]+)/$' % PREFIX, CompanyView.as_view()),
     )
 """
     url(r'^%s/users/(?P<pk>[0-9]+)/$' % PREFIX, UserView.as_view()),
@@ -43,7 +47,6 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/documents/$' % PREFIX, DocumentView.as_view()),
 
-    url(r'^%s/company/(?P<pk>[0-9]+)/$' % PREFIX, CompanyView.as_view()),
 
 
 

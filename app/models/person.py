@@ -15,6 +15,6 @@ class Person(models.Model):
                              null=True,
                              blank=True)
     company = models.ForeignKey(Company,
-                                related_name="person",
+                                related_name="contacts",
                                 null=True,
                                 blank=True)
