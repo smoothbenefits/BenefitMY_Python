@@ -7,7 +7,7 @@ from app.models.company_user import CompanyUser
 from app.serializers.company_user_serializer import CompanyUserSerializer
 
 
-class CompanyUsersView(APIView):
+class CompanyUserView(APIView):
     def get_companies(self, pk):
         try:
             return CompanyUser.objects.filter(company=pk)
