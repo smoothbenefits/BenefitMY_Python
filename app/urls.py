@@ -37,12 +37,12 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/(?P<pk>[0-9]+)/family/$' % PREFIX, UserFamilyView.as_view()),
     url(r'^%s/templates/(?P<pk>[0-9]+)/$' % PREFIX, TemplateView.as_view()),
     url(r'^%s/benefits/(?P<pk>[0-9]+)/$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
-   )
-"""
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/benefits/$' % PREFIX,
         CompanyBenefitPlansView.as_view()),
 
+  )
+"""
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/users/$' % PREFIX, CompanyUserView.as_view()),
 

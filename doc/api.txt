@@ -9,3 +9,4 @@ This is the currently working apis
 /api/v1/users/#/family/
 /api/v1/templates/#/
 /api/v1/benefits/#/
+/api/v1/companies/#/benefits/
