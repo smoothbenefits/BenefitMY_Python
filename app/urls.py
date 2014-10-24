@@ -11,14 +11,14 @@ from app.views.company_view import CompanyView
 from app.views import dashboard_view
 
 from app.views.template_view import TemplateView
-"""
+
 from app.views.company_benefit_plan_option_view import (
     CompanyBenefitPlanOptionView,
     CompanyBenefitPlansView
     )
 
 from app.views.document_view import DocumentView
-"""
+
 
 PREFIX = "api/v1"
 
@@ -36,16 +36,16 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/(?P<pk>[0-9]+)/$' % PREFIX, UserView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/family/$' % PREFIX, UserFamilyView.as_view()),
     url(r'^%s/templates/(?P<pk>[0-9]+)/$' % PREFIX, TemplateView.as_view()),
-    )
+    url(r'^%s/benefits/(?P<pk>[0-9]+)/$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
+   )
 """
+
+    url(r'^%s/companies/(?P<pk>[0-9]+)/benefits/$' % PREFIX,
+        CompanyBenefitPlansView.as_view()),
 
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/users/$' % PREFIX, CompanyUserView.as_view()),
 
-
-    url(r'^%s/benefits/(?P<pk>[0-9]+)/$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
-    url(r'^%s/companies/(?P<pk>[0-9]+)/benefits/$' % PREFIX,
-        CompanyBenefitPlansView.as_view()),
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/documents/$' % PREFIX, DocumentView.as_view()),
 
