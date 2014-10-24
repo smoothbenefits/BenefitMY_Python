@@ -35,9 +35,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>[0-9]+)/$' % PREFIX, CompanyView.as_view()),
 
     url(r'^%s/users/$' % PREFIX, UsersView.as_view()),
+    url(r'^%s/users/(?P<pk>[0-9]+)/$' % PREFIX, UserView.as_view()),
     )
 """
-    url(r'^%s/users/(?P<pk>[0-9]+)/$' % PREFIX, UserView.as_view()),
 
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/users/$' % PREFIX, CompanyUserView.as_view()),
