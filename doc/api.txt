@@ -11,3 +11,4 @@ This is the currently working apis
 /api/v1/benefits/#/
 /api/v1/companies/#/benefits/
 /api/v1/companies/#/users/
+/api/v1/companies/#/documents/

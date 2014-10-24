@@ -42,14 +42,7 @@ urlpatterns = patterns('app.views',
         CompanyBenefitPlansView.as_view()),
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/users/$' % PREFIX, CompanyUserView.as_view()),
-  )
-"""
-
-
-
     url(r'^%s/companies/(?P<pk>[0-9]+)/documents/$' % PREFIX, DocumentView.as_view()),
-
-)
-"""
+  )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
