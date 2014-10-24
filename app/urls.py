@@ -41,10 +41,10 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>[0-9]+)/benefits/$' % PREFIX,
         CompanyBenefitPlansView.as_view()),
 
+    url(r'^%s/companies/(?P<pk>[0-9]+)/users/$' % PREFIX, CompanyUserView.as_view()),
   )
 """
 
-    url(r'^%s/companies/(?P<pk>[0-9]+)/users/$' % PREFIX, CompanyUserView.as_view()),
 
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/documents/$' % PREFIX, DocumentView.as_view()),

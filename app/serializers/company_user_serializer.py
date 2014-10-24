@@ -5,6 +5,10 @@ from app.models.company_user import CompanyUser
 
 
 class CompanyUserSerializer(serializers.ModelSerializer):
-    users = UserSerializer(source='user_set', many=True)
+    user = UserSerializer()
+
     class Meta:
         model = CompanyUser
+        fields = ('id',
+                  'company_user_type',
+                  'user')
