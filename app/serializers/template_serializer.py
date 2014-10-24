@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from app.models.template import Template
 
-from app.serializer.company_serializer import CompanySerializer
-from app.serializer.document_type_serializer import DocumentTypeSerializer
+from app.serializers.company_serializer import CompanySerializer
+from app.serializers.document_type_serializer import DocumentTypeSerializer
 
 
 class TemplateSerializer(serializers.ModelSerializer):
