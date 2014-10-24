@@ -11,7 +11,7 @@ class Person(models.Model):
     ssn = models.CharField(max_length=30, null=True)
     birth_date = models.DateField(blank=True, null=True)
     user = models.ForeignKey(User,
-                             related_name="person",
+                             related_name="families",
                              null=True,
                              blank=True)
     company = models.ForeignKey(Company,
