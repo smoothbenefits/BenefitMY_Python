@@ -53,3 +53,9 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Static folder
+staticfiles/
+
+# Mac files
+.DS_Store
