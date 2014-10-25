@@ -11,6 +11,7 @@ Get:
 /api/v1/users/#/family/
 /api/v1/users/#/documents/
 /api/v1/users/#/benefits/
+/api/v1/users/#/company_roles/
 /api/v1/templates/#/
 /api/v1/benefits/#/
 /api/v1/companies/#/benefits/
