@@ -24,8 +24,11 @@ python manage.py loaddata app/fixtures/*.json
 6. Make sure you reset the user table id sequence to be the latest in psql
 SELECT setval('auth_user_id_seq', (SELECT MAX(id) from "auth_user"));
 
-7. start django server
+7. Collect the static files into the correct staticfiles folder
+python manage.py collectstatic
+
+8. start django server
 python manage.py runserver
 
-8. test api in your web browser by
+9. test api in your web browser by
 http://localhost:8000/api/v1/people/1/
