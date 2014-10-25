@@ -1,0 +1,38 @@
+@import "variables";
+
+.textbox {
+    input, textarea {
+        border: 1px solid #CCC;
+        border: 1px solid rgba(0,0,0,0.35);
+        padding: 10px 6px;
+        width: 100%;
+        &:focus {
+            outline: none;
+            border: 1px solid $blue;
+        }
+    }
+}
+
+.submit-box {
+    input {
+        width: 100%;
+        padding: 10px 6px;
+    }
+}
+
+div.textbox, div.submit-box {
+    margin-bottom: 6px;
+}
+
+.btn {
+    padding: 10px 6px;
+    width: 100%;
+    text-align: center;
+    &.green {
+        background: #6EBE4B;
+        color: #FFF;
+        font-weight: 700;
+        border: 1px solid #56A245;
+        border-radius: 0;
+    }
+}

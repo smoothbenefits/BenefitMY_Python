@@ -1,0 +1,45 @@
+.home-footer
+{
+    text-align: center;
+    margin-top:100px;
+    color:#999;
+}
+.home-footer .links
+{
+    margin:0;
+    padding:0;
+}
+.home-footer ul.links
+{
+    display: block;
+    list-style-type: disc;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 40px;
+}
+.home-footer .links li
+{
+    display: inline-block;
+    padding-right: 10px;
+    margin-right: 10px;
+    list-style: none;
+    border-right: 1px dotted #999;
+}
+.home-footer .links li:last-child
+{
+    padding-right:0px;
+    margin-right:0px;
+    border:none;
+}
+
+.home-footer .footer-container
+{
+    border-top: 1px solid #ccc;
+}
+.home-footer .copyright
+{
+    margin-right:40px;
+}
+}

@@ -1,0 +1,93 @@
+<ul class="breadcrumb breadcrumb-page">
+    <div class="breadcrumb-label text-light-gray">You are here: </div>
+    <li><a href="/">Home</a></li>
+    <li><a ng-href="#/clients">Broker Dashboard</a></li>
+    <li><a href="javascript:void(0);" ng-click="viewBenefits()">View Benefits</a></li>
+    <li class="active"><a href="javascript:void(0);">Add Benefit</a></li>
+</ul>
+<div class="col-md-2">
+</div>
+<div class="col-md-8">
+    <form name="form" class="panel">
+        <div class="panel-heading">
+            <span class="panel-title">Please use the form below to add a new benefit.</span>
+        </div>
+        <div class="panel-body">
+            <div class="row form-group">
+                <div class="col-md-12 form-inline-error" ng-show="form.benefit_type.$dirty">Required:
+                  <span ng-show="form.benefit_type.$error.required">Benefit Type must be selected</span>
+                </div>
+                <label class="col-sm-4 control-label"> Benefit Type</label>
+                <div class="col-sm-8">
+                    <select ng-model="benefit.benefit_type"
+                        ng-required="true"
+                        name="benefit_type"
+                        ng-options="benefit_type for benefit_type in benefit_types"
+                        class="form-control"></select>
+                </div> 
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 form-inline-error" ng-show="form.benefit_name.$dirty && form.benefit_name.$invalid">Invalid:
+                  <span ng-show="form.benefit_name.$error.required">Benefit name field is required</span>
+                </div>
+                <label class="col-sm-4 control-label"> Benefit Name</label>
+                <div class="col-sm-8">
+                    <input type="text"
+                        name="benefit_name"
+                        ng-model="benefit.benefit_name"
+                        ng-required="true"
+                        class="form-control">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 form-inline-error" ng-show="form.benefit_option_type.$dirty">Required:
+                  <span ng-show="form.benefit_option_type.$error.required">Benefit Option must be selected</span>
+                </div>
+                <label class="col-sm-4 control-label"> Benefit Option</label>
+                <div class="col-sm-8">
+                    <select name="benefit_option_type"
+                        ng-model="benefit.benefit_option_type"
+                        ng-options="option_type for option_type in benefit_option_types_display"
+                        ng-required="true"
+                        class="form-control"></select>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 form-inline-error" ng-show="form.total_premium.$dirty && form.total_premium.$invalid">Invalid:
+                  <span ng-show="form.total_premium.$error.required">Total Premium field is required</span>
+                </div>
+                <label class="col-sm-4 control-label"> Total Premium</label>
+                <div class="col-sm-8">
+                    <input type="text"
+                        name="total_premium"
+                        ng-model="benefit.total_cost_per_period"
+                        ng-required="true"
+                        class="form-control">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 form-inline-error" ng-show="form.employee_premium.$dirty && form.employee_premium.$invalid">Invalid:
+                  <span ng-show="form.employee_premium.$error.required">Employee Premium field is required</span>
+                </div>
+                <label class="col-sm-4 control-label"> Employee Premium</label>
+                <div class="col-sm-8">
+                    <input type="text"
+                        name="employee_premium"
+                        ng-model="benefit.employee_cost_per_period"
+                        ng-required="true"
+                        class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer text-right">
+            <button ng-click="addBenefit()" class="btn btn-primary btn-flat btn-labeled" ng-disabled="form.$invalid">
+                <span class="btn-label icon fa fa-plus"></span>Add Benefit
+            </button>
+            <a href="javascript:history.back();" class="btn btn-primary btn-flat btn-labeled">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+<div class="col-md-2">
+</div>

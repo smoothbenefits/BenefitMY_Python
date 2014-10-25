@@ -1,0 +1,154 @@
+<ul class="breadcrumb breadcrumb-page">
+    <div class="breadcrumb-label text-light-gray">You are here: </div>
+    <li><a href="/">Home</a></li>
+    <li class="active">Employee Onboard</li>
+</ul>
+
+<script type="text/javascript" src="js/flashcanvas.js"></script>
+<script src="js/jSignature.min.js"></script>
+
+<div class="page-header">
+    <div class="row">
+        <!-- Page header, center on small screens -->
+        <h1 class="col-xs-12 text-center text-left-sm">
+            Benefitmy works with your company to ensure all of employee information is collected from you
+        </h1>
+    </div>
+</div> <!-- / .page-header -->
+<div class="col-md-4">
+    <div class="panel">
+        <div class="panel-heading">
+            <span class="panel-title"> Overview</span>
+        </div>
+        <div class="panel-body">
+            <div class="list-group">
+                <a ng-href="#/employee/onboard/index/{{employeeId}}" class="list-group-item">
+                    <h4 class="list-group-item-heading">Basic Information</h4>
+                    <p class="list-group-item-text">Personal information</p>
+                </a>
+                <a ng-href="#/employee/onboard/employment/{{employeeId}}" class="list-group-item active">
+                    <h4 class="list-group-item-heading">Employment Authorization</h4>
+                    <p class="list-group-item-text">Employment and proof of eligibility</p>
+                </a>
+                <a href="#/employee/onboard/tax/{{employeeId}}" class="list-group-item">
+                    <h4 class="list-group-item-heading">Tax information (W-4)</h4>
+                    <p class="list-group-item-text">Information about your W-4 and state tax withholding form</p>
+                </a>
+                <a href="#/employee/onboard/complete/{{employeeId}}" class="list-group-item">
+                    <h4 class="list-group-item-heading">Term and Signature</h4>
+                    <p class="list-group-item-text">Please acknowledge the information by providing us your signature</p>
+                </a>
+            </div>
+        </div> 
+    </div>   
+</div>
+<div class="col-md-8">
+    <form class="panel" name="authForm">
+        <div class="panel-body">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="row form-group">
+                    <label class="col-sm-4 control-label">I am</label>
+                    <div class="col-sm-8">
+                        <select name="authorization_type"
+                            ng-model="employee.auth_type"
+                            ng-required="true"
+                            class="form-control">
+                            <option value="citizen">A citizen of the United States</option>
+                            <option value="noncitizen">A noncitizen national of the United States</option>
+                            <option value="PR">A lawful permanent resident</option>
+                            <option value="alien">An alien authorized to work</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group" ng-show="employee.auth_type == 'alien'">
+                    <label class="col-sm-4 control-label">Expiration Date</label>
+                    <div class="col-sm-4">
+                        <input name="expirationDate"
+                            ng-model="employee.auth_expiration"
+                            type="date"
+                            ui-mask="mm/dd/yyyy"
+                            ng-required="false"/>
+                    </div>
+                     <div class="col-sm-4 text-left">
+                        <input type="checkbox"
+                            ng-model="employee.expiration_na"
+                            name="expirationNA" />
+                        <label class="control-label"> NA </label> 
+                    </div>
+                    <div style="clear:both;height:50px"></div>
+                </div>
+                <div class="row form-group" ng-show="employee.auth_type == 'PR' || employee.auth_type=='alien'">
+                    <label class="col-sm-4 control-label">Alien Registration Number/USCIS number</label>
+                    <div class="col-sm-8">
+                        <input name="USCISNumber"
+                            ng-model="employee.authNumber"
+                            type="number"
+                            ui-mask="999-999-999"
+                            ng-required="true"/>
+                    </div>
+                </div>
+                <div class="row form-group text-center" ng-show="employee.auth_type=='alien'">
+                    <b>OR </b>
+                </div>
+                <div class="row form-group" ng-show="employee.auth_type=='alien'">
+                    <label class="col-sm-4 control-label">Form I-94 Admission Number</label>
+                    <div class="col-sm-8">
+                        <input name="I94Number"
+                            ng-model="employee.I94Id"
+                            type="number"/>
+                    </div>
+                    <div style="clear:both;height:30px"></div>
+                    <label class="col-sm-4 control-label">Foreign Passport Number</label>
+                    <div class="col-sm-8">
+                        <input name="foreignPassportNumber"
+                            ng-model="employee.passportId"
+                            type="text"/>
+                    </div>
+                    <div style="clear:both;height:30px"></div>
+                    <label class="col-sm-4 control-label">Country of Issuance</label>
+                    <div class="col-sm-8">
+                        <input name="foreignPassportCountry"
+                            ng-model="employee.passportCountry"
+                            type="text"/>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- <div class="panel" ng-show="employee.auth_type">
+        <div class="panel-heading">
+            <span class="panel-title" ng-show="employee.auth_type=='citizen' || employee.auth_type=='noncitizen'">Please upload your passport ID page (The page with your picture on it)</span>
+            <span class="panel-title" ng-show="employee.auth_type=='PR'">Please upload your permanent resident card</span>
+            <span class="panel-title" ng-show="employee.auth_type=='alien'">Please upload your US visa page</span>
+        </div>
+        <div class="panel-body">
+            <div class="uploaded-doc-container" ng-show="doc_uploaded">
+                <img ng-src="{{}}" name="uploaded-doc-preview"/>
+            </div>
+            <form class="upload-button" name="docUpload">
+                <input type="button" value="Upload" />
+            </form>
+        </div>
+    </div> -->
+    <div class="signature-container" ng-show="employee.auth_type">
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title">Please sign below</span>
+            </div>
+            <div class="panel-body">
+                <div id="auth_signature" class="signature-pad"></div>
+            </div>
+            <div class="panel-footer text-right">
+                <button ng-click="clearSignature()" class="btn btn-primary btn-labeled">
+                    Reset
+                </button>
+                <button ng-click="signDocument()" class="btn btn-primary btn-labeled">
+                    <span class="btn-label icon fa fa-plus"></span>Submit and Next 
+                </button>
+                <input type="hidden" name="signatureHiddenData" ng-value="{{signatureImage}}"/>
+            </div>
+        </div>
+    </div>
+
+</div>
