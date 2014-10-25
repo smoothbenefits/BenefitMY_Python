@@ -1,5 +1,7 @@
 This is the currently working apis
 
+Get:
+
 /api/v1/people/#/
 /api/v1/benefit_types/
 /api/v1/document_types/
@@ -12,3 +14,6 @@ This is the currently working apis
 /api/v1/companies/#/benefits/
 /api/v1/companies/#/users/
 /api/v1/companies/#/documents/
+/api/v1/companies/#/templates/
+Post:
+
