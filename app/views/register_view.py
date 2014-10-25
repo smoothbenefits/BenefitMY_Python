@@ -1,6 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from app.forms import UserForm
+from django.shortcuts import redirect
 
 def register(request):
     # Like before, get the request's context.
@@ -28,7 +29,6 @@ def register(request):
 
             # Update our variable to tell the template registration was successful.
             registered = True
-
         # Invalid form or forms - mistakes or something else?
         # Print problems to the terminal.
         # They'll also be shown to the user.

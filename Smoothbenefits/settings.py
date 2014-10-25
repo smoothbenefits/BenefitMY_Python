@@ -62,7 +62,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'Benefits_DB',
-        'USER': 'leixiaoyu',
+        'USER': 'postgres',
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '',

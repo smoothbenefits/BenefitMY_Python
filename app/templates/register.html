@@ -8,12 +8,12 @@
         <h1>Register with BenefitMy</h1>
 
         {% if registered %}
-        Rango says: <strong>thank you for registering!</strong>
-        <a href="/api/v1/register">Return to registration.</a><br />
+        <strong>thank you for registering!</strong>
+        Click <a href="/login">here</a> to log in with your newly created credentials<br />
         {% else %}
-        Rango says: <strong>register here!</strong><br />
+        <strong>register here!</strong><br />
 
-        <form id="user_form" method="post" action="/api/v1/register/"
+        <form id="user_form" method="post" action="/register/"
                 enctype="multipart/form-data">
 
             {% csrf_token %}
