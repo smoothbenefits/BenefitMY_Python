@@ -13,3 +13,4 @@ from template import Template
 from document import Document
 from document_field import DocumentField
 from enrolled import Enrolled
+from user_company_waived_benefit import UserCompanyWaivedBenefit

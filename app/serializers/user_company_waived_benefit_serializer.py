@@ -3,7 +3,7 @@ from app.models.user_company_waived_benefit import \
     UserCompanyWaivedBenefit
 
 
-class WaivedBenefitSerializer(serializers.ModelSerializer):
+class UserCompanyWaivedBenefitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserCompanyWaivedBenefit

@@ -1,7 +1,7 @@
 from django.db import models
-from app.model.user import User
-from app.model.company import Company
-from app.model.benefit_type import BenefitType
+from user import User
+from company import Company
+from benefit_type import BenefitType
 
 
 class UserCompanyWaivedBenefit(models.Model):
