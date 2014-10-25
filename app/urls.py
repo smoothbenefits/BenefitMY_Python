@@ -21,6 +21,9 @@ from app.views.document_view import (
     UserDocumentView)
 from app.views.company_templates_view import CompanyTemplatesView
 
+from app.views.user_company_benefit_plan_option_view import UserCompanyBenefitPlanOptionView
+
+
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
@@ -31,21 +34,24 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/document_types/$' % PREFIX, DocumentTypeView.as_view()),
 
-    url(r'^%s/companies/(?P<pk>[0-9]+)/$' % PREFIX, CompanyView.as_view()),
 
     url(r'^%s/users/$' % PREFIX, UsersView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/$' % PREFIX, UserView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/family/$' % PREFIX, UserFamilyView.as_view()),
+    url(r'^%s/users/(?P<pk>[0-9]+)/documents/$' % PREFIX, UserDocumentView.as_view()),
+    url(r'^%s/users/(?P<pk>[0-9]+)/benefits/$' % PREFIX,
+        UserCompanyBenefitPlanOptionView.as_view()),
+
+
     url(r'^%s/templates/(?P<pk>[0-9]+)/$' % PREFIX, TemplateView.as_view()),
     url(r'^%s/benefits/(?P<pk>[0-9]+)/$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/benefits/$' % PREFIX,
         CompanyBenefitPlansView.as_view()),
-
+    url(r'^%s/companies/(?P<pk>[0-9]+)/$' % PREFIX, CompanyView.as_view()),
     url(r'^%s/companies/(?P<pk>[0-9]+)/users/$' % PREFIX, CompanyUserView.as_view()),
     url(r'^%s/companies/(?P<pk>[0-9]+)/documents/$' % PREFIX, CompanyDocumentView.as_view()),
     url(r'^%s/companies/(?P<pk>[0-9]+)/templates/$' % PREFIX, CompanyTemplatesView.as_view()),
-    url(r'^%s/users/(?P<pk>[0-9]+)/documents/$' % PREFIX, UserDocumentView.as_view()),
 
 )
 urlpatterns = format_suffix_patterns(urlpatterns)
