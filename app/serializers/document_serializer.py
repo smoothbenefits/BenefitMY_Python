@@ -8,7 +8,27 @@ from document_field_serializer import DocumentFieldSerializer
 from app.models.document import Document
 
 
-class DocumentSerializer(serializers.ModelSerializer):
+class CompanyDocumentSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    company = CompanySerializer()
+    template = TemplateSerializer()
+    document_type = DocumentTypeSerializer()
+    document_field = DocumentFieldSerializer()
+
+    class Meta:
+        model = Document
+        fileds = ('id',
+                  'name',
+                  'content',
+                  'edited',
+                  'company',
+                  'user',
+                  'template'
+                  'document_type',
+                  'document_field')
+
+
+class UserDocumentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     company = CompanySerializer()
     template = TemplateSerializer()

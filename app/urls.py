@@ -16,8 +16,9 @@ from app.views.company_benefit_plan_option_view import (
     CompanyBenefitPlanOptionView,
     CompanyBenefitPlansView
     )
-
-from app.views.document_view import DocumentView
+from app.views.document_view import (
+    CompanyDocumentView,
+    UserDocumentView)
 from app.views.company_templates_view import CompanyTemplatesView
 
 PREFIX = "api/v1"
@@ -42,8 +43,9 @@ urlpatterns = patterns('app.views',
         CompanyBenefitPlansView.as_view()),
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/users/$' % PREFIX, CompanyUserView.as_view()),
-    url(r'^%s/companies/(?P<pk>[0-9]+)/documents/$' % PREFIX, DocumentView.as_view()),
+    url(r'^%s/companies/(?P<pk>[0-9]+)/documents/$' % PREFIX, CompanyDocumentView.as_view()),
     url(r'^%s/companies/(?P<pk>[0-9]+)/templates/$' % PREFIX, CompanyTemplatesView.as_view()),
-)
+    url(r'^%s/users/(?P<pk>[0-9]+)/documents/$' % PREFIX, UserDocumentView.as_view()),
 
+)
 urlpatterns = format_suffix_patterns(urlpatterns)
