@@ -22,4 +22,5 @@ Get:
 
 
 Post:
-api/v1/users/:id/family
+api/v1/users/#/family/
+api/v1/templates/#/
