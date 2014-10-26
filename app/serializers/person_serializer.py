@@ -18,4 +18,6 @@ class PersonSerializer(serializers.ModelSerializer):
                   'full_name',
                   'email',
                   'phones',
-                  'addresses')
+                  'addresses',
+                  'company',
+                  'user')

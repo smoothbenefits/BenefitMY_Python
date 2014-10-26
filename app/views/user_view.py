@@ -2,10 +2,12 @@ from rest_framework.views import APIView
 from django.http import Http404
 from django.shortcuts import render_to_response
 from rest_framework.response import Response
+from rest_framework import status
 
 from app.models.user import User
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
+from app.serializers.person_serializer import PersonSerializer
 
 
 class UserView(APIView):
@@ -39,6 +41,14 @@ class UserFamilyView(APIView):
         user = self.get_object(pk)
         serializer = UserFamilySerializer(user)
         return Response(serializer.data)
+
+
+    def post(self, request, pk, format=None):
+        serializer = PersonSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserRegisterView():
     def register(request):
@@ -97,3 +107,4 @@ class UserRegisterView():
 
         # Render the template depending on the context.
         return render_to_response('rango/register.html',{'user_form': user_form, 'profile_form': profile_form, 'registered': registered},context)
+
