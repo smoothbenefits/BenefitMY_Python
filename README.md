@@ -3,6 +3,9 @@ BenefitMY_Python
 
 Please follow the following steps to start the app on your local machine
 
+0. Install yuglify component. This is for the static files
+`sudo npm -g install yuglify`
+
 1. install django
 `pip install django`
 `pip install djangorestframework`
