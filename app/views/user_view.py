@@ -29,6 +29,15 @@ class UsersView(APIView):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
+class CurrentUserView(APIView):
+
+    def get(self, request, format=None):
+        try:
+            curUser = User.objects.get(pk=request.user.id)
+        except User.DoesNotExist:
+            raise Http404
+        serializer = UserSerializer(curUser)
+        return Response({'user':serializer.data})
 
 class UserFamilyView(APIView):
     def get_object(self, pk):

@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 
 from app.views.person_view import PersonView
-from app.views.user_view import UserView, UsersView, UserFamilyView
+from app.views.user_view import UserView, UsersView, UserFamilyView, CurrentUserView
 from app.views.company_user_view import CompanyUserView
 from app.views.benefit_type_view import BenefitTypeView
 from app.views.document_type_view import DocumentTypeView
@@ -37,6 +37,7 @@ urlpatterns = patterns('app.views',
 
 
     url(r'^%s/users/$' % PREFIX, UsersView.as_view()),
+    url(r'^%s/users/current/$' % PREFIX, CurrentUserView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/$' % PREFIX, UserView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/family/$' % PREFIX, UserFamilyView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/documents/$' % PREFIX, UserDocumentView.as_view()),
