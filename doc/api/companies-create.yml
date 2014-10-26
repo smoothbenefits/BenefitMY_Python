@@ -1,0 +1,78 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource: company
+resource_url: /api/v1/companies
+description: >
+  Create a new client company, and also add the current user as a broker for
+  the new company.
+  address_type must be "main" or "other"
+  person_type must be "primary_contact", "secondary_contact", or "other"
+  phone_type must be "home", "work", "mobile", or "other"
+  Returns an error object with status 400 if the field values are missing.
+
+parameters:
+  - name: user
+  description: >
+    id of current user, only used if SMOOTHBENEFITS_API_UNAUTHORIZED is true
+
+  optional: yes
+sample_url: /api/v1/companies
+sample_request:
+  {
+
+      "name": "Acme Widgets, Inc.",
+      "addresses": [
+        {
+          "address_type": "main",
+          "street_1": "101 Breeze Way",
+          "street_2": "Suite 101",
+          "city": "Pleasantville",
+          "state": "MA",
+          "zipcode": "01234"
+        }
+      ],
+      "contacts": [
+        {
+          "person_type": "primary_contact",
+          "full_name": "Barbara Smith",
+          "email": "barbara.smith@acmewidgets.com",
+          "phones": [
+            {
+              "phone_type": "work",
+              "number": "1-987-555-1234"
+            }
+          ]
+        }
+      ]
+    }
+sample_response: |
+{
+    "name": "Acme Widgets, Inc.", 
+    "contacts": [
+        {
+            "person_type": "primary_contact", 
+            "full_name": "Barbara Smith", 
+            "email": "barbara.smith@acmewidgets.com", 
+            "phones": [
+                {
+                    "id": 19, 
+                    "phone_type": "work", 
+                    "number": "1-987-555-1234"
+                }
+            ]
+        }
+    ], 
+    "addresses": [
+        {
+            "id": 19, 
+            "address_type": "main", 
+            "street_1": "101 Breeze Way", 
+            "street_2": "Suite 101", 
+            "city": "Pleasantville", 
+            "state": "MA", 
+            "zipcode": "01234"
+        }
+    ]
+}

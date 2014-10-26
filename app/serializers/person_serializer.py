@@ -21,3 +21,16 @@ class PersonSerializer(serializers.ModelSerializer):
                   'addresses',
                   'company',
                   'user')
+
+class PersonPostSerializer(serializers.ModelSerializer):
+
+    phones = PhoneSerializer(many=True)
+
+    class Meta:
+
+        model = Person
+        fields = ('person_type',
+                  'full_name',
+                  'email',
+                  'phones')
+
