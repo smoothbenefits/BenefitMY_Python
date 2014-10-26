@@ -5,11 +5,14 @@ from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOp
 from app.serializers.company_benefit_plan_option_serializer import \
     CompanyBenefitPlanOptionSerializer
 from app.serializers.enrolled_serializer import EnrolledSerializer
+from app.serializers.user_company_waived_benefit_serializer import \
+    UserCompanyWaivedBenefitSerializer
 
 
 class UserCompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
     company_benefit_plan_option = CompanyBenefitPlanOptionSerializer()
     enrolled = EnrolledSerializer(many=True)
+    waived_benefit = UserCompanyWaivedBenefitSerializer()
 
     class Meta:
 
