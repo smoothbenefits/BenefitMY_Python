@@ -1,0 +1,56 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource: benefit
+resource_url: api/v1/benefits
+description: >
+  Create a new benefit.
+  company, benefit_type, benefit_option_type, benefit_name,
+  total_cost_per_period, employee_cost_per_period are required.
+  Allowed values for benefit_type are "Medical", "Dental", and "Vision"
+  Allowed values for benefit_option_type are:
+    "individual"
+    "individual_plus_spouse"
+    "individual_plus_child"
+    "individual_plus_one"
+    "individual_plus_children"
+    "family"
+  Returns an error object with status 400 if any required field values
+  are missing.
+  Returns an error object with status 404 if a referenced id is not found.
+  Returns an error object with status 409 if the benefit_name, benefit_type, and
+  benefit_option_type already exists for this company.
+
+parameters:
+sample_url: /api/v1/benefits
+sample_request: |
+{
+ "total_cost_per_period": "1000.00", 
+ "employee_cost_per_period": "200.00", 
+ "benefit_option_type": "individual",
+ "company": 2,
+
+ "benefit_plan": {
+ "btype": { 
+    "name": "Medical"
+ }, 
+ "name": "Blue Cross Blue Shield of Mass. HMO Blue"
+ }
+
+}
+sample_response: |
+{
+    "total_cost_per_period": "1000.00", 
+    "employee_cost_per_period": "200.00", 
+    "benefit_option_type": "individual", 
+    "company": 2, 
+    "benefit_plan": {
+        "btype": {
+            "id": 4, 
+            "name": "Medical"
+        }, 
+        "id": 9, 
+        "name": "Blue Cross Blue Shield of Mass. HMO Blue"
+    }
+}

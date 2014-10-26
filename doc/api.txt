@@ -26,4 +26,4 @@ api/v1/users/#/family/
 api/v1/templates/
 api/v1/companies/
 api/v1/users/
-
+api/v1/benefits/

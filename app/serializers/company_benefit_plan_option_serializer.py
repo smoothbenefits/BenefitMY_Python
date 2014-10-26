@@ -5,6 +5,20 @@ from company_serializer import CompanySerializer
 from benefit_plan_serializer import BenefitPlanSerializer
 
 
+class CompanyBenefitPlanOptionPostSerializer(serializers.ModelSerializer):
+
+    benefit_plan = BenefitPlanSerializer()
+
+    class Meta:
+
+        model = CompanyBenefitPlanOption
+        fields = ('total_cost_per_period',
+                  'employee_cost_per_period',
+                  'benefit_option_type',
+                  'company',
+                  'benefit_plan')
+
+
 class CompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
 
     company = CompanySerializer()
@@ -33,5 +47,3 @@ class CompanyBenefitPlanSerializer(serializers.ModelSerializer):
                   'employee_cost_per_period',
                   'benefit_option_type',
                   'benefit_plan')
-
-

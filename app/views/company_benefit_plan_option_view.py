@@ -1,10 +1,13 @@
 from rest_framework.views import APIView
 from django.http import Http404
+from rest_framework.response import Response
+from rest_framework import status
 
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
-from app.serializers.company_benefit_plan_option_serializer import \
-    CompanyBenefitPlanOptionSerializer, CompanyBenefitPlanSerializer
-from rest_framework.response import Response
+from app.serializers.company_benefit_plan_option_serializer import (
+    CompanyBenefitPlanOptionSerializer,
+    CompanyBenefitPlanOptionPostSerializer,
+    CompanyBenefitPlanSerializer)
 
 
 class CompanyBenefitPlanOptionView(APIView):
@@ -20,7 +23,7 @@ class CompanyBenefitPlanOptionView(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
-        serializer = CompanyBenefitPlanOptionSerializer(data=request.DATA)
+        serializer = CompanyBenefitPlanOptionPostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
