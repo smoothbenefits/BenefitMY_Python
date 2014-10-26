@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from app.views import register_view, login_view, home_view
+from django.conf import settings
 
 
 urlpatterns = patterns('',
@@ -15,3 +16,9 @@ urlpatterns = patterns('',
     url(r'^login/$', login_view.user_login, name='user_login'),
     url(r'^', include('app.urls')),
 )
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    )
+
