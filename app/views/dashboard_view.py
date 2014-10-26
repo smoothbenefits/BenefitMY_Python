@@ -6,4 +6,4 @@ def index(request):
     # Like before, obtain the context for the user's request.
     context = RequestContext(request)
     # just go ahead and return the home html
-    return render_to_response('home.html', {}, context)
+    return render_to_response('dashboard.html', {}, context)

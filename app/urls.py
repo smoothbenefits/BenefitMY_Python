@@ -10,6 +10,7 @@ from app.views.benefit_type_view import BenefitTypeView
 from app.views.document_type_view import DocumentTypeView
 
 from app.views.company_view import CompanyView
+from app.views import dashboard_view
 
 """
 from app.views.company_benefit_plan_option_view import (
@@ -24,6 +25,7 @@ from app.views.template_view import TemplateView
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
+    url(r'^dashboard/$', dashboard_view.index, name='dashboard'),
     url(r'^%s/people/(?P<pk>[0-9]+)/$' % PREFIX, PersonView.as_view()),
 
     url(r'^%s/benefit_types/$' % PREFIX, BenefitTypeView.as_view()),
