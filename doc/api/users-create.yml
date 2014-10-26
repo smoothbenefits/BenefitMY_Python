@@ -1,0 +1,37 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource: user
+resource_url: /api/v1/users
+description: >
+  Create a new user and role for a company.
+  Email and full_name fields are required.
+  Returns an error object with status 400 if the field values missing.
+  Returns an error object with status 404 if a referenced id is not found.
+  Returns an error object with status 409 if the email address and type already exists for this company.
+
+parameters:
+sample_url: /api/v1/users
+sample_request:
+{       
+       "company": 1,
+       "company_user_type": "Employee", 
+        "user": {
+
+            "first_name": "fiddfrstvvv5", 
+            "last_name": "lastvvfdvv5", 
+            "email": "user5@smoothbenefits.com"
+}
+
+sample_response: |
+{
+    "company": 1, 
+    "company_user_type": "Employee", 
+    "user": {
+        "id": 7, 
+        "first_name": "firstvvffffv5", 
+        "last_name": "lastvvffffvv5", 
+        "email": "user5@smoffffthbenefits.com"
+    }
+}

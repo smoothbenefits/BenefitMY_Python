@@ -22,7 +22,7 @@ class TemplateView(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
-        serializer = TemplateSerializer(data=request.DATA)
+        serializer = TemplatePostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

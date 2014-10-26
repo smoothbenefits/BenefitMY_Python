@@ -12,3 +12,13 @@ class CompanyUserSerializer(serializers.ModelSerializer):
         fields = ('id',
                   'company_user_type',
                   'user')
+
+
+class CompanyUserPostSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = CompanyUser
+        fields = ('company',
+                  'company_user_type',
+                  'user')

@@ -5,7 +5,7 @@ from app.serializers.company_serializer import CompanySerializer
 from app.serializers.document_type_serializer import DocumentTypeSerializer
 
 
-class TemplateiPostSerializer(serializers.ModelSerializer):
+class TemplatePostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Template

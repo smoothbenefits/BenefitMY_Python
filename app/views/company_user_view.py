@@ -1,10 +1,12 @@
 from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.response import Response
+from rest_framework import status
 
-from app.models.user import User
 from app.models.company_user import CompanyUser
-from app.serializers.company_user_serializer import CompanyUserSerializer
+from app.serializers.company_user_serializer import (
+    CompanyUserSerializer,
+    CompanyUserPostSerializer)
 
 
 class CompanyUserView(APIView):
@@ -18,3 +20,10 @@ class CompanyUserView(APIView):
         companies = self.get_companies(pk)
         serializer = CompanyUserSerializer(companies, many=True)
         return Response(serializer.data)
+
+    def post(self, request, pk, format=None):
+        serializer = CompanyUserPostSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
