@@ -3,8 +3,8 @@ BenefitMY_Python
 
 Please follow the following steps to start the app on your local machine
 
-0. Install yuglify component. This is for the static files
-`sudo npm -g install yuglify`
+0. Install coffeescript component. This is for the coffee javascript files
+`sudo npm install -g coffee-script`
 
 1. install django
 `pip install django`
