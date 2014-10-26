@@ -1,0 +1,120 @@
+<ul class="breadcrumb breadcrumb-page">
+    <div class="breadcrumb-label text-light-gray">You are here: </div>
+    <li><a href="/">Home</a></li>
+    <li><a ng-href="#/admin">Employer Dashboard</a></li>
+    <li class="active"><a href="javascript:void(0);">{{viewTitle}}</a></li>
+</ul>
+<div class="page-header">
+    <div class="row">
+        <!-- Page header, center on small screens -->
+        <h1 class="col-xs-12 col-sm-6 text-center text-left-sm">
+            <i class="fa fa-dashboard page-header-icon"></i> {{viewTitle}}
+        </h1>
+        <hr class="visible-xs no-grid-gutter-h">
+        <!-- "Create project" button, width=auto on desktops -->
+        <div class="pull-right col-xs-12 col-sm-auto" ng-show="!showCreateButton">
+            <a href="javascript:void(0);" ng-click="addOfferTemplate()" class="btn btn-primary btn-labeled" style="width: 100%;">
+                <span class="btn-label icon fa fa-plus"></span>Add {{documentType}} template
+            </a>
+        </div>
+    </div>
+    <div class="row">
+    </div>
+</div>
+<div class="row" ng-if="!_.isEmpty(existingTemplateList) && !addMode">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+        <div class="panel" name="list-templates">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    {{documentType}} Template List
+                </span>
+            </div>
+            <div class="panel-body">
+                <div class="row" ng-repeat="template in existingTemplateList">
+                    <div class="col-md-6">
+                        {{template.name}}
+                    </div>
+                    <div class="col-md-6">
+                        <button ng-click="modifyExistingTemplate(template)" 
+                            class="btn btn-primary btn-flat btn-labeled">
+                            View Template
+                        </button>
+                    </div>
+                    <div style="clear:both"></div>
+                    <div class="row"><br/></div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <button class="btn btn-primary btn-labeled" ng-click="viewDashboard()">
+                    Back
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+    </div>
+    <div style="clear:both"></div>
+</div>
+<div class="row" ng-show="addMode || templateContent">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+        <form class="panel" name="template">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    View/Edit {{documentType}} Template
+                </span>
+            </div>
+            <div class="panel-body">
+                <div class="row form-group">
+                    <label class="col-sm-4 control-label">Template name</label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                            name="template_name"
+                            ng-model="templateName"
+                            ng-required="true"
+                            style="width:100%">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <textarea class="template-field"
+                        rows="25"
+                        ng-required="true"
+                        name="template"
+                        ng-model="templateContent">
+                    </textarea>
+                </div>
+                <div class="row form-group" ng-non-bindable>
+                    <div><b>Please note: For dynamically changing fields to be replaced later, use double curly brackets ({{}}). </b></div>
+                    <div> For example: {{salaryFigure}}, {{sign_date}}, {{Title}}</div>
+                    <div> The following dynamic fields are filled in by the data system knows automatically:</div>
+                    <ul>
+                        <li>{{FullName}}</li>
+                        <li>{{Email}}</li>
+                        <li>{{CompanyName}}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div ng-show="justCreated" class="action-result-message">
+                  The template has just been created!
+                </div>
+                <button ng-show="showCreateButton" ng-click="createTemplate()" 
+                    class="btn btn-primary btn-flat btn-labeled" 
+                    ng-disabled="form.$invalid">
+                    <span class="btn-label icon fa fa-plus"> </span>Create Template
+                </button>
+                <button ng-show="showEditButton" ng-click="editTemplate()" class="btn btn-primary btn-flat btn-labeled">
+                    Edit Template
+                </button>
+                <a href="javascript:history.back();" class="btn btn-primary btn-flat btn-labeled">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>

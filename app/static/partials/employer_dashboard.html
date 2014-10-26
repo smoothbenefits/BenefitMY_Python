@@ -1,0 +1,61 @@
+<ul class="breadcrumb breadcrumb-page">
+    <div class="breadcrumb-label text-light-gray">You are here: </div>
+    <li><a href="/">Home</a></li>
+    <li class="active"><a ng-href="#/admin">Employer Dashboard</a></li>
+</ul>
+<div class="page-header">
+    <div class="row employer-dashboard-header">
+        <!-- Page header, center on small screens -->
+        <h1 class="col-xs-12 col-sm-6 text-center text-left-sm">
+            <i class="fa fa-dashboard page-header-icon"></i>Benefits
+        </h1>
+        <h1 class="col-xs-12 col-sm-6 text-center text-left-sm">
+            <i class="fa fa-dashboard page-header-icon"></i>HR
+        </h1>
+    </div>
+    <div class="row employer-dashboard-body">
+        <div class="col-xs-6 employer-benefits">
+        
+            <ul class="client-list">
+                <li>
+                    <a ng-click="addBrokerClick(company.id)" class="btn btn-primary btn-labeled">
+                        <span class="btn-label icon fa fa-plus"></span>Add Broker Info
+                    </a>
+                </li>
+                <li>
+                    <a ng-click="viewBrokerClick(company.id)" class="btn btn-primary btn-labeled">
+                        <span class="btn-label icon fa fa-plus"></span>View Broker Info
+                    </a>
+                </li>
+                <li>
+                    <a ng-click="viewBenefitsClick(company.id)" class="btn btn-primary btn-labeled">
+                        <span class="btn-label icon fa fa-plus"></span>View Benefits
+                    </a>
+                </li>
+            </ul>
+        
+        </div>
+        <div class="col-xs-6 employer-hr">
+        
+            <ul class="client-list">
+                <li>
+                    <a ng-click="addEmployeeClick(company.id)" class="btn btn-primary btn-labeled">
+                        <span class="btn-label icon fa fa-plus"></span>Add Employee
+                    </a>
+                </li>
+                <li>
+                    <a ng-click="viewEmployeeClick(company.id)" class="btn btn-primary btn-labeled">
+                        <span class="btn-label icon fa fa-plus"></span>View Employees
+                    </a>
+                </li>
+                <li ng-repeat="docType in documentTypes">
+                    <a ng-click="templateClick(company.id, docType)" class="btn btn-primary btn-labeled">
+                        <span class="btn-label icon fa fa-plus"></span>
+                            <span>Manage {{docType.name}} Template</span>
+                    </a>
+                </li>
+            </ul>
+        
+        </div>
+    </div>
+</div> <!-- / .page-header -->

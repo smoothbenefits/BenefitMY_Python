@@ -1,0 +1,80 @@
+<ul class="breadcrumb breadcrumb-page">
+    <div class="breadcrumb-label text-light-gray">You are here: </div>
+    <li><a href="/">Home</a></li>
+    <li><a ng-href="#/admin">Employer Dashboard</a></li>
+    <li class="active"><a href="javascript:void(0);">Add Broker</a></li>
+</ul>
+<div class="page-header">
+    <div class="row">
+        <!-- Page header, center on small screens -->
+        <h1 class="col-xs-12 col-sm-4 text-center text-left-sm">
+            <i class="fa fa-dashboard page-header-icon"></i>Add Broker
+        </h1>
+    </div>
+    <div class="row">
+    </div>
+</div>
+
+<div class="col-md-2">
+</div>
+<div class="col-md-8">
+    <form name="form" class="panel">
+        <div class="panel-heading">
+            <span class="panel-title">Please enter the broker information below</span>
+        </div>
+        <div class="panel-body">
+            <div class="row form-group">
+                <div class="col-md-12 form-inline-error" ng-show="form.broker_name.$dirty && form.broker_name.$invalid">Invalid:
+                  <span ng-show="form.broker_name.$error.required">Broker name field is required</span>
+                </div>
+                <label class="col-sm-4 control-label">Name</label>
+                <div class="col-sm-8">
+                    <input type="text" 
+                        name="broker_name"
+                        ng-model="addUser.name" 
+                        ng-required="true"
+                        class="form-control">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 form-inline-error" ng-show="form.broker_email.$dirty && form.broker_email.$invalid">Invalid:
+                  <span ng-show="form.broker_email.$error.required">Broker name field is required</span>                  
+                  <span ng-show="form.broker_email.$error.email">Not a valid email address</span>
+                </div>
+                <label class="col-sm-4 control-label">Email</label>
+                <div class="col-sm-8">
+                    <input type="email" 
+                        name="broker_email"
+                        ng-model="addUser.email" 
+                        ng-required="true"
+                        class="form-control">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 form-inline-error" ng-show="form.broker_phone.$dirty && form.broker_phone.$invalid">Invalid:
+                  <span ng-show="form.broker_phone.$error.required">Phone field is required</span>
+                  <span ng-show="form.broker_phone.$invalid">Please enter an valid phone number</span>
+                </div>
+                <label class="col-sm-4 control-label">Phone</label>
+                <div class="col-sm-8">
+                    <input type="masked" 
+                        name="broker_phone"
+                        ng-model="addUser.phone" 
+                        ng-required="true"
+                        ui-mask="(999) 999-9999"
+                        class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer text-right">
+            <button ng-click="createUser('broker')" class="btn btn-primary btn-labeled" ng-disabled="form.$invalid">
+                <span class="btn-label icon fa fa-plus"></span>Add Broker
+            </button>
+            <a href="javascript:void(0);" onclick="history.back()" class="btn btn-primary btn-labeled">
+                Back
+            </a>
+        </div>
+    </form>
+</div>
+<div class="col-md-2">
+</div>

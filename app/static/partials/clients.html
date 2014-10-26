@@ -1,0 +1,43 @@
+<ul class="breadcrumb breadcrumb-page">
+    <div class="breadcrumb-label text-light-gray">You are here: </div>
+    <li><a href="/">Home</a></li>
+    <li class="active"><a ng-href="#/clients">Broker Dashboard</a></li>
+</ul>
+<div class="page-header">
+    <div class="row">
+        <!-- Page header, center on small screens -->
+        <h1 class="col-xs-12 col-sm-4 text-center text-left-sm">
+            <i class="fa fa-dashboard page-header-icon"></i>My Client List
+        </h1>
+
+        <div class="col-xs-12 col-sm-8">
+            <div class="row">
+                <hr class="visible-xs no-grid-gutter-h">
+                <!-- "Create project" button, width=auto on desktops -->
+                <div class="pull-right col-xs-12 col-sm-auto">
+                    <a ng-click="addClient()" class="btn btn-primary btn-labeled" style="width: 100%;">
+                        <span class="btn-label icon fa fa-plus"></span>Add new client
+                    </a>
+                </div>
+
+                <!-- Margin -->
+                <div class="visible-xs clearfix form-group-margin"></div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="row col-xs-12 main-content">
+
+        <ul class="client-list">
+            <li ng-repeat="client in clientList">
+
+                <a href="#/benefits/{{client.id}}" class="btn btn-info btn-flat btn-labeled pull-right">
+                    <span class="btn-label">View Benefits</span>
+                </a>
+                <span class="client-name">{{client.name}}</span>
+            </li>
+        </ul>
+
+    </div>
+</div> <!-- / .page-header -->

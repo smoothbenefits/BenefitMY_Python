@@ -1,0 +1,105 @@
+#content-wrapper
+{
+    width:90%;
+    margin-left:40px;
+}
+
+.main-content
+{
+    margin-top: 20px;
+}
+
+ul.client-list 
+{
+    list-style-type:none;
+}
+
+ul.client-list li
+{
+    margin-bottom:20px;
+    border-bottom:1px dotted black;
+    height:40px;
+}
+
+ul.client-list li span.client-name
+{
+    font-size:16px;
+}
+
+.employer-dashboard-header
+{
+    margin-bottom:20px;
+}
+
+.employer-dashboard-body ul.client-list li
+{
+    border-bottom:none;
+}
+
+.employer-user-label
+{
+    text-align: center;
+}
+
+.employer-user-row
+{
+    margin-top:20px;
+    margin-bottom:20px;
+
+}
+
+.no-related-users
+{
+    margin-top:30px;
+    text-align: center;
+    margin-bottom:30px;
+    font-size:20px;
+}
+.header-container
+{
+    height:50px;
+}
+
+.form-validation-error
+{
+    color:red;
+    font-size: :14px;
+}
+.employer-benefit .panel-heading
+{
+    height:40px;
+}
+.in-form-instruction
+{
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.form-group input.ng-invalid.ng-dirty {
+    background-color: #F5D7D3;
+  }
+.form-inline-error{
+    color:red;
+    padding-bottom: 10px;
+}
+.template-field
+{
+    width:100%;
+}
+.action-result-message
+{
+    margin-bottom:10px;
+    font-weight: bold;
+}
+.enrolled
+{
+    margin-left:30px;
+}
+.signature-pad
+{
+    width:600px;
+}
+.terms-container
+{
+    margin-bottom:40px;
+}

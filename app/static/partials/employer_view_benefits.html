@@ -1,0 +1,58 @@
+<ul class="breadcrumb breadcrumb-page">
+    <div class="breadcrumb-label text-light-gray">You are here: </div>
+    <li><a href="/">Home</a></li>
+    <li><a ng-href="#/admin">Employer Dashboard</a></li>
+    <li class="active"><a href="javascript:void(0);">View Benefits</a></li>
+</ul>
+<div class="page-header">
+    <div class="row">
+        <!-- Page header, center on small screens -->
+        <h1 class="col-xs-12 col-sm-4 text-center text-left-sm">
+            <i class="fa fa-dashboard page-header-icon"></i>View Benefits
+        </h1>
+    </div>
+</div>
+<div class="content-container">
+    <div class="panel employer-benefit" ng-repeat="benefitArray in companyBenefitsArray">
+        <div class="panel-heading">
+             <div class="col-md-5 text-left">
+                <span class="panel-title">{{benefitArray.type}}</span>
+            </div>
+            <div class="col-md-3 text-left">
+                <span class="panel-title">Types</span>
+            </div>
+            <div class="col-md-2 text-center">
+                <span class="panel-title">Total Premiums</span>
+            </div>
+            <div class="col-md-2 text-center">
+                <span class="panel-title">Employee Premiums</span>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div class="panel-body">
+            <div class="well" ng-repeat="benefit in benefitArray.benefitList">
+                <div class="col-md-5 text-left">
+                    {{benefit.name}}
+                </div>
+                <div class="col-md-7 text-left">
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="option in benefit.options">
+                            <div class="col-md-6">{{option.optionType}}</div>
+                            <div class="col-md-3">${{option.totalCost}}</div>
+                            <div class="col-md-3">${{option.employeeCost}}</div>
+                            <div style="clear:both"></div>
+                        </li>
+                    </ul>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+        </div>
+    </div>
+    <div class="flow-button-container">
+        <div class="pull-right col-xs-12 col-sm-auto">
+            <a href="javascript:void(0);" onclick="history.back()" class="btn btn-primary btn-labeled">
+                Back
+            </a>
+        </div>
+    </div>
+</div>

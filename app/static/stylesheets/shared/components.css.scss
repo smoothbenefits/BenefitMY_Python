@@ -1,0 +1,41 @@
+@import "variables.css.scss";
+
+html, body {
+    min-width: 100%;
+    min-height: 100%;
+}
+
+body {
+    height: 100vh;
+}
+
+.container {
+    max-width: 980px;
+    @media (max-width: 768px) {
+        padding: 0 10px;
+    }
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1em;
+    margin-bottom: $gutter;
+}
+
+p, ul {
+    color: #6D6E70;
+    font-size: $size;
+    font-weight: 300;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+    li {
+        margin-bottom: $gutter-sm;
+    }
+}
