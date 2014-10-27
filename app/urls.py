@@ -7,7 +7,9 @@ from app.views.user_view import UserView, UsersView, UserFamilyView, CurrentUser
 from app.views.company_user_view import CompanyUserView
 from app.views.benefit_type_view import BenefitTypeView
 from app.views.document_type_view import DocumentTypeView
-from app.views.company_view import CompanyView
+from app.views.company_view import (
+    CompanyView,
+    companies)
 from app.views import dashboard_view
 
 from app.views.template_view import (
@@ -60,6 +62,7 @@ urlpatterns = patterns('app.views',
 
 
 
+    url(r'^%s/companies/$' % PREFIX, companies),
     url(r'^%s/templates/$' % PREFIX, templates),
 )
 urlpatterns = format_suffix_patterns(urlpatterns)
