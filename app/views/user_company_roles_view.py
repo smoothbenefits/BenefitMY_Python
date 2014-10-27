@@ -16,4 +16,4 @@ class UserCompanyRolesView(APIView):
     def get(self, request, pk, format=None):
         companies = self.get_companies(pk)
         serializer = UserCompanyRolesSerializer(companies, many=True)
-        return Response(serializer.data)
+        return Response({'company_roles':serializer.data})

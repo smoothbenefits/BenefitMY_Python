@@ -131,18 +131,10 @@ PIPELINE_CSS = {
     },
     'dashboard':{
         'source_filenames':(
-            'stylesheets/front_end/users.css.scss',
-            'stylesheets/shared/variables.css.scss',
-            'stylesheets/shared/buttons.css.scss',
-            'stylesheets/shared/components.css.scss',
-            'stylesheets/shared/forms.css.scss',
-            'stylesheets/shared/global.css.scss',
             'stylesheets/api.css.scss',
             'stylesheets/application.css.scss',
             'stylesheets/app.css',
             'stylesheets/bootstrap.css.scss',
-            'stylesheets/framework_and_overrides.css.scss',
-            'stylesheets/front_end.css.scss',
             'stylesheets/home.css',
             'stylesheets/layout.css',
             'stylesheets/pages.css',

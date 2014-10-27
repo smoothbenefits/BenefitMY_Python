@@ -10,15 +10,18 @@ var findViewController = brokersControllers.controller('findViewController', ['$
       var determineDashboardLocation = function(userRoles)
       {
         var urlParam = window.location.search;
-        var paramNameValueList = urlParam.split('=');
-        var paramValue = paramNameValueList[1];
-        if(userRolesContains(paramValue, userRoles))
+        if(urlParam !== '')
         {
-          $location.replace().path('/'+paramValue);
+          var paramNameValueList = urlParam.split('=');
+          var paramValue = paramNameValueList[1];
+          if(userRolesContains(paramValue, userRoles))
+          {
+            $location.replace().path('/'+paramValue);
+          }
         }
         else if(userRoles.length > 0 && !paramValue)
         {
-           var firstRole = userRoles[0].type;
+           var firstRole = userRoles[0].company_user_type;
            $location.replace().path('/'+firstRole);
         }
         else
