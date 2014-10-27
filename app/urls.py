@@ -10,7 +10,9 @@ from app.views.document_type_view import DocumentTypeView
 from app.views.company_view import CompanyView
 from app.views import dashboard_view
 
-from app.views.template_view import TemplateView
+from app.views.template_view import (
+    TemplateView,
+    templates)
 
 from app.views.company_benefit_plan_option_view import (
     CompanyBenefitPlanOptionView,
@@ -56,5 +58,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>[0-9]+)/documents/$' % PREFIX, CompanyDocumentView.as_view()),
     url(r'^%s/companies/(?P<pk>[0-9]+)/templates/$' % PREFIX, CompanyTemplatesView.as_view()),
 
+
+
+    url(r'^%s/templates/$' % PREFIX, templates),
 )
 urlpatterns = format_suffix_patterns(urlpatterns)
