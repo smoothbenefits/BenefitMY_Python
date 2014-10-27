@@ -79,10 +79,11 @@
                             <a href="/contact_us">Contact Us</a>
                         </li>
                     </ul> <!-- / .navbar-nav -->
+                    {% verbatim %}
                     <ul class="nav navbar-nav right-navbar-nav pull-right">
                         <li class="dropdown pull-right">
                             <a href="javascript:void(0);" class="dropdown-toggle user-menu" data-toggle="dropdown">
-                                <span>{{curUser.full_name}}</span>
+                                <span>{{curUser.first_name+ ' ' + curUser.last_name}}</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="#"><i class="dropdown-icon fa fa-cog"></i>&nbsp;&nbsp;Settings</a></li>
@@ -91,6 +92,7 @@
                             </ul>
                         </li>
                     </ul>
+                    {% endverbatim %}
                 </div>
             </div> <!-- / #main-navbar-collapse -->
         </div> <!-- / .navbar-inner -->

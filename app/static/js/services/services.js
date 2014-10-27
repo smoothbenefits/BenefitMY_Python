@@ -18,7 +18,7 @@ benefitmyService.factory('users', [
 benefitmyService.factory('userLogOut', [
      '$resource',
      function($resource){
-     	return $resource('api/v1/users/sign_out', {})
+     	return $resource('/logout', {})
      }]
 );
 

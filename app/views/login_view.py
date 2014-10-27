@@ -1,7 +1,10 @@
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+
 
 def user_login(request):
     # Like before, obtain the context for the user's request.
@@ -27,7 +30,7 @@ def user_login(request):
                 # If the account is valid and active, we can log the user in.
                 # We'll send the user back to the homepage.
                 login(request, user)
-                return HttpResponse('You have logged in')
+                return HttpResponseRedirect('/dashboard/')
             else:
                 # An inactive account was used - no logging in!
                 return HttpResponse("Your account is disabled.")
@@ -42,3 +45,9 @@ def user_login(request):
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
         return render_to_response('login.html', {}, context)
+
+@require_http_methods(['DELETE'])
+@csrf_exempt
+def user_logout(request):
+    logout(request)
+    return HttpResponse("done")
