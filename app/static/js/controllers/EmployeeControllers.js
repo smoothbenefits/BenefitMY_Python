@@ -18,7 +18,7 @@ var employeeHome = employeeControllers.controller('employeeHome', ['$scope', '$l
     var benefitPromise = companyPromise.then(function(response){
       var curCompanyId;
         _.each(response.company_roles, function(role){
-          if (role.type === 'employee'){
+          if (role.company_user_type === 'employee'){
             curCompanyId = role.company.id;
           }
         })
@@ -60,7 +60,7 @@ var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignu
       .$promise.then(function(response){
         var company_id;
         _.each(response.company_roles, function(role){
-          if(role.type==='employee'){
+          if(role.company_user_type==='employee'){
             company_id = role.company.id;
             companyId = company_id;
           }

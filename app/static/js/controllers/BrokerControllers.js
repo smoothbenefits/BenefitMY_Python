@@ -4,7 +4,7 @@ var findViewController = brokersControllers.controller('findViewController', ['$
     function findViewController($scope, $location, currentUser, clientListRepository){
       var userRolesContains = function(userType, userRoles)
       {
-        var role = _.findWhere(userRoles, {type:userType});
+        var role = _.findWhere(userRoles, {company_user_type:userType});
         return role != null;
       }
       var determineDashboardLocation = function(userRoles)
@@ -84,7 +84,7 @@ var clientsController = brokersControllers.controller('clientsController', ['$sc
             var clientList =[];
             _.each(response.company_roles, function(company_role)
               {
-                if(company_role.type === 'broker')
+                if(company_role.company_user_type === 'broker')
                 {
                   clientList.push(company_role.company);
                 }

@@ -10,4 +10,4 @@ class DocumentTypeView(APIView):
     def get(self, request, format=None):
         types = DocumentType.objects.all()
         serializer = DocumentTypeSerializer(types, many=True)
-        return Response(serializer.data)
+        return Response({'document_types':serializer.data})

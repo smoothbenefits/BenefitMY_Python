@@ -40,4 +40,4 @@ class CompanyBenefitPlansView(APIView):
     def get(self, request, pk, format=None):
         plans = self.get_object(pk)
         serializer = CompanyBenefitPlanSerializer(plans, many=True)
-        return Response(serializer.data)
+        return Response({'benefits':serializer.data})

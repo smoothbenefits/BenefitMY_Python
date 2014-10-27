@@ -16,4 +16,4 @@ class CompanyTemplatesView(APIView):
     def get(self, request, pk, format=None):
         templates = self.get_templates(pk)
         serializer = CompanyTemplatesSerializer(templates, many=True)
-        return Response(serializer.data)
+        return Response({'templates':serializer.data})

@@ -41,7 +41,7 @@ var employerHome = employersController.controller('employerHome',
     clientPromise.then(function(clientListResponse){
       _.every(clientListResponse.company_roles, function(company_role)
         {
-          if(company_role.type === 'admin')
+          if(company_role.company_user_type === 'admin')
           {
             $scope.company = company_role.company;
             getDocumentTypes($scope.company);
@@ -104,11 +104,11 @@ var employerUser = employersController.controller('employerUser',
       employerWorkerRepository.get({companyId:compId})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
-              if(role.type=='employee')
+              if(role.company_user_type=='employee')
               {
                 $scope.employees.push(role);
               }
-              else if(role.type=='broker')
+              else if(role.company_user_type=='broker')
               {
                 $scope.brokers.push(role);
               }
