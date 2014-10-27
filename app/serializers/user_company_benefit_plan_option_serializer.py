@@ -20,10 +20,11 @@ class UserCompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
 
 
 class UserBenefitPostSerializer(serializers.ModelSerializer):
-    enrolled = EnrolledSerializer(many=True, slug_field='id')
+    enrolled = serializers.SlugRelatedField(many=True, slug_field='id')
     #waived_benefit = UserCompanyWaivedBenefitSerializer()
-    benefit = CompanyBenefitPlanOptionSerializer()
+    #benefit = serializers.SlugRelatedField(slug_filed='id')
 
     class Meta:
 
         model = UserCompanyBenefitPlanOption
+        fields = ("user", "company_benefit_plan_option", "enrolled")
