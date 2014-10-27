@@ -17,3 +17,13 @@ class UserCompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = UserCompanyBenefitPlanOption
+
+
+class UserBenefitPostSerializer(serializers.ModelSerializer):
+    enrolled = EnrolledSerializer(many=True, slug_field='id')
+    #waived_benefit = UserCompanyWaivedBenefitSerializer()
+    benefit = CompanyBenefitPlanOptionSerializer()
+
+    class Meta:
+
+        model = UserCompanyBenefitPlanOption
