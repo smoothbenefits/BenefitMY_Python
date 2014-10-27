@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 
 from app.views.person_view import PersonView
-from app.views.user_view import UserView, UsersView, UserFamilyView
+from app.views.user_view import UserView, UsersView, UserFamilyView, CurrentUserView
 from app.views.company_user_view import (
     CompanyUserView,
     company_user)

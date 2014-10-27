@@ -20,7 +20,7 @@ class CompanyUserView(APIView):
     def get(self, request, pk, format=None):
         companies = self.get_companies(pk)
         serializer = CompanyUserSerializer(companies, many=True)
-        return Response(serializer.data)
+        return Response({'user_roles':serializer.data})
 
 
 @api_view(['POST'])

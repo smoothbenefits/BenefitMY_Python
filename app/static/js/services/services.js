@@ -73,7 +73,7 @@ benefitmyService.factory('employeeBenefits', ['$resource',
 
 benefitmyService.factory('employerWorkerRepository', ['$resource',
   function($resource){
-  	return $resource('/api/v1/companies/:companyId/user_roles',
+  	return $resource('/api/v1/companies/:companyId/users',
   		{companyId:'@company_id'})
   }
 ]);
