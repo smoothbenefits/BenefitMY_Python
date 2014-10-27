@@ -18,7 +18,8 @@ from app.views.template_view import (
 
 from app.views.company_benefit_plan_option_view import (
     CompanyBenefitPlanOptionView,
-    CompanyBenefitPlansView
+    CompanyBenefitPlansView,
+    benefits
     )
 from app.views.document_view import (
     CompanyDocumentView,
@@ -62,6 +63,7 @@ urlpatterns = patterns('app.views',
 
 
 
+    url(r'^%s/benefits/$' % PREFIX, benefits),
     url(r'^%s/companies/$' % PREFIX, companies),
     url(r'^%s/templates/$' % PREFIX, templates),
 )
