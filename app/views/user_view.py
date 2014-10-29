@@ -27,7 +27,7 @@ class UsersView(APIView):
     def get(self, request, format=None):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+        return Response({'users':serializer.data})
 
 class CurrentUserView(APIView):
 

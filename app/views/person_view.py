@@ -16,5 +16,4 @@ class PersonView(APIView):
     def get(self, request, pk, format=None):
         person = self.get_object(pk)
         serializer = PersonSerializer(person)
-        return Response(serializer.data)
-
+        return Response({'person': serializer.data})
