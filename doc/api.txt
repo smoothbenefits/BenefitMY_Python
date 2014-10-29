@@ -8,8 +8,8 @@ Get:
 /api/v1/companies/#/
 /api/v1/users/
 /api/v1/users/#/
-/api/v1/users/#/family/
-/api/v1/users/#/documents/
+/api/v1/users/#/family/                   done,   update full_name to first_name, middle_name, last_name
+/api/v1/users/#/documents/                done,   minor change for document_type
 /api/v1/users/#/benefits/
 /api/v1/users/#/waived_benefits/
 /api/v1/users/#/company_roles/

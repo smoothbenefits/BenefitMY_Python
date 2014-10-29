@@ -13,7 +13,7 @@ class CompanyDocumentSerializer(serializers.ModelSerializer):
     company = CompanySerializer()
     template = TemplateSerializer()
     document_type = DocumentTypeSerializer()
-    document_field = DocumentFieldSerializer()
+    fields = DocumentFieldSerializer()
 
     class Meta:
         model = Document
@@ -25,18 +25,15 @@ class CompanyDocumentSerializer(serializers.ModelSerializer):
                   'user',
                   'template'
                   'document_type',
-                  'document_field')
+                  'fields')
 
 
 class UserDocumentSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    company = CompanySerializer()
-    template = TemplateSerializer()
-    document_type = DocumentTypeSerializer()
-    document_field = DocumentFieldSerializer()
+    fields = DocumentFieldSerializer()
 
     class Meta:
         model = Document
+        depth = 1
         fileds = ('id',
                   'name',
                   'content',
@@ -45,4 +42,4 @@ class UserDocumentSerializer(serializers.ModelSerializer):
                   'user',
                   'template'
                   'document_type',
-                  'document_field')
+                  'fields')
