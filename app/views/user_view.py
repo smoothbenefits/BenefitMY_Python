@@ -20,7 +20,7 @@ class UserView(APIView):
     def get(self, request, pk, format=None):
         user = self.get_object(pk)
         serializer = UserSerializer(user)
-        return Response(serializer.data)
+        return Response({'user':serializer.data})
 
 class UsersView(APIView):
 
