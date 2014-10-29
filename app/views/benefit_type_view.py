@@ -11,4 +11,4 @@ class BenefitTypeView(APIView):
     def get(self, request, format=None):
         types = BenefitType.objects.all()
         serializer = BenefitTypeSerializer(types, many=True)
-        return Response(serializer.data)
+        return Response({'benefit_types': serializer.data})

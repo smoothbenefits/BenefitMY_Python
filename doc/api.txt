@@ -3,7 +3,7 @@ This is the currently working apis
 Get:
 
 /api/v1/people/#/                         done,   Same as the old api, full name --> first/last_name
-/api/v1/benefit_types/
+/api/v1/benefit_types/                    done, same as the old api
 /api/v1/document_types/
 /api/v1/companies/#/
 /api/v1/users/                            done,    Same as the old api, full name --> first/last_name
