@@ -14,7 +14,7 @@ Get:
 /api/v1/users/#/waived_benefits/
 /api/v1/users/#/company_roles/
 /api/v1/templates/#/                      done, the fields should not be here, it should be retrieved from document
-/api/v1/benefits/#/
+/api/v1/benefits/#/                       done, need minor work for benefit_type
 /api/v1/companies/#/benefits/
 /api/v1/companies/#/users/
 /api/v1/companies/#/documents/
