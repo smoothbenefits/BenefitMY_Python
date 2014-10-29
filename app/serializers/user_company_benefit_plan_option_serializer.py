@@ -2,21 +2,17 @@ from rest_framework import serializers
 
 from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
 
-from app.serializers.company_benefit_plan_option_serializer import \
-    CompanyBenefitPlanOptionSerializer
 from app.serializers.enrolled_serializer import EnrolledSerializer
-from app.serializers.user_company_waived_benefit_serializer import \
-    UserCompanyWaivedBenefitSerializer
 
 
 class UserCompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
-    company_benefit_plan_option = CompanyBenefitPlanOptionSerializer()
-    enrolled = EnrolledSerializer(many=True)
-    waived_benefit = UserCompanyWaivedBenefitSerializer()
+    enrolleds = EnrolledSerializer(many=True)
 
     class Meta:
 
         model = UserCompanyBenefitPlanOption
+        fields = ('enrolleds', 'benefit', 'waived_benefit')
+        depth = 2
 
 
 class UserBenefitPostSerializer(serializers.ModelSerializer):
@@ -27,4 +23,4 @@ class UserBenefitPostSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = UserCompanyBenefitPlanOption
-        fields = ("user", "company_benefit_plan_option", "enrolled")
+        fields = ("user", "benefit", "enrolled")

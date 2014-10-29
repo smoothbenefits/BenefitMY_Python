@@ -8,7 +8,7 @@ class UserCompanyBenefitPlanOption(models.Model):
 
     user = models.ForeignKey(User,
                              related_name="user_company_benefit_plan")
-    company_benefit_plan_option = models.ForeignKey(
+    benefit = models.ForeignKey(
         CompanyBenefitPlanOption,
         related_name="user_company_benefit_plan")
 

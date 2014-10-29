@@ -4,7 +4,7 @@
       "pk": 1,
       "fields": {      
       "user": 4,
-      "company_benefit_plan_option": 23
+      "benefit": 23
       }
     },
 
@@ -13,7 +13,7 @@
       "pk": 2,
       "fields": {      
       "user": 4,
-      "company_benefit_plan_option": 28
+      "benefit": 28
       }
     },
 
@@ -22,7 +22,7 @@
       "pk": 3,
       "fields": {      
       "user": 4,
-      "company_benefit_plan_option": 33
+      "benefit": 33
       }
     },
 
@@ -31,7 +31,7 @@
       "pk": 4,
       "fields": {      
       "user": 5,
-      "company_benefit_plan_option": 7
+      "benefit": 7
       }
     },
 
@@ -40,7 +40,7 @@
       "pk": 5,
       "fields": {      
       "user": 5,
-      "company_benefit_plan_option": 13
+      "benefit": 13
       }
     },
 
@@ -49,7 +49,7 @@
       "pk": 6,
       "fields": {      
       "user": 5,
-      "company_benefit_plan_option": 19
+      "benefit": 19
       }
     }
 ]

@@ -21,7 +21,7 @@ class UserCompanyBenefitPlanOptionView(APIView):
     def get(self, request, pk, format=None):
         plans = self.get_object(pk)
         serializer = UserCompanyBenefitPlanOptionSerializer(plans, many=True)
-        return Response(serializer.data)
+        return Response({'benefits': serializer.data})
 
     def post(self, request, pk, format=None):
         serializer = UserBenefitPostSerializer(data=request.DATA)
