@@ -14,9 +14,9 @@ Get:
 /api/v1/users/#/company_roles/            done, type --> company_user_type
 /api/v1/templates/#/                      done, the fields should not be here, it should be retrieved from document
 /api/v1/benefits/#/                       done, need minor work for benefit_type
-/api/v1/companies/#/benefits/
+/api/v1/companies/#/benefits/             done, need work for benefit plan
 /api/v1/companies/#/users/                done, type --> company_user_type
-/api/v1/companies/#/documents/
+/api/v1/companies/#/documents/            done, minor work for document type
 /api/v1/companies/#/templates/
 
 
