@@ -17,7 +17,7 @@ Get:
 /api/v1/companies/#/benefits/             done, need work for benefit plan
 /api/v1/companies/#/users/                done, type --> company_user_type
 /api/v1/companies/#/documents/            done, minor work for document type
-/api/v1/companies/#/templates/
+/api/v1/companies/#/templates/            done, document_type need minor work, fields should not be here, it should be retrieved from document
 
 
 Post:
