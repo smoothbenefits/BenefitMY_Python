@@ -9,6 +9,7 @@ Please follow the following steps to start the app on your local machine
 1. install django
 `pip install django`
 `pip install djangorestframework`
+ pip install django-pipeline
 
 2. install postgres
 
@@ -17,7 +18,7 @@ Please follow the following steps to start the app on your local machine
 `password: ""`
 
 4. get into the src directory
-`python manage.py makemigrations app`
+`python manage.py makemigrations`
 `python manage.py migrate`
 `python syncdb`
 
