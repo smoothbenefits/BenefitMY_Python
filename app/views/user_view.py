@@ -4,10 +4,13 @@ from django.shortcuts import render_to_response
 from rest_framework.response import Response
 from rest_framework import status
 
+from app.models.company_user import CompanyUser
+from app.models.company import Company
 from app.models.user import User
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
 from app.serializers.person_serializer import PersonSerializer
+from app.serializers.company_user_serializer import CompanyUserPostSerializer
 
 
 class UserView(APIView):
@@ -20,14 +23,43 @@ class UserView(APIView):
     def get(self, request, pk, format=None):
         user = self.get_object(pk)
         serializer = UserSerializer(user)
-        return Response({'user':serializer.data})
+        return Response({'user': serializer.data})
+
 
 class UsersView(APIView):
 
     def get(self, request, format=None):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
-        return Response({'users':serializer.data})
+        return Response({'users': serializer.data})
+
+    def post(self, request, format=None):
+        if ("company" not in request.DATA or
+            "company_user_type" not in request.DATA or
+            "user" not in request.DATA or
+            "first_name" not in request.DATA['user'] or
+                "last_name" not in request.DATA['user']):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            c = Company.objects.get(pk=request.DATA['company'])
+        except Company.DoesNotExist:
+            raise Http404
+
+        company_users = CompanyUser.objects.filter(
+            company = request.DATA['company'])
+
+        for c in company_users:
+            if (c.company_user_type == request.DATA['company_user_type'] and
+                    c.user.email == request.DATA['user']['email']):
+                return Response(status=status.HTTP_409_CONFLICT)
+
+        serializer = CompanyUserPostSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CurrentUserView(APIView):
 
@@ -37,7 +69,8 @@ class CurrentUserView(APIView):
         except User.DoesNotExist:
             raise Http404
         serializer = UserSerializer(curUser)
-        return Response({'user':serializer.data})
+        return Response({'user': serializer.data})
+
 
 class UserFamilyView(APIView):
     def get_object(self, pk):
@@ -51,13 +84,13 @@ class UserFamilyView(APIView):
         serializer = UserFamilySerializer(user)
         return Response(serializer.data)
 
-
     def post(self, request, pk, format=None):
         serializer = PersonSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserRegisterView():
     def register(request):

@@ -3,10 +3,12 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 
 from app.views.person_view import PersonView
-from app.views.user_view import UserView, UsersView, UserFamilyView, CurrentUserView
-from app.views.company_user_view import (
-    CompanyUserView,
-    company_user)
+from app.views.user_view import (
+    UserView,
+    UsersView,
+    UserFamilyView,
+    CurrentUserView)
+from app.views.company_user_view import CompanyUserView
 from app.views.benefit_type_view import BenefitTypeView
 from app.views.document_type_view import DocumentTypeView
 from app.views.company_view import (
@@ -64,8 +66,6 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>[0-9]+)/templates/$' % PREFIX, CompanyTemplatesView.as_view()),
 
 
-
-    url(r'^%s/user_create/$' % PREFIX, company_user),
     url(r'^%s/benefits/$' % PREFIX, benefits),
     url(r'^%s/companies/$' % PREFIX, companies),
     url(r'^%s/templates/$' % PREFIX, templates),

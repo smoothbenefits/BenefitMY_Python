@@ -22,6 +22,7 @@ sample_request:
             "first_name": "fiddfrstvvv5", 
             "last_name": "lastvvfdvv5", 
             "email": "user5@smoothbenefits.com"
+        }
 }
 
 sample_response: |
