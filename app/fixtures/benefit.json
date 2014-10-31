@@ -28,7 +28,7 @@
       "model": "app.BenefitPlan",
       "pk":1,
       "fields":{
-      "btype": 1,
+      "benefit_type": 1,
       "name": "Blue Cross Blue Shield of Mass. HMO Blue"
       }
     },
@@ -36,7 +36,7 @@
       "model": "app.BenefitPlan",
       "pk":2,
       "fields":{
-      "btype": 1,
+      "benefit_type": 1,
       "name": "Blue Cross Blue Shield of Mass. PPO"
       }
     },
@@ -44,7 +44,7 @@
       "model": "app.BenefitPlan",
       "pk":3,
       "fields":{
-      "btype": 1,
+      "benefit_type": 1,
       "name": "Aetna HMO"
       }
     },
@@ -52,7 +52,7 @@
       "model": "app.BenefitPlan",
       "pk":4,
       "fields":{
-      "btype": 1,
+      "benefit_type": 1,
       "name": "Aetna PPO Value"
       }
     },
@@ -60,7 +60,7 @@
       "model": "app.BenefitPlan",
       "pk":5,
       "fields":{
-      "btype": 1,
+      "benefit_type": 1,
       "name": "Aetna PPO High Deductible"
       }
     },
@@ -68,7 +68,7 @@
       "model": "app.BenefitPlan",
       "pk":6,
       "fields":{
-      "btype": 2,
+      "benefit_type": 2,
       "name": "Blue Cross Blue Shield of Mass. Dental"
       }
     },
@@ -76,7 +76,7 @@
       "model": "app.BenefitPlan",
       "pk":7,
       "fields":{
-      "btype": 2,
+      "benefit_type": 2,
       "name": "Aetna Dental"
       }
     },
@@ -84,7 +84,7 @@
       "model": "app.BenefitPlan",
       "pk":8,
       "fields":{
-      "btype": 3,
+      "benefit_type": 3,
       "name": "VSP Vision"
       }
     }

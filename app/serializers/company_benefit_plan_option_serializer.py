@@ -1,12 +1,13 @@
 from rest_framework import serializers
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
 
-from benefit_plan_serializer import BenefitPlanSerializer
-
+from benefit_plan_serializer import (
+    BenefitPlanSerializer,
+    BenefitPlanPostSerializer)
 
 class CompanyBenefitPlanOptionPostSerializer(serializers.ModelSerializer):
 
-    benefit_plan = BenefitPlanSerializer()
+    benefit_plan = BenefitPlanPostSerializer()
 
     class Meta:
 

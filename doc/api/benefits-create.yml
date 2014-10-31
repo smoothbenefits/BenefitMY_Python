@@ -25,32 +25,26 @@ description: >
 parameters:
 sample_url: /api/v1/benefits
 sample_request: |
-{
- "total_cost_per_period": "1000.00", 
- "employee_cost_per_period": "200.00", 
- "benefit_option_type": "individual",
- "company": 2,
+  {
+    "company": 1,
+    "benefit": {
+      "benefit_type": "Medical",
+      "benefit_option_type": "individual",
+      "benefit_name": "Aetna HMO Value",
+      "total_cost_per_period": "1000.0",
+      "employee_cost_per_period": "200.0"
+    }
+  }
 
- "benefit_plan": {
- "btype": { 
-    "name": "Medical"
- }, 
- "name": "Blue Cross Blue Shield of Mass. HMO Blue"
- }
-
-}
 sample_response: |
 {
-    "total_cost_per_period": "1000.00", 
-    "employee_cost_per_period": "200.00", 
+    "total_cost_per_period": "1000.0", 
+    "employee_cost_per_period": "200.0", 
     "benefit_option_type": "individual", 
-    "company": 2, 
+    "company": 1, 
     "benefit_plan": {
-        "btype": {
-            "id": 4, 
-            "name": "Medical"
-        }, 
-        "id": 9, 
-        "name": "Blue Cross Blue Shield of Mass. HMO Blue"
+        "id": 23, 
+        "name": "Aetna HMO Vadddlue", 
+        "benefit_type": 1
     }
 }

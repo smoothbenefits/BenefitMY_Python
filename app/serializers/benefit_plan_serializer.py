@@ -4,7 +4,13 @@ from benefit_type_serializer import BenefitTypeSerializer
 
 
 class BenefitPlanSerializer(serializers.ModelSerializer):
-    btype = BenefitTypeSerializer()
+    benefit_type = BenefitTypeSerializer()
+
+    class Meta:
+        model = BenefitPlan
+
+
+class BenefitPlanPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BenefitPlan
