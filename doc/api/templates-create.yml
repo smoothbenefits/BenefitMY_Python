@@ -11,16 +11,26 @@ parameters:
 sample_url: /api/v1/templates/42
 sample_request:
   {
-    "company": 1,,
-    "document_type": 2,
-    "name": "Offer Letter without Stock Options"
-    "content": "Dear {{FullName}},\nYou are offered the position of Head Bottle Washer at a salary of {{AnnualSalary}} per year. Sincerely, Mafalda Hopkirk"
+    "company": 1,
+    "template": {
+        "document_type": "Offer Letter",
+        "name": "Offer Letter without Stock Options",
+        "content": "Dear {{FullName}},\nYou are offered the position of Head Bottle Washer at a salary of {{AnnualSalary}} per year. Sincerely, Mafalda Hopkirk"
     }
   }
 sample_response: |
- {
-     "company": 1,,
-    "document_type": 2,
-    "name": "Offer Letter without Stock Options"
-    "content": "Dear {{FullName}},\nYou are offered the position of Head Bottle Washer at a salary of {{AnnualSalary}} per year. Sincerely, Mafalda Hopkirk"
-  }
+{
+    "template": {
+        "id": 4, 
+        "company": {
+            "id": 1, 
+            "name": "Company1"
+        }, 
+        "document_type": {
+            "id": 1, 
+            "name": "Offer Letter"
+        }, 
+        "name": "Offer Letter without Stock Options", 
+        "content": "Dear {{FullName}},\nYou are offered the position of Head Bottle Washer at a salary of {{AnnualSalary}} per year. Sincerely, Mafalda Hopkirk"
+    }
+}

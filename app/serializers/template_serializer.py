@@ -4,16 +4,6 @@ from app.models.template import Template
 from app.serializers.document_type_serializer import DocumentTypeSerializer
 
 
-class TemplatePostSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Template
-        fields = ("name",
-                  "content",
-                  "company",
-                  "document_type")
-
-
 class TemplateSerializer(serializers.ModelSerializer):
 
     class Meta:
