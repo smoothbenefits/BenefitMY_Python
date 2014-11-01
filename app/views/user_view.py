@@ -85,6 +85,7 @@ class UserFamilyView(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
+        request.DATA['user'] = pk
         serializer = PersonSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()

@@ -21,8 +21,8 @@ Get:
 
 
 Post:
-api/v1/users/#/family/
+api/v1/users/#/family/                    same as before
 api/v1/templates/                         same as before
-api/v1/companies/
+api/v1/companies/                         same as before
 api/v1/users/                             same as before, error may happern for the username in the postgres db
 api/v1/benefits/                          Post is exactly the same, return changes a little, may not need any work

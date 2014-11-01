@@ -13,7 +13,8 @@ sample_request: |
   {
       "person_type": "family",
       "relationship": "spouse",
-      "full_name": "Jim Smith",
+      "first_name": "Jim Smith",
+      "last_name": "Smith",
       "birth_date": "1971-01-01",
       "ssn": "123-45-6789",
       "email": "ggg@gmail.com",
@@ -32,9 +33,6 @@ sample_request: |
           "number": "1-987-555-1234"
         }
       ]
-
-    "users": 6
-
     } 
 
 sample_response: |
@@ -44,7 +42,8 @@ sample_response: |
     "person_type": "family", 
     "relationship": "spouse", 
     "ssn": "123-45-6789", 
-    "full_name": "Jim Smith", 
+    "first_name": "Jim Smith", 
+    "last_name": "Smith", 
     "email": "ggg@gmail.com", 
     "phones": [
         {
@@ -65,5 +64,5 @@ sample_response: |
         }
     ], 
     "company": null, 
-    "user": 6
+    "user": 1
 }
