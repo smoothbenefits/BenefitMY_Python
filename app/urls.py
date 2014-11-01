@@ -27,7 +27,8 @@ from app.views.company_benefit_plan_option_view import (
     )
 from app.views.document_view import (
     CompanyDocumentView,
-    UserDocumentView)
+    UserDocumentView,
+    documents)
 from app.views.company_templates_view import CompanyTemplatesView
 
 from app.views.user_company_waived_benefit_view import UserCompanyWaivedBenefitView
@@ -69,5 +70,6 @@ urlpatterns = patterns('app.views',
     url(r'^%s/benefits/$' % PREFIX, benefits),
     url(r'^%s/companies/$' % PREFIX, companies),
     url(r'^%s/templates/$' % PREFIX, templates),
+    url(r'^%s/documents/$' % PREFIX, documents),
 )
 urlpatterns = format_suffix_patterns(urlpatterns)

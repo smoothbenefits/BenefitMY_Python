@@ -1,0 +1,141 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource: document
+resource_url: /api/v1/documents
+description: >
+  Create a document for a specified user.
+  Template is optional. Content must be present and fields must be absent if no template is present. Content must be absent and fields may be present if a template is present.
+  All non-automatic fields in the specified template (if any) must be present.
+  Automatic fields are:
+    FullName - full name of user (from user record)
+    Email - email of user (from user record)
+    CompanyName - name of company (from company record)
+  To create a document from a template, include the template parameter to specify which template to use, and include the fields list to define values for all the fields required by the specified template. Do not include content, it will be auto-generated from the template and field names/values. The edited parameter will be automatically set to "false" to indicate that content is from a template.
+  To create a document without a template, do not include the template parameter or fields list, but include the content parameter to specify the content of the document. No field substitution will be made on the content. The edited parameter will be automatically set to "true" to indicate that content is not from a template.
+
+parameters:
+sample_url: /api/v1/documents
+sample_request:
+  {
+    "company": 2,
+    "user": 2,
+    "template": 2,
+    "document": {
+      "document_type": "Offer Letter",
+      "name": "Offer Letter for Joe Smith",
+      "fields": [
+        {
+          "name": "FullName",
+          "value": "Joe Smith"
+        },
+        {
+          "name": "AnnualSalary",
+          "value": "50,000"
+        }
+      ]
+    }
+  }
+sample_response: |
+{
+    "fields": [
+        {
+            "id": 7, 
+            "document": 9, 
+            "name": "AnnualSalary", 
+            "value": "50,000"
+        }, 
+        {
+            "id": 6, 
+            "document": 9, 
+            "name": "FullName", 
+            "value": "Joe Smith"
+        }
+    ], 
+    "id": 9, 
+    "company": {
+        "id": 2, 
+        "name": "Company2"
+    }, 
+    "user": {
+        "id": 2, 
+        "password": "1234", 
+        "last_login": "2014-11-01T16:42:09.803Z", 
+        "is_superuser": false, 
+        "username": "user2", 
+        "first_name": "first2", 
+        "last_name": "last2", 
+        "email": "user2@smoothbenefits.com", 
+        "is_staff": false, 
+        "is_active": true, 
+        "date_joined": "2014-11-01T16:42:09.803Z", 
+        "groups": [], 
+        "user_permissions": []
+    }, 
+    "template": {
+        "id": 3, 
+        "company": 1, 
+        "document_type": 3, 
+        "name": "m", 
+        "content": "c"
+    }, 
+    "document_type": {
+        "id": 1, 
+        "name": "Offer Letter"
+    }, 
+    "name": "Offer Letter for Joe Smith", 
+    "content": "", 
+    "edited": false
+}
+
+
+
+another request:
+  {
+    "company": 2,
+    "user": 2,
+    "document": {
+      "document_type": "Offer Letter",
+      "name": "Offer Letter for Joe Smith",
+      "content": "ddfsdfsafdasfasffsafds"
+    }
+  }
+
+
+response:
+    "fields": [], 
+    "id": 12, 
+    "company": {
+        "id": 2, 
+        "name": "Company2"
+    }, 
+    "user": {
+        "id": 2, 
+        "password": "1234", 
+        "last_login": "2014-11-01T16:42:09.803Z", 
+        "is_superuser": false, 
+        "username": "user2", 
+        "first_name": "first2", 
+        "last_name": "last2", 
+        "email": "user2@smoothbenefits.com", 
+        "is_staff": false, 
+        "is_active": true, 
+        "date_joined": "2014-11-01T16:42:09.803Z", 
+        "groups": [], 
+        "user_permissions": []
+    }, 
+    "template": null, 
+    "document_type": {
+        "id": 1, 
+        "name": "Offer Letter"
+    }, 
+    "name": "Offer Letter for Joe Smith", 
+    "content": "ddfsdfsafdasfasffsafds", 
+    "edited": false
+}
+
+
+
+
+

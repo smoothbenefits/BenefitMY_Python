@@ -33,7 +33,7 @@ def templates(request):
     try:
         d_type = DocumentType.objects.get(
             name=request.DATA['template']['document_type'])
-    except Template.DoesNotExist:
+    except DocumentType.DoesNotExist:
         d_type = DocumentType(name=request.DATA['template']['document_type'])
 
     t = Template(name=request.DATA['template']['name'],
