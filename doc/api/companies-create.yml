@@ -36,7 +36,8 @@ sample_request:
       "contacts": [
         {
           "person_type": "primary_contact",
-          "full_name": "Barbara Smith",
+          "first_name": "Barbara Smith",
+          "last_name": "last_name",
           "email": "barbara.smith@acmewidgets.com",
           "phones": [
             {

@@ -23,7 +23,7 @@ class CompanyView(APIView):
 
 
 @api_view(['POST'])
-def companies(request, pk):
+def companies(request):
     serializer = CompanyPostSerializer(data=request.DATA)
     if serializer.is_valid():
         serializer.save()
