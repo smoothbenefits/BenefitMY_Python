@@ -96,8 +96,6 @@ STATICFILES_DIRS = (
 )
 
 #Pipeline variables
-
-
 PIPELINE_CSS_COMPRESSOR = ''
 PIPELINE_JS_COMPRESSOR = ''
 
