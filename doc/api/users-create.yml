@@ -14,25 +14,25 @@ description: >
 parameters:
 sample_url: /api/v1/user_create
 sample_request:
-{       
+{
        "company": 1,
-       "company_user_type": "Employee", 
+       "company_user_type": "Employee",
         "user": {
 
-            "first_name": "fiddfrstvvv5", 
-            "last_name": "lastvvfdvv5", 
+            "first_name": "fiddfrstvvv5",
+            "last_name": "lastvvfdvv5",
             "email": "user5@smoothbenefits.com"
         }
 }
 
 sample_response: |
 {
-    "company": 1, 
-    "company_user_type": "Employee", 
+    "company": 1,
+    "company_user_type": "Employee",
     "user": {
-        "id": 7, 
-        "first_name": "firstvvffffv5", 
-        "last_name": "lastvvffffvv5", 
+        "id": 7,
+        "first_name": "firstvvffffv5",
+        "last_name": "lastvvffffvv5",
         "email": "user5@smoffffthbenefits.com"
     }
 }

@@ -1,5 +1,6 @@
 var BenefitMyApp = angular.module('BenefitMyApp',[
     'ngRoute',
+    'ngResource',
     'ui.mask',
     'benefitmyService',
     'benefitmyApp.brokers.controllers',
@@ -12,6 +13,14 @@ var underscore = angular.module('underscore', []);
 underscore.factory('_', function(){
     return window._;
 });
+
+BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
+  // Don't strip trailing slashes from calculated URLs
+  $resourceProvider.defaults.stripTrailingSlashes = false;
+
+  $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+  $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+}]);
 
 BenefitMyApp.config(['$routeProvider',
     function ($routeProvider) {

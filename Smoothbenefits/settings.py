@@ -91,7 +91,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 STATICFILES_DIRS = (
-    # location of your application, should not be public web accessible 
+    # location of your application, should not be public web accessible
     os.path.join(os.path.join(BASE_DIR, 'app'), 'static'),
 )
 

@@ -118,30 +118,33 @@ var benefitsController = brokersControllers.controller('benefitsController', ['$
         });
     var insertIntoBenefitArray = function(companyBenefitsArray, benefit)
     {
-        var array = _.findWhere(companyBenefitsArray, {type:benefit.benefit_type});
+        var benefitType = benefit.benefit_plan.benefit_type.name;
+        var array = _.findWhere(companyBenefitsArray, {type:benefitType});
         if(!array)
         {
-            array = {type:benefit.benefit_type, benefitList:[]};
+            array = {type:benefitType, benefitList:[]};
             companyBenefitsArray.push(array);
         }
-        var sameBenefit = _.findWhere(array.benefitList, {name:benefit.benefit_name})
+
+        var benefitName = benefit.benefit_plan.name;
+        var sameBenefit = _.findWhere(array.benefitList, {name:benefitName})
         if(!sameBenefit)
         {
           var sameNameBenefit = {};
-          sameNameBenefit.name = benefit.benefit_name;
+          sameNameBenefit.name = benefitName;
           sameNameBenefit.options = [];
           sameNameBenefit.options.push({
-              optionType:benefit.benefit_option_type, 
-              totalCost:benefit.total_cost_per_period, 
+              optionType:benefit.benefit_option_type,
+              totalCost:benefit.total_cost_per_period,
               employeeCost: benefit.employee_cost_per_period
             });
-          array.benefitList.push(sameNameBenefit);  
+          array.benefitList.push(sameNameBenefit);
         }
         else
         {
           sameBenefit.options.push({
-              optionType:benefit.benefit_option_type, 
-              totalCost:benefit.total_cost_per_period, 
+              optionType:benefit.benefit_option_type,
+              totalCost:benefit.total_cost_per_period,
               employeeCost: benefit.employee_cost_per_period
           });
         }

@@ -1,18 +1,18 @@
 var employersController = angular.module('benefitmyApp.employers.controllers',[]);
 
 
-var employerHome = employersController.controller('employerHome', 
-                                                  ['$scope', 
-                                                  '$location', 
-                                                  'employerRepository', 
-                                                  'currentUser', 
+var employerHome = employersController.controller('employerHome',
+                                                  ['$scope',
+                                                  '$location',
+                                                  'employerRepository',
+                                                  'currentUser',
                                                   'clientListRepository',
                                                   'documentRepository',
                                                   'templateRepository',
-  function employerHome($scope, 
-                        $location, 
-                        employerRepository, 
-                        currentUser, 
+  function employerHome($scope,
+                        $location,
+                        employerRepository,
+                        currentUser,
                         clientListRepository,
                         documentRepository,
                         templateRepository){
@@ -84,17 +84,17 @@ var employerHome = employersController.controller('employerHome',
   }
 ]);
 
-var employerUser = employersController.controller('employerUser', 
-                                                  ['$scope', 
-                                                  '$location', 
-                                                  '$routeParams', 
+var employerUser = employersController.controller('employerUser',
+                                                  ['$scope',
+                                                  '$location',
+                                                  '$routeParams',
                                                   'employerWorkerRepository',
                                                   'usersRepository',
                                                   'documentRepository',
-  function employerUser($scope, 
-                        $location, 
-                        $routeParams, 
-                        employerWorkerRepository, 
+  function employerUser($scope,
+                        $location,
+                        $routeParams,
+                        employerWorkerRepository,
                         usersRepository,
                         documentRepository){
       var compId = $routeParams.company_id;
@@ -114,7 +114,7 @@ var employerUser = employersController.controller('employerUser',
               }
             })
         });
-      
+
       var gotoUserView = function(userType){
         $location.path('/admin/' + userType + '/' + compId);
       }
@@ -122,10 +122,11 @@ var employerUser = employersController.controller('employerUser',
       var mapToAPIUser = function(viewUser, userType){
         var apiUser = {};
         apiUser.company = compId;
-        apiUser.type = userType;
+        apiUser.company_user_type = userType;
         apiUser.user = {};
         apiUser.user.email = viewUser.email;
-        apiUser.user.full_name = viewUser.name;
+        apiUser.user.first_name = viewUser.name;
+        apiUser.user.last_name = 'Default';
         if(viewUser.phone)
         {
             //input phone to the apiModel here
@@ -178,7 +179,7 @@ var employerUser = employersController.controller('employerUser',
           }
           $location.path('/admin/' + pathKey + '/' +compId +'/'+employeeId).search({type:docType});
         });
-        
+
       }
   }
 ]);
@@ -208,21 +209,21 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
           sameNameBenefit.name = benefit.benefit_name;
           sameNameBenefit.options = [];
           sameNameBenefit.options.push({
-              optionType:benefit.benefit_option_type, 
-              totalCost:benefit.total_cost_per_period, 
+              optionType:benefit.benefit_option_type,
+              totalCost:benefit.total_cost_per_period,
               employeeCost: benefit.employee_cost_per_period
             });
-          array.benefitList.push(sameNameBenefit);  
+          array.benefitList.push(sameNameBenefit);
         }
         else
         {
           sameBenefit.options.push({
-              optionType:benefit.benefit_option_type, 
-              totalCost:benefit.total_cost_per_period, 
+              optionType:benefit.benefit_option_type,
+              totalCost:benefit.total_cost_per_period,
               employeeCost: benefit.employee_cost_per_period
           });
         }
-        
+
     }
   }
 ]);
@@ -291,16 +292,16 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
   }
 ]);
 
-var employerCreateLetter = employersController.controller('employerCreateLetter', 
-                                                          ['$scope', 
-                                                          '$location', 
-                                                          '$routeParams', 
-                                                          'documentRepository', 
+var employerCreateLetter = employersController.controller('employerCreateLetter',
+                                                          ['$scope',
+                                                          '$location',
+                                                          '$routeParams',
+                                                          'documentRepository',
                                                           'templateRepository',
-  function employerCreateLetter($scope, 
-                                $location, 
-                                $routeParams, 
-                                documentRepository, 
+  function employerCreateLetter($scope,
+                                $location,
+                                $routeParams,
+                                documentRepository,
                                 templateRepository){
     $scope.companyId = $routeParams.company_id;
     var employeeId = $routeParams.employee_id;
@@ -339,26 +340,26 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
     }
   }]);
 
-var employerViewLetter = employersController.controller('employerViewLetter', 
-                                                          ['$scope', 
-                                                          '$location', 
-                                                          '$routeParams', 
+var employerViewLetter = employersController.controller('employerViewLetter',
+                                                          ['$scope',
+                                                          '$location',
+                                                          '$routeParams',
                                                           'documentRepository',
-  function employerViewLetter($scope, 
-                              $location, 
-                              $routeParams, 
+  function employerViewLetter($scope,
+                              $location,
+                              $routeParams,
                               documentRepository){
     $scope.companyId = $routeParams.company_id;
     var employeeId = $routeParams.employee_id;
     $scope.documentType = $routeParams.type;
     $scope.documentList = [];
 
-    
+
     documentRepository.byUser.get({userId:employeeId, companyId:$scope.companyId})
       .$promise.then(function(response){
         $scope.documentList = _.sortBy(_.where(response.documents, {document_type:$scope.documentType}), function(elm){return elm.id;}).reverse();
       });
-    
+
     $scope.viewExistingLetter = function(doc){
       $scope.curDocument = doc;
     };
