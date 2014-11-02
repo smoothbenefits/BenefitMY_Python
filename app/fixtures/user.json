@@ -7,7 +7,7 @@
       "first_name": "first1",
       "last_name": "last1",
       "username": "user1",
-      "password": "1234"
+      "password": "pbkdf2_sha256$12000$dXE4eFXDMmTz$+c+n2GGWHBUmoCQaGVL5NfteZWJa7LUKYwqc87jjiY0="
       }
     },
     {
@@ -18,7 +18,7 @@
       "first_name": "first2",
       "last_name": "last2",
       "username": "user2",
-      "password": "1234"
+      "password": "pbkdf2_sha256$12000$dXE4eFXDMmTz$+c+n2GGWHBUmoCQaGVL5NfteZWJa7LUKYwqc87jjiY0="
       }
     },
     {
@@ -29,7 +29,7 @@
       "first_name": "first3",
       "last_name": "last3",
       "username": "user3",
-      "password": "1234"
+      "password": "pbkdf2_sha256$12000$dXE4eFXDMmTz$+c+n2GGWHBUmoCQaGVL5NfteZWJa7LUKYwqc87jjiY0="
       }
     },
     {
@@ -40,7 +40,7 @@
       "first_name": "first4",
       "last_name": "last4",
       "username": "user4",
-      "password": "1234"
+      "password": "pbkdf2_sha256$12000$dXE4eFXDMmTz$+c+n2GGWHBUmoCQaGVL5NfteZWJa7LUKYwqc87jjiY0="
       }
     },
     {
@@ -51,7 +51,7 @@
       "first_name": "first5",
       "last_name": "last5",
       "username": "user5",
-      "password": "1234"
+      "password": "pbkdf2_sha256$12000$dXE4eFXDMmTz$+c+n2GGWHBUmoCQaGVL5NfteZWJa7LUKYwqc87jjiY0="
       }
     },
     {
@@ -62,7 +62,7 @@
       "first_name": "first6",
       "last_name": "last6",
       "username": "user6",
-      "password": "1234"
+      "password": "pbkdf2_sha256$12000$dXE4eFXDMmTz$+c+n2GGWHBUmoCQaGVL5NfteZWJa7LUKYwqc87jjiY0="
       }
     }
 ]

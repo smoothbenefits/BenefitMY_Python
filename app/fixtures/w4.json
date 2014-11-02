@@ -1,0 +1,28 @@
+[
+    {
+      "model": "app.W4",
+      "pk": 1,
+      "fields":{
+      "marriage": 1,
+      "dependencies": 2,
+      "head": True,
+      "tax_credit": True,
+      "total_points": 4,
+      "user": 2
+      }
+    },
+
+     {
+      "model": "app.W4",
+      "pk": 2,
+      "fields":{
+      "marriage": 3,
+      "dependencies": 2,
+      "head": True,
+      "tax_credit": True,
+      "total_points": 4,
+      "user": 1
+      }
+    }
+   
+]

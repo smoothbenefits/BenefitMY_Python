@@ -21,8 +21,13 @@ class W4View(APIView):
 
     def post(self, request, pk, format=None):
         try:
-            W4.objects.get(user=pk)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            w4 = W4.objects.get(user=pk)
+            serializer = W4Serializer(w4, data=request.DATA)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         except W4.DoesNotExist:
             request.DATA['user'] = pk
             serializer = W4Serializer(request.DATA)

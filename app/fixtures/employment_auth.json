@@ -1,0 +1,35 @@
+[
+    {
+      "model": "app.EmploymentAuthorization",
+      "pk": 1,
+      "fields":{
+      "work_type": "Citizen",
+      "expiration_date": "2020-12-31",
+      "uscis_number": "fdfeggg",
+      "i_94": "fdsfa",
+      "passport": "ddfsre",
+      "country": "china",
+      "signature": 1,
+      "user": 1
+      }
+    },
+
+    {
+
+      "model": "app.EmploymentAuthorization",
+      "pk": 2,
+      "fields":{
+      "work_type": "Citizen",
+      "expiration_date": "2020-12-31",
+      "uscis_number": "fgdsggdfeggg",
+      "i_94": "fdsvfgsfa",
+      "passport": "ddfsrgdfse",
+      "country": "USA",
+      "signature": 1,
+      "user": 1
+      }
+    }
+
+
+
+]

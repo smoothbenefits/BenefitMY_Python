@@ -1,0 +1,21 @@
+[
+    {
+      "model": "app.Signature",
+      "pk": 1,
+      "fields":{
+      "signature_type": "step",
+      "user": 2
+      }
+    },
+
+     {
+      "model": "app.Signature",
+      "pk": 2,
+      "fields":{
+      "signature_type": "step",
+      "user": 1
+      }
+    },
+
+  
+]
