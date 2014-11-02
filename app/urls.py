@@ -35,6 +35,9 @@ from app.views.user_company_waived_benefit_view import UserCompanyWaivedBenefitV
 from app.views.user_company_benefit_plan_option_view import UserCompanyBenefitPlanOptionView
 from app.views.user_company_roles_view import UserCompanyRolesView
 
+from app.views.w4_view import W4View
+from app.views.employment_authorization_view import EmploymentAuthorizationView
+
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
@@ -56,6 +59,10 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/(?P<pk>[0-9]+)/company_roles/$' % PREFIX, UserCompanyRolesView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/waived_benefits/$' % PREFIX, UserCompanyWaivedBenefitView.as_view()),
 
+    url(r'^%s/users/(?P<pk>[0-9]+)/w4/$' % PREFIX, W4View.as_view()),
+    url(r'^%s/users/(?P<pk>[0-9]+)/employment_authorization/$' % PREFIX,
+        EmploymentAuthorizationView.as_view()),
+
     url(r'^%s/templates/(?P<pk>[0-9]+)/$' % PREFIX, TemplateView.as_view()),
     url(r'^%s/benefits/(?P<pk>[0-9]+)/$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
 
@@ -72,4 +79,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/templates/$' % PREFIX, templates),
     url(r'^%s/documents/$' % PREFIX, documents),
 )
+
+
+
 urlpatterns = format_suffix_patterns(urlpatterns)
