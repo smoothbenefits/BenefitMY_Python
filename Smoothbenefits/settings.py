@@ -20,9 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'x_qz2d46!0dmvk9(lb_c-z%r)&_jq8nl+-_fvsywp1+j+y5oj1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-TEMPLATE_DEBUG = False
+TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '.benefitmy.com', 'benefitmy.com.', '.heroku.com', '.herokuapp.com']
 
@@ -157,8 +157,6 @@ PIPELINE_JS = {
             'js/jquery-select2.js',
             'js/jquery-ui-extras.js',
             'js/jquery.mockjax.js',
-            'js/users.js.coffee',
-            'js/front_end/users.js.js',
         ),
         'output_filename':'js/benefitmy_home.js'
     },
@@ -183,7 +181,6 @@ PIPELINE_JS = {
             'js/controllers/EmployeeControllers.js',
             'js/controllers/EmployerControllers.js',
             'js/directives/ScrollTo.js',
-            'js/front_end/users.js.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
             ),
