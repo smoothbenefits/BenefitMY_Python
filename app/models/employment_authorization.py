@@ -1,5 +1,6 @@
 from django.db import models
 from signature import Signature
+from user import User
 
 WORKER_TYPE = (("Citizen", "CItizen"),
                ("Noncitizen", "Noncitizen"),
@@ -19,3 +20,6 @@ class EmploymentAuthorization(models.Model):
                                   related_name="employment_authorization",
                                   null=True,
                                   blank=True)
+
+    user = models.ForeignKey(User,
+                             related_name="employment_authorization")
