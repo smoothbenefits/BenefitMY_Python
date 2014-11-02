@@ -68,8 +68,10 @@ class CurrentUserView(APIView):
             curUser = User.objects.get(pk=request.user.id)
         except User.DoesNotExist:
             raise Http404
+        company_user = CompanyUser.objects.get(user=request.user.id)
         serializer = UserSerializer(curUser)
-        return Response({'user': serializer.data})
+        return Response({'user': serializer.data,
+                         'group': company_user.company_user_type})
 
 
 class UserFamilyView(APIView):

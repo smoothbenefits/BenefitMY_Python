@@ -1,0 +1,23 @@
+eversion: v1.0
+response_format: JSON
+authentication: None
+method: GET
+resource: user
+resource_url: /api/v1/users/current
+description: >
+  Retrieve current user data
+
+parameters:
+sample_url: /api/v1/users/current
+sample_request:
+  None
+sample_response: |
+{
+    "group": "broker", 
+    "user": {
+        "id": 7, 
+        "first_name": "", 
+        "last_name": "", 
+        "email": "lennon@thebeatles.com"
+    }
+}
