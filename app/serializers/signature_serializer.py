@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from app.models.signature_authorization import Signature
+from app.models.signature import Signature
 
 
 class SignatureSerializer(serializers.ModelSerializer):
