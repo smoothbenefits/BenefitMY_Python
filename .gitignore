@@ -56,9 +56,10 @@ target/
 
 # Static folder
 staticfiles/
-*.css.css
+*.css.scss
 *.css.css.map
 .sass-cache/
+*.js.coffee
 
 # Mac files
 .DS_Store
