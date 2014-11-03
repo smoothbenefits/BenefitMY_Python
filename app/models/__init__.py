@@ -14,3 +14,6 @@ from document import Document
 from document_field import DocumentField
 from enrolled import Enrolled
 from user_company_waived_benefit import UserCompanyWaivedBenefit
+from w4 import W4
+from signature import Signature
+from employment_authorization import EmploymentAuthorization
