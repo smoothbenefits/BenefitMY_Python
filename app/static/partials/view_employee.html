@@ -35,7 +35,7 @@
     </div>
     <div class="row employer-user-row" ng-repeat="employee in employees">
         <div class="col-xs-12 col-sm-3 employer-user-label">
-            {{employee.user.full_name}}
+            {{employee.user.first_name}} {{employee.user.last_name}}
         </div>
         <div class="col-xs-12 col-sm-3">
             <a ng-click="documentLink(employee.user.id, 'Offer Letter')" class="btn btn-info btn-labeled">
