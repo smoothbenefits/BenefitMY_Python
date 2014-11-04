@@ -218,12 +218,12 @@ var addClientController = brokersControllers.controller('addClientController', [
     }
     var mapToAPIClient = function(viewClient){
       var apiClient = {};
-      apiClient.company = {};
-      apiClient.company.addresses = [];
-      apiClient.company.contacts = [];
-      apiClient.company.name = viewClient.company.name;
+      apiClient.addresses = [];
+      apiClient.contacts = [];
+      apiClient.name = viewClient.company.name;
       var apiContact = {};
-      apiContact.full_name = viewClient.contact.name;
+      apiContact.first_name = viewClient.contact.first_name;
+      apiContact.last_name = viewClient.contact.last_name;
       apiContact.email = viewClient.contact.email;
       apiContact.person_type = 'primary_contact';
       apiContact.phones = [];
@@ -231,7 +231,7 @@ var addClientController = brokersControllers.controller('addClientController', [
       apiContactPhone.phone_type = 'work';
       apiContactPhone.number = viewClient.contact.phone;
       apiContact.phones.push(apiContactPhone);
-      apiClient.company.contacts.push(apiContact);
+      apiClient.contacts.push(apiContact);
       var apiAddress = {};
       apiAddress.address_type = 'main';
       apiAddress.street_1 = viewClient.address.street1;
@@ -239,7 +239,7 @@ var addClientController = brokersControllers.controller('addClientController', [
       apiAddress.city = viewClient.address.city;
       apiAddress.state = viewClient.address.state;
       apiAddress.zipcode = viewClient.address.zip;
-      apiClient.company.addresses.push(apiAddress);
+      apiClient.addresses.push(apiAddress);
       return apiClient;
     }
   }

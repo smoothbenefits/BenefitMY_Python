@@ -196,17 +196,18 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
         });
     var insertIntoBenefitArray = function(companyBenefitsArray, benefit)
     {
-        var array = _.findWhere(companyBenefitsArray, {type:benefit.benefit_type});
+        var benefitType = benefit.benefit_plan.benefit_type.name;
+        var array = _.findWhere(companyBenefitsArray, {type:benefitType});
         if(!array)
         {
-            array = {type:benefit.benefit_type, benefitList:[]};
+            array = {type:benefitType, benefitList:[]};
             companyBenefitsArray.push(array);
         }
         var sameBenefit = _.findWhere(array.benefitList, {name:benefit.benefit_name})
         if(!sameBenefit)
         {
           var sameNameBenefit = {};
-          sameNameBenefit.name = benefit.benefit_name;
+          sameNameBenefit.name = benefit.benefit_plan.name;
           sameNameBenefit.options = [];
           sameNameBenefit.options.push({
               optionType:benefit.benefit_option_type,
