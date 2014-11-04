@@ -1,6 +1,7 @@
 from django.db import models
 from signature import Signature
-from user import User
+from django.contrib.auth.models import User
+
 
 WORKER_TYPE = (("Citizen", "CItizen"),
                ("Noncitizen", "Noncitizen"),

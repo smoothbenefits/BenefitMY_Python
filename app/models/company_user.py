@@ -1,7 +1,6 @@
 from django.db import models
-from user import User
 from company import Company
-
+from django.contrib.auth.models import User
 
 USER_TYPE = (("Employee", "Employee"),
              ("Admin", "Admin"),

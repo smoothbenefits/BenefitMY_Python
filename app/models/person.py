@@ -1,7 +1,6 @@
 from django.db import models
-from user import User
 from company import Company
-
+from django.contrib.auth.models import User
 
 class Person(models.Model):
     person_type = models.CharField(max_length=30)

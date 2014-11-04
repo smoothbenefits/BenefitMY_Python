@@ -1,8 +1,8 @@
 from django.db import models
-from user import User
 from company_benefit_plan_option import CompanyBenefitPlanOption
 from user_company_waived_benefit import UserCompanyWaivedBenefit
 
+from django.contrib.auth.models import User
 
 class UserCompanyBenefitPlanOption(models.Model):
 

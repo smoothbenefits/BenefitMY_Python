@@ -7,6 +7,7 @@ Please follow the following steps to start the app on your local machine
 `sudo npm install -g coffee-script`
 
 1. install django
+`sudo apt-get install python-psycopg2`
 `pip install django`
 `pip install djangorestframework`
  pip install django-pipeline

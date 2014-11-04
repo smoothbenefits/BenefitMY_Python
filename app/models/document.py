@@ -1,9 +1,8 @@
 from django.db import models
 from company import Company
-from user import User
 from template import Template
 from document_type import DocumentType
-
+from django.contrib.auth.models import User
 
 class Document(models.Model):
     company = models.ForeignKey(Company)
