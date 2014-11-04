@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 
+from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.serializers.company_serializer import (
     CompanySerializer,
@@ -27,5 +28,9 @@ def companies(request):
     serializer = CompanyPostSerializer(data=request.DATA)
     if serializer.is_valid():
         serializer.save()
+        company_user = CompanyUser(user_id=request.user.pk,
+                                   company=serializer.object,
+                                   company_user_type="Broker")
+        company_user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
