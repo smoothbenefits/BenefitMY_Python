@@ -1,0 +1,47 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource: user
+resource_url: /api/v1/users/#/w4/
+description: >
+  Post a w4 details for a user, if the user w4 is already there, update the detail
+
+sample_url: /api/v1/users/2/w4/
+sample_request:
+{ 
+    "marriage": 3, 
+    "dependencies": 2, 
+    "head": 2, 
+    "tax_credit": 1, 
+    "total_points": 4
+}
+sample_response: |
+{
+    "id": 3, 
+    "marriage": 3, 
+    "dependencies": 2, 
+    "head": 2, 
+    "tax_credit": 1, 
+    "total_points": 4, 
+    "user": 2
+}
+
+method: GET
+resource: user
+resource_url: /api/v1/users/#/w4/
+description: >
+  Get the w4 details for a user, if no w4, return 404 error
+
+sample_url: /api/v1/users/1/w4/
+sample_request:
+
+{
+    "id": 2, 
+    "marriage": 3, 
+    "dependencies": 2, 
+    "head": 2, 
+    "tax_credit": 1, 
+    "total_points": 4, 
+    "user": 1
+}
