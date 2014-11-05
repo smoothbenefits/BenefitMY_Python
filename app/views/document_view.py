@@ -8,8 +8,7 @@ from app.models.document_field import DocumentField
 from app.models.document_type import DocumentType
 from app.models.document import Document
 from app.serializers.document_serializer import (
-    CompanyDocumentSerializer,
-    UserDocumentSerializer)
+    DocumentSerializer)
 
 
 class CompanyDocumentView(APIView):
@@ -21,7 +20,7 @@ class CompanyDocumentView(APIView):
 
     def get(self, request, pk, format=None):
         documents = self.get_documents(pk)
-        serializer = CompanyDocumentSerializer(documents, many=True)
+        serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data)
 
 
@@ -34,7 +33,7 @@ class UserDocumentView(APIView):
 
     def get(self, request, pk, format=None):
         documents = self.get_documents(pk)
-        serializer = UserDocumentSerializer(documents, many=True)
+        serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data)
 
 
@@ -55,7 +54,7 @@ def documents(request):
                      content=request.DATA['document']['content'],
                      )
         d.save()
-        serializer = UserDocumentSerializer(d)
+        serializer = DocumentSerializer(d)
         return Response(serializer.data)
 
     else:
@@ -80,5 +79,5 @@ def documents(request):
                                 document=d)
             d_f.save()
 
-        serializer = UserDocumentSerializer(d)
+        serializer = DocumentSerializer(d)
         return Response(serializer.data)

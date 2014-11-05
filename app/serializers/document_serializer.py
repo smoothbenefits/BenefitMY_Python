@@ -4,7 +4,7 @@ from document_field_serializer import DocumentFieldSerializer
 from app.models.document import Document
 
 
-class CompanyDocumentSerializer(serializers.ModelSerializer):
+class DocumentSerializer(serializers.ModelSerializer):
     fields = DocumentFieldSerializer()
 
     class Meta:
@@ -20,19 +20,3 @@ class CompanyDocumentSerializer(serializers.ModelSerializer):
                   'fields')
         depth = 1
 
-
-class UserDocumentSerializer(serializers.ModelSerializer):
-    fields = DocumentFieldSerializer()
-
-    class Meta:
-        model = Document
-        depth = 1
-        fileds = ('id',
-                  'name',
-                  'content',
-                  'edited',
-                  'company',
-                  'user',
-                  'template'
-                  'document_type',
-                  'fields')
