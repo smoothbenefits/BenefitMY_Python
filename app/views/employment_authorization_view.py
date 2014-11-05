@@ -29,11 +29,11 @@ class EmploymentAuthorizationView(APIView):
                                                            data=request.DATA)
             if serializer.is_valid():
                 serializer.save()
-                return Response(data=serializer.data)
+                return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except EmploymentAuthorization.DoesNotExist:
-            serializer = EmploymentAuthorizationSerializer(request.DATA)
+            serializer = EmploymentAuthorizationSerializer(data=request.DATA)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
