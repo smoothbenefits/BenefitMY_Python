@@ -17,6 +17,7 @@ class DocumentSerializer(serializers.ModelSerializer):
                   'user',
                   'template'
                   'document_type',
+                  'signature',
                   'fields')
         depth = 1
 

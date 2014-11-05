@@ -5,7 +5,7 @@ method: POST
 resource: document
 resource_url: /api/v1/documents
 description: >
-  Create a document for a specified user.
+  Create a document for a specified user. submit signature with the doc
   Template is optional. Content must be present and fields must be absent if no template is present. Content must be absent and fields may be present if a template is present.
   All non-automatic fields in the specified template (if any) must be present.
   Automatic fields are:
@@ -22,6 +22,7 @@ sample_request:
     "company": 2,
     "user": 2,
     "template": 2,
+    "signature": "ff",
     "document": {
       "document_type": "Offer Letter",
       "name": "Offer Letter for Joe Smith",
@@ -86,7 +87,14 @@ sample_response: |
     }, 
     "name": "Offer Letter for Joe Smith", 
     "content": "", 
-    "edited": false
+    "edited": false,
+    "signature": {
+        "id": 5, 
+        "signature": "ff", 
+        "signature_type": "step", 
+        "user": 2, 
+        "created_at": "2014-11-05T04:55:25.978Z"
+    },
 }
 
 
@@ -95,6 +103,7 @@ another request:
   {
     "company": 2,
     "user": 2,
+    "signature": "ff",
     "document": {
       "document_type": "Offer Letter",
       "name": "Offer Letter for Joe Smith",
@@ -132,7 +141,14 @@ response:
     }, 
     "name": "Offer Letter for Joe Smith", 
     "content": "ddfsdfsafdasfasffsafds", 
-    "edited": false
+    "edited": false,
+    "signature": {
+        "id": 5, 
+        "signature": "ff", 
+        "signature_type": "step", 
+        "user": 2, 
+        "created_at": "2014-11-05T04:55:25.978Z"
+    },
 }
 
 

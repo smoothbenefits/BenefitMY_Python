@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 
+from app.models.signature import Signature
 from app.models.document_field import DocumentField
 from app.models.document_type import DocumentType
 from app.models.document import Document
@@ -39,6 +40,12 @@ class UserDocumentView(APIView):
 
 @api_view(['POST'])
 def documents(request):
+
+    s = Signature(signature=request.DATA['signature'],
+                  signature_type='step',
+                  user_id=request.DATA['user'])
+    s.save()
+
     if 'template' not in request.DATA:
         try:
             d_type = DocumentType.objects.get(
@@ -52,6 +59,7 @@ def documents(request):
                      document_type=d_type,
                      name=request.DATA['document']['name'],
                      content=request.DATA['document']['content'],
+                     signature=s
                      )
         d.save()
         serializer = DocumentSerializer(d)
@@ -69,7 +77,8 @@ def documents(request):
                      user_id=request.DATA['user'],
                      document_type=d_type,
                      name=request.DATA['document']['name'],
-                     template_id=request.DATA['template']
+                     template_id=request.DATA['template'],
+                     signature=s
                      )
         d.save()
 
