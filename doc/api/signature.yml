@@ -1,0 +1,45 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource: user
+resource_url: /api/v1/users/#/signature/
+description: >
+  Post a final signature for a user, if the signature is already there,
+  Then update the signature
+
+sample_url: /api/v1/users/2/signature/
+sample_request:
+{
+    "signature": "fdfsffffffffffffffffffffd", 
+    "signature_type": "final"
+}
+
+sample_response: |
+{
+    "id": 3, 
+    "signature": "fdfsffffffffffffffffffffd", 
+    "signature_type": "final", 
+    "user": 4, 
+    "created_at": "2014-11-05T03:09:08.463Z"
+}
+
+
+
+method: GET
+resource: user
+resource_url: /api/v1/users/#/signature/
+description: >
+  Get the final signature for a user, if no signature, return 404 error
+
+sample_url: /api/v1/users/2/signature/
+sample_request:
+
+
+{
+    "id": 1, 
+    "signature": "fdfsffffffffffffffffffffd", 
+    "signature_type": "final", 
+    "user": 2, 
+    "created_at": "1991-07-01T00:00:00Z"
+}
