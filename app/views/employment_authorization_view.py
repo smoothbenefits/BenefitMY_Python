@@ -21,11 +21,18 @@ class EmploymentAuthorizationView(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
+
+        request.DATA['user'] = pk
         try:
-            EmploymentAuthorization.objects.get(user=pk)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            ea = EmploymentAuthorization.objects.get(user=pk)
+            serializer = EmploymentAuthorizationSerializer(ea,
+                                                           data=request.DATA)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(data=serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         except EmploymentAuthorization.DoesNotExist:
-            request.DATA['user'] = pk
             serializer = EmploymentAuthorizationSerializer(request.DATA)
             if serializer.is_valid():
                 serializer.save()

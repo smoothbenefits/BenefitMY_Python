@@ -37,6 +37,8 @@ from app.views.user_company_roles_view import UserCompanyRolesView
 
 from app.views.w4_view import W4View
 from app.views.employment_authorization_view import EmploymentAuthorizationView
+from app.views.signature_view import SignatureView
+
 
 PREFIX = "api/v1"
 
@@ -62,6 +64,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/(?P<pk>[0-9]+)/w4/$' % PREFIX, W4View.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/employment_authorization/$' % PREFIX,
         EmploymentAuthorizationView.as_view()),
+    url(r'^%s/users/(?P<pk>[0-9]+)/signature/$' % PREFIX, SignatureView.as_view()),
 
     url(r'^%s/templates/(?P<pk>[0-9]+)/$' % PREFIX, TemplateView.as_view()),
     url(r'^%s/benefits/(?P<pk>[0-9]+)/$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
