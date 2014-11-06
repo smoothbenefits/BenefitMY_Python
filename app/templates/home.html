@@ -22,6 +22,7 @@
             <a href="/" id="logo-link"></a>
             <div class="form-holder">
                 <form accept-charset="UTF-8" action="/login/" method="post">
+                    {% csrf_token %}
                     <span class="textbox"><input type="text" id="username" name="username" placeholder="User name"></span>
                     <span class="textbox"><input type="password" id="password" name="password" placeholder="Password"></span>
                     <span class="submit-box"><input type="submit" value="Sign In" class="btn green"></span>

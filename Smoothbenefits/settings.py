@@ -164,6 +164,7 @@ PIPELINE_JS = {
             'js/front_end/users.js.coffee',
             'js/jquery.scrollspy.js',
             'js/services/services.js',
+            'js/pixel-admin.min.js',
         ),
         'output_filename':'js/benefitmy_home.js'
     },
