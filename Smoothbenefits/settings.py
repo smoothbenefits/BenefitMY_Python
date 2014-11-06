@@ -149,6 +149,11 @@ PIPELINE_CSS = {
             'stylesheets/front_end.css.scss',
             'stylesheets/shared/devise.css.scss',
             'stylesheets/shared/dashboard.css.scss',
+            'stylesheets/shared/variables.css.scss',
+            'stylesheets/shared/buttons.css.scss',
+            'stylesheets/shared/components.css.scss',
+            'stylesheets/shared/forms.css.scss',
+            'stylesheets/shared/global.css.scss',
         ),
         'output_filename': 'stylesheets/dashboard.min.css',
     }

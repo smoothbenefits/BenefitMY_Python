@@ -4,6 +4,7 @@
     <span>Add Employee</span>
 </div>
 
+
 <div class="content-header">
     <h1>Add Employee</h1>
     <span class="general-info">Please enter your employee basic information below</span>
@@ -13,14 +14,24 @@
     <div class="form-holder">
         <form name="form">
 
-            <div class="form-label">Name*</div>
+            <div class="form-label">First Name*</div>
             <div class="textbox">
                 <input type="text"
-                    name="employee_name"
-                    ng-model="addUser.name"
+                    name="employee_firstname"
+                    ng-model="addUser.first_name"
                     ng-required="true">
-                <div class="form-error" ng-show="form.employee_name.$dirty && form.employee_name.$invalid">
-                  <span ng-show="form.employee_name.$error.required">Employee name field is required</span>
+                <div class="form-error" ng-show="form.employee_firstname.$dirty && form.employee_firstname.$invalid">
+                  <span ng-show="form.employee_firstname.$error.required">Employee First name field is required</span>
+                </div>
+            </div>
+            <div class="form-label">Last Name*</div>
+            <div class="textbox">
+                <input type="text"
+                    name="employee_lastname"
+                    ng-model="addUser.last_name"
+                    ng-required="true">
+                <div class="form-error" ng-show="form.employee_lastname.$dirty && form.employee_lastname.$invalid">
+                  <span ng-show="form.employee_lastname.$error.required">Employee Last name field is required</span>
                 </div>
             </div>
 

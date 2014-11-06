@@ -26,10 +26,10 @@
                    </td>
                 </tr>
                 <tr ng-repeat="employee in employees">
-                    <td>{{employee.user.full_name}}</td>
+                    <td>{{employee.user.first_name}} {{employee.user.last_name}}</td>
                     <td>
-                        <span class="btn inline" ng-click="documentLink(employee.user.id, 'Offer Letter')">Offer Letter</span>
-                        <span class="btn inline" ng-click="documentLink(employee.user.id, 'Employee Agreement')">Employee Agreement</span>
+                        <span class="btn inline" ng-click="documentLink(employee.user.id, 1)">Offer Letter</span>
+                        <span class="btn inline" ng-click="documentLink(employee.user.id, 2)">Employee Agreement</span>
                         <span class="btn inline" ng-click="addClient()">Send Invitation</span>
                     </td>
                 </tr>
