@@ -1,0 +1,124 @@
+@font-face {
+	font-family: "Flaticon";
+	src: url("flaticon.eot");
+	src: url("flaticon.eot#iefix") format("embedded-opentype"),
+	url("flaticon.woff") format("woff"),
+	url("flaticon.ttf") format("truetype"),
+	url("flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {
+	font-family: Flaticon;
+        font-size: inherit;
+font-style: normal;
+margin-left: 20px;
+}.flaticon-bell34:before {
+	content: "\e000";
+}
+.flaticon-big103:before {
+	content: "\e001";
+}
+.flaticon-book163:before {
+	content: "\e002";
+}
+.flaticon-cellphone51:before {
+	content: "\e003";
+}
+.flaticon-circular177:before {
+	content: "\e004";
+}
+.flaticon-dashboard6:before {
+	content: "\e005";
+}
+.flaticon-dashboard7:before {
+	content: "\e006";
+}
+.flaticon-download99:before {
+	content: "\e007";
+}
+.flaticon-file46:before {
+	content: "\e008";
+}
+.flaticon-filter16:before {
+	content: "\e009";
+}
+.flaticon-graphic29:before {
+	content: "\e00a";
+}
+.flaticon-heart260:before {
+	content: "\e00b";
+}
+.flaticon-link44:before {
+	content: "\e00c";
+}
+.flaticon-logout5:before {
+	content: "\e00d";
+}
+.flaticon-new56:before {
+	content: "\e00e";
+}
+.flaticon-oil9:before {
+	content: "\e00f";
+}
+.flaticon-opening2:before {
+	content: "\e010";
+}
+.flaticon-oval27:before {
+	content: "\e011";
+}
+.flaticon-picture21:before {
+	content: "\e012";
+}
+.flaticon-pie52:before {
+	content: "\e013";
+}
+.flaticon-placeholder11:before {
+	content: "\e014";
+}
+.flaticon-play67:before {
+	content: "\e015";
+}
+.flaticon-plug28:before {
+	content: "\e016";
+}
+.flaticon-puzzle30:before {
+	content: "\e017";
+}
+.flaticon-reminder5:before {
+	content: "\e018";
+}
+.flaticon-rhombus2:before {
+	content: "\e019";
+}
+.flaticon-rounded47:before {
+	content: "\e01a";
+}
+.flaticon-rounded48:before {
+	content: "\e01b";
+}
+.flaticon-rounded49:before {
+	content: "\e01c";
+}
+.flaticon-shield80:before {
+	content: "\e01d";
+}
+.flaticon-star145:before {
+	content: "\e01e";
+}
+.flaticon-thumb39:before {
+	content: "\e01f";
+}
+.flaticon-trash48:before {
+	content: "\e020";
+}
+.flaticon-triangular51:before {
+	content: "\e021";
+}
+.flaticon-user135:before {
+	content: "\e022";
+}
+.flaticon-wheel21:before {
+	content: "\e023";
+}

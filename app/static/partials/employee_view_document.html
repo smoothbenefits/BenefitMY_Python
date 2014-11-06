@@ -1,24 +1,16 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li><a ng-href="#/employee">Employee Dashboard</a></li>
-    <li class="active">View Document</li>
-</ul>
-
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/admin">Employee Dashboard</a>
+    <span>View Document</span>
+</div>
 
 <script type="text/javascript" src="js/flashcanvas.js"></script>
 <script src="js/jSignature.min.js"></script>
 
-<div class="page-header">
-    <div class="row">
-        <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12 col-sm-4 text-center text-left-sm">
-            <i class="fa fa-dashboard page-header-icon"></i>Document
-        </h1>
-    </div>
-</div> <!-- / .page-header -->
-<div class="col-md-1">
-</div>
+<div class="content-header">
+    <h1>Document</h1>
+</div><!-- / .content-header -->
+
 <div class="col-md-10">
     <div class="signature-container">
         <div id="doc_signature" class="signature-pad"></div>
@@ -27,7 +19,7 @@
                 Reset
             </button>
             <button ng-click="signDocument()" class="btn btn-primary btn-labeled">
-                <span class="btn-label icon fa fa-plus"></span>Sign 
+                <span class="btn-label icon fa fa-plus"></span>Sign
             </button>
         </div>
         <input type="hidden" name="signatureHiddenData" value="{{signatureImage}}"/>

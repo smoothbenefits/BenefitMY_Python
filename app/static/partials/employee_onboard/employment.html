@@ -1,26 +1,20 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li class="active">Employee Onboard</li>
-</ul>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>Employee Onboard</span>
+</div>
 
 <script type="text/javascript" src="js/flashcanvas.js"></script>
 <script src="js/jSignature.min.js"></script>
 
-<div class="page-header">
+<div class="content-header">
+    <h1>Employee Onboard</h1>
+    <span class="general-info">Benefitmy works with your company to ensure all of employee information is collected from you</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
     <div class="row">
-        <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12 text-center text-left-sm">
-            Benefitmy works with your company to ensure all of employee information is collected from you
-        </h1>
-    </div>
-</div> <!-- / .page-header -->
-<div class="col-md-4">
-    <div class="panel">
-        <div class="panel-heading">
-            <span class="panel-title"> Overview</span>
-        </div>
-        <div class="panel-body">
+
+        <div class="col-md-4">
             <div class="list-group">
                 <a ng-href="#/employee/onboard/index/{{employeeId}}" class="list-group-item">
                     <h4 class="list-group-item-heading">Basic Information</h4>
@@ -39,16 +33,14 @@
                     <p class="list-group-item-text">Please acknowledge the information by providing us your signature</p>
                 </a>
             </div>
-        </div> 
-    </div>   
-</div>
-<div class="col-md-8">
-    <form class="panel" name="authForm">
-        <div class="panel-body">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="row form-group">
-                    <label class="col-sm-4 control-label">I am</label>
-                    <div class="col-sm-8">
+        </div>
+
+        <div class="col-md-8">
+            <div class="form-holder">
+                <form name="form">
+                    <ul class="list-group"><li class="list-group-item">
+                    <div class="form-label">I am</div>
+                    <div class="select-box">
                         <select name="authorization_type"
                             ng-model="employee.auth_type"
                             ng-required="true"
@@ -59,63 +51,102 @@
                             <option value="alien">An alien authorized to work</option>
                         </select>
                     </div>
-                </div>
-                <div class="row form-group" ng-show="employee.auth_type == 'alien'">
-                    <label class="col-sm-4 control-label">Expiration Date</label>
-                    <div class="col-sm-4">
-                        <input name="expirationDate"
-                            ng-model="employee.auth_expiration"
-                            type="date"
-                            ui-mask="mm/dd/yyyy"
-                            ng-required="false"/>
+
+                    <div ng-show="employee.auth_type == 'alien'">
+                        <div class="form-label">Expiration Date</div>
+                        <div class="datebox">
+                            <input name="expirationDate"
+                                ng-model="employee.auth_expiration"
+                                type="date"
+                                ui-mask="mm/dd/yyyy"
+                                ng-required="false"/>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"
+                                    ng-model="employee.expiration_na"
+                                    name="expirationNA" />
+                                NA
+                             </label>
+                        </div>
                     </div>
-                     <div class="col-sm-4 text-left">
-                        <input type="checkbox"
-                            ng-model="employee.expiration_na"
-                            name="expirationNA" />
-                        <label class="control-label"> NA </label> 
+
+                    <div ng-show="employee.auth_type == 'PR' || employee.auth_type=='alien'">
+                        <div class="form-label">Alien Registration Number/USCIS number</div>
+                        <div class="textbox">
+                            <input name="USCISNumber"
+                                ng-model="employee.authNumber"
+                                type="number"
+                                ui-mask="999-999-999"
+                                ng-required="true"/>
+                        </div>
                     </div>
-                    <div style="clear:both;height:50px"></div>
-                </div>
-                <div class="row form-group" ng-show="employee.auth_type == 'PR' || employee.auth_type=='alien'">
-                    <label class="col-sm-4 control-label">Alien Registration Number/USCIS number</label>
-                    <div class="col-sm-8">
-                        <input name="USCISNumber"
-                            ng-model="employee.authNumber"
-                            type="number"
-                            ui-mask="999-999-999"
-                            ng-required="true"/>
+
+                    <div ng-show="employee.auth_type=='alien'">
+                        <center>Or</center>
                     </div>
-                </div>
-                <div class="row form-group text-center" ng-show="employee.auth_type=='alien'">
-                    <b>OR </b>
-                </div>
-                <div class="row form-group" ng-show="employee.auth_type=='alien'">
-                    <label class="col-sm-4 control-label">Form I-94 Admission Number</label>
-                    <div class="col-sm-8">
-                        <input name="I94Number"
-                            ng-model="employee.I94Id"
-                            type="number"/>
+
+                    <div ng-show="employee.auth_type=='alien'">
+                        <div class="form-label">Form I-94 Admission Number</div>
+                        <div class="textbox">
+                            <input name="I94Number"
+                                ng-model="employee.I94Id"
+                                type="number"/>
+                        </div>
+
+                        <div class="form-label">Foreign Passport Number</div>
+                        <div class="textbox">
+                            <input name="foreignPassportNumber"
+                                ng-model="employee.passportId"
+                                type="text"/>
+                        </div>
+
+                        <div class="form-label">Country of Issuance</div>
+                        <div class="textbox">
+                            <input name="foreignPassportCountry"
+                                ng-model="employee.passportCountry"
+                                type="text"/>
+                        </div>
+
                     </div>
-                    <div style="clear:both;height:30px"></div>
-                    <label class="col-sm-4 control-label">Foreign Passport Number</label>
-                    <div class="col-sm-8">
-                        <input name="foreignPassportNumber"
-                            ng-model="employee.passportId"
-                            type="text"/>
+
+                    <div class="signature-container" ng-show="employee.auth_type">
+                            <div class="panel">
+                                <div class="panel-heading">
+                                    <span class="panel-title">Please sign below</span>
+                                </div>
+                                <div class="panel-body">
+                                    <div id="auth_signature" class="signature-pad"></div>
+                                </div>
+                            </div>
+                            <div class="submit-box">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <button ng-click="clearSignature()" class="btn green">
+                                            Reset
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button ng-click="signDocument()" class="btn green">
+                                            Submit and Next
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="signatureHiddenData" ng-value="{{signatureImage}}"/>
+                            </div>
                     </div>
-                    <div style="clear:both;height:30px"></div>
-                    <label class="col-sm-4 control-label">Country of Issuance</label>
-                    <div class="col-sm-8">
-                        <input name="foreignPassportCountry"
-                            ng-model="employee.passportCountry"
-                            type="text"/>
-                    </div>
-                    <div style="clear:both"></div>
-                </div>
+
+                </li></ul>
+                </form>
             </div>
+
+
+
         </div>
-    </form>
+
+    </div><!-- / .row -->
+</div><!-- / .content-body -->
+
     <!-- <div class="panel" ng-show="employee.auth_type">
         <div class="panel-heading">
             <span class="panel-title" ng-show="employee.auth_type=='citizen' || employee.auth_type=='noncitizen'">Please upload your passport ID page (The page with your picture on it)</span>
@@ -131,24 +162,3 @@
             </form>
         </div>
     </div> -->
-    <div class="signature-container" ng-show="employee.auth_type">
-        <div class="panel">
-            <div class="panel-heading">
-                <span class="panel-title">Please sign below</span>
-            </div>
-            <div class="panel-body">
-                <div id="auth_signature" class="signature-pad"></div>
-            </div>
-            <div class="panel-footer text-right">
-                <button ng-click="clearSignature()" class="btn btn-primary btn-labeled">
-                    Reset
-                </button>
-                <button ng-click="signDocument()" class="btn btn-primary btn-labeled">
-                    <span class="btn-label icon fa fa-plus"></span>Submit and Next 
-                </button>
-                <input type="hidden" name="signatureHiddenData" ng-value="{{signatureImage}}"/>
-            </div>
-        </div>
-    </div>
-
-</div>

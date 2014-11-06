@@ -1,69 +1,52 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li><a ng-href="#/admin">Employer Dashboard</a></li>
-    <li><a ng-href="#/admin/employee/{{companyId}}">View Employee</a></li>
-    <li class="active"><a href="javascript:void(0);">Create {{documentType}}</a></li>
-</ul>
-<div class="page-header">
-    <div class="row">
-        <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12 col-sm-6 text-center text-left-sm">
-            <i class="fa fa-dashboard page-header-icon"></i> Create {{documentType}}
-        </h1>
-    </div>
-    <div class="row">
-    </div>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/admin">Employer Dashboard</a>
+    <a ng-href="#/admin/employee/{{companyId}}">View Employee</a>
+    <span>Create {{documentType}}</span>
 </div>
-<div class="col-md-2">
-</div>
-<div class="col-md-8">
-    <form name="createLetter" class="panel">
-        <div class="panel-heading">
-            <span class="panel-title">HR {{documentType}} Generation</span>
-        </div>
-        <div class="panel-body">
-            <div class="row form-group">
-                <label class="col-sm-4 control-label">Document Name</label>
-                <div class="col-sm-8">
-                    <input type="text"
-                        class="form-control"
-                        ng-required="true"
-                        ng-model="newDoc.name"
-                        name="document_name">
-                </div>
+
+<div class="content-header">
+    <h1>Create {{documentType}}</h1>
+    <span class="general-info">HR {{documentType}} Generation</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="form-holder">
+        <form name="form">
+
+            <div class="form-label">Document Name*</div>
+            <div class="textbox">
+                <input type="text"
+                    ng-required="true"
+                    ng-model="newDoc.name"
+                    name="document_name">
             </div>
-            <div class="row form-group">
-                <label class="col-sm-4 control-label">Select template</label>
-                <div class="col-sm-8">
-                    <select name="templateSelect" 
-                        ng-required="true"
-                        ng-options="template.name for template in templateArray"
-                        ng-model="selectedTemplate"
-                        class="form-control">
-                    </select>
-                </div>
+
+            <div class="form-label">Select Template</div>
+            <div class="select-box">
+                <select name="templateSelect"
+                    ng-required="true"
+                    ng-options="template.name for template in templateArray"
+                    ng-model="selectedTemplate"
+                    class="form-control">
+                </select>
             </div>
-            <div class="row form-group" ng-repeat="field in getTemplateFields(selectedTemplate)">
-                <label class="col-sm-4 control-label">{{field.name}}</label>
-                <div class="col-sm-8">
+
+            <div ng-repeat="field in getTemplateFields(selectedTemplate)">
+                <div class="form-label">{{field.name}}</div>
+                <div class="textbox">
                     <input type="text"
-                        class="form-control"
                         ng-required="true"
                         ng-model="field.value"
                         name="field_{{field.name}}">
                 </div>
             </div>
-        </div>
-        <div class="panel-footer text-right">
-            <button ng-click="doCreateLetter()" class="btn btn-primary btn-labeled" ng-disabled="form.$invalid">
-                <span class="btn-label icon fa fa-plus"></span>Create Letter
-            </button>
-            <a href="javascript:void(0);" onclick="history.back()" class="btn btn-primary btn-labeled">
-                Back
-            </a>
-        </div>
-    </form>
-</div>
-<div class="col-md-2">
-</div>
+
+            <div class="submit-box">
+                <button ng-click="doCreateLetter()" class="btn green" ng-disabled="form.$invalid">Create Letter</button>
+            </div>
+
+        </form>
+    </div><!-- / .form-holder -->
+    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+</div><!-- / .content-body -->

@@ -1,26 +1,21 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li class="active">Employee Onboard</li>
-</ul>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>Employee Onboard</span>
+</div>
 
 <script type="text/javascript" src="js/flashcanvas.js"></script>
 <script src="js/jSignature.min.js"></script>
 
-<div class="page-header">
+<div class="content-header">
+    <h1>Employee Onboard</h1>
+    <span class="general-info">Benefitmy works with your company to ensure all of employee information is collected from you</span>
+</div><!-- / .content-header -->
+
+
+<div class="content-body">
     <div class="row">
-        <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12 text-center text-left-sm">
-            Benefitmy works with your company to ensure all of employee information is collected from you
-        </h1>
-    </div>
-</div> <!-- / .page-header -->
-<div class="col-md-4">
-    <div class="panel">
-        <div class="panel-heading">
-            <span class="panel-title"> Overview</span>
-        </div>
-        <div class="panel-body">
+
+        <div class="col-md-4">
             <div class="list-group">
                 <a ng-href="#/employee/onboard/index/{{employeeId}}" class="list-group-item">
                     <h4 class="list-group-item-heading">Basic Information</h4>
@@ -39,82 +34,84 @@
                     <p class="list-group-item-text">Please acknowledge the information by providing us your signature</p>
                 </a>
             </div>
-        </div> 
-    </div>   
-</div>
-<div class="col-md-8">
-    <form name="taxForm" class="panel">
-        <ul class="list-group">
-            <li class="list-group-item">
-                <div class="radio-label">
-                    <label class="control-label">How do you choose to withhold for tax?</label>
-                </div>
-                <div class="radio-container">
-                    <div class="col-md-2">
-                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="single"> 
-                        Single 
-                    </div>
-                    <div class="col-md-2">
-                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="married"> 
-                        Married
-                    </div>
-                    <div class="col-md-8">
-                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="higher"> 
-                        Married, but withold at higher Single rate
-                    </div>
-                    <div style="clear:both;padding-top:10px;">Note, if married, but legally separated, or spouse is a nonresident alien, check the "Single" box</div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <label class="control-label">Enter the number of dependents&nbsp;</label>
-                
-                    <input type="number"
-                        ng-model="employee.dependent_count"
-                        ng-required="true"
-                        ng-name = "dependent_count" />
-                
-            </li>
-            <li class="list-group-item">
-                <div class="radio-label">
-                    <label class="control-label">Will you file as head of household on your tax return?</label>
-                </div>
-                <div class="radio-container">
-                    <div class="col-md-2">
-                        <input type="radio" name="household" ng-model="employee.headOfHousehold" value="0" checked />
-                        No
-                    </div>
-                    <div class="col-md-2">
-                        <input type="radio" name="household" ng-model="employee.headOfHousehold" value="1" />
-                        Yes
-                    </div>
-                    <div style="clear:both"></div>
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="radio-label">
-                    <label class="control-label">Will you claim at least $1900 for tax credit as <b>child or dependent care expenses</b>?</label>
-                </div>
-                <div class="radio-container">
-                    <div class="col-md-2">
-                        <input type="radio" name="childExpense" ng-model="employee.childExpense" value="0" checked/>
-                        No
-                    </div>
-                    <div class="col-md-2">
-                        <input type="radio" name="childExpense" ng-model="employee.childExpense" value="1" />
-                        Yes
-                    </div>
-                    <div style="clear:both"></div>
-                </div>
-            </li>
-        </ul>
-        <div class="panel-footer text-right">
-            <button ng-click="submit()" class="btn btn-primary btn-flat btn-labeled" ng-disabled="form.$invalid">
-                    <span class="btn-label icon fa fa-plus"> </span>Submit and Next
-                </button>
-                <a class="btn btn-primary btn-flat btn-labeled">
-                    Previous
-                </a>
         </div>
-    </form>
-</div>
-<div style="clear:both">
+
+        <div class="col-md-8">
+            <div class="form-holder">
+                <form name="taxForm">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="radio-label">
+                                <label class="control-label">How do you choose to withhold for tax?</label>
+                            </div>
+                            <div class="radio-container">
+                                <div class="col-md-4 col">
+                                    <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="single">
+                                    Single
+                                </div>
+                                <div class="col-md-4 col">
+                                    <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="married">
+                                    Married
+                                </div>
+                                <div class="col-md-12 col">
+                                    <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="higher">
+                                    Married, but withold at higher Single rate
+                                </div>
+                                <div class="notes" style="clear:both;">Note, if married, but legally separated, or spouse is a nonresident alien, check the "Single" box</div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="control-label">Enter the number of dependents&nbsp;</label>
+                            <span class="textbox">
+                                <input type="number"
+                                    ng-model="employee.dependent_count"
+                                    ng-required="true"
+                                    ng-name = "dependent_count" />
+                            </span>
+
+                        </li>
+                        <li class="list-group-item">
+                            <div class="radio-label">
+                                <label class="control-label">Will you file as head of household on your tax return?</label>
+                            </div>
+                            <div class="radio-container">
+                                <div class="col-md-2">
+                                    <input type="radio" name="household" ng-model="employee.headOfHousehold" value="0" checked />
+                                    No
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="radio" name="household" ng-model="employee.headOfHousehold" value="1" />
+                                    Yes
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="radio-label">
+                                <label class="control-label">Will you claim at least $1900 for tax credit as <b>child or dependent care expenses</b>?</label>
+                            </div>
+                            <div class="radio-container">
+                                <div class="col-md-2">
+                                    <input type="radio" name="childExpense" ng-model="employee.childExpense" value="0" checked/>
+                                    No
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="radio" name="childExpense" ng-model="employee.childExpense" value="1" />
+                                    Yes
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="submit-box">
+                        <div class="row">
+                            <div class="col-sm-6"><a class="btn green">Previous</a></div>
+                            <div class="col-sm-6"><button ng-click="submit()" class="btn green" ng-disabled="form.$invalid">Submit and Next</button></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div><!-- / .row -->
+</div><!-- / .content-body -->

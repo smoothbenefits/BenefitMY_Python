@@ -1,152 +1,131 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li><a ng-href="#/employee">Broker Dashboard</a></li>
-    <li><a ng-href="#/employee/benefit/{{employeeId}}">View Benefits</a></li>
-    <li class="active"><a href="javascript:void(0);">Add Family Member</a></li>
-</ul>
-<!-- Add A Family Member -->
-<div class="col-md-2">
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/clients">Broker Dashboard</a>
+    <a ng-href="#/employee/benefit/{{employeeId}}">View Benefits</a>
+    <span>Add Family Member</span>
 </div>
-<div class="col-md-8">
-    <form name="form" class="panel">
-        <div class="panel-heading">
-            <span class="panel-title">Please use the form below to add a new family member.</span>
-        </div>
-        <div class="panel-body">
-            <div class="col-md-10 col-md-offset-1">
-            <div class="row form-group">
-                <div class="col-md-12 form-inline-error" ng-show="form.person_name.$dirty && form.person_name.$invalid">Invalid:
+
+<div class="content-header">
+    <h1>Add Family Member</h1>
+    <span class="general-info">Please use the form below to add a new family member</span>
+</div><!-- / .content-header -->
+
+
+<div class="content-body">
+    <div class="form-holder">
+        <form name="form">
+            <div class="form-label">Full Name*</div>
+            <div class="textbox">
+                <input type="text"
+                    name="person_name"
+                    ng-model="person.full_name"
+                    ng-required="true">
+                <div class="form-error" ng-show="form.person_name.$dirty && form.person_name.$invalid">
                   <span ng-show="form.person_name.$error.required">Name field is required</span>
                 </div>
-                <label class="col-sm-4 control-label"> Full Name *</label>
-                <div class="col-sm-8">
-                    <input type="text"
-                        class="form-control form-group-margin"
-                        name="person_name"
-                        ng-model="person.full_name"
-                        ng-required="true">
-                </div>
             </div>
-            <div class="row form-group">
-                <div class="col-md-12 form-inline-error" ng-show="form.person_birth_date.$dirty && form.person_birth_date.$invalid">Invalid:
+            <div class="form-label">Date of Birth*</div>
+            <div class="datebox">
+                <input type="date"
+                    name="person_birth_date"
+                    ng-model="person.birth_date"
+                    ng-required="true"
+                    min="1900-01-01">
+                <div class="form-error" ng-show="form.person_birth_date.$dirty && form.person_birth_date.$invalid">
                     <span ng-show="form.person_birth_date.$error.required">Date of Birth field is required</span>
                     <span ng-show="form.person_birth_date.$invalid">Please enter a valid Date of Birth</span>
                 </div>
-                <label class="col-sm-4 control-label"> Date Of Birth *</label> 
-                <div class="col-sm-8">
-                    <input type="date"
-                        class="form-control form-group-margin"
-                        name="person_birth_date"
-                        ng-model="person.birth_date"
-                        ng-required="true"
-                        min="1900-01-01">
-                </div>
             </div>
-            <div class="row form-group">
-                <div class="col-md-12 form-inline-error" ng-show="form.person_ssn.$dirty && form.person_ssn.$invalid">Invalid:
+
+            <div class="form-label">Social Security Number*</div>
+            <div class="textbox">
+                <input type="tel"
+                    name="person_ssn"
+                    ng-model="person.ssn"
+                    ng-required="true"
+                    ui-mask="999-999-9999">
+                <div class="form-error" ng-show="form.person_ssn.$dirty && form.person_ssn.$invalid">
                     <span ng-show="form.person_ssn.$error.required">SSN field is required</span>
                     <span ng-show="form.person_ssn.$invalid">Please enter a valid Social Security Number</span>
                 </div>
-                <label class="col-sm-4 control-label"> Social Security Number *</label> 
-                <div class="col-sm-8">
-                    <input type="tel"
-                        class="form-control form-group-margin"
-                        name="person_ssn"
-                        ng-model="person.ssn"
-                        ng-required="true"
-                        ui-mask="999-999-9999">
+            </div>
+
+            <div class="form-label">Relationship</div>
+            <div class="select-box">
+                <select
+                    class="form-control"
+                    name="person_relationship"
+                    ng-model="person.relationship"
+                    ng-required="true">
+                    <option value="self">Self</option>
+                    <option value="spouse">Spouse</option>
+                    <option value="child">Child</option>
+                </select>
+            </div>
+
+            <div class="form-label">Address</div>
+            <div class="textbox">
+                <input type="text"
+                    placeholder="Street Line 1"
+                    name="person_address_street1"
+                    ng-model="person.address.street_1"
+                    ng-required="false">
+            </div>
+            <div class="textbox">
+                <input type="text"
+                    placeholder="Street Line 2"
+                    name="person_address_street2"
+                    ng-model="person.address.street_2"
+                    ng-required="false">
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="textbox">
+                        <input type="text"
+                            placeholder="City"
+                            name="person_address_city"
+                            ng-model="person.address.city"
+                            ng-required="false">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="textbox">
+                        <input type="text"
+                            placeholder="State"
+                            name="person_address_state"
+                            ng-model="person.address.state"
+                            ng-required="false">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="textbox">
+                        <input type="text"
+                            placeholder="Zip Code"
+                            name="person_address_zip"
+                            ng-model="person.address.zipcode"
+                            ng-required="false">
+                    </div>
                 </div>
             </div>
-            <div class="row form-group">
-                <label class="col-sm-4 control-label"> Relationship</label> 
-                <div class="col-sm-8">
-                    <select
-                        class="form-control form-group-margin"
-                        name="person_relationship" 
-                        ng-model="person.relationship" 
-                        ng-required="true">
-                        <option value="self">Self</option>
-                        <option value="spouse">Spouse</option>
-                        <option value="child">Child</option>
-                    </select>
+
+            <div class="form-label">Phone Number</div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="textbox">
+                        <input type="text"
+                            name="phone_number"
+                            ng-model="person.phone.number"
+                            ng-required="false">
+                    </div>
                 </div>
             </div>
-            <div class="row form-group">
-                <label class="col-sm-4 control-label"> Street Line 1</label> 
-                <div class="col-sm-8">
-                    <input type="text"
-                        class="form-control form-group-margin"
-                        name="person_address_street1"
-                        ng-model="person.address.street_1"
-                        ng-required="false">
-                </div>
+
+            <div class="submit-box">
+                <button ng-click="addMember()" class="btn green" ng-disabled="form.$invalid">Add person</button>
             </div>
-            <div class="row form-group">
-                <label class="col-sm-4 control-label"> Street Line 2</label> 
-                <div class="col-sm-8">
-                    <input type="text"
-                        class="form-control form-group-margin"
-                        name="person_address_street2"
-                        ng-model="person.address.street_2"
-                        ng-required="false">
-                </div>
-            </div>
-            <div class="row form-group">
-                <label class="col-sm-4 control-label">City</label> 
-                <div class="col-sm-8">
-                    <input type="text"
-                        class="form-control form-group-margin"
-                        name="person_address_city"
-                        ng-model="person.address.city"
-                        ng-required="false">
-                </div>
-            </div>
-            <div class="row form-group">
-                <label class="col-sm-4 control-label">State</label> 
-                <div class="col-sm-8">
-                    <input type="text"
-                        class="form-control form-group-margin"
-                        name="person_address_state"
-                        ng-model="person.address.state"
-                        ng-required="false">
-                </div>
-            </div>
-            <div class="row form-group">
-                <label class="col-sm-4 control-label">Zip code</label>
-                <div class="col-sm-8">
-                    <input type="text"
-                        class="form-control form-group-margin"
-                        name="person_address_zip"
-                        ng-model="person.address.zipcode"
-                        ng-required="false">
-                </div>
-            </div>
-            <div class="row form-group">
-                <label class="col-sm-4 control-label">Phone Number</label> 
-                <div class="col-sm-8">
-                    <input type="text"
-                        class="form-control form-group-margin"
-                        name="phone_number"
-                        ng-model="person.phone.number"
-                        ng-required="false">
-                </div>
-            </div>
-            <div class="row text-right">
-                * required form elements
-            </div>
-            </div>
-            <div style="clear:both">
-            <div class="panel-footer text-right">
-                <button ng-click="addMember()" class="btn btn-primary btn-flat btn-labeled" ng-disabled="form.$invalid">
-                    <span class="btn-label icon fa fa-plus"> </span>Add person
-                </button>
-                <a href="javascript:history.back();" class="btn btn-primary btn-flat btn-labeled">
-                    Cancel
-                </a>
-            </div>
-        </div>
-    </form>
-</div>
-<div class="col-md-2">
-</div>
+
+        </form>
+    </div><!-- / .form-holder -->
+    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
+</div><!-- / .content-body -->
