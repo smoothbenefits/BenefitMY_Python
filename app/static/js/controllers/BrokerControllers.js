@@ -84,7 +84,7 @@ var clientsController = brokersControllers.controller('clientsController', ['$sc
             var clientList =[];
             _.each(response.company_roles, function(company_role)
               {
-                if(company_role.company_user_type === 'broker')
+                if(company_role.company_user_type.toLowerCase() === 'broker')
                 {
                   clientList.push(company_role.company);
                 }

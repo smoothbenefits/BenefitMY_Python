@@ -23,14 +23,27 @@
         </div>
         <div class="panel-body">
             <div class="row form-group">
-                <div class="col-md-12 form-inline-error" ng-show="form.employee_name.$dirty && form.employee_name.$invalid">Invalid:
-                  <span ng-show="form.employee_name.$error.required">Employee name field is required</span>
+                <div class="col-md-12 form-inline-error" ng-show="form.employee_first_name.$dirty && form.employee_first_name.$invalid">Invalid:
+                  <span ng-show="form.employee_first_name.$error.required">Employee name field is required</span>
                 </div>
-                <label class="col-sm-4 control-label">Name</label>
+                <label class="col-sm-4 control-label">First Name</label>
                 <div class="col-sm-8">
-                    <input type="text" 
-                        name="employee_name"
-                        ng-model="addUser.name" 
+                    <input type="text"
+                        name="employee_first_name"
+                        ng-model="addUser.first_name"
+                        ng-required="true"
+                        class="form-control">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 form-inline-error" ng-show="form.employee_last_name.$dirty && form.employee_last_name.$invalid">Invalid:
+                  <span ng-show="form.employee_last_name.$error.required">Employee name field is required</span>
+                </div>
+                <label class="col-sm-4 control-label">Last Name</label>
+                <div class="col-sm-8">
+                    <input type="text"
+                        name="employee_last_name"
+                        ng-model="addUser.last_name"
                         ng-required="true"
                         class="form-control">
                 </div>
@@ -42,9 +55,9 @@
                 </div>
                 <label class="col-sm-4 control-label">Email</label>
                 <div class="col-sm-8">
-                    <input type="email" 
+                    <input type="email"
                         name="employee_email"
-                        ng-model="addUser.email" 
+                        ng-model="addUser.email"
                         ng-required="true"
                         class="form-control">
                 </div>

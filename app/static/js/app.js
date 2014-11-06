@@ -81,6 +81,10 @@ BenefitMyApp.config(['$routeProvider',
                 templateUrl:'/static/partials/view_letter.html',
                 controller:'employerViewLetter'
             }).
+            when('/admin/view_draft/:company_id/:employee_id/:document_type_id', {
+                templateUrl: '/static/partials/view_draft.html',
+                controller: 'employerViewDraft'
+            }).
             when('/employee',{
                 templateUrl: '/static/partials/employee_dashboard.html',
                 controller: 'employeeHome'

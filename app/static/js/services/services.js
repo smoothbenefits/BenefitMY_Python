@@ -88,10 +88,15 @@ benefitmyService.factory('employeeFamily', ['$resource',
     return $resource('/api/v1/users/:userId/family/', {userId:'user_id'});
   }]);
 
+benefitmyService.factory('userDocument', ['$resource',
+  function($resource){
+    return $resource('/api/v1/users/:userId/documents/', {userId:'@userId'});
+  }])
+
 benefitmyService.factory('documentRepository', ['$resource',
   function($resource){
     return {
-      byUser: $resource('/api/v1/users/:userId/documents?company=:companyId', {userId:'@user_id', companyId:'@company_id'}),
+      byUser: $resource('/api/v1/users/:userId/documents', {userId:'@user_id'}),
       type: $resource('/api/v1/document_types?company=:companyId', {companyId:'@company_id'}),
       create: $resource('/api/v1/documents/', {}),
       getById: $resource('/api/v1/documents/:id', {id:'@document_id'})

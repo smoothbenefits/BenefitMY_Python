@@ -90,13 +90,13 @@ var employerUser = employersController.controller('employerUser',
                                                   '$routeParams',
                                                   'employerWorkerRepository',
                                                   'usersRepository',
-                                                  'documentRepository',
+                                                  'userDocument',
   function employerUser($scope,
                         $location,
                         $routeParams,
                         employerWorkerRepository,
                         usersRepository,
-                        documentRepository){
+                        userDocument){
       var compId = $routeParams.company_id;
       $scope.employees=[];
       $scope.addUser = {};
@@ -125,8 +125,8 @@ var employerUser = employersController.controller('employerUser',
         apiUser.company_user_type = userType;
         apiUser.user = {};
         apiUser.user.email = viewUser.email;
-        apiUser.user.first_name = viewUser.name;
-        apiUser.user.last_name = 'Default';
+        apiUser.user.first_name = viewUser.first_name;
+        apiUser.user.last_name = viewUser.last_name;
         if(viewUser.phone)
         {
             //input phone to the apiModel here
@@ -135,7 +135,7 @@ var employerUser = employersController.controller('employerUser',
       }
 
       var validateAddUser = function(addUser){
-        if(addUser.name && addUser.email)
+        if(addUser.first_name && addUser.last_name && addUser.email)
         {
           return true;
         }
@@ -169,11 +169,11 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.documentLink = function(employeeId, docType)
       {
-        documentRepository.byUser.get({userId:employeeId, companyId:compId})
+        userDocument.query({userId:employeeId})
         .$promise.then(function(response){
-          var doc = _.findWhere(response.documents, {document_type:docType});
+          var doc = _.where(response, {document_type:docType});
           var pathKey = 'create_letter';
-          if(doc)
+          if(doc && doc.length > 0)
           {
             pathKey='view_letter';
           }
@@ -203,11 +203,12 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
             array = {type:benefitType, benefitList:[]};
             companyBenefitsArray.push(array);
         }
-        var sameBenefit = _.findWhere(array.benefitList, {name:benefit.benefit_name})
+        var benefitName = benefit.benefit_plan.name;
+        var sameBenefit = _.findWhere(array.benefitList, {name:benefitName})
         if(!sameBenefit)
         {
           var sameNameBenefit = {};
-          sameNameBenefit.name = benefit.benefit_plan.name;
+          sameNameBenefit.name = benefitName;
           sameNameBenefit.options = [];
           sameNameBenefit.options.push({
               optionType:benefit.benefit_option_type,
@@ -229,8 +230,8 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
   }
 ]);
 
-var employerLetterTemplate = employersController.controller('employerLetterTemplate', ['$scope', '$location', '$route', '$routeParams', 'templateRepository', 'documentRepository',
-  function employerLetterTemplate($scope, $location, $route, $routeParams, templateRepository, documentRepository){
+var employerLetterTemplate = employersController.controller('employerLetterTemplate', ['$scope', '$location', '$route', '$routeParams', 'templateRepository',
+  function employerLetterTemplate($scope, $location, $route, $routeParams, templateRepository){
     $scope.documentType = $routeParams.type;
     $scope.addMode = $routeParams.add;
     $scope.companyId = $routeParams.company_id;
@@ -306,12 +307,33 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
                                 templateRepository){
     $scope.companyId = $routeParams.company_id;
     var employeeId = $routeParams.employee_id;
-    $scope.documentType = $routeParams.type;
     $scope.newDoc = {document_type:$scope.documentType};
+
+    var getDocumentType = function(documentTypeId){
+      if (documentTypeId === 1){
+        return "Offer Letter";
+      }
+      if (documentTypeId === 2){
+        return "Employment Agreement";
+      }
+      return "";
+    }
+
+    $scope.documentType = getDocumentType($routeParams.type);
 
     templateRepository.byCompany.get({companyId:$scope.companyId})
       .$promise.then(function(response){
-        $scope.templateArray = _.sortBy(_.where(response.templates, {document_type:$scope.documentType}), function(elm){return elm.id;}).reverse();
+        $scope.templateArray = [];
+
+        _.each(response.templates, function(template){
+          if (template.document_type.id.toString() === $routeParams.type){
+            $scope.templateArray.push(template);
+          }
+        });
+
+        _.sortBy($scope.templateArray, function(template){
+          return template.name;
+        });
       });
 
     $scope.getTemplateFields = function(sTemplate){
@@ -372,4 +394,14 @@ var employerViewLetter = employersController.controller('employerViewLetter',
     $scope.viewEmployeesLink = function(){
       $location.path('/admin/employee/' + $scope.companyId);
     };
+  }]);
+
+var employerViewDraft = employersController.controller('employerViewDraft',
+  ['$scope', '$location', '$routeParams', 'documentRepository',
+  function employerViewDraft($scope, $location, $routeParams, documentRepository){
+    var companyId = $routeParams.company_id;
+    var documentTypeId = $routeParams.document_type_id;
+    var employeeId = $routeParams.employee_id;
+
+
   }]);
