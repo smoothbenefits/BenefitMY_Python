@@ -39,7 +39,14 @@ INSTALLED_APPS = (
     'rest_framework',
     'pipeline',
     'app',
+    'emailusernames',
 )
+
+
+AUTHENTICATION_BACKENDS = (
+    'emailusernames.backends.EmailAuthBackend',
+)
+
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

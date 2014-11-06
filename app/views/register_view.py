@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from app.forms import UserForm
-from django.shortcuts import redirect
+from emailusernames.utils import create_user
 
 def register(request):
     # Like before, get the request's context.
@@ -16,17 +16,11 @@ def register(request):
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
-
         # If the two forms are valid...
         if user_form.is_valid():
-            # Save the user's form data to the database.
-            user = user_form.save()
+            create_user(request.POST['email'], request.POST['password'])
 
-            # Now we hash the password with the set_password method.
-            # Once hashed, we can update the user object.
-            user.set_password(user.password)
-            user.save()
-
+            registered = True
             # Update our variable to tell the template registration was successful.
             return redirect('/login')
         # Invalid form or forms - mistakes or something else?
