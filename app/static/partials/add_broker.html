@@ -16,22 +16,22 @@
             <div class="form-label">First Name*</div>
             <div class="textbox">
                 <input type="text"
-                    name="first_name"
+                    name="broker_firstname"
                     ng-model="addUser.first_name"
                     ng-required="true">
-                <div class="form-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
-                  <span ng-show="form.first_name.$error.required">Broker first name field is required</span>
+                <div class="form-error" ng-show="form.broker_firstname.$dirty && form.broker_firstname.$invalid">
+                  <span ng-show="form.broker_firstname.$error.required">Broker first name field is required</span>
                 </div>
             </div>
 
             <div class="form-label">Last Name*</div>
             <div class="textbox">
                 <input type="text"
-                    name="last_name"
+                    name="broker_lastname"
                     ng-model="addUser.last_name"
                     ng-required="true">
-                <div class="form-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
-                  <span ng-show="form.last_name.$error.required">Broker last name field is required</span>
+                <div class="form-error" ng-show="form.broker_lastname.$dirty && form.broker_lastname.$invalid">
+                  <span ng-show="form.broker_lastname.$error.required">Broker last name field is required</span>
                 </div>
             </div>
 
@@ -61,7 +61,7 @@
             </div>
 
             <div class="submit-box">
-                <button ng-click="createUser('Broker')" class="btn green" ng-disabled="form.$invalid">Add Broker</button>
+                <button ng-click="createUser('broker')" class="btn green" ng-disabled="form.$invalid">Add Broker</button>
             </div>
 
         </form>
