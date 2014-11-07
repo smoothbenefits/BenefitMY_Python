@@ -16,19 +16,29 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-resource.min.js" > </script>
         {% compressed_js "home" %}
     </header>
-    <body>
+
+    <body ng-app="BenefitMyHome">
 
         <div id="header">
-            <img src="/static/images/logo-white.png" id="logo-link" alt="logo"/>
+            <a href="/" id="logo-link"></a>
+            <div class="form-holder">
+                <form accept-charset="UTF-8" action="/login/" method="post">
+                    {% csrf_token %}
+                    <span class="textbox"><input type="text" id="username" name="username" placeholder="User name"></span>
+                    <span class="textbox"><input type="password" id="password" name="password" placeholder="Password"></span>
+                    <span class="submit-box"><input type="submit" value="Sign In" class="btn green"></span>
+                </form>
+            </div>
         </div><!-- / #header -->
 
         <div id="hero-section">
+            <div class="bg-radiant"></div>
             <div class="signin-holder">
                 <h2>Sign In</h2>
                 <div class="form-holder">
                     <form accept-charset="UTF-8" action="/login/" method="post">
                         {% csrf_token %}
-                        <div class="textbox"><input type="text" id="username" name="username" placeholder="Username"></div>
+                        <div class="textbox"><input type="text" id="username" name="username" placeholder="User name"></div>
                         <div class="textbox"><input type="password" id="password" name="password" placeholder="Password"></div>
                         <div class="submit-box"><input type="submit" value="Sign In" class="btn green"></div>
                         <div class="meta-links">
@@ -40,12 +50,12 @@
             </div>
         </div><!-- / #hero-section -->
 
-        <div class="container">
+       <div class="container">
 
             <div id="intro-section">
                 <h1>Platform between health care broker<br>and small businesses</h1>
-                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam.</p>
             </div>
+
 
             <div id="features-section">
                 <div class="row">
@@ -99,7 +109,7 @@
                         <div class="submit-box"><input type="submit" value="Send" class="btn green"></div>
                     </form>
                 </div>
-                <p>Or talk to our sales at<br><strong>855-631-6850</strong></p>
+                <p>Or talk to our sales at<br><strong>617-657-9988</strong></p>
             </div>
         </div><!-- / #contact-section -->
 
@@ -114,16 +124,36 @@
                     </div>
                     <div class="col-sm-3">
                         <div class="footer-title">BenefitMy</div>
-                        <p>Riverside Center,<br>275 Grove St. Suite 2-400<br>Newton, MA 02466</p>
+                        <p>111 Huntington  Ave<br>Boston, MA 02199</p>
                     </div>
                     <div class="col-sm-3">
                         <div class="footer-title">Need Help?</div>
-                        <p>855-631-6850</p>
+                        <p>617-657-9988</p>
                         <p><a href="mailto:">help@benefitmy.com</a></p>
                     </div>
                 </div>
                 <div class="copyright">Copyright &copy; 2014 BenefitMy</div>
             </div>
         </div>
+        <script type="text/javascript">
+            if(!init)
+                {
+                    var init = [];
+                }
+            init.push(function () {
+                var spyTarget = $("#intro-section");
+                $('body').scrollspy({
+                    min: spyTarget.offset().top - 100,
+                    max: 10000,
+                    onEnter: function(element, position) {
+                        $("#header").addClass("fixed");
+                    },
+                    onLeave: function(element, position) {
+                        $("#header").removeClass("fixed");
+                    }
+                });
+            })
+            window.PixelAdmin.start(init);
+        </script>
     </body>
 </html>

@@ -3,7 +3,11 @@ html, body {
   min-height: 100%; }
 
 body {
-  height: 100vh; }
+  height: 100vh;
+  min-height: 480px;
+  overflow-x: hidden;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #58585B; }
 
 .container {
   max-width: 980px; }
@@ -29,5 +33,11 @@ ul {
   padding-left: 0; }
   ul li {
     margin-bottom: 10px; }
+
+a {
+  color: #00ADEF;
+  cursor: pointer; }
+  a:hover {
+    color: #00ADEF; }
 
 /*# sourceMappingURL=components.css.css.map */

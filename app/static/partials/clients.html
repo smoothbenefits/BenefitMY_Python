@@ -1,43 +1,32 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li class="active"><a ng-href="#/clients">Broker Dashboard</a></li>
-</ul>
-<div class="page-header">
-    <div class="row">
-        <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12 col-sm-4 text-center text-left-sm">
-            <i class="fa fa-dashboard page-header-icon"></i>My Client List
-        </h1>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/clients">Broker Dashboard</a>
+    <span>Broker Dashboard</span>
+</div>
 
-        <div class="col-xs-12 col-sm-8">
-            <div class="row">
-                <hr class="visible-xs no-grid-gutter-h">
-                <!-- "Create project" button, width=auto on desktops -->
-                <div class="pull-right col-xs-12 col-sm-auto">
-                    <a ng-click="addClient()" class="btn btn-primary btn-labeled" style="width: 100%;">
-                        <span class="btn-label icon fa fa-plus"></span>Add new client
-                    </a>
-                </div>
+<div class="content-header">
+    <h1>My Client List</h1>
+    <span class="general-info">You have total <b>{{clientCount}}</b> clients</span>
+    <div class="cta"><span class="btn green" ng-click="addClient()">Add new client</span></div>
+</div><!-- / .content-header -->
 
-                <!-- Margin -->
-                <div class="visible-xs clearfix form-group-margin"></div>
-
-            </div>
-
-        </div>
+<div class="content-body">
+    <div class="table-responsive table-holder">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Name</span></th>
+                    <th width="220"><span>Actions</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="client in clientList">
+                    <td>{{client.name}}</td>
+                    <td>
+                        <a class="btn inline" href="#/broker/benefits/{{client.id}}">View Benefits</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="row col-xs-12 main-content">
-
-        <ul class="client-list">
-            <li ng-repeat="client in clientList">
-
-                <a href="#/benefits/{{client.id}}" class="btn btn-info btn-flat btn-labeled pull-right">
-                    <span class="btn-label">View Benefits</span>
-                </a>
-                <span class="client-name">{{client.name}}</span>
-            </li>
-        </ul>
-
-    </div>
-</div> <!-- / .page-header -->
+</div><!-- / .content-body -->

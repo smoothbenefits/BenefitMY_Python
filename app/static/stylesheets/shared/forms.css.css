@@ -11,13 +11,72 @@
   width: 100%;
   padding: 10px 6px; }
 
-div.textbox, div.submit-box {
-  margin-bottom: 6px; }
+.checkbox {
+  font-size: 13px;
+  padding: 10px 0 10px 20px; }
+  .checkbox input, .checkbox label, .checkbox a {
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
+    line-height: 1em; }
+
+span.checkbox {
+  display: inline-block;
+  padding: 0 20px 6px 20px;
+  margin: 10px 0 0;
+  min-width: 150px; }
+  span.checkbox input, span.checkbox span {
+    vertical-align: top;
+    line-height: 1em; }
+
+.select-box select {
+  width: 100%; }
+
+.datebox input {
+  border: 1px solid #CCC;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  padding: 2px 6px;
+  width: 100%; }
+  .datebox input:focus {
+    outline: none;
+    border: 1px solid #00ADEF; }
+
+div.textbox, div.submit-box, div.checkbox, div.select-box, div.datebox {
+  margin-bottom: 10px;
+  position: relative; }
+
+.form-error {
+  position: absolute;
+  color: red;
+  margin-left: 103%;
+  min-width: 320px;
+  top: 10px; }
+
+.form-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #A0A2A3;
+  font-weight: 500;
+  padding: 6px 0; }
+
+div.back {
+  padding: 10px 0; }
 
 .btn {
   padding: 10px 6px;
   width: 100%;
   text-align: center; }
+  .btn.inline {
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #D9D8D8;
+    border-radius: 2px;
+    width: auto;
+    background: #FFF;
+    color: #58585B; }
+    .btn.inline:hover {
+      border-color: #58A445;
+      color: #58A445; }
   .btn.green {
     background: #6EBE4B;
     color: #FFF;

@@ -11,7 +11,6 @@
     <title>BenefitMy</title>
     <!-- Open Sans font from Google CDN -->
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"/>
     {% compressed_css "dashboard" %}
     <script type="text/javascript">var init = [];</script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"> </script>
@@ -27,109 +26,118 @@
 </head>
 
 
-<!-- 1. $BODY ======================================================================================
-
-    Body
-
-    Classes:
-    * 'theme-{THEME NAME}'
-    * 'right-to-left'      - Sets text direction to right-to-left
-    * 'main-menu-right'    - Places the main menu on the right side
-    * 'no-main-menu'       - Hides the main menu
-    * 'main-navbar-fixed'  - Fixes the main navigation
-    * 'main-menu-fixed'    - Fixes the main menu
-    * 'main-menu-animated' - Animate main menu
--->
 <body ng-app="BenefitMyApp">
 
-    <div class="theme-default no-main-menu" ng-controller="userController">
+    <script type="text/javascript">var init = [];</script>
+    <div id="dashboard-wrapper" ng-controller="userController">
 
+        <div id="header">
+            <a href="/" id="logo-link"></a>
+            <div class="pull-right">
+                {%verbatim%}
+                <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="drop-trigger">
+                    {{curUser.email}}
+                    <span class="caret"></span>
+                </span>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <li><a href="#" ng-click="logout()"><span class="flaticon flaticon-wheel21"></span> Settings</a></li>
+                    <li><a href="#" ng-click="logout()"><span class="flaticon flaticon-logout5"></span> Log Out</a></li>
+                </ul>
+                {%endverbatim%}
+            </div>
+        </div><!-- / #header -->
 
-<!-- 2. $MAIN_NAVIGATION ===========================================================================
+        <div id="sidebar">
+            <ul class="nav-list">
+                <li class="expandable">
+                    <div class="primary-nav active">
+                        <button data-toggle="collapse" data-target="#dashboard-nav" aria-expanded="true" aria-controls="dashboard-nav"><span class="flaticon flaticon-dashboard6"></span>Dashboard</button>
+                    </div>
+                    <div class="sub-nav collapse in" id="dashboard-nav">
+                        <a href="#/admin" ng-class="getActiveRoleClass('/admin')" ng-if="isRoleActive('admin')">Employer Dashboard</a>
+                        <a href="#/employee" ng-class="getActiveRoleClass('/employee')" ng-if="isRoleActive('employee')">Employee Dashboard</a>
+                        <a href="#/broker" ng-class="getActiveRoleClass('/broker')" ng-if="isRoleActive('broker')">Broker Dashboard</a>
+                    </div>
+                </li>
 
-    Main navigation
--->
-   <div id="main-navbar" class="navbar navbar-inverse" role="navigation">
-        <!-- Main menu toggle -->
-        <div class="navbar-inner">
-            <!-- Main navbar header -->
-            <div class="navbar-header">
+                <!-- EMPLOYER NAVS START -->
+                <li class="expandable" ng-show="getCurRoleFromPath() === 'admin'">
+                    <div class="primary-nav">
+                        <button data-toggle="collapse" data-target="#hr-nav" aria-expanded="false" aria-controls="hr-nav"><span class="flaticon flaticon-user135"></span>HR</button>
+                    </div>
+                    <div class="sub-nav collapse" id="hr-nav">
+                        <a ng-click="goToFunctionalView('/admin/employee/add/')">Add Employee</a>
+                        <a ng-click="goToFunctionalView('/admin/employee/')">View Employees</a>
+                        <a ng-click="goToFunctionalView('/admin/generate_template/', {type:'Offer'})">Offer Letter Template</a>
+                        <a ng-click="goToFunctionalView('/admin/generate_template/', {type:'Employee Agreement'})">Employee Agreement Template</a>
+                        <a ng-click="goToFunctionalView('/admin/generate_template/', {type:'NDA'})">NDA Template</a>
+                    </div>
+                </li>
+                <li class="expandable" ng-show="getCurRoleFromPath() === 'admin'">
+                    <div class="primary-nav">
+                        <button data-toggle="collapse" data-target="#employer-benefit-nav" aria-expanded="false" aria-controls="employer-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
+                    </div>
+                    <div class="sub-nav collapse" id="employer-benefit-nav">
+                        <a ng-click="goToFunctionalView('/admin/broker/add/')">Add Broker Info</a>
+                        <a ng-click="goToFunctionalView('/admin/broker/')">View Broker Info</a>
+                        <a ng-click="goToFunctionalView('/admin/benefits/')">View Benefits</a>
+                    </div>
+                </li>
+                <!-- EMPLOYER NAVS END -->
 
-                <!-- Logo -->
-                <a href="/" class="navbar-brand">
-                    <div><img alt="logo" src="/static/images/logo-icon.png"></div>
-                    BenefitMy
-                </a>
+                <!-- EMPLOYEE NAV STARTS -->
+                <li class="expandable" ng-show="getCurRoleFromPath() === 'employee'">
+                    <div class="primary-nav">
+                        <button data-toggle="collapse" data-target="#employee-benefit-nav" aria-expanded="false" aria-controls="employee-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
+                    </div>
+                    <div class="sub-nav collapse" id="employee-benefit-nav">
+                        <a href="#/employee">View Benefits</a>
+                        <a ng-click="goToFunctionalView('/employee/benefit/')">Modify Benefits</a>
+                    </div>
+                </li>
+                <!-- EMPLOYEE NAV ENDS -->
 
-                <!-- Main navbar toggle -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar-collapse"><i class="navbar-icon fa fa-bars"></i></button>
+                <!-- BROKER NAV STARTS -->
+                <li class="expandable" ng-show="getCurRoleFromPath() === 'broker'">
+                    <div class="primary-nav">
+                        <button data-toggle="collapse" data-target="#clients-nav" aria-expanded="false" aria-controls="clients-nav"><span class="flaticon flaticon-user135"></span>Clients</button>
+                    </div>
+                    <div class="sub-nav collapse" id="clients-nav">
+                        <a href="#/broker">Client List</a>
+                        <a href="#/broker/add_client">Add New Client</a>
+                    </div>
+                </li>
+                <!-- BROKER NAV ENDS -->
 
-            </div> <!-- / .navbar-header -->
+            </ul>
 
-            <div id="main-navbar-collapse" class="collapse navbar-collapse main-navbar-collapse">
-                <div>
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="/">Home</a>
-                        </li>
-                        <li>
-                            <a href="/about">About</a>
-                        </li>
-                        <li>
-                            <a href="/contact_us">Contact Us</a>
-                        </li>
-                    </ul> <!-- / .navbar-nav -->
-                    {% verbatim %}
-                    <ul class="nav navbar-nav right-navbar-nav pull-right">
-                        <li class="dropdown pull-right">
-                            <a href="javascript:void(0);" class="dropdown-toggle user-menu" data-toggle="dropdown">
-                                <span>{{curUser.first_name+ ' ' + curUser.last_name}}</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#"><i class="dropdown-icon fa fa-cog"></i>&nbsp;&nbsp;Settings</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#" ng-click="logout()"><i class="dropdown-icon fa fa-power-off"></i>&nbsp;&nbsp;Log Out</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    {% endverbatim %}
+            <div id="side-footer">
+                <div class="footer-nav">
+                    <a href="/">Home</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="/">About Us</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="/">Contact Us</a>
                 </div>
-            </div> <!-- / #main-navbar-collapse -->
-        </div> <!-- / .navbar-inner -->
-    </div>
-<!-- /2. $END_MAIN_NAVIGATION -->
+                <div class="copyright">&copy; 2014 BenefitMy</div>
+            </div>
 
-    <div id="content-wrapper">
-        <div ng-view>
-        </div>
+        </div><!-- / #sidebar -->
 
-    </div> <!-- / #content-wrapper -->
-</div> <!-- / #main-wrapper -->
-<div class="home-footer">
-    <div class="footer-container">
-        <span class="copyright pull-right">
-            © 2014 BenefitMy
-        </span>
-        <ul class="links pull-left">
-            <li>
-                <a href="/">Home</a>
-            </li>
-            <li>
-                <a href="/">About</a>
-            </li>
-            <li>
-                <a href="/">Contact Us</a>
-            </li>
-        </ul>
-        <div class="clearfix"></div>
-    </div>
+
+        <div id="content-wrapper"><div ng-view></div></div> <!-- / #content-wrapper -->
+    </div> <!-- / #dashboard-wrapper -->
     <script type="text/javascript">
         if(!init)
         {
             var init = [];
         }
         init.push(function () {
-            // Javascript code here
+            $(".primary-nav").on("click", function() {
+                $(".primary-nav.active").removeClass("active");
+                $(".collapse.in").removeClass("in");
+                $(this).addClass("active");
+            });
+            $(".sub-nav a").on("click", function() {
+                $(".sub-nav a.active").removeClass("active");
+                $(this).addClass("active");
+            });
         })
         window.PixelAdmin.start(init);
     </script>

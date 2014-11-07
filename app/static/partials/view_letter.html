@@ -1,98 +1,60 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li><a ng-href="#/admin">Employer Dashboard</a></li>
-    <li><a ng-href="#/admin/employee/{{companyId}}">View Employees</a></li>
-    <li class="active"><a href="javascript:void(0);">View {{documentType}}</a></li>
-</ul>
-<div class="page-header">
-    <div class="row">
-        <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12 col-sm-6 text-center text-left-sm">
-            <i class="fa fa-dashboard page-header-icon"></i> View {{documentType}}
-        </h1>
-        <hr class="visible-xs no-grid-gutter-h">
-        <!-- "Create project" button, width=auto on desktops -->
-        <div class="pull-right col-xs-12 col-sm-auto" ng-show="!showCreateButton">
-            <a href="javascript:void(0);" ng-click="createNewLetter()" class="btn btn-primary btn-labeled" style="width: 100%;">
-                <span class="btn-label icon fa fa-plus"></span>Add {{documentType}}
-            </a>
-        </div>
-    </div>
-    <div class="row">
-    </div>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/admin">Employer Dashboard</a>
+    <a ng-href="#/admin/employee/{{companyId}}">View Employees</a>
+    <span>View {{documentType}}</span>
 </div>
-<div class="row" ng-if="!_.isEmpty(documentList)">
-    <div class="col-md-2">
+
+<div class="content-header">
+    <h1>View {{documentType}}</h1>
+    <div class="cta"><span class="btn green" ng-click="createNewLetter()">Add {{documentType}}</span></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="table-responsive table-holder" ng-if="!_.isEmpty(documentList)">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Name</span></th>
+                    <th><span>Template</span></th>
+                    <th><span>Actions</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="doc in documentList">
+                    <td>{{doc.name}}</td>
+                    <td>{{doc.template.name}}</td>
+                    <td><span class="btn inline" ng-click="viewExistingLetter(doc)">View</span></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="col-md-8">
-        <div name="letterList" class="panel">
-            <div class="panel-heading">
-                <div class="col-md-4">
-                    Name
+
+    <div class="template-holder" ng-show="addMode || templateContent">
+        <h2>View {{documentType}} Template</h2>
+        <div class="form-holder">
+            <form name="form">
+                <div class="form-label">Template Name</div>
+                <div class="textbox">
+                    <p>{{curDocument.name}}</p>
                 </div>
-                <div class="col-md-4">
-                    Template
+                <div class="textbox">
+                    <textarea class="form-control"
+                        ng-model="curDocument.content"
+                        rows="10"> </textarea>
                 </div>
-                <div class="col-md-4">
-                    Actions
+                <div class="submit-box">
+                    <button ng-click="Send(employeeId)" class="btn green">
+                        Email PDF to
+                    </button>
+                    <button ng-click="Send(employeeId)" class="btn green">
+                        Download PDF
+                    </button>
                 </div>
-                <div style="clear:both"></div>
-            </div>
-            <div class="panel-body">
-                <div class="row" ng-repeat="doc in documentList">
-                    <div class="col-md-4">
-                        {{doc.name}}
-                    </div>
-                    <div class="col-md-4">
-                        {{doc.template.name}}
-                    </div>
-                    <div class="col-md-4">
-                        <button ng-click="viewExistingLetter(doc)" 
-                            class="btn btn-primary btn-flat btn-labeled">
-                            View Letter
-                        </button>
-                    </div>
-                    <div style="clear:both"> </div>
-                    <div><br /></div>
-                </div>
-            </div>
-            <div class="panel-footer text-right">
-                <button class="btn btn-primary btn-labeled" ng-click="viewEmployeesLink()">
-                    Back
-                </button>
-            </div>
+            </form>
         </div>
-    </div>
-    <div class="col-md-2">
-    </div>
-    <div style="clear:both">
-</div>
-<div class="row" ng-if="curDocument">
-    <div class="col-md-2">
-    </div>
-    <div class="col-md-8">
-        <div name="viewLetter" class="panel">
-            <div class="panel-heading">
-                <span class="panel-title">{{curDocument.name}}</span>
-            </div>
-            <div class="panel-body">
-                <textarea class="form-control"
-                    ng-model="curDocument.content"
-                    rows="25"> </textarea>
-            </div>
-            <div class="panel-footer">
-                <button ng-click="Send(employeeId)" class="btn btn-primary btn-labeled">
-                    Email PDF to 
-                </button>
-                <button ng-click="Send(employeeId)" class="btn btn-primary btn-labeled">
-                    Download PDF 
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-2">
-    </div>
-    <div style="clear:both">
-    </div>
-</div>
+    </div><!-- / .template-holder -->
+
+    <div class="back"><a ng-click="viewEmployeesLink()">&laquo; Back</a></div>
+
+</div><!-- / .content-body -->

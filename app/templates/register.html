@@ -1,31 +1,57 @@
 <!DOCTYPE html>
+{% load compressed %}
 <html>
-    <head>
-        <title>Smooth Benefit</title>
-    </head>
-
+    <header>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>BenefitMy</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <!-- Open Sans font from Google CDN -->
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
+        {% compressed_css "home" %}  
+        <script type="text/javascript">var init = [];</script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"> </script>
+        <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.min.js"> </script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js" > </script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-resource.min.js" > </script>
+        {% compressed_js "home" %}
+    </header>
     <body>
-        <h1>Register with BenefitMy</h1>
+        <div id="content-wrapper">
+           <div class="devise-page">
+                <div class="logo-row"><a href="/"><img src="/static/images/logo-black.png"></a></div>
+                <div class="form-holder">
+                    <h2>Employee Sign Up</h2>
+                    <form id="user_form" method="post" action="/register/" enctype="multipart/form-data" class="register-form">
+                    {% csrf_token %}
+                    <div class="form-label">Email</div>
+                        <div class="textbox">
+                            <input type="email" id="id_email" name="email" required="true">
+                        </div>
+                        <div class="form-label">Password</div>
+                        <div class="textbox">
+                            <input type="password" id="id_password" name="password" required="true">
+                        </div>
+                        <div class="form-label">Confirm Password</div>
+                        <div class="textbox">
+                            <input type="password" id="id_confirm_password" name="confirm_password" required="true">
+                        </div>
+                    
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" class="px" name="agree_terms" required="true">
+                                I agree to <a href="/EmployeeTerms" target="_blank">terms and policy</a>
+                            </label>
+                        </div>
+                        <div class="submit-box"><input type="submit" name="submit" class="btn green" value="Sign Up" /></div>
+                        <div class="meta">
+                            <a href="javascript:history.back();">Cancel</a>
+                        </div>
+                    </form> 
+                </div>
+            </div>
 
-        {% if registered %}
-        <strong>thank you for registering!</strong>
-        Click <a href="/login">here</a> to log in with your newly created credentials<br />
-        {% else %}
-        <strong>register here!</strong><br />
+        </div> <!-- / #content-wrapper -->
 
-        <form id="user_form" method="post" action="/register/"
-                enctype="multipart/form-data">
-
-            {% csrf_token %}
-
-            <!-- Display each form. The as_p method wraps each element in a paragraph
-                 (<p>) element. This ensures each element appears on a new line,
-                 making everything look neater. -->
-            {{ user_form.as_p }}
-
-            <!-- Provide a button to click to submit the form. -->
-            <input type="submit" name="submit" value="Register" />
-        </form>
-        {% endif %}
     </body>
 </html>

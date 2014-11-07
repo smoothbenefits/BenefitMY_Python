@@ -162,7 +162,7 @@ var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignu
     };
 
     $scope.addMember = function(){
-      $location.path('/add_family/' + employeeId);
+      $location.path('/employee/add_family/' + employeeId);
     };
 
     $scope.save = function(){
@@ -323,6 +323,7 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
 
 var onboardIndex = employeeControllers.controller('onboardIndex', ['$scope', '$routeParams', '$location',
   function($scope, $routeParams, $location){
+    $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
     $scope.addBasicInfo = function(){
@@ -332,6 +333,7 @@ var onboardIndex = employeeControllers.controller('onboardIndex', ['$scope', '$r
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment', ['$scope', '$routeParams', '$location',
   function($scope, $routeParams, $location){
+    $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
     var signatureUpdated = false;
@@ -362,6 +364,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment', ['$s
 
 var onboardTax = employeeControllers.controller('onboardTax', ['$scope', '$routeParams', '$location',
   function($scope, $routeParams, $location){
+    $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
     $scope.employee.withholdingType = 'single';
@@ -374,6 +377,7 @@ var onboardTax = employeeControllers.controller('onboardTax', ['$scope', '$route
 
 var onboardComplete = employeeControllers.controller('onboardComplete', ['$scope', '$routeParams', '$location',
   function($scope, $routeParams, $location){
+    $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
     var signatureUpdated = false;

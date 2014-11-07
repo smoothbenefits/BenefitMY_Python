@@ -14,7 +14,7 @@ underscore.factory('_', function(){
     return window._;
 });
 
-BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
+BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($httpProvider, $resourceProvider) {
   // Don't strip trailing slashes from calculated URLs
   $resourceProvider.defaults.stripTrailingSlashes = false;
 
@@ -29,15 +29,15 @@ BenefitMyApp.config(['$routeProvider',
                  templateUrl: '/static/partials/clients.html',
                  controller: 'clientsController'
              }).
-            when('/add_client', {
+            when('/broker/add_client', {
                  templateUrl: '/static/partials/add_client.html',
                  controller: 'addClientController'
              }).
-            when('/benefits/:clientId', {
+            when('/broker/benefits/:clientId', {
                 templateUrl: '/static/partials/company_benefits.html',
                 controller: 'benefitsController'
             }).
-            when('/add_benefit/:clientId', {
+            when('/broker/add_benefit/:clientId', {
                 templateUrl: '/static/partials/add_benefit.html',
                 controller: 'addBenefitController'
             }).
@@ -74,12 +74,16 @@ BenefitMyApp.config(['$routeProvider',
                 controller:'employerLetterTemplate'
             }).
             when('/admin/create_letter/:company_id/:employee_id', {
-                templateUrl:'/static/partials/create_letter.html',
+                templateUrl:'/partials/create_letter.html',
                 controller:'employerCreateLetter'
             }).
             when('/admin/view_letter/:company_id/:employee_id', {
-                templateUrl:'/static/partials/view_letter.html',
+                templateUrl:'/partials/view_letter.html',
                 controller:'employerViewLetter'
+            }).
+            when('/admin/view_draft/:company_id/:employee_id/:document_type_id', {
+                templateUrl: '/static/partials/view_draft.html',
+                controller: 'employerViewDraft'
             }).
             when('/employee',{
                 templateUrl: '/static/partials/employee_dashboard.html',
@@ -93,15 +97,11 @@ BenefitMyApp.config(['$routeProvider',
                 templateUrl: '/static/partials/employee_family.html',
                 controller: 'employeeFamily'
             }).
-            when('/employee/signin/:employee_id', {
-                templateUrl: '/static/partials/employee_signin.html',
-                controller: 'employeeSignin'
-            }).
             when('/employee/signup/:signup_number', {
                 templateUrl: '/static/partials/employee_signup.html',
                 controller: 'employeeSignup'
             }).
-            when('/add_family/:employee_id', {
+            when('/employee/add_family/:employee_id', {
                 templateUrl: '/static/partials/add_family.html',
                 controller: 'addFamily'
             }).

@@ -1,26 +1,20 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li class="active">Employee Onboard</li>
-</ul>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>Employee Onboard</span>
+</div>
 
-<script type="text/javascript" src="js/flashcanvas.js"></script>
-<script src="js/jSignature.min.js"></script>
+<script type="text/javascript" src="/static/js/flashcanvas.js"></script>
+<script src="/static/js/jSignature.min.js"></script>
 
-<div class="page-header">
+<div class="content-header">
+    <h1>Employee Onboard</h1>
+    <span class="general-info">Benefitmy works with your company to ensure all of employee information is collected from you</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
     <div class="row">
-        <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12 text-center text-left-sm">
-            Benefitmy works with your company to ensure all of employee information is collected from you
-        </h1>
-    </div>
-</div> <!-- / .page-header -->
-<div class="col-md-4">
-    <div class="panel">
-        <div class="panel-heading">
-            <span class="panel-title"> Overview</span>
-        </div>
-        <div class="panel-body">
+
+        <div class="col-md-4">
             <div class="list-group">
                 <a ng-href="#/employee/onboard/index/{{employeeId}}" class="list-group-item">
                     <h4 class="list-group-item-heading">Basic Information</h4>
@@ -39,32 +33,35 @@
                     <p class="list-group-item-text">Please acknowledge the information by providing us your signature</p>
                 </a>
             </div>
-        </div> 
-    </div>   
-</div>
-<div class="col-md-8">
-    <div class="signature-container">
-        <div class="panel">
-            <div class="panel-heading">
-                <span class="panel-title">Please agree to the statement below and sign</span>
-            </div>
-            <div class="panel-body">
-                <div class="terms-container">
-                    I hereby acknowledge that all the information I provided before are to the best of my knowledge and all the facts I stated are true.
-                    I am aware that if I provided faulty information, I would be liable to the penalties by law
+        </div>
+
+        <div class="col-md-8">
+            <div class="signature-container">
+                <div class="form-holder">
+                <ul class="list-group"><li class="list-group-item">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <span class="panel-title">Please agree to the statement below and sign</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="terms-container">
+                                I hereby acknowledge that all the information I provided before are to the best of my knowledge and all the facts I stated are true.
+                                I am aware that if I provided faulty information, I would be liable to the penalties by law
+                            </div>
+                            <div id="term_signature" class="signature-pad"></div>
+                        </div>
+                    </div>
+                    <div class="submit-box">
+                        <div class="row">
+                            <div class="col-sm-6"><button ng-click="clearSignature()" class="btn green">Reset</button></div>
+                            <div class="col-sm-6"><button ng-click="submit()" class="btn green">Sign and Next</button></div>
+                        </div>
+                        <input type="hidden" name="signatureHiddenData" value="{{termSignatureData}}"/>
+                    </div>
+                </li></ul>
                 </div>
-                <div id="term_signature" class="signature-pad"></div>
-            </div>
-            <div class="panel-footer text-right">
-                <button ng-click="clearSignature()" class="btn btn-primary btn-labeled">
-                    Reset
-                </button>
-                <button ng-click="submit()" class="btn btn-primary btn-labeled">
-                    <span class="btn-label icon fa fa-plus"></span>Sign and Next 
-                </button>
-                <input type="hidden" name="signatureHiddenData" value="{{termSignatureData}}"/>
             </div>
         </div>
-    </div>
-</div>
-<div style="clear:both"></div>
+
+    </div><!-- / .row -->
+</div><!-- / .content-body -->

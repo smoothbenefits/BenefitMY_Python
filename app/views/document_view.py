@@ -25,6 +25,34 @@ class CompanyDocumentView(APIView):
         return Response(serializer.data)
 
 
+class CompanyUserDocumentView(APIView):
+    def get_documents(self, pk, pd):
+        try:
+            return Document.objects.filter(company=pk, user=pd)
+        except Document.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, pd, format=None):
+        documents = self.get_documents(pk, pd)
+        serializer = DocumentSerializer(documents, many=True)
+        return Response(serializer.data)
+
+
+class CompanyUserTypeDocumentView(APIView):
+    def get_documents(self, pk, pd, py):
+        try:
+            return Document.objects.filter(company=pk,
+                                           user=pd,
+                                           document_type=py)
+        except Document.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, pd, py, format=None):
+        documents = self.get_documents(pk, pd, py)
+        serializer = DocumentSerializer(documents, many=True)
+        return Response(serializer.data)
+
+
 class UserDocumentView(APIView):
     def get_documents(self, pk):
         try:

@@ -1,65 +1,45 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li><a ng-href="#/clients">Broker Dashboard</a></li>
-    <li class="active"><a href="javascript:void(0);">View Benefits</a></li>
-</ul>
-<div class="page-header">
-    <div class="row">
-        <h1 class="col-xs-12 col-sm-4 text-center text-left-sm">
-            <i class="fa fa-dashboard page-header-icon"></i> {{client.name}} Benefits
-        </h1>
-
-        <hr class="visible-xs no-grid-gutter-h">
-        <!-- "Create project" button, width=auto on desktops -->
-        <div class="pull-right col-xs-12 col-sm-auto">
-            <a href="#/add_benefit/{{clientId}}" class="btn btn-primary btn-labeled" style="width: 100%;">
-                <span class="btn-label icon fa fa-plus"></span>Add new benefit
-            </a>
-        </div>
-    </div>
-</div> <!-- / .page-header -->
-
-<div class="content-container">
-    <div class="panel employer-benefit" ng-repeat="benefitArray in companyBenefitsArray">
-        <div class="panel-heading">
-             <div class="col-md-5 text-left">
-                <span class="panel-title">{{benefitArray.type}}</span>
-            </div>
-            <div class="col-md-3 text-left">
-                <span class="panel-title">Types</span>
-            </div>
-            <div class="col-md-2 text-center">
-                <span class="panel-title">Total Premiums</span>
-            </div>
-            <div class="col-md-2 text-center">
-                <span class="panel-title">Employee Premiums</span>
-            </div>
-        </div>
-        <div class="panel-body">
-            <div class="well" ng-repeat="benefit in benefitArray.benefitList">
-                <div class="col-md-5 text-left">
-                    {{benefit.name}}
-                </div>
-                <div class="col-md-7 text-left">
-                    <ul class="list-group">
-                        <li class="list-group-item" ng-repeat="option in benefit.options">
-                            <div class="col-md-6">{{option.optionType}}</div>
-                            <div class="col-md-3">${{option.totalCost}}</div>
-                            <div class="col-md-3">${{option.employeeCost}}</div>
-                            <div style="clear:both"></div>
-                        </li>
-                    </ul>
-                </div>
-                <div style="clear:both"></div>
-            </div>
-        </div>
-    </div>
-    <div class="flow-button-container">
-        <div class="pull-right col-xs-12 col-sm-auto">
-            <a href="javascript:void(0);" ng-click="backtoDashboard()" class="btn btn-primary btn-labeled">
-                Back
-            </a>
-        </div>
-    </div>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/clients">Broker Dashboard</a>
+    <span>View Benefits</span>
 </div>
+
+<div class="content-header">
+    <h1>{{client.name}} Benefits</h1>
+    <span class="general-info">Total <b>{{benefitCount}}</b> benefits</span>
+    <div class="cta"><a href="#/broker/add_benefit/{{clientId}}" class="btn green">Add new benefit</a></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+
+    <div class="table-responsive table-holder" ng-repeat="benefitArray in companyBenefitsArray">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>{{benefitArray.type}}</span></th>
+                    <th width="250"><span>Types</span></th>
+                    <th width="180"><span>Total Premiums</span></th>
+                    <th width="180"><span>Employee Premiums</span></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr ng-repeat="benefit in benefitArray.benefitList">
+                    <td style="vertical-align: top;">{{benefit.name}}</td>
+                    <td colspan="3" style="padding: 0;">
+                        <table class="table">
+                            <tr ng-repeat="option in benefit.options">
+                                <td width="250">{{option.optionType}}</td>
+                                <td width="180">${{option.totalCost}}</td>
+                                <td width="180">${{option.employeeCost}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+</div><!-- / .content-body -->
+

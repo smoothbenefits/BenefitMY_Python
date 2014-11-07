@@ -1,63 +1,40 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li><a ng-href="#/admin">Employer Dashboard</a></li>
-    <li class="active"><a href="javascript:void(0);">View Employees</a></li>
-</ul>
-<div class="page-header">
-    <div class="col-xs-12 col-sm-6">
-        <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12 col-sm-6 text-center text-left-sm">
-            <i class="fa fa-dashboard page-header-icon"></i>View Employee
-        </h1>
-    </div>
-    <div class="col-xs-12 col-sm-6">
-        <div class="row">
-            <hr class="visible-xs no-grid-gutter-h">
-            <!-- "Create project" button, width=auto on desktops -->
-            <div class="pull-right col-xs-12 col-sm-auto">
-                <a ng-click="addLink('employee')" class="btn btn-primary btn-labeled" style="width: 100%;">
-                    <span class="btn-label icon fa fa-plus"></span>Add Employee
-                </a>
-            </div>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/admin">Employer Dashboard</a>
+    <span>View Employee</span>
+</div>
 
-            <!-- Margin -->
-            <div class="visible-xs clearfix form-group-margin"></div>
-        </div>
+<div class="content-header">
+    <h1>View Employee</h1>
+    <span class="general-info">You have total <b>{{employeeCount}}</b> employees</span>
+    <div class="cta"><span class="btn green" ng-click="addLink('employee')">Add Employee</span></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="table-responsive table-holder">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Name</span></th>
+                    <th><span>Actions</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="employees.length==0">
+                    <td colspan="2" class="no-related-users">
+                       There is no employee entered for this company
+                   </td>
+                </tr>
+                <tr ng-repeat="employee in employees">
+                    <td>{{employee.user.first_name}} {{employee.user.last_name}}</td>
+                    <td>
+                        <span class="btn inline" ng-click="documentLink(employee.user.id, 1)">Offer Letter</span>
+                        <span class="btn inline" ng-click="documentLink(employee.user.id, 2)">Employee Agreement</span>
+                        <span class="btn inline" ng-click="addClient()">Send Invitation</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="visible-xs clearfix form-group-margin"></div>
-</div>
-<div class="content-container">
-    <div class="col-xs-12 col-sm-12" ng-if="employees.length==0">
-        <div class="no-related-users">
-           There is no employee entered for this company
-        </div>
-    </div>
-    <div class="row employer-user-row" ng-repeat="employee in employees">
-        <div class="col-xs-12 col-sm-3 employer-user-label">
-            {{employee.user.first_name}} {{employee.user.last_name}}
-        </div>
-        <div class="col-xs-12 col-sm-3">
-            <a ng-click="documentLink(employee.user.id, 'Offer Letter')" class="btn btn-info btn-labeled">
-                Offer Letter
-            </a>
-        </div>
-        <div class="col-xs-12 col-sm-3">
-            <a ng-click="documentLink(employee.user.id, 'Employee Agreement')" class="btn btn-info btn-labeled">
-                Employee Agreement
-            </a>
-        </div>
-        <div class="col-xs-12 col-sm-3">
-            <a ng-click="addClient()" class="btn btn-info btn-labeled">
-                Send Invitation
-            </a>
-        </div>
-    </div>
-    <div class="flow-button-container">
-        <div class="pull-right col-xs-12 col-sm-auto">
-            <a ng-click="gotoEmployerDashboardLink()" class="btn btn-primary btn-labeled" style="width: 100%;">
-                Back
-            </a>
-        </div>
-    </div>
-</div>
+    <div class="back"><a ng-click="gotoEmployerDashboardLink()">&laquo; Back</a></div>
+</div><!-- / .content-body -->

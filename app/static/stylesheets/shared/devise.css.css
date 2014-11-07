@@ -1,0 +1,57 @@
+.devise-page {
+  height: 100vh;
+  background: url(/static/images/home/collaboration.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover; }
+  .devise-page:before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.9) 34%, rgba(255, 255, 255, 0.5) 100%);
+    /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0.9)), color-stop(34%, rgba(255, 255, 255, 0.9)), color-stop(100%, rgba(255, 255, 255, 0.5)));
+    /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.9) 34%, rgba(255, 255, 255, 0.5) 100%);
+    /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.9) 34%, rgba(255, 255, 255, 0.5) 100%);
+    /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.9) 34%, rgba(255, 255, 255, 0.5) 100%);
+    /* IE10+ */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.9) 34%, rgba(255, 255, 255, 0.5) 100%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ffffff', endColorstr='#80ffffff',GradientType=0 );
+    /* IE6-9 */ }
+  .devise-page .logo-row {
+    position: relative;
+    z-index: 2;
+    padding-bottom: 20px;
+    padding-top: 60px; }
+    .devise-page .logo-row a img {
+      display: block;
+      height: 100px; }
+  .devise-page .form-holder {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    background: #FFF;
+    border: 1px solid #E9E7E2;
+    padding: 40px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.15); }
+    .devise-page .form-holder h2 {
+      margin: 0 0 20px;
+      font-size: 21px; }
+    .devise-page .form-holder p {
+      margin: -8px 0 20px;
+      font-size: 13px; }
+    .devise-page .form-holder .meta {
+      text-align: center; }
+
+/*# sourceMappingURL=devise.css.css.map */

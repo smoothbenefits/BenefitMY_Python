@@ -1,55 +1,49 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li><a ng-href="#/employee">Employee Dashboard</a></li>
-    <li class="active"><a href="javascript:void(0);">Update Benefits</a></li>
-</ul>
-<!-- Employee Benefit Page -->
-<div class="col-md-1">
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/employee">Employee Dashboard</a>
+    <span>Update Benefits</span>
 </div>
-<div class="col-md-10">
-    <div class="panel">
-        <div class="panel-heading">
-            <span class="panel-title">Please use the form below to update your benefit.</span>
-        </div>
+
+<div class="content-header">
+    <h1>Modify Benefits</h1>
+    <span class="general-info">Please use the form below to update your benefit</span>
+    <div class="cta"><a ng-click="addMember()" class="btn green" >Add a family member</a></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="panel" ng-repeat="benefitTypePlan in availablePlans">
+        <div class="panel-head">{{benefitTypePlan.type}} Plan</div>
         <div class="panel-body">
-            <div ng-repeat="benefitTypePlan in availablePlans">
-                <div class="row form-group">
-                    <label class="col-sm-2 control-label"> {{benefitTypePlan.type}} Plan</label>
-                    <div class="col-sm-8">
-                        <select ng-model="benefitTypePlan.selected"
-                            ng-required="true"
-                            name="{{benefitTypePlan.type}}_benefit_plan"
-                            ng-options="plan.benefit.benefit_name + ' ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
-                            class="form-control"></select>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <label class="col-sm-2 col-md-offset-2 control-label"> Select Members: </label>
-                    <div class="col-sm-6 text-left">
-                        <p>
-                            <label class="checkbox-inline" ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList">
-                                <input type="checkbox" class="px" ng-model="member.selected" id="{{benefitTypePlan.type}}_family" ng-change="memberSelected(benefitTypePlan.selected, member)">
-                                <span class="lbl">{{member.full_name}}</span>
-                            </label>
-                        </p>
-                    </div>
+            <div class="select-box">
+                <select ng-model="benefitTypePlan.selected"
+                    ng-required="true"
+                    name="{{benefitTypePlan.type}}_benefit_plan"
+                    ng-options="plan.benefit.benefit_name + ' ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
+                    class="form-control"></select>
+            </div>
+            <div class="row">
+                <div class="col-sm-4"><div class="form-label">Select Members:</div></div>
+                <div class="col-sm-8">
+                    <span class="checkbox" ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList">
+                        <label>
+                            <input type="checkbox" class="px" ng-model="member.selected" id="{{benefitTypePlan.type}}_family" ng-change="memberSelected(benefitTypePlan.selected, member)">
+                            <span class="lbl">{{member.full_name}}</span>
+                        </label>
+                    </span>
                 </div>
             </div>
-           
-        </div>
-        <div class="panel-footer text-right">
-            <a ng-click="save()" class="btn btn-primary btn-flat btn-labeled">
-                <span class="btn-label icon fa fa-plus"></span>Save Selection
-            </a>
-            <a ng-click="addMember()" class="btn btn-primary btn-flat btn-labeled">
-                <span class="btn-label icon fa fa-plus"></span>Add a family member
-            </a>
-            <a href="javascript:history.back();" class="btn btn-primary btn-flat btn-labeled">
-                Cancel
-            </a>
         </div>
     </div>
-</div>
-<div class="col-md-1">
-</div>
+    <div class="form-holder">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="submit-box" style="max-width: 200px;">
+                    <a ng-click="save()" class="btn green">Save Selection</a>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="back"><a href="javascript:void(0);" onclick="history.back()">Cancel</a></div>
+            </div>
+        </div>
+    </div>
+</div><!-- / .content-body -->

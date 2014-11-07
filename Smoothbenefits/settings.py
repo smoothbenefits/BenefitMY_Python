@@ -39,9 +39,17 @@ INSTALLED_APPS = (
     'rest_framework',
     'pipeline',
     'app',
+    'emailusernames',
 )
 
+
+AUTHENTICATION_BACKENDS = (
+    'emailusernames.backends.EmailAuthBackend',
+)
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 MIDDLEWARE_CLASSES = (
+    'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -113,12 +121,17 @@ PIPELINE_CSS = {
             'stylesheets/application.css.css',
             'stylesheets/app.css',
             'stylesheets/bootstrap.css.css',
+            'stylesheets/bootstrap.min.css'
             'stylesheets/framework_and_overrides.css.css',
             'stylesheets/front_end.css.css',
             'stylesheets/home.css',
             'stylesheets/layout.css',
             'stylesheets/pages.css',
             'stylesheets/users.css.css',
+            'stylesheets/front_end.css.css',
+            'stylesheets/application.css',
+            'stylesheets/shared/devise.css.css',
+            'stylesheets/shared/dashboard.css.css',
         ),
         'output_filename': 'stylesheets/home.min.css',
     },
@@ -136,6 +149,16 @@ PIPELINE_CSS = {
             'stylesheets/rtl.css',
             'stylesheets/themes.css',
             'stylesheets/widgets.css',
+            'stylesheets/application.css',
+            'stylesheets/front_end.css.css',
+            'stylesheets/shared/devise.css.css',
+            'stylesheets/shared/dashboard.css.css',
+            'stylesheets/shared/variables.css.css',
+            'stylesheets/shared/buttons.css.css',
+            'stylesheets/shared/components.css.css',
+            'stylesheets/shared/forms.css.css',
+            'stylesheets/shared/global.css.css',
+            'fonts/flaticon/flaticon.css',
         ),
         'output_filename': 'stylesheets/dashboard.min.css',
     }
@@ -146,17 +169,13 @@ PIPELINE_JS = {
         'source_filenames':(
             'js/home.js',
             'js/api.js.js',
-            'js/angular-multi-select.js',
-            'js/application.js',
-            'js/bootstrap-editable-demo.js',
-            'js/bootstrap.js',
-            'js/demo-mock.js',
-            'js/front_end.js.js',
+            'js/bootstrap.min.js',
+            'js/front_end/users.js.js',
             'js/google_analytics.js.js',
             'js/ie.js',
-            'js/jquery-select2.js',
-            'js/jquery-ui-extras.js',
-            'js/jquery.mockjax.js',
+            'js/jquery.scrollspy.js',
+            'js/services/services.js',
+            'js/pixel-admin.min.js',
         ),
         'output_filename':'js/benefitmy_home.js'
     },
@@ -183,6 +202,7 @@ PIPELINE_JS = {
             'js/directives/ScrollTo.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
+            'js/jquery.scrollspy.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }

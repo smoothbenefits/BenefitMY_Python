@@ -16,7 +16,6 @@ urlpatterns = patterns('',
     url(r'^logout$', login_view.user_logout, name='user_logout'),
     url(r'^', include('app.urls')),
 )
-
 urlpatterns += patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
 )
