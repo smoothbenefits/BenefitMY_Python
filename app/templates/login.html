@@ -1,22 +1,47 @@
 <!DOCTYPE html>
-<html>
+
+<!--[if IE 8]>         <html class="ie8"> <![endif]-->
+<!--[if IE 9]>         <html class="ie9 gt-ie8"> <![endif]-->
+<!--[if gt IE 9]><!-->
+{% load compressed %}
+<html class="gt-ie8 gt-ie9 not-ie"> <!--<![endif]-->
     <head>
-        <!-- Is anyone getting tired of repeatedly entering the header over and over?? -->
-        <title>Smooth Benefit</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>BenefitMy</title>
+        <!-- Open Sans font from Google CDN -->
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
+        {% compressed_css "home" %}  
+        {% compressed_js "home" %}    
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"> </script>
+        <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.min.js"> </script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js" > </script>
     </head>
 
     <body>
-        <h1>Login to BenefitMy</h1>
 
-        <form id="login_form" method="post" action="/login/">
-            {% csrf_token %}
-            Username: <input type="text" name="username" value="" size="50" />
-            <br />
-            Password: <input type="password" name="password" value="" size="50" />
-            <br />
+        <script type="text/javascript">var init = [];</script>
 
-            <input type="submit" value="submit" />
-        </form>
-
+        <div id="content-wrapper">
+           <div class="devise-page">
+        <div class="logo-row"><a href="/"><img src="/static/images/logo-black.png"></a></div>
+        <div class="form-holder">
+            <h2>Sign In</h2>
+<!--                   <p id="flash_alert">Your session expired. Please sign in again to continue.</p>
+ -->            <form accept-charset="UTF-8" action="/users/sign_in" class="new_user" id="new_user" method="post"><div style="display:none"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="qzxTGnDEOQj4i0pBVib+fdDBwNTAw9ixSRMCkHXDDN4=" /></div>
+                <div class="form-label">Email Address</div>
+                <div class="textbox">
+                    <input autofocus="autofocus" id="user_email" name="user[email]" type="email" />
+                </div>
+                <div class="form-label">Password</div>
+                <div class="textbox">
+                    <input autocomplete="off" id="user_password" name="user[password]" type="password" />
+                </div>
+                <div class="submit-box"><input type="submit" class="btn green" value="Sign In" id="SignInButton" /></div>
+                <div class="meta">
+                    <a href="javascript:history.back();">Cancel</a>
+                </div>
+            </form>    
+        </div>
     </body>
 </html>
