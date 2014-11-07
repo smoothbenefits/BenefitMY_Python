@@ -53,9 +53,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/document_types/$' % PREFIX, DocumentTypeView.as_view()),
 
 
-    url(r'^%s/users/$' % PREFIX, UsersView.as_view()),
+    url(r'^%s/users/?$' % PREFIX, UsersView.as_view()),
     url(r'^%s/users/current/$' % PREFIX, CurrentUserView.as_view()),
-    url(r'^%s/users/(?P<pk>[0-9]+)/$' % PREFIX, UserView.as_view()),
+    url(r'^%s/users/(?P<pk>[0-9]+)/?$' % PREFIX, UserView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/family/$' % PREFIX, UserFamilyView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/documents/$' % PREFIX, UserDocumentView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/benefits/$' % PREFIX,
