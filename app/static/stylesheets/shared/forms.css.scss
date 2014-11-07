@@ -20,14 +20,89 @@
     }
 }
 
-div.textbox, div.submit-box {
-    margin-bottom: 6px;
+.checkbox {
+    font-size: $size-sm;
+    padding: $gutter-sm 0 $gutter-sm $gutter;
+    input, label, a {
+        margin: 0;
+        padding: 0;
+        vertical-align: top;
+        line-height: 1em;
+    }
+}
+
+span.checkbox {
+    display: inline-block;
+    padding: 0 $gutter $gutter-xs $gutter;
+    margin: $gutter-sm 0 0;
+    min-width: 150px;
+    input, span {
+        vertical-align: top;
+        line-height: 1em;
+    }
+}
+
+.select-box {
+    select {
+        width: 100%;
+    }
+}
+
+.datebox {
+    input {
+        border: 1px solid #CCC;
+        border: 1px solid rgba(0,0,0,0.35);
+        padding: 2px 6px;
+        width: 100%;
+        &:focus {
+            outline: none;
+            border: 1px solid $blue;
+        }
+    }
+}
+
+div.textbox, div.submit-box, div.checkbox, div.select-box, div.datebox {
+    margin-bottom: $gutter-sm;
+    position: relative;
+}
+
+.form-error {
+    position: absolute;
+    color: red;
+    margin-left: 103%;
+    min-width: 320px;
+    top: 10px;
+}
+
+.form-label {
+    font-size: $size-xs;
+    text-transform: uppercase;
+    color: $gray-font;
+    font-weight: 500;
+    padding: $gutter-xs 0;
+}
+
+div.back {
+    padding: $gutter-sm 0;
 }
 
 .btn {
     padding: 10px 6px;
     width: 100%;
     text-align: center;
+    &.inline {
+        display: inline-block;
+        padding: 5px 10px;
+        border: 1px solid #D9D8D8;
+        border-radius: 2px;
+        width: auto;
+        background: #FFF;
+        color: $black-font;
+        &:hover {
+            border-color: $green;
+            color: $green;
+        }
+    }
     &.green {
         background: #6EBE4B;
         color: #FFF;

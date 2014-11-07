@@ -1,86 +1,67 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li><a ng-href="#/admin">Employer Dashboard</a></li>
-    <li class="active"><a href="javascript:void(0);">Add Employee</a></li>
-</ul>
-<div class="page-header">
-    <div class="row">
-        <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12 col-sm-4 text-center text-left-sm">
-            <i class="fa fa-dashboard page-header-icon"></i>Add Employee
-        </h1>
-    </div>
-    <div class="row">
-    </div>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/admin">Employer Dashboard</a>
+    <span>Add Employee</span>
 </div>
-<div class="col-md-2">
-</div>
-<div class="col-md-8">
-    <form name="form" class="panel">
-        <div class="panel-heading">
-            <span class="panel-title">Please enter your employee basic information below</span>
-        </div>
-        <div class="panel-body">
-            <div class="row form-group">
-                <div class="col-md-12 form-inline-error" ng-show="form.employee_first_name.$dirty && form.employee_first_name.$invalid">Invalid:
-                  <span ng-show="form.employee_first_name.$error.required">Employee name field is required</span>
-                </div>
-                <label class="col-sm-4 control-label">First Name</label>
-                <div class="col-sm-8">
-                    <input type="text"
-                        name="employee_first_name"
-                        ng-model="addUser.first_name"
-                        ng-required="true"
-                        class="form-control">
+
+
+<div class="content-header">
+    <h1>Add Employee</h1>
+    <span class="general-info">Please enter your employee basic information below</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="form-holder">
+        <form name="form">
+
+            <div class="form-label">First Name*</div>
+            <div class="textbox">
+                <input type="text"
+                    name="employee_firstname"
+                    ng-model="addUser.first_name"
+                    ng-required="true">
+                <div class="form-error" ng-show="form.employee_firstname.$dirty && form.employee_firstname.$invalid">
+                  <span ng-show="form.employee_firstname.$error.required">Employee First name field is required</span>
                 </div>
             </div>
-            <div class="row form-group">
-                <div class="col-md-12 form-inline-error" ng-show="form.employee_last_name.$dirty && form.employee_last_name.$invalid">Invalid:
-                  <span ng-show="form.employee_last_name.$error.required">Employee name field is required</span>
-                </div>
-                <label class="col-sm-4 control-label">Last Name</label>
-                <div class="col-sm-8">
-                    <input type="text"
-                        name="employee_last_name"
-                        ng-model="addUser.last_name"
-                        ng-required="true"
-                        class="form-control">
+            <div class="form-label">Last Name*</div>
+            <div class="textbox">
+                <input type="text"
+                    name="employee_lastname"
+                    ng-model="addUser.last_name"
+                    ng-required="true">
+                <div class="form-error" ng-show="form.employee_lastname.$dirty && form.employee_lastname.$invalid">
+                  <span ng-show="form.employee_lastname.$error.required">Employee Last name field is required</span>
                 </div>
             </div>
-            <div class="row form-group">
-                <div class="col-md-12 form-inline-error" ng-show="form.employee_email.$dirty && form.employee_email.$invalid">Invalid:
+
+            <div class="form-label">Email*</div>
+            <div class="textbox">
+                <input type="email"
+                    name="employee_email"
+                    ng-model="addUser.email"
+                    ng-required="true">
+                <div class="form-error" ng-show="form.employee_email.$dirty && form.employee_email.$invalid">
                   <span ng-show="form.employee_email.$error.required">Employee email field is required</span>
                   <span ng-show="form.employee_email.$error.email">Not a valid email address</span>
                 </div>
-                <label class="col-sm-4 control-label">Email</label>
-                <div class="col-sm-8">
-                    <input type="email"
-                        name="employee_email"
-                        ng-model="addUser.email"
-                        ng-required="true"
-                        class="form-control">
-                </div>
             </div>
-            <div class="form-checkmark-field">
-                <div class="col-sm-1">
+
+            <div class="checkbox">
+                <label>
                     <input type="checkbox"
                         name="employee_send_email"
                         ng-model="addUser.send_email"
                         ng-require="false">
-                </div>
-                <label class="col-sm-11 control-label">Send email to Employee to sign up</label>
+                    Send email to Employee to sign up
+                </label>
             </div>
-        </div>
-        <div class="panel-footer text-right">
-            <button ng-click="createUser('employee')" class="btn btn-primary btn-labeled" ng-disabled="form.$invalid">
-                <span class="btn-label icon fa fa-plus"></span>Add Employee
-            </button>
-            <a href="javascript:void(0);" onclick="history.back()" class="btn btn-primary btn-labeled">
-                Back
-            </a>
-        </div>
-    </form>
-</div>
-<div class="col-md-2">
-</div>
+
+            <div class="submit-box">
+                <button ng-click="createUser('employee')" class="btn green" ng-disabled="form.$invalid">Add Employee</button>
+            </div>
+
+        </form>
+    </div><!-- / .form-holder -->
+    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+</div><!-- / .content-body -->

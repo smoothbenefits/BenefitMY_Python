@@ -1,0 +1,478 @@
+@import "variables.css.scss";
+
+#dashboard-wrapper {
+    #header {
+        background: $black;
+        height: $header-height;
+        padding: $gutter-xs $gutter;
+        color: #FFF;
+        position: fixed;
+        z-index: 5;
+        top: 0;
+        left: 0;
+        right: 0;
+        #logo-link {
+            height: 43px;
+            width: 132px;
+        }
+        .drop-holder {
+            height: 43px;
+            padding: $gutter-sm;
+        }
+    }
+    #sidebar {
+        width: $sidebar-width;
+        height: 100vh;
+        background: $light-gray;
+        position: fixed;
+        z-index: 4;
+        top: $header-height;
+        left: 0;
+        bottom: 0;
+        border-right: $border;
+        .nav-list {
+            li {
+                margin: 0 0 -1px;
+                .primary-nav {
+                    height: $tab-height;
+                    border-bottom: $border;
+                    border-top: $border;
+                    line-height: $tab-height;
+                    padding: 0 $gutter;
+                    font-weight: 500;
+                    cursor: pointer;
+                    position: relative;
+                    button {
+                        background: none;
+                        border: none;
+                        display: block;
+                        margin: 0;
+                        width: 100%;
+                        padding: 0;
+                        text-align: left;
+                        outline: none;
+                    }
+                    &:hover {
+                        background: #FFF;
+                    }
+                    &:after {
+                        content: "";
+                        position: absolute;
+                        right: $gutter;
+                        top: 50%;
+                        border: 4px solid transparent;
+                        border-top: 4px solid $black;
+                        opacity: 0.65;
+                    }
+                    &.active:after {
+                        border: 4px solid transparent;
+                        border-bottom: 4px solid $black;
+                        margin-top: -4px;
+                    }
+                    .flaticon {
+                        margin-right: $gutter;
+                        &:before {
+                            margin: 0;
+                        }
+                    }
+                }
+                .sub-nav {
+                    background: rgba(0,0,0,0.02);
+                    a {
+                        display: block;
+                        padding: $gutter-sm $gutter $gutter-sm 60px;
+                        font-size: $size-xs;
+                        color: #58585B;
+                        font-weight: 500;
+                        &:hover {
+                            background: #FFF;
+                            text-decoration: none;
+                        }
+                        &.active {
+                            background: $light-green;
+                            color: #FFF;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    #side-footer {
+        position: absolute;
+        bottom: 50px;
+        left: 0;
+        right: 0;
+        z-index: 3;
+        font-size: $size-xs;
+        padding: $gutter;
+        .footer-nav {
+            color: #E5E8EA;
+        }
+        a {
+            color: $blue;
+        }
+        .copyright {
+            color: #BBBDC0;
+            padding: $gutter-sm 0;
+        }
+    }
+    #content-wrapper {
+        padding-top: $header-height;
+        padding-left: $sidebar-width;
+        position: relative;
+        z-index: 1;
+        .breadcrumb {
+            height: $tab-height;
+            padding: $gutter-sm $gutter;
+            line-height: 30px;
+            font-size: $size-sm;
+            background: $light-blue;
+            border-bottom: $border;
+            border-radius: 0;
+            margin: 0;
+            a {
+                color: $blue;
+                &:after {
+                    content: "»";
+                    padding: 0 $gutter-sm;
+                    color: $black-font;
+                }
+            }
+            span {
+                color: $black-font;
+            }
+        }
+        .content-header {
+            padding: $gutter;
+            position: relative;
+            min-height: 85px;
+            .cta {
+                position: absolute;
+                top: $gutter;
+                right: $gutter;
+                width: 200px;
+            }
+            h1 {
+                color: $black-font;
+                margin: 0 0 $gutter-xs;
+                font-size: $size-md;
+            }
+            .general-info {
+                color: $gray-font;
+                font-size: $size-xs;
+            }
+            .divider {
+                color: #CCC;
+                margin: 0 $gutter-sm;
+            }
+        }
+        .content-body {
+            padding: $gutter;
+            padding-top: 0;
+            h2 {
+                font-size: $size;
+                color: $black-font;
+                margin: $gutter 0 $gutter-sm;
+            }
+            &.table-view {
+                padding: 0;
+            }
+            &:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+            h6 {
+                clear: both;
+                color: $gray-font;
+                text-transform: uppercase;
+                font-weight: 700;
+                font-size: $size-xs;
+                margin-bottom: $gutter-sm;
+            }
+            .dashboard-card {
+                float: left;
+                min-width: 300px;
+                width: 25%;
+                padding-right: $gutter;
+                margin-bottom: $gutter;
+                .img-col {
+                    padding-top: 16px;
+                    span {
+                        font-size: 40px;
+                        color: #999;
+                    }
+                }
+                .info-row {
+                    border: $border;
+                    border-bottom: none;
+                    &:after {
+                        content: "";
+                        display: table;
+                        clear: both;
+                    }
+                }
+                .action-row {
+                    background: #F7F7F7;
+                    border: $border;
+                    &:after {
+                        content: "";
+                        display: table;
+                        clear: both;
+                    }
+                    > div {
+                        border-right: $border;
+                        &:last-child {
+                            border-right: none;
+                        }
+                    }
+                    a {
+                        display: block;
+                        text-align: center;
+                        font-size: $size-sm;
+                        padding: $gutter-xs;
+                    }
+                }
+                .info-col {
+                    padding: $gutter;
+                    padding-right: $gutter-sm;
+                    h3 {
+                        margin: 0 0 $gutter-xs;
+                        font-size: $size-lg;
+                    }
+                    p {
+                        font-size: 10px;
+                    }
+                }
+            }
+            .form-holder {
+                width: 100%;
+                max-width: 520px;
+                min-width: 320px;
+                .notes {
+                    p, ul {
+                        font-size: $size-xs;
+                        margin-bottom: $gutter-xs;
+                        li {
+                            margin-bottom: $gutter-xs;
+                        }
+                    }
+                    ul {
+                        margin-bottom: $gutter;
+                    }
+                }
+                .response {
+                    color: $green;
+                    font-size: $size-xs;
+                    margin: 0 0 $gutter;
+                }
+                .row {
+                    margin-left: -5px;
+                    margin-right: -5px;
+                    .col-sm-6 {
+                        padding: 0 5px;
+                    }
+                }
+            }
+            .table-holder {
+                margin-left: -20px;
+                margin-right: -20px;
+            }
+            .table {
+                font-size: $size-sm;
+                color: $black-font;
+                thead {
+                    background: $light-blue;
+                    tr {
+                        th {
+                            padding: $gutter-xs $gutter 0 0;
+                            border-top: $border-blue;
+                            border-bottom: $border-blue;
+                            font-weight: 600;
+                            span {
+                                display: inline-block;
+                                padding-left: $gutter;
+                                padding-top: $gutter-xs;
+                                padding-bottom: $gutter-sm;
+                                border-left: $border-blue;
+                            }
+                            &:first-child {
+                                span {
+                                    border-left: none;
+                                }
+                            }
+                        }
+                    }
+                }
+                tbody {
+                    tr {
+                        td {
+                            padding: $gutter-sm $gutter;
+                            vertical-align: middle;
+                            border-bottom: $border-blue;
+                        }
+                    }
+                    tr:nth-child(odd) > td {
+                        background: #FFF;
+                        table tr:nth-child(even) > td {
+                            background: #F9FCFD;
+                        }
+                        table tr:nth-child(odd) > td {
+                            background: #FFF;
+                        }
+                    }
+                    tr:nth-child(even) > td {
+                        background: #F9FCFD;
+                        table tr:nth-child(odd) > td {
+                            background: #F9FCFD;
+                        }
+                        table tr:nth-child(even) > td {
+                            background: #FFF;
+                        }
+                    }
+                }
+                table {
+                    margin: 0;
+                    tr:first-child td {
+                        border-top: none;
+                    }
+                    tr:last-child td {
+                        border-bottom: none;
+                    }
+                    tr td:first-child {
+                        border-left: $border-blue;
+                    }
+                    tr td {
+                        vertical-align: top;
+                    }
+                    table {
+                        tr td {
+                            border-bottom: $border-blue !important;
+                        }
+                        tr:last-child td {
+                            border-bottom: none !important;
+                        }
+                    }
+                }
+            } //table
+            .list-group {
+                .list-group-item {
+                    border-radius: 0;
+                    padding: $gutter;
+                    font-size: $size-sm;
+                    .control-label {
+                        font-weight: 600;
+                        font-size: $size;
+                        margin-bottom: $gutter-sm;
+                    }
+                    .col {
+                        margin-bottom: $gutter-sm;
+                    }
+                }
+            } //list-group
+        } //content-body
+    } //content-wrapper
+}
+
+.panel {
+    margin: 0 0 $gutter;
+    border: $border;
+    border-radius: 0;
+    .panel-head {
+        background: #F7F7F7;
+        padding: $gutter-sm;
+        font-size: $size-sm;
+        border-bottom: $border;
+    }
+    .panel-body {
+        border: none;
+        border-radius: 0;
+    }
+    .list-group {
+        border: none;
+        margin: 0;
+        border-radius: 0;
+        a {
+            border-radius: 0;
+            border: none;
+            border-top: $border-blue;
+            padding: $gutter;
+            &.active {
+                background: $light-green;
+            }
+            h4 {
+                font-size: $size-sm;
+            }
+            p {
+                font-size: $size-xs;
+            }
+        }
+    }
+} //panel
+
+.onboarding-page {
+  #sidebar, .breadcrumb {
+    display: none;
+  }
+  #content-wrapper {
+    padding-left: 0 !important;
+    .list-group {
+        border: none;
+        margin: 0 0 $gutter;
+        border-radius: 0;
+        counter-reset: my-counter;
+        &:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        a {
+            border-radius: 0;
+            border: none;
+            width: 100%;
+            padding-left: 65px !important;
+            position: relative;
+            &:before {
+                content: counter(my-counter, decimal);
+                counter-increment: my-counter;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                font-size: 20px;
+                text-align: center;
+                width: 50px;
+                height: 50px;
+                margin-top: -25px;
+                line-height: 42px;
+                border-radius: 50%;
+                border: 4px solid #eee;
+                color: #999;
+                font-weight: bold;
+            }
+            &.active {
+                background: #FFF;
+                color: $black-font;
+                p {
+                    color: $black-font;
+                }
+                &:before {
+                    border-color: $light-green;
+                    color: $light-green;
+                }
+            }
+            &:hover {
+                background: #FFF;
+                &:before {
+                    color: $light-green;
+                }
+            }
+            h4 {
+                font-size: $size-sm;
+            }
+            p {
+                font-size: $size-xs;
+            }
+        }
+    }
+  }
+}

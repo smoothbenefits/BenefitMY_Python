@@ -1,51 +1,36 @@
-<ul class="breadcrumb breadcrumb-page">
-    <div class="breadcrumb-label text-light-gray">You are here: </div>
-    <li><a href="/">Home</a></li>
-    <li><a ng-href="#/admin">Employer Dashboard</a></li>
-    <li class="active"><a href="javascript:void(0);">View Broker</a></li>
-</ul>
-<div class="page-header">
-    <div class="col-xs-12 col-sm-6">
-        <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12 col-sm-6 text-center text-left-sm">
-            <i class="fa fa-dashboard page-header-icon"></i>View Brokers
-        </h1>
-    </div>
-    <div class="col-xs-12 col-sm-6">
-        <div class="row">
-            <hr class="visible-xs no-grid-gutter-h">
-            <!-- "Create project" button, width=auto on desktops -->
-            <div class="pull-right col-xs-12 col-sm-auto">
-                <a ng-click="addLink('broker')" class="btn btn-primary btn-labeled" style="width: 100%;">
-                    <span class="btn-label icon fa fa-plus"></span>Add Broker
-                </a>
-            </div>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/admin">Employer Dashboard</a>
+    <span>View Broker</span>
+</div>
 
-            <!-- Margin -->
-            <div class="visible-xs clearfix form-group-margin"></div>
-        </div>
+<div class="content-header">
+    <h1>View Brokers</h1>
+    <span class="general-info">You have total <b>{{brokerCount}}</b> brokers</span>
+    <div class="cta"><span class="btn green" ng-click="addLink('broker')">Add Broker</span></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="table-responsive table-holder">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Name</span></th>
+                    <th><span>Actions</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="brokers.length==0">
+                    <td colspan="2" class="no-related-users">
+                       There is no broker associated for this company
+                   </td>
+                </tr>
+                <tr ng-repeat="broker in brokers">
+                    <td>{{broker.user.full_name}}</td>
+                    <td><a href="mailto:{{broker.user.email}}">{{broker.user.email}}</a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="visible-xs clearfix form-group-margin"></div>
-</div>
-<div class="content-container">
-    <div class="col-xs-12 col-sm-12" ng-if="brokers.length==0">
-        <div class="no-related-users">
-           There is no broker associated for this company
-        </div>
-    </div>
-    <div class="row employer-user-row" ng-repeat="broker in brokers">
-        <div class="col-xs-12 col-sm-6 employer-user-label">
-            {{broker.user.first_name}} {{broker.user.last_name}}
-        </div>
-        <div class="col-xs-12 col-sm-6 employer-user-label">
-            {{broker.user.email}}
-        </div>
-    </div>
-    <div class="flow-button-container">
-        <div class="pull-right col-xs-12 col-sm-auto">
-            <a ng-click="gotoEmployerDashboardLink()" class="btn btn-primary btn-labeled" style="width: 100%;">
-                Back
-            </a>
-        </div>
-    </div>
-</div>
+    <div class="back"><a ng-click="gotoEmployerDashboardLink()">&laquo; Back</a></div>
+</div><!-- / .content-body -->

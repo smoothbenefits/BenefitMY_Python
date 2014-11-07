@@ -46,14 +46,33 @@ var findViewController = brokersControllers.controller('findViewController', ['$
 ]);
 
 
-var userController = brokersControllers.controller('userController', ['$scope', '$http', 'currentUser','users', 'userLogOut',
-	function userController($scope, $http, currentUser, users, userLogOut) {
-    currentUser.get()
-      .$promise.then(function(response)
-           {
-              $scope.curUser = response.user;
-           }
-      );
+var userController = brokersControllers.controller('userController', ['$scope', '$http', 'currentUser','users', 'userLogOut', 'clientListRepository','$location',
+  function userController($scope, $http, currentUser, users, userLogOut, clientListRepository, $location) {
+    $scope.roleArray = [];
+    var currentRoleList = [];
+    var userPromise = currentUser.get()
+        .$promise.then(function(response)
+             {
+                $scope.curUser = response.user;
+                return $scope.curUser;
+             }
+        );
+    $scope.isRoleActive = function(checkRole){
+      if(currentRoleList.length <=0){
+        userPromise.then(function(user){
+          clientListRepository.get({userId:user.id})
+            .$promise.then(function(response){
+              currentRoleList = response.company_roles;
+            });
+        });
+        return false;
+      }
+      else
+      {
+        var roleFind = _.findWhere(currentRoleList, {'company_user_type':checkRole});
+        return !_.isUndefined(roleFind);
+      }
+    };
     $scope.logout = function ()
     {
         userLogOut.delete()
@@ -65,7 +84,57 @@ var userController = brokersControllers.controller('userController', ['$scope', 
           {
             window.location = '/';
           });
-    }
+    };
+    $scope.getCurRoleFromPath = function(){
+      var curPath = $location.path();
+      if(curPath[0] === '/'){
+        curPath = curPath.substring(1);
+      }
+      var pathArray = curPath.split('/');
+      if(pathArray.length > 0)
+      {
+        return pathArray[0];
+      }
+      else
+      {
+        return undefined;
+      }
+    };
+    var getIdByRole = function(role){
+      if(role === 'employee'){
+        return $scope.curUser.id;
+      }
+      else{
+        var curCompanyRole = _.findWhere(currentRoleList, {'company_user_type':role});
+        return curCompanyRole.company.id;
+      }
+    };
+    $scope.getActiveRoleClass = function(checkPath){
+      var curPath = $location.path();
+
+      if(curPath === checkPath)
+      {
+        return "active";
+      }
+      else
+      {
+        return "inactive";
+      }
+    };
+    $scope.goToFunctionalView = function(viewLink, parameter){
+      var curRole = $scope.getCurRoleFromPath();
+      if(curRole)
+      {
+        var id = getIdByRole(curRole);
+        if(parameter)
+        {
+          $location.path(viewLink+id).search(parameter);
+        }
+        else{
+          $location.path(viewLink + id).search('');
+        }
+      }
+    };
 }]);
 
 var clientsController = brokersControllers.controller('clientsController', ['$scope', '$location', 'clientListRepository', 'currentUser',
@@ -73,7 +142,7 @@ var clientsController = brokersControllers.controller('clientsController', ['$sc
 
     $scope.addClient = function()
     {
-      $location.path('/add_client');
+      $location.path('/broker/add_client');
     }
 
     var getClientList = function(theUser)
@@ -179,7 +248,7 @@ var addBenefitController = brokersControllers.controller('addBenefitController',
       var request = {company: clientId, benefit: apiBenefit};
 
       addBenefitRepository.save(request, function(){
-        $location.path('/benefits/' + clientId);
+        $location.path('/broker/benefits/' + clientId);
       }, function(){
         $scope.saveSucceeded = false;
       });
@@ -198,7 +267,7 @@ var addBenefitController = brokersControllers.controller('addBenefitController',
     }
 
     $scope.viewBenefits = function(){
-      $location.path('/benefits/'+clientId);
+      $location.path('/broker/benefits/'+clientId);
     }
   }])
 

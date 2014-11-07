@@ -1,3 +1,9 @@
+#content-wrapper
+{
+    width:90%;
+    margin-left:40px;
+}
+
 .main-content
 {
     margin-top: 20px;

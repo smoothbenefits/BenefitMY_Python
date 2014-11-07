@@ -3,8 +3,35 @@
 #hero-section {
     text-align: right;
     height: 100%;
+    min-height: 700px;
     position: relative;
     background: #f0f0f0;
+    overflow: hidden;
+    background: url(/static/images/home/collaboration.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    .bg-radiant {
+        position: absolute;
+        z-index: 2;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 34%, rgba(255,255,255,0.8) 72%, rgba(255,255,255,0.5) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(34%,rgba(255,255,255,0.6)), color-stop(72%,rgba(255,255,255,0.8)), color-stop(100%,rgba(255,255,255,0.5))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 34%,rgba(255,255,255,0.8) 72%,rgba(255,255,255,0.5) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 34%,rgba(255,255,255,0.8) 72%,rgba(255,255,255,0.5) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 34%,rgba(255,255,255,0.8) 72%,rgba(255,255,255,0.5) 100%); /* IE10+ */
+        background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 34%,rgba(255,255,255,0.8) 72%,rgba(255,255,255,0.5) 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#80ffffff',GradientType=1 ); /* IE6-9 */
+        @media (max-width: 767px) {
+            left: 0;
+            background: #FFF;
+            opacity: 0.45;
+        }
+    }
     .signin-holder {
         width: 100%;
         padding: 0 10px;
@@ -32,15 +59,12 @@
 
 #intro-section {
     text-align: center;
-    padding: $gutter-lg 0;
+    padding: 100px 0 $gutter-lg;
     h1 {
         text-transform: capitalize;
         font-weight: 300;
         color: $green;
-    }
-    p {
-        max-width: 700px;
-        margin: 0 auto;
+        line-height: 1.4em;
     }
 }
 
@@ -78,13 +102,14 @@
                 counter-increment: my-counter;
                 background: #6EBE4B;
                 color: #FFF;
-                width: 32px;
-                height: 32px;
-                line-height: 32px;
+                width: 26px;
+                height: 26px;
+                line-height: 26px;
                 text-align: center;
                 display: inline-block;
                 border-radius: 50%;
-                margin-right: $gutter-sm;
+                margin-right: 15px;
+                font-size: $size-sm;
                 @media (max-width: 520px) {
                     display: none;
                 }
@@ -166,14 +191,78 @@
     text-align: center;
     #logo-link {
         display: inline-block;
-        img {
-            display: block;
+        width: 156px;
+        height: 52px;
+        background: url("/static/images/logo-white.png") no-repeat;
+        background-size: 100%;
+    }
+    .form-holder {
+        display: none;
+    }
+    .pull-right {
+    }
+    .drop-trigger {
+        border-radius: 2px;
+        padding: $gutter-sm;
+        display: inline-block;
+        cursor: pointer;
+        &:hover {
+            box-shadow: 0 0 0 1px #777;
+        }
+    }
+    .dropdown-menu {
+        padding-top: $gutter-sm;
+        width: auto;
+        border-radius: 0;
+        margin-right: $gutter;
+        a {
+            text-align: left;
+            padding-left: $gutter;
+            .flaticon {
+                margin-right: $gutter-sm;
+                &:before {
+                    margin: 0;
+                }
+            }
         }
     }
     @media (min-width: 768px) {
         text-align: left;
         #logo-link img {
             height: 52px;
+        }
+        &.fixed {
+            background: #FFF;
+            border-bottom: 1px solid #CCC;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: $gutter-xs $gutter-md;
+            #logo-link {
+                background-image: url("/static/images/logo-black.png");
+            }
+            @media (min-width: 767px) {
+                .form-holder {
+                    display: block;
+                    float: right;
+                    width: 400px;
+                    padding-top: 12px;
+                    .textbox, .submit-box {
+                        display: inline-block;
+                        vertical-align: top;
+                        input {
+                            padding: 5px 10px;
+                        }
+                    }
+                    .textbox {
+                        width: 150px;
+                    }
+                    .submit-box {
+                        width: 80px;
+                    }
+                }
+            }
         }
     }
 }

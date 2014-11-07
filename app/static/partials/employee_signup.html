@@ -1,50 +1,44 @@
 <!-- Employee Signup Partial Page -->
 
-<form class="panel form-horizontal" name="form" ng-submit="submit()">
-    <div class="panel-heading">
-        <span class="panel-title">Employee Signup</span>
-    </div>
-    <div class="panel-body">
-        <div class="form-group">
-            <div class="col-md-12 form-inline-error" ng-show="form.username.$dirty && form.username.$invalid">Invalid:
-              <span ng-show="form.username.$error.required">Username field is required</span>
-            </div>
-            <label for="inputUsername" class="col-sm-2 control-label">Username</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="username" name="username" placeholder="User Name" ng-required="true" ng-model="employee.username">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="inputPassword" class="col-sm-2 control-label">Password</label>
-            <div class="col-sm-10">
-                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Password" ng-model="employee.password" ng-required="true">
-                <p class="help-block">Password help text here.</p>
-            </div>
-        </div> <!-- / .form-group -->
-        <div class="form-group">
-            <label for="inputPassword" class="col-sm-2 control-label">Confirm Password</label>
-            <div class="col-sm-10">
-                <input type="password" class="form-control" id="inputPassword" name="password_confirm" placeholder="Password" ng-model="employee.password_confirm" ng-required="true">
-                <p class="help-block">Password help text here.</p>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" class="px" name="agree_terms" ng-model="employee.agree_terms" ng-required="true"> 
-                            <span class="lbl">I agree to <a href="/EmployeeTerms" target="_blank">terms and policy</a></span>
-                    </label>
+<div class="content-header">
+    <h1>Welcome</h1>
+    <span class="general-info">Please use the form below to sign up as an Employee</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="form-holder">
+        <form name="form" ng-submit="submit()">
+
+            <div class="form-label">Username*</div>
+            <div class="textbox">
+                <input type="text" id="username" name="username" ng-required="true" ng-model="employee.username">
+                <div class="form-error" ng-show="form.username.$dirty && form.username.$invalid">
+                  <span ng-show="form.username.$error.required">Username field is required</span>
                 </div>
             </div>
-        </div> <!-- / .form-group -->
-        <div class="form-group" style="margin-bottom: 0;">
-            <div class="col-sm-offset-2 col-sm-1">
-                <button type="submit" class="btn btn-primary" ng-disabled="form.$invalid">Sign Up</button>
+
+            <div class="form-label">Password*</div>
+            <div class="textbox">
+                <input type="password" id="inputPassword" name="password" ng-model="employee.password" ng-required="true" placeholder="Password Help Text">
             </div>
-            <div class="pull-left">
-                <a href="javascript:history.back();" class="btn btn-info btn-flat btn-labeled"> Cancel </a>
+
+            <div class="form-label">Confirm Password*</div>
+            <div class="textbox">
+                <input type="password" id="inputPassword" name="password_confirm" ng-model="employee.password_confirm" ng-required="true" placeholder="Password Help Text">
             </div>
-        </div> <!-- / .form-group -->
-    </div>
-</form>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" class="px" name="agree_terms" ng-model="employee.agree_terms" ng-required="true">
+                    I agree to <a href="/EmployeeTerms" target="_blank">terms and policy</a>
+                </label>
+            </div>
+
+            <div class="submit-box">
+                <button type="submit" class="btn green" ng-disabled="form.$invalid">Sign Up</button>
+            </div>
+
+        </form>
+    </div><!-- / .form-holder -->
+    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+</div><!-- / .content-body -->

@@ -9,13 +9,22 @@ var employerHome = employersController.controller('employerHome',
                                                   'clientListRepository',
                                                   'documentRepository',
                                                   'templateRepository',
+                                                  'employerWorkerRepository',
+                                                  'benefitListRepository',
   function employerHome($scope,
                         $location,
                         employerRepository,
                         currentUser,
                         clientListRepository,
                         documentRepository,
-                        templateRepository){
+                        templateRepository,
+                        employerWorkerRepository,
+                        benefitListRepository){
+
+    $scope.employeeCount = 0;
+    $scope.brokerCount = 0;
+    $scope.benefitCount = 0;
+    $scope.templateCountArray = [];
 
    var getDocumentTypes = function(company){
       documentRepository.type.get({companyId:company.Id}).$promise.then(function(response){
@@ -27,6 +36,51 @@ var employerHome = employersController.controller('employerHome',
         $scope.templateArray = response.templates;
       });
     }
+    var getWorkerCount = function(company){
+      employerWorkerRepository.get({companyId:company.id})
+        .$promise.then(function(response){
+            _.each(response.user_roles, function(role){
+              if(role.type=='employee')
+              {
+                $scope.employeeCount++;
+              }
+              else if(role.type=='broker')
+              {
+                $scope.brokerCount++;
+              }
+            })
+        });
+    };
+
+    var getBenefitCount = function(company){
+      benefitListRepository.get({clientId:company.id})
+        .$promise.then(function(response){
+            var benefitNameArray = [];
+            _.each(response.benefits, function(benefit){
+              var name = _.findWhere(benefitNameArray, {benefit_name:benefit.benefit_name});
+              if(!name){
+                benefitNameArray.push(benefit);
+              }
+            });
+            $scope.benefitCount = _.size(benefitNameArray);
+        });
+    };
+
+    var getTemplateCount = function(company){
+      templateRepository.byCompany.get({companyId:company.id})
+        .$promise.then(function(response){
+          _.each(response.templates, function(template){
+            if(!$scope.templateCountArray[template.document_type])
+            {
+              $scope.templateCountArray[template.document_type] = 1;
+            }
+            else
+            {
+              $scope.templateCountArray[template.document_type] ++;
+            }
+          });
+        });
+    };
 
     var userPromise = currentUser.get()
       .$promise.then(function(response)
@@ -46,6 +100,9 @@ var employerHome = employersController.controller('employerHome',
             $scope.company = company_role.company;
             getDocumentTypes($scope.company);
             getTemplates($scope.company);
+            getWorkerCount($scope.company);
+            getBenefitCount($scope.company);
+            getTemplateCount($scope.company);
             return false;
           }
           return true;
