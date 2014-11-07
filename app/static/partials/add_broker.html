@@ -13,14 +13,25 @@
     <div class="form-holder">
         <form name="form">
 
-            <div class="form-label">Name*</div>
+            <div class="form-label">First Name*</div>
             <div class="textbox">
                 <input type="text"
-                    name="broker_name"
-                    ng-model="addUser.name"
+                    name="first_name"
+                    ng-model="addUser.first_name"
                     ng-required="true">
-                <div class="form-error" ng-show="form.broker_name.$dirty && form.broker_name.$invalid">
-                  <span ng-show="form.broker_name.$error.required">Broker name field is required</span>
+                <div class="form-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
+                  <span ng-show="form.first_name.$error.required">Broker first name field is required</span>
+                </div>
+            </div>
+
+            <div class="form-label">Last Name*</div>
+            <div class="textbox">
+                <input type="text"
+                    name="last_name"
+                    ng-model="addUser.last_name"
+                    ng-required="true">
+                <div class="form-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
+                  <span ng-show="form.last_name.$error.required">Broker last name field is required</span>
                 </div>
             </div>
 
@@ -50,7 +61,7 @@
             </div>
 
             <div class="submit-box">
-                <button ng-click="createUser('broker')" class="btn green" ng-disabled="form.$invalid">Add Broker</button>
+                <button ng-click="createUser('Broker')" class="btn green" ng-disabled="form.$invalid">Add Broker</button>
             </div>
 
         </form>
