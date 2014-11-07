@@ -35,16 +35,16 @@
         <div id="header">
             <a href="/" id="logo-link"></a>
             <div class="pull-right">
-
+                {%verbatim%}
                 <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="drop-trigger">
-                    {{curUser.full_name}}
+                    {{curUser.email}}
                     <span class="caret"></span>
                 </span>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                     <li><a href="#" ng-click="logout()"><span class="flaticon flaticon-wheel21"></span> Settings</a></li>
                     <li><a href="#" ng-click="logout()"><span class="flaticon flaticon-logout5"></span> Log Out</a></li>
                 </ul>
-
+                {%endverbatim%}
             </div>
         </div><!-- / #header -->
 
