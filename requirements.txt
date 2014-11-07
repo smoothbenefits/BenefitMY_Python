@@ -4,3 +4,5 @@ djangorestframework==2.4.3
 futures==2.2.0
 psycopg2==2.5.4
 wsgiref==0.1.2
+django-sslify>=0.2
+django-email-as-username>=1.6.7
