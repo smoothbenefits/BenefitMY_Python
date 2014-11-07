@@ -28,7 +28,7 @@ def register(request):
             user.save()
 
             # Update our variable to tell the template registration was successful.
-            registered = True
+            return redirect('/login')
         # Invalid form or forms - mistakes or something else?
         # Print problems to the terminal.
         # They'll also be shown to the user.
