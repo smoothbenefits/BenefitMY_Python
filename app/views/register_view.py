@@ -19,7 +19,7 @@ def register(request):
         # If the two forms are valid...
         if user_form.is_valid():
             create_user(request.POST['email'], request.POST['password'])
-
+            
             registered = True
             # Update our variable to tell the template registration was successful.
             return redirect('/login')
