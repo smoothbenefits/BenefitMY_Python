@@ -68,7 +68,7 @@ urlpatterns = patterns('app.views',
         EmploymentAuthorizationView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/signature/$' % PREFIX, SignatureView.as_view()),
 
-    url(r'^%s/templates/(?P<pk>[0-9]+)/$' % PREFIX, TemplateView.as_view()),
+    url(r'^%s/templates/(?P<pk>[0-9]+)/?$' % PREFIX, TemplateView.as_view()),
     url(r'^%s/benefits/(?P<pk>[0-9]+)/$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/benefits/$' % PREFIX,

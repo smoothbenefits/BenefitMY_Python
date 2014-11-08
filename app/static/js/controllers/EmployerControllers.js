@@ -40,11 +40,11 @@ var employerHome = employersController.controller('employerHome',
       employerWorkerRepository.get({companyId:company.id})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
-              if(role.type=='employee')
+              if(role.company_user_type=='employee')
               {
                 $scope.employeeCount++;
               }
-              else if(role.type=='broker')
+              else if(role.company_user_type=='broker')
               {
                 $scope.brokerCount++;
               }

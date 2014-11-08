@@ -14,7 +14,7 @@ underscore.factory('_', function(){
     return window._;
 });
 
-BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($httpProvider, $resourceProvider) {
+BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs
   $resourceProvider.defaults.stripTrailingSlashes = false;
 

@@ -112,4 +112,4 @@ benefitmyService.factory('templateRepository', ['$resource',
       getById: $resource('/api/v1/templates/:id', {id:'@id'})
     };
   }
-                         ]);
+]);

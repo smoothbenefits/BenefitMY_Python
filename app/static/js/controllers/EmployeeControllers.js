@@ -1,7 +1,8 @@
 var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]);
 
-var employeeHome = employeeControllers.controller('employeeHome', ['$scope', '$location', '$routeParams', 'employeeCompanyRoles', 'employeeBenefits', 'currentUser',
-  function employeeHome($scope, $location, $routeParams, employeeCompanyRoles, employeeBenefits, currentUser){
+var employeeHome = employeeControllers.controller('employeeHome',
+    ['$scope', '$location', '$routeParams', 'employeeCompanyRoles', 'employeeBenefits', 'currentUser', 'userDocument',
+    function employeeHome($scope, $location, $routeParams, employeeCompanyRoles, employeeBenefits, currentUser, userDocument){
 
     var curUserId;
     var userPromise = currentUser.get().$promise
@@ -11,8 +12,8 @@ var employeeHome = employeeControllers.controller('employeeHome', ['$scope', '$l
       });
 
     var companyPromise = userPromise.then(function(userId){
-      curUserId = userId;
-      return employeeCompanyRoles.get({userId:userId}).$promise;
+        curUserId = userId;
+        return employeeCompanyRoles.get({userId:userId}).$promise;
     });
 
     var benefitPromise = companyPromise.then(function(response){
@@ -26,11 +27,30 @@ var employeeHome = employeeControllers.controller('employeeHome', ['$scope', '$l
     });
 
     benefitPromise.then(function(companyId){
-      employeeBenefits.get({userId:curUserId, companyId:companyId})
-      .$promise.then(function(response){
-        $scope.benefits = response.benefits;
-      })
-    })
+                        employeeBenefits.get({userId:curUserId, companyId:companyId})
+                        .$promise.then(function(response){
+                                       $scope.benefits = response.benefits;
+                                       $scope.benefitCount = response.benefits.length;
+                                       })
+                        });
+     
+     var curUserPromise = currentUser.get().$promise.then(function(userResponse){
+                                                          return userResponse.user.id;
+                      });
+     
+     var documentPromise = curUserPromise.then(function(userId){
+                                               return userDocument.query({userId:userId}).$promise;
+                         });
+    
+     documentPromise.then(function(response){
+                          $scope.documents = response;
+                          $scope.documentCount = response.length;
+                          });
+     
+     $scope.ViewDocument = function(documentId){
+         $location.path('/employee/document/' + documentId);
+     }
+     
   }
 ]);
 
