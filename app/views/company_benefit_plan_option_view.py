@@ -52,23 +52,39 @@ def benefits(request):
                 b.benefit_plan.benefit_type_id == TYPE[request.DATA['benefit']['benefit_type']]):
                 return Response(status=status.HTTP_409_CONFLICT)
 
-    company_data = {
-        "company": request.DATA["company"],
-        "benefit_option_type": request.DATA["benefit"]["benefit_option_type"],
-        "total_cost_per_period": request.DATA["benefit"]["total_cost_per_period"],
-        "employee_cost_per_period": request.DATA["benefit"]["employee_cost_per_period"],
-        "benefit_plan":
-            {
-                "name": request.DATA["benefit"]["benefit_name"],
-                "benefit_type": TYPE[request.DATA['benefit']['benefit_type']]
-            }
-    }
+    try:
+        b_plan = BenefitPlan.objects.get(
+            name=request.DATA["benefit"]["benefit_name"],
+            benefit_type_id=TYPE[request.DATA['benefit']['benefit_type']])
+        company_benefit = CompanyBenefitPlanOption(
+            company_id=request.DATA["company"],
+            benefit_option_type=request.DATA["benefit"]["benefit_option_type"],
+            total_cost_per_period=request.DATA["benefit"]["total_cost_per_period"],
+            employee_cost_per_period=request.DATA["benefit"]["employee_cost_per_period"],
+            benefit_plan=b_plan)
+        company_benefit.save()
+        serializer = CompanyBenefitPlanSerializer(company_benefit)
+        return Response({'benefits': serializer.data})
 
-    serializer = CompanyBenefitPlanOptionPostSerializer(data=company_data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except BenefitPlan.DoesNotExist:
+
+        company_data = {
+            "company": request.DATA["company"],
+            "benefit_option_type": request.DATA["benefit"]["benefit_option_type"],
+            "total_cost_per_period": request.DATA["benefit"]["total_cost_per_period"],
+            "employee_cost_per_period": request.DATA["benefit"]["employee_cost_per_period"],
+            "benefit_plan":
+                {
+                    "name": request.DATA["benefit"]["benefit_name"],
+                    "benefit_type": TYPE[request.DATA['benefit']['benefit_type']]
+                }
+        }
+
+        serializer = CompanyBenefitPlanOptionPostSerializer(data=company_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CompanyBenefitPlansView(APIView):
