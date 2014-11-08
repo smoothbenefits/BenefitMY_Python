@@ -24,7 +24,7 @@
             <div class="form-holder">
                 <form accept-charset="UTF-8" action="/login/" method="post">
                     {% csrf_token %}
-                    <span class="textbox"><input type="text" id="username" name="username" placeholder="User name"></span>
+                    <span class="textbox"><input type="email" id="email" name="email" placeholder="Email"></span>
                     <span class="textbox"><input type="password" id="password" name="password" placeholder="Password"></span>
                     <span class="submit-box"><input type="submit" value="Sign In" class="btn green"></span>
                 </form>
@@ -38,7 +38,7 @@
                 <div class="form-holder">
                     <form accept-charset="UTF-8" action="/login/" method="post">
                         {% csrf_token %}
-                        <div class="textbox"><input type="text" id="username" name="username" placeholder="User name"></div>
+                        <div class="textbox"><input type="email" id="email" name="email" placeholder="Email"></div>
                         <div class="textbox"><input type="password" id="password" name="password" placeholder="Password"></div>
                         <div class="submit-box"><input type="submit" value="Sign In" class="btn green"></div>
                         <div class="meta-links">

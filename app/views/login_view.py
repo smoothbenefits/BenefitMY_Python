@@ -14,13 +14,12 @@ def user_login(request):
     if request.method == 'POST':
         # Gather the username and password provided by the user.
         # This information is obtained from the login form.
-        username = request.POST['username']
+        userEmail = request.POST['email']
         password = request.POST['password']
-
-        # Use Django's machinery to attempt to see if the username/password
+        
+        # Use Django's machinery to attempt to see if the email/password
         # combination is valid - a User object is returned if it is.
-        user = authenticate(username=username, password=password)
-
+        user = authenticate(email=userEmail, password=password)
         # If we have a User object, the details are correct.
         # If None (Python's way of representing the absence of a value), no user
         # with matching credentials was found.
@@ -36,7 +35,7 @@ def user_login(request):
                 return HttpResponse("Your account is disabled.")
         else:
             # Bad login details were provided. So we can't log the user in.
-            print "Invalid login details: {0}, {1}".format(username, password)
+            print "Invalid login details: {0}, {1}".format(userEmail, password)
             return HttpResponse("Invalid login details supplied.")
 
     # The request is not a HTTP POST, so display the login form.
