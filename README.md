@@ -11,6 +11,8 @@ Please follow the following steps to start the app on your local machine
 `pip install django`
 `pip install djangorestframework`
  pip install django-pipeline
+ pip install django-email-as-username
+
 
 2. install postgres
 
