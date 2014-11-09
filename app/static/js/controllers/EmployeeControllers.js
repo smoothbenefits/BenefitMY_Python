@@ -366,14 +366,45 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
     }
 }]);
 
-var onboardIndex = employeeControllers.controller('onboardIndex', ['$scope', '$routeParams', '$location',
-  function($scope, $routeParams, $location){
+var onboardIndex = employeeControllers.controller('onboardIndex',
+  ['$scope', '$routeParams', '$location', 'employeeFamily',
+  function($scope, $routeParams, $location, employeeFamily){
     $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
+
+    var mapEmployee = function(viewEmployee){
+      var apiEmployee = {
+        'person_type': 'family',
+        'relationship': 'self',
+        'first_name': viewEmployee.firstname,
+        'last_name': viewEmployee.lastname,
+        'birth_date': viewEmployee.birth_date,
+        'ssn': viewEmployee.ssn,
+        'email': viewEmployee.email,
+        'addresses': [],
+        'phones': [
+          {
+            'phone_type': 'home',
+            'number': viewEmployee.phone.number
+          }
+        ]
+      };
+
+      viewEmployee.address.address_type = 'home';
+      apiEmployee.addresses.push(viewEmployee.address);
+      return apiEmployee;
+    };
+
     $scope.addBasicInfo = function(){
-      $location.path('/employee/onboard/employment/'+$scope.employeeId);
-    }
+      var newEmployee = mapEmployee($scope.employee);
+      employeeFamily.save({userId: $scope.employeeId}, newEmployee,
+        function(){
+          $location.path('/employee/onboard/employment/' + $scope.employeeId);
+        }, function(){
+          alert('Failed to add the new user');
+        });
+    };
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment', ['$scope', '$routeParams', '$location',
