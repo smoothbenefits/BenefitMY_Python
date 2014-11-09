@@ -33,24 +33,25 @@ var employeeHome = employeeControllers.controller('employeeHome',
                                        $scope.benefitCount = response.benefits.length;
                                        })
                         });
-     
-     var curUserPromise = currentUser.get().$promise.then(function(userResponse){
-                                                          return userResponse.user.id;
-                      });
-     
+
+     var curUserPromise = currentUser.get().$promise.
+         then(function(userResponse){
+             return userResponse.user.id;
+         });
+
      var documentPromise = curUserPromise.then(function(userId){
                                                return userDocument.query({userId:userId}).$promise;
                          });
-    
+
      documentPromise.then(function(response){
                           $scope.documents = response;
                           $scope.documentCount = response.length;
                           });
-     
+
      $scope.ViewDocument = function(documentId){
          $location.path('/employee/document/' + documentId);
      }
-     
+
   }
 ]);
 
@@ -282,10 +283,33 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
 }]);
 
 
-var viewDocument = employeeControllers.controller('viewDocument', ['$scope', '$location','$routeParams',
-  function viewDocument($scope, $location, $routeParams){
+var viewDocument = employeeControllers.controller('viewDocument',
+  ['$scope', '$location', '$routeParams', 'userDocument', 'currentUser',
+  function viewDocument($scope, $location, $routeParams, userDocument, currentUser){
+    $scope.document = {};
+    var documentId = $routeParams.doc_id;
     var signatureUpdated = false;
-    
+    var userPromise = currentUser.get().$promise
+      .then(function(response){
+        $scope.employee_id = response.user.id;
+        return response.user.id;
+      });
+
+    var documentPromise = userPromise.then(function(userId){
+      var document = userDocument.query({userId:userId}).$promise
+        .then(function(response){
+          return _.find(response, function(d)
+          {
+            return d.id.toString() === documentId;
+          });
+        });
+      return document;
+    });
+
+    documentPromise.then(function(document){
+      $scope.document = document;
+    });
+
     var $sigdiv = $("#doc_signature");
     if(_.isUndefined($sigdiv))
     {
@@ -308,7 +332,8 @@ var viewDocument = employeeControllers.controller('viewDocument', ['$scope', '$l
         $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
         $location.path('/employee');
       }
-    }
+                                                                   };
+
 }]);
 
 var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$routeParams', function($scope, $routeParams){
@@ -323,7 +348,7 @@ var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$route
   }
 }]);
 
-var signup = employeeControllers.controller('employeeSignup', ['$scope', '$routeParams', '$location', 
+var signup = employeeControllers.controller('employeeSignup', ['$scope', '$routeParams', '$location',
   function($scope, $routeParams, $location){
     $scope.employee = {};
     $scope.employee.id = $routeParams.signup_number;
