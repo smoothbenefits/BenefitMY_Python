@@ -46,6 +46,7 @@ from app.views.w4_view import W4View
 from app.views.employment_authorization_view import EmploymentAuthorizationView
 from app.views.signature_view import SignatureView
 
+from app.views.util_view import send_onboard_email
 
 PREFIX = "api/v1"
 
@@ -96,6 +97,12 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
+
+
+    # util api
+
+    url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
+
 )
 
 
