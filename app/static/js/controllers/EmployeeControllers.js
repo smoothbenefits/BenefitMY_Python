@@ -407,11 +407,31 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     };
 }]);
 
-var onboardEmployment = employeeControllers.controller('onboardEmployment', ['$scope', '$routeParams', '$location',
-  function($scope, $routeParams, $location){
+var onboardEmployment = employeeControllers.controller('onboardEmployment',
+  ['$scope', '$routeParams', '$location', 'employeeOnboarding',
+  function($scope, $routeParams, $location, employeeOnboarding){
     $('body').addClass('onboarding-page');
-    $scope.employee = {};
+    $scope.employee = {
+
+    };
     $scope.employeeId = $routeParams.employee_id;
+
+    var mapContract = function(viewObject, signature){
+      var contract = {
+        'worker_type': viewObject.auth_type,
+        'expiration_date': viewObject.auth_expiration,
+        'uscis_number': viewObject.authNumber,
+        'i_94': viewObject.I94Id,
+        'passport': viewObject.passportId,
+        'country': viewObject.passportCountry,
+        'signature': {
+          'signature': signature,
+          'signature_type': 'step'
+        }
+      };
+      return contract;
+    };
+
     var signatureUpdated = false;
     var $sigdiv = $("#auth_signature");
     if(_.isUndefined($sigdiv))
@@ -433,12 +453,19 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment', ['$s
       {
         var signatureData = $sigdiv.jSignature('getData', 'svg');
         $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
-        $location.path('/employee/onboard/tax/' + $scope.employeeId);
+        var contract = mapContract($scope.employee, $scope.signatureImage);
+        employeeOnboarding.save({userId: $scope.employeeId}, contract,
+          function(){
+            $location.path('/employee/onboard/tax/' + $scope.employeeId);
+          }, function(){
+            alert('Failed to add employment information');
+          });
       }
     }
 }]);
 
-var onboardTax = employeeControllers.controller('onboardTax', ['$scope', '$routeParams', '$location',
+var onboardTax = employeeControllers.controller('onboardTax',
+  ['$scope', '$routeParams', '$location',
   function($scope, $routeParams, $location){
     $('body').addClass('onboarding-page');
     $scope.employee = {};

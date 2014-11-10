@@ -113,3 +113,8 @@ benefitmyService.factory('templateRepository', ['$resource',
     };
   }
 ]);
+
+benefitmyService.factory('employeeOnboarding', ['$resource',
+  function($resource){
+    return $resource('/api/v1/users/:userId/employment_authorization/', {userId: '@userId'});
+  }]);
