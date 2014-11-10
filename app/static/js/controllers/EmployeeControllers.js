@@ -478,8 +478,9 @@ var onboardTax = employeeControllers.controller('onboardTax',
     }
 }]);
 
-var onboardComplete = employeeControllers.controller('onboardComplete', ['$scope', '$routeParams', '$location',
-  function($scope, $routeParams, $location){
+var onboardComplete = employeeControllers.controller('onboardComplete',
+  ['$scope', '$routeParams', '$location', 'employeeSignature',
+  function($scope, $routeParams, $location, employeeSignature){
     $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
@@ -503,7 +504,16 @@ var onboardComplete = employeeControllers.controller('onboardComplete', ['$scope
       else{
         var signatureData = $sigdiv.jSignature('getData', 'svg');
         $scope.termSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
-        $location.path('/employee');
+        var contract = {
+          'signature': $scope.termSignatureData,
+          'signature_type': 'final'
+        };
+        employeeSignature.save({userId: $scope.employeeId}, contract,
+          function(){
+            $location.path('/employee');
+          }, function(){
+            alert('Failed to submit signature');
+          });
       }
     }
 }])

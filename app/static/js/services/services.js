@@ -118,3 +118,8 @@ benefitmyService.factory('employeeOnboarding', ['$resource',
   function($resource){
     return $resource('/api/v1/users/:userId/employment_authorization/', {userId: '@userId'});
   }]);
+
+benefitmyService.factory('employeeSignature', ['$resource',
+  function($resource){
+    return $resource('/api/v1/users/:userId/signature/', {userId: '@userId'});
+  }]);
