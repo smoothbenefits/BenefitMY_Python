@@ -18,3 +18,11 @@ class CompanyUserView(APIView):
         companies = self.get_companies(pk)
         serializer = CompanyUserSerializer(companies, many=True)
         return Response({'user_roles':serializer.data})
+
+
+class CompanyEmployeeCountView(APIView):
+
+    def get(self, request, pk, format=None):
+        return Response({'employees_count':
+            CompanyUser.objects.filter(company=pk,
+                                       company_user_type='Employee')})
