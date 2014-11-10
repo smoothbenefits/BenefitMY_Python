@@ -10,7 +10,8 @@ from app.views.user_view import (
     CurrentUserView)
 from app.views.company_user_view import (
     CompanyUserView,
-    CompanyEmployeeCountView)
+    CompanyEmployeeCountView,
+    BrokerCompanyCountView,
     CompanyBrokerCountView)
 from app.views.benefit_type_view import BenefitTypeView
 from app.views.document_type_view import DocumentTypeView
@@ -83,6 +84,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>[0-9]+)/templates/?$' % PREFIX, CompanyTemplatesView.as_view()),
     url(r'^%s/company_employees_count/(?P<pk>[0-9]+)/?$' % PREFIX, CompanyEmployeeCountView.as_view()),
     url(r'^%s/company_brokers_count/(?P<pk>[0-9]+)/?$' % PREFIX, CompanyBrokerCountView.as_view()),
+    url(r'^%s/broker_company_count/(?P<pk>[0-9]+)/?$' % PREFIX, BrokerCompanyCountView.as_view()),
 
     url(r'^%s/documents/companies/(?P<pk>[0-9]+)/users/(?P<pd>[0-9]+)/?$' % PREFIX,
         CompanyUserDocumentView.as_view()),

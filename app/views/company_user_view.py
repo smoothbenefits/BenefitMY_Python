@@ -24,12 +24,19 @@ class CompanyEmployeeCountView(APIView):
 
     def get(self, request, pk, format=None):
         return Response({'employees_count':
-            CompanyUser.objects.filter(company=pk,
-                                       company_user_type='Employee')})
+            len(CompanyUser.objects.filter(company=pk,
+                                       company_user_type='Employee'))})
 
 class CompanyBrokerCountView(APIView):
 
     def get(self, request, pk, format=None):
         return Response({'brokers_count':
-            CompanyUser.objects.filter(company=pk,
-                                       company_user_type='Broker')})
+            len(CompanyUser.objects.filter(company=pk,
+                                       company_user_type='Broker'))})
+
+class BrokerCompanyCountView(APIView):
+
+    def get(self, request, pk, format=None):
+        return Response({'brokers_count':
+            len(CompanyUser.objects.filter(user=pk,
+                                       company_user_type='Broker'))})
