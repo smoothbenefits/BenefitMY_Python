@@ -37,6 +37,6 @@ class CompanyBrokerCountView(APIView):
 class BrokerCompanyCountView(APIView):
 
     def get(self, request, pk, format=None):
-        return Response({'brokers_count':
+        return Response({'companies_count':
             len(CompanyUser.objects.filter(user=pk,
                                        company_user_type='Broker'))})
