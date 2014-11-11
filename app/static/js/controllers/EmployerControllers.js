@@ -40,11 +40,11 @@ var employerHome = employersController.controller('employerHome',
       employerWorkerRepository.get({companyId:company.id})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
-              if(role.type=='employee')
+              if(role.company_user_type=='employee')
               {
                 $scope.employeeCount++;
               }
-              else if(role.type=='broker')
+              else if(role.company_user_type=='broker')
               {
                 $scope.brokerCount++;
               }
@@ -70,13 +70,13 @@ var employerHome = employersController.controller('employerHome',
       templateRepository.byCompany.get({companyId:company.id})
         .$promise.then(function(response){
           _.each(response.templates, function(template){
-            if(!$scope.templateCountArray[template.document_type])
+            if(!$scope.templateCountArray[template.document_type.name])
             {
-              $scope.templateCountArray[template.document_type] = 1;
+              $scope.templateCountArray[template.document_type.name] = 1;
             }
             else
             {
-              $scope.templateCountArray[template.document_type] ++;
+              $scope.templateCountArray[template.document_type.name] ++;
             }
           });
         });
@@ -292,7 +292,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
     $scope.documentType = $routeParams.type;
     $scope.addMode = $routeParams.add;
     $scope.companyId = $routeParams.company_id;
-    $scope.viewTitle = 'Create ' + $scope.documentType + ' Template';
+    $scope.viewTitle = 'Create ' + $scope.documentType.name + ' Template';
     $scope.showCreateButton = $scope.addMode;
     $scope.showEditButton = false;
     $scope.existingTemplateList = [];
@@ -311,7 +311,14 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
     {
       templateRepository.byCompany.get({companyId:$routeParams.company_id})
         .$promise.then(function(response){
-          $scope.existingTemplateList = _.sortBy(_.where(response.templates, {document_type:$scope.documentType}), function(elm){return elm.id;}).reverse();
+          $scope.existingTemplateList = _.sortBy(
+            _.filter(response.templates, 
+                   function(template){
+                    return template.document_type.name === $scope.documentType;
+            }), 
+            function(elm){return elm.id;}
+          ).reverse();
+          
           if(!_.isEmpty($scope.existingTemplateList))
           {
             $scope.viewTitle = 'Manage ' + $scope.documentType + ' Template';
@@ -367,11 +374,15 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
     $scope.newDoc = {document_type:$scope.documentType};
 
     var getDocumentType = function(documentTypeId){
-      if (documentTypeId === 1){
+      if (documentTypeId === '1'){
         return "Offer Letter";
       }
-      if (documentTypeId === 2){
+      else if (documentTypeId === '2'){
         return "Employment Agreement";
+      }
+      else if(documentTypeId === '3')
+      {
+        return "NDA";
       }
       return "";
     }
@@ -383,7 +394,7 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
         $scope.templateArray = [];
 
         _.each(response.templates, function(template){
-          if (template.document_type.id.toString() === $routeParams.type){
+          if (template.document_type.name === $scope.documentType){
             $scope.templateArray.push(template);
           }
         });

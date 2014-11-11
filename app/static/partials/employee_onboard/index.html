@@ -71,6 +71,19 @@
                         </div>
                     </div>
 
+                    <div class="form-label">Email</div>
+                    <div class="textbox">
+                        <input type="tel"
+                            name="person_email"
+                            ng-model="employee.email"
+                            ng-required="true"
+                            ui-mask="username@domain.com">
+                        <div class="form-error" ng-show="form.person_email.$dirty && form.person_email.$invalid">
+                            <span ng-show="form.person_email.$error.required">Email field is required</span>
+                            <span ng-show="form.person_email.$invalid">Please enter a valid email address</span>
+                        </div>
+                    </div>
+
                     <div class="form-label">Social Security Number</div>
                     <div class="textbox">
                         <input type="tel"

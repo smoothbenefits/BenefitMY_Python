@@ -4,13 +4,16 @@
     <span>View Document</span>
 </div>
 
-<script type="text/javascript" src="js/flashcanvas.js"></script>
-<script src="js/jSignature.min.js"></script>
+<script type="text/javascript" src="/static/js/flashcanvas.js"></script>
+<script src="/static/js/jSignature.min.js"></script>
 
 <div class="content-header">
-    <h1>Document</h1>
+    <h1>{{document.name}}</h1>
 </div><!-- / .content-header -->
+<div class="content-body col-md-10">
+    {{document.content}}
 
+</div>
 <div class="col-md-10">
     <div class="signature-container">
         <div id="doc_signature" class="signature-pad"></div>
@@ -19,7 +22,7 @@
                 Reset
             </button>
             <button ng-click="signDocument()" class="btn btn-primary btn-labeled">
-                <span class="btn-label icon fa fa-plus"></span>Sign
+                Sign
             </button>
         </div>
         <input type="hidden" name="signatureHiddenData" value="{{signatureImage}}"/>

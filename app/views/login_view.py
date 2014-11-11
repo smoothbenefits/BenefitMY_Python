@@ -12,14 +12,15 @@ def user_login(request):
 
     # If the request is a HTTP POST, try to pull out the relevant information.
     if request.method == 'POST':
-        # Gather the username and password provided by the user.
+        # Gather the email and password provided by the user.
         # This information is obtained from the login form.
         userEmail = request.POST['email']
         password = request.POST['password']
-        
+
         # Use Django's machinery to attempt to see if the email/password
         # combination is valid - a User object is returned if it is.
         user = authenticate(email=userEmail, password=password)
+
         # If we have a User object, the details are correct.
         # If None (Python's way of representing the absence of a value), no user
         # with matching credentials was found.

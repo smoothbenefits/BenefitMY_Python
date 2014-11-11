@@ -14,7 +14,7 @@ underscore.factory('_', function(){
     return window._;
 });
 
-BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($httpProvider, $resourceProvider) {
+BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs
   $resourceProvider.defaults.stripTrailingSlashes = false;
 
@@ -74,11 +74,11 @@ BenefitMyApp.config(['$routeProvider',
                 controller:'employerLetterTemplate'
             }).
             when('/admin/create_letter/:company_id/:employee_id', {
-                templateUrl:'/partials/create_letter.html',
+                templateUrl:'/static/partials/create_letter.html',
                 controller:'employerCreateLetter'
             }).
             when('/admin/view_letter/:company_id/:employee_id', {
-                templateUrl:'/partials/view_letter.html',
+                templateUrl:'/static/partials/view_letter.html',
                 controller:'employerViewLetter'
             }).
             when('/admin/view_draft/:company_id/:employee_id/:document_type_id', {

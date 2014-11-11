@@ -12,6 +12,19 @@ from app.serializers.document_serializer import (
     DocumentSerializer)
 
 
+class DocumentView(APIView):
+    def get_documents(self, pk):
+        try:
+            return Document.objects.get(pk=pk)
+        except Document.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        document = self.get_documents(pk)
+        serializer = DocumentSerializer(document)
+        return Response(serializer.data)
+
+
 class CompanyDocumentView(APIView):
     def get_documents(self, pk):
         try:
