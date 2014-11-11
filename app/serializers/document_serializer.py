@@ -9,7 +9,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Document
-        fileds = ('id',
+        fields = ('id',
                   'name',
                   'content',
                   'edited',
@@ -27,9 +27,7 @@ class TemplateDtypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Document
-        fileds = ('name',
-                  'content',
-                  'template'
-                  'document_type',
+
+        fields = ('template',
                   'fields')
-        depth = 1
+        depth = 2
