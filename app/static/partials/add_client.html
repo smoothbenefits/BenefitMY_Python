@@ -22,14 +22,24 @@
                   <span ng-show="form.company_name.$error.required">Company name field is required</span>
                 </div>
             </div>
-            <div class="form-label">Name of Contact*</div>
+            <div class="form-label">First Name of Contact*</div>
             <div class="textbox">
                 <input type="text"
-                    name="contact_name"
-                    ng-model="client.contact.name"
+                    name="first_name"
+                    ng-model="client.contact.first_name"
                     ng-required="true">
-                <div class="form-error" ng-show="form.contact_name.$dirty && form.contact_name.$invalid">
-                  <span ng-show="form.contact_name.$error.required">Contact name field is required</span>
+                <div class="form-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
+                  <span ng-show="form.first_name.$error.required">First name field is required</span>
+                </div>
+            </div>
+            <div class="form-label">Last Name of Contact*</div>
+            <div class="textbox">
+                <input type="text"
+                    name="last_name"
+                    ng-model="client.contact.last_name"
+                    ng-required="true">
+                <div class="form-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
+                  <span ng-show="form.last_name.$error.required">Last name field is required</span>
                 </div>
             </div>
             <div class="form-label">Email of Contact*</div>
