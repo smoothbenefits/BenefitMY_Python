@@ -8,6 +8,6 @@ Dear %s:
 FROM='xxx@gmail.com'
 
 
-def onboard_mail(name, to, id):
+def onboard_email(name, to, id):
     c = CONTENT % (name, id)
     send_mail(SUBJECT, c, FROM, [to], fail_silently=False)
