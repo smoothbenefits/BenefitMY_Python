@@ -11,8 +11,4 @@ class TemplateSerializer(serializers.ModelSerializer):
         depth = 1
 
 
-class CompanyTemplatesSerializer(serializers.ModelSerializer):
-    document_type = DocumentTypeSerializer()
 
-    class Meta:
-        model = Template

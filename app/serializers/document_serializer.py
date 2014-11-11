@@ -21,3 +21,15 @@ class DocumentSerializer(serializers.ModelSerializer):
                   'fields')
         depth = 1
 
+
+class TemplateDtypeSerializer(serializers.ModelSerializer):
+    fields = DocumentFieldSerializer()
+
+    class Meta:
+        model = Document
+        fileds = ('name',
+                  'content',
+                  'template'
+                  'document_type',
+                  'fields')
+        depth = 1
