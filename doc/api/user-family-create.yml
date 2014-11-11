@@ -9,6 +9,9 @@ description: >
 
 parameters:
 sample_url: /api/v1/users/207119551/family
+
+relationship should be one of ('self', 'spouse', 'dependent')
+
 sample_request: |
   {
       "person_type": "family",
