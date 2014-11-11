@@ -374,13 +374,13 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
     $scope.newDoc = {document_type:$scope.documentType};
 
     var getDocumentType = function(documentTypeId){
-      if (documentTypeId === 1){
+      if (documentTypeId === '1'){
         return "Offer Letter";
       }
-      else if (documentTypeId === 2){
+      else if (documentTypeId === '2'){
         return "Employment Agreement";
       }
-      else if(documentTypeId === 3)
+      else if(documentTypeId === '3')
       {
         return "NDA";
       }
@@ -394,7 +394,7 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
         $scope.templateArray = [];
 
         _.each(response.templates, function(template){
-          if (template.document_type.name === $routeParams.type){
+          if (template.document_type.name === $scope.documentType){
             $scope.templateArray.push(template);
           }
         });
