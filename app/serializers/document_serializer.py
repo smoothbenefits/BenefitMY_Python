@@ -15,7 +15,7 @@ class DocumentSerializer(serializers.ModelSerializer):
                   'edited',
                   'company',
                   'user',
-                  'template'
+                  'template',
                   'document_type',
                   'signature',
                   'fields')
