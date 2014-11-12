@@ -40,6 +40,7 @@ var employerHome = employersController.controller('employerHome',
     $scope.benefitCount = 0;
     $scope.templateCountArray = [];
 
+
    var getDocumentTypes = function(company){
       documentRepository.type.get({companyId:company.Id}).$promise.then(function(response){
         $scope.documentTypes = response.document_types;
@@ -83,15 +84,12 @@ var employerHome = employersController.controller('employerHome',
     var getTemplateCount = function(company){
       templateRepository.byCompany.get({companyId:company.id})
         .$promise.then(function(response){
+          _.each($scope.documentTypes, function(type){
+            $scope.templateCountArray[type.name] = 0;
+          });
+
           _.each(response.templates, function(template){
-            if(!$scope.templateCountArray[template.document_type.name])
-            {
-              $scope.templateCountArray[template.document_type.name] = 1;
-            }
-            else
-            {
-              $scope.templateCountArray[template.document_type.name] ++;
-            }
+            $scope.templateCountArray[template.template.document_type.name] ++;
           });
         });
     };
@@ -150,7 +148,7 @@ var employerHome = employersController.controller('employerHome',
 
     $scope.templateClick = function(companyId, docType)
     {
-       $location.path('/admin/generate_template/'+ companyId).search({type:docType.name});
+       $location.search({type:docType.name}).path('/admin/generate_template/'+ companyId);
     }
   }
 ]);
@@ -306,7 +304,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
     $scope.documentType = $routeParams.type;
     $scope.addMode = $routeParams.add;
     $scope.companyId = $routeParams.company_id;
-    $scope.viewTitle = 'Create ' + $scope.documentType.name + ' Template';
+    $scope.viewTitle = 'Create ' + $scope.documentType + ' Template';
     $scope.showCreateButton = $scope.addMode;
     $scope.showEditButton = false;
     $scope.existingTemplateList = [];
@@ -328,7 +326,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
           $scope.existingTemplateList = _.sortBy(
             _.filter(response.templates, 
                    function(template){
-                    return template.document_type.name === $scope.documentType;
+                    return template.template.document_type.name === $scope.documentType;
             }), 
             function(elm){return elm.id;}
           ).reverse();

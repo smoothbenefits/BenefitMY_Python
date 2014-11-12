@@ -20,8 +20,8 @@
             </thead>
             <tbody>
                 <tr ng-repeat="template in existingTemplateList">
-                    <td>{{template.name}}</td>
-                    <td><span class="btn inline" ng-click="modifyExistingTemplate(template)">View</span></td>
+                    <td>{{template.template.name}}</td>
+                    <td><span class="btn inline" ng-click="modifyExistingTemplate(template.template)">View</span></td>
                 </tr>
             </tbody>
         </table>
