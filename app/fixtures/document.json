@@ -9,7 +9,7 @@
        "model": "app.DocumentType",
       "pk": 2,
       "fields":{
-      "name": "Employee Agreement"
+      "name": "Employment Agreement"
       }
     },
     {

@@ -26,7 +26,7 @@
             <div class="select-box">
                 <select name="templateSelect"
                     ng-required="true"
-                    ng-options="template.name for template in templateArray"
+                    ng-options="template.template.name for template in templateArray"
                     ng-model="selectedTemplate"
                     class="form-control">
                 </select>
