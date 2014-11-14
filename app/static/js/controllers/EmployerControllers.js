@@ -55,11 +55,11 @@ var employerHome = employersController.controller('employerHome',
       employerWorkerRepository.get({companyId:company.id})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
-              if(role.company_user_type=='employee')
+              if(role.company_user_type.toLowerCase()==='employee')
               {
                 $scope.employeeCount++;
               }
-              else if(role.company_user_type=='broker')
+              else if(role.company_user_type.toLowerCase()==='broker')
               {
                 $scope.brokerCount++;
               }
@@ -329,7 +329,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
           $scope.existingTemplateList = _.sortBy(
             _.filter(response.templates,
               function(template){
-                return template.template.document_type.name === $scope.documentType;
+                return template.document_type.name === $scope.documentType;
             }),
             function(elm){return elm.id;}
           ).reverse();
