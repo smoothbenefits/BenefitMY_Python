@@ -16,13 +16,13 @@ var findViewController = brokersControllers.controller('findViewController', ['$
           var paramValue = paramNameValueList[1];
           if(userRolesContains(paramValue, userRoles))
           {
-            $location.replace().path('/'+paramValue);
+            $location.replace().path('/'+paramValue.toLowerCase());
           }
         }
         else if(userRoles.length > 0 && !paramValue)
         {
            var firstRole = userRoles[0].company_user_type;
-           $location.replace().path('/'+firstRole);
+           $location.replace().path('/'+firstRole.toLowerCase());
         }
         else
         {
