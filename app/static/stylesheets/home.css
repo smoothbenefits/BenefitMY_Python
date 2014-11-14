@@ -57,3 +57,9 @@
 {
     float:right;
 }
+.login-error
+{
+    color:red;
+    background-color: #FCF0E8;
+    text-align: center;
+}

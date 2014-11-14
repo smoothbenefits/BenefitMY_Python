@@ -37,14 +37,15 @@ def user_login(request):
         else:
             # Bad login details were provided. So we can't log the user in.
             print "Invalid login details: {0}, {1}".format(userEmail, password)
-            return HttpResponse("Invalid login details supplied.")
+            external_message = "The combination of your email and password is not correct"
+            return render_to_response('login.html', {'message':external_message}, context)
 
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
     else:
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
-        return render_to_response('login.html', {}, context)
+        return render_to_response('login.html', {'message':''}, context)
 
 @require_http_methods(['DELETE'])
 @csrf_exempt
