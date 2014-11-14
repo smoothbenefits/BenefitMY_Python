@@ -185,7 +185,7 @@ var employerUser = employersController.controller('employerUser',
         });
 
       var gotoUserView = function(userType){
-        $location.path('/admin/' + userType + '/' + compId);
+        $location.path('/admin/' + userType.toLowerCase() + '/' + compId);
       }
 
       var mapToAPIUser = function(viewUser, userType){
@@ -213,7 +213,7 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.addLink = function(userType)
       {
-        $location.path('/admin/'+ userType + '/add/'+compId);
+        $location.path('/admin/'+ userType.toLowerCase() + '/add/'+compId);
       }
 
       $scope.createUser = function(userType){
