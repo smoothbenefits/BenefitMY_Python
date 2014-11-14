@@ -4,13 +4,16 @@ from django.shortcuts import render_to_response
 from rest_framework.response import Response
 from rest_framework import status
 
+from emailusernames.utils import (
+    create_user,
+    get_user,
+    user_exists)
 from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.models.user import User
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
 from app.serializers.person_serializer import PersonSerializer
-from app.serializers.company_user_serializer import CompanyUserPostSerializer
 
 
 class UserView(APIView):
@@ -47,18 +50,30 @@ class UsersView(APIView):
             raise Http404
 
         company_users = CompanyUser.objects.filter(
-            company = request.DATA['company'])
+            company=request.DATA['company'])
 
         for c in company_users:
             if (c.company_user_type == request.DATA['company_user_type'] and
                     c.user.email == request.DATA['user']['email']):
                 return Response(status=status.HTTP_409_CONFLICT)
 
-        serializer = CompanyUserPostSerializer(data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        create_user(request.DATA['user']['email'], '123456')
+        if not user_exists(request.DATA['user']['email']):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_user(request.DATA['user']['email'])
+        user.first_name = request.DATA['user']['first_name']
+        user.last_name = request.DATA['user']['last_name']
+        user.save()
+
+        company_user = CompanyUser(company_id=request.DATA['company'],
+                                   user=user,
+                                   company_user_type=request.DATA['company_user_type'])
+        company_user.save()
+
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class CurrentUserView(APIView):
