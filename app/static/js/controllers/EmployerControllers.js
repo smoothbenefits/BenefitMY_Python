@@ -173,11 +173,11 @@ var employerUser = employersController.controller('employerUser',
       employerWorkerRepository.get({companyId:compId})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
-              if(role.company_user_type=='employee')
+              if(role.company_user_type.toLowerCase()=='employee')
               {
                 $scope.employees.push(role);
               }
-              else if(role.company_user_type=='broker')
+              else if(role.company_user_type.toLowerCase()=='broker')
               {
                 $scope.brokers.push(role);
               }
@@ -327,13 +327,13 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
       templateRepository.byCompany.get({companyId:$routeParams.company_id})
         .$promise.then(function(response){
           $scope.existingTemplateList = _.sortBy(
-            _.filter(response.templates, 
-                   function(template){
-                    return template.document_type.name === $scope.documentType;
-            }), 
+            _.filter(response.templates,
+              function(template){
+                return template.template.document_type.name === $scope.documentType;
+            }),
             function(elm){return elm.id;}
           ).reverse();
-          
+
           if(!_.isEmpty($scope.existingTemplateList))
           {
             $scope.viewTitle = 'Manage ' + $scope.documentType + ' Template';
@@ -460,9 +460,9 @@ var employerViewLetter = employersController.controller('employerViewLetter',
 
     documentRepository.byUser.query({userId:employeeId})
       .$promise.then(function(response){
-        
+
         var unsortedDocumentList = _.filter(
-            response, 
+            response,
             function(doc){
               return doc.document_type.name === $scope.documentType
             });
