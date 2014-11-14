@@ -18,7 +18,7 @@
                 <select ng-model="benefitTypePlan.selected"
                     ng-required="true"
                     name="{{benefitTypePlan.type}}_benefit_plan"
-                    ng-options="plan.benefit.benefit_name + ' ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
+                    ng-options="plan.benefit.benefit_plan.name + ', ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
                     class="form-control"></select>
             </div>
             <div class="row">
