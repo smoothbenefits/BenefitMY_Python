@@ -60,7 +60,7 @@
                   The template has just been created!
                 </div>
                 <div class="submit-box">
-                    <button ng-show="showCreateButton" ng-click="createTemplate()"
+                    <button ng-show="isInAddMode()" ng-click="createTemplate()"
                         class="btn green"
                         ng-disabled="form.$invalid">
                         Create Template

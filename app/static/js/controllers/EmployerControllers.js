@@ -340,8 +340,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
           }
           else
           {
-            $scope.addMode=true;
-            $scope.showCreateButton = true;
+            $location.search({type:$scope.documentType, add:'true'});
           }
         });
     };
