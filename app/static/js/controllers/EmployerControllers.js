@@ -89,7 +89,7 @@ var employerHome = employersController.controller('employerHome',
           });
 
           _.each(response.templates, function(template){
-            $scope.templateCountArray[template.template.document_type.name] ++;
+            $scope.templateCountArray[template.document_type.name] ++;
           });
         });
     };
@@ -305,9 +305,12 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
     $scope.addMode = $routeParams.add;
     $scope.companyId = $routeParams.company_id;
     $scope.viewTitle = 'Create ' + $scope.documentType + ' Template';
-    $scope.showCreateButton = $scope.addMode;
     $scope.showEditButton = false;
     $scope.existingTemplateList = [];
+
+    $scope.isInAddMode = function(){
+      return _.isEmpty($scope.existingTemplateList) || $scope.addMode === 'true';
+    };
 
     var updateWithExistingTemplate = function(template)
     {
@@ -319,14 +322,14 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
         $scope.showEditButton = true;
       }
     }
-    if(!$scope.addMode)
+    if(!$scope.addMode || $scope.addMode === 'false')
     {
       templateRepository.byCompany.get({companyId:$routeParams.company_id})
         .$promise.then(function(response){
           $scope.existingTemplateList = _.sortBy(
             _.filter(response.templates, 
                    function(template){
-                    return template.template.document_type.name === $scope.documentType;
+                    return template.document_type.name === $scope.documentType;
             }), 
             function(elm){return elm.id;}
           ).reverse();
@@ -362,6 +365,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
         templateRepository.create.save(postObj, function(response){
           updateWithExistingTemplate(response.template);
           $scope.justCreated = true;
+          $location.search({add:'false', type:$scope.documentType})
         }, function(response){
           $scope.templateCreateFailed = true;
         });
@@ -393,13 +397,13 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
         $scope.templateArray = [];
 
         _.each(response.templates, function(template){
-          if (template.template.document_type.name === $scope.documentType){
+          if (template.document_type.name === $scope.documentType){
             $scope.templateArray.push(template);
           }
         });
 
         _.sortBy($scope.templateArray, function(template){
-          return template.template.name;
+          return template.name;
         });
       });
 
@@ -421,8 +425,16 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
     {
       var curTemplate = $scope.selectedTemplate;
       $scope.newDoc.fields = curTemplate.fields;
+      _.each($scope.newDoc.fields, function(field){
+        if(!field.value){
+          var foundValue = _.findWhere($scope.newDoc.fields, {name:field.name});
+          if(foundValue){
+            field.value = foundValue.value;
+          }
+        }
+      });
       $scope.newDoc.document_type = $scope.documentType;
-      var postObj={company:$scope.companyId, user:employeeId, template:curTemplate.template.id, signature:'', document:$scope.newDoc};
+      var postObj={company:$scope.companyId, user:employeeId, template:curTemplate.id, signature:'', document:$scope.newDoc};
       documentRepository.create.save(postObj, function(response){
         $location.search({type:$scope.documentType}).path('/admin/view_letter/' + $scope.companyId + '/' + employeeId);
       }, function(errResponse){
