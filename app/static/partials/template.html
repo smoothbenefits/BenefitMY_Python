@@ -6,11 +6,11 @@
 
 <div class="content-header">
     <h1>{{viewTitle}}</h1>
-    <div class="cta" ng-show="!showCreateButton"><span class="btn green" ng-click="addOfferTemplate()">Add Template</span></div>
+    <div class="cta" ng-show="!isInAddMode()"><span class="btn green" ng-click="addOfferTemplate()">Add Template</span></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="table-responsive table-holder" ng-if="!_.isEmpty(existingTemplateList) && !addMode">
+    <div class="table-responsive table-holder" ng-if="!isInAddMode()">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -27,7 +27,7 @@
         </table>
     </div>
 
-    <div class="template-holder" ng-show="addMode || templateContent">
+    <div class="template-holder" ng-show="addMode==='true' || templateContent">
         <h2>View/Edit {{documentType}} Template</h2>
         <div class="form-holder">
             <form name="form">
@@ -60,7 +60,7 @@
                   The template has just been created!
                 </div>
                 <div class="submit-box">
-                    <button ng-show="showCreateButton" ng-click="createTemplate()"
+                    <button ng-show="isInAddMode()" ng-click="createTemplate()"
                         class="btn green"
                         ng-disabled="form.$invalid">
                         Create Template

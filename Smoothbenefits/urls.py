@@ -10,7 +10,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     
-    url(r'^register/$', register_view.register),
+    url(r'^employee/signup/$', register_view.register),
     
     url(r'^login/$', login_view.user_login, name='user_login'),
     url(r'^logout$', login_view.user_logout, name='user_logout'),

@@ -63,4 +63,8 @@ This would compile all the .css.scss to .css.css files.
 
 6. run “heroku run python manage.py migrate” to migrate the changes in model into database
 
+7. run "heroku run python manage.py shell". In shell, run the following commands and confirm in the database usernames have been hashed.
+>>> from emailusernames.utils import migrate_usernames
+>>> migrate_usernames()
+
 7. Then try to hit the heroku app. If it is not working, run “heroku logs” to see what is the logging on heroku say.

@@ -24,7 +24,7 @@
             <tbody>
 
                 <tr ng-repeat="benefitElement in benefits">
-                    <td style="vertical-align: top;">{{benefitElement.benefit.benefit_name}}</td>
+                    <td style="vertical-align: top;">{{benefitElement.benefit.benefit_plan.name}}</td>
                     <td colspan="3" style="padding: 0;">
                         <table class="table">
                             <tr>
@@ -34,7 +34,7 @@
                                     <table class="table">
                                         <tr ng-repeat="enrolled in benefitElement.enrolleds">
                                             <td>
-                                                {{enrolled.relationship.capitalize()}} : {{enrolled.full_name}}</td>
+                                                {{enrolled.person.relationship.capitalize()}} : {{enrolled.person.first_name}} {{enrolled.person.last_name}}</td>
                                         </tr>
                                     </table>
                                 </td>
