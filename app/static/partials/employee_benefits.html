@@ -27,7 +27,7 @@
                     <span class="checkbox" ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList">
                         <label>
                             <input type="checkbox" class="px" ng-model="member.selected" id="{{benefitTypePlan.type}}_family" ng-change="memberSelected(benefitTypePlan.selected, member)">
-                            <span class="lbl">{{member.full_name}}</span>
+                            <span class="lbl">{{member.first_name}} {{member.last_name}}</span>
                         </label>
                     </span>
                 </div>
