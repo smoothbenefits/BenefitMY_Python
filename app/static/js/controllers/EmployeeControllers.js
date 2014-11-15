@@ -3,7 +3,7 @@ var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]
 var employeeHome = employeeControllers.controller('employeeHome',
     ['$scope', '$location', '$routeParams', 'employeeCompanyRoles', 'employeeBenefits', 'currentUser', 'userDocument',
     function employeeHome($scope, $location, $routeParams, employeeCompanyRoles, employeeBenefits, currentUser, userDocument){
-
+    $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
       .then(function(response){
