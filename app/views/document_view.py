@@ -131,3 +131,26 @@ def documents(request):
 
         serializer = DocumentSerializer(d)
         return Response(serializer.data)
+
+
+class DocumentSignatureView(APIView):
+    def get_document(self, pk):
+        try:
+            return Document.objects.get(pk=pk)
+        except Document.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        
+        document = self.get_document(pk=pk)
+        s = Signature(signature=request.DATA['signature'],
+                  signature_type='sign_doc',
+                  user_id=document.user.id)
+        s.save()
+        document.signature = s
+        document.save()
+        serialized = DocumentSerializer(document)
+        return Response(serialized.data)
+
+        
+            

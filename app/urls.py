@@ -35,6 +35,7 @@ from app.views.document_view import (
     CompanyDocumentView,
     UserDocumentView,
     DocumentView,
+    DocumentSignatureView,
     documents)
 from app.views.company_templates_view import CompanyTemplatesView
 
@@ -92,6 +93,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/documents/companies/(?P<pk>[0-9]+)/users/(?P<pd>[0-9]+)/type/(?P<py>[0-9]+)/?$' % PREFIX,
         CompanyUserTypeDocumentView.as_view()),
     url(r'^%s/documents/(?P<pk>[0-9]+)/?$' % PREFIX, DocumentView.as_view()),
+    url(r'^%s/documents/(?P<pk>[0-9]+)/signature/?$' % PREFIX, DocumentSignatureView.as_view()),
 
     url(r'^%s/benefits/?$' % PREFIX, benefits),
     url(r'^%s/companies/?$' % PREFIX, companies),
