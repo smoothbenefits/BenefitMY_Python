@@ -3,6 +3,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ngResource',
     'ui.mask',
     'benefitmyService',
+    'benefitmyApp.users.controllers',
     'benefitmyApp.brokers.controllers',
     'benefitmyApp.employers.controllers',
     'benefitmyApp.employees.controllers']);
