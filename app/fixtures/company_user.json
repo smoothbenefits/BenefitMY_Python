@@ -5,7 +5,7 @@
       "fields": {
       "user": 1,
       "company": 1,
-      "company_user_type": "Broker"
+      "company_user_type": "broker"
       }
     },
     {
@@ -14,7 +14,7 @@
       "fields": {
       "user": 1,
       "company": 2,
-      "company_user_type": "Broker"
+      "company_user_type": "broker"
       }
     },
     {
@@ -23,7 +23,7 @@
       "fields": {
       "user": 2,
       "company": 3,
-      "company_user_type": "Broker"
+      "company_user_type": "broker"
       }
     },
     {
@@ -32,7 +32,7 @@
       "fields": {
       "user": 2,
       "company": 3,
-      "company_user_type": "Admin"
+      "company_user_type": "admin"
       }
     },
     {
@@ -41,7 +41,7 @@
       "fields": {
       "user": 4,
       "company": 1,
-      "company_user_type": "Admin"
+      "company_user_type": "admin"
       }
     },
     {
@@ -50,7 +50,7 @@
       "fields": {
       "user": 4,
       "company": 2,
-      "company_user_type": "Admin"
+      "company_user_type": "admin"
       }
     },
     {
@@ -59,7 +59,7 @@
       "fields": {
       "user": 5,
       "company": 2,
-      "company_user_type": "Employee"
+      "company_user_type": "employee"
       }
     },
     {
@@ -68,7 +68,7 @@
       "fields": {
       "user": 5,
       "company": 1,
-      "company_user_type": "Employee"
+      "company_user_type": "employee"
       }
     },
     {
@@ -77,7 +77,7 @@
       "fields": {
       "user": 6,
       "company": 1,
-      "company_user_type": "Employee"
+      "company_user_type": "employee"
       }
     }
  ]
