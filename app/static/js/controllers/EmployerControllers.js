@@ -104,10 +104,11 @@ var employerHome = employersController.controller('employerHome',
     var clientPromise = userPromise.then(function(user){
       return clientListRepository.get({userId:user.id}).$promise;
     });
+
     clientPromise.then(function(clientListResponse){
       _.every(clientListResponse.company_roles, function(company_role)
         {
-          if(company_role.company_user_type === 'admin')
+          if(company_role.company_user_type.toLowerCase() === 'admin')
           {
             $scope.company = company_role.company;
             getDocumentTypes($scope.company);
