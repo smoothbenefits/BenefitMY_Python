@@ -498,13 +498,3 @@ var employerViewLetter = employersController.controller('employerViewLetter',
       $location.path('/admin/employee/' + $scope.companyId);
     };
   }]);
-
-var employerViewDraft = employersController.controller('employerViewDraft',
-  ['$scope', '$location', '$routeParams', 'documentRepository',
-  function employerViewDraft($scope, $location, $routeParams, documentRepository){
-    var companyId = $routeParams.company_id;
-    var documentTypeId = $routeParams.document_type_id;
-    var employeeId = $routeParams.employee_id;
-
-
-  }]);
