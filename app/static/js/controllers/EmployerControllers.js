@@ -55,11 +55,11 @@ var employerHome = employersController.controller('employerHome',
       employerWorkerRepository.get({companyId:company.id})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
-              if(role.company_user_type.toLowerCase()==='employee')
+              if(role.company_user_type==='employee')
               {
                 $scope.employeeCount++;
               }
-              else if(role.company_user_type.toLowerCase()==='broker')
+              else if(role.company_user_type==='broker')
               {
                 $scope.brokerCount++;
               }
@@ -108,7 +108,7 @@ var employerHome = employersController.controller('employerHome',
     clientPromise.then(function(clientListResponse){
       _.every(clientListResponse.company_roles, function(company_role)
         {
-          if(company_role.company_user_type.toLowerCase() === 'admin')
+          if(company_role.company_user_type === 'admin')
           {
             $scope.company = company_role.company;
             getDocumentTypes($scope.company);
@@ -174,11 +174,11 @@ var employerUser = employersController.controller('employerUser',
       employerWorkerRepository.get({companyId:compId})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
-              if(role.company_user_type.toLowerCase()=='employee')
+              if(role.company_user_type=='employee')
               {
                 $scope.employees.push(role);
               }
-              else if(role.company_user_type.toLowerCase()=='broker')
+              else if(role.company_user_type=='broker')
               {
                 $scope.brokers.push(role);
               }
@@ -186,7 +186,7 @@ var employerUser = employersController.controller('employerUser',
         });
 
       var gotoUserView = function(userType){
-        $location.path('/admin/' + userType.toLowerCase() + '/' + compId);
+        $location.path('/admin/' + userType + '/' + compId);
       }
 
       var mapToAPIUser = function(viewUser, userType){
@@ -214,7 +214,7 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.addLink = function(userType)
       {
-        $location.path('/admin/'+ userType.toLowerCase() + '/add/'+compId);
+        $location.path('/admin/'+ userType + '/add/'+compId);
       }
 
       $scope.createUser = function(userType){

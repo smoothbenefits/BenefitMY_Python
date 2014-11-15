@@ -26,12 +26,12 @@ var findViewController = userControllers.controller('findViewController',
         else if(userRoles.length > 0 && !paramValue)
         {
            var firstRole = userRoles[0].company_user_type;
-           if(firstRole.toLowerCase() === 'employee'){
+           if(firstRole === 'employee'){
               $location.replace().path('/employee/onboard/index/' + currentUser.id);
            }
            else
            {
-              $location.replace().path('/'+firstRole.toLowerCase());
+              $location.replace().path('/'+firstRole);
            }
         }
         else
@@ -79,7 +79,7 @@ var userController = userControllers.controller('userController', ['$scope', '$h
       }
       else
       {
-        var roleFind = _.findWhere(currentRoleList, {'company_user_type':checkRole.capitalize()});
+        var roleFind = _.findWhere(currentRoleList, {'company_user_type':checkRole});
         return !_.isUndefined(roleFind);
       }
     };
