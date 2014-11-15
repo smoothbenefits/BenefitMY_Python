@@ -2,6 +2,7 @@ var brokersControllers = angular.module('benefitmyApp.brokers.controllers',[]);
 
 var findViewController = brokersControllers.controller('findViewController', ['$scope', '$location', 'currentUser', 'clientListRepository',
     function findViewController($scope, $location, currentUser, clientListRepository){
+      var currentUser;
       var userRolesContains = function(userType, userRoles)
       {
         var role = _.findWhere(userRoles, {company_user_type:userType});
@@ -22,7 +23,13 @@ var findViewController = brokersControllers.controller('findViewController', ['$
         else if(userRoles.length > 0 && !paramValue)
         {
            var firstRole = userRoles[0].company_user_type;
-           $location.replace().path('/'+firstRole.toLowerCase());
+           if(firstRole.toLowerCase() === 'employee'){
+              $location.replace().path('/employee/onboard/index/' + currentUser.id);
+           }
+           else
+           {
+              $location.replace().path('/'+firstRole.toLowerCase());
+           }
         }
         else
         {
@@ -33,7 +40,8 @@ var findViewController = brokersControllers.controller('findViewController', ['$
       var userPromise = currentUser.get()
         .$promise.then(function(response)
              {
-                return response.user;
+                currentUser = response.user;
+                return currentUser;
              }
         );
       userPromise.then(function(user){
