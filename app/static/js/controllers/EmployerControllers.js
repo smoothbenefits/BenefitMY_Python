@@ -469,7 +469,7 @@ var employerViewLetter = employersController.controller('employerViewLetter',
     $scope.documentType = $routeParams.type;
     $scope.documentList = [];
     $scope.activeDocument = {};
-
+    $scope.signaturePresent = false;
 
     documentRepository.byUser.query({userId:employeeId})
       .$promise.then(function(response){
@@ -488,6 +488,10 @@ var employerViewLetter = employersController.controller('employerViewLetter',
 
     $scope.viewExistingLetter = function(doc){
       $scope.activeDocument = doc;
+      if (doc.signature && doc.signature.signature){
+        $scope.signatureImage = doc.signature.signature;
+        $scope.signaturePresent = true;
+      }
     };
 
     $scope.createNewLetter = function(){

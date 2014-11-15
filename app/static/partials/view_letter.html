@@ -40,6 +40,12 @@
         <div class="panel-body">
             {{activeDocument.content}}
         </div>
+        <div class="signature-display-container" ng-show="signaturePresent">
+            <div class="signature-image-container col-md-10 col-md-offset-1">
+                <img ng-src="{{signatureImage}}" alt="signature"/>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
     </div>
 
     <div class="template-holder" ng-show="addMode || templateContent">
