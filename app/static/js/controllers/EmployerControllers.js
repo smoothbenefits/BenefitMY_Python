@@ -348,6 +348,18 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
     $scope.modifyExistingTemplate = function(template){
       updateWithExistingTemplate(template);
     };
+    $scope.saveTemplateChanges = function(){
+      var template = {};
+      template.name = $scope.templateName;
+      template.content = $scope.templateContent;
+      template.document_type = $scope.documentType;
+      templateRepository.create.save({company: $scope.companyId, template: template}, function(response){
+        updateWithExistingTemplate(response.template);
+        $location.search({add:'false', type: $scope.documentType})
+      }, function(response){
+        $scope.templateCreateFailed = true;
+      })
+    }
     $scope.addOfferTemplate = function(){
       $location.search({type:$scope.documentType, add:'true'});
     };
