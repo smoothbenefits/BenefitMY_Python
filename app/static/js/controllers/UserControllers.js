@@ -79,7 +79,7 @@ var userController = userControllers.controller('userController', ['$scope', '$h
       }
       else
       {
-        var roleFind = _.findWhere(currentRoleList, {'company_user_type':checkRole});
+        var roleFind = _.findWhere(currentRoleList, {'company_user_type':checkRole.capitalize()});
         return !_.isUndefined(roleFind);
       }
     };
