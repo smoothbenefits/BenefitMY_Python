@@ -9,6 +9,7 @@ description: >
 sample_request:
 {
     "name": "john killer",
+    "company": "XXX company"
     "email": "john@gmail.com"
 }
 

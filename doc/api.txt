@@ -2,28 +2,28 @@ This is the currently working apis
 
 Get:
 
-/api/v1/people/#/                         done,   Same as the old api, full name --> first/last_name
-/api/v1/benefit_types/                    done, same as the old api
-/api/v1/document_types/                   done, same as the old api
-/api/v1/companies/#/                      done, the old api is not correct, can not verify
-/api/v1/users/                            done,    Same as the old api, full name --> first/last_name
-/api/v1/users/#/                          done,   Same as the old api, full name --> first/last_name
-/api/v1/users/#/family/                   done,   update full_name to first_name, middle_name, last_name
-/api/v1/users/#/documents/                done,   minor change for document_type
-/api/v1/users/#/benefits/                 done, benefit_plan needs some work
-/api/v1/users/#/company_roles/            done, type --> company_user_type
-/api/v1/templates/#/                      done, the fields should not be here, it should be retrieved from document
-/api/v1/benefits/#/                       done, need minor work for benefit_type
-/api/v1/companies/#/benefits/             done, need work for benefit plan
-/api/v1/companies/#/users/                done, type --> company_user_type
-/api/v1/companies/#/documents/            done, minor work for document type
-/api/v1/companies/#/templates/            done, document_type need minor work, fields should not be here, it should be retrieved from document
+/api/v1/people/#/                        
+/api/v1/benefit_types/              
+/api/v1/document_types/           
+/api/v1/companies/#/                      
+/api/v1/users/               
+/api/v1/users/#/                 
+/api/v1/users/#/family/           
+/api/v1/users/#/documents/        
+/api/v1/users/#/benefits/        
+/api/v1/users/#/company_roles/  
+/api/v1/templates/#/        
+/api/v1/benefits/#/                
+/api/v1/companies/#/benefits/           
+/api/v1/companies/#/users/               
+/api/v1/companies/#/documents/         
+/api/v1/companies/#/templates/           
 
 
 Post:
-api/v1/users/#/family/                    same as before
-api/v1/templates/                         same as before
-api/v1/companies/                         same as before
-api/v1/users/                             same as before, error may happern for the username in the postgres db
-api/v1/benefits/                          Post is exactly the same, return changes a little, may not need any work
-api/v1/documents/                         same as before
+api/v1/users/#/family/               
+api/v1/templates/                
+api/v1/companies/                 
+api/v1/users/                       
+api/v1/benefits/                
+api/v1/documents/             
