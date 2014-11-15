@@ -81,7 +81,7 @@ var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignu
       .$promise.then(function(response){
         var company_id;
         _.each(response.company_roles, function(role){
-          if(role.company_user_type.toLowerCase()==='employee'){
+          if(role.company_user_type==='employee'){
             company_id = role.company.id;
             companyId = company_id;
           }
