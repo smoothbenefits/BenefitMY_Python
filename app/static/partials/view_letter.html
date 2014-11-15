@@ -1,3 +1,6 @@
+<script type="text/javascript" src="/static/js/flashcanvas.js"></script>
+<script src="/static/js/jSignature.min.js"></script>
+
 <div class="breadcrumb">
     <a href="/">Home</a>
     <a ng-href="#/admin">Employer Dashboard</a>
@@ -30,14 +33,14 @@
         </table>
     </div>
 
-    <div class="document-holder" ng-show="anyActiveDocument()">
-        <div class="header-holder">
-            <h2>{{activeDocument.name}}</h2>
-        <div>
-        <div class="document-content-holder">
+    <div class="panel colourable" ng-show="anyActiveDocument()">
+        <div class="panel-heading">
+            <span class="panel-title">{{activeDocument.name}}</span>
+        </div>
+        <div class="panel-body">
             {{activeDocument.content}}
         </div>
-    </div><!-- / .document-holder -->
+    </div>
 
     <div class="template-holder" ng-show="addMode || templateContent">
         <h2>View {{documentType}} Template</h2>
@@ -64,6 +67,6 @@
         </div>
     </div><!-- / .template-holder -->
 
-    <div class="back"><a ng-click="viewEmployeesLink()">&laquo; Back</a></div>
+    <div class="back pull-left"><a ng-click="viewEmployeesLink()">&laquo; Back</a></div>
 
 </div><!-- / .content-body -->

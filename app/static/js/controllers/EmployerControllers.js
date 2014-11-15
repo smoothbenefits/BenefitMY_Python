@@ -483,7 +483,7 @@ var employerViewLetter = employersController.controller('employerViewLetter',
       });
 
     $scope.anyActiveDocument = function(){
-      return typeof $scope.activeDocument.name !== undefined;
+      return typeof $scope.activeDocument.name !== 'undefined';
     }
 
     $scope.viewExistingLetter = function(doc){
