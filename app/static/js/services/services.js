@@ -99,7 +99,8 @@ benefitmyService.factory('documentRepository', ['$resource',
       byUser: $resource('/api/v1/users/:userId/documents', {userId:'@user_id'}),
       type: $resource('/api/v1/document_types?company=:companyId', {companyId:'@company_id'}),
       create: $resource('/api/v1/documents/', {}),
-      getById: $resource('/api/v1/documents/:id', {id:'@document_id'})
+      getById: $resource('/api/v1/documents/:id', {id:'@document_id'}),
+      sign: $resource('/api/v1/documents/:id/signature', {id:'@document_id'})
     };
   }
 ]);
