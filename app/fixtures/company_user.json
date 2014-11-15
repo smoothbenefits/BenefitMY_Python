@@ -8,7 +8,7 @@
       "company_user_type": "broker"
       }
     },
-    {      
+    {
       "model": "app.CompanyUser",
       "pk": 2,
       "fields": {
@@ -26,7 +26,7 @@
       "company_user_type": "broker"
       }
     },
-    {      
+    {
       "model": "app.CompanyUser",
       "pk": 4,
       "fields": {
@@ -35,7 +35,7 @@
       "company_user_type": "admin"
       }
     },
-    { 
+    {
       "model": "app.CompanyUser",
       "pk": 5,
       "fields": {
@@ -44,7 +44,7 @@
       "company_user_type": "admin"
       }
     },
-    {      
+    {
       "model": "app.CompanyUser",
       "pk": 6,
       "fields": {
@@ -53,7 +53,7 @@
       "company_user_type": "admin"
       }
     },
-    {       
+    {
       "model": "app.CompanyUser",
       "pk": 7,
       "fields": {
@@ -62,7 +62,7 @@
       "company_user_type": "employee"
       }
     },
-    { 
+    {
       "model": "app.CompanyUser",
       "pk": 8,
       "fields": {
@@ -71,7 +71,7 @@
       "company_user_type": "employee"
       }
     },
-    {      
+    {
       "model": "app.CompanyUser",
       "pk": 9,
       "fields": {

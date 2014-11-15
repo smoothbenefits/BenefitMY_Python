@@ -18,7 +18,7 @@
                 <select ng-model="benefitTypePlan.selected"
                     ng-required="true"
                     name="{{benefitTypePlan.type}}_benefit_plan"
-                    ng-options="plan.benefit.benefit_name + ' ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
+                    ng-options="plan.benefit.benefit_plan.name + ', ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
                     class="form-control"></select>
             </div>
             <div class="row">
@@ -27,7 +27,7 @@
                     <span class="checkbox" ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList">
                         <label>
                             <input type="checkbox" class="px" ng-model="member.selected" id="{{benefitTypePlan.type}}_family" ng-change="memberSelected(benefitTypePlan.selected, member)">
-                            <span class="lbl">{{member.full_name}}</span>
+                            <span class="lbl">{{member.first_name}} {{member.last_name}}</span>
                         </label>
                     </span>
                 </div>

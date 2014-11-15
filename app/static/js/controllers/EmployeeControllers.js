@@ -1,8 +1,9 @@
 var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]);
 
-var employeeHome = employeeControllers.controller('employeeHome', ['$scope', '$location', '$routeParams', 'employeeCompanyRoles', 'employeeBenefits', 'currentUser',
-  function employeeHome($scope, $location, $routeParams, employeeCompanyRoles, employeeBenefits, currentUser){
-
+var employeeHome = employeeControllers.controller('employeeHome',
+    ['$scope', '$location', '$routeParams', 'employeeCompanyRoles', 'employeeBenefits', 'currentUser', 'userDocument',
+    function employeeHome($scope, $location, $routeParams, employeeCompanyRoles, employeeBenefits, currentUser, userDocument){
+    $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
       .then(function(response){
@@ -11,8 +12,8 @@ var employeeHome = employeeControllers.controller('employeeHome', ['$scope', '$l
       });
 
     var companyPromise = userPromise.then(function(userId){
-      curUserId = userId;
-      return employeeCompanyRoles.get({userId:userId}).$promise;
+        curUserId = userId;
+        return employeeCompanyRoles.get({userId:userId}).$promise;
     });
 
     var benefitPromise = companyPromise.then(function(response){
@@ -26,11 +27,31 @@ var employeeHome = employeeControllers.controller('employeeHome', ['$scope', '$l
     });
 
     benefitPromise.then(function(companyId){
-      employeeBenefits.get({userId:curUserId, companyId:companyId})
-      .$promise.then(function(response){
-        $scope.benefits = response.benefits;
-      })
-    })
+                        employeeBenefits.get({userId:curUserId, companyId:companyId})
+                        .$promise.then(function(response){
+                                       $scope.benefits = response.benefits;
+                                       $scope.benefitCount = response.benefits.length;
+                                       })
+                        });
+
+     var curUserPromise = currentUser.get().$promise.
+         then(function(userResponse){
+             return userResponse.user.id;
+         });
+
+     var documentPromise = curUserPromise.then(function(userId){
+                                               return userDocument.query({userId:userId}).$promise;
+                         });
+
+     documentPromise.then(function(response){
+                          $scope.documents = response;
+                          $scope.documentCount = response.length;
+                          });
+
+     $scope.ViewDocument = function(documentId){
+         $location.path('/employee/document/' + documentId);
+     }
+
   }
 ]);
 
@@ -262,10 +283,38 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
 }]);
 
 
-var viewDocument = employeeControllers.controller('viewDocument', ['$scope', '$location','$routeParams',
-  function viewDocument($scope, $location, $routeParams){
+var viewDocument = employeeControllers.controller('viewDocument',
+  ['$scope', '$location', '$routeParams', 'userDocument', 'currentUser', 'documentRepository',
+  function viewDocument($scope, $location, $routeParams, userDocument, currentUser, documentRepository){
+    $scope.document = {};
+    var documentId = $routeParams.doc_id;
     var signatureUpdated = false;
-    
+    var userPromise = currentUser.get().$promise
+      .then(function(response){
+        $scope.employee_id = response.user.id;
+        return response.user.id;
+      });
+
+    var documentPromise = userPromise.then(function(userId){
+      var document = userDocument.query({userId:userId}).$promise
+        .then(function(response){
+          return _.find(response, function(d)
+          {
+            return d.id.toString() === documentId;
+          });
+        });
+      return document;
+    });
+
+    documentPromise.then(function(document){
+      $scope.document = document;
+      if(document.signature && document.signature.signature)
+      {
+        $scope.signatureImage = document.signature.signature;
+        $scope.signaturePresent = true;
+      }
+    });
+
     var $sigdiv = $("#doc_signature");
     if(_.isUndefined($sigdiv))
     {
@@ -285,10 +334,20 @@ var viewDocument = employeeControllers.controller('viewDocument', ['$scope', '$l
       else
       {
         var signatureData = $sigdiv.jSignature('getData', 'svg');
-        $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
-        $location.path('/employee');
+        var signaturePayload = "data:" + signatureData[0] + ',' + signatureData[1];
+        documentRepository.sign.save({id:$scope.document.id}, {'signature':signaturePayload}, function(successResponse){
+          $scope.signatureSaved = true;
+          $scope.signatureImage = successResponse.signature.signature;
+        }, function(failureResponse){
+          $scope.signatureSaveFailed = true;
+        });
       }
+    };
+    $scope.goToDashboard = function()
+    {
+      $location.path('/employee');
     }
+
 }]);
 
 var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$routeParams', function($scope, $routeParams){
@@ -303,7 +362,7 @@ var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$route
   }
 }]);
 
-var signup = employeeControllers.controller('employeeSignup', ['$scope', '$routeParams', '$location', 
+var signup = employeeControllers.controller('employeeSignup', ['$scope', '$routeParams', '$location',
   function($scope, $routeParams, $location){
     $scope.employee = {};
     $scope.employee.id = $routeParams.signup_number;
@@ -321,21 +380,72 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
     }
 }]);
 
-var onboardIndex = employeeControllers.controller('onboardIndex', ['$scope', '$routeParams', '$location',
-  function($scope, $routeParams, $location){
+var onboardIndex = employeeControllers.controller('onboardIndex',
+  ['$scope', '$routeParams', '$location', 'employeeFamily',
+  function($scope, $routeParams, $location, employeeFamily){
     $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
+
+    var mapEmployee = function(viewEmployee){
+      var apiEmployee = {
+        'person_type': 'family',
+        'relationship': 'self',
+        'first_name': viewEmployee.firstname,
+        'last_name': viewEmployee.lastname,
+        'birth_date': viewEmployee.birth_date,
+        'ssn': viewEmployee.ssn,
+        'email': viewEmployee.email,
+        'addresses': [],
+        'phones': [
+          {
+            'phone_type': 'home',
+            'number': viewEmployee.phone.number
+          }
+        ]
+      };
+
+      viewEmployee.address.address_type = 'home';
+      apiEmployee.addresses.push(viewEmployee.address);
+      return apiEmployee;
+    };
+
     $scope.addBasicInfo = function(){
-      $location.path('/employee/onboard/employment/'+$scope.employeeId);
-    }
+      var newEmployee = mapEmployee($scope.employee);
+      employeeFamily.save({userId: $scope.employeeId}, newEmployee,
+        function(){
+          $location.path('/employee/onboard/employment/' + $scope.employeeId);
+        }, function(){
+          alert('Failed to add the new user');
+        });
+    };
 }]);
 
-var onboardEmployment = employeeControllers.controller('onboardEmployment', ['$scope', '$routeParams', '$location',
-  function($scope, $routeParams, $location){
+var onboardEmployment = employeeControllers.controller('onboardEmployment',
+  ['$scope', '$routeParams', '$location', 'employeeOnboarding',
+  function($scope, $routeParams, $location, employeeOnboarding){
     $('body').addClass('onboarding-page');
-    $scope.employee = {};
+    $scope.employee = {
+
+    };
     $scope.employeeId = $routeParams.employee_id;
+
+    var mapContract = function(viewObject, signature){
+      var contract = {
+        'worker_type': viewObject.auth_type,
+        'expiration_date': viewObject.auth_expiration,
+        'uscis_number': viewObject.authNumber,
+        'i_94': viewObject.I94Id,
+        'passport': viewObject.passportId,
+        'country': viewObject.passportCountry,
+        'signature': {
+          'signature': signature,
+          'signature_type': 'step'
+        }
+      };
+      return contract;
+    };
+
     var signatureUpdated = false;
     var $sigdiv = $("#auth_signature");
     if(_.isUndefined($sigdiv))
@@ -357,12 +467,19 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment', ['$s
       {
         var signatureData = $sigdiv.jSignature('getData', 'svg');
         $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
-        $location.path('/employee/onboard/tax/' + $scope.employeeId);
+        var contract = mapContract($scope.employee, $scope.signatureImage);
+        employeeOnboarding.save({userId: $scope.employeeId}, contract,
+          function(){
+            $location.path('/employee/onboard/tax/' + $scope.employeeId);
+          }, function(){
+            alert('Failed to add employment information');
+          });
       }
     }
 }]);
 
-var onboardTax = employeeControllers.controller('onboardTax', ['$scope', '$routeParams', '$location',
+var onboardTax = employeeControllers.controller('onboardTax',
+  ['$scope', '$routeParams', '$location',
   function($scope, $routeParams, $location){
     $('body').addClass('onboarding-page');
     $scope.employee = {};
@@ -375,8 +492,9 @@ var onboardTax = employeeControllers.controller('onboardTax', ['$scope', '$route
     }
 }]);
 
-var onboardComplete = employeeControllers.controller('onboardComplete', ['$scope', '$routeParams', '$location',
-  function($scope, $routeParams, $location){
+var onboardComplete = employeeControllers.controller('onboardComplete',
+  ['$scope', '$routeParams', '$location', 'employeeSignature',
+  function($scope, $routeParams, $location, employeeSignature){
     $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
@@ -400,7 +518,16 @@ var onboardComplete = employeeControllers.controller('onboardComplete', ['$scope
       else{
         var signatureData = $sigdiv.jSignature('getData', 'svg');
         $scope.termSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
-        $location.path('/employee');
+        var contract = {
+          'signature': $scope.termSignatureData,
+          'signature_type': 'final'
+        };
+        employeeSignature.save({userId: $scope.employeeId}, contract,
+          function(){
+            $location.path('/employee');
+          }, function(){
+            alert('Failed to submit signature');
+          });
       }
     }
 }])

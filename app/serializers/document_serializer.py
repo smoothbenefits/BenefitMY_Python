@@ -9,13 +9,13 @@ class DocumentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Document
-        fileds = ('id',
+        fields = ('id',
                   'name',
                   'content',
                   'edited',
                   'company',
                   'user',
-                  'template'
+                  'template',
                   'document_type',
                   'signature',
                   'fields')

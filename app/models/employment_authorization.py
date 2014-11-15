@@ -12,8 +12,8 @@ WORKER_TYPE = (("Citizen", "CItizen"),
 class EmploymentAuthorization(models.Model):
     worker_type = models.CharField(max_length=30,
                                    choices=WORKER_TYPE)
-    expiration_date = models.DateField()
-    uscis_number = models.CharField(max_length=255)
+    expiration_date = models.DateField(blank=True, null=True)
+    uscis_number = models.CharField(max_length=255, blank=True, null=True)
     i_94 = models.CharField(max_length=255, null=True, blank=True)
     passport = models.CharField(max_length=255, null=True, blank=True)
     country = models.CharField(max_length=255, null=True, blank=True)

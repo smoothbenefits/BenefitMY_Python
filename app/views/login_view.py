@@ -12,14 +12,15 @@ def user_login(request):
 
     # If the request is a HTTP POST, try to pull out the relevant information.
     if request.method == 'POST':
-        # Gather the username and password provided by the user.
+        # Gather the email and password provided by the user.
         # This information is obtained from the login form.
         userEmail = request.POST['email']
         password = request.POST['password']
-        
+
         # Use Django's machinery to attempt to see if the email/password
         # combination is valid - a User object is returned if it is.
         user = authenticate(email=userEmail, password=password)
+
         # If we have a User object, the details are correct.
         # If None (Python's way of representing the absence of a value), no user
         # with matching credentials was found.
@@ -36,14 +37,16 @@ def user_login(request):
         else:
             # Bad login details were provided. So we can't log the user in.
             print "Invalid login details: {0}, {1}".format(userEmail, password)
-            return HttpResponse("Invalid login details supplied.")
+
+            external_message = "The combination of your email and password is not correct"
+            return render_to_response('login.html', {'message':external_message}, context)
 
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
     else:
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
-        return render_to_response('login.html', {}, context)
+        return render_to_response('login.html', {'message':''}, context)
 
 @require_http_methods(['DELETE'])
 @csrf_exempt

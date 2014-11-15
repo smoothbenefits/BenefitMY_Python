@@ -24,7 +24,7 @@
             <tbody>
 
                 <tr ng-repeat="benefitElement in benefits">
-                    <td style="vertical-align: top;">{{benefitElement.benefit.benefit_name}}</td>
+                    <td style="vertical-align: top;">{{benefitElement.benefit.benefit_plan.name}}</td>
                     <td colspan="3" style="padding: 0;">
                         <table class="table">
                             <tr>
@@ -34,7 +34,7 @@
                                     <table class="table">
                                         <tr ng-repeat="enrolled in benefitElement.enrolleds">
                                             <td>
-                                                {{enrolled.relationship.capitalize()}} : {{enrolled.full_name}}</td>
+                                                {{enrolled.person.relationship.capitalize()}} : {{enrolled.person.first_name}} {{enrolled.person.last_name}}</td>
                                         </tr>
                                     </table>
                                 </td>
@@ -50,7 +50,7 @@
 
 <div class="content-header">
     <h1>My Documents</h1>
-    <span class="general-info">You have total <b>{{benefitCount}}</b> documents</span>
+    <span class="general-info">You have total <b>{{documentCount}}</b> documents</span>
 </div><!-- / .content-header -->
 
 <div class="content-body">
@@ -66,7 +66,7 @@
                 <tr ng-repeat="document in documents">
                     <td>{{document.name}}</td>
                     <td>
-                        <a class="btn inline" ng-click="ViewDocument(document)"> {{document.name}}</a>
+                        <a class="btn inline" ng-click="ViewDocument(document.id)"> View</a>
                     </td>
                 </tr>
             </tbody>

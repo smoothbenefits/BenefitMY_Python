@@ -99,7 +99,8 @@ benefitmyService.factory('documentRepository', ['$resource',
       byUser: $resource('/api/v1/users/:userId/documents', {userId:'@user_id'}),
       type: $resource('/api/v1/document_types?company=:companyId', {companyId:'@company_id'}),
       create: $resource('/api/v1/documents/', {}),
-      getById: $resource('/api/v1/documents/:id', {id:'@document_id'})
+      getById: $resource('/api/v1/documents/:id', {id:'@document_id'}),
+      sign: $resource('/api/v1/documents/:id/signature', {id:'@document_id'})
     };
   }
 ]);
@@ -112,4 +113,14 @@ benefitmyService.factory('templateRepository', ['$resource',
       getById: $resource('/api/v1/templates/:id', {id:'@id'})
     };
   }
-                         ]);
+]);
+
+benefitmyService.factory('employeeOnboarding', ['$resource',
+  function($resource){
+    return $resource('/api/v1/users/:userId/employment_authorization/', {userId: '@userId'});
+  }]);
+
+benefitmyService.factory('employeeSignature', ['$resource',
+  function($resource){
+    return $resource('/api/v1/users/:userId/signature/', {userId: '@userId'});
+  }]);

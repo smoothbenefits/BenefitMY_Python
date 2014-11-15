@@ -1,5 +1,19 @@
 var employersController = angular.module('benefitmyApp.employers.controllers',[]);
 
+var getDocumentType = function(documentTypeId){
+
+    if (documentTypeId === 1){
+      return "Offer Letter";
+    }
+    else if (documentTypeId === 2){
+      return "Employment Agreement";
+    }
+    else if(documentTypeId === 3)
+    {
+      return "NDA";
+    }
+    return "";
+};
 
 var employerHome = employersController.controller('employerHome',
                                                   ['$scope',
@@ -26,6 +40,7 @@ var employerHome = employersController.controller('employerHome',
     $scope.benefitCount = 0;
     $scope.templateCountArray = [];
 
+
    var getDocumentTypes = function(company){
       documentRepository.type.get({companyId:company.Id}).$promise.then(function(response){
         $scope.documentTypes = response.document_types;
@@ -40,11 +55,11 @@ var employerHome = employersController.controller('employerHome',
       employerWorkerRepository.get({companyId:company.id})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
-              if(role.type=='employee')
+              if(role.company_user_type==='employee')
               {
                 $scope.employeeCount++;
               }
-              else if(role.type=='broker')
+              else if(role.company_user_type==='broker')
               {
                 $scope.brokerCount++;
               }
@@ -69,15 +84,12 @@ var employerHome = employersController.controller('employerHome',
     var getTemplateCount = function(company){
       templateRepository.byCompany.get({companyId:company.id})
         .$promise.then(function(response){
+          _.each($scope.documentTypes, function(type){
+            $scope.templateCountArray[type.name] = 0;
+          });
+
           _.each(response.templates, function(template){
-            if(!$scope.templateCountArray[template.document_type])
-            {
-              $scope.templateCountArray[template.document_type] = 1;
-            }
-            else
-            {
-              $scope.templateCountArray[template.document_type] ++;
-            }
+            $scope.templateCountArray[template.document_type.name] ++;
           });
         });
     };
@@ -92,6 +104,7 @@ var employerHome = employersController.controller('employerHome',
     var clientPromise = userPromise.then(function(user){
       return clientListRepository.get({userId:user.id}).$promise;
     });
+
     clientPromise.then(function(clientListResponse){
       _.every(clientListResponse.company_roles, function(company_role)
         {
@@ -136,7 +149,7 @@ var employerHome = employersController.controller('employerHome',
 
     $scope.templateClick = function(companyId, docType)
     {
-       $location.path('/admin/generate_template/'+ companyId).search({type:docType.name});
+       $location.search({type:docType.name}).path('/admin/generate_template/'+ companyId);
     }
   }
 ]);
@@ -228,13 +241,13 @@ var employerUser = employersController.controller('employerUser',
       {
         userDocument.query({userId:employeeId})
         .$promise.then(function(response){
-          var doc = _.where(response, {document_type:docType});
+          var doc = _.filter(response, function(doc){return doc.document_type.id === docType});
           var pathKey = 'create_letter';
           if(doc && doc.length > 0)
           {
             pathKey='view_letter';
           }
-          $location.path('/admin/' + pathKey + '/' +compId +'/'+employeeId).search({type:docType});
+          $location.search({type:getDocumentType(docType)}).path('/admin/' + pathKey + '/' +compId +'/'+employeeId);
         });
 
       }
@@ -293,9 +306,12 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
     $scope.addMode = $routeParams.add;
     $scope.companyId = $routeParams.company_id;
     $scope.viewTitle = 'Create ' + $scope.documentType + ' Template';
-    $scope.showCreateButton = $scope.addMode;
     $scope.showEditButton = false;
     $scope.existingTemplateList = [];
+
+    $scope.isInAddMode = function(){
+      return _.isEmpty($scope.existingTemplateList) || $scope.addMode === 'true';
+    };
 
     var updateWithExistingTemplate = function(template)
     {
@@ -307,25 +323,43 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
         $scope.showEditButton = true;
       }
     }
-    if(!$scope.addMode)
+    if(!$scope.addMode || $scope.addMode === 'false')
     {
       templateRepository.byCompany.get({companyId:$routeParams.company_id})
         .$promise.then(function(response){
-          $scope.existingTemplateList = _.sortBy(_.where(response.templates, {document_type:$scope.documentType}), function(elm){return elm.id;}).reverse();
+          $scope.existingTemplateList = _.sortBy(
+            _.filter(response.templates,
+              function(template){
+                return template.document_type.name === $scope.documentType;
+            }),
+            function(elm){return elm.id;}
+          ).reverse();
+
           if(!_.isEmpty($scope.existingTemplateList))
           {
             $scope.viewTitle = 'Manage ' + $scope.documentType + ' Template';
           }
           else
           {
-            $scope.addMode=true;
-            $scope.showCreateButton = true;
+            $location.search({type:$scope.documentType, add:'true'});
           }
         });
     };
     $scope.modifyExistingTemplate = function(template){
       updateWithExistingTemplate(template);
     };
+    $scope.saveTemplateChanges = function(){
+      var template = {};
+      template.name = $scope.templateName;
+      template.content = $scope.templateContent;
+      template.document_type = $scope.documentType;
+      templateRepository.create.save({company: $scope.companyId, template: template}, function(response){
+        updateWithExistingTemplate(response.template);
+        $location.search({add:'false', type: $scope.documentType})
+      }, function(response){
+        $scope.templateCreateFailed = true;
+      })
+    }
     $scope.addOfferTemplate = function(){
       $location.search({type:$scope.documentType, add:'true'});
     };
@@ -343,6 +377,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
         templateRepository.create.save(postObj, function(response){
           updateWithExistingTemplate(response.template);
           $scope.justCreated = true;
+          $location.search({add:'false', type:$scope.documentType})
         }, function(response){
           $scope.templateCreateFailed = true;
         });
@@ -364,26 +399,17 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
                                 templateRepository){
     $scope.companyId = $routeParams.company_id;
     var employeeId = $routeParams.employee_id;
-    $scope.newDoc = {document_type:$scope.documentType};
+    $scope.newDoc = {};
 
-    var getDocumentType = function(documentTypeId){
-      if (documentTypeId === 1){
-        return "Offer Letter";
-      }
-      if (documentTypeId === 2){
-        return "Employment Agreement";
-      }
-      return "";
-    }
 
-    $scope.documentType = getDocumentType($routeParams.type);
+    $scope.documentType = $routeParams.type;
 
     templateRepository.byCompany.get({companyId:$scope.companyId})
       .$promise.then(function(response){
         $scope.templateArray = [];
 
         _.each(response.templates, function(template){
-          if (template.document_type.id.toString() === $routeParams.type){
+          if (template.document_type.name === $scope.documentType){
             $scope.templateArray.push(template);
           }
         });
@@ -411,9 +437,18 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
     {
       var curTemplate = $scope.selectedTemplate;
       $scope.newDoc.fields = curTemplate.fields;
-      var postObj={company:$scope.companyId, user:employeeId, template:curTemplate.id, document:$scope.newDoc};
+      _.each($scope.newDoc.fields, function(field){
+        if(!field.value){
+          var foundValue = _.findWhere($scope.newDoc.fields, {name:field.name});
+          if(foundValue){
+            field.value = foundValue.value;
+          }
+        }
+      });
+      $scope.newDoc.document_type = $scope.documentType;
+      var postObj={company:$scope.companyId, user:employeeId, template:curTemplate.id, signature:'', document:$scope.newDoc};
       documentRepository.create.save(postObj, function(response){
-        $location.path('/admin/view_letter/' + $scope.companyId + '/' + employeeId).search({type:$scope.documentType});
+        $location.search({type:$scope.documentType}).path('/admin/view_letter/' + $scope.companyId + '/' + employeeId);
       }, function(errResponse){
         $scope.createFailed = true;
       });
@@ -433,32 +468,37 @@ var employerViewLetter = employersController.controller('employerViewLetter',
     var employeeId = $routeParams.employee_id;
     $scope.documentType = $routeParams.type;
     $scope.documentList = [];
+    $scope.activeDocument = {};
+    $scope.signaturePresent = false;
 
-
-    documentRepository.byUser.get({userId:employeeId, companyId:$scope.companyId})
+    documentRepository.byUser.query({userId:employeeId})
       .$promise.then(function(response){
-        $scope.documentList = _.sortBy(_.where(response.documents, {document_type:$scope.documentType}), function(elm){return elm.id;}).reverse();
+
+        var unsortedDocumentList = _.filter(
+            response,
+            function(doc){
+              return doc.document_type.name === $scope.documentType
+            });
+        $scope.documentList = _.sortBy(unsortedDocumentList, function(elm){return elm.id;}).reverse();
       });
 
+    $scope.anyActiveDocument = function(){
+      return typeof $scope.activeDocument.name !== 'undefined';
+    }
+
     $scope.viewExistingLetter = function(doc){
-      $scope.curDocument = doc;
+      $scope.activeDocument = doc;
+      if (doc.signature && doc.signature.signature){
+        $scope.signatureImage = doc.signature.signature;
+        $scope.signaturePresent = true;
+      }
     };
 
     $scope.createNewLetter = function(){
-      $location.path('/admin/create_letter/'+ $scope.companyId +'/' + employeeId).search({type:$scope.documentType});
+      $location.search({type:$scope.documentType}).path('/admin/create_letter/'+ $scope.companyId +'/' + employeeId);
     };
 
     $scope.viewEmployeesLink = function(){
       $location.path('/admin/employee/' + $scope.companyId);
     };
-  }]);
-
-var employerViewDraft = employersController.controller('employerViewDraft',
-  ['$scope', '$location', '$routeParams', 'documentRepository',
-  function employerViewDraft($scope, $location, $routeParams, documentRepository){
-    var companyId = $routeParams.company_id;
-    var documentTypeId = $routeParams.document_type_id;
-    var employeeId = $routeParams.employee_id;
-
-
   }]);

@@ -2,10 +2,10 @@ from django.db import models
 from company import Company
 from django.contrib.auth.models import User
 
-USER_TYPE = (("Employee", "Employee"),
-             ("Admin", "Admin"),
-             ("Broker", "Broker"),
-             ("Super", "Super"))
+USER_TYPE = (("employee", "employee"),
+             ("admin", "admin"),
+             ("broker", "broker"),
+             ("super", "super"))
 
 
 class CompanyUser(models.Model):

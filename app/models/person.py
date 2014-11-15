@@ -9,7 +9,7 @@ class Person(models.Model):
     last_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(max_length=255, null=True)
     relationship = models.CharField(max_length=30, null=True)
-    ssn = models.CharField(max_length=30, null=True)
+    ssn = models.CharField(max_length=30, null=True, blank=True)
     birth_date = models.DateField(blank=True, null=True)
     user = models.ForeignKey(User,
                              related_name="family",

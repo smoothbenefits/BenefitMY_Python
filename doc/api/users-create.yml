@@ -3,7 +3,7 @@ response_format: JSON
 authentication: None
 method: POST
 resource: user
-resource_url: /api/v1/user_create
+resource_url: /api/v1/users
 description: >
   Create a new user and role for a company.
   Email and full_name fields are required.
@@ -12,7 +12,7 @@ description: >
   Returns an error object with status 409 if the email address and type already exists for this company.
 
 parameters:
-sample_url: /api/v1/user_create
+sample_url: /api/v1/users
 sample_request:
 {
        "company": 1,

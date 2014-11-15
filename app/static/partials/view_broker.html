@@ -26,7 +26,7 @@
                    </td>
                 </tr>
                 <tr ng-repeat="broker in brokers">
-                    <td>{{broker.user.full_name}}</td>
+                    <td>{{broker.user.first_name}} {{broker.user.last_name}}</td>
                     <td><a href="mailto:{{broker.user.email}}">{{broker.user.email}}</a></td>
                 </tr>
             </tbody>

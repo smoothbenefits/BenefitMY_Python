@@ -18,3 +18,25 @@ class CompanyUserView(APIView):
         companies = self.get_companies(pk)
         serializer = CompanyUserSerializer(companies, many=True)
         return Response({'user_roles':serializer.data})
+
+
+class CompanyEmployeeCountView(APIView):
+
+    def get(self, request, pk, format=None):
+        return Response({'employees_count':
+            len(CompanyUser.objects.filter(company=pk,
+                                       company_user_type='Employee'))})
+
+class CompanyBrokerCountView(APIView):
+
+    def get(self, request, pk, format=None):
+        return Response({'brokers_count':
+            len(CompanyUser.objects.filter(company=pk,
+                                       company_user_type='Broker'))})
+
+class BrokerCompanyCountView(APIView):
+
+    def get(self, request, pk, format=None):
+        return Response({'companies_count':
+            len(CompanyUser.objects.filter(user=pk,
+                                       company_user_type='Broker'))})

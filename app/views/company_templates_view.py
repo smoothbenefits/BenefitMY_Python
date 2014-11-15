@@ -3,7 +3,7 @@ from django.http import Http404
 from rest_framework.response import Response
 
 from app.models.template import Template
-from app.serializers.template_serializer import CompanyTemplatesSerializer
+from app.serializers.template_serializer import TemplateSerializer
 
 
 class CompanyTemplatesView(APIView):
@@ -15,5 +15,6 @@ class CompanyTemplatesView(APIView):
 
     def get(self, request, pk, format=None):
         templates = self.get_templates(pk)
-        serializer = CompanyTemplatesSerializer(templates, many=True)
-        return Response({'templates':serializer.data})
+        serializer = TemplateSerializer(templates,
+                                        many=True)
+        return Response({'templates': serializer.data})

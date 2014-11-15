@@ -47,6 +47,13 @@ AUTHENTICATION_BACKENDS = (
     'emailusernames.backends.EmailAuthBackend',
 )
 
+# Email
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'benefitmy@gmail.com'
+EMAIL_HOST_PASSWORD = 'linlin00'
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 MIDDLEWARE_CLASSES = (
     'sslify.middleware.SSLifyMiddleware',
@@ -196,6 +203,7 @@ PIPELINE_JS = {
             'js/jquery-ui-extras.js',
             'js/jquery.mockjax.js',
             'js/users.js.js',
+            'js/controllers/UserControllers.js',
             'js/controllers/BrokerControllers.js',
             'js/controllers/EmployeeControllers.js',
             'js/controllers/EmployerControllers.js',

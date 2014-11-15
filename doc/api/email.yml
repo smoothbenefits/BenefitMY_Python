@@ -1,0 +1,21 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource_url: /api/v1/onboard_email
+description: >
+    Send onboard email with link
+
+sample_request:
+{
+    "name": "john killer",
+    "company": "XXX company"
+    "email": "john@gmail.com"
+}
+
+
+
+sample_response: |
+
+"True" #sent
+"False" #failed

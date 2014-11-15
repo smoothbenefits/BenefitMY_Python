@@ -9,21 +9,21 @@ description: >
 
 sample_url: /api/v1/users/2/w4/
 sample_request:
-{ 
-    "marriage": 3, 
-    "dependencies": 2, 
-    "head": 2, 
-    "tax_credit": 1, 
+{
+    "marriage": 3,
+    "dependencies": 2,
+    "head": 2,
+    "tax_credit": 1,
     "total_points": 4
 }
 sample_response: |
 {
-    "id": 3, 
-    "marriage": 3, 
-    "dependencies": 2, 
-    "head": 2, 
-    "tax_credit": 1, 
-    "total_points": 4, 
+    "id": 3,
+    "marriage": 3,
+    "dependencies": 2,
+    "head": 2,
+    "tax_credit": 1,
+    "total_points": 4,
     "user": 2
 }
 
@@ -37,11 +37,11 @@ sample_url: /api/v1/users/1/w4/
 sample_request:
 
 {
-    "id": 2, 
-    "marriage": 3, 
-    "dependencies": 2, 
-    "head": 2, 
-    "tax_credit": 1, 
-    "total_points": 4, 
+    "id": 2,
+    "marriage": 3,
+    "dependencies": 2,
+    "head": 2,
+    "tax_credit": 1,
+    "total_points": 4,
     "user": 1
 }

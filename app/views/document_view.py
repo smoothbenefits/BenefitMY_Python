@@ -12,6 +12,19 @@ from app.serializers.document_serializer import (
     DocumentSerializer)
 
 
+class DocumentView(APIView):
+    def get_documents(self, pk):
+        try:
+            return Document.objects.get(pk=pk)
+        except Document.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        document = self.get_documents(pk)
+        serializer = DocumentSerializer(document)
+        return Response(serializer.data)
+
+
 class CompanyDocumentView(APIView):
     def get_documents(self, pk):
         try:
@@ -68,11 +81,11 @@ class UserDocumentView(APIView):
 
 @api_view(['POST'])
 def documents(request):
-
     s = Signature(signature=request.DATA['signature'],
                   signature_type='step',
                   user_id=request.DATA['user'])
     s.save()
+
 
     if 'template' not in request.DATA:
         try:
@@ -118,3 +131,26 @@ def documents(request):
 
         serializer = DocumentSerializer(d)
         return Response(serializer.data)
+
+
+class DocumentSignatureView(APIView):
+    def get_document(self, pk):
+        try:
+            return Document.objects.get(pk=pk)
+        except Document.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        
+        document = self.get_document(pk=pk)
+        s = Signature(signature=request.DATA['signature'],
+                  signature_type='sign_doc',
+                  user_id=document.user.id)
+        s.save()
+        document.signature = s
+        document.save()
+        serialized = DocumentSerializer(document)
+        return Response(serialized.data)
+
+        
+            
