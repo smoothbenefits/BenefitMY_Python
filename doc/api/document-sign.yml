@@ -1,0 +1,80 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource: document
+resource_url: /api/v1/documents/:doc_id/signature
+description: >
+  Create a document signature associated with the document. We need to make sure 
+  the signature is referenced from document and the signature itself is saved.
+parameters: doc_id
+sample_url: /api/v1/documents/4/signature
+sample_request:
+  {
+    "signature":"signature content"
+  }
+sample_response: |
+{
+    "id": 4, 
+    "name": "testoffer creation letter", 
+    "content": "", 
+    "edited": false, 
+    "company": {
+        "id": 1, 
+        "name": "Company1"
+    }, 
+    "user": {
+        "id": 5, 
+        "password": "pbkdf2_sha256$12000$dXE4eFXDMmTz$+c+n2GGWHBUmoCQaGVL5NfteZWJa7LUKYwqc87jjiY0=", 
+        "last_login": "2014-11-11T01:02:53.592Z", 
+        "is_superuser": false, 
+        "username": "user5@smoothbenefits.com", 
+        "first_name": "first5", 
+        "last_name": "last5", 
+        "email": "user5@smoothbenefits.com", 
+        "is_staff": false, 
+        "is_active": true, 
+        "date_joined": "2014-11-07T01:05:57.292Z", 
+        "groups": [], 
+        "user_permissions": []
+    }, 
+    "template": {
+        "id": 1, 
+        "company": 1, 
+        "document_type": 1, 
+        "name": "Company1 Standard Offer Letter", 
+        "content": "Dear {{FullName}},\n{{CompanyName}} is pleased to offer you the position of {{Title}} with a starting salary of {{Salary}} per year, with a sttarting date of {{StartDate}}. {{CompanyName}} also offers a generous benefits package. Welcome to the {{CompanyName}} Team!\n\nSincerely,\nMafalda Hopkirk\nVP of Human Resources\n"
+    }, 
+    "document_type": {
+        "id": 1, 
+        "name": "Offer Letter"
+    }, 
+    "signature": {
+        "id": 17, 
+        "signature": "signature content", 
+        "signature_type": "sign_doc", 
+        "user": 5, 
+        "created_at": "2014-11-15T14:23:37.313Z"
+    }, 
+    "fields": [
+        {
+            "id": 6, 
+            "document": 4, 
+            "name": "Title", 
+            "value": "Chief"
+        }, 
+        {
+            "id": 5, 
+            "document": 4, 
+            "name": "Salary", 
+            "value": "32432"
+        }, 
+        {
+            "id": 4, 
+            "document": 4, 
+            "name": "StartDate", 
+            "value": "12/12/2013"
+        }
+    ]
+}
+

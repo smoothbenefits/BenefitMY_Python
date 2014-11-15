@@ -57,3 +57,11 @@
 {
     float:right;
 }
+.login-error, 
+.signup-message
+{
+    color:red;
+    background-color: #FCF0E8;
+    text-align: center;
+}
+

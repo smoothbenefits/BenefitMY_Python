@@ -205,6 +205,7 @@ PIPELINE_JS = {
             'js/jquery-ui-extras.js',
             'js/jquery.mockjax.js',
             'js/users.js.coffee',
+            'js/controllers/UserControllers.js',
             'js/controllers/BrokerControllers.js',
             'js/controllers/EmployeeControllers.js',
             'js/controllers/EmployerControllers.js',

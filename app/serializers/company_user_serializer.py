@@ -14,12 +14,3 @@ class CompanyUserSerializer(serializers.ModelSerializer):
 
         depth = 1
 
-
-class CompanyUserPostSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
-    class Meta:
-        model = CompanyUser
-        fields = ('company',
-                  'company_user_type',
-                  'user')

@@ -103,3 +103,28 @@ ul.client-list li span.client-name
 {
     margin-bottom:40px;
 }
+.signature-container
+{
+    margin-bottom:20px;
+}
+.signature-saved-successful
+{
+    margin-bottom:10px;
+    margin-top:10px;
+    text-align: center;
+    font-color:gray;
+    font-weight: bold;
+}
+.signature-image-container
+{
+    padding-bottom:20px;
+}
+.signature-saved-fail
+{
+    margin-bottom:10px;
+    margin-top:10px;
+    font-size:16px;
+    font-weight:bold;
+    color:red;
+    text-align: center;
+}

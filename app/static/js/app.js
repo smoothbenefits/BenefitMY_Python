@@ -3,6 +3,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ngResource',
     'ui.mask',
     'benefitmyService',
+    'benefitmyApp.users.controllers',
     'benefitmyApp.brokers.controllers',
     'benefitmyApp.employers.controllers',
     'benefitmyApp.employees.controllers']);
@@ -13,6 +14,10 @@ var underscore = angular.module('underscore', []);
 underscore.factory('_', function(){
     return window._;
 });
+
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
 
 BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs

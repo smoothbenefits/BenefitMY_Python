@@ -104,10 +104,11 @@ var employerHome = employersController.controller('employerHome',
     var clientPromise = userPromise.then(function(user){
       return clientListRepository.get({userId:user.id}).$promise;
     });
+
     clientPromise.then(function(clientListResponse){
       _.every(clientListResponse.company_roles, function(company_role)
         {
-          if(company_role.company_user_type === 'admin')
+          if(company_role.company_user_type.toLowerCase() === 'admin')
           {
             $scope.company = company_role.company;
             getDocumentTypes($scope.company);
@@ -185,7 +186,7 @@ var employerUser = employersController.controller('employerUser',
         });
 
       var gotoUserView = function(userType){
-        $location.path('/admin/' + userType + '/' + compId);
+        $location.path('/admin/' + userType.toLowerCase() + '/' + compId);
       }
 
       var mapToAPIUser = function(viewUser, userType){
@@ -213,7 +214,7 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.addLink = function(userType)
       {
-        $location.path('/admin/'+ userType + '/add/'+compId);
+        $location.path('/admin/'+ userType.toLowerCase() + '/add/'+compId);
       }
 
       $scope.createUser = function(userType){
@@ -347,6 +348,18 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
     $scope.modifyExistingTemplate = function(template){
       updateWithExistingTemplate(template);
     };
+    $scope.saveTemplateChanges = function(){
+      var template = {};
+      template.name = $scope.templateName;
+      template.content = $scope.templateContent;
+      template.document_type = $scope.documentType;
+      templateRepository.create.save({company: $scope.companyId, template: template}, function(response){
+        updateWithExistingTemplate(response.template);
+        $location.search({add:'false', type: $scope.documentType})
+      }, function(response){
+        $scope.templateCreateFailed = true;
+      })
+    }
     $scope.addOfferTemplate = function(){
       $location.search({type:$scope.documentType, add:'true'});
     };
@@ -455,6 +468,7 @@ var employerViewLetter = employersController.controller('employerViewLetter',
     var employeeId = $routeParams.employee_id;
     $scope.documentType = $routeParams.type;
     $scope.documentList = [];
+    $scope.activeDocument = {};
 
 
     documentRepository.byUser.query({userId:employeeId})
@@ -468,8 +482,12 @@ var employerViewLetter = employersController.controller('employerViewLetter',
         $scope.documentList = _.sortBy(unsortedDocumentList, function(elm){return elm.id;}).reverse();
       });
 
+    $scope.anyActiveDocument = function(){
+      return typeof $scope.activeDocument.name !== 'undefined';
+    }
+
     $scope.viewExistingLetter = function(doc){
-      $scope.curDocument = doc;
+      $scope.activeDocument = doc;
     };
 
     $scope.createNewLetter = function(){
@@ -479,14 +497,4 @@ var employerViewLetter = employersController.controller('employerViewLetter',
     $scope.viewEmployeesLink = function(){
       $location.path('/admin/employee/' + $scope.companyId);
     };
-  }]);
-
-var employerViewDraft = employersController.controller('employerViewDraft',
-  ['$scope', '$location', '$routeParams', 'documentRepository',
-  function employerViewDraft($scope, $location, $routeParams, documentRepository){
-    var companyId = $routeParams.company_id;
-    var documentTypeId = $routeParams.document_type_id;
-    var employeeId = $routeParams.employee_id;
-
-
   }]);

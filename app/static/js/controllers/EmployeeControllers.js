@@ -284,8 +284,8 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
 
 
 var viewDocument = employeeControllers.controller('viewDocument',
-  ['$scope', '$location', '$routeParams', 'userDocument', 'currentUser',
-  function viewDocument($scope, $location, $routeParams, userDocument, currentUser){
+  ['$scope', '$location', '$routeParams', 'userDocument', 'currentUser', 'documentRepository',
+  function viewDocument($scope, $location, $routeParams, userDocument, currentUser, documentRepository){
     $scope.document = {};
     var documentId = $routeParams.doc_id;
     var signatureUpdated = false;
@@ -308,6 +308,11 @@ var viewDocument = employeeControllers.controller('viewDocument',
 
     documentPromise.then(function(document){
       $scope.document = document;
+      if(document.signature && document.signature.signature)
+      {
+        $scope.signatureImage = document.signature.signature;
+        $scope.signaturePresent = true;
+      }
     });
 
     var $sigdiv = $("#doc_signature");
@@ -329,10 +334,19 @@ var viewDocument = employeeControllers.controller('viewDocument',
       else
       {
         var signatureData = $sigdiv.jSignature('getData', 'svg');
-        $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
-        $location.path('/employee');
+        var signaturePayload = "data:" + signatureData[0] + ',' + signatureData[1];
+        documentRepository.sign.save({id:$scope.document.id}, {'signature':signaturePayload}, function(successResponse){
+          $scope.signatureSaved = true;
+          $scope.signatureImage = successResponse.signature.signature;
+        }, function(failureResponse){
+          $scope.signatureSaveFailed = true;
+        });
       }
-                                                                   };
+    };
+    $scope.goToDashboard = function()
+    {
+      $location.path('/employee');
+    }
 
 }]);
 
