@@ -468,6 +468,7 @@ var employerViewLetter = employersController.controller('employerViewLetter',
     var employeeId = $routeParams.employee_id;
     $scope.documentType = $routeParams.type;
     $scope.documentList = [];
+    $scope.activeDocument = {};
 
 
     documentRepository.byUser.query({userId:employeeId})
@@ -481,8 +482,12 @@ var employerViewLetter = employersController.controller('employerViewLetter',
         $scope.documentList = _.sortBy(unsortedDocumentList, function(elm){return elm.id;}).reverse();
       });
 
+    $scope.anyActiveDocument = function(){
+      return typeof $scope.activeDocument.name !== undefined;
+    }
+
     $scope.viewExistingLetter = function(doc){
-      $scope.curDocument = doc;
+      $scope.activeDocument = doc;
     };
 
     $scope.createNewLetter = function(){

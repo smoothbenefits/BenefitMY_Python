@@ -30,6 +30,15 @@
         </table>
     </div>
 
+    <div class="document-holder" ng-if="anyActiveDocument()">
+        <div class="header-holder">
+            <h2>{{activeDocument.name}}</h2>
+        <div>
+        <div class="document-content-holder">
+            {{activeDocument.content}}
+        </div>
+    </div><!-- / .document-holder -->
+
     <div class="template-holder" ng-show="addMode || templateContent">
         <h2>View {{documentType}} Template</h2>
         <div class="form-holder">
