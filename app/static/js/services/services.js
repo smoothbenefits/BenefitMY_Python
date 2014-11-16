@@ -124,3 +124,12 @@ benefitmyService.factory('employeeSignature', ['$resource',
   function($resource){
     return $resource('/api/v1/users/:userId/signature/', {userId: '@userId'});
   }]);
+
+benefitmyService.factory('countRepository', ['$resource',
+  function($resource){
+    return {
+      employeeCount: $resource('/api/v1/company_employees_count/:companyId', {companyId: '@companyId'}),
+      brokerCount: $resource('/api/v1/company_brokers_count/:companyId', {companyId: '@companyId'}),
+      companyCount: $resource('/api/v1/broker_company_count/:brokerId', {brokerId: '@brokerId'})
+    }
+  }]);  

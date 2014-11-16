@@ -59,29 +59,21 @@ var findViewController = userControllers.controller('findViewController',
 var userController = userControllers.controller('userController', ['$scope', '$http', 'currentUser','users', 'userLogOut', 'clientListRepository','$location',
   function userController($scope, $http, currentUser, users, userLogOut, clientListRepository, $location) {
     $scope.roleArray = [];
-    var currentRoleList = [];
+    $scope.currentRoleList = [];
     var userPromise = currentUser.get()
-        .$promise.then(function(response)
-             {
-                $scope.curUser = response.user;
-                return $scope.curUser;
-             }
-        );
+        .$promise.then(function(response){
+              $scope.curUser = response.user;
+              return $scope.curUser;
+           });
+    userPromise.then(function(user){
+      clientListRepository.get({userId:user.id})
+        .$promise.then(function(response){
+          $scope.currentRoleList = response.company_roles;
+        })
+      });
     $scope.isRoleActive = function(checkRole){
-      if(currentRoleList.length <=0){
-        userPromise.then(function(user){
-          clientListRepository.get({userId:user.id})
-            .$promise.then(function(response){
-              currentRoleList = response.company_roles;
-            });
-        });
-        return false;
-      }
-      else
-      {
-        var roleFind = _.findWhere(currentRoleList, {'company_user_type':checkRole});
-        return !_.isUndefined(roleFind);
-      }
+      var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});
+      return !_.isUndefined(roleFind);
     };
     $scope.logout = function ()
     {
@@ -115,7 +107,7 @@ var userController = userControllers.controller('userController', ['$scope', '$h
         return $scope.curUser.id;
       }
       else{
-        var curCompanyRole = _.findWhere(currentRoleList, {'company_user_type':role});
+        var curCompanyRole = _.findWhere($scope.currentRoleList, {'company_user_type':role});
         return curCompanyRole.company.id;
       }
     };
