@@ -297,7 +297,8 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
   }
 ]);
 
-var employerLetterTemplate = employersController.controller('employerLetterTemplate', ['$scope', '$location', '$route', '$routeParams', 'templateRepository',
+var employerLetterTemplate = employersController.controller('employerLetterTemplate',
+  ['$scope', '$location', '$route', '$routeParams', 'templateRepository',
   function employerLetterTemplate($scope, $location, $route, $routeParams, templateRepository){
     $scope.documentType = $routeParams.type;
     $scope.addMode = $routeParams.add;
@@ -310,18 +311,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
       return _.isEmpty($scope.existingTemplateList) || $scope.addMode === 'true';
     };
 
-    var updateWithExistingTemplate = function(template)
-    {
-      if(template)
-      {
-        $scope.templateContent = template.content;
-        $scope.templateName = template.name;
-        $scope.showCreateButton = false;
-        $scope.showEditButton = true;
-      }
-    }
-    if(!$scope.addMode || $scope.addMode === 'false')
-    {
+    var udpateExistingTemplateList = function(){
       templateRepository.byCompany.get({companyId:$routeParams.company_id})
         .$promise.then(function(response){
           $scope.existingTemplateList = _.sortBy(
@@ -341,6 +331,22 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
             $location.search({type:$scope.documentType, add:'true'});
           }
         });
+      };
+
+    var updateWithExistingTemplate = function(template)
+    {
+      if(template)
+      {
+        $scope.templateId = template.id;
+        $scope.templateContent = template.content;
+        $scope.templateName = template.name;
+        $scope.showCreateButton = false;
+        $scope.showEditButton = true;
+      }
+    }
+    if(!$scope.addMode || $scope.addMode === 'false')
+    {
+      udpateExistingTemplateList();
     };
     $scope.modifyExistingTemplate = function(template){
       updateWithExistingTemplate(template);
@@ -350,9 +356,11 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
       template.name = $scope.templateName;
       template.content = $scope.templateContent;
       template.document_type = $scope.documentType;
-      templateRepository.create.save({company: $scope.companyId, template: template}, function(response){
+      var updateObject = {company: $scope.companyId, template: template};
+      templateRepository.update.update({id: $scope.templateId}, updateObject, function(response){
         updateWithExistingTemplate(response.template);
-        $location.search({add:'false', type: $scope.documentType})
+        $location.search({add:'false', type: $scope.documentType});
+        udpateExistingTemplateList();
       }, function(response){
         $scope.templateCreateFailed = true;
       })

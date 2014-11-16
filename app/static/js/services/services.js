@@ -108,6 +108,9 @@ benefitmyService.factory('documentRepository', ['$resource',
 benefitmyService.factory('templateRepository', ['$resource',
   function($resource){
     return {
+      update: $resource('/api/v1/templates/:id', {id: '@id'}, {
+        'update': {method:'PUT'}
+      }),
       create: $resource('/api/v1/templates/',{}),
       byCompany: $resource('/api/v1/companies/:companyId/templates/', {companyId:'@company_id'}),
       getById: $resource('/api/v1/templates/:id', {id:'@id'})
@@ -132,4 +135,4 @@ benefitmyService.factory('countRepository', ['$resource',
       brokerCount: $resource('/api/v1/company_brokers_count/:companyId', {companyId: '@companyId'}),
       companyCount: $resource('/api/v1/broker_company_count/:brokerId', {brokerId: '@brokerId'})
     }
-  }]);  
+  }]);
