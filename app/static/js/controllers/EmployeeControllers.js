@@ -259,7 +259,10 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
     }
     viewPerson.phone.phone_type = 'home';
     var apiPerson = {};
-    apiPerson.full_name = viewPerson.full_name;
+    apiPerson.person_type = "family";
+    apiPerson.email = viewPerson.email;
+    apiPerson.first_name = viewPerson.first_name;
+    apiPerson.last_name = viewPerson.last_name;
     apiPerson.birth_date = viewPerson.birth_date;
     apiPerson.ssn = viewPerson.ssn;
     apiPerson.relationship = viewPerson.relationship;
@@ -267,7 +270,7 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
     apiPerson.addresses.push(viewPerson.address);
     apiPerson.phones = [];
     apiPerson.phones.push(viewPerson.phone);
-    return {person: apiPerson};
+    return apiPerson;
   }
 
 
@@ -389,7 +392,7 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     currentUser.get()
       .$promise.then(function(curUserResponse){
         $scope.curUser = curUserResponse.user;
-      }); 
+      });
     var mapEmployee = function(viewEmployee){
       var apiEmployee = {
         'person_type': 'family',
