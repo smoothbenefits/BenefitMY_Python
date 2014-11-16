@@ -28,12 +28,10 @@ class CompanyView(APIView):
 def companies(request):
     # We first need to create an active user for it
     contact_size = len(request.DATA['contacts'])
-    print "contact list size: {}".format(contact_size)
     u = None
     
     if contact_size:
         primary_contact = request.DATA['contacts'][0]
-        print "primary_contact email is: {}".format(primary_contact['email'])
         u = create_user(primary_contact['email'], 'temp')
         if u and primary_contact['first_name'] and primary_contact['last_name']:
             u.first_name = primary_contact['first_name']
