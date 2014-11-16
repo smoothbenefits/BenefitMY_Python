@@ -23,8 +23,8 @@ var employerHome = employersController.controller('employerHome',
                                                   'clientListRepository',
                                                   'documentRepository',
                                                   'templateRepository',
-                                                  'employerWorkerRepository',
                                                   'benefitListRepository',
+                                                  'countRepository',
   function employerHome($scope,
                         $location,
                         employerRepository,
@@ -32,8 +32,8 @@ var employerHome = employersController.controller('employerHome',
                         clientListRepository,
                         documentRepository,
                         templateRepository,
-                        employerWorkerRepository,
-                        benefitListRepository){
+                        benefitListRepository,
+                        countRepository){
 
     $scope.employeeCount = 0;
     $scope.brokerCount = 0;
@@ -52,18 +52,13 @@ var employerHome = employersController.controller('employerHome',
       });
     }
     var getWorkerCount = function(company){
-      employerWorkerRepository.get({companyId:company.id})
-        .$promise.then(function(response){
-            _.each(response.user_roles, function(role){
-              if(role.company_user_type==='employee')
-              {
-                $scope.employeeCount++;
-              }
-              else if(role.company_user_type==='broker')
-              {
-                $scope.brokerCount++;
-              }
-            })
+      countRepository.employeeCount.get({companyId:company.id})
+        .$promise.then(function(employeeCountResponse){
+          $scope.employeeCount = employeeCountResponse.employees_count;
+        });
+      countRepository.brokerCount.get({companyId:company.id})
+        .$promise.then(function(brokerCountResponse){
+          $scope.brokerCount = brokerCountResponse.brokers_count;
         });
     };
 
@@ -72,7 +67,9 @@ var employerHome = employersController.controller('employerHome',
         .$promise.then(function(response){
             var benefitNameArray = [];
             _.each(response.benefits, function(benefit){
-              var name = _.findWhere(benefitNameArray, {benefit_name:benefit.benefit_name});
+              var name = _.find(benefitNameArray, function(bnf){
+                return bnf.benefit_plan.name == benefit.benefit_plan.name;
+              });
               if(!name){
                 benefitNameArray.push(benefit);
               }
