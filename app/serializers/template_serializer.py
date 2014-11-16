@@ -10,9 +10,10 @@ class TemplateSerializer(serializers.ModelSerializer):
     def find_fields(self, foo):
         field_names = re.findall('{{(.*?)}}', foo.content)
         for field_name in field_names:
-            yield {'name':field_name}
+            yield {'name': field_name}
 
     class Meta:
         model = Template
         fields = ("id", "company", "document_type", "name", "content", "fields")
         depth = 1
+
