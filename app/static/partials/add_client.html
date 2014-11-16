@@ -108,7 +108,8 @@
                             name="company_address_state"
                             ng-model="client.address.state"
                             ng-required="true"
-                            placeholder="State">
+                            placeholder="State" 
+                            maxlength="2">
                         <div class="form-error" ng-show="form.company_address_state.$dirty && form.company_address_state.$invalid">
                           <span ng-show="form.company_address_state.$error.required">State field is required</span>
                         </div>
