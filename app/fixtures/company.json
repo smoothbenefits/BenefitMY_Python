@@ -3,21 +3,28 @@
       "model": "app.Company",
       "pk": 1,
       "fields": {
-      "name": "Company1"
+      "name": "Benefitmy LLC"
       }
     },
     {
       "model": "app.Company",
       "pk": 2,
       "fields": {
-      "name": "Company2"
+      "name": "Startup.com"
       }
     },
     {
       "model": "app.Company",
       "pk": 3,
       "fields": { 
-      "name": "Company3"
+      "name": "Cambridge.com"
+      }
+    },
+    {
+      "model": "app.Company",
+      "pk": 4,
+      "fields": { 
+      "name": "Boston.com"
       }
     }
 ]
