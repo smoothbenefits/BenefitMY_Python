@@ -38,7 +38,12 @@
             <span class="panel-title">{{activeDocument.name}}</span>
         </div>
         <div class="panel-body">
-            {{activeDocument.content}}
+            <textarea 
+                name="document_content" 
+                readonly="true" 
+                wrap="true" 
+                cols="100"
+                rows="10">{{activeDocument.content}}</textarea>
         </div>
         <div class="signature-display-container" ng-show="signaturePresent">
             <div class="signature-image-container col-md-10 col-md-offset-1">
