@@ -381,21 +381,24 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$routeParams', '$location', 'employeeFamily',
-  function($scope, $routeParams, $location, employeeFamily){
+  ['$scope', '$routeParams', '$location', 'employeeFamily', 'currentUser',
+  function($scope, $routeParams, $location, employeeFamily, currentUser){
     $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
-
+    currentUser.get()
+      .$promise.then(function(curUserResponse){
+        $scope.curUser = curUserResponse.user;
+      }); 
     var mapEmployee = function(viewEmployee){
       var apiEmployee = {
         'person_type': 'family',
         'relationship': 'self',
-        'first_name': viewEmployee.firstname,
-        'last_name': viewEmployee.lastname,
+        'first_name': viewEmployee.firstName,
+        'last_name': viewEmployee.lastName,
         'birth_date': viewEmployee.birth_date,
         'ssn': viewEmployee.ssn,
-        'email': viewEmployee.email,
+        'email': $scope.curUser.email,
         'addresses': [],
         'phones': [
           {
