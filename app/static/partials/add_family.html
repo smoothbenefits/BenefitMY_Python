@@ -132,14 +132,15 @@
             </div>
 
             <div class="form-label">Phone Number</div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="textbox">
-                        <input type="text"
-                            name="phone_number"
-                            ng-model="person.phone.number"
-                            ng-required="false">
-                    </div>
+            <div class="textbox">
+                <input type="masked"
+                    name="phone_number"
+                    ui-mask="(999) 999-9999"
+                    ng-model="person.phone.number"
+                    ng-required="false"
+                    class="ng-valid ng-valid-mask">
+                <div class="form-error" ng-show="form.phone_number.$dirty && form.phone_number.$invalid">
+                  <span ng-show="form.phone_number.$invalid">Please enter an valid phone number</span>
                 </div>
             </div>
 
