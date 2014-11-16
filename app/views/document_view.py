@@ -81,11 +81,12 @@ class UserDocumentView(APIView):
 
 @api_view(['POST'])
 def documents(request):
-    s = Signature(signature=request.DATA['signature'],
-                  signature_type='step',
-                  user_id=request.DATA['user'])
-    s.save()
-
+    s = None
+    if request.DATA['signature']:
+        s = Signature(signature=request.DATA['signature'],
+                      signature_type='step',
+                      user_id=request.DATA['user'])
+        s.save()
 
     if 'template' not in request.DATA:
         try:

@@ -166,7 +166,7 @@ var employerUser = employersController.controller('employerUser',
                         userDocument){
       var compId = $routeParams.company_id;
       $scope.employees=[];
-      $scope.addUser = {};
+      $scope.addUser = {send_email:true};
       $scope.brokers = [];
       employerWorkerRepository.get({companyId:compId})
         .$promise.then(function(response){
