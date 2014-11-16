@@ -99,7 +99,6 @@ def documents(request):
                      user_id=request.DATA['user'],
                      document_type=d_type,
                      name=request.DATA['document']['name'],
-                     content=request.DATA['document']['content'],
                      signature=s
                      )
         d.save()
@@ -141,7 +140,7 @@ class DocumentSignatureView(APIView):
             raise Http404
 
     def post(self, request, pk, format=None):
-        
+
         document = self.get_document(pk=pk)
         s = Signature(signature=request.DATA['signature'],
                   signature_type='sign_doc',
@@ -152,5 +151,5 @@ class DocumentSignatureView(APIView):
         serialized = DocumentSerializer(document)
         return Response(serialized.data)
 
-        
-            
+
+

@@ -25,6 +25,26 @@
   "name": "StartDate",
   "value": "August 18, 2014"
   }
+},
+
+
+{
+  "model": "app.DocumentField",
+  "pk": 4,
+  "fields": {
+  "document": 1,
+  "name": "CompanyName",
+  "value": "Apple"
+  }
+},
+{
+  "model": "app.DocumentField",
+  "pk": 5,
+  "fields": {
+  "document": 1,
+  "name": "FullName",
+  "value": "John Bush"
+  }
 }
 ]
 
