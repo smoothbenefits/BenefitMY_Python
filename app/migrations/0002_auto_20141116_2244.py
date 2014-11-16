@@ -17,9 +17,9 @@ class Migration(migrations.Migration):
             name='EmploymentAuthorization',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('worker_type', models.CharField(max_length=30, choices=[(b'Citizen', b'CItizen'), (b'Noncitizen', b'Noncitizen'), (b'PResident', b'PResideng'), (b'Aaw', b'Aaw')])),
-                ('expiration_date', models.DateField()),
-                ('uscis_number', models.CharField(max_length=255)),
+                ('worker_type', models.CharField(max_length=30, choices=[(b'Citizen', b'Citizen'), (b'Noncitizen', b'Noncitizen'), (b'PResident', b'PResident'), (b'Aaw', b'Aaw')])),
+                ('expiration_date', models.DateField(null=True, blank=True)),
+                ('uscis_number', models.CharField(max_length=255, null=True, blank=True)),
                 ('i_94', models.CharField(max_length=255, null=True, blank=True)),
                 ('passport', models.CharField(max_length=255, null=True, blank=True)),
                 ('country', models.CharField(max_length=255, null=True, blank=True)),
@@ -68,11 +68,20 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(related_name=b'employment_authorization', to=settings.AUTH_USER_MODEL),
             preserve_default=True,
         ),
+        migrations.RemoveField(
+            model_name='document',
+            name='content',
+        ),
         migrations.AddField(
             model_name='document',
             name='signature',
             field=models.ForeignKey(blank=True, to='app.Signature', null=True),
             preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='companyuser',
+            name='company_user_type',
+            field=models.TextField(choices=[(b'employee', b'employee'), (b'admin', b'admin'), (b'broker', b'broker'), (b'super', b'super')]),
         ),
         migrations.AlterField(
             model_name='companyuser',
@@ -83,6 +92,11 @@ class Migration(migrations.Migration):
             model_name='document',
             name='user',
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AlterField(
+            model_name='person',
+            name='ssn',
+            field=models.CharField(max_length=30, null=True, blank=True),
         ),
         migrations.AlterField(
             model_name='person',
