@@ -23,8 +23,8 @@ var employerHome = employersController.controller('employerHome',
                                                   'clientListRepository',
                                                   'documentRepository',
                                                   'templateRepository',
-                                                  'employerWorkerRepository',
                                                   'benefitListRepository',
+                                                  'countRepository',
   function employerHome($scope,
                         $location,
                         employerRepository,
@@ -32,8 +32,8 @@ var employerHome = employersController.controller('employerHome',
                         clientListRepository,
                         documentRepository,
                         templateRepository,
-                        employerWorkerRepository,
-                        benefitListRepository){
+                        benefitListRepository,
+                        countRepository){
 
     $scope.employeeCount = 0;
     $scope.brokerCount = 0;
@@ -52,18 +52,13 @@ var employerHome = employersController.controller('employerHome',
       });
     }
     var getWorkerCount = function(company){
-      employerWorkerRepository.get({companyId:company.id})
-        .$promise.then(function(response){
-            _.each(response.user_roles, function(role){
-              if(role.company_user_type==='employee')
-              {
-                $scope.employeeCount++;
-              }
-              else if(role.company_user_type==='broker')
-              {
-                $scope.brokerCount++;
-              }
-            })
+      countRepository.employeeCount.get({companyId:company.id})
+        .$promise.then(function(employeeCountResponse){
+          $scope.employeeCount = employeeCountResponse.employees_count;
+        });
+      countRepository.brokerCount.get({companyId:company.id})
+        .$promise.then(function(brokerCountResponse){
+          $scope.brokerCount = brokerCountResponse.brokers_count;
         });
     };
 
@@ -72,7 +67,9 @@ var employerHome = employersController.controller('employerHome',
         .$promise.then(function(response){
             var benefitNameArray = [];
             _.each(response.benefits, function(benefit){
-              var name = _.findWhere(benefitNameArray, {benefit_name:benefit.benefit_name});
+              var name = _.find(benefitNameArray, function(bnf){
+                return bnf.benefit_plan.name == benefit.benefit_plan.name;
+              });
               if(!name){
                 benefitNameArray.push(benefit);
               }
@@ -169,7 +166,7 @@ var employerUser = employersController.controller('employerUser',
                         userDocument){
       var compId = $routeParams.company_id;
       $scope.employees=[];
-      $scope.addUser = {};
+      $scope.addUser = {send_email:true};
       $scope.brokers = [];
       employerWorkerRepository.get({companyId:compId})
         .$promise.then(function(response){
@@ -300,7 +297,8 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
   }
 ]);
 
-var employerLetterTemplate = employersController.controller('employerLetterTemplate', ['$scope', '$location', '$route', '$routeParams', 'templateRepository',
+var employerLetterTemplate = employersController.controller('employerLetterTemplate',
+  ['$scope', '$location', '$route', '$routeParams', 'templateRepository',
   function employerLetterTemplate($scope, $location, $route, $routeParams, templateRepository){
     $scope.documentType = $routeParams.type;
     $scope.addMode = $routeParams.add;
@@ -313,18 +311,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
       return _.isEmpty($scope.existingTemplateList) || $scope.addMode === 'true';
     };
 
-    var updateWithExistingTemplate = function(template)
-    {
-      if(template)
-      {
-        $scope.templateContent = template.content;
-        $scope.templateName = template.name;
-        $scope.showCreateButton = false;
-        $scope.showEditButton = true;
-      }
-    }
-    if(!$scope.addMode || $scope.addMode === 'false')
-    {
+    var udpateExistingTemplateList = function(){
       templateRepository.byCompany.get({companyId:$routeParams.company_id})
         .$promise.then(function(response){
           $scope.existingTemplateList = _.sortBy(
@@ -344,6 +331,22 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
             $location.search({type:$scope.documentType, add:'true'});
           }
         });
+      };
+
+    var updateWithExistingTemplate = function(template)
+    {
+      if(template)
+      {
+        $scope.templateId = template.id;
+        $scope.templateContent = template.content;
+        $scope.templateName = template.name;
+        $scope.showCreateButton = false;
+        $scope.showEditButton = true;
+      }
+    }
+    if(!$scope.addMode || $scope.addMode === 'false')
+    {
+      udpateExistingTemplateList();
     };
     $scope.modifyExistingTemplate = function(template){
       updateWithExistingTemplate(template);
@@ -353,9 +356,11 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
       template.name = $scope.templateName;
       template.content = $scope.templateContent;
       template.document_type = $scope.documentType;
-      templateRepository.create.save({company: $scope.companyId, template: template}, function(response){
+      var updateObject = {company: $scope.companyId, template: template};
+      templateRepository.update.update({id: $scope.templateId}, updateObject, function(response){
         updateWithExistingTemplate(response.template);
-        $location.search({add:'false', type: $scope.documentType})
+        $location.search({add:'false', type: $scope.documentType});
+        udpateExistingTemplateList();
       }, function(response){
         $scope.templateCreateFailed = true;
       })

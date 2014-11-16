@@ -22,6 +22,22 @@ class TemplateView(APIView):
         serializer = TemplateSerializer(template)
         return Response({'template': serializer.data})
 
+    def put(self, request, pk, format=None):
+        t = self.get_object(pk)
+        try:
+            d_type = DocumentType.objects.get(
+                name=request.DATA['template']['document_type'])
+        except DocumentType.DoesNotExist:
+            d_type = DocumentType(name=request.DATA['template']['document_type'])
+            d_type.save()
+        t.company_id = request.DATA['company']
+        t.document_type = d_type
+        t.name = request.DATA['template']['name']
+        t.content = request.DATA['template']['content']
+        t.save()
+        serializer = TemplateSerializer(t)
+        return Response({'template': serializer.data})
+
 
 @api_view(['POST'])
 def templates(request):

@@ -3,9 +3,9 @@ from signature import Signature
 from django.contrib.auth.models import User
 
 
-WORKER_TYPE = (("Citizen", "CItizen"),
+WORKER_TYPE = (("Citizen", "Citizen"),
                ("Noncitizen", "Noncitizen"),
-               ("PResident", "PResideng"),
+               ("PResident", "PResident"),
                ("Aaw", "Aaw"))
 
 

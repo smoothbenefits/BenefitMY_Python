@@ -97,6 +97,10 @@ ul.client-list li span.client-name
 }
 .signature-pad
 {
+    width:430px;
+}
+.employee-doc-signature-pad
+{
     width:600px;
 }
 .terms-container

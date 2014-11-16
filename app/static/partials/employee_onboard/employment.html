@@ -45,14 +45,14 @@
                             ng-model="employee.auth_type"
                             ng-required="true"
                             class="form-control">
-                            <option value="citizen">A citizen of the United States</option>
-                            <option value="noncitizen">A noncitizen national of the United States</option>
-                            <option value="PR">A lawful permanent resident</option>
-                            <option value="alien">An alien authorized to work</option>
+                            <option value="Citizen">A citizen of the United States</option>
+                            <option value="Noncitizen">A noncitizen national of the United States</option>
+                            <option value="PResident">A lawful permanent resident</option>
+                            <option value="Aaw">An alien authorized to work</option>
                         </select>
                     </div>
 
-                    <div ng-show="employee.auth_type == 'alien'">
+                    <div ng-show="employee.auth_type == 'Aaw'">
                         <div class="form-label">Expiration Date</div>
                         <div class="datebox">
                             <input name="expirationDate"
@@ -71,7 +71,7 @@
                         </div>
                     </div>
 
-                    <div ng-show="employee.auth_type == 'PR' || employee.auth_type=='alien'">
+                    <div ng-show="employee.auth_type == 'PResident' || employee.auth_type=='Aaw'">
                         <div class="form-label">Alien Registration Number/USCIS number</div>
                         <div class="textbox">
                             <input name="USCISNumber"
@@ -82,11 +82,11 @@
                         </div>
                     </div>
 
-                    <div ng-show="employee.auth_type=='alien'">
+                    <div ng-show="employee.auth_type=='Aaw'">
                         <center>Or</center>
                     </div>
 
-                    <div ng-show="employee.auth_type=='alien'">
+                    <div ng-show="employee.auth_type=='Aaw'">
                         <div class="form-label">Form I-94 Admission Number</div>
                         <div class="textbox">
                             <input name="I94Number"

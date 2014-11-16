@@ -259,7 +259,10 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
     }
     viewPerson.phone.phone_type = 'home';
     var apiPerson = {};
-    apiPerson.full_name = viewPerson.full_name;
+    apiPerson.person_type = "family";
+    apiPerson.email = viewPerson.email;
+    apiPerson.first_name = viewPerson.first_name;
+    apiPerson.last_name = viewPerson.last_name;
     apiPerson.birth_date = viewPerson.birth_date;
     apiPerson.ssn = viewPerson.ssn;
     apiPerson.relationship = viewPerson.relationship;
@@ -267,7 +270,7 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
     apiPerson.addresses.push(viewPerson.address);
     apiPerson.phones = [];
     apiPerson.phones.push(viewPerson.phone);
-    return {person: apiPerson};
+    return apiPerson;
   }
 
 
@@ -381,21 +384,24 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$routeParams', '$location', 'employeeFamily',
-  function($scope, $routeParams, $location, employeeFamily){
+  ['$scope', '$routeParams', '$location', 'employeeFamily', 'currentUser',
+  function($scope, $routeParams, $location, employeeFamily, currentUser){
     $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
-
+    currentUser.get()
+      .$promise.then(function(curUserResponse){
+        $scope.curUser = curUserResponse.user;
+      });
     var mapEmployee = function(viewEmployee){
       var apiEmployee = {
         'person_type': 'family',
         'relationship': 'self',
-        'first_name': viewEmployee.firstname,
-        'last_name': viewEmployee.lastname,
+        'first_name': viewEmployee.firstName,
+        'last_name': viewEmployee.lastName,
         'birth_date': viewEmployee.birth_date,
         'ssn': viewEmployee.ssn,
-        'email': viewEmployee.email,
+        'email': $scope.curUser.email,
         'addresses': [],
         'phones': [
           {
