@@ -40,4 +40,6 @@ class PersonPostSerializer(serializers.ModelSerializer):
                   'middle_name',
                   'last_name',
                   'email',
-                  'phones')
+                  'phones',
+                  'relationship',
+                  'user')

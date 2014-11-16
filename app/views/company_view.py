@@ -9,6 +9,7 @@ from app.models.company import Company
 from app.serializers.company_serializer import (
     CompanySerializer,
     CompanyPostSerializer)
+from emailusernames.utils import create_user
 
 class CompanyView(APIView):
     def get_object(self, pk):
@@ -25,12 +26,35 @@ class CompanyView(APIView):
 
 @api_view(['POST'])
 def companies(request):
+    # We first need to create an active user for it
+    contact_size = len(request.DATA['contacts'])
+    print "contact list size: {}".format(contact_size)
+    u = None
+    
+    if contact_size:
+        primary_contact = request.DATA['contacts'][0]
+        print "primary_contact email is: {}".format(primary_contact['email'])
+        u = create_user(primary_contact['email'], 'temp')
+        if u and primary_contact['first_name'] and primary_contact['last_name']:
+            u.first_name = primary_contact['first_name']
+            u.last_name = primary_contact['last_name']
+        
+        u.save()
+        primary_contact['relationship'] = 'self'
+        primary_contact['user'] = u.id
+
     serializer = CompanyPostSerializer(data=request.DATA)
     if serializer.is_valid():
         serializer.save()
-        company_user = CompanyUser(user_id=request.user.pk,
+        if u:
+            company_user = CompanyUser(user_id = u.id,
+                                       company=serializer.object,
+                                       company_user_type="admin")
+            company_user.save()
+
+        broker_user = CompanyUser(user_id=request.user.pk,
                                    company=serializer.object,
-                                   company_user_type="Broker")
-        company_user.save()
+                                   company_user_type="broker")
+        broker_user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
