@@ -13,5 +13,4 @@ class Document(models.Model):
     document_type = models.ForeignKey(DocumentType, null=True, blank=True)
     signature = models.ForeignKey(Signature, null=True, blank=True)
     name = models.CharField(max_length=255)
-    content = models.TextField()
     edited = models.BooleanField(default=False)
