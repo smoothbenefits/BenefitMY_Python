@@ -27,19 +27,6 @@
     },
     {
       "model": "app.Person",
-      "pk": 3,
-      "fields":{
-      "person_type": "primary_contact",
-      "first_name": "Raymond",
-      "last_name": "Long",
-      "email": "user4@benefitmy.com",
-      "company": 1,
-      "relationship": "self",
-      "user": 4
-      }
-    },
-    {
-      "model": "app.Person",
       "pk": 4,
       "fields":{
       "person_type": "primary_contact",
@@ -49,32 +36,6 @@
       "company": 2,
       "relationship": "self",
       "user": 5
-      }
-    },
-    {
-      "model": "app.Person",
-      "pk": 5,
-      "fields":{
-      "person_type": "primary_contact",
-      "first_name": "George",
-      "last_name": "Kingston",
-      "email": "user6@startup.com",
-      "company": 2,
-      "relationship": "self",
-      "user": 6
-      }
-    },
-    {
-      "model": "app.Person",
-      "pk": 6,
-      "fields":{
-      "person_type": "primary_contact",
-      "first_name": "Harry",
-      "last_name": "Queenson",
-      "email": "user7@startup.com",
-      "company": 3,
-      "relationship": "self",
-      "user": 7
       }
     },
     {

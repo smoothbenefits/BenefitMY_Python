@@ -48,15 +48,6 @@
       "model": "app.phone",
       "pk": 6,
       "fields":{ 
-      "phone_type": "home",
-      "number": "1-978-555-6666",
-      "person":3
-      }
-    },
-    {
-      "model": "app.phone",
-      "pk": 7,
-      "fields":{ 
       "phone_type": "mobile",
       "number": "1-978-555-7777",
       "person":2
@@ -64,29 +55,11 @@
     },
     {
       "model": "app.phone",
-      "pk": 8,
+      "pk": 7,
       "fields":{ 
       "phone_type": "mobile",
       "number": "1-978-555-8888",
       "person":4
-      }
-    },
-    {
-      "model": "app.phone",
-      "pk": 9,
-      "fields":{ 
-      "phone_type": "mobile",
-      "number": "1-978-555-9999",
-      "person":5
-      }
-    },
-    {
-      "model": "app.phone",
-      "pk": 10,
-      "fields":{ 
-      "phone_type": "mobile",
-      "number": "1-978-555-1010",
-      "person":6
       }
     }
 ]
