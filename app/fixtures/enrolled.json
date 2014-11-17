@@ -6,13 +6,6 @@
       "user_company_benefit_plan_option": 1,
       "person": 2}
     },
-     {
-      "model": "app.enrolled",
-      "pk":2,
-      "fields":{
-      "user_company_benefit_plan_option": 1,
-      "person": 3}
-    },
    {
       "model": "app.enrolled",
       "pk":3,
@@ -26,13 +19,6 @@
       "fields":{
       "user_company_benefit_plan_option": 3,
       "person":2}
-    },
-   {
-      "model": "app.enrolled",
-      "pk":5,
-      "fields":{
-      "user_company_benefit_plan_option": 3,
-      "person":3}
-    }        
+    }      
  ]
 

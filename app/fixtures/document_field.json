@@ -26,15 +26,13 @@
   "value": "August 18, 2014"
   }
 },
-
-
 {
   "model": "app.DocumentField",
   "pk": 4,
   "fields": {
   "document": 1,
   "name": "CompanyName",
-  "value": "Apple"
+  "value": "BenefitMy"
   }
 },
 {
@@ -43,7 +41,25 @@
   "fields": {
   "document": 1,
   "name": "FullName",
-  "value": "John Bush"
+  "value": "Simon Terrick"
+  }
+},
+{
+  "model": "app.DocumentField",
+  "pk": 6,
+  "fields": {
+  "document": 2,
+  "name": "FullName",
+  "value": "Simon Terrick"
+  }
+},
+{
+  "model": "app.DocumentField",
+  "pk": 7,
+  "fields": {
+  "document": 2,
+  "name": "CompanyName",
+  "value": "BenefitMy"
   }
 }
 ]
