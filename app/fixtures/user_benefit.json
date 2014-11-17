@@ -30,7 +30,7 @@
       "model": "app.UserCompanyBenefitPlanOption",
       "pk": 4,
       "fields": {      
-      "user": 5,
+      "user": 3,
       "benefit": 7
       }
     },
@@ -39,7 +39,7 @@
       "model": "app.UserCompanyBenefitPlanOption",
       "pk": 5,
       "fields": {      
-      "user": 5,
+      "user": 3,
       "benefit": 13
       }
     },
@@ -48,7 +48,7 @@
       "model": "app.UserCompanyBenefitPlanOption",
       "pk": 6,
       "fields": {      
-      "user": 5,
+      "user": 3,
       "benefit": 19
       }
     }
