@@ -29,14 +29,14 @@ def companies(request):
     # We first need to create an active user for it
     contact_size = len(request.DATA['contacts'])
     u = None
-    
+
     if contact_size:
         primary_contact = request.DATA['contacts'][0]
         u = create_user(primary_contact['email'], 'temp')
         if u and primary_contact['first_name'] and primary_contact['last_name']:
             u.first_name = primary_contact['first_name']
             u.last_name = primary_contact['last_name']
-        
+
         u.save()
         primary_contact['relationship'] = 'self'
         primary_contact['user'] = u.id
