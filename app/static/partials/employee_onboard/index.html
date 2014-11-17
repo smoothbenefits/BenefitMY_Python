@@ -78,7 +78,7 @@
                             name="person_ssn"
                             ng-model="employee.ssn"
                             ng-required="true"
-                            ui-mask="999-999-9999">
+                            ui-mask="999-99-9999">
                         <div class="form-error" ng-show="form.person_.$dirty && form.person_ssn.$invalid">
                             <span ng-show="form.person_ssn.$error.required">SSN field is required</span>
                             <span ng-show="form.person_ssn.$invalid">Please enter a valid Social Security Number</span>
