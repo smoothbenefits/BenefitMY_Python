@@ -10,8 +10,7 @@ from rest_framework.response import Response
 class SignatureView(APIView):
     def _get_object(self, pk):
         try:
-            return Signature.objects.get(user=pk,
-                                         signature_type="final")
+            return Signature.objects.get(user=pk)
         except Signature.DoesNotExist:
             raise Http404
 
