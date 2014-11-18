@@ -45,7 +45,7 @@ def _add_user_benefits(request, pk):
 def user_update_benefits(request, pk, pc):
     benefits = UserCompanyBenefitPlanOption.objects.filter(user=pk)
     for b in benefits:
-        if b.benefit.company_id == pc:
+        if b.benefit.company_id == int(pc):
             Enrolled.objects.filter(
                 user_company_benefit_plan_option=b.id).delete()
             b.delete()
