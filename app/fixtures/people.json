@@ -4,10 +4,12 @@
       "pk": 1,
       "fields":{
       "person_type": "primary_contact",
-      "first_name": "Mike",
-      "last_name": "Jones",
-      "email": "mike.jones@company1.com",
-      "company": 1
+      "first_name": "Frank",
+      "last_name": "Derekson",
+      "email": "user2@benefitmy.com",
+      "company": 1,
+      "relationship": "self",
+      "user": 2
       }
     },
     {
@@ -15,119 +17,51 @@
       "pk": 2,
       "fields":{
       "person_type": "primary_contact",
-      "first_name": "Mary",
-      "last_name": "Smith",
-      "email": "mary.smith@company2.com",
-      "company": 2
-      }
-    },
-    {
-      "model": "app.Person",
-      "pk": 3,
-      "fields":{
-      "person_type": "primary_contact",
-      "first_name": "Alan",
-      "last_name": "Smithee",
-      "email": "alan.smithee@company3.com",
-      "company": 3
+      "first_name": "Simon",
+      "last_name": "Terrick",
+      "email": "user3@benefitmy.com",
+      "company": 1,
+      "relationship": "self",
+      "user": 3
       }
     },
     {
       "model": "app.Person",
       "pk": 4,
-      "fields":{ 
-      "user": 4,
-      "person_type": "family",
+      "fields":{
+      "person_type": "primary_contact",
+      "first_name": "Kevin",
+      "last_name": "Johnson",
+      "email": "user5@startup.com",
+      "company": 2,
       "relationship": "self",
-      "first_name": "User4",
-      "last_name": "Name",
-      "email": "user4@smoothbenefits.com",
-      "birth_date": "1971-01-01",
-      "ssn": "123-45-6789"
-      }
-    },
-    {
-      "model": "app.Person",
-      "pk": 5,
-      "fields":{ 
-      "user": 4,
-      "person_type": "family",
-      "relationship": "spouse",
-      "first_name": "User4",
-      "last_name": "Spouse",
-      "email": "user4.spouse@gmail.com",
-      "birth_date": "1972-01-01",
-      "ssn": "223-45-6789"
-      }
-    },
-    {
-      "model": "app.Person",
-      "pk": 6,
-      "fields":{ 
-      "user": 4,
-      "person_type": "family",
-      "relationship": "child",
-      "first_name": "User4",
-      "last_name": "Child1",
-      "email": "user4.child1@gmail.com",
-      "birth_date": "2001-01-01",
-      "ssn": "323-45-6789"
+      "user": 5
       }
     },
     {
       "model": "app.Person",
       "pk": 7,
-      "fields":{ 
-      "user": 4,
-      "person_type": "family",
-      "relationship": "child",
-      "first_name": "User4",
-      "last_name": "Child2",
-      "email": "user4.child2@gmail.com",
-      "birth_date": "2003-01-01",
-      "ssn": "423-45-6789"
+      "fields":{
+      "person_type": "primary_contact",
+      "first_name": "Lynn",
+      "last_name": "Terrick",
+      "email": "user8@cambridge.com",
+      "company": 3,
+      "relationship": "self",
+      "user": 8
       }
     },
     {
       "model": "app.Person",
       "pk": 8,
-      "fields":{ 
-      "user": 5,
-      "person_type": "family",
+      "fields":{
+      "person_type": "primary_contact",
+      "first_name": "Rebecca",
+      "last_name": "Karry",
+      "email": "user9@boston.com",
+      "company": 4,
       "relationship": "self",
-      "first_name": "User5",
-      "last_name": "Name",
-      "email": "user5@smoothbenefits.com",
-      "birth_date": "1969-01-01",
-      "ssn": "523-45-6789"
-      }
-    },
-    {
-      "model": "app.Person",
-      "pk": 9,
-      "fields":{ 
-      "user": 5,
-      "person_type": "family",
-      "relationship": "spouse",
-      "first_name": "User5",
-      "last_name": "Spouse",
-      "email": "user5.spouse@gmail.com",
-      "birth_date": "1966-01-01",
-      "ssn": "623-45-6789"
-      }
-    },
-    {
-      "model": "app.Person",
-      "pk": 10,
-      "fields":{ 
-      "user": 5,
-      "person_type": "family",
-      "relationship": "self",
-      "first_name": "User5",
-      "last_name": "Name",
-      "email": "user4@smoothbenefits.com",
-      "birth_date": "1961-01-01",
-      "ssn": "723-45-6789"
+      "user": 9
       }
     }
 ]

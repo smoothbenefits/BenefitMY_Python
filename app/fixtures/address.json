@@ -29,12 +29,12 @@
       "model": "app.address",
       "pk": 3,
       "fields":{
-      "address_type": "main",
-      "street_1": "1000 Walker Drive",
-      "city": "Anytown",
-      "state": "CA",
-      "zipcode": "98765",
-      "person":3
+      "address_type": "home",
+      "street_1": "10 Lois Lane",
+      "city": "Showme",
+      "state": "MO",
+      "zipcode": "43210",
+      "person":4
       }
     },
     {
@@ -46,7 +46,7 @@
       "city": "Showme",
       "state": "MO",
       "zipcode": "43210",
-      "person":4
+      "person":7
       }
     },
     {
@@ -54,71 +54,11 @@
       "pk": 5,
       "fields":{
       "address_type": "home",
-      "street_1": "5 No Way",
-      "city": "Garden",
-      "state": "NJ",
-      "zipcode": "07070",
-      "person":5
-      }
-    },
-    {
-      "model": "app.address",
-      "pk": 6,
-      "fields":{
-      "address_type": "home",
-      "street_1": "6 Above Ave",
-      "city": "Nome",
-      "state": "AK",
-      "zipcode": "99991",
-      "person":6
-      }
-    },
-    {
-      "model": "app.address",
-      "pk": 7,
-      "fields":{
-      "address_type": "home",
-      "street_1": "10 Lois Lane",
-      "city": "Showme",
-      "state": "MO",
-      "zipcode": "43210",
-      "person":7
-      }
-    },
-    {
-      "model": "app.address",
-      "pk": 8,
-      "fields":{
-      "address_type": "home",
       "street_1": "10 Lois Lane",
       "city": "Showme",
       "state": "MO",
       "zipcode": "43210",
       "company": 1
-      }
-    },
-    {
-      "model": "app.address",
-      "pk": 9,
-      "fields":{
-      "address_type": "home",
-      "street_1": "10 Lois Lane",
-      "city": "Showme",
-      "state": "MO",
-      "zipcode": "43210",
-      "company": 2
-      }
-    },
-    {
-      "model": "app.address",
-      "pk": 10,
-      "fields":{
-      "address_type": "home",
-      "street_1": "5 No Way",
-      "city": "Garden",
-      "state": "NJ",
-      "zipcode": "07070",
-      "company": 3
       }
     }
  ]

@@ -267,6 +267,7 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
     apiPerson.ssn = viewPerson.ssn;
     apiPerson.relationship = viewPerson.relationship;
     apiPerson.addresses = [];
+    viewPerson.address.state = viewPerson.address.state.toUpperCase();
     apiPerson.addresses.push(viewPerson.address);
     apiPerson.phones = [];
     apiPerson.phones.push(viewPerson.phone);
@@ -279,9 +280,9 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
     var apiPerson = mapPerson(viewPerson);
     employeeFamily.save({userId:employeeId}, apiPerson, function(){
       $location.path('/employee/benefit/' + employeeId);
-    }, function(){
-      $scope.saveSucceed = false;
-    })
+    }, function(errorResponse){
+          alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
+    });
   }
 }]);
 
@@ -412,6 +413,7 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
       };
 
       viewEmployee.address.address_type = 'home';
+      viewEmployee.address.state = viewEmployee.address.state.toUpperCase();
       apiEmployee.addresses.push(viewEmployee.address);
       return apiEmployee;
     };
@@ -421,8 +423,8 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
       employeeFamily.save({userId: $scope.employeeId}, newEmployee,
         function(){
           $location.path('/employee/onboard/employment/' + $scope.employeeId);
-        }, function(){
-          alert('Failed to add the new user');
+        }, function(errorResponse){
+          alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
         });
     };
 }]);
