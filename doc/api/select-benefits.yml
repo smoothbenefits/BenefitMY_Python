@@ -1,0 +1,213 @@
+# add new user benefits
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource: user
+resource_url: api/v1/users/:id/benefits
+description: >
+  add the benefits and/or waive benefits for a specified user and company.
+
+
+
+  {
+    "benefits": [
+      {
+        "benefit": {
+          "id": 5,
+          "benefit_type": "Dental"
+        },
+        "enrolleds" : [
+          {
+            "id": 1
+          },
+          {
+            "id": 8
+          }
+        ]
+      },
+      {
+        "benefit": {
+          "id": 1,
+          "benefit_type": "Medical"
+        },
+        "enrolleds" : [
+          {
+            "id": 8
+          }
+        ]
+      }
+    ]
+
+  }
+
+
+
+# update user benefits belong to a company
+version: v1.0
+response_format: JSON
+authentication: None
+method: PUT
+resource: user
+resource_url: api/v1/users/#/benefits_company=#/
+description: >
+  update the benefits and/or waive benefits for a specified user and company.
+
+
+
+  {
+    "benefits": [
+      {
+        "benefit": {
+          "id": 5,
+          "benefit_type": "Dental"
+        },
+        "enrolleds" : [
+          {
+            "id": 1
+          },
+          {
+            "id": 8
+          }
+        ]
+      },
+      {
+        "benefit": {
+          "id": 1,
+          "benefit_type": "Medical"
+        },
+        "enrolleds" : [
+          {
+            "id": 8
+          }
+        ]
+      }
+    ]
+
+  }
+
+
+Response:
+
+{
+    "benefits": [
+        {
+            "enrolleds": [
+                {
+                    "person": {
+                        "id": 1, 
+                        "person_type": "primary_contact", 
+                        "relationship": "self", 
+                        "ssn": null, 
+                        "first_name": "Frank", 
+                        "last_name": "Derekson", 
+                        "middle_name": null, 
+                        "email": "user2@benefitmy.com", 
+                        "birth_date": null, 
+                        "phones": [
+                            {
+                                "id": 2, 
+                                "phone_type": "mobile", 
+                                "number": "1-978-555-2222"
+                            }, 
+                            {
+                                "id": 4, 
+                                "phone_type": "home", 
+                                "number": "1-978-555-4444"
+                            }
+                        ], 
+                        "addresses": [
+                            {
+                                "id": 1, 
+                                "address_type": "main", 
+                                "street_1": "101 Breeze Way", 
+                                "street_2": "Suite 200", 
+                                "city": "Pleasantville", 
+                                "state": "MA", 
+                                "zipcode": "01234"
+                            }
+                        ], 
+                        "company": 1, 
+                        "user": 2
+                    }, 
+                    "id": 7, 
+                    "user_company_benefit_plan_option": 10
+                }, 
+                {
+                    "person": {
+                        "id": 8, 
+                        "person_type": "primary_contact", 
+                        "relationship": "self", 
+                        "ssn": null, 
+                        "first_name": "Rebecca", 
+                        "last_name": "Karry", 
+                        "middle_name": null, 
+                        "email": "user9@boston.com", 
+                        "birth_date": null, 
+                        "phones": [], 
+                        "addresses": [], 
+                        "company": 4, 
+                        "user": 9
+                    }, 
+                    "id": 8, 
+                    "user_company_benefit_plan_option": 10
+                }
+            ], 
+            "benefit": {
+                "id": 5, 
+                "total_cost_per_period": "1700.00", 
+                "employee_cost_per_period": "900.00", 
+                "benefit_option_type": "individual_plus_spouse", 
+                "company": {
+                    "id": 1, 
+                    "name": "Benefitmy LLC"
+                }, 
+                "benefit_plan": {
+                    "id": 2, 
+                    "name": "Blue Cross Blue Shield of Mass. PPO", 
+                    "benefit_type": 1
+                }
+            }, 
+            "waived_benefit": null
+        }, 
+        {
+            "enrolleds": [
+                {
+                    "person": {
+                        "id": 8, 
+                        "person_type": "primary_contact", 
+                        "relationship": "self", 
+                        "ssn": null, 
+                        "first_name": "Rebecca", 
+                        "last_name": "Karry", 
+                        "middle_name": null, 
+                        "email": "user9@boston.com", 
+                        "birth_date": null, 
+                        "phones": [], 
+                        "addresses": [], 
+                        "company": 4, 
+                        "user": 9
+                    }, 
+                    "id": 9, 
+                    "user_company_benefit_plan_option": 11
+                }
+            ], 
+            "benefit": {
+                "id": 1, 
+                "total_cost_per_period": "1000.00", 
+                "employee_cost_per_period": "200.00", 
+                "benefit_option_type": "individual", 
+                "company": {
+                    "id": 1, 
+                    "name": "Benefitmy LLC"
+                }, 
+                "benefit_plan": {
+                    "id": 1, 
+                    "name": "Blue Cross Blue Shield of Mass. HMO Blue", 
+                    "benefit_type": 1
+                }
+            }, 
+            "waived_benefit": null
+        }
+    ]
+}
