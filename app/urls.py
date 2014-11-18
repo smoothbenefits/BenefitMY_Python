@@ -42,7 +42,8 @@ from app.views.company_templates_view import CompanyTemplatesView
 from app.views.user_company_waived_benefit_view import UserCompanyWaivedBenefitView
 from app.views.user_company_benefit_plan_option_view import (
     UserCompanyBenefitPlanOptionView,
-    user_select_benefit)
+    user_add_benefits,
+    user_select_benefits)
 from app.views.user_company_roles_view import UserCompanyRolesView
 
 from app.views.w4_view import W4View
@@ -103,6 +104,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/documents/?$' % PREFIX, documents),
     url(r'^%s/users/(?P<pk>[0-9]+)/benefits_company=(?P<pc>[0-9]+)/?$' % PREFIX,
         user_select_benefit),
+    url(r'^%s/users/(?P<pk>[0-9]+)/benefits/?$' % PREFIX,
+        user_add_benefit),
+
 
     # util api
 
