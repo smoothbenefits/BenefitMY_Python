@@ -69,8 +69,7 @@ var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignu
     $scope.selectedBenefits =[];
     $scope.selectedBenefitHashmap = {};
 
-    employeeFamily.get({userId:employeeId}).$promise
-    .then(function(response){
+    employeeFamily.get({userId:employeeId}).$promise.then(function(response){
       _.each(response.family, function(member){
         member.ticked = false;
         $scope.family.push(member);
@@ -88,6 +87,7 @@ var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignu
         })
         return company_id;
       });
+
     var getEligibleFamilyMember = function(benefit, selected){
       var availFamilyList = {};
       var selectedMemberHash = {};
@@ -131,7 +131,8 @@ var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignu
       });
       return availFamilyList;
     };
-  companyIdPromise.then(function(companyId){
+
+    companyIdPromise.then(function(companyId){
       employeeBenefits.get({userId:employeeId, companyId:companyId})
         .$promise.then(function(response){
           $scope.selectedBenefits = response.benefits;
@@ -147,13 +148,23 @@ var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignu
               }));
 
               benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
-              var curTypePlan = _.findWhere($scope.availablePlans, {type:availBenefit.benefit_type});
+              var benefitType = availBenefit.benefit_plan.benefit_type.name;
+              var curTypePlan = _.find($scope.availablePlans, function(plans){
+                var hit = _.find(plans.benefitList, function(benefit){
+                  return benefit.benefit.benefit_plan.benefit_type.name == benefitType;
+                });
+                if (hit){
+                  return true;
+                }
+                return false;
+              })
               if(!curTypePlan)
               {
                 curTypePlan = {type:availBenefit.benefit_type, benefitList:[], selected:{}};
                 $scope.availablePlans.push(curTypePlan);
               }
               curTypePlan.benefitList.push(benefitFamilyPlan);
+              curTypePlan.benefit_type = benefitType;
             });
             _.each($scope.availablePlans, function(typedPlan){
               _.each(typedPlan.benefitList, function(curBenefit){
