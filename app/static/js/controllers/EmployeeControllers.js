@@ -464,8 +464,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
         'passport': viewObject.passportId,
         'country': viewObject.passportCountry,
         'signature': {
-          'signature': signature,
-          'signature_type': 'step'
+          'signature': signature
         }
       };
       return contract;
