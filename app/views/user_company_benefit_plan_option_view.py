@@ -22,35 +22,24 @@ class UserCompanyBenefitPlanOptionView(APIView):
         serializer = UserCompanyBenefitPlanOptionSerializer(plans, many=True)
         return Response({'benefits': serializer.data})
 
+    def _add_user_benefits(self, request, pk):
+        for benefit in request.DATA['benefits']:
+            enroll_list = [ids["id"] for ids in benefit["enrolleds"]]
+            u = UserCompanyBenefitPlanOption(user_id=pk,
+                benefit_id=benefit['benefit']['id'])
+            u.save()
+            for e in enroll_list:
+                enrolled = Enrolled(user_company_benefit_plan_option=u,
+                                    person_id=e)
+                enrolled.save()
+
     def post(self, request, pk, format=None):
-        _add_user_benefits(request, pk)
         benefits = UserCompanyBenefitPlanOption.objects.filter(user=pk)
-        serializer = UserCompanyBenefitPlanOptionSerializer(benefits, many=True)
-        return Response({'benefits': serializer.data})
-
-
-def _add_user_benefits(request, pk):
-    for benefit in request.DATA['benefits']:
-        enroll_list = [ids["id"] for ids in benefit["enrolleds"]]
-        u = UserCompanyBenefitPlanOption(user_id=pk,
-            benefit_id=benefit['benefit']['id'])
-        u.save()
-        for e in enroll_list:
-            enrolled = Enrolled(user_company_benefit_plan_option=u,
-                                person_id=e)
-            enrolled.save()
-
-
-@api_view(['PUT'])
-def user_update_benefits(request, pk, pc):
-    benefits = UserCompanyBenefitPlanOption.objects.filter(user=pk)
-    for b in benefits:
-        if b.benefit.company_id == int(pc):
+        for b in benefits:
             Enrolled.objects.filter(
                 user_company_benefit_plan_option=b.id).delete()
             b.delete()
-
-    _add_user_benefits(request, pk)
-    benefits = UserCompanyBenefitPlanOption.objects.filter(user=pk)
-    serializer = UserCompanyBenefitPlanOptionSerializer(benefits, many=True)
-    return Response({'benefits': serializer.data})
+        self._add_user_benefits(request, pk)
+        benefits = UserCompanyBenefitPlanOption.objects.filter(user=pk)
+        serializer = UserCompanyBenefitPlanOptionSerializer(benefits, many=True)
+        return Response({'benefits': serializer.data})
