@@ -43,49 +43,6 @@ description: >
 
 
 
-# update user benefits belong to a company
-version: v1.0
-response_format: JSON
-authentication: None
-method: PUT
-resource: user
-resource_url: api/v1/users/#/benefits_company=#/
-description: >
-  update the benefits and/or waive benefits for a specified user and company.
-
-
-
-  {
-    "benefits": [
-      {
-        "benefit": {
-          "id": 5,
-          "benefit_type": "Dental"
-        },
-        "enrolleds" : [
-          {
-            "id": 1
-          },
-          {
-            "id": 8
-          }
-        ]
-      },
-      {
-        "benefit": {
-          "id": 1,
-          "benefit_type": "Medical"
-        },
-        "enrolleds" : [
-          {
-            "id": 8
-          }
-        ]
-      }
-    ]
-
-  }
-
 
 Response:
 
