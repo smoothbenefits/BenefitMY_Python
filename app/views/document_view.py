@@ -84,7 +84,6 @@ def documents(request):
     s = None
     if request.DATA['signature']:
         s = Signature(signature=request.DATA['signature'],
-                      signature_type='step',
                       user_id=request.DATA['user'])
         s.save()
 
