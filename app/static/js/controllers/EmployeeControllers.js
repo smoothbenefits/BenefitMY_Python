@@ -202,18 +202,24 @@ var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignu
       var invalidEnrollNumberList = [];
       _.each($scope.availablePlans, function(benefitTypePlan){
         var enrolledList = [];
-        _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
-          if(member.selected)
-          {
-            enrolledList.push({id:member.id});
-          }
-        });
+        if (typeof benefitTypePlan.selected.eligibleMemberCombo != 'undefined'){
+          _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
+            if(member.selected)
+            {
+              enrolledList.push({id:member.id});
+            }
+          });
+        }
 
         if(enrolledList.length > 0)
         {
-          var requestBenefit = {benefit:{id:benefitTypePlan.selected.benefit.id,
-              benefit_type:benefitTypePlan.selected.benefit.benefit_type},
-            enrolleds:enrolledList};
+          var requestBenefit = {
+            benefit:{
+              id:benefitTypePlan.selected.benefit.id,
+              benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
+            },
+            enrolleds:enrolledList
+          };
           saveRequest.benefits.push(requestBenefit);
 
           if(benefitTypePlan.selected.benefit.benefit_option_type != 'family' &&
