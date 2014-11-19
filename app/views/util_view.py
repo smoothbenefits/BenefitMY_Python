@@ -15,11 +15,13 @@ def send_onboard_email(request):
 
 Hi %s,
 
+
 We, BenefitMy LLC, are partnering with your employer, %s, to welcome you.  Your HR administrator has asked us to
 
-Verify your employment eligibility in the US. so that you could start to work at the right time.  Please make sure you have all the necessary documents.
-Collect the personal info in order to setup your health benefit.
-Help you to enroll benefit plans for you and your family.
+     * Verify your employment eligibility in the US. so that you could start to work at the right time.  Please make sure you have all the necessary documents.
+     * Collect the personal info in order to setup your health benefit.
+     * Help you to enroll benefit plans for you and your family.
+
 Here is your unique link to setup your account: https://www.benefitmy.com/employee/signup/:%d.
 
 If you have any questions, feel free to drop us an email.
