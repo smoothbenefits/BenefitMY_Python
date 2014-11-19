@@ -202,12 +202,14 @@ var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignu
       var invalidEnrollNumberList = [];
       _.each($scope.availablePlans, function(benefitTypePlan){
         var enrolledList = [];
-        _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
-          if(member.selected)
-          {
-            enrolledList.push({id:member.id});
-          }
-        });
+        if (typeof benefitTypePlan.selected.eligibleMemberCombo != 'undefined'){
+          _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
+            if(member.selected)
+            {
+              enrolledList.push({id:member.id});
+            }
+          });
+        }
 
         if(enrolledList.length > 0)
         {
