@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 
+from django.db import transaction
 from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.serializers.company_serializer import (
@@ -25,6 +26,7 @@ class CompanyView(APIView):
 
 
 @api_view(['POST'])
+@transaction.atomic
 def companies(request):
     # We first need to create an active user for it
     contact_size = len(request.DATA['contacts'])
