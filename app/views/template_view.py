@@ -3,6 +3,7 @@ from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
+from django.db import transaction
 
 from app.models.company import Company
 from app.models.document_type import DocumentType
@@ -22,6 +23,7 @@ class TemplateView(APIView):
         serializer = TemplateSerializer(template)
         return Response({'template': serializer.data})
 
+    @transaction.atomic
     def put(self, request, pk, format=None):
         t = self.get_object(pk)
         try:
@@ -40,6 +42,7 @@ class TemplateView(APIView):
 
 
 @api_view(['POST'])
+@transaction.atomic
 def templates(request):
     try:
         c = Company.objects.get(id=request.DATA['company'])
