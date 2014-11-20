@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 
+from django.db import transaction
 from app.models.benefit_plan import BenefitPlan
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
 from app.serializers.company_benefit_plan_option_serializer import (
@@ -30,6 +31,7 @@ class CompanyBenefitPlanOptionView(APIView):
 
 
 @api_view(['POST'])
+@transaction.atomic
 def benefits(request):
     if (not "company" in request.DATA or not
         "benefit" in request.DATA or not
