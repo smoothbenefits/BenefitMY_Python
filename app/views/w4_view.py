@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import status
+from django.db import transaction
 
 from app.models.w4 import W4
 from app.serializers.w4_serializer import W4Serializer
@@ -19,6 +20,8 @@ class W4View(APIView):
         serializer = W4Serializer(w4)
         return Response(serializer.data)
 
+
+    @transaction.atomic
     def post(self, request, pk, format=None):
 
         request.DATA['user'] = pk
