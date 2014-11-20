@@ -4,6 +4,7 @@ from django.http import Http404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from django.db import transaction
 from app.models.enrolled import Enrolled
 from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
 from app.serializers.user_company_benefit_plan_option_serializer import (
@@ -33,6 +34,7 @@ class UserCompanyBenefitPlanOptionView(APIView):
                                     person_id=e)
                 enrolled.save()
 
+    @transaction.atomic
     def post(self, request, pk, format=None):
         benefits = UserCompanyBenefitPlanOption.objects.filter(user=pk)
         for b in benefits:
