@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework import status
 
+from django.db import transaction
 from app.models.signature import Signature
 from app.serializers.signature_serializer import SignatureSerializer
 from rest_framework.response import Response
@@ -19,6 +20,7 @@ class SignatureView(APIView):
         serializer = SignatureSerializer(s)
         return Response(serializer.data)
 
+    @transaction.atomic
     def post(self, request, pk, format=None):
 
         request.DATA['user'] = pk
