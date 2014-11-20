@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
+from django.db import transaction
 
 from app.models.signature import Signature
 from app.models.document_field import DocumentField
@@ -80,6 +80,7 @@ class UserDocumentView(APIView):
 
 
 @api_view(['POST'])
+@transaction.atomic
 def documents(request):
     s = None
     if request.DATA['signature']:
@@ -139,6 +140,7 @@ class DocumentSignatureView(APIView):
         except Document.DoesNotExist:
             raise Http404
 
+    @transaction.atomic
     def post(self, request, pk, format=None):
 
         document = self.get_document(pk=pk)
