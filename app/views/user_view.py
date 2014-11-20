@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from rest_framework.response import Response
 from rest_framework import status
 
+from django.db import transaction
 from emailusernames.utils import (
     create_user,
     get_user,
@@ -36,6 +37,8 @@ class UsersView(APIView):
         serializer = UserSerializer(users, many=True)
         return Response({'users': serializer.data})
 
+
+    @transaction.atomic
     def post(self, request, format=None):
         if ("company" not in request.DATA or
             "company_user_type" not in request.DATA or
