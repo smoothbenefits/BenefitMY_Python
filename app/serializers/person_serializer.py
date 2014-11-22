@@ -16,7 +16,6 @@ class PersonSerializer(serializers.ModelSerializer):
         fields = ('id',
                   'person_type',
                   'relationship',
-                  'ssn',
                   'first_name',
                   'last_name',
                   'middle_name',
