@@ -58,13 +58,14 @@
                         </div>
                     </div>
 
-                    <div class="form-label">Date Of Birth</div>
+                    <div class="form-label">Date Of Birth (MM/DD/YYYY)</div>
                     <div class="datebox">
                         <input type="date"
                             name="birth_date"
                             ng-model="employee.birth_date"
                             ng-required="true"
-                            min="1900-01-01">
+                            min="1900-01-01"
+                            ui-mask="99/99/9999">
                         <div class="form-error" ng-show="form.birth_date.$dirty && form.birth_date.$invalid">
                             <span ng-show="form.birth_date.$error.required">Date of Birth field is required</span>
                             <span ng-show="form.birth_date.$invalid">Please enter a valid Date of Birth</span>
