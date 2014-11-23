@@ -9,4 +9,4 @@ class Template(models.Model):
     document_type = models.ForeignKey(DocumentType,
                                       related_name="template")
     name = models.CharField(max_length=255)
-    content = models.TextField()
+    content = models.TextField(blank=True, null=True)

@@ -12,6 +12,8 @@ class DocumentSerializer(serializers.ModelSerializer):
 
     def generate_content(self, foo):
         content = foo.template.content
+        if not content:
+            content = foo.document_type.default_content
         field_names = re.findall('{{(.*?)}}', content)
         fields = DocumentField.objects.filter(document_id=foo.id)
         fields_dict = {f.name: f.value for f in fields}

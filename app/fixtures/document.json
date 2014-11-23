@@ -3,21 +3,36 @@
       "model": "app.DocumentType",
       "pk": 1,
       "fields":{
-      "name": "Offer Letter"}
+      "name": "Offer Letter",
+      "default_content": "offer default content"}
     },
     {
        "model": "app.DocumentType",
       "pk": 2,
       "fields":{
-      "name": "Employment Agreement"
-      }
+      "name": "Employment Agreement",
+      "default_content": "ea default content"}
     },
     {
        "model": "app.DocumentType",
       "pk": 3,
       "fields":{
-      "name": "NDA"}
-    },
+      "name": "NDA", 
+      "default_content": "dna default content"}
+      },
+
+
+    {
+       "model": "app.DocumentType",
+      "pk": 4,
+      "fields":{
+      "name": "Cobra", 
+      "default_content": "cobra default content"}
+      },
+
+
+
+
 
     {
        "model": "app.Template",
