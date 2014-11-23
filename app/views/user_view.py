@@ -14,7 +14,7 @@ from app.models.company import Company
 from app.models.user import User
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
-from app.serializers.person_serializer import PersonSerializer
+from app.serializers.person_serializer import PersonFullPostSerializer
 
 
 class UserView(APIView):
@@ -111,7 +111,7 @@ class UserFamilyView(APIView):
 
     def post(self, request, pk, format=None):
         request.DATA['user'] = pk
-        serializer = PersonSerializer(data=request.DATA)
+        serializer = PersonFullPostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
