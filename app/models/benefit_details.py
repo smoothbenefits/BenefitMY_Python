@@ -1,7 +1,7 @@
 from django.db import models
 from benefit_policy_key import BenefitPolicyKey
 from benefit_policy_type import BenefitPolicyType
-
+from company_benefit_plan_option import ComapanyBenefitPlanOption
 
 class BenefitDetails(models.Model):
     value = models.CharField(max_length=1024)
@@ -14,3 +14,8 @@ class BenefitDetails(models.Model):
         related_name="benefit_details",
         blank=True,
         null=True)
+
+    benefit_plan = models.ForeignKey(ComapanyBenefitPlanOption,
+                                     related_name="benefit_details",
+                                     blank=True,
+                                     null=True)
