@@ -136,3 +136,8 @@ benefitmyService.factory('countRepository', ['$resource',
       companyCount: $resource('/api/v1/broker_company_count/:brokerId', {brokerId: '@brokerId'})
     }
   }]);
+
+benefitmyService.factory('emailRepository', ['$resource',
+  function($resource){
+    return $resource('/api/v1/onboard_email', {});
+  }]);
