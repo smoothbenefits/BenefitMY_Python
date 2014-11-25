@@ -9,7 +9,7 @@ description: >
 sample_request:
 {
     "name": "john killer",
-    "company": "XXX company",
+    "company_id": 3,
     "email": "john@gmail.com"
 }
 
@@ -17,5 +17,5 @@ sample_request:
 
 sample_response: |
 
-"True" #sent
-"False" #failed
+True #sent
+False #failed
