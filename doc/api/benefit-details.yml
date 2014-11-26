@@ -62,6 +62,7 @@ sample_response: |
 
 
 To update/insert
+POST
 sample_url: /api/v1/benefit_details/plan=#/
 
         
@@ -73,3 +74,11 @@ Get benefit details of benefit plan #
      "type": "Out of network",
      "benefit_plan_id": 2
     }
+
+
+
+To delete
+DELETE
+sample_url: /api/v1/benefit_details/#/
+
+return 204 
