@@ -55,3 +55,21 @@ sample_response: |
         }
     }
 ]
+
+
+
+
+
+
+To update/insert
+sample_url: /api/v1/benefit_details/#/
+
+        
+Get benefit details of benefit plan #
+
+    {
+     "value": "cover 10%", 
+     "key": "prescription",
+     "type": "Out of network",
+     "benefit_plan_id": 2
+    }
