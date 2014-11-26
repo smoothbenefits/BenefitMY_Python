@@ -46,7 +46,9 @@ from app.views.user_company_roles_view import UserCompanyRolesView
 from app.views.w4_view import W4View
 from app.views.employment_authorization_view import EmploymentAuthorizationView
 from app.views.signature_view import SignatureView
-from app.views.benefit_details_view import BenefitDetailsView
+from app.views.benefit_details_view import (
+    BenefitDetailsView,
+    delete_benefit_details)
 from app.views.util_view import send_onboard_email
 
 PREFIX = "api/v1"
@@ -79,6 +81,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/benefits/(?P<pk>[0-9]+)/?$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
     url(r'^%s/benefit_details/plan=(?P<pk>[0-9]+)/?$' % PREFIX, BenefitDetailsView.as_view()),
 
+    url(r'^%s/benefit_details/(?P<pk>[0-9]+)/?$' % PREFIX, delete_benefit_details),
     url(r'^%s/companies/(?P<pk>[0-9]+)/benefits/?$' % PREFIX,
         CompanyBenefitPlansView.as_view()),
     url(r'^%s/companies/(?P<pk>[0-9]+)/?$' % PREFIX, CompanyView.as_view()),

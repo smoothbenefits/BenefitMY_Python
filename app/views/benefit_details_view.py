@@ -3,6 +3,8 @@ from django.http import Http404
 from rest_framework.response import Response
 from django.db import transaction
 from rest_framework import status
+from rest_framework.decorators import api_view
+
 
 from app.models.benefit_details import BenefitDetails
 from app.models.benefit_policy_key import BenefitPolicyKey
@@ -60,3 +62,16 @@ class BenefitDetailsView(APIView):
             detail.save()
             serializer = BenefitDetailsSerializer(detail)
             return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+def delete_benefit_details(request, pk):
+
+    try:
+        detail = BenefitDetails.objects.get(pk=pk)
+    except BenefitDetails.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        detail.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
