@@ -6,7 +6,7 @@ resource: benefit
 resource_url: api/v1/benefit_details
 description: >
 parameters:
-sample_url: /api/v1/benefit_details/#/
+sample_url: /api/v1/benefit_details/plan=#/
 
         
 Get benefit details of benefit plan #
@@ -62,7 +62,7 @@ sample_response: |
 
 
 To update/insert
-sample_url: /api/v1/benefit_details/#/
+sample_url: /api/v1/benefit_details/plan=#/
 
         
 Get benefit details of benefit plan #
