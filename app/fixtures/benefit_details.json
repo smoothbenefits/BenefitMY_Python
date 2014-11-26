@@ -1,0 +1,139 @@
+[
+    { 
+      "model": "app.BenefitPolicyKey",
+      "pk": 1,
+      "fields":{
+      "name": "surgery"
+      }
+    },
+    { 
+      "model": "app.BenefitPolicyKey",
+      "pk": 2,
+      "fields":{
+      "name": "x-ray"
+      }
+    },
+    { 
+      "model": "app.BenefitPolicyKey",
+      "pk": 3,
+      "fields":{
+      "name": "prescription"
+      }
+    },
+
+
+    { 
+      "model": "app.BenefitPolicyType",
+      "pk": 1,
+      "fields":{
+      "name": "In network"
+      }
+    },
+    { 
+      "model": "app.BenefitPolicyType",
+      "pk": 2,
+      "fields":{
+      "name": "Out of network"
+      }
+    },
+ 
+
+
+
+    { 
+      "model": "app.BenefitDetails",
+      "pk": 1,
+      "fields":{
+      	"value" : "100%",
+	"benefit_policy_key": 1,
+	"benefit_policy_type": 1,
+	"benefit_plan": 1
+      }
+    },
+ 
+
+    { 
+      "model": "app.BenefitDetails",
+      "pk": 2,
+      "fields":{
+      	"value" : "80%",
+	"benefit_policy_key": 1,
+	"benefit_policy_type": 2,
+	"benefit_plan": 1
+      }
+    },
+
+
+    { 
+      "model": "app.BenefitDetails",
+      "pk": 3,
+      "fields":{
+      	"value" : "70%",
+	"benefit_policy_key": 2,
+	"benefit_policy_type": 1,
+	"benefit_plan": 1
+      }
+    },
+
+    { 
+      "model": "app.BenefitDetails",
+      "pk": 4,
+      "fields":{
+      	"value" : "50%",
+	"benefit_policy_key": 2,
+	"benefit_policy_type": 2,
+	"benefit_plan": 1
+      }
+    },
+
+    { 
+      "model": "app.BenefitDetails",
+      "pk": 5,
+      "fields":{
+      	"value" : "100%",
+	"benefit_policy_key": 3,
+	"benefit_policy_type": 1,
+	"benefit_plan": 1
+      }
+    },
+
+    { 
+      "model": "app.BenefitDetails",
+      "pk": 6,
+      "fields":{
+      	"value" : "No cover",
+	"benefit_policy_key": 3,
+	"benefit_policy_type": 2,
+	"benefit_plan": 1
+      }
+    },
+
+
+    { 
+      "model": "app.BenefitDetails",
+      "pk": 7,
+      "fields":{
+      	"value" : "100%",
+	"benefit_policy_key": 3,
+	"benefit_policy_type": 1,
+	"benefit_plan": 2
+      }
+    },
+
+    { 
+      "model": "app.BenefitDetails",
+      "pk": 8,
+      "fields":{
+      	"value" : "No cover",
+	"benefit_policy_key": 3,
+	"benefit_policy_type": 2,
+	"benefit_plan": 2
+      }
+    }
+
+
+
+
+ ]
+
+
