@@ -491,7 +491,7 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     
       employeeTaxRepository.get({userId:employeeId})
         .$promise.then(function(response){
-          if(!response || response.total_points <= 0){
+          if(!response || !response.total_points || response.total_points <= 0){
             if(!$scope.displayAll && employmentAuthValidated){
               $location.path(getTaxUrl(employeeId));
             }
@@ -618,16 +618,45 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', '$routeParams', '$location',
-  function($scope, $routeParams, $location){
+  ['$scope', '$routeParams', '$location','employeeTaxRepository',
+  function($scope, $routeParams, $location, employeeTaxRepository){
     $('body').addClass('onboarding-page');
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
     $scope.employee.withholdingType = 'single';
     $scope.employee.headOfHousehold = 0;
     $scope.employee.childExpense = 0;
+
+    var getMarriageNumber = function(){
+      if($scope.employee.withholdingType ==='married'){
+        return 2;
+      }
+      else{
+        return 1;
+      }
+    };
+
+    var getTotalPoints = function(){
+      var total = getMarriageNumber() + 1;
+      total += $scope.employee.dependent_count;
+      if($scope.employee.childExpense){
+        total ++;
+      }
+      return total;
+    };
+
     $scope.submit=function(){
-      $location.path('/employee/onboard/complete/'+$scope.employeeId);
+      var empAuth = {
+        marriage: getMarriageNumber(),
+        dependencies: $scope.employee.dependent_count,
+        head: $scope.employee.headOfHousehold,
+        tax_credit: $scope.employee.childExpense,
+        total_points: getTotalPoints()
+      };
+      employeeTaxRepository.save({userId:$scope.employeeId}, empAuth,
+        function(response){
+          $location.path('/employee/onboard/complete/'+$scope.employeeId);
+        }); 
     }
 }]);
 
