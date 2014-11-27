@@ -25,7 +25,7 @@ class SignatureView(APIView):
 
         request.DATA['user'] = pk
         try:
-            s = Signature.objects.get(user=pk)
+            s = Signature.objects.get(user=pk, signature_step='final')
             serializer = SignatureSerializer(s, data=request.DATA)
             if serializer.is_valid():
                 serializer.save()
