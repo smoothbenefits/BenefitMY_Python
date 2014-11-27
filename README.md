@@ -12,7 +12,7 @@ Please follow the following steps to start the app on your local machine
 `pip install djangorestframework`
  pip install django-pipeline
  pip install django-email-as-username
-
+ pip install django-encrypted-fields
 
 2. Install postgres
 
