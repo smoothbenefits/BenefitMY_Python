@@ -141,3 +141,14 @@ benefitmyService.factory('emailRepository', ['$resource',
   function($resource){
     return $resource('/api/v1/onboard_email', {});
   }]);
+
+benefitmyService.factory('employeeTaxRepository', ['$resource', 
+  function($resource){
+    return $resource('/api/v1/users/:userId/w4/', {userId:'@userId'});
+  }
+]);
+benefitmyService.factory('peopleRepository', ['$resource',
+  function($resource){
+    return $resource('/api/v1/people/:personId', {personId:'@personId'});
+  }
+]);

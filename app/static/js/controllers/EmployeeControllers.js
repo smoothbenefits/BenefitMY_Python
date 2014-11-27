@@ -402,15 +402,130 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$routeParams', '$location', 'employeeFamily', 'currentUser',
-  function($scope, $routeParams, $location, employeeFamily, currentUser){
-    $('body').addClass('onboarding-page');
+  ['$scope', '$routeParams', '$location', 'employeeFamily', 'currentUser', 'employeeOnboarding', 'employeeTaxRepository', 'employeeSignature', 'peopleRepository',
+  function($scope, $routeParams, $location, employeeFamily, currentUser, employeeOnboarding, employeeTaxRepository, employeeSignature, peopleRepository){
+    
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
-    currentUser.get()
+    $scope.displayAll = false;
+    var employmentAuthValidated = false;
+    var taxValidated = false;
+    var userPromise = currentUser.get()
       .$promise.then(function(curUserResponse){
         $scope.curUser = curUserResponse.user;
+        return curUserResponse.user;
       });
+
+    var validateBasicInfo = function(person){
+      //make sure we get all the basic information of this person correctly.
+      if(!person)
+      {
+        return false;
+      }
+      if(!person.email){
+        return false;
+      }
+      if(!(person.first_name && person.last_name))
+      {
+        return false;
+      }
+      if(!person.birth_date)
+      {
+        return false;
+      }
+      if(!person.phones || person.phones.length <=0){
+        return false;
+      }
+      if(!person.addresses || person.addresses.length <= 0){
+        return false;
+      }
+      return true;
+    };
+
+    var getEmploymentAuthUrl = function(employeeId){
+      return '/employee/onboard/employment/' + employeeId;
+    };
+
+    var getTaxUrl = function(employeeId){
+      return '/employee/onboard/tax/' + employeeId;
+    };
+
+    var getSignatureUrl = function(employeeId){
+      return '/employee/onboard/complete/' + employeeId;
+    };
+
+    var getOnboardStartingUrl = function(employeeId){
+      //We would like to check if this user has the correct information for each steps
+      //starting from the basic information check
+
+      //step one (basic info) validation
+      employeeFamily.get({userId:employeeId})
+        .$promise.then(function(familyResponse){
+          var self = _.findWhere(familyResponse.family, {'relationship':'self'});
+          if(self){
+            //We need to validate this self
+            if(!validateBasicInfo(self)){
+            //we should remove the family person.
+            //Do we have this API?
+              peopleRepository.delete({personId:self.id});
+              $scope.displayAll = true;
+            }
+          }
+          else{
+            $scope.displayAll = true;
+          }
+        });
+      //step two (employment auth) validation
+      //get the sigature for employment auth document
+      employeeOnboarding.get({userId:employeeId})
+        .$promise.then(function(response){
+           if(!(response && response.signature && response.signature.signature)){
+            if(!$scope.displayAll){
+              $location.path(getEmploymentAuthUrl(employeeId));
+            }
+           }
+           else{
+            employmentAuthValidated = true;
+           }
+        });
+    
+      employeeTaxRepository.get({userId:employeeId})
+        .$promise.then(function(response){
+          if(!response || response.total_points <= 0){
+            if(!$scope.displayAll && employmentAuthValidated){
+              $location.path(getTaxUrl(employeeId));
+            }
+          }
+          else{
+            taxValidated = true;
+          }
+        }, function(err){
+          if(!$scope.displayAll && employmentAuthValidated){
+            $location.path(getTaxUrl(employeeId));
+          }
+        });
+    
+      if(!$scope.displayAll){
+        //step 4 the signature for employee
+        employeeSignature.get({userId:employeeId})
+          .$promise.then(function(signature){
+            if(!signature || !signature.signature || signature.signature===''){
+              if(!$scope.displayAll && employmentAuthValidated && taxValidated){
+                $location.path(getSignatureUrl(employeeId));
+              }
+            }
+            else{
+              //we have finished all the validation.
+              $location.path('/employee');
+            }
+          })
+      }
+    };
+
+    getOnboardStartingUrl($scope.employeeId);
+
+    $('body').addClass('onboarding-page');
+
     var mapEmployee = function(viewEmployee){
       var apiEmployee = {
         'person_type': 'family',

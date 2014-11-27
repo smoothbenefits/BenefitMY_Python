@@ -11,14 +11,21 @@ from rest_framework.response import Response
 class SignatureView(APIView):
     def _get_object(self, pk):
         try:
-            return Signature.objects.filter(user=pk)
+            signature_list = Signature.objects.filter(user=pk, signature_type='final')
+            if signature_list:
+                return signature_list[0]
+            else:
+                return None
         except Signature.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
         s = self._get_object(pk)
-        serializer = SignatureSerializer(s, many=True)
-        return Response(serializer.data)
+        if s:
+            serializer = SignatureSerializer(s)
+            return Response(serializer.data)
+        else:
+            return Response({})
 
     @transaction.atomic
     def post(self, request, pk, format=None):

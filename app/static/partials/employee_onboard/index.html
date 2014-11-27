@@ -1,162 +1,164 @@
-<div class="breadcrumb">
-    <a href="/">Home</a>
-    <span>Employee Onboard</span>
+<div ng-show="displayAll">
+    <div class="breadcrumb">
+        <a href="/">Home</a>
+        <span>Employee Onboard</span>
+    </div>
+    <div class="content-header">
+        <h1>Employee Onboard</h1>
+        <span class="general-info">Benefitmy works with your company to ensure all of employee information is collected from you</span>
+    </div><!-- / .content-header -->
+
+    <div class="content-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="list-group">
+                    <a ng-href="#/employee/onboard/index/{{employeeId}}" class="list-group-item active">
+                        <h4 class="list-group-item-heading">Basic Information</h4>
+                        <p class="list-group-item-text">Personal information</p>
+                    </a>
+                    <a ng-href="#/employee/onboard/employment/{{employeeId}}" class="list-group-item">
+                        <h4 class="list-group-item-heading">Employment Authorization</h4>
+                        <p class="list-group-item-text">Employment and proof of eligibility</p>
+                    </a>
+                    <a href="#/employee/onboard/tax/{{employeeId}}" class="list-group-item">
+                        <h4 class="list-group-item-heading">Tax information (W-4)</h4>
+                        <p class="list-group-item-text">Information about your W-4 and state tax withholding form</p>
+                    </a>
+                    <a href="#/employee/onboard/complete/{{employeeId}}" class="list-group-item">
+                        <h4 class="list-group-item-heading">Term and Signature</h4>
+                        <p class="list-group-item-text">Please acknowledge the information by providing us your signature</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="form-holder">
+                    <form name="form">
+                        <ul class="list-group"><li class="list-group-item">
+                        <div class="form-label">First Name</div>
+                        <div class="textbox">
+                            <input type="text"
+                                name="first_name"
+                                ng-model="employee.firstName"
+                                ng-required="true">
+                            <div class="form-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
+                              <span ng-show="form.first_name.$error.required">First field is required</span>
+                            </div>
+                        </div>
+
+                        <div class="form-label">Last Name</div>
+                        <div class="textbox">
+                            <input type="text"
+                                name="last_name"
+                                ng-model="employee.lastName"
+                                ng-required="true">
+                            <div class="form-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
+                              <span ng-show="form.last_name.$error.required">Last Name field is required</span>
+                            </div>
+                        </div>
+
+                        <div class="form-label">Date Of Birth (MM/DD/YYYY)</div>
+                        <div class="datebox">
+                            <input type="date"
+                                name="birth_date"
+                                ng-model="employee.birth_date"
+                                ng-required="true"
+                                min="1900-01-01"
+                                placeholder="yyyy-MM-dd">
+                            <div class="form-error" ng-show="form.birth_date.$dirty && form.birth_date.$invalid">
+                                <span ng-show="form.birth_date.$error.required">Date of Birth field is required</span>
+                                <span ng-show="form.birth_date.$invalid">Please enter a valid Date of Birth</span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-label">Social Security Number</div>
+                        <div class="textbox">
+                            <input type="tel"
+                                name="person_ssn"
+                                ng-model="employee.ssn"
+                                ng-required="true"
+                                ui-mask="999-99-9999">
+                            <div class="form-error" ng-show="form.person_.$dirty && form.person_ssn.$invalid">
+                                <span ng-show="form.person_ssn.$error.required">SSN field is required</span>
+                                <span ng-show="form.person_ssn.$invalid">Please enter a valid Social Security Number</span>
+                            </div>
+                        </div>
+
+                        <div class="form-label">Address</div>
+                        <div class="textbox">
+                            <input type="text"
+                                name="address_street1"
+                                ng-model="employee.address.street_1"
+                                ng-required="true"
+                                placeholder="Street Line 1">
+                        </div>
+                        <div class="textbox">
+                            <input type="text"
+                                name="address_street2"
+                                ng-model="employee.address.street_2"
+                                ng-required="false"
+                                placeholder="Street Line 2">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="textbox">
+                                    <input type="text"
+                                        name="address_city"
+                                        ng-model="employee.address.city"
+                                        ng-required="true"
+                                        placeholder="City">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="textbox">
+                                    <input type="text"
+                                        name="address_state"
+                                        ng-model="employee.address.state"
+                                        ng-required="true"
+                                        placeholder="State"
+                                        maxlength="2">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="textbox">
+                                    <input type="text"
+                                        name="address_zip"
+                                        ng-model="employee.address.zipcode"
+                                        ng-required="true"
+                                        placeholder="Zip Code">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-label">Phone Number</div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="textbox">
+                                    <input type="tel"
+                                        name="phone_number"
+                                        ng-model="employee.phone.number"
+                                        ng-required="true"
+                                        ui-mask="(999)999-9999">
+                                </div>
+                            </div>
+                        </div>
+                        </li></ul>
+
+                        <div class="submit-box">
+                            <button ng-click="addBasicInfo()" class="btn green" ng-disabled="form.$invalid">
+                                Submit and Next
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
+            </div>
+
+        </div><!-- / .row -->
+    </div><!-- / .content-body -->
 </div>
-<div class="content-header">
-    <h1>Employee Onboard</h1>
-    <span class="general-info">Benefitmy works with your company to ensure all of employee information is collected from you</span>
-</div><!-- / .content-header -->
-
-<div class="content-body">
-
-    <div class="row">
-
-        <div class="col-md-4">
-            <div class="list-group">
-                <a ng-href="#/employee/onboard/index/{{employeeId}}" class="list-group-item active">
-                    <h4 class="list-group-item-heading">Basic Information</h4>
-                    <p class="list-group-item-text">Personal information</p>
-                </a>
-                <a ng-href="#/employee/onboard/employment/{{employeeId}}" class="list-group-item">
-                    <h4 class="list-group-item-heading">Employment Authorization</h4>
-                    <p class="list-group-item-text">Employment and proof of eligibility</p>
-                </a>
-                <a href="#/employee/onboard/tax/{{employeeId}}" class="list-group-item">
-                    <h4 class="list-group-item-heading">Tax information (W-4)</h4>
-                    <p class="list-group-item-text">Information about your W-4 and state tax withholding form</p>
-                </a>
-                <a href="#/employee/onboard/complete/{{employeeId}}" class="list-group-item">
-                    <h4 class="list-group-item-heading">Term and Signature</h4>
-                    <p class="list-group-item-text">Please acknowledge the information by providing us your signature</p>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-md-8">
-            <div class="form-holder">
-                <form name="form">
-                    <ul class="list-group"><li class="list-group-item">
-                    <div class="form-label">First Name</div>
-                    <div class="textbox">
-                        <input type="text"
-                            name="first_name"
-                            ng-model="employee.firstName"
-                            ng-required="true">
-                        <div class="form-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
-                          <span ng-show="form.first_name.$error.required">First field is required</span>
-                        </div>
-                    </div>
-
-                    <div class="form-label">Last Name</div>
-                    <div class="textbox">
-                        <input type="text"
-                            name="last_name"
-                            ng-model="employee.lastName"
-                            ng-required="true">
-                        <div class="form-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
-                          <span ng-show="form.last_name.$error.required">Last Name field is required</span>
-                        </div>
-                    </div>
-
-                    <div class="form-label">Date Of Birth (MM/DD/YYYY)</div>
-                    <div class="datebox">
-                        <input type="date"
-                            name="birth_date"
-                            ng-model="employee.birth_date"
-                            ng-required="true"
-                            min="1900-01-01"
-                            ui-mask="99/99/9999">
-                        <div class="form-error" ng-show="form.birth_date.$dirty && form.birth_date.$invalid">
-                            <span ng-show="form.birth_date.$error.required">Date of Birth field is required</span>
-                            <span ng-show="form.birth_date.$invalid">Please enter a valid Date of Birth</span>
-                        </div>
-                    </div>
-
-
-                    <div class="form-label">Social Security Number</div>
-                    <div class="textbox">
-                        <input type="tel"
-                            name="person_ssn"
-                            ng-model="employee.ssn"
-                            ng-required="true"
-                            ui-mask="999-99-9999">
-                        <div class="form-error" ng-show="form.person_.$dirty && form.person_ssn.$invalid">
-                            <span ng-show="form.person_ssn.$error.required">SSN field is required</span>
-                            <span ng-show="form.person_ssn.$invalid">Please enter a valid Social Security Number</span>
-                        </div>
-                    </div>
-
-                    <div class="form-label">Address</div>
-                    <div class="textbox">
-                        <input type="text"
-                            name="address_street1"
-                            ng-model="employee.address.street_1"
-                            ng-required="true"
-                            placeholder="Street Line 1">
-                    </div>
-                    <div class="textbox">
-                        <input type="text"
-                            name="address_street2"
-                            ng-model="employee.address.street_2"
-                            ng-required="false"
-                            placeholder="Street Line 2">
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="textbox">
-                                <input type="text"
-                                    name="address_city"
-                                    ng-model="employee.address.city"
-                                    ng-required="true"
-                                    placeholder="City">
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="textbox">
-                                <input type="text"
-                                    name="address_state"
-                                    ng-model="employee.address.state"
-                                    ng-required="true"
-                                    placeholder="State"
-                                    maxlength="2">
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="textbox">
-                                <input type="text"
-                                    name="address_zip"
-                                    ng-model="employee.address.zipcode"
-                                    ng-required="true"
-                                    placeholder="Zip Code">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-label">Phone Number</div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="textbox">
-                                <input type="tel"
-                                    name="phone_number"
-                                    ng-model="employee.phone.number"
-                                    ng-required="true"
-                                    ui-mask="(999)999-9999">
-                            </div>
-                        </div>
-                    </div>
-                    </li></ul>
-
-                    <div class="submit-box">
-                        <button ng-click="addBasicInfo()" class="btn green" ng-disabled="form.$invalid">
-                            Submit and Next
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-            <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
-        </div>
-
-    </div><!-- / .row -->
-</div><!-- / .content-body -->
