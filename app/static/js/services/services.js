@@ -61,11 +61,6 @@ benefitmyService.factory('employerRepository', ['$resource',
   }
 ]);
 
-benefitmyService.factory('employeeCompanyRoles', ['$resource',
-  function($resource){
-    return $resource('/api/v1/users/:userId/company_roles', {userId: '@id'})
-  }]);
-
 benefitmyService.factory('employeeBenefits', ['$resource',
   function($resource){
     return $resource('/api/v1/users/:userId/benefits?company=:companyId', {userId: 'employee_id', companyId:'@company_id'})
@@ -153,13 +148,12 @@ benefitmyService.factory('peopleRepository', ['$resource',
   }
 ]);
 benefitmyService.factory('EmployeeOnboardingValidationService', 
-                         ['$location', 
-                         'employeeFamily', 
-                         'currentUser', 
-                         'employmentAuthRepository', 
-                         'employeeTaxRepository', 
-                         'employeeSignature', 
-                         'peopleRepository',
+                         ['employeeFamily', 
+                          'currentUser', 
+                          'employmentAuthRepository', 
+                          'employeeTaxRepository', 
+                          'employeeSignature', 
+                          'peopleRepository',
   function($location, 
            employeeFamily, 
            currentUser, 
@@ -295,5 +289,25 @@ benefitmyService.factory('EmployeeOnboardingValidationService',
       }, function(){
         failed(getBasicInfoUrl(employeeId));
       });
+    };
+  }]);
+benefitmyService.factory('EmployeeLetterSignatureValidationService', 
+  ['documentRepository',
+  function(documentRepository){
+    return function(employeeId, letterType, success, failure){
+      documentRepository.byUser.query({userId:employeeId})
+        .$promise.then(function(response){
+          var letter = _.find(response, function(l){
+            return l.document_type.name === letterType;
+          });
+          if(letter && letter.signature && letter.signature.signature){
+            if(success){
+              success();
+            }
+          }
+          else if(failure){
+            failure();
+          }
+        })
     };
   }]);

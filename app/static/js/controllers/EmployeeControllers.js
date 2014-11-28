@@ -1,43 +1,69 @@
 var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]);
 
 var employeeHome = employeeControllers.controller('employeeHome',
-    ['$scope', '$location', '$routeParams', 'employeeCompanyRoles', 'employeeBenefits', 'currentUser', 'userDocument', 'EmployeeOnboardingValidationService',
-  function employeeHome($scope, $location, $routeParams, employeeCompanyRoles, employeeBenefits, currentUser, userDocument, EmployeeOnboardingValidationService){
+    ['$scope', 
+     '$location', 
+     '$routeParams', 
+     'clientListRepository', 
+     'employeeBenefits', 
+     'currentUser', 
+     'userDocument', 
+     'EmployeeOnboardingValidationService',
+     'EmployeeLetterSignatureValidationService',
+  function employeeHome($scope, 
+                        $location, 
+                        $routeParams, 
+                        clientListRepository, 
+                        employeeBenefits, 
+                        currentUser, 
+                        userDocument, 
+                        EmployeeOnboardingValidationService,
+                        EmployeeLetterSignatureValidationService){
 
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
       .then(function(response){
         $scope.employee_id = response.user.id;
-        EmployeeOnboardingValidationService($scope.employee_id, function(){
-          return $scope.employee_id;
-        }, function(redirectUrl){
-          $location.path(redirectUrl);
+        EmployeeLetterSignatureValidationService($scope.employee_id, 'Offer Letter', function(){
+          EmployeeOnboardingValidationService($scope.employee_id, function(){
+            return $scope.employee_id;
+          }, function(redirectUrl){
+            $location.path(redirectUrl);
+          });
+        },function(){
+          $location.path('/employee/sign_letter/' + $scope.employee_id).search({letter_type:'Offer Letter'});
         });
       });
 
     var companyPromise = userPromise.then(function(userId){
+      if(userId){
         curUserId = userId;
-        return employeeCompanyRoles.get({userId:userId}).$promise;
+        return clientListRepository.get({userId:userId}).$promise;
+      }
     });
 
     var benefitPromise = companyPromise.then(function(response){
-      var curCompanyId;
-        _.each(response.company_roles, function(role){
-          if (role.company_user_type === 'employee'){
-            curCompanyId = role.company.id;
-          }
-        })
-        return curCompanyId;
+      if(response){
+        var curCompanyId;
+          _.each(response.company_roles, function(role){
+            if (role.company_user_type === 'employee'){
+              curCompanyId = role.company.id;
+            }
+          })
+          return curCompanyId;
+      }
     });
 
     benefitPromise.then(function(companyId){
-                        employeeBenefits.get({userId:curUserId, companyId:companyId})
-                        .$promise.then(function(response){
-                                       $scope.benefits = response.benefits;
-                                       $scope.benefitCount = response.benefits.length;
-                                       })
-                        });
+      if(companyId){
+        employeeBenefits.get({userId:curUserId, companyId:companyId})
+        .$promise.then(function(response){
+                       $scope.benefits = response.benefits;
+                       $scope.benefitCount = response.benefits.length;
+                               });
+      }
+    });
 
      var curUserPromise = currentUser.get().$promise.
          then(function(userResponse){
@@ -60,8 +86,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
   }
 ]);
 
-var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignup', ['$scope', '$location', '$routeParams', 'employeeCompanyRoles', 'employeeBenefits', 'benefitListRepository', 'employeeFamily',
-  function employeeBenefitController($scope, $location, $routeParams, employeeCompanyRoles, employeeBenefits, benefitListRepository, employeeFamily){
+var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignup', ['$scope', '$location', '$routeParams', 'clientListRepository', 'employeeBenefits', 'benefitListRepository', 'employeeFamily',
+  function employeeBenefitController($scope, $location, $routeParams, clientListRepository, employeeBenefits, benefitListRepository, employeeFamily){
 
     var medicalPlans = [];
     var dentalPlans = [];
@@ -81,7 +107,7 @@ var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignu
       });
     });
 
-    var companyIdPromise =  employeeCompanyRoles.get({userId:employeeId})
+    var companyIdPromise =  clientListRepository.get({userId:employeeId})
       .$promise.then(function(response){
         var company_id;
         _.each(response.company_roles, function(role){
@@ -361,7 +387,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
       {
         var signatureData = $sigdiv.jSignature('getData', 'svg');
         var signaturePayload = "data:" + signatureData[0] + ',' + signatureData[1];
-        documentRepository.sign.save({id:$scope.document.id}, {'signature':signaturePayload}, function(successResponse){
+        documentRepository.sign.save({id:$scope.document.id}, {'signature':signaturePayload, 'signature_type': 'doc_sign'}, function(successResponse){
           $scope.signatureSaved = true;
           $scope.signatureImage = successResponse.signature.signature;
         }, function(failureResponse){
@@ -639,5 +665,69 @@ var onboardComplete = employeeControllers.controller('onboardComplete',
           });
       }
     }
-}])
+}]);
+
+var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocument', 
+  ['$scope', '$routeParams', '$location', 'documentRepository', 'EmployeeLetterSignatureValidationService',
+  function($scope, $routeParams, $location, documentRepository, EmployeeLetterSignatureValidationService){
+    $scope.employeeId = $routeParams.employee_id;
+    var letterType = $location.search().letter_type;
+    if(!letterType){
+      letterType = 'Offer Letter';
+    }
+
+    var goToOnboarding = function(employeeId){
+      $location.path('/employee/onboard/index/' + employeeId);
+    };
+
+    EmployeeLetterSignatureValidationService($scope.employeeId, letterType, function(){
+      goToOnboarding($scope.employeeId);
+    }, function(){
+      $scope.displayAll = true;
+    })
+    documentRepository.byUser.query({userId:$scope.employeeId})
+      .$promise.then(function(response){
+        $scope.curLetter = _.find(response, function(letter){
+          return letter.document_type.name === letterType;
+        });
+      });
+    
+    $('body').addClass('onboarding-page');
+    var signatureUpdated = false;
+    var $sigdiv = $('#letter_signature');
+    if(_.isUndefined($sigdiv))
+    {
+      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
+    }
+    $sigdiv.jSignature();
+    $sigdiv.bind('change', function(e){
+     signatureUpdated = true;
+    });
+    
+    $scope.clearSignature = function(){
+      $sigdiv.jSignature("reset")
+    };
+
+    $scope.submit = function(){
+
+      if(!signatureUpdated){
+        alert('Please sign your name on the signature pad');
+      }
+      else{
+        var signatureData = $sigdiv.jSignature('getData', 'svg');
+        $scope.letterSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
+        var contract = {
+          'signature': $scope.letterSignatureData,
+          'signature_type': 'doc_sign'
+        };
+        documentRepository.sign.save({id:$scope.curLetter.id}, contract,
+         function(){
+           goToOnboarding($scope.employeeId);         
+         },
+         function(err){
+          alert('The signature has not been accepted. The reason is: ' + JSON.stringify(err.data));
+         });
+      }
+    };
+  }]);
 

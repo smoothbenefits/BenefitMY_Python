@@ -414,6 +414,11 @@
   #sidebar, .breadcrumb {
     display: none;
   }
+  .view-document-holder{
+    max-width:800px;
+    margin:auto;
+    position:relative;
+  }
   #content-wrapper {
     padding-left: 0 !important;
     .list-group {
