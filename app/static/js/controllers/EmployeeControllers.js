@@ -1,14 +1,19 @@
 var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]);
 
 var employeeHome = employeeControllers.controller('employeeHome',
-    ['$scope', '$location', '$routeParams', 'employeeCompanyRoles', 'employeeBenefits', 'currentUser', 'userDocument',
-    function employeeHome($scope, $location, $routeParams, employeeCompanyRoles, employeeBenefits, currentUser, userDocument){
+    ['$scope', '$location', '$routeParams', 'employeeCompanyRoles', 'employeeBenefits', 'currentUser', 'userDocument', 'EmployeeOnboardingValidationService',
+  function employeeHome($scope, $location, $routeParams, employeeCompanyRoles, employeeBenefits, currentUser, userDocument, EmployeeOnboardingValidationService){
+
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
       .then(function(response){
         $scope.employee_id = response.user.id;
-        return response.user.id;
+        EmployeeOnboardingValidationService($scope.employee_id, function(){
+          return $scope.employee_id;
+        }, function(redirectUrl){
+          $location.path(redirectUrl);
+        });
       });
 
     var companyPromise = userPromise.then(function(userId){
@@ -402,127 +407,25 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$routeParams', '$location', 'employeeFamily', 'currentUser', 'employeeOnboarding', 'employeeTaxRepository', 'employeeSignature', 'peopleRepository',
-  function($scope, $routeParams, $location, employeeFamily, currentUser, employeeOnboarding, employeeTaxRepository, employeeSignature, peopleRepository){
+  ['$scope', '$routeParams', '$location', 'employeeFamily', 'currentUser', 'EmployeeOnboardingValidationService',
+  function($scope, $routeParams, $location, employeeFamily, currentUser, EmployeeOnboardingValidationService){
     
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
     $scope.displayAll = false;
-    var employmentAuthValidated = false;
-    var taxValidated = false;
-    var userPromise = currentUser.get()
-      .$promise.then(function(curUserResponse){
-        $scope.curUser = curUserResponse.user;
-        return curUserResponse.user;
-      });
-
-    var validateBasicInfo = function(person){
-      //make sure we get all the basic information of this person correctly.
-      if(!person)
-      {
-        return false;
-      }
-      if(!person.email){
-        return false;
-      }
-      if(!(person.first_name && person.last_name))
-      {
-        return false;
-      }
-      if(!person.birth_date)
-      {
-        return false;
-      }
-      if(!person.phones || person.phones.length <=0){
-        return false;
-      }
-      if(!person.addresses || person.addresses.length <= 0){
-        return false;
-      }
-      return true;
-    };
-
-    var getEmploymentAuthUrl = function(employeeId){
-      return '/employee/onboard/employment/' + employeeId;
-    };
-
-    var getTaxUrl = function(employeeId){
-      return '/employee/onboard/tax/' + employeeId;
-    };
-
-    var getSignatureUrl = function(employeeId){
-      return '/employee/onboard/complete/' + employeeId;
-    };
-
-    var getOnboardStartingUrl = function(employeeId){
-      //We would like to check if this user has the correct information for each steps
-      //starting from the basic information check
-
-      //step one (basic info) validation
-      employeeFamily.get({userId:employeeId})
-        .$promise.then(function(familyResponse){
-          var self = _.findWhere(familyResponse.family, {'relationship':'self'});
-          if(self){
-            //We need to validate this self
-            if(!validateBasicInfo(self)){
-            //we should remove the family person.
-            //Do we have this API?
-              peopleRepository.delete({personId:self.id});
-              $scope.displayAll = true;
-            }
-          }
-          else{
-            $scope.displayAll = true;
-          }
-        });
-      //step two (employment auth) validation
-      //get the sigature for employment auth document
-      employeeOnboarding.get({userId:employeeId})
-        .$promise.then(function(response){
-           if(!(response && response.signature && response.signature.signature)){
-            if(!$scope.displayAll){
-              $location.path(getEmploymentAuthUrl(employeeId));
-            }
-           }
-           else{
-            employmentAuthValidated = true;
-           }
-        });
     
-      employeeTaxRepository.get({userId:employeeId})
-        .$promise.then(function(response){
-          if(!response || !response.total_points || response.total_points <= 0){
-            if(!$scope.displayAll && employmentAuthValidated){
-              $location.path(getTaxUrl(employeeId));
-            }
-          }
-          else{
-            taxValidated = true;
-          }
-        }, function(err){
-          if(!$scope.displayAll && employmentAuthValidated){
-            $location.path(getTaxUrl(employeeId));
-          }
-        });
-    
-      if(!$scope.displayAll){
-        //step 4 the signature for employee
-        employeeSignature.get({userId:employeeId})
-          .$promise.then(function(signature){
-            if(!signature || !signature.signature || signature.signature===''){
-              if(!$scope.displayAll && employmentAuthValidated && taxValidated){
-                $location.path(getSignatureUrl(employeeId));
-              }
-            }
-            else{
-              //we have finished all the validation.
-              $location.path('/employee');
-            }
-          })
-      }
-    };
 
-    getOnboardStartingUrl($scope.employeeId);
+    EmployeeOnboardingValidationService($scope.employeeId, function(){
+      $location.path('/employee');
+    },
+    function(redirectUrl){
+      if($location.path() !== redirectUrl){
+        $location.path(redirectUrl);
+      }
+      else{
+        $scope.displayAll = true;
+      }
+    });
 
     $('body').addClass('onboarding-page');
 
@@ -562,14 +465,26 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$routeParams', '$location', 'employeeOnboarding',
-  function($scope, $routeParams, $location, employeeOnboarding){
-    $('body').addClass('onboarding-page');
+  ['$scope', '$routeParams', '$location', 'employmentAuthRepository', 'EmployeeOnboardingValidationService',
+  function($scope, $routeParams, $location, employmentAuthRepository, EmployeeOnboardingValidationService){
     $scope.employee = {
 
     };
     $scope.employeeId = $routeParams.employee_id;
 
+    EmployeeOnboardingValidationService($scope.employeeId, function(){
+      $location.path('/employee');
+    },
+    function(redirectUrl){
+      if($location.path() !== redirectUrl){
+        $location.path(redirectUrl);
+      }
+      else{
+        $scope.displayAll = true;
+      }
+    });
+
+    $('body').addClass('onboarding-page');
     var mapContract = function(viewObject, signature){
       var contract = {
         'worker_type': viewObject.auth_type,
@@ -607,7 +522,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
         var signatureData = $sigdiv.jSignature('getData', 'svg');
         $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
         var contract = mapContract($scope.employee, $scope.signatureImage);
-        employeeOnboarding.save({userId: $scope.employeeId}, contract,
+        employmentAuthRepository.save({userId: $scope.employeeId}, contract,
           function(){
             $location.path('/employee/onboard/tax/' + $scope.employeeId);
           }, function(){
@@ -618,11 +533,24 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', '$routeParams', '$location','employeeTaxRepository',
-  function($scope, $routeParams, $location, employeeTaxRepository){
-    $('body').addClass('onboarding-page');
+  ['$scope', '$routeParams', '$location','employeeTaxRepository', 'EmployeeOnboardingValidationService',
+  function($scope, $routeParams, $location, employeeTaxRepository, EmployeeOnboardingValidationService){
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
+    
+    EmployeeOnboardingValidationService($scope.employeeId, function(){
+      $location.path('/employee');
+    },
+    function(redirectUrl){
+      if($location.path() !== redirectUrl){
+        $location.path(redirectUrl);
+      }
+      else{
+        $scope.displayAll = true;
+      }
+    });
+
+    $('body').addClass('onboarding-page');
     $scope.employee.withholdingType = 'single';
     $scope.employee.headOfHousehold = 0;
     $scope.employee.childExpense = 0;
@@ -661,11 +589,24 @@ var onboardTax = employeeControllers.controller('onboardTax',
 }]);
 
 var onboardComplete = employeeControllers.controller('onboardComplete',
-  ['$scope', '$routeParams', '$location', 'employeeSignature',
-  function($scope, $routeParams, $location, employeeSignature){
-    $('body').addClass('onboarding-page');
+  ['$scope', '$routeParams', '$location', 'employeeSignature', 'EmployeeOnboardingValidationService',
+  function($scope, $routeParams, $location, employeeSignature, EmployeeOnboardingValidationService){
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
+
+    EmployeeOnboardingValidationService($scope.employeeId, function(){
+      $location.path('/employee');
+    },
+    function(redirectUrl){
+      if($location.path() !== redirectUrl){
+        $location.path(redirectUrl);
+      }
+      else{
+        $scope.displayAll = true;
+      }
+    });
+
+    $('body').addClass('onboarding-page');
     var signatureUpdated = false;
     var $sigdiv = $("#term_signature");
     if(_.isUndefined($sigdiv))

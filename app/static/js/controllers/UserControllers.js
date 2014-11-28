@@ -25,14 +25,8 @@ var findViewController = userControllers.controller('findViewController',
         }
         else if(userRoles.length > 0 && !paramValue)
         {
-           var firstRole = userRoles[0].company_user_type;
-           if(firstRole === 'employee'){
-              $location.replace().path('/employee/onboard/index/' + currentUser.id);
-           }
-           else
-           {
-              $location.replace().path('/'+firstRole);
-           }
+           var firstRole = userRoles[0].company_user_type; 
+           $location.replace().path('/'+firstRole);
         }
         else
         {
