@@ -154,8 +154,7 @@ benefitmyService.factory('EmployeeOnboardingValidationService',
                           'employeeTaxRepository', 
                           'employeeSignature', 
                           'peopleRepository',
-  function($location, 
-           employeeFamily, 
+  function(employeeFamily, 
            currentUser, 
            employmentAuthRepository, 
            employeeTaxRepository, 
@@ -300,10 +299,11 @@ benefitmyService.factory('EmployeeLetterSignatureValidationService',
           var letter = _.find(response, function(l){
             return l.document_type.name === letterType;
           });
-          if(letter && letter.signature && letter.signature.signature){
-            if(success){
-              success();
-            }
+          if(!letter && success){
+            success();
+          }
+          else if(letter.signature && letter.signature.signature && success){
+            success();
           }
           else if(failure){
             failure();
