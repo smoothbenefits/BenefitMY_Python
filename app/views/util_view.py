@@ -4,6 +4,9 @@ from django.http import Http404
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from app.models.company import Company
+
+
 
 
 @api_view(['POST'])
@@ -35,8 +38,12 @@ support@benefitmy.com
         FROM='Support@benefitmy.com'
 
 
-        def onboard_email(name, company, to, id):
-            c = CONTENT % (name, company, id)
+        def onboard_email(name, company_id, to, id):
+            try:
+                company = Company.objects.get(pk=company_id)
+            except Company.DoesNotExist:
+                raise Http404
+            c = CONTENT % (name, company.name, id)
             send_mail(SUBJECT, c, FROM, [to], fail_silently=False)
 
         try:
@@ -46,9 +53,9 @@ support@benefitmy.com
 
         try:
             onboard_email(request.DATA['name'],
-                          request.DATA['company'],
+                          request.DATA['company_id'],
                           request.DATA['email'],
                           p.id)
-            return Response("True")
+            return Response(True)
         except StandardError:
-            return Response("False")
+            return Response(False)

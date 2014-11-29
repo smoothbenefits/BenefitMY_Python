@@ -17,3 +17,9 @@ class PersonView(APIView):
         person = self.get_object(pk)
         serializer = PersonSerializer(person)
         return Response({'person': serializer.data})
+
+    def delete(self, request, pk, format=None):
+        person = self.get_object(pk)
+        serializer = PersonSerializer(person)
+        person.delete()
+        return Response({'deleted_person': serializer.data})

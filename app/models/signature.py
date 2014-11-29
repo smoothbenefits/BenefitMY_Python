@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 class Signature(models.Model):
     signature = models.TextField()
+    signature_type = models.CharField(max_length=10)
     user = models.ForeignKey(User, related_name="signature",
                              blank=True,
                              null=True)

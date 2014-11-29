@@ -16,10 +16,32 @@ class PersonSerializer(serializers.ModelSerializer):
         fields = ('id',
                   'person_type',
                   'relationship',
-                  'ssn',
                   'first_name',
                   'last_name',
                   'middle_name',
+                  'email',
+                  'birth_date',
+                  'phones',
+                  'addresses',
+                  'company',
+                  'user')
+
+
+class PersonFullPostSerializer(serializers.ModelSerializer):
+
+    addresses = AddressSerializer(many=True)
+    phones = PhoneSerializer(many=True)
+
+    class Meta:
+
+        model = Person
+        fields = ('id',
+                  'person_type',
+                  'relationship',
+                  'first_name',
+                  'last_name',
+                  'middle_name',
+                  'ssn',
                   'email',
                   'birth_date',
                   'phones',

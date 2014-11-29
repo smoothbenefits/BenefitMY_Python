@@ -17,3 +17,11 @@ from user_company_waived_benefit import UserCompanyWaivedBenefit
 from w4 import W4
 from signature import Signature
 from employment_authorization import EmploymentAuthorization
+from benefit_details import BenefitDetails
+from benefit_policy_key import BenefitPolicyKey
+from benefit_policy_type import BenefitPolicyType
+
+
+
+
+

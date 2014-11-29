@@ -47,6 +47,9 @@ AUTHENTICATION_BACKENDS = (
     'emailusernames.backends.EmailAuthBackend',
 )
 
+
+ENCRYPTED_FIELDS_KEYDIR = 'fieldkeys'
+
 # Email
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'

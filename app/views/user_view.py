@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from rest_framework.response import Response
 from rest_framework import status
 
+from django.db import transaction
 from emailusernames.utils import (
     create_user,
     get_user,
@@ -13,7 +14,7 @@ from app.models.company import Company
 from app.models.user import User
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
-from app.serializers.person_serializer import PersonSerializer
+from app.serializers.person_serializer import PersonFullPostSerializer
 
 
 class UserView(APIView):
@@ -36,6 +37,8 @@ class UsersView(APIView):
         serializer = UserSerializer(users, many=True)
         return Response({'users': serializer.data})
 
+
+    @transaction.atomic
     def post(self, request, format=None):
         if ("company" not in request.DATA or
             "company_user_type" not in request.DATA or
@@ -108,7 +111,7 @@ class UserFamilyView(APIView):
 
     def post(self, request, pk, format=None):
         request.DATA['user'] = pk
-        serializer = PersonSerializer(data=request.DATA)
+        serializer = PersonFullPostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

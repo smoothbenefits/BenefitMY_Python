@@ -1,0 +1,36 @@
+<div ng-show="displayAll">
+    <script type="text/javascript" src="/static/js/flashcanvas.js"></script>
+    <script src="/static/js/jSignature.min.js"></script>
+
+    <div class="breadcrumb">
+        <a href="/">Home</a>
+        <span>Accept your Offer Letter</span>
+    </div>
+    <div class="content-header">
+        <h1>Offer Letter</h1>
+        <span class="general-info">Please accept your offer letter. You have to accept the offer letter to continue.</span>
+    </div><!-- / .content-header -->
+
+    <div class="view-document-holder">
+            <form name="form">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <span class="panel-title">Please review the offer letter below and sign</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="letter-container">
+                           <textarea rows="15" cols="80" readonly="true">{{curLetter.content}}</textarea>
+                        </div>
+                        <div id="letter_signature" class="signature-pad"></div>
+                    </div>
+                </div>
+                <div class="submit-box">
+                    <div class="row">
+                        <div class="col-sm-6"><button ng-click="clearSignature()" class="btn green">Reset</button></div>
+                        <div class="col-sm-6"><button ng-click="submit()" class="btn green">Sign and Next</button></div>
+                    </div>
+                    <input type="hidden" name="signatureHiddenData" value="{{letterSignatureData}}"/>
+                </div>
+            </form>
+        <div class="back"><a href="/">&laquo; Cancel</a></div>
+</div>

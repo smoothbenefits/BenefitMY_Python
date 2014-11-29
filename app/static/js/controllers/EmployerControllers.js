@@ -152,18 +152,8 @@ var employerHome = employersController.controller('employerHome',
 ]);
 
 var employerUser = employersController.controller('employerUser',
-                                                  ['$scope',
-                                                  '$location',
-                                                  '$routeParams',
-                                                  'employerWorkerRepository',
-                                                  'usersRepository',
-                                                  'userDocument',
-  function employerUser($scope,
-                        $location,
-                        $routeParams,
-                        employerWorkerRepository,
-                        usersRepository,
-                        userDocument){
+  ['$scope', '$location', '$routeParams', 'employerWorkerRepository', 'usersRepository', 'userDocument', 'emailRepository',
+  function employerUser($scope, $location, $routeParams, employerWorkerRepository, usersRepository, userDocument, emailRepository){
       var compId = $routeParams.company_id;
       $scope.employees=[];
       $scope.addUser = {send_email:true};
@@ -218,7 +208,19 @@ var employerUser = employersController.controller('employerUser',
         var sendEmail = $scope.addUser.send_email;
         if(validateAddUser($scope.addUser))
         {
-          usersRepository.save(mapToAPIUser($scope.addUser, userType), function(){
+          usersRepository.save(mapToAPIUser($scope.addUser, userType),
+            function(){
+              if (sendEmail){
+                var name = $scope.addUser.first_name + ' ' + $scope.addUser.last_name;
+                var email = {name: name, company_id: parseInt(compId, 10), email: $scope.addUser.email};
+                emailRepository.save(email, function(response){
+                  if (response[0] != 'f'){
+                    alert('Email sent successfully.');
+                  }
+                }, function(){
+                  $scope.saveSucceeded = false;
+                });
+              }
               gotoUserView(userType);
             }, function(){
                 $scope.saveSucceeded = false;
