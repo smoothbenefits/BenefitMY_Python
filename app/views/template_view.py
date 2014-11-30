@@ -40,6 +40,13 @@ class TemplateView(APIView):
         serializer = TemplateSerializer(t)
         return Response({'template': serializer.data})
 
+    def delete(self, request, pk, format=None):
+
+        if request.method == 'DELETE':
+            t = self.get_object(pk)
+            t.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['POST'])
 @transaction.atomic
