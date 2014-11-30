@@ -13,7 +13,12 @@
 <div class="content-body">
     <div class="form-holder">
         <form name="form">
-
+            <div ng-show="alreadyExists" class="form-validation-error">
+                The user with email "{{addUser.email}}" already exists in our system!
+            </div>
+            <div ng-show="addError" class="form-validation-error">
+                We are sorry but error happened while trying to add the employee. Please contact your system administrator.
+            </div>
             <div class="form-label">First Name*</div>
             <div class="textbox">
                 <input type="text"
