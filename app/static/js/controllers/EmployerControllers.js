@@ -218,12 +218,18 @@ var employerUser = employersController.controller('employerUser',
                     alert('Email sent successfully.');
                   }
                 }, function(){
-                  $scope.saveSucceeded = false;
+                  $scope.addError = true;
                 });
               }
               gotoUserView(userType);
-            }, function(){
-                $scope.saveSucceeded = false;
+            }, function(err){
+                if(err.status === 409){
+                  $scope.alreadyExists = true;
+                }
+                else
+                {
+                  $scope.addError = true;
+                }
             });
         }
         else
