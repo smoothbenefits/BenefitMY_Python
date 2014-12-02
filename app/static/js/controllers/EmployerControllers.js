@@ -208,30 +208,22 @@ var employerUser = employersController.controller('employerUser',
         var sendEmail = $scope.addUser.send_email;
         if(validateAddUser($scope.addUser))
         {
-
           usersRepository.save(mapToAPIUser($scope.addUser, userType),
             function(){
-              if (sendEmail){
-                var name = $scope.addUser.first_name + ' ' + $scope.addUser.last_name;
-                var email = {name: name, company_id: parseInt(compId, 10), email: $scope.addUser.email};
-                emailRepository.save(email, function(success){
-                  if (success){
-                    alert('Email sent successfully.');
-                  }
-                }, function(response){
-                  alert('Failed to send the email. Error: ' + response);
-                  $scope.addError = true;
-                });
-              }
+			  alert('Email sent successful.');
               gotoUserView(userType);
             }, function(err){
                 if(err.status === 409){
                   $scope.alreadyExists = true;
                 }
+				if (err.status === 503){
+				  alert('Failed to send email.');
+				}
                 else
                 {
                   $scope.addError = true;
                 }
+				alert('Failed to add employee.');
             });
         }
         else
