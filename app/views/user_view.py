@@ -15,7 +15,7 @@ from app.models.user import User
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
 from app.serializers.person_serializer import PersonFullPostSerializer
-from app.views.util import onboard_email
+from app.views.util_view import onboard_email
 
 
 class UserView(APIView):
