@@ -38,6 +38,7 @@ def register(request):
     # Render the template depending on the context.
     return render_to_response('register.html',{'user_form': user_form, 'registered': registered},context)
 
+
 def register_employee(request, user_id):
     context = RequestContext(request)
     registered = False
@@ -49,7 +50,7 @@ def register_employee(request, user_id):
         user_email = employee_user.email
     except User.DoesNotExist:
             error_message = "We cannot find the user based on the URL. Please contact your HR."
-    
+
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
         confirm_password = request.POST['confirm_password']
