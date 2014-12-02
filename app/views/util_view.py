@@ -7,14 +7,8 @@ from django.core.mail import send_mail
 from app.models.company import Company
 
 
-
-
-@api_view(['POST'])
-def send_onboard_email(request):
-    if request.method == 'POST':
-
-        SUBJECT = "Welcome to BenefitMy"
-        CONTENT = """
+SUBJECT = "Welcome to BenefitMy"
+CONTENT = """
 
 Hi %s,
 
@@ -35,16 +29,23 @@ BenefityMy
 
 support@benefitmy.com
 """
-        FROM='Support@benefitmy.com'
+FROM='Support@benefitmy.com'
 
 
-        def onboard_email(name, company_id, to, id):
-            try:
-                company = Company.objects.get(pk=company_id)
-            except Company.DoesNotExist:
-                raise Http404
-            c = CONTENT % (name, company.name, id)
-            send_mail(SUBJECT, c, FROM, [to], fail_silently=False)
+
+def onboard_email(name, company_id, to, id):
+    try:
+        company = Company.objects.get(pk=company_id)
+    except Company.DoesNotExist:
+        raise Http404
+    c = CONTENT % (name, company.name, id)
+    send_mail(SUBJECT, c, FROM, [to], fail_silently=False)
+
+
+
+@api_view(['POST'])
+def send_onboard_email(request):
+    if request.method == 'POST':
 
         try:
             p = User.objects.get(email=request.DATA['email'])
