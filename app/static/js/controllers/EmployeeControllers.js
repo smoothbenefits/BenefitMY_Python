@@ -34,6 +34,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
         },function(){
           $location.path('/employee/sign_letter/' + $scope.employee_id).search({letter_type:'Offer Letter'});
         });
+        return $scope.employee_id;
       });
 
     var companyPromise = userPromise.then(function(userId){

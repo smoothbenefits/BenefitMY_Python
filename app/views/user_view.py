@@ -15,6 +15,7 @@ from app.models.user import User
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
 from app.serializers.person_serializer import PersonFullPostSerializer
+from app.views.util import onboard_email
 
 
 class UserView(APIView):
@@ -75,6 +76,14 @@ class UsersView(APIView):
         company_user.save()
 
         serializer = UserSerializer(user)
+        try:
+            onboard_email("%s %s" % (user.first_name, user.last_name),
+                          request.DATA['company'],
+                          request.DATA['user']['email'],
+                          user.id
+                          )
+        except StandardError:
+            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
