@@ -1,0 +1,55 @@
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/clients">Broker Dashboard</a>
+    <a href="javascript:void(0);" ng-click="viewBenefits()">View Benefits</a>
+    <span>Modify Benefit Details</span>
+</div>
+
+<div class="content-header">
+    <h1>Gives the Benefit "{{benefit.benefit_plan.name}}" Details</h1>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="form-holder">
+        <form name="form">
+
+            <div ng-show="benefitDetailEmpty">
+                <div class="instructions">
+                    There are yet been details given to benefit "{{benefit.name}}". Please use the link below to start
+                </div>
+            </div>
+            <div class="row">
+                <div class="table-responsive table-holder">
+                    <table class="table table-striped" id="details_container_table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Benefit Options
+                                </th>
+                                <!-- existing types-->
+                                <th>
+                                    <div class="editable-container">
+                                        <a ng-click="handleElementEvent($event)">Add New Plan</a>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="details_container_table_body">
+                            <tr ng-repeat="policyKey in policyKeyArray" option-key="{{policyKey.position}}">
+                                <td>{{policyKey.name}}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="submit-box">
+                <button ng-click="addBenefitDetail()" class="btn green"> Save Details</button>
+            </div>
+
+        </form>
+    </div><!-- / .form-holder -->
+    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
+</div><!-- / .content-body -->
