@@ -262,6 +262,7 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
             var tableCellArray = $(row).children('td')
             var lastTableCell = tableCellArray[tableCellArray.length -1];
             $(lastTableCell).append(createInputElement(policyTypeId, rowKey, 'Add option value'));
+            $(lastTableCell).attr('policy-type-id', policyTypeId);
             var newTableCell = $(document.createElement('td'));
             $(row).append(newTableCell);
           }
@@ -284,6 +285,22 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
       };
 
       var deletePolicyType = function(event){
+        //first delete all the td of the tbody.
+        var tableRows = benefitDetailBody.children('tr');
+        _.each(tableRows, function(row){
+          var tableCellArray = $(row).children('td');
+          _.each(tableCellArray, function(cell){
+            var policyTypeId = $(cell).attr('policy-type-id');
+            if(policyTypeId === $(event.target).attr('policy-type-id'))
+            {
+              $(cell).remove();
+            }
+          });
+        });
+
+        //now delete the th
+        var curTh = $(event.target).parent().parent();
+        curTh.remove();
 
       };
 
@@ -301,9 +318,10 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
           if(showDelete){
             //add delete icon to this div
             var removeSpan = $(document.createElement('a'));
-            removeSpan.append('del');
+            removeSpan.append('X');
             removeSpan.attr('policy-type-id', policyTypeId);
             removeSpan.on('click', deletePolicyType);
+            removeSpan.attr('href', 'javascript:void(0);')
             saveTextContainer.append(removeSpan);
           }
           return saveTextContainer;
