@@ -47,6 +47,11 @@ benefitmyService.factory('benefitListRepository', [
         return $resource('/api/v1/companies/:clientId/benefits',
             {clientId:'@id'})
     }]);
+benefitmyService.factory('benefitDetailsRepository', [
+    '$resource',
+    function($resource){
+      return $resource('/api/v1/benefit_details/plan=:planId/', {planId:'@id'});
+    }]);
 
 benefitmyService.factory('addBenefitRepository', [
     '$resource',
