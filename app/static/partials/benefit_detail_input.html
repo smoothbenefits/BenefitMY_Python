@@ -40,6 +40,9 @@
                     <div ng-show="inputUnfilledError" class="validation-error">
                         * Please fill out all the input fields because all these values are required.
                     </div>
+                    <div ng-show="noPolicyTypeError" class="validation-error">
+                        * Please make sure you created a benefit option set
+                    </div>
                 </div>
             </div>
 
@@ -50,5 +53,5 @@
 
         </form>
     </div>
-    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
+    <div class="back"><a href="javascript:void(0);" ng-click="backToBenefitDisplay">&laquo; Cancel</a></div>
 </div><!-- / .content-body -->
