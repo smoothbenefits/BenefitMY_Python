@@ -4,10 +4,8 @@ from benefit_plan import BenefitPlan
 
 S = ["individual",
      "individual_plus_spouse",
-     "individual_plus_child",
-     "individual_plus_one",
-     "individual_plus_children",
-     "family"]
+     "individual_plus_family",
+     "individual_plus_children"]
 
 TYPES = ([(item, item) for item in S])
 
