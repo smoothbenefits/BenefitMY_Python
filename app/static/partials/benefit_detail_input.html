@@ -6,25 +6,21 @@
 </div>
 
 <div class="content-header">
-    <h1>Gives the Benefit "{{benefit.benefit_plan.name}}" Details</h1>
+    <h1>Please provide details to "{{benefit.benefit_plan.name}}"</h1>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="form-holder">
+    <div class="dynamic-form">
         <form name="form">
-
-            <div ng-show="benefitDetailEmpty">
-                <div class="instructions">
-                    There are yet been details given to benefit "{{benefit.name}}". Please use the link below to start
-                </div>
-            </div>
             <div class="row">
                 <div class="table-responsive table-holder">
                     <table class="table table-striped" id="details_container_table">
                         <thead>
                             <tr>
                                 <th>
-                                    Benefit Options
+                                    <div>
+                                        Benefit Options
+                                    </div>
                                 </th>
                                 <!-- existing types-->
                                 <th>
@@ -41,6 +37,9 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div ng-show="inputUnfilledError" class="validation-error">
+                        * Please fill out all the input fields because all these values are required.
+                    </div>
                 </div>
             </div>
 
@@ -50,6 +49,6 @@
             </div>
 
         </form>
-    </div><!-- / .form-holder -->
+    </div>
     <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
 </div><!-- / .content-body -->

@@ -250,6 +250,7 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
         var newPolicyTypeLink = $(document.createElement('a'));
         newPolicyTypeLink.on('click', handleEditElement)
         newPolicyTypeLink.html('Add New Plan');
+        newPolicyTypeLinkContainer.addClass('editable-container')
         newPolicyTypeLinkContainer.append(newPolicyTypeLink);
         newTh.append(newPolicyTypeLinkContainer);
         thContainer.append(newTh);
@@ -318,10 +319,11 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
           if(showDelete){
             //add delete icon to this div
             var removeSpan = $(document.createElement('a'));
-            removeSpan.append('X');
+            //removeSpan.append('X');
             removeSpan.attr('policy-type-id', policyTypeId);
             removeSpan.on('click', deletePolicyType);
             removeSpan.attr('href', 'javascript:void(0);')
+            removeSpan.addClass('glyphicon glyphicon-remove remove-policy-type');
             saveTextContainer.append(removeSpan);
           }
           return saveTextContainer;
@@ -382,6 +384,16 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
       $scope.handleElementEvent = handleEditElement;
 
       $scope.addBenefitDetail = function(){
-
+        //first we should validate the table
+        var containerTable = $('#details_container_table');
+        var inputElements = containerTable.find('input');
+        if(inputElements.length > 0)
+        {
+          _.each(inputElements, function(inputElm){
+            $(inputElm).addClass('unfilled-input');
+            $scope.inputUnfilledError = true;
+          })
+          return;
+        }
       };
 }]);

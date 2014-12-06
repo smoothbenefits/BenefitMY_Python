@@ -132,3 +132,37 @@ ul.client-list li span.client-name
     color:red;
     text-align: center;
 }
+.remove-policy-type{
+    color:red;
+    margin-left:5px;
+    vertical-align: text-top;
+}
+.editable-container{
+    cursor:pointer;
+}
+
+th .editable-container{
+    font-weight: bold;
+}
+#details_container_table{
+    margin:auto;
+    position:relative;
+}
+#details_container_table th div{
+    padding:10px 20px;
+}
+.dynamic-form .submit-box{
+    padding-top: 20px;
+    max-width:200px;
+    margin:auto;
+}
+.dynamic-form{
+    margin-right:120px;
+}
+.dynamic-form .validation-error{
+    color:red;
+    margin-left:20px;
+}
+.unfilled-input{
+    border: solid 2px red;
+}
