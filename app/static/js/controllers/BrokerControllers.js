@@ -69,7 +69,8 @@ var benefitsController = brokersControllers.controller('benefitsController', ['$
           sameNameBenefit.options.push({
               optionType:benefit.benefit_option_type,
               totalCost:benefit.total_cost_per_period,
-              employeeCost: benefit.employee_cost_per_period
+              employeeCost: benefit.employee_cost_per_period,
+              id: benefit.id
             });
           array.benefitList.push(sameNameBenefit);
         }
@@ -78,12 +79,16 @@ var benefitsController = brokersControllers.controller('benefitsController', ['$
           sameBenefit.options.push({
               optionType:benefit.benefit_option_type,
               totalCost:benefit.total_cost_per_period,
-              employeeCost: benefit.employee_cost_per_period
+              employeeCost: benefit.employee_cost_per_period,
+              id: benefit.id
           });
         }
     };
     $scope.backtoDashboard = function(){
       $location.path('/broker');
+    };
+    $scope.viewDetails = function(benefitData){
+      $location.path('/broker/benefit/add_details/' + $scope.clientId + "/" + benefitData.id);
     }
 }]);
 
@@ -111,8 +116,8 @@ var addBenefitController = brokersControllers.controller('addBenefitController',
       var apiBenefit = mapBenefit(viewBenefit);
       var request = {company: clientId, benefit: apiBenefit};
 
-      addBenefitRepository.save(request, function(){
-        $location.path('/broker/benefits/' + clientId);
+      addBenefitRepository.save(request, function(addedBenefit){
+        $location.path('/broker/benefit/add_details/' + clientId + "/" + addedBenefit.benefits.id);
       }, function(){
         $scope.saveSucceeded = false;
       });

@@ -12,7 +12,8 @@ class CompanyBenefitPlanOptionPostSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = CompanyBenefitPlanOption
-        fields = ('total_cost_per_period',
+        fields = ('id',
+                  'total_cost_per_period',
                   'employee_cost_per_period',
                   'benefit_option_type',
                   'company',

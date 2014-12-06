@@ -29,7 +29,7 @@
                     <td colspan="3" style="padding: 0;">
                         <table class="table">
                             <tr ng-repeat="option in benefit.options">
-                                <td width="250">{{option.optionType}}</td>
+                                <td width="250">{{option.optionType}} <a class="add-benefit-detail-link" ng-click="viewDetails(option)">Details</a></td>
                                 <td width="180">${{option.totalCost}}</td>
                                 <td width="180">${{option.employeeCost}}</td>
                             </tr>
