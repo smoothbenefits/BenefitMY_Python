@@ -40,7 +40,9 @@ from app.views.document_view import (
 from app.views.company_templates_view import CompanyTemplatesView
 
 from app.views.user_company_waived_benefit_view import UserCompanyWaivedBenefitView
-from app.views.user_company_benefit_plan_option_view import UserCompanyBenefitPlanOptionView
+from app.views.user_company_benefit_plan_option_view import (
+    UserCompanyBenefitPlanOptionView,
+    CompanyUsersBenefitPlanOptionView)
 from app.views.user_company_roles_view import UserCompanyRolesView
 
 from app.views.w4_view import W4View
@@ -84,6 +86,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/benefit_details/(?P<pk>[0-9]+)/?$' % PREFIX, delete_benefit_details),
     url(r'^%s/companies/(?P<pk>[0-9]+)/benefits/?$' % PREFIX,
         CompanyBenefitPlansView.as_view()),
+    url(r'^%s/company_users/(?P<pk>[0-9]+)/benefits/?$' % PREFIX,
+        CompanyUsersBenefitPlanOptionView.as_view()),
+
     url(r'^%s/companies/(?P<pk>[0-9]+)/?$' % PREFIX, CompanyView.as_view()),
     url(r'^%s/companies/(?P<pk>[0-9]+)/users/?$' % PREFIX, CompanyUserView.as_view()),
     url(r'^%s/companies/(?P<pk>[0-9]+)/documents/?$' % PREFIX, CompanyDocumentView.as_view()),
@@ -103,7 +108,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
-    
+ 
 
 
     # util api
