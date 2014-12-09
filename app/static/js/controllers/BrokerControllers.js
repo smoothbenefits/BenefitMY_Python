@@ -101,6 +101,7 @@ var benefitsController = brokersControllers.controller('benefitsController', ['$
 }]);
 
 
+
 var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
   ['$scope', '$location', '$routeParams', 'companyRepository', 'companySelectedBenefits',
   function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companySelectedBenefits){
@@ -616,43 +617,6 @@ var addBenefitController = brokersControllers.controller(
         }
       };
   }]);
-
-var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
-  ['$scope', '$location', '$routeParams', 'companyRepository', 'companySelectedBenefits',
-  function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companySelectedBenefits){
-    var clientId = $routeParams.client_id;
-
-    companyRepository.get({clientId: clientId}).$promise.then(function(response){
-      $scope.companyName = response.name;
-    });
-
-    companySelectedBenefits.get({companyId: clientId}).$promise.then(function(response){
-      var selectedBenefits = response.benefits;
-      $scope.selectionList = [];
-
-      _.each(selectedBenefits, function(benefit){
-        var displayBenefit = { enrolled: [] };
-
-        _.each(benefit.enrolleds, function(enrolled){
-          if (enrolled.person.relationship === 'self'){
-            displayBenefit.name = enrolled.person.first_name + ' ' + enrolled.person.last_name;
-            displayBenefit.email = enrolled.person.email;
-          }
-          var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: enrolled.person.relationship};
-          displayBenefit.enrolled.push(displayEnrolled);
-        })
-
-        displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name
-        displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
-
-        $scope.selectionList.push(displayBenefit);
-      })
-    });
-
-    $scope.back = function(){
-      $location.path('/broker');
-    }
-  }])
 
 
 var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',
