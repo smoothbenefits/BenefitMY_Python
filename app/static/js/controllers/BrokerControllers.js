@@ -175,6 +175,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
         displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name
         displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
+        displayBenefit.lastUpdatedTime = new Date(benefit.benefit.updated_at).toDateString();
 
         $scope.selectionList.push(displayBenefit);
       })
