@@ -353,7 +353,6 @@ var addBenefitController = brokersControllers.controller(
           return saveTextContainer;
       };
 
-
       var updateOptionObject = function(container, input, val){
         var bOptionName = container.attr('b-option');
         if(bOptionName){
