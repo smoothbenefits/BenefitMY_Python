@@ -16,7 +16,8 @@
             <div class="form-holder">
                 <div class="form-label">Benefit Type</div>
                 <div class="select-box">
-                    <select ng-model="benefit.benefit_type"
+                    <select id="benefit_type_select" 
+                        ng-model="benefit.benefit_type"
                         ng-required="true"
                         name="benefit_type"
                         ng-options="benefit_type for benefit_type in benefit_types"
@@ -50,11 +51,11 @@
                             <tbody>
                                 <tr ng-repeat="option in benefit.benefit_option_types" b-option="{{option.name}}">
                                     <td>{{option.name}}</td>
-                                    <td b-option="{{option.name}}">
-                                        <span>$ <input type="text" placeholder="Total Premium" value="{{option.total_cost_per_period}}" /></span>
+                                    <td b-option="{{option.name}}" field-name="total">
+                                        $ <input type="text" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" />
                                     </td>
-                                    <td b-option="{{option.name}}">
-                                        <span>$ <input type="text" placeholder="Employee Premium" value="{{option.employee_cost_per_period}}" /></span>
+                                    <td b-option="{{option.name}}" field-name="employee">
+                                        $ <input type="text" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" />
                                     </td>
                                 </tr>
                             </tbody>
@@ -81,7 +82,7 @@
                                 </tr>
                             </thead>
                             <tbody id="details_container_table_body">
-                                <tr ng-repeat="policyKey in policyKeyArray" option-key="{{policyKey.position}}">
+                                <tr ng-repeat="policyKey in policyKeyArray" option-key="{{policyKey.name}}">
                                     <td>{{policyKey.name}}</td>
                                     <td></td>
                                 </tr>
@@ -94,7 +95,7 @@
                             * Please fill out all the input fields because all these values are required.
                         </div>
                         <div ng-show="noPolicyTypeError" class="validation-error">
-                            * Please make sure you created a benefit option set
+                            * Please make sure you created a benefit option set. Please click on the "Add New Plan" link "
                         </div>
                     </div>
                 </div>
