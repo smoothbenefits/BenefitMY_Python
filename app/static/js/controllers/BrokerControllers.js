@@ -215,12 +215,14 @@ var addBenefitController = brokersControllers.controller(
             valueInput.attr('show-dollar', showDollar);
           }
           valueInput.on('keypress', changeInputKeyPress);
+
           if(noBlurBlank){
             valueInput.on('blur', lostFocusNoBlankHandler)
           }
           else{
             valueInput.on('blur', lostFocusHandler);
           }
+
           return valueInput;
       };
 
@@ -351,6 +353,7 @@ var addBenefitController = brokersControllers.controller(
           return saveTextContainer;
       };
 
+
       var updateOptionObject = function(container, input, val){
         var bOptionName = container.attr('b-option');
         if(bOptionName){
@@ -366,6 +369,7 @@ var addBenefitController = brokersControllers.controller(
           }
         }
       }
+
 
       var tryCommitInputValue = function(inputElement){
         $scope.inputUnfilledError = false;
@@ -401,6 +405,7 @@ var addBenefitController = brokersControllers.controller(
             tryCommitInputValue($(event.target));
           }
       };
+
 
       function lostFocusNoBlankHandler(blurEvent){
         var inputElement = $(blurEvent.target);
@@ -584,7 +589,7 @@ var addBenefitController = brokersControllers.controller(
             });
           });
 
-          //save the request list to the backend.
+        //save the request list to the backend.
 
           saveBenefitOptionPlan(requestList, 0, function(){
             var apiObjectArray = [];
@@ -612,6 +617,44 @@ var addBenefitController = brokersControllers.controller(
         }
       };
   }]);
+
+var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
+  ['$scope', '$location', '$routeParams', 'companyRepository', 'companySelectedBenefits',
+  function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companySelectedBenefits){
+    var clientId = $routeParams.client_id;
+
+    companyRepository.get({clientId: clientId}).$promise.then(function(response){
+      $scope.companyName = response.name;
+    });
+
+    companySelectedBenefits.get({companyId: clientId}).$promise.then(function(response){
+      var selectedBenefits = response.benefits;
+      $scope.selectionList = [];
+
+      _.each(selectedBenefits, function(benefit){
+        var displayBenefit = { enrolled: [] };
+
+        _.each(benefit.enrolleds, function(enrolled){
+          if (enrolled.person.relationship === 'self'){
+            displayBenefit.name = enrolled.person.first_name + ' ' + enrolled.person.last_name;
+            displayBenefit.email = enrolled.person.email;
+          }
+          var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: enrolled.person.relationship};
+          displayBenefit.enrolled.push(displayEnrolled);
+        })
+
+        displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name
+        displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
+
+        $scope.selectionList.push(displayBenefit);
+      })
+    });
+
+    $scope.back = function(){
+      $location.path('/broker');
+    }
+  }])
+
 
 var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',
   function addClientController($scope, $location, addClientRepository){
