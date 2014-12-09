@@ -157,8 +157,14 @@ var addBenefitController = brokersControllers.controller(
           {name:"Individual plus One"},
           {name:"Individual plus children"},
           {name:"Family"}],
-      };
-
+      };      
+      $('#benefit_type_select').on('change', function(){
+        var optionTypeInputs = $('#plan_option_table').find('input');
+        _.each(optionTypeInputs, function(input){
+          $(input).on('keypress', changeInputKeyPress);
+          $(input).on('blur', lostFocusNoBlankHandler);
+        });
+      });
       $scope.isTypeMedical = function(benefitType){
         return benefitType === 'Medical';
       };
@@ -195,14 +201,26 @@ var addBenefitController = brokersControllers.controller(
         return _.findWhere($scope.benefitDetailArray, {policy_type_id: policyTypeId});
       };
 
-      var createInputElement = function(policyTypeId, optionKey, placeHolderText){
+      var createInputElement = function(policyTypeId, optionKey, placeHolderText, showDollar, noBlurBlank){
           var valueInput = $(document.createElement('input'));
           valueInput.attr('type', 'text');
           valueInput.attr('placeholder', placeHolderText);
-          valueInput.attr('key', optionKey);
-          valueInput.attr('policy-type-id', policyTypeId);
+          if(optionKey){
+            valueInput.attr('key', optionKey);
+          }
+          if(policyTypeId){
+            valueInput.attr('policy-type-id', policyTypeId);
+          }
+          if(showDollar){
+            valueInput.attr('show-dollar', showDollar);
+          }
           valueInput.on('keypress', changeInputKeyPress);
-          valueInput.on('blur', lostFocusHandler)
+          if(noBlurBlank){
+            valueInput.on('blur', lostFocusNoBlankHandler)
+          }
+          else{
+            valueInput.on('blur', lostFocusHandler);
+          }
           return valueInput;
       };
 
@@ -243,7 +261,7 @@ var addBenefitController = brokersControllers.controller(
           if(rowKey){
             var tableCellArray = $(row).children('td')
             var lastTableCell = tableCellArray[tableCellArray.length -1];
-            $(lastTableCell).append(createInputElement(policyTypeId, rowKey, 'Add option value'));
+            $(lastTableCell).append(createInputElement(policyTypeId, rowKey, 'Add option value', false, true));
             $(lastTableCell).attr('policy-type-id', policyTypeId);
             var newTableCell = $(document.createElement('td'));
             $(row).append(newTableCell);
@@ -298,15 +316,26 @@ var addBenefitController = brokersControllers.controller(
 
       };
 
-      var createValueDiv = function(policyTypeId, optionKey, content, showDelete){
+      var createValueDiv = function(policyTypeId, optionKey, content, placeHolder, showDelete, showDollar){
           var saveTextContainer = $(document.createElement('div'));
           saveTextContainer.addClass('editable-container');
           var contentSpan = $(document.createElement('span'));
-          contentSpan.attr('policy-type-id', policyTypeId);
+          if(showDollar){
+            saveTextContainer.append('$');
+            contentSpan.attr('show-dollar', showDollar);
+          }
+          if(policyTypeId){
+            contentSpan.attr('policy-type-id', policyTypeId);
+          }
           if(optionKey){
             contentSpan.attr('key', optionKey);
           }
-          contentSpan.append(content);
+          if(content){
+            contentSpan.append(content);
+          }
+          else{
+            contentSpan.append(placeHolder);
+          }
           contentSpan.on('click', handleEditElement);
           saveTextContainer.append(contentSpan);
           if(showDelete){
@@ -322,15 +351,33 @@ var addBenefitController = brokersControllers.controller(
           return saveTextContainer;
       };
 
+      var updateOptionObject = function(container, input, val){
+        var bOptionName = container.attr('b-option');
+        if(bOptionName){
+          var optionType = _.findWhere($scope.benefit.benefit_option_types, {name:bOptionName});
+          if(optionType){
+            var fieldName = container.attr('field-name');
+            if(fieldName === 'total'){
+              optionType.total_cost_per_period = val;
+            }
+            else if(fieldName === 'employee'){
+              optionType.employee_cost_per_period = val;
+            }
+          }
+        }
+      }
+
       var tryCommitInputValue = function(inputElement){
         $scope.inputUnfilledError = false;
         var inputVal = inputElement.val();
         var optionKey = inputElement.attr('key');
         var policyTypeId = inputElement.attr('policy-type-id');
+        var showDollar = inputElement.attr('show-dollar');
+        var placeHolder = inputElement.attr('placeholder');
         var targetContainer = inputElement.parent();
         var showDeleteIcon = false;
         //Populate the data set
-        if(targetContainer[0].tagName ==='TH'){
+        if(targetContainer.length > 0 && targetContainer[0].tagName ==='TH'){
           //This is another new option set.
           if(tryCreateNewPolicyTypeDataSet(policyTypeId, inputVal)){
             updateTableWithNewPolicyType(inputElement, policyTypeId);
@@ -341,8 +388,12 @@ var addBenefitController = brokersControllers.controller(
           //this is just the option type value
           tryCreateNewPolicyValue(policyTypeId, optionKey, inputVal);
         }
+        else if(showDollar){
+          //Needs a better indicator.
+          updateOptionObject(targetContainer, inputElement, inputVal)
+        }
         targetContainer.empty();
-        targetContainer.append(createValueDiv(policyTypeId, optionKey, inputVal, showDeleteIcon));
+        targetContainer.append(createValueDiv(policyTypeId, optionKey, inputVal, placeHolder, showDeleteIcon, showDollar));
       };
 
       var changeInputKeyPress = function(event){
@@ -351,70 +402,38 @@ var addBenefitController = brokersControllers.controller(
           }
       };
 
-      function lostFocusHandler(blurEvent){
-        var textInput = $(blurEvent.target);
-        if(!textInput.val()){
-          //if the input is empty, we should not set this element to DIV.
+      function lostFocusNoBlankHandler(blurEvent){
+        var inputElement = $(blurEvent.target);
+        if(!inputElement.val()){
           return;
         }
-        tryCommitInputValue(textInput);
+        tryCommitInputValue(inputElement);
+      }
+
+      function lostFocusHandler(blurEvent){
+        tryCommitInputValue($(blurEvent.target));
       };
 
       function handleEditElement (clickEvent){
         var container = $(clickEvent.target).parent().parent();
         var placeHolderText = $(clickEvent.target).html();
         var curPolicyTypeId = $(clickEvent.target).attr('policy-type-id');
+        var showDollar = $(clickEvent.target).attr('show-dollar');
         if(!curPolicyTypeId){
           curPolicyTypeId = $scope.columnCount;
         }
         var curOptionKey = $(clickEvent.target).attr('key');
-        var typeTextInput = createInputElement(curPolicyTypeId, curOptionKey, placeHolderText);
-        typeTextInput.on('blur', lostFocusHandler)
+        var typeTextInput = createInputElement(curPolicyTypeId, curOptionKey, placeHolderText, showDollar, false);
         container.empty();
+        if(showDollar){
+          container.append('$ ');
+        }
         container.append(typeTextInput);
         typeTextInput.focus();
       };
 
 
       $scope.handleElementEvent = handleEditElement;
-
-
-      function saveToBackendSequential(objArray, index){
-        if(objArray.length <= index){
-          if($scope.errorString){
-            alert($scope.errorString);
-          }
-          else{
-            alert('Add Benefit Details Succeeded! You can click "back" to see the benefits');
-          }
-          return;
-        }
-
-        benefitDetailsRepository.save({planId:$scope.benefitId}, objArray[index],
-          function(success){
-            saveToBackendSequential(objArray, index+1);
-          }, function(error){
-            $scope.errorString = "Add Benefit Detail Failed! The error is: "+ error.data.stringify();
-            return;
-          });
-      };
-
-
-      function saveBenefitOptionPlan(objArray, index, completed, error){
-        if(objArray.length <= index){
-          //save details
-          if(completed){
-            completed();
-          }
-        }
-        addBenefitRepository.save(objArray[index], function(addedBenefit){
-          saveBenefitOptionPlan(objArray, index++, completed, error);
-        }, function(errorResponse){
-          if(error){
-            error(errorResponse);
-          }
-        });
-      };
 
       var validateBenefitFields = function(){
         //validate option fields
@@ -425,9 +444,13 @@ var addBenefitController = brokersControllers.controller(
           if(!optionInput.val()){
             optionInput.addClass('unfilled-input');
             $scope.optionEmptyError = true;
-            return false;
+            return;
           }
         });
+
+        if($scope.optionEmptyError){
+          return false;
+        }
 
         if($scope.isTypeMedical($scope.benefit.benefit_type)){
           //first we should validate the table
@@ -440,7 +463,7 @@ var addBenefitController = brokersControllers.controller(
               if(!policyValueInput){
                 $(inputElm).addClass('unfilled-input');
                 $scope.inputUnfilledError = true;
-                return false;
+                return;
               }
               else{
                 //save the value into the list.
@@ -455,6 +478,25 @@ var addBenefitController = brokersControllers.controller(
             });
           }
 
+          if($scope.inputUnfilledError){
+            return false;
+          }
+
+          //we validate the benefit object.
+          if(!$scope.benefit.benefit_type){
+            alert('No benefit type selected!')
+            return false;
+          }
+          _.each($scope.benefit.benefit_option_types, function(optionType){
+            if(!optionType.total_cost_per_period || !optionType.employee_cost_per_period){
+              $scope.noCostError = true;
+            }
+          });
+          if($scope.noCostError){
+            return false;
+          }
+
+
           //now we validate the details array
           if($scope.benefitDetailArray.length <= 0)
           {
@@ -466,7 +508,7 @@ var addBenefitController = brokersControllers.controller(
               if(!optionPair.policy_key)
               {
                 $scope.policyKeyNotFound = true;
-                return false;
+                return;
               }
               if(!optionPair.policy_value)
               {
@@ -474,10 +516,55 @@ var addBenefitController = brokersControllers.controller(
               }
             });
           });
+          if($scope.policyKeyNotFound){
+            return false;
+          }
         }
         return true;
       };
 
+
+
+      function saveBenefitOptionPlan(objArray, index, completed, error){
+        if(objArray.length <= index){
+          //save details
+          if(completed){
+            completed();
+            return;
+          }
+        }
+        addBenefitRepository.save(objArray[index], function(addedBenefit){
+          $scope.addedBenefit = addedBenefit;
+          saveBenefitOptionPlan(objArray, index+1, completed, error);
+        }, function(errorResponse){
+          if(error){
+            error(errorResponse);
+          }
+        });
+      };
+
+      function saveToBackendSequential(objArray, index){
+        if(objArray.length <= index){
+          if($scope.errorString){
+            alert($scope.errorString);
+          }
+          else{
+            $location.path('/broker/benefits/' + clientId);
+          }
+          return;
+        }
+
+        benefitDetailsRepository.save({planId:$scope.addedBenefit.benefits.benefit_plan.id}, objArray[index],
+          function(success){
+            saveToBackendSequential(objArray, index+1);
+          }, function(error){
+            $scope.errorString = "Add Benefit Detail Failed!";
+            if(error && error.data){
+              $scope.errorString += " The error is: "+ JSON.stringify(error.data);
+            }
+            return;
+          });
+      };
 
       $scope.addBenefit = function(){
 
@@ -486,10 +573,10 @@ var addBenefitController = brokersControllers.controller(
           var requestList = [];
           _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
             requestList.push({
-              company: $scope.clientId,
+              company: clientId,
               benefit: {
-                benefit_type: $scope.benefit_type,
-                benefit_name: $scope.benefit_name,
+                benefit_type: $scope.benefit.benefit_type,
+                benefit_name: $scope.benefit.benefit_name,
                 benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
                 total_cost_per_period: optionTypeItem.total_cost_per_period,
                 employee_cost_per_period: optionTypeItem.employee_cost_per_period
@@ -507,7 +594,7 @@ var addBenefitController = brokersControllers.controller(
                     value: optionPair.policy_value,
                     key: optionPair.policy_key,
                     type: benefitTypeContent.policy_type,
-                    benefit_plan_id: $scope.benefitId};
+                    benefit_plan_id: $scope.addedBenefit.benefits.benefit_plan.id};
                 apiObjectArray.push(apiObject);
               });
             });
@@ -515,8 +602,12 @@ var addBenefitController = brokersControllers.controller(
             saveToBackendSequential(apiObjectArray, 0);
           }, 
           function(response){
-            //Error condition, 
-            alert('Error while saving Benefits! Details: ' + response.data.stringify());
+            //Error condition,
+            var errorDetail = "";
+            if(response && response.data){
+              errorDetail = JSON.stringify(response.data);
+            } 
+            alert('Error while saving Benefits! Details: ' + errorDetail);
           });
         }
       };
