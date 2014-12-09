@@ -100,54 +100,6 @@ var benefitsController = brokersControllers.controller('benefitsController', ['$
     }
 }]);
 
-var addBenefitController = brokersControllers.controller('addBenefitController', ['$scope', '$location', '$routeParams', 'addBenefitRepository',
-  function addBenefitController($scope, $location, $routeParams, addBenefitRepository){
-    var clientId = $routeParams.clientId;
-    $scope.benefit = {
-      benefit_type:"Medical",
-      benefit_option_type: "Individual",
-      total_cost_per_period: null,
-      employee_cost_per_period: null
-    };
-
-    $scope.benefit_types = ["Medical", "Dental", "Vision"];
-    $scope.benefit_option_types_display = [
-      "Individual",
-      "Individual plus Spouse",
-      "Individual plus Child",
-      "Individual plus One",
-      "Individual plus children",
-      "Family"];
-
-    $scope.addBenefit = function(){
-      var viewBenefit = $scope.benefit;
-      var apiBenefit = mapBenefit(viewBenefit);
-      var request = {company: clientId, benefit: apiBenefit};
-
-      addBenefitRepository.save(request, function(addedBenefit){
-        $location.path('/broker/benefit/add_details/' + clientId + "/" + addedBenefit.benefits.id);
-      }, function(){
-        $scope.saveSucceeded = false;
-      });
-    }
-
-    var mapBenefit = function(viewBenefit){
-      var apiBenefit = {};
-      // TODO: Add convertion function to mapp a benefit object from view to a benefit object defined in the API.
-      apiBenefit.benefit_type = viewBenefit.benefit_type;
-      apiBenefit.total_cost_per_period = viewBenefit.total_cost_per_period;
-      apiBenefit.employee_cost_per_period = viewBenefit.employee_cost_per_period;
-      apiBenefit.benefit_name = viewBenefit.benefit_name;
-      apiBenefit.benefit_option_type = viewBenefit.benefit_option_type.replace(/\s+/g, '_').toLowerCase();
-
-      return apiBenefit;
-    }
-
-    $scope.viewBenefits = function(){
-      $location.path('/broker/benefits/'+clientId);
-    }
-  }]);
-
 var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
   ['$scope', '$location', '$routeParams', 'companyRepository', 'companySelectedBenefits',
   function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companySelectedBenefits){
@@ -660,43 +612,6 @@ var addBenefitController = brokersControllers.controller(
         }
       };
   }]);
-
-var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
-  ['$scope', '$location', '$routeParams', 'companyRepository', 'companySelectedBenefits',
-  function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companySelectedBenefits){
-    var clientId = $routeParams.client_id;
-
-    companyRepository.get({clientId: clientId}).$promise.then(function(response){
-      $scope.companyName = response.name;
-    });
-
-    companySelectedBenefits.get({companyId: clientId}).$promise.then(function(response){
-      var selectedBenefits = response.benefits;
-      $scope.selectionList = [];
-
-      _.each(selectedBenefits, function(benefit){
-        var displayBenefit = { enrolled: [] };
-
-        _.each(benefit.enrolleds, function(enrolled){
-          if (enrolled.person.relationship === 'self'){
-            displayBenefit.name = enrolled.person.first_name + ' ' + enrolled.person.last_name;
-            displayBenefit.email = enrolled.person.email;
-          }
-          var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: enrolled.person.relationship};
-          displayBenefit.enrolled.push(displayEnrolled);
-        })
-
-        displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name
-        displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
-
-        $scope.selectionList.push(displayBenefit);
-      })
-    });
-
-    $scope.back = function(){
-      $location.path('/broker');
-    }
-  }])
 
 
 var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',
