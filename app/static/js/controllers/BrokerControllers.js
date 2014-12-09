@@ -157,7 +157,8 @@ var addBenefitController = brokersControllers.controller(
           {name:"Individual plus One"},
           {name:"Individual plus children"},
           {name:"Family"}],
-      };      
+      };    
+        
       $('#benefit_type_select').on('change', function(){
         var optionTypeInputs = $('#plan_option_table').find('input');
         _.each(optionTypeInputs, function(input){
@@ -612,7 +613,6 @@ var addBenefitController = brokersControllers.controller(
         }
       };
   }]);
-
 
 var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',
   function addClientController($scope, $location, addClientRepository){
