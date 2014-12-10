@@ -102,6 +102,7 @@ var benefitsController = brokersControllers.controller('benefitsController', ['$
 
 
 
+
 var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
   ['$scope', '$location', '$routeParams', 'companyRepository', 'companySelectedBenefits',
   function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companySelectedBenefits){
@@ -175,6 +176,7 @@ var addBenefitController = brokersControllers.controller(
       };
 
       $scope.benefit_types = ["Medical", "Dental", "Vision"];
+
 
       $scope.viewBenefits = function(){
         $location.path('/broker/benefits/'+clientId);
@@ -617,7 +619,6 @@ var addBenefitController = brokersControllers.controller(
         }
       };
   }]);
-
 
 var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',
   function addClientController($scope, $location, addClientRepository){
