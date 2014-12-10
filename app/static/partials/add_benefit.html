@@ -52,10 +52,10 @@
                                 <tr ng-repeat="option in benefit.benefit_option_types" b-option="{{option.name}}">
                                     <td>{{option.name}}</td>
                                     <td b-option="{{option.name}}" field-name="total">
-                                        $ <input type="text" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" />
+                                        $ <input type="number" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" />
                                     </td>
                                     <td b-option="{{option.name}}" field-name="employee">
-                                        $ <input type="text" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" />
+                                        $ <input type="number" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" />
                                     </td>
                                 </tr>
                             </tbody>

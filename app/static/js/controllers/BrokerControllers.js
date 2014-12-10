@@ -204,9 +204,9 @@ var addBenefitController = brokersControllers.controller(
         return _.findWhere($scope.benefitDetailArray, {policy_type_id: policyTypeId});
       };
 
-      var createInputElement = function(policyTypeId, optionKey, placeHolderText, showDollar, noBlurBlank){
+      var createInputElement = function(policyTypeId, optionKey, placeHolderText, inputType, showDollar, noBlurBlank){
           var valueInput = $(document.createElement('input'));
-          valueInput.attr('type', 'text');
+          valueInput.attr('type', inputType);
           valueInput.attr('placeholder', placeHolderText);
           if(optionKey){
             valueInput.attr('key', optionKey);
@@ -266,7 +266,7 @@ var addBenefitController = brokersControllers.controller(
           if(rowKey){
             var tableCellArray = $(row).children('td')
             var lastTableCell = tableCellArray[tableCellArray.length -1];
-            $(lastTableCell).append(createInputElement(policyTypeId, rowKey, 'Add option value', false, true));
+            $(lastTableCell).append(createInputElement(policyTypeId, rowKey, 'Add option value', 'text', false, true));
             $(lastTableCell).attr('policy-type-id', policyTypeId);
             var newTableCell = $(document.createElement('td'));
             $(row).append(newTableCell);
@@ -321,7 +321,7 @@ var addBenefitController = brokersControllers.controller(
 
       };
 
-      var createValueDiv = function(policyTypeId, optionKey, content, placeHolder, showDelete, showDollar){
+      var createValueDiv = function(policyTypeId, optionKey, content, placeHolder, originalType, showDelete, showDollar){
           var saveTextContainer = $(document.createElement('div'));
           saveTextContainer.addClass('editable-container');
           var contentSpan = $(document.createElement('span'));
@@ -334,6 +334,9 @@ var addBenefitController = brokersControllers.controller(
           }
           if(optionKey){
             contentSpan.attr('key', optionKey);
+          }
+          if(originalType){
+            contentSpan.attr('original-type', originalType);
           }
           if(content){
             contentSpan.append(content);
@@ -380,6 +383,7 @@ var addBenefitController = brokersControllers.controller(
         var policyTypeId = inputElement.attr('policy-type-id');
         var showDollar = inputElement.attr('show-dollar');
         var placeHolder = inputElement.attr('placeholder');
+        var originalType = inputElement.attr('type');
         var targetContainer = inputElement.parent();
         var showDeleteIcon = false;
         //Populate the data set
@@ -399,7 +403,7 @@ var addBenefitController = brokersControllers.controller(
           updateOptionObject(targetContainer, inputElement, inputVal)
         }
         targetContainer.empty();
-        targetContainer.append(createValueDiv(policyTypeId, optionKey, inputVal, placeHolder, showDeleteIcon, showDollar));
+        targetContainer.append(createValueDiv(policyTypeId, optionKey, inputVal, placeHolder, originalType, showDeleteIcon, showDollar));
       };
 
       var changeInputKeyPress = function(event){
@@ -426,11 +430,12 @@ var addBenefitController = brokersControllers.controller(
         var placeHolderText = $(clickEvent.target).html();
         var curPolicyTypeId = $(clickEvent.target).attr('policy-type-id');
         var showDollar = $(clickEvent.target).attr('show-dollar');
+        var originalType = $(clickEvent.target).attr('original-type');
         if(!curPolicyTypeId){
           curPolicyTypeId = $scope.columnCount;
         }
         var curOptionKey = $(clickEvent.target).attr('key');
-        var typeTextInput = createInputElement(curPolicyTypeId, curOptionKey, placeHolderText, showDollar, false);
+        var typeTextInput = createInputElement(curPolicyTypeId, curOptionKey, placeHolderText, originalType, showDollar, false);
         container.empty();
         if(showDollar){
           container.append('$ ');
