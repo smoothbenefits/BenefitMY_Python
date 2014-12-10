@@ -135,6 +135,11 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         $scope.selectionList.push(displayBenefit);
       })
     });
+
+    $scope.back = function(){
+      $location.path('/broker');
+    };
+    
 }]);
 
 var addBenefitController = brokersControllers.controller(
