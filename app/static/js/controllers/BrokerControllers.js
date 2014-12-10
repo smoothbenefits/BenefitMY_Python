@@ -100,53 +100,8 @@ var benefitsController = brokersControllers.controller('benefitsController', ['$
     }
 }]);
 
-var addBenefitController = brokersControllers.controller('addBenefitController', ['$scope', '$location', '$routeParams', 'addBenefitRepository',
-  function addBenefitController($scope, $location, $routeParams, addBenefitRepository){
-    var clientId = $routeParams.clientId;
-    $scope.benefit = {
-      benefit_type:"Medical",
-      benefit_option_type: "Individual",
-      total_cost_per_period: null,
-      employee_cost_per_period: null
-    };
 
-    $scope.benefit_types = ["Medical", "Dental", "Vision"];
-    $scope.benefit_option_types_display = [
-      "Individual",
-      "Individual plus Spouse",
-      "Individual plus Child",
-      "Individual plus One",
-      "Individual plus children",
-      "Family"];
 
-    $scope.addBenefit = function(){
-      var viewBenefit = $scope.benefit;
-      var apiBenefit = mapBenefit(viewBenefit);
-      var request = {company: clientId, benefit: apiBenefit};
-
-      addBenefitRepository.save(request, function(addedBenefit){
-        $location.path('/broker/benefit/add_details/' + clientId + "/" + addedBenefit.benefits.id);
-      }, function(){
-        $scope.saveSucceeded = false;
-      });
-    }
-
-    var mapBenefit = function(viewBenefit){
-      var apiBenefit = {};
-      // TODO: Add convertion function to mapp a benefit object from view to a benefit object defined in the API.
-      apiBenefit.benefit_type = viewBenefit.benefit_type;
-      apiBenefit.total_cost_per_period = viewBenefit.total_cost_per_period;
-      apiBenefit.employee_cost_per_period = viewBenefit.employee_cost_per_period;
-      apiBenefit.benefit_name = viewBenefit.benefit_name;
-      apiBenefit.benefit_option_type = viewBenefit.benefit_option_type.replace(/\s+/g, '_').toLowerCase();
-
-      return apiBenefit;
-    }
-
-    $scope.viewBenefits = function(){
-      $location.path('/broker/benefits/'+clientId);
-    }
-  }]);
 
 var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
   ['$scope', '$location', '$routeParams', 'companyRepository', 'companySelectedBenefits',
@@ -180,12 +135,495 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         $scope.selectionList.push(displayBenefit);
       })
     });
+}]);
 
-    $scope.back = function(){
-      $location.path('/broker');
-    }
-  }])
+var addBenefitController = brokersControllers.controller(
+  'addBenefitController', 
+  ['$scope', 
+   '$location', 
+   '$routeParams', 
+   'addBenefitRepository',
+   'benefitDetailsRepository',
+    function addBenefitController(
+      $scope, 
+      $location, 
+      $routeParams, 
+      addBenefitRepository, 
+      benefitDetailsRepository){
 
+      var clientId = $routeParams.clientId;
+      $scope.benefit = {
+        benefit_type:'',
+        benefit_option_types: [
+          {name:"Individual"},
+          {name:"Individual plus One"},
+          {name:"Individual plus children"},
+          {name:"Family"}],
+      };      
+      $('#benefit_type_select').on('change', function(){
+        var optionTypeInputs = $('#plan_option_table').find('input');
+        _.each(optionTypeInputs, function(input){
+          $(input).on('keypress', changeInputKeyPress);
+          $(input).on('blur', lostFocusNoBlankHandler);
+        });
+      });
+      $scope.isTypeMedical = function(benefitType){
+        return benefitType === 'Medical';
+      };
+
+      $scope.benefitTypeSelected = function(benefitType){
+        return benefitType !== '';
+      };
+
+      $scope.benefit_types = ["Medical", "Dental", "Vision"];
+
+
+      $scope.viewBenefits = function(){
+        $location.path('/broker/benefits/'+clientId);
+      };
+
+      $scope.policyKeyArray = [
+        {position:0, name:'Individual Deductables'},
+        {position:1, name:'Family Deductables'},
+        {position:2, name:'Hospital-Inpatient'},
+        {position:3, name:'Out-patient Day Surgery'},
+        {position:4, name:'MRI/CT/PET Scans'},
+        {position:5, name:'Lab work/X-Ray'},
+        {position:6, name:'Chiropractic'},
+        {position:7, name:'Prescription Drugs-30 days'},
+        {position:8, name:'Mail order drugs-90 days'},
+        {position:9, name:'Annual Maximum'},
+        {position:10, name:'Primary Care Physician required'}];
+
+      $scope.benefitDetailArray = [];
+      $scope.columnCount = 1;
+      $scope.errorString = "";
+      var benefitDetailBody = $('#details_container_table_body');
+
+      var getPolicyTypeObjectById = function(policyTypeId){
+        return _.findWhere($scope.benefitDetailArray, {policy_type_id: policyTypeId});
+      };
+
+      var createInputElement = function(policyTypeId, optionKey, placeHolderText, inputType, showDollar, noBlurBlank){
+          var valueInput = $(document.createElement('input'));
+          valueInput.attr('type', inputType);
+          valueInput.attr('placeholder', placeHolderText);
+          if(optionKey){
+            valueInput.attr('key', optionKey);
+          }
+          if(policyTypeId){
+            valueInput.attr('policy-type-id', policyTypeId);
+          }
+          if(showDollar){
+            valueInput.attr('show-dollar', showDollar);
+          }
+          valueInput.on('keypress', changeInputKeyPress);
+
+          if(noBlurBlank){
+            valueInput.on('blur', lostFocusNoBlankHandler)
+          }
+          else{
+            valueInput.on('blur', lostFocusHandler);
+          }
+
+          return valueInput;
+      };
+
+      var tryCreateNewPolicyTypeDataSet = function(policyTypeId, policyTypeValue){
+        var existingPolicyType = getPolicyTypeObjectById(policyTypeId);
+        if(!existingPolicyType){
+          //There is no existing policyType, create a new policyType
+          var policyType = {policy_type:policyTypeValue, policy_type_id: policyTypeId, policy_array:[]};
+          $scope.benefitDetailArray.push(policyType);
+          $scope.noPolicyTypeError = false;
+          $scope.columnCount ++;
+          return true;
+        }
+        else{
+          existingPolicyType.policy_type = policyTypeValue;
+          return false;
+        }
+      };
+
+      var updateTableWithNewPolicyType = function(target, policyTypeId){
+        var thElement = target.parent();
+        var thContainer = thElement.parent();
+        var newTh = $(document.createElement('th'));
+        //First create the new th on the right hand side
+        var newPolicyTypeLinkContainer = $(document.createElement('div'));
+        var newPolicyTypeLink = $(document.createElement('a'));
+        newPolicyTypeLink.on('click', handleEditElement)
+        newPolicyTypeLink.html('Add New Plan');
+        newPolicyTypeLinkContainer.addClass('editable-container')
+        newPolicyTypeLinkContainer.append(newPolicyTypeLink);
+        newTh.append(newPolicyTypeLinkContainer);
+        thContainer.append(newTh);
+
+        //update each row with the input
+        var tableRows = benefitDetailBody.children('tr');
+        _.each(tableRows, function(row){
+          var rowKey = $(row).attr('option-key');
+          if(rowKey){
+            var tableCellArray = $(row).children('td')
+            var lastTableCell = tableCellArray[tableCellArray.length -1];
+            $(lastTableCell).append(createInputElement(policyTypeId, rowKey, 'Add option value', 'text', false, true));
+            $(lastTableCell).attr('policy-type-id', policyTypeId);
+            var newTableCell = $(document.createElement('td'));
+            $(row).append(newTableCell);
+          }
+        });
+      };
+
+
+      var tryCreateNewPolicyValue = function(policyTypeId, optionKey, policyValue){
+        var policyTypeObject = getPolicyTypeObjectById(policyTypeId);
+          var policyPair = _.findWhere(policyTypeObject.policy_array, {policy_key:optionKey});
+          if(policyPair){
+            policyPair.policy_value = policyValue;
+            return false;
+          }
+          else{
+            policyPair = {policy_key:optionKey, policy_value:policyValue};
+            policyTypeObject.policy_array.push(policyPair);
+            return true;
+          }
+          $scope.policyKeyNotFound = false;
+      };
+
+      var deletePolicyType = function(event){
+        //Remove the type from array
+        var curPolicyTypeId = $(event.target).attr('policy-type-id');
+        var indexToRemove;
+        for(var i = 0; i< $scope.benefitDetailArray.length; i++){
+          if($scope.benefitDetailArray[i].policy_type_id === curPolicyTypeId){
+            indexToRemove = i;
+          }
+        }
+        if(indexToRemove || indexToRemove === 0){
+          $scope.benefitDetailArray.splice(indexToRemove, 1);
+        }
+        //Delete all the td of the tbody.
+        var tableRows = benefitDetailBody.children('tr');
+        _.each(tableRows, function(row){
+          var tableCellArray = $(row).children('td');
+          _.each(tableCellArray, function(cell){
+            var policyTypeId = $(cell).attr('policy-type-id');
+            if(policyTypeId === $(event.target).attr('policy-type-id'))
+            {
+              $(cell).remove();
+            }
+          });
+        });
+
+        //now delete the th
+        var curTh = $(event.target).parent().parent();
+        curTh.remove();
+
+      };
+
+      var createValueDiv = function(policyTypeId, optionKey, content, placeHolder, originalType, showDelete, showDollar){
+          var saveTextContainer = $(document.createElement('div'));
+          saveTextContainer.addClass('editable-container');
+          var contentSpan = $(document.createElement('span'));
+          if(showDollar){
+            saveTextContainer.append('$');
+            contentSpan.attr('show-dollar', showDollar);
+          }
+          if(policyTypeId){
+            contentSpan.attr('policy-type-id', policyTypeId);
+          }
+          if(optionKey){
+            contentSpan.attr('key', optionKey);
+          }
+          if(originalType){
+            contentSpan.attr('original-type', originalType);
+          }
+          if(content){
+            contentSpan.append(content);
+          }
+          else{
+            contentSpan.append(placeHolder);
+          }
+          contentSpan.on('click', handleEditElement);
+          saveTextContainer.append(contentSpan);
+          if(showDelete){
+            //add delete icon to this div
+            var removeSpan = $(document.createElement('a'));
+            //removeSpan.append('X');
+            removeSpan.attr('policy-type-id', policyTypeId);
+            removeSpan.on('click', deletePolicyType);
+            removeSpan.attr('href', 'javascript:void(0);')
+            removeSpan.addClass('glyphicon glyphicon-remove remove-policy-type');
+            saveTextContainer.append(removeSpan);
+          }
+          return saveTextContainer;
+      };
+
+      var updateOptionObject = function(container, input, val){
+        var bOptionName = container.attr('b-option');
+        if(bOptionName){
+          var optionType = _.findWhere($scope.benefit.benefit_option_types, {name:bOptionName});
+          if(optionType){
+            var fieldName = container.attr('field-name');
+            if(fieldName === 'total'){
+              optionType.total_cost_per_period = val;
+            }
+            else if(fieldName === 'employee'){
+              optionType.employee_cost_per_period = val;
+            }
+          }
+        }
+      }
+
+
+      var tryCommitInputValue = function(inputElement){
+        $scope.inputUnfilledError = false;
+        var inputVal = inputElement.val();
+        var optionKey = inputElement.attr('key');
+        var policyTypeId = inputElement.attr('policy-type-id');
+        var showDollar = inputElement.attr('show-dollar');
+        var placeHolder = inputElement.attr('placeholder');
+        var originalType = inputElement.attr('type');
+        var targetContainer = inputElement.parent();
+        var showDeleteIcon = false;
+        //Populate the data set
+        if(targetContainer.length > 0 && targetContainer[0].tagName ==='TH'){
+          //This is another new option set.
+          if(tryCreateNewPolicyTypeDataSet(policyTypeId, inputVal)){
+            updateTableWithNewPolicyType(inputElement, policyTypeId);
+          }
+          showDeleteIcon = true;
+        }
+        else if(policyTypeId && optionKey){
+          //this is just the option type value
+          tryCreateNewPolicyValue(policyTypeId, optionKey, inputVal);
+        }
+        else if(showDollar){
+          //Needs a better indicator.
+          updateOptionObject(targetContainer, inputElement, inputVal)
+        }
+        targetContainer.empty();
+        targetContainer.append(createValueDiv(policyTypeId, optionKey, inputVal, placeHolder, originalType, showDeleteIcon, showDollar));
+      };
+
+      var changeInputKeyPress = function(event){
+          if(event.charCode == 13){
+            tryCommitInputValue($(event.target));
+          }
+      };
+
+
+      function lostFocusNoBlankHandler(blurEvent){
+        var inputElement = $(blurEvent.target);
+        if(!inputElement.val()){
+          return;
+        }
+        tryCommitInputValue(inputElement);
+      }
+
+      function lostFocusHandler(blurEvent){
+        tryCommitInputValue($(blurEvent.target));
+      };
+
+      function handleEditElement (clickEvent){
+        var container = $(clickEvent.target).parent().parent();
+        var placeHolderText = $(clickEvent.target).html();
+        var curPolicyTypeId = $(clickEvent.target).attr('policy-type-id');
+        var showDollar = $(clickEvent.target).attr('show-dollar');
+        var originalType = $(clickEvent.target).attr('original-type');
+        if(!curPolicyTypeId){
+          curPolicyTypeId = $scope.columnCount;
+        }
+        var curOptionKey = $(clickEvent.target).attr('key');
+        var typeTextInput = createInputElement(curPolicyTypeId, curOptionKey, placeHolderText, originalType, showDollar, false);
+        container.empty();
+        if(showDollar){
+          container.append('$ ');
+        }
+        container.append(typeTextInput);
+        typeTextInput.focus();
+      };
+
+
+      $scope.handleElementEvent = handleEditElement;
+
+      var validateBenefitFields = function(){
+        //validate option fields
+        var optionTable = $('#plan_option_table');
+        var optionTableInputList = optionTable.find('input');
+        _.each(optionTableInputList, function(inputElement){
+          var optionInput = $(inputElement);
+          if(!optionInput.val()){
+            optionInput.addClass('unfilled-input');
+            $scope.optionEmptyError = true;
+            return;
+          }
+        });
+
+        if($scope.optionEmptyError){
+          return false;
+        }
+
+        if($scope.isTypeMedical($scope.benefit.benefit_type)){
+          //first we should validate the table
+          var containerTable = $('#details_container_table');
+          var inputElements = containerTable.find('input');
+          if(inputElements.length > 0)
+          {
+            _.each(inputElements, function(inputElm){
+              var policyValueInput = $(inputElm);
+              if(!policyValueInput){
+                $(inputElm).addClass('unfilled-input');
+                $scope.inputUnfilledError = true;
+                return;
+              }
+              else{
+                //save the value into the list.
+                var ptid = policyValueInput.attr('policy-type-id');
+                var optionKey = policyValueInput.attr('key');
+                var policyTypeObject = getPolicyTypeObjectById(ptid);
+                var policyPair = _.findWhere(policyTypeObject.policy_array, {policy_key:optionKey});
+                if(policyPair){
+                  policyPair.policy_value = policyValueInput.val();
+                }
+              }
+            });
+          }
+
+          if($scope.inputUnfilledError){
+            return false;
+          }
+
+          //we validate the benefit object.
+          if(!$scope.benefit.benefit_type){
+            alert('No benefit type selected!')
+            return false;
+          }
+          _.each($scope.benefit.benefit_option_types, function(optionType){
+            if(!optionType.total_cost_per_period || !optionType.employee_cost_per_period){
+              $scope.noCostError = true;
+            }
+          });
+          if($scope.noCostError){
+            return false;
+          }
+
+
+          //now we validate the details array
+          if($scope.benefitDetailArray.length <= 0)
+          {
+            $scope.noPolicyTypeError = true;
+            return false;
+          }
+          _.each($scope.benefitDetailArray, function(benefitTypeContent){
+            _.each(benefitTypeContent.policy_array, function(optionPair){
+              if(!optionPair.policy_key)
+              {
+                $scope.policyKeyNotFound = true;
+                return;
+              }
+              if(!optionPair.policy_value)
+              {
+                optionPair.policy_value = "";
+              }
+            });
+          });
+          if($scope.policyKeyNotFound){
+            return false;
+          }
+        }
+        return true;
+      };
+
+
+
+      function saveBenefitOptionPlan(objArray, index, completed, error){
+        if(objArray.length <= index){
+          //save details
+          if(completed){
+            completed();
+            return;
+          }
+        }
+        addBenefitRepository.save(objArray[index], function(addedBenefit){
+          $scope.addedBenefit = addedBenefit;
+          saveBenefitOptionPlan(objArray, index+1, completed, error);
+        }, function(errorResponse){
+          if(error){
+            error(errorResponse);
+          }
+        });
+      };
+
+      function saveToBackendSequential(objArray, index){
+        if(objArray.length <= index){
+          if($scope.errorString){
+            alert($scope.errorString);
+          }
+          else{
+            $location.path('/broker/benefits/' + clientId);
+          }
+          return;
+        }
+
+        benefitDetailsRepository.save({planId:$scope.addedBenefit.benefits.benefit_plan.id}, objArray[index],
+          function(success){
+            saveToBackendSequential(objArray, index+1);
+          }, function(error){
+            $scope.errorString = "Add Benefit Detail Failed!";
+            if(error && error.data){
+              $scope.errorString += " The error is: "+ JSON.stringify(error.data);
+            }
+            return;
+          });
+      };
+
+      $scope.addBenefit = function(){
+
+        if(validateBenefitFields()){
+          //save to data store
+          var requestList = [];
+          _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
+            requestList.push({
+              company: clientId,
+              benefit: {
+                benefit_type: $scope.benefit.benefit_type,
+                benefit_name: $scope.benefit.benefit_name,
+                benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
+                total_cost_per_period: optionTypeItem.total_cost_per_period,
+                employee_cost_per_period: optionTypeItem.employee_cost_per_period
+              }
+            });
+          });
+
+        //save the request list to the backend.
+
+          saveBenefitOptionPlan(requestList, 0, function(){
+            var apiObjectArray = [];
+            _.each($scope.benefitDetailArray, function(benefitTypeContent){
+              _.each(benefitTypeContent.policy_array, function(optionPair){
+                var apiObject = {
+                    value: optionPair.policy_value,
+                    key: optionPair.policy_key,
+                    type: benefitTypeContent.policy_type,
+                    benefit_plan_id: $scope.addedBenefit.benefits.benefit_plan.id};
+                apiObjectArray.push(apiObject);
+              });
+            });
+
+            saveToBackendSequential(apiObjectArray, 0);
+          }, 
+          function(response){
+            //Error condition,
+            var errorDetail = "";
+            if(response && response.data){
+              errorDetail = JSON.stringify(response.data);
+            } 
+            alert('Error while saving Benefits! Details: ' + errorDetail);
+          });
+        }
+      };
+  }]);
 
 var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',
   function addClientController($scope, $location, addClientRepository){
@@ -242,283 +680,5 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
                                              benefitDetailsRepository){
       $scope.clientId = parseInt($routeParams.client_id);
       $scope.benefitId = parseInt($routeParams.benefit_id);
-      $scope.policyKeyArray = [
-        {position:0, name:'Individual Deductables'},
-        {position:1, name:'Family Deductables'},
-        {position:2, name:'Hospital-Inpatient'},
-        {position:3, name:'Out-patient Day Surgery'},
-        {position:4, name:'MRI/CT/PET Scans'},
-        {position:5, name:'Lab work/X-Ray'},
-        {position:6, name:'Chiropractic'},
-        {position:7, name:'Prescription Drugs-30 days'},
-        {position:8, name:'Mail order drugs-90 days'},
-        {position:9, name:'Annual Maximum'},
-        {position:10, name:'Primary Care Physician required'}];
-
-      benefitListRepository.get({clientId:$scope.clientId})
-        .$promise.then(function(response){
-          $scope.benefit = _.findWhere(response.benefits, {id:$scope.benefitId});
-        });
-      $scope.benefitDetailArray = [];
-      $scope.columnCount = 1;
-      $scope.errorString = "";
-      var benefitDetailBody = $('#details_container_table_body');
-
-      var getPolicyTypeObjectById = function(policyTypeId){
-        return _.findWhere($scope.benefitDetailArray, {policy_type_id: policyTypeId});
-      };
-
-      var createInputElement = function(policyTypeId, optionKey, placeHolderText){
-          var valueInput = $(document.createElement('input'));
-          valueInput.attr('type', 'text');
-          valueInput.attr('placeholder', placeHolderText);
-          valueInput.attr('key', optionKey);
-          valueInput.attr('policy-type-id', policyTypeId);
-          valueInput.on('keypress', changeInputKeyPress);
-          return valueInput;
-      };
-
-      var tryCreateNewPolicyTypeDataSet = function(policyTypeId, policyTypeValue){
-        var existingPolicyType = getPolicyTypeObjectById(policyTypeId);
-        if(!existingPolicyType){
-          //There is no existing policyType, create a new policyType
-          var policyType = {policy_type:policyTypeValue, policy_type_id: policyTypeId, policy_array:[]};
-          $scope.benefitDetailArray.push(policyType);
-          $scope.noPolicyTypeError = false;
-          $scope.columnCount ++;
-          return true;
-        }
-        else{
-          existingPolicyType.policy_type = policyTypeValue;
-          return false;
-        }
-      };
-
-      var updateTableWithNewPolicyType = function(target, policyTypeId){
-        var thElement = target.parent();
-        var thContainer = thElement.parent();
-        var newTh = $(document.createElement('th'));
-        //First create the new th on the right hand side
-        var newPolicyTypeLinkContainer = $(document.createElement('div'));
-        var newPolicyTypeLink = $(document.createElement('a'));
-        newPolicyTypeLink.on('click', handleEditElement)
-        newPolicyTypeLink.html('Add New Plan');
-        newPolicyTypeLinkContainer.addClass('editable-container')
-        newPolicyTypeLinkContainer.append(newPolicyTypeLink);
-        newTh.append(newPolicyTypeLinkContainer);
-        thContainer.append(newTh);
-
-        //update each row with the input
-        var tableRows = benefitDetailBody.children('tr');
-        _.each(tableRows, function(row){
-          var rowKey = $(row).attr('option-key');
-          if(rowKey){
-            var tableCellArray = $(row).children('td')
-            var lastTableCell = tableCellArray[tableCellArray.length -1];
-            $(lastTableCell).append(createInputElement(policyTypeId, rowKey, 'Add option value'));
-            $(lastTableCell).attr('policy-type-id', policyTypeId);
-            var newTableCell = $(document.createElement('td'));
-            $(row).append(newTableCell);
-          }
-        });
-      };
-
-
-      var tryCreateNewPolicyValue = function(policyTypeId, optionKey, policyValue){
-        var policyTypeObject = getPolicyTypeObjectById(policyTypeId);
-          var policyPair = _.findWhere(policyTypeObject.policy_array, {policy_key:optionKey});
-          if(policyPair){
-            policyPair.policy_value = policyValue;
-            return false;
-          }
-          else{
-            policyPair = {policy_key:optionKey, policy_value:policyValue};
-            policyTypeObject.policy_array.push(policyPair);
-            return true;
-          }
-          $scope.policyKeyNotFound = false;
-      };
-
-      var deletePolicyType = function(event){
-        //Remove the type from array
-        var curPolicyTypeId = $(event.target).attr('policy-type-id');
-        var indexToRemove;
-        for(var i = 0; i< $scope.benefitDetailArray.length; i++){
-          if($scope.benefitDetailArray[i].policy_type_id === curPolicyTypeId){
-            indexToRemove = i;
-          }
-        }
-        if(indexToRemove || indexToRemove === 0){
-          $scope.benefitDetailArray.splice(indexToRemove, 1);
-        }
-        //Delete all the td of the tbody.
-        var tableRows = benefitDetailBody.children('tr');
-        _.each(tableRows, function(row){
-          var tableCellArray = $(row).children('td');
-          _.each(tableCellArray, function(cell){
-            var policyTypeId = $(cell).attr('policy-type-id');
-            if(policyTypeId === $(event.target).attr('policy-type-id'))
-            {
-              $(cell).remove();
-            }
-          });
-        });
-
-        //now delete the th
-        var curTh = $(event.target).parent().parent();
-        curTh.remove();
-
-      };
-
-      var createValueDiv = function(policyTypeId, optionKey, content, showDelete){
-          var saveTextContainer = $(document.createElement('div'));
-          saveTextContainer.addClass('editable-container');
-          var contentSpan = $(document.createElement('span'));
-          contentSpan.attr('policy-type-id', policyTypeId);
-          if(optionKey){
-            contentSpan.attr('key', optionKey);
-          }
-          contentSpan.append(content);
-          contentSpan.on('click', handleEditElement);
-          saveTextContainer.append(contentSpan);
-          if(showDelete){
-            //add delete icon to this div
-            var removeSpan = $(document.createElement('a'));
-            //removeSpan.append('X');
-            removeSpan.attr('policy-type-id', policyTypeId);
-            removeSpan.on('click', deletePolicyType);
-            removeSpan.attr('href', 'javascript:void(0);')
-            removeSpan.addClass('glyphicon glyphicon-remove remove-policy-type');
-            saveTextContainer.append(removeSpan);
-          }
-          return saveTextContainer;
-      };
-
-
-      var changeInputKeyPress = function(event){
-          if(event.charCode == 13){
-            $scope.inputUnfilledError = false;
-            var inputVal = $(event.target).val();
-            var optionKey = $(event.target).attr('key');
-            var policyTypeId = $(event.target).attr('policy-type-id');
-            var targetContainer = $(event.target).parent();
-            var showDeleteIcon = false;
-            //Populate the data set
-            if(targetContainer[0].tagName ==='TH'){
-              //This is another new option set.
-              if(tryCreateNewPolicyTypeDataSet(policyTypeId, inputVal)){
-                updateTableWithNewPolicyType($(event.target), policyTypeId);
-              }
-              showDeleteIcon = true;
-            }
-            else if(policyTypeId && optionKey){
-              //this is just the option type value
-              tryCreateNewPolicyValue(policyTypeId, optionKey, inputVal);
-            }
-            targetContainer.empty();
-            targetContainer.append(createValueDiv(policyTypeId, optionKey, inputVal, showDeleteIcon));
-
-          }
-      };
-
-      var lostFocusHandler = function(blurEvent){
-        var textInput = $(blurEvent.target);
-        var curPolicyTypeId = textInput.attr('policy-type-id');
-        var curOptionKey = textInput.attr('key');
-        var container = textInput.parent();
-        var originalText = textInput.attr('placeholder');
-        container.empty();
-        container.append(createValueDiv(curPolicyTypeId, curOptionKey, originalText));
-      };
-
-      function handleEditElement (clickEvent){
-        var container = $(clickEvent.target).parent().parent();
-        var placeHolderText = $(clickEvent.target).html();
-        var curPolicyTypeId = $(clickEvent.target).attr('policy-type-id');
-        if(!curPolicyTypeId){
-          curPolicyTypeId = $scope.columnCount;
-        }
-        var curOptionKey = $(clickEvent.target).attr('key');
-        var typeTextInput = createInputElement(curPolicyTypeId, curOptionKey, placeHolderText);
-        typeTextInput.on('blur', lostFocusHandler)
-        container.empty();
-        container.append(typeTextInput);
-        typeTextInput.focus();
-      };
-
-
-      $scope.handleElementEvent = handleEditElement;
-
-      $scope.backToBenefitDisplay = function(){
-        $location.path('/broker/benefits/' + $scope.clientId);
-      };
-
-      function saveToBackendSequential(objArray, index){
-        if(objArray.length <= index){
-          if($scope.errorString){
-            alert($scope.errorString);
-          }
-          else{
-            alert('Add Benefit Details Succeeded! You can click "back" to see the benefits');
-          }
-          return;
-        }
-
-        benefitDetailsRepository.save({planId:$scope.benefitId}, objArray[index],
-          function(success){
-            saveToBackendSequential(objArray, index+1);
-          }, function(error){
-            $scope.errorString = "Add Benefit Detail Failed! The error is: "+ error.data.stringify();
-            return;
-          });
-      };
-
-      $scope.addBenefitDetail = function(){
-        //first we should validate the table
-        var containerTable = $('#details_container_table');
-        var inputElements = containerTable.find('input');
-        if(inputElements.length > 0)
-        {
-          _.each(inputElements, function(inputElm){
-            $(inputElm).addClass('unfilled-input');
-            $scope.inputUnfilledError = true;
-          })
-          return;
-        }
-
-        //now we validate the details array
-        if($scope.benefitDetailArray.length <= 0)
-        {
-          $scope.noPolicyTypeError = true;
-          return;
-        }
-        _.each($scope.benefitDetailArray, function(benefitTypeContent){
-          _.each(benefitTypeContent.policy_array, function(optionPair){
-            if(!optionPair.policy_key)
-            {
-              $scope.policyKeyNotFound = true;
-              return;
-            }
-            if(!optionPair.policy_value)
-            {
-              optionPair.policy_value = "";
-            }
-          });
-        });
-        var errorString;
-        //save to data store
-        var apiObjectArray = [];
-        _.each($scope.benefitDetailArray, function(benefitTypeContent){
-          _.each(benefitTypeContent.policy_array, function(optionPair){
-            var apiObject = {
-                value: optionPair.policy_value,
-                key: optionPair.policy_key,
-                type: benefitTypeContent.policy_type,
-                benefit_plan_id: $scope.benefitId};
-            apiObjectArray.push(apiObject);
-          });
-        });
-
-        saveToBackendSequential(apiObjectArray, 0);
-      };
+      
 }]);

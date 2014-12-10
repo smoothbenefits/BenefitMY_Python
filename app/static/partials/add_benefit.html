@@ -11,76 +11,99 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="form-holder">
-        <form name="form">
-
-            <div class="form-label">Benefit Type</div>
-            <div class="select-box">
-                <select ng-model="benefit.benefit_type"
-                    ng-required="true"
-                    name="benefit_type"
-                    ng-options="benefit_type for benefit_type in benefit_types"
-                    class="form-control"></select>
-                <div class="form-error" ng-show="form.benefit_type.$dirty">
-                  <span ng-show="form.benefit_type.$error.required">Benefit Type must be selected</span>
+    <div class="benefit-form-holder">
+        <form name="form" class="dynamic-form">
+            <div class="form-holder">
+                <div class="form-label">Benefit Type</div>
+                <div class="select-box">
+                    <select id="benefit_type_select" 
+                        ng-model="benefit.benefit_type"
+                        ng-required="true"
+                        name="benefit_type"
+                        ng-options="benefit_type for benefit_type in benefit_types"
+                        class="form-control"></select>
+                    <div class="form-error" ng-show="form.benefit_type.$dirty">
+                      <span ng-show="form.benefit_type.$error.required">Benefit Type must be selected</span>
+                    </div>
                 </div>
-            </div>
-
-            <div class="form-label">Benefit Name</div>
-            <div class="textbox">
-                <input type="text"
-                    name="benefit_name"
-                    ng-model="benefit.benefit_name"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.benefit_name.$dirty && form.benefit_name.$invalid">
-                  <span ng-show="form.benefit_name.$error.required">Benefit name field is required</span>
-                </div>
-            </div>
-
-            <div class="form-label">Benefit Option</div>
-            <div class="select-box">
-                <select name="benefit_option_type"
-                    ng-model="benefit.benefit_option_type"
-                    ng-options="option_type for option_type in benefit_option_types_display"
-                    ng-required="true"
-                    class="form-control"></select>
-                <div class="form-error" ng-show="form.benefit_option_type.$dirty">
-                  <span ng-show="form.benefit_option_type.$error.required">Benefit Option must be selected</span>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-label">Total Premium</div>
+                <div ng-show="benefitTypeSelected(benefit.benefit_type)">
+                    <div class="form-label">Benefit Name</div>
                     <div class="textbox">
                         <input type="text"
-                            name="total_premium"
-                            ng-model="benefit.total_cost_per_period"
+                            name="benefit_name"
+                            ng-model="benefit.benefit_name"
                             ng-required="true">
-                        <div class="form-error" ng-show="form.total_premium.$dirty && form.total_premium.$invalid">
-                          <span ng-show="form.total_premium.$error.required">Total Premium field is required</span>
+                        <div class="form-error" ng-show="form.benefit_name.$dirty && form.benefit_name.$invalid">
+                          <span ng-show="form.benefit_name.$error.required">Benefit name field is required</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="form-label">Employee Premium</div>
-                    <div class="textbox">
-                        <input type="text"
-                            name="employee_premium"
-                            ng-model="benefit.employee_cost_per_period"
-                            ng-required="true">
-                        <div class="form-error" ng-show="form.employee_premium.$dirty && form.employee_premium.$invalid">
-                          <span ng-show="form.employee_premium.$error.required">Employee Premium field is required</span>
+            </div><!-- / .form-holder -->
+            <div ng-show="benefitTypeSelected(benefit.benefit_type)">
+                <div class="row">
+                    <div class="table-responsive table-holder">
+                        <table class="table table-striped benefit-table" id="plan_option_table">
+                            <thead>
+                                <th><div>Benefit Plan Option</div></th>
+                                <th><div>Total Premium</div></th>
+                                <th><div>Employee Premium</div></th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="option in benefit.benefit_option_types" b-option="{{option.name}}">
+                                    <td>{{option.name}}</td>
+                                    <td b-option="{{option.name}}" field-name="total">
+                                        $ <input type="number" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" />
+                                    </td>
+                                    <td b-option="{{option.name}}" field-name="employee">
+                                        $ <input type="number" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row" ng-show="isTypeMedical(benefit.benefit_type)">
+                    <div class="table-responsive table-holder">
+                        <table class="table table-striped benefit-table" id="details_container_table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div>
+                                            Benefit Options
+                                        </div>
+                                    </th>
+                                    <!-- existing types-->
+                                    <th>
+                                        <div class="editable-container">
+                                            <a ng-click="handleElementEvent($event)">Add New Plan</a>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="details_container_table_body">
+                                <tr ng-repeat="policyKey in policyKeyArray" option-key="{{policyKey.name}}">
+                                    <td>{{policyKey.name}}</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div ng-show="optionEmptyError" class="validation-error">
+                            * Benefit plan data is required. See highlighted input fields
+                        </div>
+                        <div ng-show="inputUnfilledError" class="validation-error">
+                            * Please fill out all the input fields because all these values are required.
+                        </div>
+                        <div ng-show="noPolicyTypeError" class="validation-error">
+                            * Please make sure you created a benefit option set. Please click on the "Add New Plan" link "
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="submit-box">
-                <button ng-click="addBenefit()" class="btn green" ng-disabled="form.$invalid">Add Benefit</button>
+                <div class="submit-box">
+                    <button ng-click="addBenefit()" class="btn green" ng-disabled="form.$invalid">Add Benefit</button>
+                </div>
             </div>
-
         </form>
-    </div><!-- / .form-holder -->
     <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
 </div><!-- / .content-body -->
