@@ -41,6 +41,12 @@ benefitmyService.factory('companyRepository', [
     return $resource('/api/v1/companies/:clientId', {clientId:'@id'})
   }]);
 
+benefitmyService.factory('companySelectedBenefits', [
+  '$resource',
+  function($resource){
+    return $resource('/api/v1/company_users/:companyId/benefits', {companyId: '@id'})
+  }]);
+
 benefitmyService.factory('benefitListRepository', [
     '$resource',
     function($resource){
@@ -142,7 +148,7 @@ benefitmyService.factory('emailRepository', ['$resource',
     return $resource('/api/v1/onboard_email', {});
   }]);
 
-benefitmyService.factory('employeeTaxRepository', ['$resource', 
+benefitmyService.factory('employeeTaxRepository', ['$resource',
   function($resource){
     return $resource('/api/v1/users/:userId/w4/', {userId:'@userId'});
   }
@@ -152,20 +158,20 @@ benefitmyService.factory('peopleRepository', ['$resource',
     return $resource('/api/v1/people/:personId', {personId:'@personId'});
   }
 ]);
-benefitmyService.factory('EmployeeOnboardingValidationService', 
-                         ['employeeFamily', 
-                          'currentUser', 
-                          'employmentAuthRepository', 
-                          'employeeTaxRepository', 
-                          'employeeSignature', 
+benefitmyService.factory('EmployeeOnboardingValidationService',
+                         ['employeeFamily',
+                          'currentUser',
+                          'employmentAuthRepository',
+                          'employeeTaxRepository',
+                          'employeeSignature',
                           'peopleRepository',
-  function(employeeFamily, 
-           currentUser, 
-           employmentAuthRepository, 
-           employeeTaxRepository, 
-           employeeSignature, 
+  function(employeeFamily,
+           currentUser,
+           employmentAuthRepository,
+           employeeTaxRepository,
+           employeeSignature,
            peopleRepository){
-    
+
     var getBasicInfoUrl = function(employeeId){
       return '/employee/onboard/index/' + employeeId;
     };
@@ -295,7 +301,7 @@ benefitmyService.factory('EmployeeOnboardingValidationService',
       });
     };
   }]);
-benefitmyService.factory('EmployeeLetterSignatureValidationService', 
+benefitmyService.factory('EmployeeLetterSignatureValidationService',
   ['documentRepository',
   function(documentRepository){
     return function(employeeId, letterType, success, failure){

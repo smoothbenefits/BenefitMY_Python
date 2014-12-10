@@ -1,0 +1,36 @@
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/clients">Broker Dashboard</a>
+    <span>Broker Dashboard</span>
+</div>
+
+<div class="content-header">
+    <h1>Employee List for {{companyName}}</h1>
+    <span class="general-info">Total <b>{{clientCount}}</b> employees</span>
+    <div class="cta"><span class="btn green" ng-click="back()">Back</span></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="table-responsive table-holder">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Name</span></th>
+                    <th><span>Selected Plan</span></th>
+                    <th><span>Enrolled Member</span></th>
+                    <th><span>Last Update</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="selection in selectionList">
+                    <td>{{selection.name}} ({{selection.email}})</td>
+                    <td>{{selection.selectedPlanName}} ({{selection.selectedPlanType}})</td>
+                    <td>
+                        <text ng-repeat="person in selection.enrolled">{{person.name}} ({{person.relationship}}); </text>
+                    </td>
+                    <td>{{selection.lastUpdatedTime}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div><!-- / .content-body -->

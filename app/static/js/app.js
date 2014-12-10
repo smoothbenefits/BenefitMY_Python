@@ -46,6 +46,10 @@ BenefitMyApp.config(['$routeProvider',
                 templateUrl: '/static/partials/add_benefit.html',
                 controller: 'addBenefitController'
             }).
+            when('/broker/benefit/selected/:client_id', {
+                templateUrl: '/static/partials/broker_selected_benefits.html',
+                controller: 'selectedBenefitsController'
+            }).
             when('/broker/benefit/add_details/:client_id/:benefit_id', {
                 templateUrl:'/static/partials/benefit_detail_input.html',
                 controller: 'benefitInputDetailsController'

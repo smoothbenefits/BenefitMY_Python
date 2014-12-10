@@ -8,49 +8,48 @@ description: >
 parameters:
 sample_url: /api/v1/benefit_details/plan=#/
 
-        
 Get benefit details of benefit plan #
 sample_response: |
 
 
 [
     {
-        "id": 8, 
-        "value": "No cover", 
+        "id": 8,
+        "value": "No cover",
         "benefit_policy_key": {
-            "id": 3, 
+            "id": 3,
             "name": "prescription"
-        }, 
+        },
         "benefit_policy_type": {
-            "id": 2, 
+            "id": 2,
             "name": "Out of network"
-        }, 
+        },
         "benefit_plan": {
-            "id": 2, 
-            "total_cost_per_period": "1500.00", 
-            "employee_cost_per_period": "700.00", 
-            "benefit_option_type": "individual_plus_spouse", 
-            "company": 1, 
+            "id": 2,
+            "total_cost_per_period": "1500.00",
+            "employee_cost_per_period": "700.00",
+            "benefit_option_type": "individual_plus_spouse",
+            "company": 1,
             "benefit_plan": 1
         }
-    }, 
+    },
     {
-        "id": 7, 
-        "value": "100%", 
+        "id": 7,
+        "value": "100%",
         "benefit_policy_key": {
-            "id": 3, 
+            "id": 3,
             "name": "prescription"
-        }, 
+        },
         "benefit_policy_type": {
-            "id": 1, 
+            "id": 1,
             "name": "In network"
-        }, 
+        },
         "benefit_plan": {
-            "id": 2, 
-            "total_cost_per_period": "1500.00", 
-            "employee_cost_per_period": "700.00", 
-            "benefit_option_type": "individual_plus_spouse", 
-            "company": 1, 
+            "id": 2,
+            "total_cost_per_period": "1500.00",
+            "employee_cost_per_period": "700.00",
+            "benefit_option_type": "individual_plus_spouse",
+            "company": 1,
             "benefit_plan": 1
         }
     }
@@ -65,11 +64,11 @@ To update/insert
 POST
 sample_url: /api/v1/benefit_details/plan=#/
 
-        
+
 Get benefit details of benefit plan #
 
     {
-     "value": "cover 10%", 
+     "value": "cover 10%",
      "key": "prescription",
      "type": "Out of network",
      "benefit_plan_id": 2
@@ -81,4 +80,4 @@ To delete
 DELETE
 sample_url: /api/v1/benefit_details/#/
 
-return 204 
+return 204

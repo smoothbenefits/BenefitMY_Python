@@ -9,6 +9,14 @@ var clientsController = brokersControllers.controller('clientsController',
       $location.path('/broker/add_client');
     }
 
+    $scope.viewElegibleBenefits = function(clientId){
+      $location.path('/broker/benefits/' + clientId);
+    }
+
+    $scope.viewSelectedBenefits = function(clientId){
+      $location.path('/broker/benefit/selected/' + clientId);
+    }
+
     var getClientList = function(theUser)
     {
         clientListRepository.get({userId:theUser.id})
@@ -138,6 +146,44 @@ var addBenefitController = brokersControllers.controller('addBenefitController',
     $scope.viewBenefits = function(){
       $location.path('/broker/benefits/'+clientId);
     }
+  }]);
+
+var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
+  ['$scope', '$location', '$routeParams', 'companyRepository', 'companySelectedBenefits',
+  function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companySelectedBenefits){
+    var clientId = $routeParams.client_id;
+
+    companyRepository.get({clientId: clientId}).$promise.then(function(response){
+      $scope.companyName = response.name;
+    });
+
+    companySelectedBenefits.get({companyId: clientId}).$promise.then(function(response){
+      var selectedBenefits = response.benefits;
+      $scope.selectionList = [];
+
+      _.each(selectedBenefits, function(benefit){
+        var displayBenefit = { enrolled: [] };
+
+        _.each(benefit.enrolleds, function(enrolled){
+          if (enrolled.person.relationship === 'self'){
+            displayBenefit.name = enrolled.person.first_name + ' ' + enrolled.person.last_name;
+            displayBenefit.email = enrolled.person.email;
+          }
+          var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: enrolled.person.relationship};
+          displayBenefit.enrolled.push(displayEnrolled);
+        })
+
+        displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name
+        displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
+        displayBenefit.lastUpdatedTime = new Date(benefit.benefit.updated_at).toDateString();
+
+        $scope.selectionList.push(displayBenefit);
+      })
+    });
+
+    $scope.back = function(){
+      $location.path('/broker');
+    }
   }])
 
 
@@ -208,7 +254,7 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
         {position:8, name:'Mail order drugs-90 days'},
         {position:9, name:'Annual Maximum'},
         {position:10, name:'Primary Care Physician required'}];
-        
+
       benefitListRepository.get({clientId:$scope.clientId})
         .$promise.then(function(response){
           $scope.benefit = _.findWhere(response.benefits, {id:$scope.benefitId});
@@ -399,10 +445,10 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
         container.append(typeTextInput);
         typeTextInput.focus();
       };
-      
+
 
       $scope.handleElementEvent = handleEditElement;
-      
+
       $scope.backToBenefitDisplay = function(){
         $location.path('/broker/benefits/' + $scope.clientId);
       };
@@ -465,7 +511,7 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
         _.each($scope.benefitDetailArray, function(benefitTypeContent){
           _.each(benefitTypeContent.policy_array, function(optionPair){
             var apiObject = {
-                value: optionPair.policy_value, 
+                value: optionPair.policy_value,
                 key: optionPair.policy_key,
                 type: benefitTypeContent.policy_type,
                 benefit_plan_id: $scope.benefitId};

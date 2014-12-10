@@ -12,4 +12,4 @@ class CompanyUser(models.Model):
     user = models.ForeignKey(User)
     company = models.ForeignKey(Company)
     company_user_type = models.TextField(choices=USER_TYPE)
-
+    new_employee = models.BooleanField(default=True)

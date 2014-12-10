@@ -16,14 +16,15 @@
             <thead>
                 <tr>
                     <th><span>Name</span></th>
-                    <th width="220"><span>Actions</span></th>
+                    <th><span>Actions</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="client in clientList">
                     <td>{{client.name}}</td>
                     <td>
-                        <a class="btn inline" href="#/broker/benefits/{{client.id}}">View Benefits</a>
+                        <span class="btn inline" ng-click="viewElegibleBenefits(client.id)">View Benefits</span>
+                        <span class="btn inline" ng-click="viewSelectedBenefits(client.id)">Elected Benefits</span>
                     </td>
                 </tr>
             </tbody>
