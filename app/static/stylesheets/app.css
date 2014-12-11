@@ -144,20 +144,20 @@ ul.client-list li span.client-name
 th .editable-container{
     font-weight: bold;
 }
-#details_container_table{
+.benefit-form-holder{
+    padding:20px 20px;
+}
+.benefit-table{
     margin:auto;
     position:relative;
 }
-#details_container_table th div{
+.benefit-table th div{
     padding:10px 20px;
 }
 .dynamic-form .submit-box{
     padding-top: 20px;
     max-width:200px;
     margin:auto;
-}
-.dynamic-form{
-    margin-right:120px;
 }
 .dynamic-form .validation-error{
     color:red;
