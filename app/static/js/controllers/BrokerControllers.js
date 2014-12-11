@@ -107,6 +107,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
   ['$scope', '$location', '$routeParams', 'companyRepository', 'companySelectedBenefits',
   function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companySelectedBenefits){
     var clientId = $routeParams.client_id;
+    $scope.selectionList = [];
 
     companyRepository.get({clientId: clientId}).$promise.then(function(response){
       $scope.companyName = response.name;
@@ -114,7 +115,6 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
     companySelectedBenefits.get({companyId: clientId}).$promise.then(function(response){
       var selectedBenefits = response.benefits;
-      $scope.selectionList = [];
 
       _.each(selectedBenefits, function(benefit){
         var displayBenefit = { enrolled: [] };
@@ -132,28 +132,42 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
         displayBenefit.lastUpdatedTime = new Date(benefit.benefit.updated_at).toDateString();
 
-        $scope.selectionList.push(displayBenefit);
+        addBenefitPlanToSelectionList(displayBenefit);
       })
     });
+
+    var addBenefitPlanToSelectionList = function(benefit){
+      var existEmployee = _.find($scope.selectionList, function(selection){
+        return selection.email === benefit.email;
+      });
+      if (existEmployee){
+        existEmployee.benefits.push(benefit);
+      }
+      else{
+        var newEntry = { email: benefit.email, name: benefit.name, benefits: []};
+        newEntry.benefits.push(benefit);
+        $scope.selectionList.push(newEntry);
+      }
+    }
 
     $scope.back = function(){
       $location.path('/broker');
     };
-    
+
 }]);
 
 var addBenefitController = brokersControllers.controller(
-  'addBenefitController', 
-  ['$scope', 
-   '$location', 
-   '$routeParams', 
+  'addBenefitController',
+  ['$scope',
+   '$location',
+   '$routeParams',
    'addBenefitRepository',
    'benefitDetailsRepository',
     function addBenefitController(
-      $scope, 
-      $location, 
-      $routeParams, 
-      addBenefitRepository, 
+      $scope,
+      $location,
+      $routeParams,
+      addBenefitRepository,
       benefitDetailsRepository){
 
       var clientId = $routeParams.clientId;
@@ -164,7 +178,7 @@ var addBenefitController = brokersControllers.controller(
           {name:"Individual plus One"},
           {name:"Individual plus children"},
           {name:"Family"}],
-      };      
+      };
       $('#benefit_type_select').on('change', function(){
         var optionTypeInputs = $('#plan_option_table').find('input');
         _.each(optionTypeInputs, function(input){
@@ -617,13 +631,13 @@ var addBenefitController = brokersControllers.controller(
             });
 
             saveToBackendSequential(apiObjectArray, 0);
-          }, 
+          },
           function(response){
             //Error condition,
             var errorDetail = "";
             if(response && response.data){
               errorDetail = JSON.stringify(response.data);
-            } 
+            }
             alert('Error while saving Benefits! Details: ' + errorDetail);
           });
         }
@@ -685,5 +699,5 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
                                              benefitDetailsRepository){
       $scope.clientId = parseInt($routeParams.client_id);
       $scope.benefitId = parseInt($routeParams.benefit_id);
-      
+
 }]);
