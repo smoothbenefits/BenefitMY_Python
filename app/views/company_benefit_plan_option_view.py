@@ -12,12 +12,14 @@ from app.serializers.company_benefit_plan_option_serializer import (
     CompanyBenefitPlanOptionPostSerializer,
     CompanyBenefitPlanSerializer)
 
+from view_mixin import *
+
 TYPE = {"Medical": 1,
         "Dental": 2,
         "Vision": 3}
 
 
-class CompanyBenefitPlanOptionView(APIView):
+class CompanyBenefitPlanOptionView(APIView, LoginRequiredMixin):
     def get_object(self, pk):
         try:
             return CompanyBenefitPlanOption.objects.get(pk=pk)
@@ -30,6 +32,7 @@ class CompanyBenefitPlanOptionView(APIView):
         return Response({'benefit': serializer.data})
 
 
+@login_required@
 @api_view(['POST'])
 @transaction.atomic
 def benefits(request):
@@ -89,7 +92,7 @@ def benefits(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CompanyBenefitPlansView(APIView):
+class CompanyBenefitPlansView(APIView, LoginRequiredMixin):
     def get_object(self, pk):
         try:
             return CompanyBenefitPlanOption.objects.filter(company=pk)
