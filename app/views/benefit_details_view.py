@@ -10,9 +10,10 @@ from app.models.benefit_details import BenefitDetails
 from app.models.benefit_policy_key import BenefitPolicyKey
 from app.models.benefit_policy_type import BenefitPolicyType
 from app.serializers.benefit_details_serializer import BenefitDetailsSerializer
+from view_mixin import *
 
 
-class BenefitDetailsView(APIView):
+class BenefitDetailsView(APIView, LoginRequiredMixin):
     def get_object(self, plan_id):
         try:
             return BenefitDetails.objects.filter(benefit_plan=plan_id)
@@ -64,6 +65,7 @@ class BenefitDetailsView(APIView):
             return Response(serializer.data)
 
 
+@login_required@
 @api_view(['DELETE'])
 def delete_benefit_details(request, pk):
 
