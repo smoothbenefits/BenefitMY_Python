@@ -1,0 +1,81 @@
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="#/clients">Broker Dashboard</a>
+    <span>View Benefits</span>
+</div>
+
+<div class="content-header">
+    <h1>{{client.name}} Benefits</h1>
+    <span class="general-info">Total <b>{{benefitCount}}</b> benefits</span>
+    <div class="cta"><a href="#/broker/add_benefit/{{clientId}}" class="btn green">Add new benefit</a></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+
+    <!-- Here is the medical benefit section -->
+
+    <div class="table-responsive table-holder">
+        <table class="table table-striped medical-plan-display-table">
+            <thead>
+                <th colspan="2"><span>{{medialBenefitTitle}}</span></th>
+                <th colspan="6" ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" class="benefit-name">
+                    <span>{{benefitName.name}}</span>
+                </th>
+            </thead>
+            <tbody>
+                <tr class="title-row">
+                    <td colspan="2" class="plan-row-head"><span>Plans Premium</span></td>
+                    <td ng-repeat="benefitOption in medicalBenefitGroup.benefitOptionMetaArray" colspan="3"><span>{{benefitOption.name}}</span></td>
+                </tr>
+                <tr class="value-row" ng-repeat="optionValue in medicalBenefitGroup.benefitOptionValueArray">
+                    <td colspan="2" class="row-head"><span>{{optionValue.optionName}}</span></td>
+                    <td colspan="3" ng-repeat="cost in optionValue.benefitCostArray"><span>${{cost}}</span></td>
+                </tr>
+                <tr class="title-row">
+                    <td colspan="2"><span>Options</span></td>
+                    <td ng-repeat="benefitPolicy in medicalBenefitGroup.policyNameArray", colspan="{{benefitPolicy.colspan}}">
+                        <span>{{benefitPolicy.name}}</span>
+                    </td>
+                </tr>
+                <tr class="value-row" ng-repeat="policyListMember in medicalBenefitGroup.policyList">
+                    <td colspan="2" class="row-head"><span>{{policyListMember.name}}</span></td>
+                    <td ng-repeat="policyValue in policyListMember.valueArray", colspan="{{policyValue.colspan}}">
+                        <span>{{policyValue.value}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Here is the non medical benefit section -->
+    <div class="table-responsive table-holder" ng-repeat="benefitArray in nonMedicalBenefitArray">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>{{benefitArray.type}}</span></th>
+                    <th width="250"><span>Types</span></th>
+                    <th width="180"><span>Total Premiums</span></th>
+                    <th width="180"><span>Employee Premiums</span></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr ng-repeat="benefit in benefitArray.benefitList">
+                    <td style="vertical-align: top;">{{benefit.name}}</td>
+                    <td colspan="3" style="padding: 0;">
+                        <table class="table">
+                            <tr ng-repeat="option in benefit.options">
+                                <td width="250">{{option.optionType}}</td>
+                                <td width="180">${{option.totalCost}}</td>
+                                <td width="180">${{option.employeeCost}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="back"><a href="javascript:void(0);" ng-click="backtoDashboard()">&laquo; Back</a></div>
+</div>

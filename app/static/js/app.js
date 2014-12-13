@@ -39,7 +39,7 @@ BenefitMyApp.config(['$routeProvider',
                  controller: 'addClientController'
              }).
             when('/broker/benefits/:clientId', {
-                templateUrl: '/static/partials/company_benefits.html',
+                templateUrl: '/static/partials/broker_view_benefits.html',
                 controller: 'benefitsController'
             }).
             when('/broker/add_benefit/:clientId', {
