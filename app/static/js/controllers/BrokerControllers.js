@@ -297,9 +297,9 @@ var addBenefitController = brokersControllers.controller(
         benefit_type:'',
         benefit_option_types: [
           {name:"Individual"},
-          {name:"Individual plus One"},
+          {name:"Individual plus Spouse"},
           {name:"Individual plus children"},
-          {name:"Family"}],
+          {name:"Individual plus Family"}],
       };
       $('#benefit_type_select').on('change', function(){
         var optionTypeInputs = $('#plan_option_table').find('input');
