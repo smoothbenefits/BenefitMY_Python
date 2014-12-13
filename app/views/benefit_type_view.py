@@ -1,12 +1,12 @@
 from rest_framework.views import APIView
-from django.http import Http404
 from rest_framework.response import Response
 
 from app.models.benefit_type import BenefitType
 from app.serializers.benefit_type_serializer import BenefitTypeSerializer
+from view_mixin import *
 
 
-class BenefitTypeView(APIView):
+class BenefitTypeView(APIView, LoginRequiredMixin):
 
     def get(self, request, format=None):
         types = BenefitType.objects.all()
