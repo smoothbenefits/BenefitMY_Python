@@ -356,6 +356,7 @@ var addBenefitController = brokersControllers.controller(
             valueInput.attr('policy-type-id', policyTypeId);
           }
           if(showDollar){
+            $scope.noCostError = false;
             valueInput.attr('show-dollar', showDollar);
           }
           valueInput.on('keypress', changeInputKeyPress);
@@ -640,14 +641,17 @@ var addBenefitController = brokersControllers.controller(
             alert('No benefit type selected!')
             return false;
           }
-          _.each($scope.benefit.benefit_option_types, function(optionType){
-            if(!optionType.total_cost_per_period || !optionType.employee_cost_per_period){
-              $scope.noCostError = true;
-            }
+          var emptyOptionType = _.find($scope.benefit.benefit_option_types, function(optionType){
+            return (!optionType.total_cost_per_period || !optionType.employee_cost_per_period);
           });
-          if($scope.noCostError){
+          if(emptyOptionType){
+            $scope.noCostError = true;
             return false;
           }
+          else{
+            $scope.noCostError = false;
+          }
+
 
 
           //now we validate the details array
