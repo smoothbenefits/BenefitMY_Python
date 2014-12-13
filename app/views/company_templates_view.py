@@ -5,8 +5,10 @@ from rest_framework.response import Response
 from app.models.template import Template
 from app.serializers.template_serializer import TemplateSerializer
 
+from view_mixin import *
 
-class CompanyTemplatesView(APIView):
+
+class CompanyTemplatesView(APIView, LoginRequiredMixin):
     def get_templates(self, pk):
         try:
             return Template.objects.filter(company=pk)
