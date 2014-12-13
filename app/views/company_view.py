@@ -11,8 +11,10 @@ from app.serializers.company_serializer import (
     CompanySerializer,
     CompanyPostSerializer)
 from emailusernames.utils import create_user
+from view_mixin import *
 
-class CompanyView(APIView):
+
+class CompanyView(APIView, LoginRequiredMixin):
     def get_object(self, pk):
         try:
             return Company.objects.get(pk=pk)
@@ -25,6 +27,7 @@ class CompanyView(APIView):
         return Response(serializer.data)
 
 
+@login_required@
 @api_view(['POST'])
 @transaction.atomic
 def companies(request):
