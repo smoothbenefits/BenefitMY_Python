@@ -4,10 +4,11 @@ from rest_framework.response import Response
 from app.models.document_type import DocumentType
 from app.serializers.document_type_serializer import DocumentTypeSerializer
 
+from view_mixin import *
 
-class DocumentTypeView(APIView):
+class DocumentTypeView(APIView, LoginRequiredMixin):
 
     def get(self, request, format=None):
         types = DocumentType.objects.all()
         serializer = DocumentTypeSerializer(types, many=True)
-        return Response({'document_types':serializer.data})
+        return Response({'document_types': serializer.data})
