@@ -82,10 +82,10 @@ WSGI_APPLICATION = 'Smoothbenefits.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dcv4d46p3t7lkj',
-        'USER': 'feblksfyqbhdjv',
-        'PASSWORD': '7F2Flb6iVg-jGTtD2dsoWXzKi3',
-        'HOST': 'ec2-54-225-101-202.compute-1.amazonaws.com',
+        'NAME': 'dbhdqcnhj8qihh',
+        'USER': 'espzlrtdipscti',
+        'PASSWORD': '6tw_VJkq-1pvnKAS8s0pTm540e',
+        'HOST': 'ec2-54-225-101-60.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
