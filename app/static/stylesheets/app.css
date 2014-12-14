@@ -166,3 +166,12 @@ th .editable-container{
 .unfilled-input{
     border: solid 2px red;
 }
+.medical-plan-display-table .benefit-name span{
+    text-align: center;
+}
+.medical-plan-display-table .title-row{
+    font-weight: bold;
+}
+.medical-plan-display-table .value-row .row-head span{
+    margin-left:10px;
+}

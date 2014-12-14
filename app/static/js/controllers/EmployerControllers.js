@@ -1,19 +1,5 @@
 var employersController = angular.module('benefitmyApp.employers.controllers',[]);
 
-var getDocumentType = function(documentTypeId){
-
-    if (documentTypeId === 1){
-      return "Offer Letter";
-    }
-    else if (documentTypeId === 2){
-      return "Employment Agreement";
-    }
-    else if(documentTypeId === 3)
-    {
-      return "NDA";
-    }
-    return "";
-};
 
 var employerHome = employersController.controller('employerHome',
                                                   ['$scope',
@@ -25,6 +11,7 @@ var employerHome = employersController.controller('employerHome',
                                                   'templateRepository',
                                                   'benefitListRepository',
                                                   'countRepository',
+                                                  'documentTypeService',
   function employerHome($scope,
                         $location,
                         employerRepository,
@@ -33,7 +20,8 @@ var employerHome = employersController.controller('employerHome',
                         documentRepository,
                         templateRepository,
                         benefitListRepository,
-                        countRepository){
+                        countRepository, 
+                        documentTypeService){
 
     $scope.employeeCount = 0;
     $scope.brokerCount = 0;
@@ -41,11 +29,6 @@ var employerHome = employersController.controller('employerHome',
     $scope.templateCountArray = [];
 
 
-   var getDocumentTypes = function(company){
-      documentRepository.type.get({companyId:company.Id}).$promise.then(function(response){
-        $scope.documentTypes = response.document_types;
-      });
-    }
     var getTemplates = function(company){
       templateRepository.byCompany.get({companyId:company.id}).$promise.then(function(response){
         $scope.templateArray = response.templates;
@@ -108,7 +91,9 @@ var employerHome = employersController.controller('employerHome',
           if(company_role.company_user_type === 'admin')
           {
             $scope.company = company_role.company;
-            getDocumentTypes($scope.company);
+            documentTypeService.getDocumentTypes($scope.company, function(doc_types){
+              $scope.documentTypes = doc_types;
+            });
             getTemplates($scope.company);
             getWorkerCount($scope.company);
             getBenefitCount($scope.company);
@@ -152,8 +137,22 @@ var employerHome = employersController.controller('employerHome',
 ]);
 
 var employerUser = employersController.controller('employerUser',
-  ['$scope', '$location', '$routeParams', 'employerWorkerRepository', 'usersRepository', 'userDocument', 'emailRepository',
-  function employerUser($scope, $location, $routeParams, employerWorkerRepository, usersRepository, userDocument, emailRepository){
+  ['$scope', 
+   '$location', 
+   '$routeParams', 
+   'employerWorkerRepository', 
+   'usersRepository', 
+   'userDocument', 
+   'emailRepository',
+   'documentTypeService',
+  function employerUser($scope, 
+                        $location, 
+                        $routeParams, 
+                        employerWorkerRepository, 
+                        usersRepository, 
+                        userDocument, 
+                        emailRepository,
+                        documentTypeService){
       var compId = $routeParams.company_id;
       $scope.employees=[];
       $scope.addUser = {send_email:true};
@@ -246,56 +245,28 @@ var employerUser = employersController.controller('employerUser',
           {
             pathKey='view_letter';
           }
-          $location.search({type:getDocumentType(docType)}).path('/admin/' + pathKey + '/' +compId +'/'+employeeId);
+          documentTypeService.getDocumentTypeById(compId, docType, function(docType){
+            $location.search({type:docType.name}).path('/admin/' + pathKey + '/' +compId +'/'+employeeId);
+          });
         });
-
       }
   }
 ]);
 
-var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$routeParams', 'benefitListRepository',
-  function employerBenefits($scope, $location, $routeParams, benefitListRepository){
+var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$routeParams', 'benefitDisplayService',
+  function employerBenefits($scope, $location, $routeParams, benefitDisplayService){
     var compId = $routeParams.company_id;
-    benefitListRepository.get({clientId:compId})
-        .$promise.then(function(response){
-            $scope.companyBenefitsArray = [];
-            _.each(response.benefits, function(benefit){
-                insertIntoBenefitArray($scope.companyBenefitsArray, benefit);
-            });
-        });
-    var insertIntoBenefitArray = function(companyBenefitsArray, benefit)
-    {
-        var benefitType = benefit.benefit_plan.benefit_type.name;
-        var array = _.findWhere(companyBenefitsArray, {type:benefitType});
-        if(!array)
-        {
-            array = {type:benefitType, benefitList:[]};
-            companyBenefitsArray.push(array);
-        }
-        var benefitName = benefit.benefit_plan.name;
-        var sameBenefit = _.findWhere(array.benefitList, {name:benefitName})
-        if(!sameBenefit)
-        {
-          var sameNameBenefit = {};
-          sameNameBenefit.name = benefitName;
-          sameNameBenefit.options = [];
-          sameNameBenefit.options.push({
-              optionType:benefit.benefit_option_type,
-              totalCost:benefit.total_cost_per_period,
-              employeeCost: benefit.employee_cost_per_period
-            });
-          array.benefitList.push(sameNameBenefit);
-        }
-        else
-        {
-          sameBenefit.options.push({
-              optionType:benefit.benefit_option_type,
-              totalCost:benefit.total_cost_per_period,
-              employeeCost: benefit.employee_cost_per_period
-          });
-        }
+    $scope.role = 'Admin';
+    $scope.showAddBenefitButton = false;
+    benefitDisplayService($routeParams.company_id, false, function(groupObj, nonMedicalArray, benefitCount){
+      $scope.medicalBenefitGroup = groupObj;
+      $scope.nonMedicalBenefitArray = nonMedicalArray;
+      $scope.benefitCount = benefitCount;
+    });
 
-    }
+    $scope.backtoDashboard = function(){
+      $location.path('/admin');
+    };
   }
 ]);
 
