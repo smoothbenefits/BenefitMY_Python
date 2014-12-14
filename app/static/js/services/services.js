@@ -328,7 +328,7 @@ benefitmyService.factory('benefitDisplayService',
    'benefitDetailsRepository',
    function(benefitListRepository, 
             benefitDetailsRepository){
-    return function(companyId, populatedFunc){
+    return function(companyId, isEmployeeView, populatedFunc){
 
         var populateMedicalArray = function(array, benefitOption){
           var member = _.findWhere(array, {benefitId:benefitOption.benefit_plan.id});
@@ -371,10 +371,20 @@ benefitmyService.factory('benefitDisplayService',
             group.benefitOptionMetaArray = [];
           }
 
+          var optionColSpan = 3;
+          var optionEmployeeLabel = 'Employee';
+          if(isEmployeeView){
+            optionColSpan = 6;
+            optionEmployeeLabel = '';
+          }
+
           if(!_.contains(group.benefitNameArray, benefit.benefitName)){
+
             group.benefitNameArray.push({id:benefit.benefitId, name:benefit.benefitName});
-            group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Total'});
-            group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Employee'});
+            if(!isEmployeeView){
+              group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Total', colspan:optionColSpan});
+            }
+            group.benefitOptionMetaArray.push({id:benefit.benefitId, name: optionEmployeeLabel, colspan:optionColSpan});
           }
           //benefitOptionValueArray
           if(!group.benefitOptionValueArray){
@@ -386,8 +396,10 @@ benefitmyService.factory('benefitDisplayService',
               optionValueObject = {optionName:benefitOption.name, benefitCostArray:[]};
               group.benefitOptionValueArray.push(optionValueObject);
             }
-            optionValueObject.benefitCostArray.push(benefitOption.totalCost);
-            optionValueObject.benefitCostArray.push(benefitOption.employeeCost);
+            if(!isEmployeeView){
+              optionValueObject.benefitCostArray.push({colspan:optionColSpan, value:benefitOption.totalCost});
+            }
+            optionValueObject.benefitCostArray.push({colspan:optionColSpan, value:benefitOption.employeeCost});
           });
           
 

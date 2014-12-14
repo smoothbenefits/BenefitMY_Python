@@ -25,11 +25,13 @@
             <tbody>
                 <tr class="title-row">
                     <td colspan="2" class="plan-row-head"><span>Plans Premium</span></td>
-                    <td ng-repeat="benefitOption in medicalBenefitGroup.benefitOptionMetaArray" colspan="3"><span>{{benefitOption.name}}</span></td>
+                    <td ng-repeat="benefitOption in medicalBenefitGroup.benefitOptionMetaArray" colspan="{{benefitOption.colspan}}">
+                        <span>{{benefitOption.name}}</span>
+                    </td>
                 </tr>
                 <tr class="value-row" ng-repeat="optionValue in medicalBenefitGroup.benefitOptionValueArray">
                     <td colspan="2" class="row-head"><span>{{optionValue.optionName}}</span></td>
-                    <td colspan="3" ng-repeat="cost in optionValue.benefitCostArray"><span>${{cost}}</span></td>
+                    <td ng-repeat="cost in optionValue.benefitCostArray" colspan="{{cost.colspan}}"><span>${{cost.value}}</span></td>
                 </tr>
                 <tr class="title-row">
                     <td colspan="2"><span>Options</span></td>

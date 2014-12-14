@@ -58,7 +58,7 @@ var benefitsController = brokersControllers.controller(
      benefitDisplayService){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
-        benefitDisplayService($routeParams.clientId, function(groupObj, nonMedicalArray, benefitCount){
+        benefitDisplayService($routeParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
           $scope.medicalBenefitGroup = groupObj;
           $scope.nonMedicalBenefitArray = nonMedicalArray;
           $scope.benefitCount = benefitCount;

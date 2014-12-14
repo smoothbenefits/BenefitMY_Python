@@ -258,7 +258,7 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
     var compId = $routeParams.company_id;
     $scope.role = 'Admin';
     $scope.showAddBenefitButton = false;
-    benefitDisplayService($routeParams.company_id, function(groupObj, nonMedicalArray, benefitCount){
+    benefitDisplayService($routeParams.company_id, false, function(groupObj, nonMedicalArray, benefitCount){
       $scope.medicalBenefitGroup = groupObj;
       $scope.nonMedicalBenefitArray = nonMedicalArray;
       $scope.benefitCount = benefitCount;
