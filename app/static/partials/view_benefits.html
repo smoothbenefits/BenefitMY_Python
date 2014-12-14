@@ -1,13 +1,13 @@
 <div class="breadcrumb">
     <a href="/">Home</a>
-    <a ng-href="#/clients">Broker Dashboard</a>
+    <a ng-click="backtoDashboard()">{{role}} Dashboard</a>
     <span>View Benefits</span>
 </div>
 
 <div class="content-header">
     <h1>{{client.name}} Benefits</h1>
     <span class="general-info">Total <b>{{benefitCount}}</b> benefits</span>
-    <div class="cta"><a href="#/broker/add_benefit/{{clientId}}" class="btn green">Add new benefit</a></div>
+    <div class="cta" ng-if="showAddBenefitButton"><a ng-click="addBenefitLinkClicked()" class="btn green">Add new benefit</a></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
@@ -17,7 +17,7 @@
     <div class="table-responsive table-holder" ng-show="medicalBenefitGroup.benefitNameArray.length > 0">
         <table class="table table-striped medical-plan-display-table">
             <thead>
-                <th colspan="2"><span>{{medialBenefitTitle}}</span></th>
+                <th colspan="2"><span>{{medicalBenefitGroup.groupTitle}}</span></th>
                 <th colspan="6" ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" class="benefit-name">
                     <span>{{benefitName.name}}</span>
                 </th>

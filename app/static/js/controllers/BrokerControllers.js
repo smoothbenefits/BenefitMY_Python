@@ -50,175 +50,26 @@ var benefitsController = brokersControllers.controller(
    ['$scope', 
     '$location', 
     '$routeParams', 
-    'benefitListRepository', 
-    'companyRepository',
-    'benefitDetailsRepository',
+    'benefitDisplayService',
     function benefitController(
      $scope, 
      $location, 
      $routeParams, 
-     benefitListRepository, 
-     companyRepository, 
-     benefitDetailsRepository){
-        var clientId = $routeParams.clientId;
-        $scope.clientId = clientId;
-        $scope.medicalBenefitGroup = {};
-
-        benefitListRepository.get({clientId:clientId})
-            .$promise.then(function(response){
-                $scope.nonMedicalBenefitArray = [];
-                $scope.medicalArray = [];
-                _.each(response.benefits, function(benefitOption){
-                    if(benefitOption.benefit_plan.benefit_type.id === 1){
-                      $scope.medialBenefitTitle = benefitOption.benefit_plan.benefit_type.name;
-                      populateMedicalArray($scope.medicalArray , benefitOption);
-                    }
-                    else{
-                      insertIntoBenefitArray($scope.nonMedicalBenefitArray, benefitOption);
-                    }
-                });
-                _.each($scope.medicalArray, function(benefit){
-                  benefitDetailsRepository.query({planId:benefit.benefitId})
-                    .$promise.then(function(detailArray){
-                      populateMedicalGroup($scope.medicalBenefitGroup, $scope.medicalArray, detailArray);
-                    });
-                })
-            });
-
-        var populateMedicalArray = function(array, benefitOption){
-          var member = _.findWhere(array, {benefitId:benefitOption.benefit_plan.id});
-          if(!member){
-            var optionArray = [];
-            optionArray.push({
-              name: benefitOption.benefit_option_type,
-              totalCost: benefitOption.total_cost_per_period,
-              employeeCost: benefitOption.employee_cost_per_period
-            });
-            array.push({
-              benefitName: benefitOption.benefit_plan.name,
-              benefitId: benefitOption.benefit_plan.id,
-              benefitOptionArray: optionArray
-            });
-          }
-          else{
-            member.benefitOptionArray.push({
-              name: benefitOption.benefit_option_type,
-              totalCost: benefitOption.total_cost_per_period,
-              employeeCost: benefitOption.employee_cost_per_period
-            });
-          }
-        }
-
-        var populateMedicalGroup = function(group, medicalArray, detailsArray){
-          //first retrieve the correct benefit from detailsArray
-          if(detailsArray.length <= 0){
-            return;
-          }
-          var benefit = _.findWhere(medicalArray, {benefitId:detailsArray[0].benefit_plan.id});
-          if(!benefit){
-            return;
-          }
-          //first work on benefitNameArray
-          if(!group.benefitNameArray){
-            group.benefitNameArray = [];
-          }
-          if(!group.benefitOptionMetaArray){
-            group.benefitOptionMetaArray = [];
-          }
-
-          if(!_.contains(group.benefitNameArray, benefit.benefitName)){
-            group.benefitNameArray.push({id:benefit.benefitId, name:benefit.benefitName});
-            group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Total'});
-            group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Employee'});
-          }
-          //benefitOptionValueArray
-          if(!group.benefitOptionValueArray){
-            group.benefitOptionValueArray = [];
-          }
-          _.each(benefit.benefitOptionArray, function(benefitOption){
-            var optionValueObject = _.findWhere(group.benefitOptionValueArray, {optionName:benefitOption.name});
-            if(!optionValueObject){
-              optionValueObject = {optionName:benefitOption.name, benefitCostArray:[]};
-              group.benefitOptionValueArray.push(optionValueObject);
-            }
-            optionValueObject.benefitCostArray.push(benefitOption.totalCost);
-            optionValueObject.benefitCostArray.push(benefitOption.employeeCost);
-          });
-          
-
-          //do policyNameArray
-          var policyTypeArray = [];
-          _.each(detailsArray, function(detail){
-            if(!_.contains(policyTypeArray, detail.benefit_policy_type.name)){
-              policyTypeArray.push(detail.benefit_policy_type.name);
-            }
-          });
-
-          if(!group.policyNameArray){
-            group.policyNameArray = [];
-          }
-          _.each(policyTypeArray, function(policyType){
-            group.policyNameArray.push({colspan:6/policyTypeArray.length, name:policyType})
-          });
-
-          //do policyList
-          if(!group.policyList){
-            group.policyList = [];
-          }
-          _.each(medicalArray, function(benefit){
-            _.each(detailsArray, function(detail){
-              if(detail.benefit_plan.id === benefit.benefitId){
-                var policyListMember = _.findWhere(group.policyList, {id:detail.benefit_policy_key.id});
-                if(!policyListMember){
-                  policyListMember = {id:detail.benefit_policy_key.id, name:detail.benefit_policy_key.name, valueArray:[]};
-                  group.policyList.push(policyListMember);
-                }
-                policyListMember.valueArray.push({colspan:6/policyTypeArray.length, value:detail.value});
-              }
-            });
-          });
-          
-
-        };
-
-        var insertIntoBenefitArray = function(companyBenefitsArray, benefit)
-        {
-            var benefitType = benefit.benefit_plan.benefit_type.name;
-            var array = _.findWhere(companyBenefitsArray, {type:benefitType});
-            if(!array)
-            {
-                array = {type:benefitType, benefitList:[]};
-                companyBenefitsArray.push(array);
-            }
-
-            var benefitName = benefit.benefit_plan.name;
-            var sameBenefit = _.findWhere(array.benefitList, {name:benefitName})
-            if(!sameBenefit)
-            {
-              var sameNameBenefit = {};
-              sameNameBenefit.name = benefitName;
-              sameNameBenefit.options = [];
-              sameNameBenefit.options.push({
-                  optionType:benefit.benefit_option_type,
-                  totalCost:benefit.total_cost_per_period,
-                  employeeCost: benefit.employee_cost_per_period,
-                  id: benefit.id
-                });
-              array.benefitList.push(sameNameBenefit);
-            }
-            else
-            {
-              sameBenefit.options.push({
-                  optionType:benefit.benefit_option_type,
-                  totalCost:benefit.total_cost_per_period,
-                  employeeCost: benefit.employee_cost_per_period,
-                  id: benefit.id
-              });
-            }
-        };
+     benefitDisplayService){
+        $scope.role = 'Broker';
+        $scope.showAddBenefitButton = true;
+        benefitDisplayService($routeParams.clientId, function(groupObj, nonMedicalArray, benefitCount){
+          $scope.medicalBenefitGroup = groupObj;
+          $scope.nonMedicalBenefitArray = nonMedicalArray;
+          $scope.benefitCount = benefitCount;
+        });
 
         $scope.backtoDashboard = function(){
           $location.path('/broker');
+        };
+
+        $scope.addBenefitLinkClicked = function(){
+          $location.path('/broker/add_benefit/' + $routeParams.clientId);
         };
 }]);
 

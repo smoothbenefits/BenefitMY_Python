@@ -39,7 +39,7 @@ BenefitMyApp.config(['$routeProvider',
                  controller: 'addClientController'
              }).
             when('/broker/benefits/:clientId', {
-                templateUrl: '/static/partials/broker_view_benefits.html',
+                templateUrl: '/static/partials/view_benefits.html',
                 controller: 'benefitsController'
             }).
             when('/broker/add_benefit/:clientId', {
@@ -71,7 +71,7 @@ BenefitMyApp.config(['$routeProvider',
                 controller:'employerUser'
             }).
             when('/admin/benefits/:company_id', {
-                templateUrl:'/static/partials/employer_view_benefits.html',
+                templateUrl:'/static/partials/view_benefits.html',
                 controller:'employerBenefits'
             }).
             when('/admin/employee/add/:company_id', {
