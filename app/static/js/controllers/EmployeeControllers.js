@@ -87,208 +87,229 @@ var employeeHome = employeeControllers.controller('employeeHome',
   }
 ]);
 
-var employeeBenefitSignup = employeeControllers.controller('employeeBenefitSignup', ['$scope', '$location', '$routeParams', 'clientListRepository', 'employeeBenefits', 'benefitListRepository', 'employeeFamily',
-  function employeeBenefitController($scope, $location, $routeParams, clientListRepository, employeeBenefits, benefitListRepository, employeeFamily){
+var employeeBenefitSignup = employeeControllers.controller(
+  'employeeBenefitSignup', 
+  ['$scope', 
+   '$location', 
+   '$routeParams', 
+   'clientListRepository', 
+   'employeeBenefits', 
+   'benefitListRepository', 
+   'employeeFamily',
+   'benefitDisplayService',
+    function employeeBenefitController(
+      $scope, 
+      $location, 
+      $routeParams, 
+      clientListRepository, 
+      employeeBenefits, 
+      benefitListRepository, 
+      employeeFamily,
+      benefitDisplayService){
 
-    var medicalPlans = [];
-    var dentalPlans = [];
-    var visionPlans = [];
-    var employeeId = $routeParams.employee_id;
-    var companyId;
-    $scope.employee_id = employeeId;
-    $scope.availablePlans = [];
-    $scope.family = [];
-    $scope.selectedBenefits =[];
-    $scope.selectedBenefitHashmap = {};
+        var medicalPlans = [];
+        var dentalPlans = [];
+        var visionPlans = [];
+        var employeeId = $routeParams.employee_id;
+        var companyId;
+        $scope.employee_id = employeeId;
+        $scope.availablePlans = [];
+        $scope.family = [];
+        $scope.selectedBenefits =[];
+        $scope.selectedBenefitHashmap = {};
 
-    employeeFamily.get({userId:employeeId}).$promise.then(function(response){
-      _.each(response.family, function(member){
-        member.ticked = false;
-        $scope.family.push(member);
-      });
-    });
-
-    var companyIdPromise =  clientListRepository.get({userId:employeeId})
-      .$promise.then(function(response){
-        var company_id;
-        _.each(response.company_roles, function(role){
-          if(role.company_user_type==='employee'){
-            company_id = role.company.id;
-            companyId = company_id;
-          }
-        })
-        return company_id;
-      });
-
-    var getEligibleFamilyMember = function(benefit, selected){
-      var availFamilyList = {};
-      var selectedMemberHash = {};
-      if(selected)
-      {
-        _.each(selected.enrolleds, function(enrolled){
-          selectedMemberHash[enrolled.id] = enrolled;
+        employeeFamily.get({userId:employeeId}).$promise.then(function(response){
+          _.each(response.family, function(member){
+            member.ticked = false;
+            $scope.family.push(member);
+          });
         });
-      }
-      switch(benefit.benefit_option_type)
-      {
-        case 'individual':
-          availFamilyList.familyList = _.where(angular.copy($scope.family), {relationship:'self'});
-          availFamilyList.eligibleNumber = 1;
-        break;
-        case 'individual_plus_spouse':
-          availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
-            return elem.relationship == 'self' || elem.relationship == 'spouse'});
-          availFamilyList.eligibleNumber = 2;
-        break;
-        case 'individual_plus_one':
-          availFamilyList.familyList = angular.copy($scope.family);
-          availFamilyList.eligibleNumber = 2;
-        break;
-        case 'individual_plus_child':
-          availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
-            return elem.relationship == 'self' || elem.relationship == 'child'});
-          availFamilyList.eligibleNumber = 2;
-        break;
-        default:
-        case 'family':
-          availFamilyList.familyList = angular.copy($scope.family);
-          availFamilyList.eligibleNumber = $scope.family.length;
-        break;
-      }
-      _.each(availFamilyList.familyList, function(member){
-        if(selectedMemberHash[member.id])
-        {
-          member.selected = true;
-        }
-      });
-      return availFamilyList;
-    };
 
-    companyIdPromise.then(function(companyId){
-      employeeBenefits.get({userId:employeeId, companyId:companyId})
-        .$promise.then(function(response){
-          $scope.selectedBenefits = response.benefits;
-          _.each($scope.selectedBenefits, function(benefitMember){
-            $scope.selectedBenefitHashmap[benefitMember.benefit.id] = benefitMember.benefit;
-          });
-          benefitListRepository.get({clientId:companyId})
+        var companyIdPromise =  clientListRepository.get({userId:employeeId})
           .$promise.then(function(response){
-            _.each(response.benefits, function(availBenefit){
-              var benefitFamilyPlan = {benefit:availBenefit};
-              var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
-                return selectedBen.benefit.benefit_type == availBenefit.benefit_type;
-              }));
-
-              benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
-              var benefitType = availBenefit.benefit_plan.benefit_type.name;
-              var curTypePlan = _.find($scope.availablePlans, function(plans){
-                var hit = _.find(plans.benefitList, function(benefit){
-                  return benefit.benefit.benefit_plan.benefit_type.name == benefitType;
-                });
-                if (hit){
-                  return true;
-                }
-                return false;
-              })
-              if(!curTypePlan)
-              {
-                curTypePlan = {type:availBenefit.benefit_type, benefitList:[], selected:{}};
-                $scope.availablePlans.push(curTypePlan);
+            var company_id;
+            _.each(response.company_roles, function(role){
+              if(role.company_user_type==='employee'){
+                company_id = role.company.id;
+                companyId = company_id;
               }
-              curTypePlan.benefitList.push(benefitFamilyPlan);
-              curTypePlan.benefit_type = benefitType;
-            });
-            _.each($scope.availablePlans, function(typedPlan){
-              _.each(typedPlan.benefitList, function(curBenefit){
-                var retrievedBenefit = $scope.selectedBenefitHashmap[curBenefit.benefit.id];
-                if(retrievedBenefit)
-                {
-                  typedPlan.selected = curBenefit;
-                }
-              });
-            });
+            })
+            return company_id;
           });
-      });
-    });
 
-    $scope.memberSelected = function(selectedBenefitFamily, member){
-      var selectedMemberList = _.where(selectedBenefitFamily.eligibleMemberCombo.familyList, {selected:true});
-      if(selectedMemberList.length > selectedBenefitFamily.eligibleMemberCombo.eligibleNumber){
-        alert("You can only select " + selectedBenefitFamily.eligibleMemberCombo.eligibleNumber + ' family member(s)');
-        member.selected = false;
-      }
-      var self = _.findWhere(selectedMemberList, {relationship:'self'});
-      if(selectedMemberList.length > 0 && !self)
-      {
-        alert("You cannot select other family member without select yourself first!");
-        member.selected = member.relationship == 'self';
-      }
-    };
-
-    $scope.addMember = function(){
-      $location.path('/employee/add_family/' + employeeId);
-    };
-
-    $scope.save = function(){
-      var saveRequest = {benefits:[],waived:[]};
-      var invalidEnrollNumberList = [];
-      _.each($scope.availablePlans, function(benefitTypePlan){
-        var enrolledList = [];
-        if (typeof benefitTypePlan.selected.eligibleMemberCombo != 'undefined'){
-          _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
-            if(member.selected)
+        var getEligibleFamilyMember = function(benefit, selected){
+          var availFamilyList = {};
+          var selectedMemberHash = {};
+          if(selected)
+          {
+            _.each(selected.enrolleds, function(enrolled){
+              selectedMemberHash[enrolled.id] = enrolled;
+            });
+          }
+          switch(benefit.benefit_option_type)
+          {
+            case 'individual':
+              availFamilyList.familyList = _.where(angular.copy($scope.family), {relationship:'self'});
+              availFamilyList.eligibleNumber = 1;
+            break;
+            case 'individual_plus_spouse':
+              availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
+                return elem.relationship == 'self' || elem.relationship == 'spouse'});
+              availFamilyList.eligibleNumber = 2;
+            break;
+            case 'individual_plus_one':
+              availFamilyList.familyList = angular.copy($scope.family);
+              availFamilyList.eligibleNumber = 2;
+            break;
+            case 'individual_plus_child':
+              availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
+                return elem.relationship == 'self' || elem.relationship == 'child'});
+              availFamilyList.eligibleNumber = 2;
+            break;
+            default:
+            case 'family':
+              availFamilyList.familyList = angular.copy($scope.family);
+              availFamilyList.eligibleNumber = $scope.family.length;
+            break;
+          }
+          _.each(availFamilyList.familyList, function(member){
+            if(selectedMemberHash[member.id])
             {
-              enrolledList.push({id:member.id});
+              member.selected = true;
             }
           });
-        }
+          return availFamilyList;
+        };
 
-        if(enrolledList.length > 0)
-        {
-          var requestBenefit = {
-            benefit:{
-              id:benefitTypePlan.selected.benefit.id,
-              benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
-            },
-            enrolleds:enrolledList
+        companyIdPromise.then(function(companyId){
+          benefitDisplayService(companyId, true, function(groupObj, nonMedicalArray, benefitCount){
+            $scope.medicalBenefitGroup = groupObj;
+            $scope.nonMedicalBenefitArray = nonMedicalArray;
+          });
+          employeeBenefits.get({userId:employeeId, companyId:companyId})
+            .$promise.then(function(response){
+              $scope.selectedBenefits = response.benefits;
+              _.each($scope.selectedBenefits, function(benefitMember){
+                $scope.selectedBenefitHashmap[benefitMember.benefit.id] = benefitMember.benefit;
+              });
+              benefitListRepository.get({clientId:companyId})
+              .$promise.then(function(response){
+                _.each(response.benefits, function(availBenefit){
+                  var benefitFamilyPlan = {benefit:availBenefit};
+                  var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
+                    return selectedBen.benefit.benefit_type == availBenefit.benefit_type;
+                  }));
+
+                  benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
+                  var benefitType = availBenefit.benefit_plan.benefit_type.name;
+                  var curTypePlan = _.find($scope.availablePlans, function(plans){
+                    var hit = _.find(plans.benefitList, function(benefit){
+                      return benefit.benefit.benefit_plan.benefit_type.name == benefitType;
+                    });
+                    if (hit){
+                      return true;
+                    }
+                    return false;
+                  })
+                  if(!curTypePlan)
+                  {
+                    curTypePlan = {type:availBenefit.benefit_type, benefitList:[], selected:{}};
+                    $scope.availablePlans.push(curTypePlan);
+                  }
+                  curTypePlan.benefitList.push(benefitFamilyPlan);
+                  curTypePlan.benefit_type = benefitType;
+                });
+                _.each($scope.availablePlans, function(typedPlan){
+                  _.each(typedPlan.benefitList, function(curBenefit){
+                    var retrievedBenefit = $scope.selectedBenefitHashmap[curBenefit.benefit.id];
+                    if(retrievedBenefit)
+                    {
+                      typedPlan.selected = curBenefit;
+                    }
+                  });
+                });
+              });
+          });
+        });
+
+        $scope.memberSelected = function(selectedBenefitFamily, member){
+          var selectedMemberList = _.where(selectedBenefitFamily.eligibleMemberCombo.familyList, {selected:true});
+          if(selectedMemberList.length > selectedBenefitFamily.eligibleMemberCombo.eligibleNumber){
+            alert("You can only select " + selectedBenefitFamily.eligibleMemberCombo.eligibleNumber + ' family member(s)');
+            member.selected = false;
+          }
+          var self = _.findWhere(selectedMemberList, {relationship:'self'});
+          if(selectedMemberList.length > 0 && !self)
+          {
+            alert("You cannot select other family member without select yourself first!");
+            member.selected = member.relationship == 'self';
+          }
+        };
+
+        $scope.addMember = function(){
+          $location.path('/employee/add_family/' + employeeId);
+        };
+
+        $scope.save = function(){
+          var saveRequest = {benefits:[],waived:[]};
+          var invalidEnrollNumberList = [];
+          _.each($scope.availablePlans, function(benefitTypePlan){
+            var enrolledList = [];
+            if (typeof benefitTypePlan.selected.eligibleMemberCombo != 'undefined'){
+              _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
+                if(member.selected)
+                {
+                  enrolledList.push({id:member.id});
+                }
+              });
+            }
+
+            if(enrolledList.length > 0)
+            {
+              var requestBenefit = {
+                benefit:{
+                  id:benefitTypePlan.selected.benefit.id,
+                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
+                },
+                enrolleds:enrolledList
+              };
+              saveRequest.benefits.push(requestBenefit);
+
+              if(benefitTypePlan.selected.benefit.benefit_option_type != 'family' &&
+                 requestBenefit.enrolleds.length < benefitTypePlan.selected.eligibleMemberCombo.eligibleNumber)
+              {
+                //validation failed.
+                var invalidEnrollNumber = {};
+                invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_name;
+                invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.eligibleNumber;
+                invalidEnrollNumberList.push(invalidEnrollNumber);
+              }
+            }
+          });
+
+          if(invalidEnrollNumberList.length > 0){
+            alert("For benefit " + invalidEnrollNumberList[0].name +
+                    ", you have to elect " + invalidEnrollNumberList[0].requiredNumber + " family members!");
+            return;
+          }
+
+          _.each($scope.selectedBenefits, function(benefitEnrolled){
+              var matched = _.filter(saveRequest.benefits, function(uiSelected){
+                return uiSelected.benefit.benefit_type == benefitEnrolled.benefit.benefit_type;
+              })
+              if(matched.length === 0)
+              {
+                saveRequest.waived.push({benefit_type:benefitEnrolled.benefit.benefit_type});
+              }
+            });
+
+          employeeBenefits.save({userId: employeeId, companyId: companyId},
+            saveRequest, function(){
+              $location.path('/employee');
+            }, function(){
+              $scope.savedSuccess = false;
+            });
           };
-          saveRequest.benefits.push(requestBenefit);
-
-          if(benefitTypePlan.selected.benefit.benefit_option_type != 'family' &&
-             requestBenefit.enrolleds.length < benefitTypePlan.selected.eligibleMemberCombo.eligibleNumber)
-          {
-            //validation failed.
-            var invalidEnrollNumber = {};
-            invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_name;
-            invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.eligibleNumber;
-            invalidEnrollNumberList.push(invalidEnrollNumber);
-          }
-        }
-      });
-
-      if(invalidEnrollNumberList.length > 0){
-        alert("For benefit " + invalidEnrollNumberList[0].name +
-                ", you have to elect " + invalidEnrollNumberList[0].requiredNumber + " family members!");
-        return;
-      }
-
-      _.each($scope.selectedBenefits, function(benefitEnrolled){
-          var matched = _.filter(saveRequest.benefits, function(uiSelected){
-            return uiSelected.benefit.benefit_type == benefitEnrolled.benefit.benefit_type;
-          })
-          if(matched.length === 0)
-          {
-            saveRequest.waived.push({benefit_type:benefitEnrolled.benefit.benefit_type});
-          }
-        });
-
-      employeeBenefits.save({userId: employeeId, companyId: companyId},
-        saveRequest, function(){
-          $location.path('/employee');
-        }, function(){
-          $scope.savedSuccess = false;
-        });
-    }
   }]);
 
 var addFamily = employeeControllers.controller('addFamily', ['$scope', '$location', '$routeParams', 'employeeFamily',

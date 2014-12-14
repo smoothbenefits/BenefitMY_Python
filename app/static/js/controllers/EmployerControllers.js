@@ -253,49 +253,20 @@ var employerUser = employersController.controller('employerUser',
   }
 ]);
 
-var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$routeParams', 'benefitListRepository',
-  function employerBenefits($scope, $location, $routeParams, benefitListRepository){
+var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$routeParams', 'benefitDisplayService',
+  function employerBenefits($scope, $location, $routeParams, benefitDisplayService){
     var compId = $routeParams.company_id;
-    benefitListRepository.get({clientId:compId})
-        .$promise.then(function(response){
-            $scope.companyBenefitsArray = [];
-            _.each(response.benefits, function(benefit){
-                insertIntoBenefitArray($scope.companyBenefitsArray, benefit);
-            });
-        });
-    var insertIntoBenefitArray = function(companyBenefitsArray, benefit)
-    {
-        var benefitType = benefit.benefit_plan.benefit_type.name;
-        var array = _.findWhere(companyBenefitsArray, {type:benefitType});
-        if(!array)
-        {
-            array = {type:benefitType, benefitList:[]};
-            companyBenefitsArray.push(array);
-        }
-        var benefitName = benefit.benefit_plan.name;
-        var sameBenefit = _.findWhere(array.benefitList, {name:benefitName})
-        if(!sameBenefit)
-        {
-          var sameNameBenefit = {};
-          sameNameBenefit.name = benefitName;
-          sameNameBenefit.options = [];
-          sameNameBenefit.options.push({
-              optionType:benefit.benefit_option_type,
-              totalCost:benefit.total_cost_per_period,
-              employeeCost: benefit.employee_cost_per_period
-            });
-          array.benefitList.push(sameNameBenefit);
-        }
-        else
-        {
-          sameBenefit.options.push({
-              optionType:benefit.benefit_option_type,
-              totalCost:benefit.total_cost_per_period,
-              employeeCost: benefit.employee_cost_per_period
-          });
-        }
+    $scope.role = 'Admin';
+    $scope.showAddBenefitButton = false;
+    benefitDisplayService($routeParams.company_id, false, function(groupObj, nonMedicalArray, benefitCount){
+      $scope.medicalBenefitGroup = groupObj;
+      $scope.nonMedicalBenefitArray = nonMedicalArray;
+      $scope.benefitCount = benefitCount;
+    });
 
-    }
+    $scope.backtoDashboard = function(){
+      $location.path('/admin');
+    };
   }
 ]);
 

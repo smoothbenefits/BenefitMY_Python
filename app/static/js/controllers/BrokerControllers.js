@@ -45,59 +45,32 @@ var clientsController = brokersControllers.controller('clientsController',
   }]
 );
 
-var benefitsController = brokersControllers.controller('benefitsController', ['$scope', '$location', '$routeParams', 'benefitListRepository', 'companyRepository',
-  function benefitController($scope, $location, $routeParams, benefitListRepository, companyRepository){
-    var clientId = $routeParams.clientId;
-    $scope.clientId = clientId;
-
-    benefitListRepository.get({clientId:clientId})
-        .$promise.then(function(response){
-            $scope.companyBenefitsArray = [];
-            _.each(response.benefits, function(benefit){
-                insertIntoBenefitArray($scope.companyBenefitsArray, benefit);
-            });
+var benefitsController = brokersControllers.controller(
+   'benefitsController', 
+   ['$scope', 
+    '$location', 
+    '$routeParams', 
+    'benefitDisplayService',
+    function benefitController(
+     $scope, 
+     $location, 
+     $routeParams, 
+     benefitDisplayService){
+        $scope.role = 'Broker';
+        $scope.showAddBenefitButton = true;
+        benefitDisplayService($routeParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
+          $scope.medicalBenefitGroup = groupObj;
+          $scope.nonMedicalBenefitArray = nonMedicalArray;
+          $scope.benefitCount = benefitCount;
         });
-    var insertIntoBenefitArray = function(companyBenefitsArray, benefit)
-    {
-        var benefitType = benefit.benefit_plan.benefit_type.name;
-        var array = _.findWhere(companyBenefitsArray, {type:benefitType});
-        if(!array)
-        {
-            array = {type:benefitType, benefitList:[]};
-            companyBenefitsArray.push(array);
-        }
 
-        var benefitName = benefit.benefit_plan.name;
-        var sameBenefit = _.findWhere(array.benefitList, {name:benefitName})
-        if(!sameBenefit)
-        {
-          var sameNameBenefit = {};
-          sameNameBenefit.name = benefitName;
-          sameNameBenefit.options = [];
-          sameNameBenefit.options.push({
-              optionType:benefit.benefit_option_type,
-              totalCost:benefit.total_cost_per_period,
-              employeeCost: benefit.employee_cost_per_period,
-              id: benefit.id
-            });
-          array.benefitList.push(sameNameBenefit);
-        }
-        else
-        {
-          sameBenefit.options.push({
-              optionType:benefit.benefit_option_type,
-              totalCost:benefit.total_cost_per_period,
-              employeeCost: benefit.employee_cost_per_period,
-              id: benefit.id
-          });
-        }
-    };
-    $scope.backtoDashboard = function(){
-      $location.path('/broker');
-    };
-    $scope.viewDetails = function(benefitData){
-      $location.path('/broker/benefit/add_details/' + $scope.clientId + "/" + benefitData.id);
-    }
+        $scope.backtoDashboard = function(){
+          $location.path('/broker');
+        };
+
+        $scope.addBenefitLinkClicked = function(){
+          $location.path('/broker/add_benefit/' + $routeParams.clientId);
+        };
 }]);
 
 
@@ -175,9 +148,9 @@ var addBenefitController = brokersControllers.controller(
         benefit_type:'',
         benefit_option_types: [
           {name:"Individual"},
-          {name:"Individual plus One"},
+          {name:"Individual plus Spouse"},
           {name:"Individual plus children"},
-          {name:"Family"}],
+          {name:"Individual plus Family"}],
       };
       $('#benefit_type_select').on('change', function(){
         var optionTypeInputs = $('#plan_option_table').find('input');
@@ -234,6 +207,7 @@ var addBenefitController = brokersControllers.controller(
             valueInput.attr('policy-type-id', policyTypeId);
           }
           if(showDollar){
+            $scope.noCostError = false;
             valueInput.attr('show-dollar', showDollar);
           }
           valueInput.on('keypress', changeInputKeyPress);
@@ -518,14 +492,17 @@ var addBenefitController = brokersControllers.controller(
             alert('No benefit type selected!')
             return false;
           }
-          _.each($scope.benefit.benefit_option_types, function(optionType){
-            if(!optionType.total_cost_per_period || !optionType.employee_cost_per_period){
-              $scope.noCostError = true;
-            }
+          var emptyOptionType = _.find($scope.benefit.benefit_option_types, function(optionType){
+            return (!optionType.total_cost_per_period || !optionType.employee_cost_per_period);
           });
-          if($scope.noCostError){
+          if(emptyOptionType){
+            $scope.noCostError = true;
             return false;
           }
+          else{
+            $scope.noCostError = false;
+          }
+
 
 
           //now we validate the details array
