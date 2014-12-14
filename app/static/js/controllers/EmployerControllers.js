@@ -1,19 +1,5 @@
 var employersController = angular.module('benefitmyApp.employers.controllers',[]);
 
-var getDocumentType = function(documentTypeId){
-
-    if (documentTypeId === 1){
-      return "Offer Letter";
-    }
-    else if (documentTypeId === 2){
-      return "Employment Agreement";
-    }
-    else if(documentTypeId === 3)
-    {
-      return "NDA";
-    }
-    return "";
-};
 
 var employerHome = employersController.controller('employerHome',
                                                   ['$scope',
@@ -25,6 +11,7 @@ var employerHome = employersController.controller('employerHome',
                                                   'templateRepository',
                                                   'benefitListRepository',
                                                   'countRepository',
+                                                  'documentTypeService',
   function employerHome($scope,
                         $location,
                         employerRepository,
@@ -33,7 +20,8 @@ var employerHome = employersController.controller('employerHome',
                         documentRepository,
                         templateRepository,
                         benefitListRepository,
-                        countRepository){
+                        countRepository, 
+                        documentTypeService){
 
     $scope.employeeCount = 0;
     $scope.brokerCount = 0;
@@ -41,11 +29,6 @@ var employerHome = employersController.controller('employerHome',
     $scope.templateCountArray = [];
 
 
-   var getDocumentTypes = function(company){
-      documentRepository.type.get({companyId:company.Id}).$promise.then(function(response){
-        $scope.documentTypes = response.document_types;
-      });
-    }
     var getTemplates = function(company){
       templateRepository.byCompany.get({companyId:company.id}).$promise.then(function(response){
         $scope.templateArray = response.templates;
@@ -108,7 +91,9 @@ var employerHome = employersController.controller('employerHome',
           if(company_role.company_user_type === 'admin')
           {
             $scope.company = company_role.company;
-            getDocumentTypes($scope.company);
+            documentTypeService.getDocumentTypes($scope.company, function(doc_types){
+              $scope.documentTypes = doc_types;
+            });
             getTemplates($scope.company);
             getWorkerCount($scope.company);
             getBenefitCount($scope.company);
@@ -152,8 +137,22 @@ var employerHome = employersController.controller('employerHome',
 ]);
 
 var employerUser = employersController.controller('employerUser',
-  ['$scope', '$location', '$routeParams', 'employerWorkerRepository', 'usersRepository', 'userDocument', 'emailRepository',
-  function employerUser($scope, $location, $routeParams, employerWorkerRepository, usersRepository, userDocument, emailRepository){
+  ['$scope', 
+   '$location', 
+   '$routeParams', 
+   'employerWorkerRepository', 
+   'usersRepository', 
+   'userDocument', 
+   'emailRepository',
+   'documentTypeService',
+  function employerUser($scope, 
+                        $location, 
+                        $routeParams, 
+                        employerWorkerRepository, 
+                        usersRepository, 
+                        userDocument, 
+                        emailRepository,
+                        documentTypeService){
       var compId = $routeParams.company_id;
       $scope.employees=[];
       $scope.addUser = {send_email:true};
@@ -246,9 +245,10 @@ var employerUser = employersController.controller('employerUser',
           {
             pathKey='view_letter';
           }
-          $location.search({type:getDocumentType(docType)}).path('/admin/' + pathKey + '/' +compId +'/'+employeeId);
+          documentTypeService.getDocumentTypeById(compId, docType, function(docType){
+            $location.search({type:docType.name}).path('/admin/' + pathKey + '/' +compId +'/'+employeeId);
+          });
         });
-
       }
   }
 ]);
