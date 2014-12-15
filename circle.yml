@@ -8,4 +8,4 @@ deployment:
 
 database:
   override:
-    - postgre -u ubuntu circle_test
+    - mysql -u ubuntu circle_test
