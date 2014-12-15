@@ -6,6 +6,3 @@ deployment:
     heroku:
       appname: benefitmy-python-staging
 
-database:
-  override:
-    - mysql -u ubuntu circle_test
