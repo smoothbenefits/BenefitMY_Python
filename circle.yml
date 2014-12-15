@@ -4,6 +4,7 @@ deployment:
   staging:
     branch: staging
     commands:
-      - ./deploy.sh benefitmy-python-staging:
-          timeout: 300
+      - git push git@heroku.com:benefitmy-python-staging.git $CIRCLE_SHA1:master
+      - heroku run python manage.py makemigrations
+      - heroku run python manage.py migrate
 
