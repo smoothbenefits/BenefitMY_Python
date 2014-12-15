@@ -3,6 +3,7 @@
 deployment:
   staging:
     branch: staging
-    heroku:
-      appname: benefitmy-python-staging
+    commands:
+      - deploy.sh benefitmy-python-staging:
+        timeout: 300
 
