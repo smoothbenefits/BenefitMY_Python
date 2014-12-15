@@ -20,9 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'x_qz2d46!0dmvk9(lb_c-z%r)&_jq8nl+-_fvsywp1+j+y5oj1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '.benefitmy.com', 'benefitmy.com.', '.heroku.com', '.herokuapp.com']
 
@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'Smoothbenefits.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Benefits_DB',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': 'dbhdqcnhj8qihh',
+        'USER': 'espzlrtdipscti',
+        'PASSWORD': '6tw_VJkq-1pvnKAS8s0pTm540e',
+        'HOST': 'ec2-54-225-101-60.compute-1.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
