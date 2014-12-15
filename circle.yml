@@ -2,7 +2,7 @@
 
 deployment:
   staging:
-    branch: master
+    branch: staging
     heroku:
       appname: benefitmy-python-staging
 
