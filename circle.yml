@@ -5,5 +5,5 @@ deployment:
     branch: staging
     commands:
       - deploy.sh benefitmy-python-staging:
-        timeout: 300
+          timeout: 300
 

@@ -1,6 +1,9 @@
 #!/bin/sh -e
 APP_NAME=$1
 
+# dump the heroku remote if it exists already
+test `git remote | grep heroku` && git remote rm heroku
+
 git remote add heroku git@heroku.com:$APP_NAME.git
 git fetch heroku
 MIGRATION_CHANGES=$(git diff HEAD heroku/master --name-only -- db | wc -l)
