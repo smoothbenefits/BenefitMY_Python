@@ -1,5 +1,11 @@
 ## configuration file for Circle continuous integration
 
+general:
+  branches:
+    ignore:
+      - master # list of branches to ignore
+      - /feature-*/ # or ignore regexes
+
 deployment:
   staging:
     branch: staging
