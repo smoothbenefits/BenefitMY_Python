@@ -5,3 +5,7 @@ deployment:
     branch: master
     heroku:
       appname: benefitmy-python-staging
+
+database:
+  override:
+    - postgre -u ubuntu circle_test
