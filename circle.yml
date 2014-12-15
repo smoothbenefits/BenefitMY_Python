@@ -1,0 +1,7 @@
+## configuration file for Circle continuous integration
+
+deployment:
+  staging:
+    branch: master
+    heroku:
+      appname: benefitmy-python-staging
