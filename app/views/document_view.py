@@ -11,8 +11,10 @@ from app.models.document import Document
 from app.serializers.document_serializer import (
     DocumentSerializer)
 
+from view_mixin import *
 
-class DocumentView(APIView):
+
+class DocumentView(APIView,  LoginRequiredMixin):
     def get_documents(self, pk):
         try:
             return Document.objects.get(pk=pk)
@@ -25,7 +27,7 @@ class DocumentView(APIView):
         return Response(serializer.data)
 
 
-class CompanyDocumentView(APIView):
+class CompanyDocumentView(APIView, LoginRequiredMixin):
     def get_documents(self, pk):
         try:
             return Document.objects.filter(company=pk)
@@ -38,7 +40,7 @@ class CompanyDocumentView(APIView):
         return Response(serializer.data)
 
 
-class CompanyUserDocumentView(APIView):
+class CompanyUserDocumentView(APIView, LoginRequiredMixin):
     def get_documents(self, pk, pd):
         try:
             return Document.objects.filter(company=pk, user=pd)
@@ -51,7 +53,7 @@ class CompanyUserDocumentView(APIView):
         return Response(serializer.data)
 
 
-class CompanyUserTypeDocumentView(APIView):
+class CompanyUserTypeDocumentView(APIView, LoginRequiredMixin):
     def get_documents(self, pk, pd, py):
         try:
             return Document.objects.filter(company=pk,
@@ -66,7 +68,7 @@ class CompanyUserTypeDocumentView(APIView):
         return Response(serializer.data)
 
 
-class UserDocumentView(APIView):
+class UserDocumentView(APIView, LoginRequiredMixin):
     def get_documents(self, pk):
         try:
             return Document.objects.filter(user=pk)
@@ -79,6 +81,7 @@ class UserDocumentView(APIView):
         return Response(serializer.data)
 
 
+@login_required@
 @api_view(['POST'])
 @transaction.atomic
 def documents(request):
