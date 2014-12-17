@@ -1,4 +1,6 @@
-@from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
+
+from app.models.company_user import CompanyUser
 
 
 class LoginRequiredMixin(object):
@@ -9,3 +11,14 @@ class LoginRequiredMixin(object):
 
 
 login_required = login_required
+
+
+def is_employer(user_id, company_id):
+    """ check if a user is the employer of a company"""
+    try:
+        CompanyUser.objects.get(user=user_id,
+                                company=company_id,
+                                company_user_type='admin')
+        return True
+    except CompanyUser.DoesNotExist:
+        return False
