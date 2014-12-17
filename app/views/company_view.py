@@ -1,5 +1,7 @@
 from rest_framework.views import APIView
-from django.http import Http404
+from django.http import (
+    Http404,
+    HttpResponseForbidden)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -22,6 +24,9 @@ class CompanyView(APIView, LoginRequiredMixin):
             raise Http404
 
     def get(self, request, pk, format=None):
+
+        if not is_employer(request.user.id, pk) or not is_broker(request.user.id, pk):
+            return HttpResponseForbidden()
         company = self.get_object(pk)
         serializer = CompanySerializer(company)
         return Response(serializer.data)
@@ -32,6 +37,9 @@ class CompanyView(APIView, LoginRequiredMixin):
 @transaction.atomic
 def companies(request):
     # We first need to create an active user for it
+    if not is_employer(request.user.id, pk) or not is_broker(request.user.id, pk):
+        return HttpResponseForbidden()
+
     contact_size = len(request.DATA['contacts'])
     u = None
 
