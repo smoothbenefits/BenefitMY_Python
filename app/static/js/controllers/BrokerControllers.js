@@ -353,6 +353,7 @@ var addBenefitController = brokersControllers.controller(
       };
 
       var updateOptionObject = function(container, input, val){
+        $scope.optionEmptyError = false;
         var bOptionName = container.attr('b-option');
         if(bOptionName){
           var optionType = _.findWhere($scope.benefit.benefit_option_types, {name:bOptionName});
