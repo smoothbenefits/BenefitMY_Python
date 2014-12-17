@@ -354,85 +354,126 @@ benefitmyService.factory('benefitDisplayService',
           }
         }
 
-        var populateMedicalGroup = function(group, medicalArray, detailsArray){
-          //first retrieve the correct benefit from detailsArray
-          if(detailsArray.length <= 0){
-            return;
-          }
-          var benefit = _.findWhere(medicalArray, {benefitId:detailsArray[0].benefit_plan.id});
-          if(!benefit){
-            return;
-          }
-          //first work on benefitNameArray
-          if(!group.benefitNameArray){
-            group.benefitNameArray = [];
-          }
-          if(!group.benefitOptionMetaArray){
-            group.benefitOptionMetaArray = [];
-          }
 
-          var optionColSpan = 3;
-          var optionEmployeeLabel = 'Employee';
-          if(isEmployeeView){
-            optionColSpan = 6;
-            optionEmployeeLabel = '';
-          }
-
-          if(!_.contains(group.benefitNameArray, benefit.benefitName)){
-
-            group.benefitNameArray.push({id:benefit.benefitId, name:benefit.benefitName});
-            if(!isEmployeeView){
-              group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Total', colspan:optionColSpan});
-            }
-            group.benefitOptionMetaArray.push({id:benefit.benefitId, name: optionEmployeeLabel, colspan:optionColSpan});
-          }
-          //benefitOptionValueArray
-          if(!group.benefitOptionValueArray){
-            group.benefitOptionValueArray = [];
-          }
-          _.each(benefit.benefitOptionArray, function(benefitOption){
-            var optionValueObject = _.findWhere(group.benefitOptionValueArray, {optionName:benefitOption.name});
-            if(!optionValueObject){
-              optionValueObject = {optionName:benefitOption.name, benefitCostArray:[]};
-              group.benefitOptionValueArray.push(optionValueObject);
-            }
-            if(!isEmployeeView){
-              optionValueObject.benefitCostArray.push({colspan:optionColSpan, value:benefitOption.totalCost});
-            }
-            optionValueObject.benefitCostArray.push({colspan:optionColSpan, value:benefitOption.employeeCost});
-          });
+        var convertToDisplayGroup = function(group, medicalArray){
           
 
-          //do policyNameArray
-          var policyTypeArray = [];
-          _.each(detailsArray, function(detail){
-            if(!_.contains(policyTypeArray, detail.benefit_policy_type.name)){
-              policyTypeArray.push(detail.benefit_policy_type.name);
-            }
-          });
-
-          if(!group.policyNameArray){
-            group.policyNameArray = [];
-          }
-          _.each(policyTypeArray, function(policyType){
-            group.policyNameArray.push({colspan:6/policyTypeArray.length, name:policyType})
-          });
-
-          //do policyList
-          if(!group.policyList){
-            group.policyList = [];
-          }
+          var optionNameList = [];
           _.each(medicalArray, function(benefit){
-            _.each(detailsArray, function(detail){
-              if(detail.benefit_plan.id === benefit.benefitId){
-                var policyListMember = _.findWhere(group.policyList, {id:detail.benefit_policy_key.id});
-                if(!policyListMember){
-                  policyListMember = {id:detail.benefit_policy_key.id, name:detail.benefit_policy_key.name, valueArray:[]};
-                  group.policyList.push(policyListMember);
-                }
-                policyListMember.valueArray.push({colspan:6/policyTypeArray.length, value:detail.value});
+            _.each(benefit.benefitOptionArray, function(benefitOption){
+              if(!_.contains(optionNameList, benefitOption.name)){
+                optionNameList.push(benefitOption.name);
               }
             });
+          });
+          
+          
+          var policyKeyArray = [];
+          _.each(medicalArray, function(benefit){
+            _.each(benefit.detailsArray, function(detail){
+              var foundKeyItem = _.findWhere(policyKeyArray, {id:detail.benefit_policy_key.id});
+              if(!foundKeyItem){
+                policyKeyArray.push({id:detail.benefit_policy_key.id, name:detail.benefit_policy_key.name});
+              }
+            });
+          });
+
+          _.each(medicalArray, function(benefit){
+            
+            if(!group.benefitNameArray){
+              group.benefitNameArray = [];
+            }
+            if(!group.benefitOptionMetaArray){
+              group.benefitOptionMetaArray = [];
+            }
+
+            var optionColSpan = 3;
+            var optionEmployeeLabel = 'Employee';
+            if(isEmployeeView){
+              optionColSpan = 6;
+              optionEmployeeLabel = '';
+            }
+
+            if(!_.contains(group.benefitNameArray, benefit.benefitName)){
+
+              group.benefitNameArray.push({id:benefit.benefitId, name:benefit.benefitName});
+              if(!isEmployeeView){
+                group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Total', colspan:optionColSpan});
+              }
+              group.benefitOptionMetaArray.push({id:benefit.benefitId, name: optionEmployeeLabel, colspan:optionColSpan});
+            }
+
+            //benefitOptionValueArray
+            if(!group.benefitOptionValueArray){
+              group.benefitOptionValueArray = [];
+            }
+
+
+            //work on the benefit total and employee costs
+            _.each(optionNameList, function(metaName){
+              var groupOption = _.findWhere(group.benefitOptionValueArray, {optionName: metaName});
+              if(!groupOption){
+                groupOption = {optionName:metaName, benefitCostArray:[]};
+                group.benefitOptionValueArray.push(groupOption);
+              }
+
+              var totalCostValue = 'N/A';
+              var employeeCostValue = 'N/A';
+              var foundOption = _.findWhere(benefit.benefitOptionArray, {name:metaName});
+              if(foundOption){
+                totalCostValue = '$' + foundOption.totalCost;
+                employeeCostValue = '$' + foundOption.employeeCost;
+              }
+              if(!isEmployeeView){
+                groupOption.benefitCostArray.push({colspan:optionColSpan, value:totalCostValue});
+              }
+              groupOption.benefitCostArray.push({colspan:optionColSpan, value:employeeCostValue});
+            });
+
+            //now work on the benefit policies    
+            var policyTypeArray = [];
+            if(benefit.detailsArray.length > 0){
+              _.each(benefit.detailsArray, function(detailItem){
+                if(!_.contains(policyTypeArray, detailItem.benefit_policy_type.name)){
+                  policyTypeArray.push(detailItem.benefit_policy_type.name);
+                }
+              });
+            }
+            else{
+              policyTypeArray.push('');
+            } 
+
+            if(!group.policyNameArray){
+              group.policyNameArray = [];
+            }
+            _.each(policyTypeArray, function(policyType){
+              group.policyNameArray.push({colspan:6/policyTypeArray.length, name:policyType})
+            });
+
+            //do policyList
+            if(!group.policyList){
+              group.policyList = [];
+            }
+
+            _.each(policyKeyArray, function(policyKeyItem){
+              var policyListMember = _.findWhere(group.policyList, {id:policyKeyItem.id});
+              if(!policyListMember){
+                policyListMember = {id:policyKeyItem.id, name:policyKeyItem.name, valueArray:[]};
+                group.policyList.push(policyListMember);
+              }
+              _.each(policyTypeArray, function(policyType){
+                var foundBenefitDetail = _.find(benefit.detailsArray, function(benefitDetailItem){
+                  return benefitDetailItem.benefit_policy_type.name === policyType && 
+                    benefitDetailItem.benefit_policy_key.id === policyKeyItem.id;
+                });
+                if(foundBenefitDetail){
+                  policyListMember.valueArray.push({colspan:6/policyTypeArray.length, value:foundBenefitDetail.value});
+                }else{
+                  policyListMember.valueArray.push({colspan:6/policyTypeArray.length, value:'N/A'});
+                }   
+              });
+            });
+            
           });
           
 
@@ -505,13 +546,20 @@ benefitmyService.factory('benefitDisplayService',
                     }
                 });
                 if(medicalArray.length > 0){
-                  _.each(medicalArray, function(benefit){
+                  var sortedMedicalArray = _.sortBy(medicalArray, 'benefitName');
+                  _.each(sortedMedicalArray, function(benefit, index){
                     benefitDetailsRepository.query({planId:benefit.benefitId})
                       .$promise.then(function(detailArray){
-                        populateMedicalGroup(medicalBenefitGroup, medicalArray, detailArray);
-                        if(populatedFunc){
-                          benefitCount = calculateBenefitCount(medicalBenefitGroup, nonMedicalBenefitArray);
-                          populatedFunc(medicalBenefitGroup, nonMedicalBenefitArray, benefitCount);
+                        benefit.detailsArray = detailArray;
+
+                        //make sure all the details array elements are all initialized.
+                        var unInitDetailsArray = _.find(sortedMedicalArray, function(bt){return !bt.detailsArray});
+                        if(!unInitDetailsArray){
+                          convertToDisplayGroup(medicalBenefitGroup, sortedMedicalArray);
+                          if(populatedFunc){
+                            benefitCount = calculateBenefitCount(medicalBenefitGroup, nonMedicalBenefitArray);
+                            populatedFunc(medicalBenefitGroup, nonMedicalBenefitArray, benefitCount);
+                          }
                         }
                       });
                   });

@@ -69,7 +69,7 @@
                 </tr>
                 <tr class="value-row" ng-repeat="optionValue in medicalBenefitGroup.benefitOptionValueArray">
                     <td colspan="2" class="row-head"><span>{{optionValue.optionName}}</span></td>
-                    <td ng-repeat="cost in optionValue.benefitCostArray" colspan="{{cost.colspan}}"><span>${{cost.value}}</span></td>
+                    <td ng-repeat="cost in optionValue.benefitCostArray" colspan="{{cost.colspan}}"><span>{{cost.value}}</span></td>
                 </tr>
                 <tr class="title-row">
                     <td colspan="2"><span>Options</span></td>
