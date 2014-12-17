@@ -353,6 +353,7 @@ var addBenefitController = brokersControllers.controller(
       };
 
       var updateOptionObject = function(container, input, val){
+        $scope.optionEmptyError = false;
         var bOptionName = container.attr('b-option');
         if(bOptionName){
           var optionType = _.findWhere($scope.benefit.benefit_option_types, {name:bOptionName});
@@ -576,7 +577,10 @@ var addBenefitController = brokersControllers.controller(
 
       $scope.addBenefit = function(){
 
-        if(validateBenefitFields()){
+        if(!validateBenefitFields()){
+          alert('There are errors associated with your data form. The data is not saved. If you do not know what the error is, please refresh the page and try again.');
+        }
+        else{
           //save to data store
           var requestList = [];
           _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
