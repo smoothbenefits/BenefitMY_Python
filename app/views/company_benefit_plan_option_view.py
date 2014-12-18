@@ -1,5 +1,7 @@
 from rest_framework.views import APIView
-from django.http import Http404
+from django.http import (
+    Http404,
+    HttpResponseForbidden)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -28,6 +30,10 @@ class CompanyBenefitPlanOptionView(APIView, LoginRequiredMixin):
 
     def get(self, request, pk, format=None):
         plan_option = self.get_object(pk)
+        if not is_employer(request.user.id, plan_option.company):
+            return HttpResponseForbidden()
+
+
         serializer = CompanyBenefitPlanOptionSerializer(plan_option)
         return Response({'benefit': serializer.data})
 
@@ -100,6 +106,9 @@ class CompanyBenefitPlansView(APIView, LoginRequiredMixin):
             raise Http404
 
     def get(self, request, pk, format=None):
+        if not is_employer(request.user.id, pk) or not is_broker(request.user.id, pk)
+            return HttpResponseForbidden()
+
         plans = self.get_object(pk)
         serializer = CompanyBenefitPlanSerializer(plans, many=True)
         return Response({'benefits': serializer.data})

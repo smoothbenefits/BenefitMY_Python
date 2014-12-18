@@ -33,3 +33,14 @@ def is_broker(user_id, company_id):
         return True
     except CompanyUser.DoesNotExist:
         return False
+
+
+def is_employee(user_id, company_id):
+    """ check if a user is the employee of a company"""
+    try:
+        CompanyUser.objects.get(user=user_id,
+                                company=company_id,
+                                company_user_type='employee')
+        return True
+    except CompanyUser.DoesNotExist:
+        return False
