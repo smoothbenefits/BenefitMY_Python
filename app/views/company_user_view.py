@@ -1,5 +1,7 @@
 from rest_framework.views import APIView
-from django.http import Http404
+from django.http import (
+    Http404,
+    HttpResponseForbidden)
 from rest_framework.response import Response
 
 from app.models.company_user import CompanyUser
@@ -16,6 +18,9 @@ class CompanyUserView(APIView, LoginRequiredMixin):
             raise Http404
 
     def get(self, request, pk, format=None):
+        if not is_employer(request.user.id, pk) or not is_broker(request.user.id, pk):
+            return HttpResponseForbidden()
+
         companies = self.get_companies(pk)
         serializer = CompanyUserSerializer(companies, many=True)
         return Response({'user_roles': serializer.data})
@@ -24,6 +29,9 @@ class CompanyUserView(APIView, LoginRequiredMixin):
 class CompanyEmployeeCountView(APIView, LoginRequiredMixin):
 
     def get(self, request, pk, format=None):
+        if not is_employer(request.user.id, pk) or not is_broker(request.user.id, pk):
+            return HttpResponseForbidden()
+
         return Response({'employees_count':
             len(CompanyUser.objects.filter(company=pk,
                                        company_user_type='employee'))})
