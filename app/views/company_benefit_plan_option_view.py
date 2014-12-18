@@ -30,18 +30,20 @@ class CompanyBenefitPlanOptionView(APIView, LoginRequiredMixin):
 
     def get(self, request, pk, format=None):
         plan_option = self.get_object(pk)
-        if not is_employer(request.user.id, plan_option.company):
+        if (not is_employer(request.user.id, plan_option.company) or
+            not is_broker(request.user.id, plan_option.company) or
+                not is_employee(request.user.id, plan_option.company)):
             return HttpResponseForbidden()
-
 
         serializer = CompanyBenefitPlanOptionSerializer(plan_option)
         return Response({'benefit': serializer.data})
 
 
-@login_required@
+@login_required
 @api_view(['POST'])
 @transaction.atomic
 def benefits(request):
+
     if (not "company" in request.DATA or not
         "benefit" in request.DATA or not
         "benefit_type" in request.DATA["benefit"] or not
@@ -54,6 +56,9 @@ def benefits(request):
 
     company_benefits = CompanyBenefitPlanOption.objects.filter(
         company=request.DATA['company'])
+
+    if not is_broker(request.user.id, request.DATA['company']):
+        return HttpResponseForbidden()
 
     if company_benefits:
 
@@ -106,7 +111,7 @@ class CompanyBenefitPlansView(APIView, LoginRequiredMixin):
             raise Http404
 
     def get(self, request, pk, format=None):
-        if not is_employer(request.user.id, pk) or not is_broker(request.user.id, pk)
+        if not is_employer(request.user.id, pk) or not is_broker(request.user.id, pk):
             return HttpResponseForbidden()
 
         plans = self.get_object(pk)
