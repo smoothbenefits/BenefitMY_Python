@@ -1,5 +1,7 @@
 from rest_framework.views import APIView
-from django.http import Http404
+from django.http import (
+    Http404,
+    HttpResponseForbidden)
 from rest_framework.response import Response
 
 from app.models.template import Template
@@ -16,6 +18,9 @@ class CompanyTemplatesView(APIView, LoginRequiredMixin):
             raise Http404
 
     def get(self, request, pk, format=None):
+        if not is_employer(request.user.id, pk):
+            return HttpResponseForbidden()
+
         templates = self.get_templates(pk)
         serializer = TemplateSerializer(templates,
                                         many=True)
