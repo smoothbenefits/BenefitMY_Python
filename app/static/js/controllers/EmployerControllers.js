@@ -249,7 +249,11 @@ var employerUser = employersController.controller('employerUser',
             $location.search({type:docType.name}).path('/admin/' + pathKey + '/' +compId +'/'+employeeId);
           });
         });
-      }
+      };
+
+      $scope.viewEmployeeDetail = function(employee){
+        $location.path('/admin/employee_detail/' + compId).search('eid', employee.user.id);
+      };
   }
 ]);
 
@@ -489,3 +493,39 @@ var employerViewLetter = employersController.controller('employerViewLetter',
       $location.path('/admin/employee/' + $scope.companyId);
     };
   }]);
+
+var employerViewEmployeeDetail = employersController.controller('employerViewEmployeeDetail',
+                                                                ['$scope',
+                                                                 '$location',
+                                                                 '$routeParams',
+                                                                 'employeeFamily',
+  function($scope, $location, $routeParams, employeeFamily){
+    var compId = $routeParams.company_id;
+    var employeeId = $routeParams.eid;
+    $scope.employee = {id:employeeId};
+    $scope.showEditButton = false;
+    employeeFamily.get({userId:employeeId})
+      .$promise.then(function(employeeDetail){
+        $scope.employee.first_name = employeeDetail.first_name;
+        $scope.employee.last_name = employeeDetail.last_name;
+        $scope.employee.email = employeeDetail.email;
+        var selfInfo = _.findWhere(employeeDetail.family, {relationship:'self'});
+        if(selfInfo){
+          $scope.employee.birth_date = selfInfo.birth_date;
+          $scope.employee.phones = selfInfo.phones;
+          $scope.employee.addresses = selfInfo.addresses;
+        }
+      });
+
+    $scope.editEmployeeDetail = function(){
+
+    };
+
+    $scope.backToDashboard = function(){
+      $location.path('/admin');
+    };
+
+    $scope.backToEmployeeList = function(){
+      $location.path('/admin/employee/' + compId);
+    }
+}]);
