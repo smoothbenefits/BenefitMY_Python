@@ -26,7 +26,7 @@
                    </td>
                 </tr>
                 <tr ng-repeat="employee in employees">
-                    <td>{{employee.user.first_name}} {{employee.user.last_name}}</td>
+                    <td><a ng-click="viewEmployeeDetail(employee)">{{employee.user.first_name}} {{employee.user.last_name}}</a></td>
                     <td>
                         <span class="btn inline" ng-click="documentLink(employee.user.id, 1)">Offer Letter</span>
                         <span class="btn inline" ng-click="documentLink(employee.user.id, 2)">Employee Agreement</span>
