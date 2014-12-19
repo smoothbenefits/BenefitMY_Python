@@ -8,7 +8,7 @@ class Person(models.Model):
     first_name = models.CharField(max_length=255, null=True)
     middle_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True)
-    email = models.EmailField(max_length=255, null=True)
+    email = models.EmailField(max_length=255, null=True, blank=True)
     relationship = models.CharField(max_length=30, null=True)
     ssn = EncryptedTextField(null=True, blank=True)
     birth_date = models.DateField(blank=True, null=True)
