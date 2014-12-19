@@ -6,6 +6,11 @@ general:
       - master # list of branches to ignore
       - /feature-*/ # or ignore regexes
 
+database:
+  post:
+    - psql -f data_migration/app_documenttype_data.sql
+
+
 deployment:
   staging:
     branch: staging
