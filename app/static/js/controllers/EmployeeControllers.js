@@ -161,13 +161,14 @@ var employeeBenefitSignup = employeeControllers.controller(
               availFamilyList.familyList = angular.copy($scope.family);
               availFamilyList.eligibleNumber = 2;
             break;
-            case 'individual_plus_child':
+            case 'individual_plus_children':
               availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
                 return elem.relationship == 'self' || elem.relationship == 'child'});
               availFamilyList.eligibleNumber = 2;
             break;
             default:
             case 'family':
+            case 'individual_plus_family':
               availFamilyList.familyList = angular.copy($scope.family);
               availFamilyList.eligibleNumber = $scope.family.length;
             break;
@@ -275,7 +276,8 @@ var employeeBenefitSignup = employeeControllers.controller(
               };
               saveRequest.benefits.push(requestBenefit);
 
-              if(benefitTypePlan.selected.benefit.benefit_option_type != 'family' &&
+              if(!(benefitTypePlan.selected.benefit.benefit_option_type ==='individual_plus_family' || 
+                   benefitTypePlan.selected.benefit.benefit_option_type === 'family') &&
                  requestBenefit.enrolleds.length < benefitTypePlan.selected.eligibleMemberCombo.eligibleNumber)
               {
                 //validation failed.
