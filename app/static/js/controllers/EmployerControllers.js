@@ -271,8 +271,8 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
 ]);
 
 var employerLetterTemplate = employersController.controller('employerLetterTemplate',
-  ['$scope', '$location', '$route', '$routeParams', 'templateRepository',
-  function employerLetterTemplate($scope, $location, $route, $routeParams, templateRepository){
+  ['$scope', '$location', '$route', '$routeParams', 'templateRepository', 'documentTypeService',
+  function employerLetterTemplate($scope, $location, $route, $routeParams, templateRepository, documentTypeService){
     $scope.documentType = $routeParams.type;
     $scope.addMode = $routeParams.add;
     $scope.companyId = $routeParams.company_id;
@@ -284,7 +284,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
       return _.isEmpty($scope.existingTemplateList) || $scope.addMode === 'true';
     };
 
-    var udpateExistingTemplateList = function(){
+    var updateExistingTemplateList = function(){
       templateRepository.byCompany.get({companyId:$routeParams.company_id})
         .$promise.then(function(response){
           $scope.existingTemplateList = _.sortBy(
@@ -316,11 +316,20 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
         $scope.showCreateButton = false;
         $scope.showEditButton = true;
       }
-    }
-    if(!$scope.addMode || $scope.addMode === 'false')
-    {
-      udpateExistingTemplateList();
     };
+
+    if(!$scope.addMode || $scope.addMode === 'false'){
+      updateExistingTemplateList();
+    }
+    else{
+      documentTypeService.getDocumentTypes($scope.companyId, function(types){
+        var docType = _.findWhere(types, {name:$scope.documentType});
+        if(docType){
+          $scope.templateContent = docType.default_content;
+        }
+      });
+    }
+
     $scope.modifyExistingTemplate = function(template){
       updateWithExistingTemplate(template);
     };
@@ -333,7 +342,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
       templateRepository.update.update({id: $scope.templateId}, updateObject, function(response){
         updateWithExistingTemplate(response.template);
         $location.search({add:'false', type: $scope.documentType});
-        udpateExistingTemplateList();
+        updateExistingTemplateList();
       }, function(response){
         $scope.templateCreateFailed = true;
       })
