@@ -155,7 +155,7 @@ var employerUser = employersController.controller('employerUser',
                         documentTypeService){
       var compId = $routeParams.company_id;
       $scope.employees=[];
-      $scope.addUser = {send_email:true};
+      $scope.addUser = {send_email:true, new_employee:false};
       $scope.brokers = [];
       employerWorkerRepository.get({companyId:compId})
         .$promise.then(function(response){
@@ -179,6 +179,7 @@ var employerUser = employersController.controller('employerUser',
         var apiUser = {};
         apiUser.company = compId;
         apiUser.company_user_type = userType;
+        apiUser.new_employee = viewUser.new_employee;
         apiUser.user = {};
         apiUser.user.email = viewUser.email;
         apiUser.user.first_name = viewUser.first_name;
@@ -502,7 +503,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   function($scope, $location, $routeParams, employeeFamily){
     var compId = $routeParams.company_id;
     var employeeId = $routeParams.eid;
-    $scope.employee = {id:employeeId};
+    $scope.employee = {};
     $scope.showEditButton = false;
     employeeFamily.get({userId:employeeId})
       .$promise.then(function(employeeDetail){
