@@ -23,14 +23,17 @@ fi
 # deploy code changes (and implicitly restart the app and any running workers)
 git push heroku $CIRCLE_SHA1:master
 
-heroku run cp -f Smoothbenefits/$APP_NAME-settings.py Smoothbenefits/settings.py
+# deploy the correct setting file
+heroku run cp -f Smoothbenefits/$APP_NAME-settings.py Smoothbenefits/settings.py --app $APP_NAME
 
 # run database migrations if needed and restart background workers once finished
 if test $MIGRATION_CHANGES -gt 0; then
   heroku run python manage.py makemigrations --app $APP_NAME
   heroku run python manage.py migrate --app $APP_NAME
   heroku scale worker=$PREV_WORKERS --app $APP_NAME
-  heroku restart --app $APP_NAME
 fi
+
+# force restart app to make new setting file take effects
+heroku restart --app $APP_NAME
 
 heroku maintenance:off --app $APP_NAME
