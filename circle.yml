@@ -16,4 +16,8 @@ deployment:
     branch: staging
     commands:
       - sh ./deployment.sh benefitmy-python-staging
+  demo:
+    branch: demo
+    commands:
+      - sh ./deployment.sh benefitmy-python-demo
 
