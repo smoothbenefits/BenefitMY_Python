@@ -26,15 +26,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
       .then(function(response){
         $scope.employee_id = response.user.id;
         var employeeRole = _.findWhere(response.roles, {company_user_type:'employee'});
-        if(employeeRole && !employeeRole.new_employee){
-          //we need to skip the offer letter step if the employee is existing.
-          EmployeeOnboardingValidationService($scope.employee_id, function(){
-              return $scope.employee_id;
-            }, function(redirectUrl){
-              $location.path(redirectUrl);
-            });
-        }
-        else{
+        if(employeeRole && employeeRole.new_employee){
           EmployeeLetterSignatureValidationService($scope.employee_id, 'Offer Letter', function(){
             EmployeeOnboardingValidationService($scope.employee_id, function(){
               return $scope.employee_id;
