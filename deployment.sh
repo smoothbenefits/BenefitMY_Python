@@ -24,7 +24,7 @@ fi
 git push heroku $CIRCLE_SHA1:master
 
 # deploy the correct setting file
-heroku run cp -f Smoothbenefits/$APP_NAME-settings.py Smoothbenefits/settings.py --app $APP_NAME
+heroku config:set DJANGO_SETTINGS_MODULE=Smoothbenefits.$APP_NAME-settings --app $APP_NAME
 
 # run database migrations if needed and restart background workers once finished
 if test $MIGRATION_CHANGES -gt 0; then
