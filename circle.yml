@@ -15,7 +15,5 @@ deployment:
   staging:
     branch: staging
     commands:
-      - git push git@heroku.com:benefitmy-python-staging.git $CIRCLE_SHA1:master
-      - heroku run python manage.py makemigrations --app benefitmy-python-staging
-      - heroku run python manage.py migrate --app benefitmy-python-staging
+      - sh ./deployment.sh benefitmy-python-staging
 

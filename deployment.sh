@@ -1,3 +1,4 @@
+# deployment script
 #!/bin/sh -e
 APP_NAME=$1
 
@@ -20,7 +21,7 @@ if test $MIGRATION_CHANGES -gt 0; then
 fi
 
 # deploy code changes (and implicitly restart the app and any running workers)
-git push heroku $CIRCLE_SHA1:refs/heads/master
+git push heroku $CIRCLE_SHA1:master
 
 # run database migrations if needed and restart background workers once finished
 if test $MIGRATION_CHANGES -gt 0; then
