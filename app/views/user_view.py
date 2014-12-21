@@ -15,6 +15,7 @@ from app.models.user import User
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
 from app.serializers.person_serializer import PersonFullPostSerializer
+from app.serializers.company_user_serializer import CompanyRoleSerializer
 from app.views.util_view import onboard_email
 
 
@@ -73,6 +74,10 @@ class UsersView(APIView):
         company_user = CompanyUser(company_id=request.DATA['company'],
                                    user=user,
                                    company_user_type=request.DATA['company_user_type'])
+        
+        if 'new_employee' in request.DATA:
+            company_user.new_employee = request.DATA['new_employee']
+
         company_user.save()
 
         serializer = UserSerializer(user)
@@ -99,7 +104,8 @@ class CurrentUserView(APIView):
         roles = []
         for q in company_users:
             if q.company_user_type not in roles:
-                roles.append(q.company_user_type)
+                comp_role = CompanyRoleSerializer(q)
+                roles.append(comp_role.data)
 
         serializer = UserSerializer(curUser)
         return Response({'user': serializer.data,
