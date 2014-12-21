@@ -1,0 +1,23 @@
+## configuration file for Circle continuous integration
+
+general:
+  branches:
+    ignore:
+      - master # list of branches to ignore
+      - /feature-*/ # or ignore regexes
+
+database:
+  post:
+    - psql -f data_migration/app_documenttype_data.sql
+
+
+deployment:
+  staging:
+    branch: staging
+    commands:
+      - sh ./deployment.sh benefitmy-python-staging
+  demo:
+    branch: demo
+    commands:
+      - sh ./deployment.sh benefitmy-python-demo
+
