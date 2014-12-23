@@ -3,6 +3,7 @@ from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db import transaction
+from rest_framework import status
 
 from app.models.signature import Signature
 from app.models.document_field import DocumentField
@@ -23,6 +24,11 @@ class DocumentView(APIView):
         document = self.get_documents(pk)
         serializer = DocumentSerializer(document)
         return Response(serializer.data)
+
+    def delete(self, request, pk, format=None):
+        d = self.get_documents(pk)
+        d.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CompanyDocumentView(APIView):
@@ -79,6 +85,7 @@ class UserDocumentView(APIView):
         return Response(serializer.data)
 
 
+""" This is the old document post view, let's keep it here
 @api_view(['POST'])
 @transaction.atomic
 def documents(request):
@@ -131,6 +138,7 @@ def documents(request):
 
         serializer = DocumentSerializer(d)
         return Response(serializer.data)
+"""
 
 
 class DocumentSignatureView(APIView):
@@ -145,13 +153,10 @@ class DocumentSignatureView(APIView):
 
         document = self.get_document(pk=pk)
         s = Signature(signature=request.DATA['signature'],
-                  signature_type='sign_doc',
-                  user_id=document.user.id)
+            signature_type='sign_doc',
+            user_id=document.user.id)
         s.save()
         document.signature = s
         document.save()
         serialized = DocumentSerializer(document)
         return Response(serialized.data)
-
-
-
