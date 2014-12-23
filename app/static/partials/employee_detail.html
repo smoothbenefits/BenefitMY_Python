@@ -1,7 +1,6 @@
 <div class="breadcrumb">
     <a href="/">Home</a>
     <a ng-click="backToDashboard()">{{role}} Dashboard</a>
-    <a ng-click="backToEmployeeList()">View Employees</a>
     <span>{{employee.first_name}} {{employee.last_name}}</span>
 </div>
 
@@ -78,5 +77,5 @@
             </div>
         </div>
     </div>
-    <div class="back"><a href="javascript:void(0);" ng-click="backToEmployeeList()">&laquo; Back</a></div>
+    <div class="back"><a href="javascript:void(0);" ng-click="backToList()">&laquo; Back</a></div>
 </div> <!-- content-header -->

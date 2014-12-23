@@ -125,7 +125,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
     }
 
     $scope.viewDetails = function(employeeId){
-      $location.path('/broker/employee/' + employeeId);
+      $location.path('/broker/employee/' + employeeId).search('cid', clientId);
     }
 
     $scope.back = function(){
@@ -138,6 +138,7 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
   ['$scope', '$location', '$routeParams', 'employeeFamily',
     function brokerEmployeeController($scope, $location, $routeParams, employeeFamily){
       var employeeId = $routeParams.employee_id;
+      var companyId = $routeParams.cid;
       $scope.employee = {};
       employeeFamily.get({userId:employeeId}).$promise.then(function(employeeDetail){
         $scope.employee.first_name = employeeDetail.first_name;
@@ -155,7 +156,9 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
         $location.path('/broker');
       }
 
-
+      $scope.backToList = function(){
+        $location.path('/broker/benefit/selected/' + companyId);
+      }
     }]);
 
 var addBenefitController = brokersControllers.controller(
