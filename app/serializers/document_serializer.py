@@ -5,7 +5,7 @@ from app.models.document import Document
 from app.models.document_field import DocumentField
 import re
 
-
+""" This is the old version, let's keep it here
 class DocumentSerializer(serializers.ModelSerializer):
     content = serializers.SerializerMethodField('generate_content')
     fields = DocumentFieldSerializer()
@@ -35,4 +35,12 @@ class DocumentSerializer(serializers.ModelSerializer):
                   'document_type',
                   'signature',
                   'fields')
+        depth = 1
+"""
+
+
+class DocumentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Document
         depth = 1
