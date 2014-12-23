@@ -30,6 +30,15 @@ class DocumentView(APIView):
         d.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def put(self, request, pk, format=None):
+        d = self.get_documents(pk)
+        if request.DATA['document']['name']:
+            d.name = request.DATA['document']['name']
+        if request.DATA['document']['content']:
+            d.name = request.DATA['document']['content']
+        serializer = DocumentSerializer(d)
+        return Response(serializer.data)
+
 
 class CompanyDocumentView(APIView):
     def get_documents(self, pk):
