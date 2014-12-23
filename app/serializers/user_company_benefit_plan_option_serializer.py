@@ -23,4 +23,4 @@ class UserBenefitPostSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = UserCompanyBenefitPlanOption
-        fields = ("user", "benefit", "enrolled")
+        fields = ("user", "benefit", "enrolled", "waived_benefit")
