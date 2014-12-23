@@ -23,7 +23,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="selection in selectionList | orderBy:selection.name">
-                    <td style="vertical-align: top;">{{selection.name}}</td>
+                    <td style="vertical-align: top;"><a ng-click="viewDetails(selection.userid)">{{selection.name}}</a></td>
                     <td colspan="3" style="padding: 0;">
                         <table class="table">
                             <tr ng-repeat="plan in selection.benefits">

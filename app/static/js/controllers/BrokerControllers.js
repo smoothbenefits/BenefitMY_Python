@@ -46,15 +46,15 @@ var clientsController = brokersControllers.controller('clientsController',
 );
 
 var benefitsController = brokersControllers.controller(
-   'benefitsController', 
-   ['$scope', 
-    '$location', 
-    '$routeParams', 
+   'benefitsController',
+   ['$scope',
+    '$location',
+    '$routeParams',
     'benefitDisplayService',
     function benefitController(
-     $scope, 
-     $location, 
-     $routeParams, 
+     $scope,
+     $location,
+     $routeParams,
      benefitDisplayService){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
@@ -94,6 +94,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
         _.each(benefit.enrolleds, function(enrolled){
           if (enrolled.person.relationship === 'self'){
+            displayBenefit.userid = enrolled.person.user;
             displayBenefit.name = enrolled.person.first_name + ' ' + enrolled.person.last_name;
             displayBenefit.email = enrolled.person.email;
           }
@@ -117,10 +118,14 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         existEmployee.benefits.push(benefit);
       }
       else{
-        var newEntry = { email: benefit.email, name: benefit.name, benefits: []};
+        var newEntry = { userid: benefit.userid, email: benefit.email, name: benefit.name, benefits: []};
         newEntry.benefits.push(benefit);
         $scope.selectionList.push(newEntry);
       }
+    }
+
+    $scope.viewDetails = function(employeeId){
+      $location.path('/broker/employee/' + employeeId);
     }
 
     $scope.back = function(){
@@ -128,6 +133,30 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
     };
 
 }]);
+
+var brokerEmployeeController = brokersControllers.controller('brokerEmployeeController',
+  ['$scope', '$location', '$routeParams', 'employeeFamily',
+    function brokerEmployeeController($scope, $location, $routeParams, employeeFamily){
+      var employeeId = $routeParams.employee_id;
+      $scope.employee = {};
+      employeeFamily.get({userId:employeeId}).$promise.then(function(employeeDetail){
+        $scope.employee.first_name = employeeDetail.first_name;
+        $scope.employee.last_name = employeeDetail.last_name;
+        $scope.employee.email = employeeDetail.email;
+        var selfInfo = _.findWhere(employeeDetail.family, {relationship:'self'});
+        if(selfInfo){
+          $scope.employee.birth_date = selfInfo.birth_date;
+          $scope.employee.phones = selfInfo.phones;
+          $scope.employee.addresses = selfInfo.addresses;
+        }
+      });
+
+      $scope.backToDashboard = function(){
+        $location.path('/broker');
+      }
+
+
+    }]);
 
 var addBenefitController = brokersControllers.controller(
   'addBenefitController',
