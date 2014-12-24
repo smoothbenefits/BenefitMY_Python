@@ -9,6 +9,7 @@ from app.models.company import Company
 from app.models.document_type import DocumentType
 from app.models.template import Template
 from app.serializers.template_serializer import TemplateSerializer
+from app.service.user_document_generator import UserDocumentGenerator
 
 
 class TemplateView(APIView):
@@ -41,12 +42,24 @@ class TemplateView(APIView):
         return Response({'template': serializer.data})
 
     def delete(self, request, pk, format=None):
-
         if request.method == 'DELETE':
             t = self.get_object(pk)
             t.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class TemplateFieldView(APIView):
+    def get(self, request, pk, format=None):
+        comp = Company.objects.get(pk=pk)
+        if comp:
+            generator = UserDocumentGenerator(comp, None)
+            fields = generator.get_all_template_fields()
+            ret_obj = []
+            for key in fields:
+                ret_obj.append({'key': key,'value':fields[key]})
+            return Response(ret_obj)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
 @transaction.atomic

@@ -22,6 +22,7 @@ from app.views import dashboard_view
 
 from app.views.template_view import (
     TemplateView,
+    TemplateFieldView,
     templates)
 
 from app.views.company_benefit_plan_option_view import (
@@ -80,6 +81,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/(?P<pk>[0-9]+)/signature/?$' % PREFIX, SignatureView.as_view()),
 
     url(r'^%s/templates/(?P<pk>[0-9]+)/?$' % PREFIX, TemplateView.as_view()),
+    url(r'^%s/companies/(?P<pk>[0-9]+)/template_fields/?$' % PREFIX, TemplateFieldView.as_view()),
     url(r'^%s/benefits/(?P<pk>[0-9]+)/?$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
     url(r'^%s/benefit_details/plan=(?P<pk>[0-9]+)/?$' % PREFIX, BenefitDetailsView.as_view()),
 

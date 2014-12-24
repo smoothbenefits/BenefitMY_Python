@@ -145,6 +145,7 @@ var employerUser = employersController.controller('employerUser',
    'userDocument',
    'emailRepository',
    'documentTypeService',
+   'templateRepository',
   function employerUser($scope,
                         $location,
                         $routeParams,
@@ -152,11 +153,13 @@ var employerUser = employersController.controller('employerUser',
                         usersRepository,
                         userDocument,
                         emailRepository,
-                        documentTypeService){
+                        documentTypeService,
+                        templateRepository){
       var compId = $routeParams.company_id;
       $scope.employees=[];
-      $scope.addUser = {send_email:true, new_employee:true};
+      $scope.addUser = {send_email:true, new_employee:true, create_docs:true};
       $scope.brokers = [];
+      $scope.templateFields = [];
       employerWorkerRepository.get({companyId:compId})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
@@ -169,6 +172,11 @@ var employerUser = employersController.controller('employerUser',
                 $scope.brokers.push(role);
               }
             })
+        });
+      
+      templateRepository.getAllFields.query({id:compId})
+        .$promise.then(function(fields){
+          $scope.templateFields = fields;
         });
 
       var gotoUserView = function(userType){
@@ -184,6 +192,8 @@ var employerUser = employersController.controller('employerUser',
         apiUser.user.email = viewUser.email;
         apiUser.user.first_name = viewUser.first_name;
         apiUser.user.last_name = viewUser.last_name;
+        apiUser.create_docs = viewUser.create_docs;
+        apiUser.fields = $scope.templateFields
         if(viewUser.phone)
         {
             //input phone to the apiModel here
