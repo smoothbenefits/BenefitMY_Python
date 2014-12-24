@@ -99,70 +99,13 @@ class UserDocumentView(APIView):
         return Response(serializer.data)
 
 
-""" This is the old document post view, let's keep it here
-@api_view(['POST'])
-@transaction.atomic
-def documents(request):
-    s = None
-    if request.DATA['signature']:
-        s = Signature(signature=request.DATA['signature'],
-                      user_id=request.DATA['user'])
-        s.save()
-
-    if 'template' not in request.DATA:
-        try:
-            d_type = DocumentType.objects.get(
-                name=request.DATA['document']['document_type'])
-        except DocumentType.DoesNotExist:
-            d_type = DocumentType(
-                name=request.DATA['document']['document_type'])
-
-        d = Document(company_id=request.DATA['company'],
-                     user_id=request.DATA['user'],
-                     document_type=d_type,
-                     name=request.DATA['document']['name'],
-                     signature=s
-                     )
-        d.save()
-        serializer = DocumentSerializer(d)
-        return Response(serializer.data)
-
-    else:
-        try:
-            d_type = DocumentType.objects.get(
-                name=request.DATA['document']['document_type'])
-        except DocumentType.DoesNotExist:
-            d_type = DocumentType(
-                name=request.DATA['document']['document_type'])
-
-        d = Document(company_id=request.DATA['company'],
-                     user_id=request.DATA['user'],
-                     document_type=d_type,
-                     name=request.DATA['document']['name'],
-                     template_id=request.DATA['template'],
-                     signature=s
-                     )
-        d.save()
-
-        for field in request.DATA['document']['fields']:
-            d_f = DocumentField(name=field['name'],
-                                value=field['value'],
-                                document=d)
-            d_f.save()
-
-        serializer = DocumentSerializer(d)
-        return Response(serializer.data)
-"""
-
-
-def _generate_content(self, template_id, document_type, fields):
+def _generate_content(template_id, document_type, fields):
     """Generate doc content according to given template, document_type, fields
     """
     try:
         template = Template.objects.get(pk=template_id)
     except Document.DoesNotExist:
         raise Http404
-
     content = template.content
     if not content:
         content = document_type.default_content
@@ -172,7 +115,6 @@ def _generate_content(self, template_id, document_type, fields):
     for f in field_names:
         if f in fields_dict:
             content = content.replace("{{%s}}" % f, fields_dict[f])
-
     return content
 
 
@@ -184,36 +126,35 @@ def documents(request):
         s = Signature(signature=request.DATA['signature'],
                       user_id=request.DATA['user'])
         s.save()
+    try:
+        d_type = DocumentType.objects.get(
+            name=request.DATA['document']['document_type'])
+    except DocumentType.DoesNotExist:
+        d_type = DocumentType(
+            name=request.DATA['document']['document_type'])
 
-        try:
-            d_type = DocumentType.objects.get(
-                name=request.DATA['document']['document_type'])
-        except DocumentType.DoesNotExist:
-            d_type = DocumentType(
-                name=request.DATA['document']['document_type'])
+    if 'template' not in request.DATA:
+        d = Document(company_id=request.DATA['company'],
+                     user_id=request.DATA['user'],
+                     document_type=d_type,
+                     name=request.DATA['document']['name'],
+                     signature=s,
+                     content=request.DATA['document']['content']
+                     )
+    else:
+        d = Document(company_id=request.DATA['company'],
+                     user_id=request.DATA['user'],
+                     document_type=d_type,
+                     name=request.DATA['document']['name'],
+                     content=_generate_content(request.DATA['template'],
+                                               d_type,
+                                               request.DATA['document']['fields']),
+                     signature=s
+                     )
 
-        if 'template' not in request.DATA:
-            d = Document(company_id=request.DATA['company'],
-                         user_id=request.DATA['user'],
-                         document_type=d_type,
-                         name=request.DATA['document']['name'],
-                         signature=s,
-                         content=request.DATA['document']['content']
-                         )
-        else:
-            d = Document(company_id=request.DATA['company'],
-                         user_id=request.DATA['user'],
-                         document_type=d_type,
-                         name=request.DATA['document']['name'],
-                         content=_generate_content(request.DATA['template'],
-                                                   d_type,
-                                                   request.DATA['document']['fields']),
-                         signature=s
-                         )
-
-        d.save()
-        serializer = DocumentSerializer(d)
-        return Response(serializer.data)
+    d.save()
+    serializer = DocumentSerializer(d)
+    return Response(serializer.data)
 
 
 class DocumentSignatureView(APIView):
