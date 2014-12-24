@@ -5,6 +5,7 @@ from app.models.document import Document
 from app.models.document_field import DocumentField
 import re
 
+
 class DocumentSerializer(serializers.ModelSerializer):
 
     class Meta:
