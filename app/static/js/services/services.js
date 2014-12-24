@@ -119,7 +119,8 @@ benefitmyService.factory('templateRepository', ['$resource',
       }),
       create: $resource('/api/v1/templates/',{}),
       byCompany: $resource('/api/v1/companies/:companyId/templates/', {companyId:'@company_id'}),
-      getById: $resource('/api/v1/templates/:id', {id:'@id'})
+      getById: $resource('/api/v1/templates/:id', {id:'@id'}),
+      getAllFields: $resource('/api/v1/companies/:id/template_fields/', {id:'@id'})
     };
   }
 ]);

@@ -17,6 +17,7 @@ from app.serializers.user_serializer import UserFamilySerializer
 from app.serializers.person_serializer import PersonFullPostSerializer
 from app.serializers.company_user_serializer import CompanyRoleSerializer
 from app.views.util_view import onboard_email
+from app.service.user_document_generator import UserDocumentGenerator
 
 
 class UserView(APIView):
@@ -38,7 +39,6 @@ class UsersView(APIView):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response({'users': serializer.data})
-
 
     @transaction.atomic
     def post(self, request, format=None):
@@ -81,14 +81,28 @@ class UsersView(APIView):
         company_user.save()
 
         serializer = UserSerializer(user)
-        try:
-            onboard_email("%s %s" % (user.first_name, user.last_name),
-                          request.DATA['company'],
-                          request.DATA['user']['email'],
-                          user.id
-                          )
-        except StandardError:
-            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+
+        if company_user.company_user_type == 'employee':
+            # now try to create the onboard email for this user. 
+            try:
+                onboard_email("%s %s" % (user.first_name, user.last_name),
+                              request.DATA['company'],
+                              request.DATA['user']['email'],
+                              user.id
+                              )
+            except StandardError:
+                return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+            if ('create_docs' in request.DATA and 
+                'fields' in request.DATA and
+                request.DATA['create_docs']):
+                #Let's create the documents for this new user
+                try:
+                    doc_gen = UserDocumentGenerator(company_user.company, user)
+                    doc_gen.generate_all_document(request.DATA['fields'])
+                except Exception as e:
+                    print "Exception happend on User Document Generation! Exception is {}".format(e)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
