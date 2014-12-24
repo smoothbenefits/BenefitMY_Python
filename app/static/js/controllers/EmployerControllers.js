@@ -20,7 +20,7 @@ var employerHome = employersController.controller('employerHome',
                         documentRepository,
                         templateRepository,
                         benefitListRepository,
-                        countRepository, 
+                        countRepository,
                         documentTypeService){
 
     $scope.employeeCount = 0;
@@ -137,20 +137,20 @@ var employerHome = employersController.controller('employerHome',
 ]);
 
 var employerUser = employersController.controller('employerUser',
-  ['$scope', 
-   '$location', 
-   '$routeParams', 
-   'employerWorkerRepository', 
-   'usersRepository', 
-   'userDocument', 
+  ['$scope',
+   '$location',
+   '$routeParams',
+   'employerWorkerRepository',
+   'usersRepository',
+   'userDocument',
    'emailRepository',
    'documentTypeService',
-  function employerUser($scope, 
-                        $location, 
-                        $routeParams, 
-                        employerWorkerRepository, 
-                        usersRepository, 
-                        userDocument, 
+  function employerUser($scope,
+                        $location,
+                        $routeParams,
+                        employerWorkerRepository,
+                        usersRepository,
+                        userDocument,
                         emailRepository,
                         documentTypeService){
       var compId = $routeParams.company_id;
@@ -496,10 +496,7 @@ var employerViewLetter = employersController.controller('employerViewLetter',
   }]);
 
 var employerViewEmployeeDetail = employersController.controller('employerViewEmployeeDetail',
-                                                                ['$scope',
-                                                                 '$location',
-                                                                 '$routeParams',
-                                                                 'employeeFamily',
+  ['$scope', '$location', '$routeParams', 'employeeFamily',
   function($scope, $location, $routeParams, employeeFamily){
     var compId = $routeParams.company_id;
     var employeeId = $routeParams.eid;
@@ -526,7 +523,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       $location.path('/admin');
     };
 
-    $scope.backToEmployeeList = function(){
+    $scope.backToList = function(){
       $location.path('/admin/employee/' + compId);
     }
 }]);
