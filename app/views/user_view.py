@@ -94,13 +94,11 @@ class UsersView(APIView):
             except StandardError:
                 return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-            print "check if we create docs"
             if ('create_docs' in request.DATA and 
                 'fields' in request.DATA and
                 request.DATA['create_docs']):
                 #Let's create the documents for this new user
                 try:
-                    print "start to actually create the documents"
                     doc_gen = UserDocumentGenerator(company_user.company, user)
                     doc_gen.generate_all_document(request.DATA['fields'])
                 except Exception as e:

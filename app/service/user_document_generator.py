@@ -49,9 +49,7 @@ class UserDocumentGenerator(object):
 
 
     def generate_all_document(self, field_values):
-        print "Calling in create all docs"
         for d_type in DocumentType.objects.all():
-            print "start to create document for {}".format(d_type.name)
             # For each document type
             # We need to get the template associated with the document type
             content = self._get_latest_template_content_by_doc_type(d_type)
@@ -64,7 +62,6 @@ class UserDocumentGenerator(object):
                         value = value_pair['value']
                         break
                 content = content.replace("{{%s}}" % field_key, value)
-            print "Finished replacing all the content: {}".format(content)
             #Create a new document based on type
             doc = Document(company_id=self.company.id,
                            user_id=self.user.id,
@@ -74,4 +71,3 @@ class UserDocumentGenerator(object):
                            signature=None
                           ) 
             doc.save()
-            print "document saved!"
