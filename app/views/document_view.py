@@ -128,35 +128,35 @@ def documents(request):
                       user_id=request.DATA['user'])
         s.save()
 
-        try:
-            d_type = DocumentType.objects.get(
-                name=request.DATA['document']['document_type'])
-        except DocumentType.DoesNotExist:
-            d_type = DocumentType(
-                name=request.DATA['document']['document_type'])
+    try:
+        d_type = DocumentType.objects.get(
+            name=request.DATA['document']['document_type'])
+    except DocumentType.DoesNotExist:
+        d_type = DocumentType(
+            name=request.DATA['document']['document_type'])
 
-        if 'template' not in request.DATA:
-            d = Document(company_id=request.DATA['company'],
-                         user_id=request.DATA['user'],
-                         document_type=d_type,
-                         name=request.DATA['document']['name'],
-                         signature=s,
-                         content=request.DATA['document']['content']
-                         )
-        else:
-            d = Document(company_id=request.DATA['company'],
-                         user_id=request.DATA['user'],
-                         document_type=d_type,
-                         name=request.DATA['document']['name'],
-                         content=_generate_content(request.DATA['template'],
-                                                   d_type,
-                                                   request.DATA['document']['fields']),
-                         signature=s
-                         )
+    if 'template' not in request.DATA:
+        d = Document(company_id=request.DATA['company'],
+                     user_id=request.DATA['user'],
+                     document_type=d_type,
+                     name=request.DATA['document']['name'],
+                     signature=s,
+                     content=request.DATA['document']['content']
+                     )
+    else:
+        d = Document(company_id=request.DATA['company'],
+                     user_id=request.DATA['user'],
+                     document_type=d_type,
+                     name=request.DATA['document']['name'],
+                     content=_generate_content(request.DATA['template'],
+                                               d_type,
+                                               request.DATA['document']['fields']),
+                     signature=s
+                     )
 
-        d.save()
-        serializer = DocumentSerializer(d)
-        return Response(serializer.data)
+    d.save()
+    serializer = DocumentSerializer(d)
+    return Response(serializer.data)
 
 
 class DocumentSignatureView(APIView):
