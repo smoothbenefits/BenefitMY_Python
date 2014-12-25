@@ -64,4 +64,4 @@ staticfiles/
 .DS_Store
 
 # Database files
-app/migrations
+# app/migrations
