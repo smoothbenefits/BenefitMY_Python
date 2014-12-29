@@ -19,6 +19,9 @@ class UserCompanyBenefitPlanOption(models.Model):
         blank=True,
         null=True)
 
+    pcp = models.CharField(max_length=30,
+                           blank=True,
+                           null=True)
     created_at = models.DateTimeField(auto_now_add=True,
                                       blank=True,
                                       null=True)
