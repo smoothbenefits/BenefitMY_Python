@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from django.http import Http404
 
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from django.db import transaction
@@ -10,7 +9,6 @@ from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOp
 from app.serializers.user_company_benefit_plan_option_serializer import (
     UserCompanyBenefitPlanOptionSerializer)
 from app.models.company_user import CompanyUser
-
 
 
 class UserCompanyBenefitPlanOptionView(APIView):
@@ -29,8 +27,14 @@ class UserCompanyBenefitPlanOptionView(APIView):
     def _add_user_benefits(self, request, pk):
         for benefit in request.DATA['benefits']:
             enroll_list = [ids["id"] for ids in benefit["enrolleds"]]
-            u = UserCompanyBenefitPlanOption(user_id=pk,
-                benefit_id=benefit['benefit']['id'])
+            if benefit['benefit']['pcp']:
+                pcp_id = benefit['benefit']['pcp']
+            else:
+                pcp_id = ''
+            u = UserCompanyBenefitPlanOption(
+                    user_id=pk,
+                    benefit_id=benefit['benefit']['id'],
+                    pcp = pcp_id)
             u.save()
             for e in enroll_list:
                 enrolled = Enrolled(user_company_benefit_plan_option=u,
@@ -50,9 +54,8 @@ class UserCompanyBenefitPlanOptionView(APIView):
         return Response({'benefits': serializer.data})
 
 
-
 class CompanyUsersBenefitPlanOptionView(APIView):
-    """ benefit for all employees in acompany """
+    """ benefit for all employees in a company """
     def _get_users_id(self, pk):
         users_id = []
         users = CompanyUser.objects.filter(company=pk,
