@@ -1,0 +1,94 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource: document
+resource_url: /api/v1/documents
+description: >
+  Create a document for a specified user. submit signature with the doc
+
+  All non-automatic fields in the specified template (if any) must be present.
+  Automatic fields are:
+    FullName - full name of user (from user record)
+    Email - email of user (from user record)
+    CompanyName - name of company (from company record)
+  To create a document from a template, include the template parameter to specify which template to use, and include the fields list to define values for all the fields required by the specified template. Do not include content, it will be auto-generated from the template and field names/values. The edited parameter will be automatically set to "false" to indicate that content is from a template.
+  To create a document without a template, do not include the template parameter or fields list, but include the content parameter to specify the content of the document. No field substitution will be made on the content. The edited parameter will be automatically set to "true" to indicate that content is not from a template.
+
+parameters:
+post--> add new doc
+sample_url: /api/v1/documents
+
+
+  {
+    "company": 2,
+    "user": 2,
+    "signature": 4,
+    "document": {
+      "document_type": "Offer Letter",
+      "name": "Offer Letter for Joe Smith",
+      "content": "content222"
+    }
+  }
+
+
+parameters:
+put--> update doc
+sample_url: /api/v1/documents/1
+
+  {
+    "company": 2,
+    "user": 2,
+    "signature": 4,
+    "document": {
+      "document_type": "Offer Letter",
+      "name": "Offer Letter for Joe Smith",
+      "content": "content222"
+    }
+  }
+
+
+parameters:
+delete--> delete doc
+sample_url: /api/v1/documents/1
+
+
+
+sample_response: |
+{
+    "id": 4, 
+    "company": {
+        "id": 2, 
+        "name": "Startup.com"
+    }, 
+    "user": {
+        "id": 2, 
+        "password": "pbkdf2_sha256$12000$dXE4eFXDMmTz$+c+n2GGWHBUmoCQaGVL5NfteZWJa7LUKYwqc87jjiY0=", 
+        "last_login": "2014-12-30T04:10:44.478Z", 
+        "is_superuser": false, 
+        "username": "user2", 
+        "first_name": "Frank", 
+        "last_name": "Derekson", 
+        "email": "user2@benefitmy.com", 
+        "is_staff": false, 
+        "is_active": true, 
+        "date_joined": "2014-12-30T04:10:44.478Z", 
+        "groups": [], 
+        "user_permissions": []
+    }, 
+    "document_type": {
+        "id": 1, 
+        "name": "Offer Letter", 
+        "default_content": "offer default content"
+    }, 
+    "signature": {
+        "id": 3, 
+        "signature": "s1", 
+        "signature_type": "", 
+        "user": 2, 
+        "created_at": "2014-12-30T04:41:24.704Z"
+    }, 
+    "name": "Offer Letter for Joe Smith", 
+    "edited": false, 
+    "content": "content555"
+}
