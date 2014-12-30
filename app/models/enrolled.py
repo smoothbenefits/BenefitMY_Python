@@ -9,3 +9,7 @@ class Enrolled(models.Model):
         related_name="enrolleds")
     person = models.ForeignKey(Person,
                                related_name="enrolleds")
+
+    pcp = models.CharField(max_length=30,
+                           blank=True,
+                           null=True)
