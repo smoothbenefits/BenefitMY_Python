@@ -20,7 +20,7 @@ var employerHome = employersController.controller('employerHome',
                         documentRepository,
                         templateRepository,
                         benefitListRepository,
-                        countRepository, 
+                        countRepository,
                         documentTypeService){
 
     $scope.employeeCount = 0;
@@ -137,26 +137,29 @@ var employerHome = employersController.controller('employerHome',
 ]);
 
 var employerUser = employersController.controller('employerUser',
-  ['$scope', 
-   '$location', 
-   '$routeParams', 
-   'employerWorkerRepository', 
-   'usersRepository', 
-   'userDocument', 
+  ['$scope',
+   '$location',
+   '$routeParams',
+   'employerWorkerRepository',
+   'usersRepository',
+   'userDocument',
    'emailRepository',
    'documentTypeService',
-  function employerUser($scope, 
-                        $location, 
-                        $routeParams, 
-                        employerWorkerRepository, 
-                        usersRepository, 
-                        userDocument, 
+   'templateRepository',
+  function employerUser($scope,
+                        $location,
+                        $routeParams,
+                        employerWorkerRepository,
+                        usersRepository,
+                        userDocument,
                         emailRepository,
-                        documentTypeService){
+                        documentTypeService,
+                        templateRepository){
       var compId = $routeParams.company_id;
       $scope.employees=[];
-      $scope.addUser = {send_email:true};
+      $scope.addUser = {send_email:true, new_employee:true, create_docs:true};
       $scope.brokers = [];
+      $scope.templateFields = [];
       employerWorkerRepository.get({companyId:compId})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
@@ -170,6 +173,11 @@ var employerUser = employersController.controller('employerUser',
               }
             })
         });
+      
+      templateRepository.getAllFields.query({id:compId})
+        .$promise.then(function(fields){
+          $scope.templateFields = fields;
+        });
 
       var gotoUserView = function(userType){
         $location.path('/admin/' + userType + '/' + compId);
@@ -179,10 +187,13 @@ var employerUser = employersController.controller('employerUser',
         var apiUser = {};
         apiUser.company = compId;
         apiUser.company_user_type = userType;
+        apiUser.new_employee = viewUser.new_employee;
         apiUser.user = {};
         apiUser.user.email = viewUser.email;
         apiUser.user.first_name = viewUser.first_name;
         apiUser.user.last_name = viewUser.last_name;
+        apiUser.create_docs = viewUser.create_docs;
+        apiUser.fields = $scope.templateFields
         if(viewUser.phone)
         {
             //input phone to the apiModel here
@@ -495,14 +506,11 @@ var employerViewLetter = employersController.controller('employerViewLetter',
   }]);
 
 var employerViewEmployeeDetail = employersController.controller('employerViewEmployeeDetail',
-                                                                ['$scope',
-                                                                 '$location',
-                                                                 '$routeParams',
-                                                                 'employeeFamily',
+  ['$scope', '$location', '$routeParams', 'employeeFamily',
   function($scope, $location, $routeParams, employeeFamily){
     var compId = $routeParams.company_id;
     var employeeId = $routeParams.eid;
-    $scope.employee = {id:employeeId};
+    $scope.employee = {};
     $scope.showEditButton = false;
     employeeFamily.get({userId:employeeId})
       .$promise.then(function(employeeDetail){
@@ -525,7 +533,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       $location.path('/admin');
     };
 
-    $scope.backToEmployeeList = function(){
+    $scope.backToList = function(){
       $location.path('/admin/employee/' + compId);
     }
 }]);

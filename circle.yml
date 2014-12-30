@@ -8,7 +8,7 @@ general:
 
 database:
   post:
-    - psql -f data_migration/app_documenttype_data.sql
+    - sh ./data_migration.sh ./data_migration
 
 
 deployment:

@@ -1,0 +1,22 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: POST
+resource: user
+resource_url: api/v1/users/:id/waived_benefits
+description: >
+  Create waived benefits for a user
+
+parameters:
+sample_url: /api/v1/users/207119551/waived_benefits
+
+benefits should be one of {1: 'Medical',
+                           2: 'Dental',
+                           3: 'Vision'}
+
+sample_request: |
+  {
+      "company": 1,
+      "benefit_type": 2
+  } 
+

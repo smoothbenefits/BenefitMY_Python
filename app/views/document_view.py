@@ -3,11 +3,14 @@ from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db import transaction
+from rest_framework import status
+import re
 
 from app.models.signature import Signature
 from app.models.document_field import DocumentField
 from app.models.document_type import DocumentType
 from app.models.document import Document
+from app.models.template import Template
 from app.serializers.document_serializer import (
     DocumentSerializer)
 
@@ -22,6 +25,23 @@ class DocumentView(APIView):
     def get(self, request, pk, format=None):
         document = self.get_documents(pk)
         serializer = DocumentSerializer(document)
+        return Response(serializer.data)
+
+    def delete(self, request, pk, format=None):
+        d = self.get_documents(pk)
+        d.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, pk, format=None):
+        """ only allow to update document name and content"""
+
+        d = self.get_documents(pk)
+        if request.DATA['document']['name']:
+            d.name = request.DATA['document']['name']
+        if request.DATA['document']['content']:
+            d.name = request.DATA['document']['content']
+        d.save()
+        serializer = DocumentSerializer(d)
         return Response(serializer.data)
 
 
@@ -79,6 +99,26 @@ class UserDocumentView(APIView):
         return Response(serializer.data)
 
 
+
+def _generate_content(template_id, document_type, fields):
+    """Generate doc content according to given template, document_type, fields
+    """
+    try:
+        template = Template.objects.get(pk=template_id)
+    except Document.DoesNotExist:
+        raise Http404
+    content = template.content
+    if not content:
+        content = document_type.default_content
+
+    field_names = re.findall('{{(.*?)}}', content)
+    fields_dict = {f['name']: f['value'] for f in fields}
+    for f in field_names:
+        if f in fields_dict:
+            content = content.replace("{{%s}}" % f, fields_dict[f])
+    return content
+
+
 @api_view(['POST'])
 @transaction.atomic
 def documents(request):
@@ -88,49 +128,35 @@ def documents(request):
                       user_id=request.DATA['user'])
         s.save()
 
+    try:
+        d_type = DocumentType.objects.get(
+            name=request.DATA['document']['document_type'])
+    except DocumentType.DoesNotExist:
+        d_type = DocumentType(
+            name=request.DATA['document']['document_type'])
+
     if 'template' not in request.DATA:
-        try:
-            d_type = DocumentType.objects.get(
-                name=request.DATA['document']['document_type'])
-        except DocumentType.DoesNotExist:
-            d_type = DocumentType(
-                name=request.DATA['document']['document_type'])
-
         d = Document(company_id=request.DATA['company'],
                      user_id=request.DATA['user'],
                      document_type=d_type,
                      name=request.DATA['document']['name'],
-                     signature=s
+                     signature=s,
+                     content=request.DATA['document']['content']
                      )
-        d.save()
-        serializer = DocumentSerializer(d)
-        return Response(serializer.data)
-
     else:
-        try:
-            d_type = DocumentType.objects.get(
-                name=request.DATA['document']['document_type'])
-        except DocumentType.DoesNotExist:
-            d_type = DocumentType(
-                name=request.DATA['document']['document_type'])
-
         d = Document(company_id=request.DATA['company'],
                      user_id=request.DATA['user'],
                      document_type=d_type,
                      name=request.DATA['document']['name'],
-                     template_id=request.DATA['template'],
+                     content=_generate_content(request.DATA['template'],
+                                               d_type,
+                                               request.DATA['document']['fields']),
                      signature=s
                      )
-        d.save()
 
-        for field in request.DATA['document']['fields']:
-            d_f = DocumentField(name=field['name'],
-                                value=field['value'],
-                                document=d)
-            d_f.save()
-
-        serializer = DocumentSerializer(d)
-        return Response(serializer.data)
+    d.save()
+    serializer = DocumentSerializer(d)
+    return Response(serializer.data)
 
 
 class DocumentSignatureView(APIView):
@@ -145,13 +171,10 @@ class DocumentSignatureView(APIView):
 
         document = self.get_document(pk=pk)
         s = Signature(signature=request.DATA['signature'],
-                  signature_type='sign_doc',
-                  user_id=document.user.id)
+            signature_type='sign_doc',
+            user_id=document.user.id)
         s.save()
         document.signature = s
         document.save()
         serialized = DocumentSerializer(document)
         return Response(serialized.data)
-
-
-

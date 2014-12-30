@@ -27,11 +27,9 @@ git push heroku $CIRCLE_SHA1:master
 heroku config:set DJANGO_SETTINGS_MODULE=Smoothbenefits.$APP_NAME-settings --app $APP_NAME
 
 # run database migrations if needed and restart background workers once finished
-if test $MIGRATION_CHANGES -gt 0; then
-  heroku run python manage.py makemigrations --app $APP_NAME
-  heroku run python manage.py migrate --app $APP_NAME
-  heroku scale worker=$PREV_WORKERS --app $APP_NAME
-fi
+heroku run python manage.py makemigrations --app $APP_NAME
+heroku run python manage.py migrate --app $APP_NAME
+heroku scale worker=$PREV_WORKERS --app $APP_NAME
 
 # force restart app to make new setting file take effects
 heroku restart --app $APP_NAME
