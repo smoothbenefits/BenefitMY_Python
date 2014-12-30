@@ -326,14 +326,14 @@ var employeeBenefitSignup = employeeControllers.controller(
                 if (type === 'Vision'){
                   typeKey = 3;
                 }
-                saveRequest.waived.push({company: companyId, benefit_type: typeKey});
+                saveRequest.waived.push({company: companyId, benefit_type: typeKey, type_name: type});
               }
             });
 
           if (saveRequest.waived.length > 0){
             _.each(saveRequest.waived, function(waivedPlan){
               employeeBenefits.waive().save({userId: employeeId}, waivedPlan, function(){
-                alert('Wavied ' + waivedPlan.benefit_type);
+                alert('Wavied ' + waivedPlan.type_name);
               }, function(){
                 $scope.savedSuccess = false;
               });
