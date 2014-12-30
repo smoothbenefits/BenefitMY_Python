@@ -34,10 +34,19 @@ var findViewController = userControllers.controller('findViewController',
         }
       }
 
-      currentUser.get()
-      .$promise.then(function(response){
-          determineDashboardLocation(response.roles);
-       });
+      var userPromise = currentUser.get()
+        .$promise.then(function(response)
+             {
+                currentUser = response.user;
+                return currentUser;
+             }
+        );
+      userPromise.then(function(user){
+        clientListRepository.get({userId:user.id})
+          .$promise.then(function(response){
+            determineDashboardLocation(response.company_roles);
+          });
+      });
     }
 ]);
 
@@ -46,11 +55,16 @@ var userController = userControllers.controller('userController', ['$scope', '$h
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var userPromise = currentUser.get()
-      .$promise.then(function(response){
-          $scope.curUser = response.user;
-          $scope.currentRoleList = response.roles;
-       });
-    
+        .$promise.then(function(response){
+              $scope.curUser = response.user;
+              return $scope.curUser;
+           });
+    userPromise.then(function(user){
+      clientListRepository.get({userId:user.id})
+        .$promise.then(function(response){
+          $scope.currentRoleList = response.company_roles;
+        })
+      });
     $scope.isRoleActive = function(checkRole){
       var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});
       return !_.isUndefined(roleFind);

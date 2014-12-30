@@ -72,21 +72,9 @@ benefitmyService.factory('employerRepository', ['$resource',
   }
 ]);
 
-benefitmyService.factory('employeeBenefits',
-  ['$resource',
+benefitmyService.factory('employeeBenefits', ['$resource',
   function($resource){
-    function enroll(){
-      return $resource('/api/v1/users/:userId/benefits?company=:companyId', {userId: 'employee_id', companyId:'@company_id'});
-    }
-
-    function waive(){
-      return $resource('/api/v1/users/:userId/waived_benefits', {userId: '@userid'});
-    }
-
-    return {
-      enroll: enroll,
-      waive: waive
-    };
+    return $resource('/api/v1/users/:userId/benefits?company=:companyId', {userId: 'employee_id', companyId:'@company_id'})
   }]);
 
 benefitmyService.factory('employerWorkerRepository', ['$resource',
@@ -131,8 +119,7 @@ benefitmyService.factory('templateRepository', ['$resource',
       }),
       create: $resource('/api/v1/templates/',{}),
       byCompany: $resource('/api/v1/companies/:companyId/templates/', {companyId:'@company_id'}),
-      getById: $resource('/api/v1/templates/:id', {id:'@id'}),
-      getAllFields: $resource('/api/v1/companies/:id/template_fields/', {id:'@id'})
+      getById: $resource('/api/v1/templates/:id', {id:'@id'})
     };
   }
 ]);
@@ -337,9 +324,9 @@ benefitmyService.factory('EmployeeLetterSignatureValidationService',
   }]);
 
 benefitmyService.factory('benefitDisplayService',
-  ['benefitListRepository',
+  ['benefitListRepository', 
    'benefitDetailsRepository',
-   function(benefitListRepository,
+   function(benefitListRepository, 
             benefitDetailsRepository){
     return function(companyId, isEmployeeView, populatedFunc){
 
@@ -369,7 +356,7 @@ benefitmyService.factory('benefitDisplayService',
 
 
         var convertToDisplayGroup = function(group, medicalArray){
-
+          
 
           var optionNameList = [];
           _.each(medicalArray, function(benefit){
@@ -379,8 +366,8 @@ benefitmyService.factory('benefitDisplayService',
               }
             });
           });
-
-
+          
+          
           var policyKeyArray = [];
           _.each(medicalArray, function(benefit){
             _.each(benefit.detailsArray, function(detail){
@@ -392,7 +379,7 @@ benefitmyService.factory('benefitDisplayService',
           });
 
           _.each(medicalArray, function(benefit){
-
+            
             if(!group.benefitNameArray){
               group.benefitNameArray = [];
             }
@@ -443,7 +430,7 @@ benefitmyService.factory('benefitDisplayService',
               groupOption.benefitCostArray.push({colspan:optionColSpan, value:employeeCostValue});
             });
 
-            //now work on the benefit policies
+            //now work on the benefit policies    
             var policyTypeArray = [];
             if(benefit.detailsArray.length > 0){
               _.each(benefit.detailsArray, function(detailItem){
@@ -454,7 +441,7 @@ benefitmyService.factory('benefitDisplayService',
             }
             else{
               policyTypeArray.push('');
-            }
+            } 
 
             if(!group.policyNameArray){
               group.policyNameArray = [];
@@ -476,19 +463,19 @@ benefitmyService.factory('benefitDisplayService',
               }
               _.each(policyTypeArray, function(policyType){
                 var foundBenefitDetail = _.find(benefit.detailsArray, function(benefitDetailItem){
-                  return benefitDetailItem.benefit_policy_type.name === policyType &&
+                  return benefitDetailItem.benefit_policy_type.name === policyType && 
                     benefitDetailItem.benefit_policy_key.id === policyKeyItem.id;
                 });
                 if(foundBenefitDetail){
                   policyListMember.valueArray.push({colspan:6/policyTypeArray.length, value:foundBenefitDetail.value});
                 }else{
                   policyListMember.valueArray.push({colspan:6/policyTypeArray.length, value:'N/A'});
-                }
+                }   
               });
             });
-
+            
           });
-
+          
 
         };
 
@@ -578,10 +565,10 @@ benefitmyService.factory('benefitDisplayService',
                   });
                 }
                 else if(populatedFunc){
-                  populatedFunc(medicalBenefitGroup, nonMedicalBenefitArray,
+                  populatedFunc(medicalBenefitGroup, nonMedicalBenefitArray, 
                                 calculateBenefitCount(medicalBenefitGroup, nonMedicalBenefitArray));
                 }
-
+                
             });
     };
 }]);
