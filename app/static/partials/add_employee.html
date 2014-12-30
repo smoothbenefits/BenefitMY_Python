@@ -53,16 +53,7 @@
                   <span ng-show="form.employee_email.$error.email">Not a valid email address</span>
                 </div>
             </div>
-            
-           <div class="checkbox">
-                <label>
-                    <input type="checkbox"
-                        name="is_employee_new"
-                        ng-model="addUser.new_employee"
-                        ng-require="false">
-                        New Employee
-                </label>
-            </div>
+
             <div class="checkbox">
                 <label>
                     <input type="checkbox"
@@ -72,29 +63,7 @@
                     Send email to Employee to sign up
                 </label>
             </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"
-                        name="employee_create_docs"
-                        ng-model="addUser.create_docs"
-                        ng-require="false"/>
-                    Auto create all documents
-                </label>
-            </div>
-            <div class="template-field-section" ng-show="addUser.create_docs">
-                Fill out the fields below, so we can create all the documents
-                <div ng-repeat="field in templateFields">
-                    <div class="form-label">
-                        {{field.key}}
-                    </div>
-                    <div class="textbox">
-                        <input type="text"
-                            name="{{field.value}}"
-                            ng-model="field.value"
-                            ng-required="false">
-                    </div>
-                </div>
-            </div>
+
             <div class="submit-box">
                 <button ng-click="createUser('employee')" class="btn green" ng-disabled="form.$invalid">Add Employee</button>
             </div>
