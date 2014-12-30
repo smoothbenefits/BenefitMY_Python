@@ -7,7 +7,6 @@ from rest_framework import status
 import re
 
 from app.models.signature import Signature
-from app.models.document_field import DocumentField
 from app.models.document_type import DocumentType
 from app.models.document import Document
 from app.models.template import Template
@@ -39,7 +38,7 @@ class DocumentView(APIView):
         if request.DATA['document']['name']:
             d.name = request.DATA['document']['name']
         if request.DATA['document']['content']:
-            d.name = request.DATA['document']['content']
+            d.content = request.DATA['document']['content']
         d.save()
         serializer = DocumentSerializer(d)
         return Response(serializer.data)
@@ -97,7 +96,6 @@ class UserDocumentView(APIView):
         documents = self.get_documents(pk)
         serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data)
-
 
 
 def _generate_content(template_id, document_type, fields):
