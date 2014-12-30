@@ -27,7 +27,7 @@ class UserCompanyBenefitPlanOptionView(APIView):
     def _add_user_benefits(self, request, pk):
         for benefit in request.DATA['benefits']:
             enroll_list = [ids["id"] for ids in benefit["enrolleds"]]
-            if benefit['benefit']['pcp']:
+            if 'pcp' in benefit['benefit'] and benefit['benefit']['pcp']:
                 pcp_id = benefit['benefit']['pcp']
             else:
                 pcp_id = ''
