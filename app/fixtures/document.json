@@ -60,7 +60,7 @@
       "fields":{
       "company": 1,
       "user": 3,
-      "template": 1,
+      "content": "content1",
       "document_type": 1,
       "name": "User5 Offer Letter"
       }
@@ -71,7 +71,7 @@
       "fields":{
       "company": 1,
       "user": 3,
-      "template": 2,
+      "content": "content2",
       "document_type": 2,
       "name": "User5 Employee Agreement"
     }},
@@ -82,7 +82,7 @@
       "company": 1,
       "user": 4,
       "document_type": 1,
-      "template": 1,
+      "content": "content3",
       "name": "User4 Offer Letter"
     }}
   ]
