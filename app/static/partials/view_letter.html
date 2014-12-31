@@ -28,7 +28,7 @@
                     <td>{{doc.name}}</td>
                     <td>{{doc.template.name}}</td>
                     <td>
-                        <span class="btn inline" ng-click="viewExistingLetter(doc)">View or Update</span>
+                        <span class="btn inline" ng-click="viewExistingLetter(doc)">View</span>
                         <span class="btn inline" ng-click="deleteExistingLetter(doc)">Delete</span>
                     </td>
                 </tr>
@@ -52,7 +52,7 @@
                 <button type="button"
                     ng-disabled="signaturePresent"
                     class="btn green"
-                    ng-click="updateExistingLetter()">Update Document</button>
+                    ng-click="updateExistingLetter()">Update</button>
             </div>
         </div>
         <div class="signature-display-container" ng-show="signaturePresent">
