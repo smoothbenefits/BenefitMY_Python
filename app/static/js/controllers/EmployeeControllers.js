@@ -288,7 +288,8 @@ var employeeBenefitSignup = employeeControllers.controller(
               var requestBenefit = {
                 benefit:{
                   id:benefitTypePlan.selected.benefit.id,
-                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
+                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name,
+                  pcp:benefitTypePlan.selected.pcp
                 },
                 enrolleds:enrolledList
               };
