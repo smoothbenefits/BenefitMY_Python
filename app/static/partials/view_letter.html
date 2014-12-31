@@ -27,7 +27,10 @@
                 <tr ng-repeat="doc in documentList">
                     <td>{{doc.name}}</td>
                     <td>{{doc.template.name}}</td>
-                    <td><span class="btn inline" ng-click="viewExistingLetter(doc)">View</span></td>
+                    <td>
+                        <span class="btn inline" ng-click="viewExistingLetter(doc)">View or Update</span>
+                        <span class="btn inline" ng-click="deleteExistingLetter(doc)">Delete</span>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -38,12 +41,19 @@
             <span class="panel-title">{{activeDocument.name}}</span>
         </div>
         <div class="panel-body">
-            <textarea 
-                name="document_content" 
-                readonly="true" 
-                wrap="true" 
+            <textarea
+                class="col-md-12"
+                name="document_content"
+                ng-model="activeDocument.content"
+                wrap="true"
                 cols="100"
                 rows="10">{{activeDocument.content}}</textarea>
+            <div class="update-button col-md-12">
+                <button type="button"
+                    ng-disabled="signaturePresent"
+                    class="btn green"
+                    ng-click="updateExistingLetter()">Update Document</button>
+            </div>
         </div>
         <div class="signature-display-container" ng-show="signaturePresent">
             <div class="signature-image-container col-md-10 col-md-offset-1">
@@ -52,6 +62,8 @@
             <div style="clear:both;"></div>
         </div>
     </div>
+
+
 
     <div class="template-holder" ng-show="addMode || templateContent">
         <h2>View {{documentType}} Template</h2>

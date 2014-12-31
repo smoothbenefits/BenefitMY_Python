@@ -173,7 +173,7 @@ var employerUser = employersController.controller('employerUser',
               }
             })
         });
-      
+
       templateRepository.getAllFields.query({id:compId})
         .$promise.then(function(fields){
           $scope.templateFields = fields;
@@ -460,10 +460,12 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
 var employerViewLetter = employersController.controller('employerViewLetter',
                                                           ['$scope',
                                                           '$location',
+                                                          '$route',
                                                           '$routeParams',
                                                           'documentRepository',
   function employerViewLetter($scope,
                               $location,
+                              $route,
                               $routeParams,
                               documentRepository){
     $scope.companyId = $routeParams.company_id;
@@ -483,6 +485,33 @@ var employerViewLetter = employersController.controller('employerViewLetter',
             });
         $scope.documentList = _.sortBy(unsortedDocumentList, function(elm){return elm.id;}).reverse();
       });
+
+    $scope.deleteExistingLetter = function(doc){
+      documentRepository.getById.delete({id: doc.id}).$promise
+        .then(function(response){
+          alert("Deleted document " + doc.name);
+          $route.reload();
+        });
+    };
+
+    $scope.updateExistingLetter = function(){
+      var doc = $scope.activeDocument;
+      var request = {
+        "company": doc.company.id,
+        "user": doc.user.id,
+        "signature": doc.signature,
+        "document": {
+          "document_type": doc.document_type.name,
+          "name": doc.name,
+          "content": doc.content
+        }
+      };
+
+      documentRepository.updateById.update({id:doc.id}, request).$promise
+        .then(function(response){
+          alert("Successful update " + response.name);
+        });
+    }
 
     $scope.anyActiveDocument = function(){
       return typeof $scope.activeDocument.name !== 'undefined';
