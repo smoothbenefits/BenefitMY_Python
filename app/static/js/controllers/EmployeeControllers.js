@@ -194,6 +194,7 @@ var employeeBenefitSignup = employeeControllers.controller(
             .$promise.then(function(response){
               $scope.selectedBenefits = response.benefits;
               _.each($scope.selectedBenefits, function(benefitMember){
+                benefitMember.benefit.pcp = benefitMember.pcp;
                 $scope.selectedBenefitHashmap[benefitMember.benefit.id] = benefitMember.benefit;
               });
               benefitListRepository.get({clientId:companyId})
@@ -244,6 +245,7 @@ var employeeBenefitSignup = employeeControllers.controller(
                     if(retrievedBenefit)
                     {
                       typedPlan.selected = curBenefit;
+                      typedPlan.selected.pcp = retrievedBenefit.pcp;
                     }
                   });
                 });
@@ -272,6 +274,7 @@ var employeeBenefitSignup = employeeControllers.controller(
         $scope.save = function(){
           var saveRequest = {benefits:[],waived:[]};
           var invalidEnrollNumberList = [];
+          var noPCPError = false;
           _.each($scope.availablePlans, function(benefitTypePlan){
             var enrolledList = [];
             if (typeof benefitTypePlan.selected.eligibleMemberCombo != 'undefined'){
@@ -306,11 +309,20 @@ var employeeBenefitSignup = employeeControllers.controller(
                 invalidEnrollNumberList.push(invalidEnrollNumber);
               }
             }
+
+            if(benefitTypePlan.benefit_type =='Medical' && !benefitTypePlan.selected.pcp){
+              noPCPError = true;
+            }
           });
 
           if(invalidEnrollNumberList.length > 0){
             alert("For benefit " + invalidEnrollNumberList[0].name +
                     ", you have to elect " + invalidEnrollNumberList[0].requiredNumber + " family members!");
+            return;
+          }
+
+          if(noPCPError){
+            alert("For medical benefits, Primary Care Physician Number is required!");
             return;
           }
 
