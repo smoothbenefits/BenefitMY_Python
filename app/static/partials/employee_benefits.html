@@ -32,6 +32,17 @@
                     </span>
                 </div>
             </div>
+            <div class="row benefit-pcp-row" ng-if="isMedicalBenefitType(benefitTypePlan)">
+                <div class="col-md-4">
+                    <div class="form-label">Primary Care Physician Number</div>
+                    <div class="form-sub-text">
+                        You can retrieve your Primary Care Physician Number at the benefit provider website
+                    </div>
+                </div>
+                <div class="col-md-8 pcp-container">
+                    <input type="text" ng-model="benefitTypePlan.selected.pcp"/>
+                </div>
+            </div>
         </div>
     </div>
     <div class="form-holder">
