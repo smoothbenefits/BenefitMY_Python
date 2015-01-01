@@ -146,7 +146,7 @@ var employeeBenefitSignup = employeeControllers.controller(
           if(selected)
           {
             _.each(selected.enrolleds, function(enrolled){
-              selectedMemberHash[enrolled.id] = enrolled;
+              selectedMemberHash[enrolled.person.id] = enrolled.person;
             });
           }
           switch(benefit.benefit_option_type)
@@ -202,7 +202,7 @@ var employeeBenefitSignup = employeeControllers.controller(
                 _.each(response.benefits, function(availBenefit){
                   var benefitFamilyPlan = {benefit:availBenefit};
                   var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
-                    return selectedBen.benefit.benefit_type == availBenefit.benefit_type;
+                    return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
                   }));
 
                   benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
@@ -271,6 +271,10 @@ var employeeBenefitSignup = employeeControllers.controller(
           $location.path('/employee/add_family/' + employeeId);
         };
 
+        $scope.isMedicalBenefitType = function(benefit){
+          return benefit && benefit.benefit_type === 'Medical';
+        };
+
         $scope.save = function(){
           var saveRequest = {benefits:[],waived:[]};
           var invalidEnrollNumberList = [];
@@ -309,10 +313,6 @@ var employeeBenefitSignup = employeeControllers.controller(
                 invalidEnrollNumberList.push(invalidEnrollNumber);
               }
             }
-
-            if(benefitTypePlan.benefit_type =='Medical' && !benefitTypePlan.selected.pcp){
-              noPCPError = true;
-            }
           });
 
           if(invalidEnrollNumberList.length > 0){
@@ -321,14 +321,12 @@ var employeeBenefitSignup = employeeControllers.controller(
             return;
           }
 
-          if(noPCPError){
-            alert("For medical benefits, Primary Care Physician Number is required!");
-            return;
-          }
 
           _.each($scope.availablePlans, function(benefitPlan){
               if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
                 var type = benefitPlan.benefit_type;
+                //This code below is such an hack. We need to get the type key from the server!
+                //CHANGE THIS
                 var typeKey = 0;
                 if (type === 'Medical'){
                   typeKey = 1;

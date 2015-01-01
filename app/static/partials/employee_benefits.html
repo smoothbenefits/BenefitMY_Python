@@ -32,16 +32,15 @@
                     </span>
                 </div>
             </div>
-            <div class="row benefit-pcp-row" ng-if="benefitTypePlan.benefit_type =='Medical'">
+            <div class="row benefit-pcp-row" ng-if="isMedicalBenefitType(benefitTypePlan)">
                 <div class="col-md-4">
                     <div class="form-label">Primary Care Physician Number</div>
                     <div class="form-sub-text">
-                        You can search for your Primary Care Physician Number at 
-                        <a target="_blank" href="https://findadoctor.bluecrossma.com/">https://findadoctor.bluecrossma.com/</a>
+                        You can retrieve your Primary Care Physician Number at the benefit provider website
                     </div>
                 </div>
                 <div class="col-md-8 pcp-container">
-                    <input type="text" ng-model="benefitTypePlan.selected.pcp" ng-required="true" ui-mask="999A99999"/>
+                    <input type="text" ng-model="benefitTypePlan.selected.pcp"/>
                 </div>
             </div>
         </div>
