@@ -321,7 +321,6 @@ var employeeBenefitSignup = employeeControllers.controller(
             return;
           }
 
-
           _.each($scope.availablePlans, function(benefitPlan){
               if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
                 var type = benefitPlan.benefit_type;
