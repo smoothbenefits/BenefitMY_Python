@@ -34,17 +34,23 @@ class UserDocumentGenerator(object):
     def _get_current_date(self):
         return time.strftime("%x")
 
-    def _get_hr(self):
-        com_users = CompanyUser.objects.filter(company=self.company, company_user_type='admin')
-        if com_users:
-            admin = com_users[0]
-            user_serialized = UserSerializer(admin.user)
+    def _get_user_full_name(self, user):
+        if user:
+            user_serialized = UserSerializer(user)
             return user_serialized.data['first_name'] + ' ' + user_serialized.data['last_name']
         else:
             return ''
 
+    def _get_hr(self):
+        com_users = CompanyUser.objects.filter(company=self.company, company_user_type='admin')
+        if com_users:
+            admin = com_users[0]
+            return self._get_user_full_name(admin.user)
+        else:
+            return ''
+
     def _get_latest_template_content_by_doc_type(self, doc_type):
-        templates = Template.objects.filter(document_type=doc_type).order_by('-id')
+        templates = Template.objects.filter(document_type=doc_type, company=self.company).order_by('-id')
         if templates:
             return templates[0].content
         return doc_type.default_content
@@ -70,7 +76,7 @@ class UserDocumentGenerator(object):
             # For each document type
             # We need to get the template associated with the document type
             content = self._get_latest_template_content_by_doc_type(d_type)
-            doc_name = "{} for {}".format(d_type.name, self.user.email) 
+            doc_name = "{} for employee".format(d_type.name) 
             field_names = re.findall('{{(.*?)}}', content)
             value = ""
             for field_key in field_names:
