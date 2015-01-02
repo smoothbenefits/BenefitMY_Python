@@ -6,6 +6,9 @@ from app.models.document import Document
 from app.models.document_type import DocumentType
 from app.models.template import Template
 from app.models.company import Company
+from app.models.company_user import CompanyUser
+from app.serializers.user_serializer import UserSerializer
+
 
 
 class UserDocumentGenerator(object):
@@ -16,7 +19,12 @@ class UserDocumentGenerator(object):
         self.company = company
         self.default_value_dict = {
             'companyname': self._get_company_name_from_context,
+            'company': self._get_company_name_from_context,
             'date': self._get_current_date,
+            'currentdate': self._get_current_date,
+            'hr': self._get_hr,
+            'ourhrname':self._get_hr,
+            'hrperson': self._get_hr
         }
 
 
@@ -25,6 +33,15 @@ class UserDocumentGenerator(object):
 
     def _get_current_date(self):
         return time.strftime("%x")
+
+    def _get_hr(self):
+        com_users = CompanyUser.objects.filter(company=self.company, company_user_type='admin')
+        if com_users:
+            admin = com_users[0]
+            user_serialized = UserSerializer(admin.user)
+            return user_serialized.data['first_name'] + ' ' + user_serialized.data['last_name']
+        else:
+            return ''
 
     def _get_latest_template_content_by_doc_type(self, doc_type):
         templates = Template.objects.filter(document_type=doc_type).order_by('-id')
@@ -40,7 +57,7 @@ class UserDocumentGenerator(object):
 
         fields = {}
         for key in field_keys:
-            processed_key = key.lower().translate('_')
+            processed_key = key.lower().translate('_').replace(" ", "")
             if processed_key in self.default_value_dict:
                 fields[key] = self.default_value_dict[processed_key]()
             else:
