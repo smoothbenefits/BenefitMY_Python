@@ -12,6 +12,7 @@ from app.models.document import Document
 from app.models.template import Template
 from app.serializers.document_serializer import (
     DocumentSerializer)
+from app.service.template_service import TemplateService
 
 
 class DocumentView(APIView):
@@ -109,13 +110,9 @@ def _generate_content(template_id, document_type, fields):
     if not content:
         content = document_type.default_content
 
-    field_names = re.findall('{{(.*?)}}', content)
-    fields_dict = {f['name']: f['value'] for f in fields}
-    for f in field_names:
-        if f in fields_dict:
-            content = content.replace("{{%s}}" % f, fields_dict[f])
-    return content
-
+    template_service = TemplateService()
+    fields_dict = [{'key':f['name'], 'value':f['value']} for f in fields]
+    return template_service.populate_content_with_field_values(content, fields_dict)
 
 @api_view(['POST'])
 @transaction.atomic
