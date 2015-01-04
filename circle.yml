@@ -20,4 +20,8 @@ deployment:
     branch: demo
     commands:
       - sh ./deployment.sh benefitmy-python-demo
+  beta:
+    branch: beta
+    commands:
+      - sh ./deployment.sh benefitmy-python-beta
 
