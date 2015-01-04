@@ -15,6 +15,30 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js" > </script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-resource.min.js" > </script>
         {% compressed_js "home" %}
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var signupButton = $('#signup');
+                if(signupButton){
+                    signupButton.click(function(event){
+                        var termCheckBox = $('#termsAck');
+                        if(termCheckBox && !termCheckBox.prop('checked')){
+                            event.preventDefault();
+                            event.stopPropagation();
+                            alert('Please read and acknowledge the Terms and Policy');
+                            return false;
+                        }
+                        var passwordInput = $('#id_password');
+                        var confirmPass = $('#id_confirm_password');
+                        if(passwordInput && confirmPass && passwordInput.val() !== confirmPass.val()){
+                            event.preventDefault();
+                            event.stopPropagation();
+                            alert('The passwords entered does not match. Please try again.');
+                            return false;
+                        }
+                    });
+                }
+            });
+        </script>
     </header>
     <body>
         <div id="content-wrapper">
@@ -40,11 +64,11 @@
                     
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" class="px" name="agree_terms" required="true">
+                                <input type="checkbox" class="px" id="termsAck" name="agree_terms" required="true">
                                 I agree to <a href="/EmployeeTerms" target="_blank">terms and policy</a>
                             </label>
                         </div>
-                        <div class="submit-box"><input type="submit" name="submit" class="btn green" value="Sign Up" /></div>
+                        <div class="submit-box"><input type="submit" id="signup" name="submit" class="btn green" value="Sign Up" /></div>
                         <div class="meta">
                             <a href="javascript:history.back();">Cancel</a>
                         </div>
