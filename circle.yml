@@ -8,7 +8,7 @@ general:
 
 database:
   post:
-    - psql -f data_migration/app_documenttype_data.sql
+    - sh ./data_migration.sh ./data_migration
 
 
 deployment:
@@ -20,4 +20,8 @@ deployment:
     branch: demo
     commands:
       - sh ./deployment.sh benefitmy-python-demo
+  beta:
+    branch: beta
+    commands:
+      - sh ./deployment.sh benefitmy-python-beta
 

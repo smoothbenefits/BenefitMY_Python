@@ -10,7 +10,14 @@ class CompanyUserSerializer(serializers.ModelSerializer):
         model = CompanyUser
         fields = ('id',
                   'company_user_type',
-                  'user')
+                  'user',
+                  'new_employee')
 
         depth = 1
 
+class CompanyRoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=CompanyUser
+        fields = ('id',
+                  'company_user_type',
+                  'new_employee')

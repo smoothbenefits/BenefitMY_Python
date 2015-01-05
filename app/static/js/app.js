@@ -54,6 +54,10 @@ BenefitMyApp.config(['$routeProvider',
                 templateUrl:'/static/partials/benefit_detail_input.html',
                 controller: 'benefitInputDetailsController'
             }).
+            when('/broker/employee/:employee_id', {
+                templateUrl: '/static/partials/employee_detail.html',
+                controller: 'brokerEmployeeController'
+            }).
             when('/', {
                 template: '',
                 controller:'findViewController'
