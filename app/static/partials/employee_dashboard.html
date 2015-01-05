@@ -24,7 +24,14 @@
             <tbody>
 
                 <tr ng-repeat="benefitElement in benefits">
-                    <td style="vertical-align: top;">{{benefitElement.benefit.benefit_plan.name}}</td>
+                    <td style="vertical-align: top;">
+                        <div>
+                            {{benefitElement.benefit.benefit_plan.name}}
+                        </div>
+                        <div class="benefit-pcp-display" ng-if="benefitElement.pcp">
+                            PCP#: {{benefitElement.pcp}}
+                        </div>
+                    </td>
                     <td colspan="3" style="padding: 0;">
                         <table class="table">
                             <tr>

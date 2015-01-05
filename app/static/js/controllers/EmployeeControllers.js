@@ -1,22 +1,22 @@
 var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]);
 
 var employeeHome = employeeControllers.controller('employeeHome',
-    ['$scope', 
-     '$location', 
-     '$routeParams', 
-     'clientListRepository', 
-     'employeeBenefits', 
-     'currentUser', 
-     'userDocument', 
+    ['$scope',
+     '$location',
+     '$routeParams',
+     'clientListRepository',
+     'employeeBenefits',
+     'currentUser',
+     'userDocument',
      'EmployeeOnboardingValidationService',
      'EmployeeLetterSignatureValidationService',
-  function employeeHome($scope, 
-                        $location, 
-                        $routeParams, 
-                        clientListRepository, 
-                        employeeBenefits, 
-                        currentUser, 
-                        userDocument, 
+  function employeeHome($scope,
+                        $location,
+                        $routeParams,
+                        clientListRepository,
+                        employeeBenefits,
+                        currentUser,
+                        userDocument,
                         EmployeeOnboardingValidationService,
                         EmployeeLetterSignatureValidationService){
 
@@ -25,15 +25,18 @@ var employeeHome = employeeControllers.controller('employeeHome',
     var userPromise = currentUser.get().$promise
       .then(function(response){
         $scope.employee_id = response.user.id;
-        EmployeeLetterSignatureValidationService($scope.employee_id, 'Offer Letter', function(){
-          EmployeeOnboardingValidationService($scope.employee_id, function(){
-            return $scope.employee_id;
-          }, function(redirectUrl){
-            $location.path(redirectUrl);
+        var employeeRole = _.findWhere(response.roles, {company_user_type:'employee'});
+        if(employeeRole && employeeRole.new_employee){
+          EmployeeLetterSignatureValidationService($scope.employee_id, 'Offer Letter', function(){
+            EmployeeOnboardingValidationService($scope.employee_id, function(){
+              return $scope.employee_id;
+            }, function(redirectUrl){
+              $location.path(redirectUrl);
+            });
+          },function(){
+            $location.path('/employee/sign_letter/' + $scope.employee_id).search({letter_type:'Offer Letter'});
           });
-        },function(){
-          $location.path('/employee/sign_letter/' + $scope.employee_id).search({letter_type:'Offer Letter'});
-        });
+        }
         return $scope.employee_id;
       });
 
@@ -58,7 +61,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
     benefitPromise.then(function(companyId){
       if(companyId){
-        employeeBenefits.get({userId:curUserId, companyId:companyId})
+        employeeBenefits.enroll().get({userId:curUserId, companyId:companyId})
         .$promise.then(function(response){
                        $scope.benefits = response.benefits;
                        $scope.benefitCount = response.benefits.length;
@@ -88,22 +91,22 @@ var employeeHome = employeeControllers.controller('employeeHome',
 ]);
 
 var employeeBenefitSignup = employeeControllers.controller(
-  'employeeBenefitSignup', 
-  ['$scope', 
-   '$location', 
-   '$routeParams', 
-   'clientListRepository', 
-   'employeeBenefits', 
-   'benefitListRepository', 
+  'employeeBenefitSignup',
+  ['$scope',
+   '$location',
+   '$routeParams',
+   'clientListRepository',
+   'employeeBenefits',
+   'benefitListRepository',
    'employeeFamily',
    'benefitDisplayService',
     function employeeBenefitController(
-      $scope, 
-      $location, 
-      $routeParams, 
-      clientListRepository, 
-      employeeBenefits, 
-      benefitListRepository, 
+      $scope,
+      $location,
+      $routeParams,
+      clientListRepository,
+      employeeBenefits,
+      benefitListRepository,
       employeeFamily,
       benefitDisplayService){
 
@@ -143,7 +146,7 @@ var employeeBenefitSignup = employeeControllers.controller(
           if(selected)
           {
             _.each(selected.enrolleds, function(enrolled){
-              selectedMemberHash[enrolled.id] = enrolled;
+              selectedMemberHash[enrolled.person.id] = enrolled.person;
             });
           }
           switch(benefit.benefit_option_type)
@@ -187,10 +190,11 @@ var employeeBenefitSignup = employeeControllers.controller(
             $scope.medicalBenefitGroup = groupObj;
             $scope.nonMedicalBenefitArray = nonMedicalArray;
           });
-          employeeBenefits.get({userId:employeeId, companyId:companyId})
+          employeeBenefits.enroll().get({userId:employeeId, companyId:companyId})
             .$promise.then(function(response){
               $scope.selectedBenefits = response.benefits;
               _.each($scope.selectedBenefits, function(benefitMember){
+                benefitMember.benefit.pcp = benefitMember.pcp;
                 $scope.selectedBenefitHashmap[benefitMember.benefit.id] = benefitMember.benefit;
               });
               benefitListRepository.get({clientId:companyId})
@@ -198,7 +202,7 @@ var employeeBenefitSignup = employeeControllers.controller(
                 _.each(response.benefits, function(availBenefit){
                   var benefitFamilyPlan = {benefit:availBenefit};
                   var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
-                    return selectedBen.benefit.benefit_type == availBenefit.benefit_type;
+                    return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
                   }));
 
                   benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
@@ -215,6 +219,21 @@ var employeeBenefitSignup = employeeControllers.controller(
                   if(!curTypePlan)
                   {
                     curTypePlan = {type:availBenefit.benefit_type, benefitList:[], selected:{}};
+
+                    var waiveOption = {
+                                        benefit: {
+                                          benefit_plan: {
+                                            name: 'Waive',
+                                            employee_cost_per_period: 0,
+                                            benefit_type: {
+                                              name: availBenefit.benefit_type
+                                            }
+                                          },
+                                          employee_cost_per_period: 0,
+                                          benefit_option_type: 'all'
+                                        }
+                                      };
+                    curTypePlan.benefitList.push(waiveOption);
                     $scope.availablePlans.push(curTypePlan);
                   }
                   curTypePlan.benefitList.push(benefitFamilyPlan);
@@ -226,6 +245,7 @@ var employeeBenefitSignup = employeeControllers.controller(
                     if(retrievedBenefit)
                     {
                       typedPlan.selected = curBenefit;
+                      typedPlan.selected.pcp = retrievedBenefit.pcp;
                     }
                   });
                 });
@@ -251,9 +271,14 @@ var employeeBenefitSignup = employeeControllers.controller(
           $location.path('/employee/add_family/' + employeeId);
         };
 
+        $scope.isMedicalBenefitType = function(benefit){
+          return benefit && benefit.benefit_type === 'Medical';
+        };
+
         $scope.save = function(){
           var saveRequest = {benefits:[],waived:[]};
           var invalidEnrollNumberList = [];
+          var noPCPError = false;
           _.each($scope.availablePlans, function(benefitTypePlan){
             var enrolledList = [];
             if (typeof benefitTypePlan.selected.eligibleMemberCombo != 'undefined'){
@@ -270,13 +295,14 @@ var employeeBenefitSignup = employeeControllers.controller(
               var requestBenefit = {
                 benefit:{
                   id:benefitTypePlan.selected.benefit.id,
-                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
+                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name,
+                  pcp:benefitTypePlan.selected.pcp
                 },
                 enrolleds:enrolledList
               };
               saveRequest.benefits.push(requestBenefit);
 
-              if(!(benefitTypePlan.selected.benefit.benefit_option_type ==='individual_plus_family' || 
+              if(!(benefitTypePlan.selected.benefit.benefit_option_type ==='individual_plus_family' ||
                    benefitTypePlan.selected.benefit.benefit_option_type === 'family') &&
                  requestBenefit.enrolleds.length < benefitTypePlan.selected.eligibleMemberCombo.eligibleNumber)
               {
@@ -295,24 +321,42 @@ var employeeBenefitSignup = employeeControllers.controller(
             return;
           }
 
-          _.each($scope.selectedBenefits, function(benefitEnrolled){
-              var matched = _.filter(saveRequest.benefits, function(uiSelected){
-                return uiSelected.benefit.benefit_type == benefitEnrolled.benefit.benefit_type;
-              })
-              if(matched.length === 0)
-              {
-                saveRequest.waived.push({benefit_type:benefitEnrolled.benefit.benefit_type});
+          _.each($scope.availablePlans, function(benefitPlan){
+              if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
+                var type = benefitPlan.benefit_type;
+                //This code below is such an hack. We need to get the type key from the server!
+                //CHANGE THIS
+                var typeKey = 0;
+                if (type === 'Medical'){
+                  typeKey = 1;
+                }
+                if (type === 'Dental'){
+                  typeKey = 2;
+                }
+                if (type === 'Vision'){
+                  typeKey = 3;
+                }
+                saveRequest.waived.push({company: companyId, benefit_type: typeKey, type_name: type});
               }
             });
 
-          employeeBenefits.save({userId: employeeId, companyId: companyId},
-            saveRequest, function(){
+          if (saveRequest.waived.length > 0){
+            _.each(saveRequest.waived, function(waivedPlan){
+              employeeBenefits.waive().save({userId: employeeId}, waivedPlan, function(){
+                alert('Wavied ' + waivedPlan.type_name);
+              }, function(){
+                $scope.savedSuccess = false;
+              });
+            });
+          }
+
+          employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
               $location.path('/employee');
             }, function(){
               $scope.savedSuccess = false;
             });
-          };
-  }]);
+        }
+      }]);
 
 var addFamily = employeeControllers.controller('addFamily', ['$scope', '$location', '$routeParams', 'employeeFamily',
   function addFamily($scope, $location, $routeParams, employeeFamily){
@@ -459,11 +503,11 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
 var onboardIndex = employeeControllers.controller('onboardIndex',
   ['$scope', '$routeParams', '$location', 'employeeFamily', 'currentUser', 'EmployeeOnboardingValidationService',
   function($scope, $routeParams, $location, employeeFamily, currentUser, EmployeeOnboardingValidationService){
-    
+
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
     $scope.displayAll = false;
-    
+
 
     EmployeeOnboardingValidationService($scope.employeeId, function(){
       $location.path('/employee');
@@ -588,7 +632,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
   function($scope, $routeParams, $location, employeeTaxRepository, EmployeeOnboardingValidationService){
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
-    
+
     EmployeeOnboardingValidationService($scope.employeeId, function(){
       $location.path('/employee');
     },
@@ -635,7 +679,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
       employeeTaxRepository.save({userId:$scope.employeeId}, empAuth,
         function(response){
           $location.path('/employee/onboard/complete/'+$scope.employeeId);
-        }); 
+        });
     }
 }]);
 
@@ -692,7 +736,7 @@ var onboardComplete = employeeControllers.controller('onboardComplete',
     }
 }]);
 
-var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocument', 
+var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocument',
   ['$scope', '$routeParams', '$location', 'documentRepository', 'EmployeeLetterSignatureValidationService',
   function($scope, $routeParams, $location, documentRepository, EmployeeLetterSignatureValidationService){
     $scope.employeeId = $routeParams.employee_id;
@@ -716,7 +760,7 @@ var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocum
           return letter.document_type.name === letterType;
         });
       });
-    
+
     $('body').addClass('onboarding-page');
     var signatureUpdated = false;
     var $sigdiv = $('#letter_signature');
@@ -728,7 +772,7 @@ var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocum
     $sigdiv.bind('change', function(e){
      signatureUpdated = true;
     });
-    
+
     $scope.clearSignature = function(){
       $sigdiv.jSignature("reset")
     };
@@ -747,7 +791,7 @@ var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocum
         };
         documentRepository.sign.save({id:$scope.curLetter.id}, contract,
          function(){
-           goToOnboarding($scope.employeeId);         
+           goToOnboarding($scope.employeeId);
          },
          function(err){
           alert('The signature has not been accepted. The reason is: ' + JSON.stringify(err.data));

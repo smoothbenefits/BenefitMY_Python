@@ -74,6 +74,10 @@ ul.client-list li span.client-name
     font-size: 12px;
     font-weight: bold;
 }
+.form-sub-text{
+    font-size:10px;
+    font-weight: normal;
+}
 
 .form-group input.ng-invalid.ng-dirty {
     background-color: #F5D7D3;
@@ -174,4 +178,12 @@ th .editable-container{
 }
 .medical-plan-display-table .value-row .row-head span{
     margin-left:10px;
+}
+.pcp-container{
+    vertical-align: bottom;
+    padding-top:20px;
+}
+.benefit-pcp-display{
+    font-size: 11px;
+    margin-top:10px;
 }
