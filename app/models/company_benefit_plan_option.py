@@ -25,6 +25,8 @@ class CompanyBenefitPlanOption(models.Model):
                                      related_name="company_benefit",
                                      blank=True,
                                      null=True)
-
+    pcp_link = models.CharField(max_length=1024,
+                                blank=True,
+                                null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -5,6 +5,7 @@ from benefit_plan_serializer import (
     BenefitPlanSerializer,
     BenefitPlanPostSerializer)
 
+
 class CompanyBenefitPlanOptionPostSerializer(serializers.ModelSerializer):
 
     benefit_plan = BenefitPlanPostSerializer()
@@ -17,7 +18,8 @@ class CompanyBenefitPlanOptionPostSerializer(serializers.ModelSerializer):
                   'employee_cost_per_period',
                   'benefit_option_type',
                   'company',
-                  'benefit_plan')
+                  'benefit_plan',
+                  'pcp_link')
 
 
 class CompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
@@ -30,7 +32,8 @@ class CompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
                   'employee_cost_per_period',
                   'benefit_option_type',
                   'company',
-                  'benefit_plan')
+                  'benefit_plan',
+                  'pcp_link')
         depth = 2
 
 
@@ -45,4 +48,5 @@ class CompanyBenefitPlanSerializer(serializers.ModelSerializer):
                   'total_cost_per_period',
                   'employee_cost_per_period',
                   'benefit_option_type',
-                  'benefit_plan')
+                  'benefit_plan',
+                  'pcp_link')
