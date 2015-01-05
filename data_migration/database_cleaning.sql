@@ -3,7 +3,7 @@ BEGIN;
 -- create temporary table to store user ids and person ids
 SELECT u.id INTO TEMPORARY TABLE user_ids
 FROM auth_user u
-WHERE lower(u.email) like 'f%qui@gmail.com';
+WHERE replace(lower(u.email), '.', '') = 'frankqiu@gmailcom';
 
 SELECT p.id INTO TEMPORARY TABLE person_ids
 FROM app_person p

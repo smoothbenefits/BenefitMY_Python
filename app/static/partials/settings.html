@@ -1,0 +1,53 @@
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-href="/dashboard">Dashboard</a>
+    <span>Edit your profile</span>
+</div>
+
+<div class="content-header">
+    <h1>Change Your Password</h1>
+    <span class="general-info">You can change your password below</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="form-holder">
+        <form name="form">
+            <div class="form-label">Current Password*</div>
+            <div class="textbox">
+                <input type="password"
+                    name="current_password"
+                    ng-model="profile.current_password"
+                    ng-required="true">
+                <div class="form-error" ng-show="form.current_password.$dirty && form.current_password.$invalid">
+                  <span ng-show="form.current_password.$error.required">Current Password is required</span>
+                </div>
+            </div>
+            <div class="form-label">New Password*</div>
+            <div class="textbox">
+                <input type="password"
+                    name="new_password"
+                    ng-model="profile.new_password"
+                    ng-required="true">
+                <div class="form-error" ng-show="form.new_password.$dirty && form.new_password.$invalid">
+                  <span ng-show="form.new_password.$error.required">New password is required</span>
+                </div>
+            </div>
+            <div class="form-label">Confirm New Password*</div>
+            <div class="textbox">
+                <input type="password"
+                    name="confirm_password"
+                    ng-model="profile.confirm_new_password"
+                    ng-required="true">
+                <div class="form-error" ng-show="form.confirm_password.$dirty && form.confirm_password.$invalid">
+                    <span ng-show="form.confirm_password.$error.required">You have to type your new password again</span>
+                </div>
+            </div>
+
+            <div class="submit-box">
+                <button ng-click="editProfile()" class="btn green" ng-disabled="form.$invalid">Save</button>
+            </div>
+
+        </form>
+    </div><!-- / .form-holder -->
+    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
+</div><!-- / .content-body -->

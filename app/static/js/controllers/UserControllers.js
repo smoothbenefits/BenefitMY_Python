@@ -117,4 +117,42 @@ var userController = userControllers.controller('userController', ['$scope', '$h
         }
       }
     };
+
+    $scope.gotoSettings = function(){
+      $location.path('/settings');
+    }
 }]);
+
+var settingsController = userControllers.controller('settingsController', ['$scope',
+   '$location',
+   'currentUser',
+   'userSettingService',
+   function settingsController ($scope, $location, currentUser, userSettingService){
+      $scope.profile = {};
+      currentUser.get()
+        .$promise.then(function(response){
+          $scope.curUser = response.user;
+        });
+      
+
+      $scope.editProfile = function(){
+        //first we need to make sure the two passwords match
+        if($scope.profile.new_password !== $scope.profile.confirm_new_password){
+          alert('The passwords do not match. Please enter your new password again!')
+          return false;
+        }
+        $scope.profile.username = $scope.curUser.email;
+        userSettingService.save($scope.profile)
+          .$promise.then(function(response){
+            alert('Changes saved successfully');
+            $location.path('/');
+          }, function(error){
+            if(error.status == 401){
+              alert('The current password is not correct for the current user. Please try again.')
+            }
+            else{
+              alert('Error: '+ error.data.error + '. Please try again.');
+            }
+          });
+      }
+  }]);
