@@ -6,7 +6,9 @@ Get:
 /api/v1/benefit_types/              
 /api/v1/document_types/           
 /api/v1/companies/#/                      
-/api/v1/users/               
+/api/v1/users/        
+/api/v1/users/settings/      
+/api/v1/users/current/       
 /api/v1/users/#/                 
 /api/v1/users/#/family/           
 /api/v1/users/#/documents/        
@@ -18,7 +20,7 @@ Get:
 /api/v1/companies/#/users/               
 /api/v1/companies/#/documents/         
 /api/v1/companies/#/templates/           
-/api/v1/company_users/#/benefits/           
+/api/v1/company_users/#/benefits/     
 
 Post:
 api/v1/users/#/family/               

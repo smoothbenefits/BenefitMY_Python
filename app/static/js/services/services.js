@@ -22,6 +22,12 @@ benefitmyService.factory('userLogOut', [
      }]
 );
 
+benefitmyService.factory('userSettingService',[
+    '$resource',
+    function($resource){
+      return $resource('/api/v1/users/settings/');
+}]);
+
 benefitmyService.factory('clientListRepository',[
     '$resource',
     function($resource){

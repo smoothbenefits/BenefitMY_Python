@@ -30,6 +30,10 @@ BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourcePro
 BenefitMyApp.config(['$routeProvider',
     function ($routeProvider) {
         $routeProvider.
+            when('/settings', {
+                 templateUrl: '/static/partials/settings.html',
+                 controller: 'settingsController'
+             }).
             when('/broker', {
                  templateUrl: '/static/partials/clients.html',
                  controller: 'clientsController'
