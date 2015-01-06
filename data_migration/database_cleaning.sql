@@ -44,6 +44,9 @@ WHERE s.user_id IN (SELECT id FROM user_ids);
 DELETE FROM app_usercompanybenefitplanoption ucb
 WHERE ucb.user_id IN (SELECT id FROM user_ids);
 
+DELETE FROM app_usercompanywaivedbenefit ucw
+WHERE ucw.user_id IN (SELECT id FROM user_ids);
+
 DELETE FROM app_w4 w
 WHERE w.user_id IN (SELECT id FROM user_ids);
 
