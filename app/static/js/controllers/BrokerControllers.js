@@ -116,13 +116,14 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
                     displayBenefit.name = enrolled.person.first_name + ' ' + enrolled.person.last_name;
                     displayBenefit.email = enrolled.person.email;
                   }
-                  var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: '('+enrolled.person.relationship+')'};
+                  var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: enrolled.person.relationship};
                   displayBenefit.enrolled.push(displayEnrolled);
                 })
 
                 displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name
-                displayBenefit.selectedPlanType = '('+benefit.benefit.benefit_option_type+')';
+                displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
                 displayBenefit.lastUpdatedTime = new Date(benefit.benefit.updated_at).toDateString();
+                displayBenefit.pcp = benefit.pcp;
 
                 addBenefitPlanToSelectionList(displayBenefit);
               });
