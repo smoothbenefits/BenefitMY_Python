@@ -220,20 +220,19 @@ var employerUser = employersController.controller('employerUser',
         {
           usersRepository.save(mapToAPIUser($scope.addUser, userType),
             function(){
-			  alert('Email sent successful.');
+  		        alert('Email sent successful.');
               gotoUserView(userType);
             }, function(err){
                 if(err.status === 409){
                   $scope.alreadyExists = true;
                 }
-				if (err.status === 503){
-				  alert('Failed to send email.');
-				}
-                else
-                {
+        				else if (err.status === 503){
+        				  alert('Failed to send email.');
+        				}
+                else{
                   $scope.addError = true;
                 }
-				alert('Failed to add employee.');
+        				alert('Failed to add employee.');
             });
         }
         else
