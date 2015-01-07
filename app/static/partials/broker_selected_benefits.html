@@ -27,8 +27,15 @@
                     <td colspan="3" style="padding: 0;">
                         <table class="table">
                             <tr ng-repeat="plan in employee.benefits">
-                                <td width="300">{{plan.selectedPlanName}} {{plan.selectedPlanType}}</td>
-                                <td width="250"><text ng-repeat="person in plan.enrolled">{{person.name}} {{person.relationship}} <br /></text></td>
+                                <td width="300">{{plan.selectedPlanName}} 
+                                    <span ng-show="plan.selectedPlanType">({{plan.selectedPlanType}})</span>
+                                    <div ng-show="plan.pcp"> PCP Number: {{plan.pcp}}</div></td>
+                                <td width="250">
+                                    <text ng-repeat="person in plan.enrolled">{{person.name}} 
+                                        <span ng-show="person.relationship">({{person.relationship}})</span> 
+                                        <br />
+                                    </text>
+                                </td>
                                 <td width="150">{{plan.lastUpdatedTime}}</td>
                             </tr>
                         </table>
