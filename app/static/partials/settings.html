@@ -1,53 +1,192 @@
 <div class="breadcrumb">
     <a href="/">Home</a>
     <a ng-href="/dashboard">Dashboard</a>
-    <span>Edit your profile</span>
+    <span>Account Settings</span>
 </div>
 
 <div class="content-header">
-    <h1>Change Your Password</h1>
-    <span class="general-info">You can change your password below</span>
+    <h1>Edit Your Account Settings</h1>
+    <span class="general-info">You can edit the information associated with your account here</span>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="form-holder">
-        <form name="form">
-            <div class="form-label">Current Password*</div>
-            <div class="textbox">
-                <input type="password"
-                    name="current_password"
-                    ng-model="profile.current_password"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.current_password.$dirty && form.current_password.$invalid">
-                  <span ng-show="form.current_password.$error.required">Current Password is required</span>
-                </div>
-            </div>
-            <div class="form-label">New Password*</div>
-            <div class="textbox">
-                <input type="password"
-                    name="new_password"
-                    ng-model="profile.new_password"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.new_password.$dirty && form.new_password.$invalid">
-                  <span ng-show="form.new_password.$error.required">New password is required</span>
-                </div>
-            </div>
-            <div class="form-label">Confirm New Password*</div>
-            <div class="textbox">
-                <input type="password"
-                    name="confirm_password"
-                    ng-model="profile.confirm_new_password"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.confirm_password.$dirty && form.confirm_password.$invalid">
-                    <span ng-show="form.confirm_password.$error.required">You have to type your new password again</span>
-                </div>
-            </div>
 
-            <div class="submit-box">
-                <button ng-click="editProfile()" class="btn green" ng-disabled="form.$invalid">Save</button>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="list-group">
+                <a href="javascript:void(0);" ng-click="editPersonal()" ng-class="isUpdatePersonalInfo? 'list-group-item active':'list-group-item' ">
+                    <h4 class="list-group-item-heading">Edit Basic Information</h4>
+                </a>
+                <a href="javascript:void(0);" ng-click="changePassword()" ng-class="isUpdatePassword? 'list-group-item active':'list-group-item'">
+                    <h4 class="list-group-item-heading">Change Your Password</h4>
+                </a>
             </div>
+        </div>
 
-        </form>
-    </div><!-- / .form-holder -->
+        <div class="col-md-8">
+            <div class="form-holder" ng-show="isUpdatePassword">
+                <form name="form">
+                <ul class="list-group"><li class="list-group-item">
+                    <div class="form-label">Current Password*</div>
+                    <div class="textbox">
+                        <input type="password"
+                            name="current_password"
+                            ng-model="profile.current_password"
+                            ng-required="true">
+                        <div class="form-error" ng-show="form.current_password.$dirty && form.current_password.$invalid">
+                          <span ng-show="form.current_password.$error.required">Current Password is required</span>
+                        </div>
+                    </div>
+                    <div class="form-label">New Password*</div>
+                    <div class="textbox">
+                        <input type="password"
+                            name="new_password"
+                            ng-model="profile.new_password"
+                            ng-required="true">
+                        <div class="form-error" ng-show="form.new_password.$dirty && form.new_password.$invalid">
+                          <span ng-show="form.new_password.$error.required">New password is required</span>
+                        </div>
+                    </div>
+                    <div class="form-label">Confirm New Password*</div>
+                    <div class="textbox">
+                        <input type="password"
+                            name="confirm_password"
+                            ng-model="profile.confirm_new_password"
+                            ng-required="true">
+                        <div class="form-error" ng-show="form.confirm_password.$dirty && form.confirm_password.$invalid">
+                            <span ng-show="form.confirm_password.$error.required">You have to type your new password again</span>
+                        </div>
+                    </div>
+                    </li></ul>
+
+                    <div class="submit-box">
+                        <button ng-click="saveNewPassword()" class="btn green" ng-disabled="form.$invalid">Save</button>
+                    </div>
+
+                </form>
+            </div><!-- / .form-holder -->
+            <div class="form-holder" ng-show="isUpdatePersonalInfo">
+                <form name="form">
+                    <ul class="list-group"><li class="list-group-item">
+                    <div class="form-label">First Name</div>
+                    <div class="textbox">
+                        <input type="text"
+                            name="first_name"
+                            ng-model="person.first_name"
+                            ng-required="true">
+                        <div class="form-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
+                          <span ng-show="form.first_name.$error.required">First Name field is required</span>
+                        </div>
+                    </div>
+
+                    <div class="form-label">Last Name</div>
+                    <div class="textbox">
+                        <input type="text"
+                            name="last_name"
+                            ng-model="person.last_name"
+                            ng-required="true">
+                        <div class="form-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
+                          <span ng-show="form.last_name.$error.required">Last Name field is required</span>
+                        </div>
+                    </div>
+
+                    <div class="form-label">Date Of Birth</div>
+                    <div class="datebox">
+                        <input type="date"
+                            name="birth_date"
+                            ng-model="person.birth_date"
+                            ng-required="true"
+                            min="1900-01-01"
+                            placeholder="yyyy-MM-dd">
+                        <div class="form-error" ng-show="form.birth_date.$dirty && form.birth_date.$invalid">
+                            <span ng-show="form.birth_date.$error.required">Date of Birth field is required</span>
+                            <span ng-show="form.birth_date.$invalid">Please enter a valid Date of Birth</span>
+                        </div>
+                    </div>
+
+
+                    <div class="form-label">Social Security Number</div>
+                    <div class="textbox">
+                        <input type="tel"
+                            name="person_ssn"
+                            ng-model="person.ssn"
+                            ng-required="true"
+                            ui-mask="999-99-9999">
+                        <div class="form-error" ng-show="form.person_.$dirty && form.person_ssn.$invalid">
+                            <span ng-show="form.person_ssn.$error.required">SSN field is required</span>
+                            <span ng-show="form.person_ssn.$invalid">Please enter a valid Social Security Number</span>
+                        </div>
+                    </div>
+
+                    <div class="form-label">Address</div>
+                    <div class="textbox">
+                        <input type="text"
+                            name="address_street1"
+                            ng-model="person.address.street_1"
+                            ng-required="true"
+                            placeholder="Street Line 1">
+                    </div>
+                    <div class="textbox">
+                        <input type="text"
+                            name="address_street2"
+                            ng-model="person.address.street_2"
+                            ng-required="false"
+                            placeholder="Street Line 2">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="textbox">
+                                <input type="text"
+                                    name="address_city"
+                                    ng-model="person.address.city"
+                                    ng-required="true"
+                                    placeholder="City">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="textbox">
+                                <input type="text"
+                                    name="address_state"
+                                    ng-model="person.address.state"
+                                    ng-required="true"
+                                    placeholder="State"
+                                    maxlength="2">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="textbox">
+                                <input type="text"
+                                    name="address_zip"
+                                    ng-model="person.address.zipcode"
+                                    ng-required="true"
+                                    placeholder="Zip Code">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-label">Phone Number</div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="textbox">
+                                <input type="tel"
+                                    name="phone_number"
+                                    ng-model="person.phone.number"
+                                    ng-required="true"
+                                    ui-mask="(999)999-9999">
+                            </div>
+                        </div>
+                    </div>
+                    </li></ul>
+
+                    <div class="submit-box">
+                        <button ng-click="updateBasicInfo()" class="btn green" ng-disabled="form.$invalid">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div><!-- row -->
     <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
 </div><!-- / .content-body -->
