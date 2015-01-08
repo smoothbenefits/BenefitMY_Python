@@ -10,6 +10,8 @@ from app.serializers.user_company_waived_benefit_serializer import (
 
 
 class UserCompanyWaivedBenefitView(APIView):
+    """ get/add user waived benefits
+    """
     def get_object(self, pk):
         try:
             return UserCompanyWaivedBenefit.objects.filter(user=pk)
@@ -29,3 +31,19 @@ class UserCompanyWaivedBenefitView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CompanyWaivedBenefitView(APIView):
+    """ get all waived benefits belong to a company
+    """
+    def get_object(self, pk):
+        try:
+            return UserCompanyWaivedBenefit.objects.filter(company=pk)
+        except UserCompanyWaivedBenefit.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        waived_benefit = self.get_object(pk)
+        serializer = UserCompanyWaivedBenefitSerializer(
+            waived_benefit, many=True)
+        return Response(serializer.data)
