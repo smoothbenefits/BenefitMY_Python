@@ -580,9 +580,10 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 
     $('body').addClass('onboarding-page');
     var mapContract = function(viewObject, signature){
+      var expirationDate = moment(viewObject.auth_expiration);
       var contract = {
         'worker_type': viewObject.auth_type,
-        'expiration_date': viewObject.auth_expiration,
+        'expiration_date': expirationDate.format('YYYY-MM-DD'),
         'uscis_number': viewObject.authNumber,
         'i_94': viewObject.I94Id,
         'passport': viewObject.passportId,
