@@ -13,7 +13,10 @@ class UserSerializer(serializers.ModelSerializer):
     def _get_self_person(self, input_user):
       try:
           p = Person.objects.filter(user=input_user.id, relationship='self')
-          return p[0]
+          if p:
+            return p[0]
+          else:
+            return None
       except Person.DoesNotExist:
         return None
 
