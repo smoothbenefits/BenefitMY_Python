@@ -41,10 +41,10 @@
                         <div class="textbox">
                             <input type="text"
                                 name="first_name"
-                                ng-model="employee.firstName"
+                                ng-model="employee.first_name"
                                 ng-required="true">
                             <div class="form-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
-                              <span ng-show="form.first_name.$error.required">First field is required</span>
+                              <span ng-show="form.first_name.$error.required">First Name field is required</span>
                             </div>
                         </div>
 
@@ -52,7 +52,7 @@
                         <div class="textbox">
                             <input type="text"
                                 name="last_name"
-                                ng-model="employee.lastName"
+                                ng-model="employee.last_name"
                                 ng-required="true">
                             <div class="form-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
                               <span ng-show="form.last_name.$error.required">Last Name field is required</span>
@@ -66,7 +66,7 @@
                                 ng-model="employee.birth_date"
                                 ng-required="true"
                                 min="1900-01-01"
-                                placeholder="YYYY-MM-dd">
+                                placeholder="YYYY-MM-DD">
                             <div class="form-error" ng-show="form.birth_date.$dirty && form.birth_date.$invalid">
                                 <span ng-show="form.birth_date.$error.required">Date of Birth field is required</span>
                                 <span ng-show="form.birth_date.$invalid">Please enter a valid Date of Birth</span>

@@ -12,6 +12,7 @@ from emailusernames.utils import (
 from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.models.user import User
+from app.models.person import Person
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
 from app.serializers.person_serializer import PersonFullPostSerializer
@@ -133,6 +134,16 @@ class UserFamilyView(APIView):
         except User.DoesNotExist:
             raise Http404
 
+    def get_person_by_user(self, user, relation_to_user):
+        try:
+            person_set=Person.objects.filter(user=user, relationship=relation_to_user)
+            if person_set:
+                return person_set[0]
+            else:
+                return None
+        except Person.DoesNotExist:
+            return None
+
     def get(self, request, pk, format=None):
         user = self.get_object(pk)
         serializer = UserFamilySerializer(user)
@@ -140,8 +151,16 @@ class UserFamilyView(APIView):
 
     def post(self, request, pk, format=None):
         request.DATA['user'] = pk
-        serializer = PersonFullPostSerializer(data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        user = self.get_object(pk)
+        person = self.get_person_by_user(user, 'self')
+        if person:
+            serializer = PersonFullPostSerializer(person, data=request.DATA)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+        else:    
+            serializer = PersonFullPostSerializer(data=request.DATA)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
