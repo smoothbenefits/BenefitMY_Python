@@ -87,8 +87,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
          $location.path('/employee/document/' + documentId);
      }
 
-     $scope.ViewI9 = function(){
-      $location.path('/employee/info/i9');
+     $scope.ViewInfo = function(type){
+      $location.path('/employee/info').search('type', type);
      }
   }
 ]);
@@ -406,8 +406,11 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
 }]);
 
 var employeeInfo = employeeControllers.controller('employeeInfoController',
-  ['$scope', '$location', 'currentUser', 'employmentAuthRepository',
-  function($scope, $location, currentUser, employmentAuthRepository){
+  ['$scope', '$location', '$routeParams', 'profileSettings', 'currentUser', 'employmentAuthRepository',
+  function($scope, $location, $routeParams, profileSettings, currentUser, employmentAuthRepository){
+    var w4ValideFields = ['withholdingType', 'dependent_count', 'headOfHousehold', 'childExpense'];
+    var infoObject = _.findWhere(profileSettings, { name: $routeParams.type });
+    $scope.info = { type: $routeParams.type, type_display: infoObject.display_name };
     $scope.person = { role: 'Employee' };
 
     var userPromise = currentUser.get().$promise.then(function(response){
@@ -418,9 +421,25 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
 
     userPromise.then(function(userId){
       employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
-        $scope.info = response;
+        $scope.info.fields = convertResponse(response, $scope.info.type);
       });
     });
+
+    var convertResponse = function(res, type){
+      var pairs = _.pairs(res);
+      var validFields = _.findWhere(profileSettings, {name: type}).valid_fields;
+      var output = [];
+      _.each(pairs, function(pair){
+        var key = pair[0];
+        var inSetting = _.findWhere(validFields, {name: key});
+        if (inSetting){
+          inSetting.value = pair[1];
+          output.push(inSetting);
+        }
+      });
+
+      return output;
+    }
 
     $scope.backToDashboard = function(){
       $location.path('/employee');

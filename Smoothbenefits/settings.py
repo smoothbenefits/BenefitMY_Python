@@ -197,6 +197,7 @@ PIPELINE_JS = {
         'source_filenames':(
             'js/app.js',
             'js/home.js',
+            'js/constants.js',
             'js/api.js.js',
             'js/angular-multi-select.js',
             'js/application.js',
