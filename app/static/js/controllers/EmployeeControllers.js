@@ -402,6 +402,28 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
   }
 }]);
 
+var employeeInfo = employeeControllers.controller('employeeInfoController',
+  ['$scope', '$location', 'currentUser', 'employmentAuthRepository',
+  function($scope, $location, currentUser, employmentAuthRepository){
+    $scope.person = { role: 'Employee' };
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      $scope.person.first_name = response.user.first_name;
+      $scope.person.last_name = response.user.last_name;
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
+        $scope.info = response;
+      });
+    });
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    }
+  }]);
+
 
 var viewDocument = employeeControllers.controller('viewDocument',
   ['$scope', '$location', '$routeParams', 'userDocument', 'currentUser', 'documentRepository',

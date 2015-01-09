@@ -1,0 +1,80 @@
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-click="backToDashboard()">{{person.role}} Dashboard</a>
+    <span>{{person.first_name}} {{person.last_name}}</span>
+</div>
+
+<div class="content-header">
+    <h1>I-9 Information of {{person.first_name}} {{person.last_name}}</h1>
+    <div class="cta" ng-show="showEditButton"><a ng-click="editI9()" class="btn green">Edit</a></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+
+    <!-- Here is the info table for the employee details -->
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class='panel'>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">
+                                Worker Type
+                            </h4>
+                            <div class="col-md-7">
+                                {{info.worker_type}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item" ng-if="info.uscis_number">
+                            <h4 class="col-md-5">
+                                Alien Registration Number/USCIS number
+                            </h4>
+                            <div class="col-md-7">
+                                {{info.uscis_number}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item" ng-if="info.expiration_date">
+                            <h4 class="col-md-5">
+                                 Expiration Date
+                            </h4>
+                            <div class="col-md-7">
+                                {{info.expiration_date}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item" ng-if='info.i_94'>
+                            <h4 class="col-md-5">
+                                 Form I-94 Admission Number
+                            </h4>
+                            <div class="col-md-7">
+                                {{info.i_94}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item" ng-if="info.passport">
+                            <h4 class="col-md-5">
+                                Passport Number
+                            </h4>
+                            <div class="col-md-7">
+                                {{info.passport}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item" ng-if="info.country">
+                            <h4 class="col-md-5">
+                                Country
+                            </h4>
+                            <div class="col-md-7">
+                                {{info.country}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="back"><a href="javascript:void(0);" ng-click="backToDashboard()">&laquo; Back</a></div>
+</div> <!-- content-header -->

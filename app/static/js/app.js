@@ -114,6 +114,10 @@ BenefitMyApp.config(['$routeProvider',
                 templateUrl: '/static/partials/employee_dashboard.html',
                 controller: 'employeeHome'
             }).
+            when('/employee/info/i9', {
+                templateUrl: '/static/partials/employee_i9.html',
+                controller: 'employeeInfoController'
+            }).
             when('/employee/benefit/:employee_id', {
                 templateUrl: '/static/partials/employee_benefits.html',
                 controller:'employeeBenefitSignup'
