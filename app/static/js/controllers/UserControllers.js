@@ -129,6 +129,7 @@ var settingsController = userControllers.controller('settingsController', ['$sco
    'userSettingService',
    'selfInfoService',
    function settingsController ($scope, $location, currentUser, userSettingService, selfInfoService){
+      $('body').removeClass('onboarding-page');
       $scope.profile = {};
       currentUser.get()
         .$promise.then(function(response){

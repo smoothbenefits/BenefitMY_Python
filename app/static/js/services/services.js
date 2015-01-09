@@ -215,9 +215,6 @@ benefitmyService.factory('EmployeeOnboardingValidationService',
       {
         return false;
       }
-      if(!person.email){
-        return false;
-      }
       if(!(person.first_name && person.last_name))
       {
         return false;
@@ -269,6 +266,10 @@ benefitmyService.factory('EmployeeOnboardingValidationService',
            else{
             succeeded();
            }
+        },function(error){
+          if(failed){
+            failed();
+          }
         });
     };
 
@@ -645,9 +646,7 @@ benefitmyService.factory('selfInfoService',
 
         saveSelfInfo: function(uId, viewInfo, success, error){
           var mapUserPerson = function(viewPerson){
-            var birth_date = moment(viewPerson.birth_date);
             var apiUserPerson = viewPerson;
-            apiUserPerson.birth_date = birth_date.format('YYYY-MM-DD')
             apiUserPerson.addresses = [];
             viewPerson.address.address_type = 'home';
             viewPerson.address.state = viewPerson.address.state.toUpperCase();
