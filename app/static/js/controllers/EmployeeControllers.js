@@ -524,12 +524,13 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     $('body').addClass('onboarding-page');
 
     var mapEmployee = function(viewEmployee){
+      var birth_date = moment(viewEmployee.birth_date);
       var apiEmployee = {
         'person_type': 'family',
         'relationship': 'self',
         'first_name': viewEmployee.firstName,
         'last_name': viewEmployee.lastName,
-        'birth_date': viewEmployee.birth_date,
+        'birth_date': birth_date.format('YYYY-MM-DD'),
         'ssn': viewEmployee.ssn,
         'email': $scope.curUser.email,
         'addresses': [],
