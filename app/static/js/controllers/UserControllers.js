@@ -127,15 +127,44 @@ var settingsController = userControllers.controller('settingsController', ['$sco
    '$location',
    'currentUser',
    'userSettingService',
-   function settingsController ($scope, $location, currentUser, userSettingService){
+   'selfInfoService',
+   function settingsController ($scope, $location, currentUser, userSettingService, selfInfoService){
+      $('body').removeClass('onboarding-page');
       $scope.profile = {};
       currentUser.get()
         .$promise.then(function(response){
           $scope.curUser = response.user;
+          selfInfoService.getSelfInfo($scope.curUser.id, function(basicInfo){
+            if(basicInfo){
+              $scope.person = basicInfo;
+            }
+          })
         });
-      
+      $scope.editPersonal = function(event){
+        $scope.isUpdatePersonalInfo = true;
+        $scope.isUpdatePassword = false;
+      };
 
-      $scope.editProfile = function(){
+      $scope.editPersonal();
+
+      $scope.updateBasicInfo = function(){
+        selfInfoService.saveSelfInfo($scope.curUser.id, $scope.person, function(response){
+          alert('Changes saved successfully');
+          $location.path('/');
+        }, function(errorResponse){
+          alert('Failed to add the basic info. The error is: ' + 
+                JSON.stringify(errorResponse.data) + 
+                '\n and the http status is: ' + errorResponse.status);
+        });
+      };
+
+
+      $scope.changePassword = function(event){
+        $scope.isUpdatePersonalInfo = false;
+        $scope.isUpdatePassword = true;
+      };
+
+      $scope.saveNewPassword = function(){
         //first we need to make sure the two passwords match
         if($scope.profile.new_password !== $scope.profile.confirm_new_password){
           alert('The passwords do not match. Please enter your new password again!')
