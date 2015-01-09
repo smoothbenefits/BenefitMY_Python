@@ -646,6 +646,7 @@ benefitmyService.factory('selfInfoService',
 
         saveSelfInfo: function(uId, viewInfo, success, error){
           var mapUserPerson = function(viewPerson){
+            viewPerson.birth_date = moment(viewPerson.birth_date).format('YYYY-MM-DD');
             var apiUserPerson = viewPerson;
             apiUserPerson.addresses = [];
             viewPerson.address.address_type = 'home';
