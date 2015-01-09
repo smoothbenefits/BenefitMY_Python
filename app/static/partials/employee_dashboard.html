@@ -4,7 +4,7 @@
 </div>
 
 <div class="content-header">
-    <h1>Manage My Benefits</h1>
+    <h1>My Benefits</h1>
     <span class="general-info">You have total <b>{{benefitCount}}</b> benefits</span>
     <div class="cta"><a href="#/employee/benefit/{{employee_id}}" class="btn green" >Modify Benefits</a></div>
 </div><!-- / .content-header -->
@@ -75,6 +75,30 @@
                     <td>
                         <a class="btn inline" ng-click="ViewDocument(document.id)"> View</a>
                     </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div><!-- / .content-body -->
+
+<div class="content-header">
+    <h1>My Profile</h1>
+    <span class="general-info">View/edit your information here</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="table-responsive table-holder">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Information Type</span></th>
+                    <th><span>Action</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>I-9</td>
+                    <td><a class="btn inline" ng-click="ViewI9()"> View </a></td>
                 </tr>
             </tbody>
         </table>

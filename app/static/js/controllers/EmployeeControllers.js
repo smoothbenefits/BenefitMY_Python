@@ -87,6 +87,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
          $location.path('/employee/document/' + documentId);
      }
 
+     $scope.ViewI9 = function(){
+      $location.path('/employee/info/i9');
+     }
   }
 ]);
 
