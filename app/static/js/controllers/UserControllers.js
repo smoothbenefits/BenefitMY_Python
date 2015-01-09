@@ -127,26 +127,17 @@ var settingsController = userControllers.controller('settingsController', ['$sco
    '$location',
    'currentUser',
    'userSettingService',
-   'employeeFamily',
-   function settingsController ($scope, $location, currentUser, userSettingService, employeeFamily){
+   'selfInfoService',
+   function settingsController ($scope, $location, currentUser, userSettingService, selfInfoService){
       $scope.profile = {};
       currentUser.get()
         .$promise.then(function(response){
           $scope.curUser = response.user;
-          employeeFamily.get({userId:$scope.curUser.id})
-            .$promise.then(function(employeePerson){
-              var selfPerson = _.findWhere(employeePerson.family, {relationship:'self'});
-              if(selfPerson){
-                $scope.person = selfPerson;
-                if(selfPerson.phones && selfPerson.phones.length > 0){
-                  $scope.person.phone = selfPerson.phones[0];
-                }
-                if(selfPerson.addresses && selfPerson.addresses.length > 0){
-                  $scope.person.address = selfPerson.addresses[0];
-                }
-
-              }
-            });
+          selfInfoService.getSelfInfo($scope.curUser.id, function(basicInfo){
+            if(basicInfo){
+              $scope.person = basicInfo;
+            }
+          })
         });
       $scope.editPersonal = function(event){
         $scope.isUpdatePersonalInfo = true;
@@ -154,37 +145,16 @@ var settingsController = userControllers.controller('settingsController', ['$sco
       };
 
       $scope.editPersonal();
-      var mapEmployee = function(viewEmployee){
-        var apiEmployee = viewEmployee;
-        apiEmployee.addresses = [];
-        viewEmployee.address.address_type = 'home';
-        viewEmployee.address.state = viewEmployee.address.state.toUpperCase();
-        apiEmployee.addresses.push(viewEmployee.address);
-        if(apiEmployee.phones && apiEmployee.phones.length > 0){
-          apiEmployee.phones[0].number = viewEmployee.phone.number;
-        }
-        else{
-          apiEmployee.phones = [];
-          apiEmployee.phones.push({phone_type:'home', number:viewEmployee.phone.number});
-        }
-        if(!apiEmployee.person_type){
-          apiEmployee.person_type = 'primary_contact';
-        }
-        if(!apiEmployee.relationship){
-          apiEmployee.relationship = 'self';
-        }
-        return apiEmployee;
-      };
 
       $scope.updateBasicInfo = function(){
-        var newEmployee = mapEmployee($scope.person);
-        employeeFamily.save({userId: $scope.curUser.id}, newEmployee,
-          function(){
-            alert('Changes saved successfully');
-            $location.path('/');
-          }, function(errorResponse){
-            alert('Failed to add the basic info. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
-          });
+        selfInfoService.saveSelfInfo($scope.curUser.id, $scope.person, function(response){
+          alert('Changes saved successfully');
+          $location.path('/');
+        }, function(errorResponse){
+          alert('Failed to add the basic info. The error is: ' + 
+                JSON.stringify(errorResponse.data) + 
+                '\n and the http status is: ' + errorResponse.status);
+        });
       };
 
 
