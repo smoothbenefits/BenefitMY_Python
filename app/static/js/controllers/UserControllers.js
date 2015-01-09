@@ -160,11 +160,18 @@ var settingsController = userControllers.controller('settingsController', ['$sco
         viewEmployee.address.address_type = 'home';
         viewEmployee.address.state = viewEmployee.address.state.toUpperCase();
         apiEmployee.addresses.push(viewEmployee.address);
-        if(apiEmployee.phones.length > 0){
+        if(apiEmployee.phones && apiEmployee.phones.length > 0){
           apiEmployee.phones[0].number = viewEmployee.phone.number;
         }
         else{
+          apiEmployee.phones = [];
           apiEmployee.phones.push({phone_type:'home', number:viewEmployee.phone.number});
+        }
+        if(!apiEmployee.person_type){
+          apiEmployee.person_type = 'primary_contact';
+        }
+        if(!apiEmployee.relationship){
+          apiEmployee.relationship = 'self';
         }
         return apiEmployee;
       };
