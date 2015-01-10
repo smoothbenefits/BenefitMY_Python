@@ -11,8 +11,11 @@
 
 <div class="content-body">
 
-    <div class="table-responsive table-holder" ng-if="benefits.length>0">
-        <table class="table table-striped">
+    <div class="table-responsive table-holder table" ng-if="benefits.length>0">
+        <div class="table-sub-title">
+            Selected Benefits
+        </div>
+        <table class="table-striped">
             <thead>
                 <tr>
                     <th><span>Benefit Name</span></th>
@@ -32,24 +35,30 @@
                             PCP#: {{benefitElement.pcp}}
                         </div>
                     </td>
-                    <td colspan="3" style="padding: 0;">
-                        <table class="table">
-                            <tr>
-                                <td width="250">{{benefitElement.benefit.benefit_option_type}}</td>
-                                <td width="180">${{benefitElement.benefit.employee_cost_per_period}}</td>
-                                <td width="300" style="padding: 0;">
-                                    <table class="table">
-                                        <tr ng-repeat="enrolled in benefitElement.enrolleds">
-                                            <td>
-                                                {{enrolled.person.relationship.capitalize()}} : {{enrolled.person.first_name}} {{enrolled.person.last_name}}</td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
+                    <td width="250">{{benefitElement.benefit.benefit_option_type}}</td>
+                    <td width="180">${{benefitElement.benefit.employee_cost_per_period}}</td>
+                    <td width="300">
+                        <div class="inner-td-div" ng-repeat="enrolled in benefitElement.enrolleds">
+                            {{enrolled.person.relationship.capitalize()}} : {{enrolled.person.first_name}} {{enrolled.person.last_name}}
+                        </div>
                     </td>
                 </tr>
 
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive table-holder table" ng-if="waivedBenefits.length>0">
+        <div class="table-sub-title">Waived Benefits</div>
+        <table class="table-striped">
+            <thead>
+                <tr>
+                    <th><span>Benefit Type Name</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="waivedBenefit in waivedBenefits">
+                    <td >{{waivedBenefit.benefit_type.name}}</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -61,7 +70,7 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="table-responsive table-holder">
+    <div class="table-responsive table-holder table">
         <table class="table table-striped">
             <thead>
                 <tr>

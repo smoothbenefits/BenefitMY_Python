@@ -12,5 +12,5 @@ class UserCompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = UserCompanyBenefitPlanOption
-        fields = ('enrolleds', 'benefit', 'pcp', 'waived_benefit')
+        fields = ('enrolleds', 'benefit', 'pcp')
         depth = 2

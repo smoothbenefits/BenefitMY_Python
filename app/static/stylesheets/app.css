@@ -187,3 +187,17 @@ th .editable-container{
     font-size: 11px;
     margin-top:10px;
 }
+.inner-td-div{
+    margin-bottom:10px;
+}
+.table-striped td{
+    border-left:solid 1px #e4e4e4;
+}
+.table-striped thead{
+    border-left:solid 1px #e4e4e4;    
+    border-right:solid 1px #e4e4e4;
+}
+.table-sub-title{
+    font-weight: bold;
+    margin-bottom:10px;
+}
