@@ -5,8 +5,7 @@ from rest_framework import status
 
 from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.serializers.user_company_waived_benefit_serializer import (
-    UserCompanyWaivedBenefitSerializer,
-    PostUserCompanyWaivedBenefitSerializer)
+    UserCompanyWaivedBenefitSerializer)
 
 
 class UserCompanyWaivedBenefitView(APIView):
@@ -25,12 +24,23 @@ class UserCompanyWaivedBenefitView(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
-        request.DATA['user'] = pk
-        serializer = PostUserCompanyWaivedBenefitSerializer(data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            waived_benefit = UserCompanyWaivedBenefit.objects.get(
+                user_id=pk,
+                company_id=request.DATA['company'],
+                benefit_type_id=request.DATA['benefit_type'])
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        except UserCompanyWaivedBenefit.DoesNotExist:
+            w = UserCompanyWaivedBenefit(
+                user_id=pk,
+                company_id=request.DATA['company'],
+                benefit_type_id=request.DATA['benefit_type'])
+
+            w.save()
+
+        serializer = UserCompanyWaivedBenefitSerializer(w)
+        return Response(serializer.data)
 
 
 class CompanyWaivedBenefitView(APIView):
