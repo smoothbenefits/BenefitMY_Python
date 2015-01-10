@@ -152,8 +152,8 @@ var settingsController = userControllers.controller('settingsController', ['$sco
           alert('Changes saved successfully');
           $location.path('/');
         }, function(errorResponse){
-          alert('Failed to add the basic info. The error is: ' + 
-                JSON.stringify(errorResponse.data) + 
+          alert('Failed to add the basic info. The error is: ' +
+                JSON.stringify(errorResponse.data) +
                 '\n and the http status is: ' + errorResponse.status);
         });
       };
