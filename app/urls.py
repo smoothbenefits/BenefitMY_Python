@@ -53,6 +53,7 @@ from app.views.benefit_details_view import (
     BenefitDetailsView,
     delete_benefit_details)
 from app.views.util_view import send_onboard_email
+from app.views.user_settings_view import SettingView
 
 PREFIX = "api/v1"
 
@@ -110,6 +111,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
+
+    url(r'^%s/users/settings/?$' % PREFIX, SettingView.as_view()),
  
 
 

@@ -5,8 +5,9 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from app.models.company import Company
+from django.conf import settings
 
-
+URL = settings.SITE_URL
 SUBJECT = "Welcome to BenefitMy"
 CONTENT = """
 
@@ -19,7 +20,7 @@ We, BenefitMy LLC, are partnering with your employer, %s, to welcome you.  Your 
      * Collect the personal info in order to setup your health benefit.
      * Help you to enroll benefit plans for you and your family.
 
-Here is your unique link to setup your account: https://demo.benefitmy.com/employee/signup/%d.
+Here is your unique link to setup your account: %s.
 
 If you have any questions, feel free to drop us an email.
 
@@ -32,15 +33,16 @@ support@benefitmy.com
 FROM='Support@benefitmy.com'
 
 
-
 def onboard_email(name, company_id, to, id):
     try:
         company = Company.objects.get(pk=company_id)
     except Company.DoesNotExist:
         raise Http404
-    c = CONTENT % (name, company.name, id)
-    send_mail(SUBJECT, c, FROM, [to], fail_silently=False)
 
+    link = "%semployee/signup/%d" % (URL, id)
+
+    c = CONTENT % (name, company.name, link)
+    send_mail(SUBJECT, c, FROM, [to], fail_silently=False)
 
 
 @api_view(['POST'])

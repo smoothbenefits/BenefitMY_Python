@@ -501,8 +501,8 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$routeParams', '$location', 'employeeFamily', 'currentUser', 'EmployeeOnboardingValidationService',
-  function($scope, $routeParams, $location, employeeFamily, currentUser, EmployeeOnboardingValidationService){
+  ['$scope', '$routeParams', '$location', 'selfInfoService', 'currentUser', 'EmployeeOnboardingValidationService',
+  function($scope, $routeParams, $location, selfInfoService, currentUser, EmployeeOnboardingValidationService){
 
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
@@ -523,38 +523,13 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 
     $('body').addClass('onboarding-page');
 
-    var mapEmployee = function(viewEmployee){
-      var apiEmployee = {
-        'person_type': 'family',
-        'relationship': 'self',
-        'first_name': viewEmployee.firstName,
-        'last_name': viewEmployee.lastName,
-        'birth_date': viewEmployee.birth_date,
-        'ssn': viewEmployee.ssn,
-        'email': $scope.curUser.email,
-        'addresses': [],
-        'phones': [
-          {
-            'phone_type': 'home',
-            'number': viewEmployee.phone.number
-          }
-        ]
-      };
-
-      viewEmployee.address.address_type = 'home';
-      viewEmployee.address.state = viewEmployee.address.state.toUpperCase();
-      apiEmployee.addresses.push(viewEmployee.address);
-      return apiEmployee;
-    };
 
     $scope.addBasicInfo = function(){
-      var newEmployee = mapEmployee($scope.employee);
-      employeeFamily.save({userId: $scope.employeeId}, newEmployee,
-        function(){
-          $location.path('/employee/onboard/employment/' + $scope.employeeId);
-        }, function(errorResponse){
+      selfInfoService.saveSelfInfo($scope.employeeId, $scope.employee, function(successResponse){
+        $location.path('/employee/onboard/employment/' + $scope.employeeId);
+      }, function(errorResponse){
           alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
-        });
+      });
     };
 }]);
 
@@ -580,9 +555,10 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 
     $('body').addClass('onboarding-page');
     var mapContract = function(viewObject, signature){
+      var expirationDate = moment(viewObject.auth_expiration);
       var contract = {
         'worker_type': viewObject.auth_type,
-        'expiration_date': viewObject.auth_expiration,
+        'expiration_date': expirationDate.format('YYYY-MM-DD'),
         'uscis_number': viewObject.authNumber,
         'i_94': viewObject.I94Id,
         'passport': viewObject.passportId,

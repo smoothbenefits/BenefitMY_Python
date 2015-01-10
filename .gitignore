@@ -62,6 +62,3 @@ staticfiles/
 
 # Mac files
 .DS_Store
-
-# Database files
-app/migrations
