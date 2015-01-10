@@ -3,7 +3,7 @@ BEGIN;
 -- create temporary table to store user ids and person ids
 SELECT u.id INTO TEMPORARY TABLE user_ids
 FROM auth_user u
-WHERE lower(u.email) like 'f%qui@gmail.com';
+WHERE replace(lower(u.email), '.', '') = 'frankqiu@gmailcom';
 
 SELECT p.id INTO TEMPORARY TABLE person_ids
 FROM app_person p
@@ -43,6 +43,9 @@ WHERE s.user_id IN (SELECT id FROM user_ids);
 
 DELETE FROM app_usercompanybenefitplanoption ucb
 WHERE ucb.user_id IN (SELECT id FROM user_ids);
+
+DELETE FROM app_usercompanywaivedbenefit ucw
+WHERE ucw.user_id IN (SELECT id FROM user_ids);
 
 DELETE FROM app_w4 w
 WHERE w.user_id IN (SELECT id FROM user_ids);

@@ -13,6 +13,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
+SITE_URL = "https://localhost:8000/"
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -216,6 +218,7 @@ PIPELINE_JS = {
             'js/services/services.js',
             'js/pixel-admin.min.js',
             'js/jquery.scrollspy.js',
+            'js/moment.min.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }
