@@ -143,12 +143,15 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
                   return employee.user.id === waived.user.id;
                 });
                 if(hasWaivedEmployee){
-                  hasWaivedEmployee.waived = waived.benefit_type.name;
+                  if(!hasWaivedEmployee.waivedList){
+                    hasWaivedEmployee.waivedList = [];
+                  }
+                  hasWaivedEmployee.waivedList.push(waived.benefit_type.name);
                 }
               });
               _.each($scope.employeeList, function(employee){
-                if(!employee.waived){
-                  employee.waived = 'N/A';
+                if(!employee.waivedList){
+                  employee.waivedList.push('N/A');
                 }
               })
             });

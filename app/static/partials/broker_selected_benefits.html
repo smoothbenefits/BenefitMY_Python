@@ -41,7 +41,11 @@
                             </tr>
                         </table>
                     </td>
-                    <td width="100">{{employee.waived}}</td>
+                    <td width="100">
+                        <div class="inner-td-div" ng-repeat="waived in employee.waivedList">
+                            {{waived}}
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
