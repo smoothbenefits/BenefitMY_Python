@@ -8,6 +8,7 @@ settings.constant('profileSettings', [
             {
                 name: 'worker_type',
                 display_name: 'Worker Type',
+                datamap: [['Aaw', 'Alien authorized to work'], ['PResident', 'Permanent resident'], ['Noncitizen', 'Noncitizen national of the United States'], ['Citizen', 'Citizen of the United States']],
                 id: 1
             },
             {
@@ -55,7 +56,7 @@ settings.constant('profileSettings', [
             {
                 name: 'marriage',
                 display_name: 'Withhold type',
-                datamap: [['0', 'Single'], ['1', 'Married'], ['2', 'Married, but withold at higher Single rate']],
+                datamap: [['0', 'Single'], ['2', 'Married'], ['1', 'Married, but withold at higher Single rate']],
                 id: 3
             },
             {
