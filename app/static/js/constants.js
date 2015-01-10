@@ -39,9 +39,35 @@ settings.constant('profileSettings', [
     },
     {
         name: 'w4',
+        display_name: 'W-4',
         valid_fields: [
             {
-                name:''
+                name: 'dependencies',
+                display_name: 'Number of dependencies',
+                id: 1
+            },
+            {
+                name: 'head',
+                display_name: 'Head of household',
+                datamap: [['0', 'No'], ['1', 'Yes']],
+                id: 2
+            },
+            {
+                name: 'marriage',
+                display_name: 'Withhold type',
+                datamap: [['0', 'Single'], ['1', 'Married'], ['2', 'Married, but withold at higher Single rate']],
+                id: 3
+            },
+            {
+                name: 'tax_credit',
+                display_name: 'At least $1900 for tax credit as child or dependent care expenses',
+                datamap: [['0', 'No'], ['1', 'Yes']],
+                id: 4
+            },
+            {
+                name: 'total_points',
+                display_name: 'Total points',
+                id: 5
             }
         ]
     }

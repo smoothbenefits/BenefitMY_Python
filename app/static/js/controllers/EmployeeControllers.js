@@ -406,9 +406,8 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
 }]);
 
 var employeeInfo = employeeControllers.controller('employeeInfoController',
-  ['$scope', '$location', '$routeParams', 'profileSettings', 'currentUser', 'employmentAuthRepository',
-  function($scope, $location, $routeParams, profileSettings, currentUser, employmentAuthRepository){
-    var w4ValideFields = ['withholdingType', 'dependent_count', 'headOfHousehold', 'childExpense'];
+  ['$scope', '$location', '$routeParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
+  function($scope, $location, $routeParams, profileSettings, currentUser, employmentAuthRepository, employeeTaxRepository){
     var infoObject = _.findWhere(profileSettings, { name: $routeParams.type });
     $scope.info = { type: $routeParams.type, type_display: infoObject.display_name };
     $scope.person = { role: 'Employee' };
@@ -420,9 +419,16 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
     });
 
     userPromise.then(function(userId){
-      employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
-        $scope.info.fields = convertResponse(response, $scope.info.type);
-      });
+      if ($scope.info.type === 'i9'){
+        employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
+          $scope.info.fields = convertResponse(response, $scope.info.type);
+        });
+      } else if ($scope.info.type === 'w4'){
+        employeeTaxRepository.get({userId: userId}).$promise.then(function(response){
+          $scope.info.fields = convertResponse(response, $scope.info.type);
+        });
+      }
+
     });
 
     var convertResponse = function(res, type){
@@ -433,7 +439,19 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
         var key = pair[0];
         var inSetting = _.findWhere(validFields, {name: key});
         if (inSetting){
-          inSetting.value = pair[1];
+          if (inSetting.datamap){
+            var value = pair[1];
+            var mappedValue = _.find(inSetting.datamap, function(map){
+              return map[0] === value.toString();
+            });
+            if (!mappedValue){
+              inSetting.value = 'UNKNOWN';
+            } else{
+              inSetting.value = mappedValue[1];
+            }
+          } else{
+            inSetting.value = pair[1];
+          }
           output.push(inSetting);
         }
       });
