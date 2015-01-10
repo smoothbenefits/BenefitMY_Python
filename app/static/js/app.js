@@ -3,6 +3,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ngResource',
     'ui.mask',
     'benefitmyService',
+    'benefitmyApp.constants',
     'benefitmyApp.users.controllers',
     'benefitmyApp.brokers.controllers',
     'benefitmyApp.employers.controllers',
@@ -117,6 +118,10 @@ BenefitMyApp.config(['$routeProvider',
             when('/employee/benefit/:employee_id', {
                 templateUrl: '/static/partials/employee_benefits.html',
                 controller:'employeeBenefitSignup'
+            }).
+            when('/employee/info', {
+                templateUrl: '/static/partials/employee_profile.html',
+                controller: 'employeeInfoController'
             }).
             when('/employee/family/:employee_id', {
                 templateUrl: '/static/partials/employee_family.html',
