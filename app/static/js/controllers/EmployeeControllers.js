@@ -174,7 +174,7 @@ var employeeBenefitSignup = employeeControllers.controller(
             case 'individual_plus_children':
               availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
                 return elem.relationship == 'self' || elem.relationship == 'child'});
-              availFamilyList.eligibleNumber = 2;
+              availFamilyList.eligibleNumber = $scope.family.length;
             break;
             default:
             case 'family':
