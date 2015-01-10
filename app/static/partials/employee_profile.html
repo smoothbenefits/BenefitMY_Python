@@ -1,0 +1,33 @@
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <a ng-click="backToDashboard()">{{person.role}} Dashboard</a>
+    <span>{{person.first_name}} {{person.last_name}}</span>
+</div>
+
+<div class="content-header">
+    <h1>{{info.type_display}} Information of {{person.first_name}} {{person.last_name}}</h1>
+    <div class="cta" ng-show="showEditButton"><a ng-click="editProfile()" class="btn green">Edit</a></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+
+    <!-- Here is the info table for the employee details -->
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class='panel'>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-if="field.value" ng-repeat="field in info.fields | orderBy: field.id">
+                            <h4 class="col-md-5"> {{field.display_name}}</h4>
+                            <div class="col-md-7">
+                                {{field.value}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="back"><a href="javascript:void(0);" ng-click="backToDashboard()">&laquo; Back</a></div>
+</div> <!-- content-header -->

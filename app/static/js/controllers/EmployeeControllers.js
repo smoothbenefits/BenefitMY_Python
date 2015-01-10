@@ -470,6 +470,66 @@ var viewDocument = employeeControllers.controller('viewDocument',
 
 }]);
 
+var employeeInfo = employeeControllers.controller('employeeInfoController',
+  ['$scope', '$location', '$routeParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
+  function($scope, $location, $routeParams, profileSettings, currentUser, employmentAuthRepository, employeeTaxRepository){
+    var infoObject = _.findWhere(profileSettings, { name: $routeParams.type });
+    $scope.info = { type: $routeParams.type, type_display: infoObject.display_name };
+    $scope.person = { role: 'Employee' };
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      $scope.person.first_name = response.user.first_name;
+      $scope.person.last_name = response.user.last_name;
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      if ($scope.info.type === 'i9'){
+        employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
+          $scope.info.fields = convertResponse(response, $scope.info.type);
+        });
+      } else if ($scope.info.type === 'w4'){
+        employeeTaxRepository.get({userId: userId}).$promise.then(function(response){
+          $scope.info.fields = convertResponse(response, $scope.info.type);
+        });
+      }
+
+    });
+
+    var convertResponse = function(res, type){
+      var pairs = _.pairs(res);
+      var validFields = _.findWhere(profileSettings, {name: type}).valid_fields;
+      var output = [];
+      _.each(pairs, function(pair){
+        var key = pair[0];
+        var inSetting = _.findWhere(validFields, {name: key});
+        if (inSetting){
+          if (inSetting.datamap){
+            var value = pair[1];
+            var mappedValue = _.find(inSetting.datamap, function(map){
+              return map[0] === value.toString();
+            });
+            if (!mappedValue){
+              inSetting.value = 'UNKNOWN';
+            } else{
+              inSetting.value = mappedValue[1];
+            }
+          } else{
+            inSetting.value = pair[1];
+          }
+          output.push(inSetting);
+        }
+      });
+
+      return output;
+    }
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    }
+  }]);
+
+
 var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$routeParams', function($scope, $routeParams){
   $scope.employee = {};
   $scope.employee.id = $routeParams.employee_id;
