@@ -75,7 +75,7 @@ class UsersView(APIView):
         company_user = CompanyUser(company_id=request.DATA['company'],
                                    user=user,
                                    company_user_type=request.DATA['company_user_type'])
-        
+
         if 'new_employee' in request.DATA:
             company_user.new_employee = request.DATA['new_employee']
 
@@ -85,7 +85,7 @@ class UsersView(APIView):
 
 
         if company_user.company_user_type == 'employee':
-            # now try to create the onboard email for this user. 
+            # now try to create the onboard email for this user.
             try:
                 onboard_email("%s %s" % (user.first_name, user.last_name),
                               request.DATA['company'],
@@ -95,7 +95,7 @@ class UsersView(APIView):
             except StandardError:
                 return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-            if ('create_docs' in request.DATA and 
+            if ('create_docs' in request.DATA and
                 'fields' in request.DATA and
                 request.DATA['create_docs']):
                 #Let's create the documents for this new user
@@ -137,10 +137,7 @@ class UserFamilyView(APIView):
     def get_person_by_user(self, user, relation_to_user):
         try:
             person_set=Person.objects.filter(user=user, relationship=relation_to_user)
-            if person_set:
-                return person_set[0]
-            else:
-                return None
+            return person_set[0]
         except Person.DoesNotExist:
             return None
 
@@ -158,7 +155,7 @@ class UserFamilyView(APIView):
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
-        else:    
+        else:
             serializer = PersonFullPostSerializer(data=request.DATA)
             if serializer.is_valid():
                 serializer.save()

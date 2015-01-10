@@ -155,26 +155,17 @@ var settingsController = userControllers.controller('settingsController', ['$sco
 
       $scope.editPersonal();
       var mapEmployee = function(viewEmployee){
-        var apiEmployee = {
-          'person_type': 'family',
-          'relationship': 'self',
-          'first_name': viewEmployee.first_name,
-          'last_name': viewEmployee.last_name,
-          'birth_date': viewEmployee.birth_date,
-          'ssn': viewEmployee.ssn,
-          'email': $scope.curUser.email,
-          'addresses': [],
-          'phones': [
-            {
-              'phone_type': 'home',
-              'number': viewEmployee.phone.number
-            }
-          ]
-        };
-
+        var apiEmployee = viewEmployee;
+        apiEmployee.addresses = [];
         viewEmployee.address.address_type = 'home';
         viewEmployee.address.state = viewEmployee.address.state.toUpperCase();
         apiEmployee.addresses.push(viewEmployee.address);
+        if(apiEmployee.phones.length > 0){
+          apiEmployee.phones[0].number = viewEmployee.phone.number;
+        }
+        else{
+          apiEmployee.phones.push({phone_type:'home', number:viewEmployee.phone.number});
+        }
         return apiEmployee;
       };
 
