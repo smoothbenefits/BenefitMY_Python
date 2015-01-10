@@ -137,10 +137,7 @@ class UserFamilyView(APIView):
     def get_person_by_user(self, user, relation_to_user):
         try:
             person_set=Person.objects.filter(user=user, relationship=relation_to_user)
-            if person_set:
-                return person_set[0]
-            else:
-                return None
+            return person_set[0]
         except Person.DoesNotExist:
             return None
 
