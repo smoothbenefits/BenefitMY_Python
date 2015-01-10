@@ -196,6 +196,7 @@ PIPELINE_JS = {
         'source_filenames':(
             'js/app.js',
             'js/home.js',
+            'js/constants.js',
             'js/api.js.js',
             'js/angular-multi-select.js',
             'js/application.js',
@@ -217,6 +218,7 @@ PIPELINE_JS = {
             'js/services/services.js',
             'js/pixel-admin.min.js',
             'js/jquery.scrollspy.js',
+            'js/moment.min.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }
