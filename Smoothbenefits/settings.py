@@ -198,6 +198,7 @@ PIPELINE_JS = {
             'js/app.js',
             'js/home.js',
             'js/api.js.js',
+            'js/constants.js',
             'js/angular-multi-select.js',
             'js/application.js',
             'js/bootstrap-editable-demo.js',
