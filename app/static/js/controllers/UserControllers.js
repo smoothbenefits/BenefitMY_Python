@@ -25,7 +25,7 @@ var findViewController = userControllers.controller('findViewController',
         }
         else if(userRoles.length > 0 && !paramValue)
         {
-           var firstRole = userRoles[0].company_user_type; 
+           var firstRole = userRoles[0].company_user_type;
            $location.replace().path('/'+firstRole);
         }
         else
@@ -50,7 +50,7 @@ var userController = userControllers.controller('userController', ['$scope', '$h
           $scope.curUser = response.user;
           $scope.currentRoleList = response.roles;
        });
-    
+
     $scope.isRoleActive = function(checkRole){
       var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});
       return !_.isUndefined(roleFind);
@@ -155,24 +155,26 @@ var settingsController = userControllers.controller('settingsController', ['$sco
 
       $scope.editPersonal();
       var mapEmployee = function(viewEmployee){
-        var apiEmployee = viewEmployee;
-        apiEmployee.addresses = [];
+        var apiEmployee = {
+          'person_type': 'family',
+          'relationship': 'self',
+          'first_name': viewEmployee.first_name,
+          'last_name': viewEmployee.last_name,
+          'birth_date': viewEmployee.birth_date,
+          'ssn': viewEmployee.ssn,
+          'email': $scope.curUser.email,
+          'addresses': [],
+          'phones': [
+            {
+              'phone_type': 'home',
+              'number': viewEmployee.phone.number
+            }
+          ]
+        };
+
         viewEmployee.address.address_type = 'home';
         viewEmployee.address.state = viewEmployee.address.state.toUpperCase();
         apiEmployee.addresses.push(viewEmployee.address);
-        if(apiEmployee.phones && apiEmployee.phones.length > 0){
-          apiEmployee.phones[0].number = viewEmployee.phone.number;
-        }
-        else{
-          apiEmployee.phones = [];
-          apiEmployee.phones.push({phone_type:'home', number:viewEmployee.phone.number});
-        }
-        if(!apiEmployee.person_type){
-          apiEmployee.person_type = 'primary_contact';
-        }
-        if(!apiEmployee.relationship){
-          apiEmployee.relationship = 'self';
-        }
         return apiEmployee;
       };
 
