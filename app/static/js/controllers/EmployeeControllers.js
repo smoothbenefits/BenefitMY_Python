@@ -62,10 +62,14 @@ var employeeHome = employeeControllers.controller('employeeHome',
     benefitPromise.then(function(companyId){
       if(companyId){
         employeeBenefits.enroll().get({userId:curUserId, companyId:companyId})
-        .$promise.then(function(response){
+          .$promise.then(function(response){
                        $scope.benefits = response.benefits;
                        $scope.benefitCount = response.benefits.length;
-                               });
+          });
+        employeeBenefits.waive().query({userId:curUserId, companyId:companyId})
+          .$promise.then(function(waivedResponse){
+            $scope.waivedBenefits = waivedResponse;
+          });
       }
     });
 
