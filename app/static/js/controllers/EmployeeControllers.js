@@ -327,7 +327,7 @@ var employeeBenefitSignup = employeeControllers.controller(
                     ", you have to elect " + invalidEnrollNumberList[0].requiredNumber + " family members!");
             return;
           }
-
+          saveRequest.waivedRequest = {company:companyId, waived:[]};
           _.each($scope.availablePlans, function(benefitPlan){
               if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
                 var type = benefitPlan.benefit_type;
@@ -343,19 +343,16 @@ var employeeBenefitSignup = employeeControllers.controller(
                 if (type === 'Vision'){
                   typeKey = 3;
                 }
-                saveRequest.waived.push({company: companyId, benefit_type: typeKey, type_name: type});
+                saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type});
               }
             });
 
-          if (saveRequest.waived.length > 0){
-            _.each(saveRequest.waived, function(waivedPlan){
-              employeeBenefits.waive().save({userId: employeeId}, waivedPlan, function(){
-                alert('Wavied ' + waivedPlan.type_name);
-              }, function(){
-                $scope.savedSuccess = false;
-              });
+          employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
+             function(errorResponse){
+              alert('Saving waived selection failed because: ' + errorResponse.data);
+              $scope.savedSuccess = false;
             });
-          }
+        
 
           employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
               $location.path('/employee');
