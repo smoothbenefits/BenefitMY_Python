@@ -83,13 +83,7 @@ var userController = userControllers.controller('userController', ['$scope', '$h
       }
     };
     var getIdByRole = function(role){
-      if(role === 'employee'){
-        return $scope.curUser.id;
-      }
-      else{
-        var curCompanyRole = _.findWhere($scope.currentRoleList, {'company_user_type':role});
-        return curCompanyRole.company.id;
-      }
+      return $scope.curUser.id;
     };
     $scope.getActiveRoleClass = function(checkPath){
       var curPath = $location.path();
