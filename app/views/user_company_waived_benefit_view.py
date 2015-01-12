@@ -46,7 +46,6 @@ class UserCompanyWaivedBenefitView(APIView):
             return Response({'Success':'false', 'error': 'the request do not have \'company\' field specified'}, 
                             status=status.HTTP_400_BAD_REQUEST)
 
-
 class CompanyWaivedBenefitView(APIView):
     """ get all waived benefits belong to a company
     """
