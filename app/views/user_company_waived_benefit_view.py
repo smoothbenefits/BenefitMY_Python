@@ -24,23 +24,27 @@ class UserCompanyWaivedBenefitView(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
-        try:
-            waived_benefit = UserCompanyWaivedBenefit.objects.get(
+        if 'company' in request.DATA:
+        ### First delete all the waived records associated with the user
+            comp_id = request.DATA['company']
+            waived_benefits = UserCompanyWaivedBenefit.objects.filter(
                 user_id=pk,
-                company_id=request.DATA['company'],
-                benefit_type_id=request.DATA['benefit_type'])
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+                company_id=comp_id)
+            for existing_waived in waived_benefits:
+                existing_waived.delete()
 
-        except UserCompanyWaivedBenefit.DoesNotExist:
-            w = UserCompanyWaivedBenefit(
-                user_id=pk,
-                company_id=request.DATA['company'],
-                benefit_type_id=request.DATA['benefit_type'])
+            ### now save all the new waived records
+            for input_waive in request.DATA['waived']:
+                w = UserCompanyWaivedBenefit(
+                    user_id=pk,
+                    company_id=comp_id,
+                    benefit_type_id=input_waive['benefit_type'])
 
-            w.save()
-
-        serializer = UserCompanyWaivedBenefitSerializer(w)
-        return Response(serializer.data)
+                w.save()
+            return Response({'Success':'true'})
+        else:
+            return Response({'Success':'false', 'error': 'the request do not have \'company\' field specified'}, 
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class CompanyWaivedBenefitView(APIView):
