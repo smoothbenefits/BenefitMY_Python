@@ -15,8 +15,12 @@ benefits should be one of {1: 'Medical',
                            3: 'Vision'}
 
 sample_request: |
-  {
-      "company": 1,
-      "benefit_type": 2
-  } 
+    {
+        "company": 1
+        "waived":
+            [
+                {"benefit_type":1},
+                {"benefit_type":2}
+            ]
+    }
 

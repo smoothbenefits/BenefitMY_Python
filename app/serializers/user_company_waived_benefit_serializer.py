@@ -13,8 +13,3 @@ class UserCompanyWaivedBenefitSerializer(serializers.ModelSerializer):
         model = UserCompanyWaivedBenefit
         depth = 1
 
-
-class PostUserCompanyWaivedBenefitSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = UserCompanyWaivedBenefit

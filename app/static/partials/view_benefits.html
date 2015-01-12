@@ -24,7 +24,7 @@
             </thead>
             <tbody>
                 <tr class="title-row">
-                    <td colspan="2" class="plan-row-head"><span>Plans Premium</span></td>
+                    <td colspan="2" class="plan-row-head"><span>Plans Premium<br />(per pay period)</span></td>
                     <td ng-repeat="benefitOption in medicalBenefitGroup.benefitOptionMetaArray" colspan="{{benefitOption.colspan}}">
                         <span>{{benefitOption.name}}</span>
                     </td>
@@ -56,8 +56,8 @@
                 <tr>
                     <th><span>{{benefitArray.type}}</span></th>
                     <th width="250"><span>Types</span></th>
-                    <th width="180"><span>Total Premiums</span></th>
-                    <th width="180"><span>Employee Premiums</span></th>
+                    <th width="180"><span>Total Premiums<br />(per pay period)</span></th>
+                    <th width="180"><span>Employee Premiums<br />(per pay period)</span></th>
                 </tr>
             </thead>
             <tbody>
