@@ -25,7 +25,7 @@
 
         <div class="col-md-8">
             <div class="form-holder" ng-show="isUpdatePassword">
-                <form name="form">
+                <form name="password_form">
                 <ul class="list-group"><li class="list-group-item">
                     <div class="form-label">Current Password*</div>
                     <div class="textbox">
@@ -33,8 +33,8 @@
                             name="current_password"
                             ng-model="profile.current_password"
                             ng-required="true">
-                        <div class="form-error" ng-show="form.current_password.$dirty && form.current_password.$invalid">
-                          <span ng-show="form.current_password.$error.required">Current Password is required</span>
+                        <div class="form-error" ng-show="password_form.current_password.$dirty && password_form.current_password.$invalid">
+                          <span ng-show="password_form.current_password.$error.required">Current Password is required</span>
                         </div>
                     </div>
                     <div class="form-label">New Password*</div>
@@ -43,8 +43,8 @@
                             name="new_password"
                             ng-model="profile.new_password"
                             ng-required="true">
-                        <div class="form-error" ng-show="form.new_password.$dirty && form.new_password.$invalid">
-                          <span ng-show="form.new_password.$error.required">New password is required</span>
+                        <div class="form-error" ng-show="password_form.new_password.$dirty && password_form.new_password.$invalid">
+                          <span ng-show="password_form.new_password.$error.required">New password is required</span>
                         </div>
                     </div>
                     <div class="form-label">Confirm New Password*</div>
@@ -53,14 +53,14 @@
                             name="confirm_password"
                             ng-model="profile.confirm_new_password"
                             ng-required="true">
-                        <div class="form-error" ng-show="form.confirm_password.$dirty && form.confirm_password.$invalid">
-                            <span ng-show="form.confirm_password.$error.required">You have to type your new password again</span>
+                        <div class="form-error" ng-show="password_form.confirm_password.$dirty && password_form.confirm_password.$invalid">
+                            <span ng-show="password_form.confirm_password.$error.required">You have to type your new password again</span>
                         </div>
                     </div>
                     </li></ul>
 
                     <div class="submit-box">
-                        <button ng-click="saveNewPassword()" class="btn green" ng-disabled="form.$invalid">Save</button>
+                        <button ng-click="saveNewPassword()" class="btn green" ng-disabled="password_form.$invalid">Save</button>
                     </div>
 
                 </form>
