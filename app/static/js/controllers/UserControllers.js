@@ -119,12 +119,14 @@ var userController = userControllers.controller('userController', ['$scope', '$h
 
 var settingsController = userControllers.controller('settingsController', ['$scope',
    '$location',
+   '$routeParams',
    'currentUser',
    'userSettingService',
    'selfInfoService',
-   function settingsController ($scope, $location, currentUser, userSettingService, selfInfoService){
+   function settingsController ($scope, $location, $routeParams, currentUser, userSettingService, selfInfoService){
       $('body').removeClass('onboarding-page');
       $scope.profile = {};
+      $scope.forced = $routeParams.forced;
       currentUser.get()
         .$promise.then(function(response){
           $scope.curUser = response.user;
