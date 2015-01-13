@@ -162,7 +162,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       var addBenefitPlanToSelectionList = function(benefit){
         var existEmployee = _.find($scope.employeeList, function(employee){
-          return employee.user.email === benefit.email;
+          return employee.user.id === benefit.userid;
         });
         if (existEmployee){
           if(!existEmployee.benefits){
