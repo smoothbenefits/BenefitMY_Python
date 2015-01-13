@@ -1,0 +1,16 @@
+[
+  {
+    "model": "app.Company",
+    "pk": 8,
+    "fields": {
+    "name": "Bay State Benefits Services"
+    }
+  },
+  {
+    "model": "app.Company",
+    "pk": 9,
+    "fields": {
+    "name": "LabCentral"
+    }
+  }
+]

@@ -13,12 +13,6 @@ class UserCompanyBenefitPlanOption(models.Model):
         CompanyBenefitPlanOption,
         related_name="user_company_benefit_plan")
 
-    waived_benefit = models.ForeignKey(
-        UserCompanyWaivedBenefit,
-        related_name="user_company_benefit_plan",
-        blank=True,
-        null=True)
-
     pcp = models.CharField(max_length=30,
                            blank=True,
                            null=True)

@@ -93,14 +93,13 @@ var employerHome = employersController.controller('employerHome',
             $scope.company = company_role.company;
             documentTypeService.getDocumentTypes($scope.company, function(doc_types){
               $scope.documentTypes = doc_types;
+
+              getTemplates($scope.company);
+              getWorkerCount($scope.company);
+              getBenefitCount($scope.company);
+              getTemplateCount($scope.company);
             });
-            getTemplates($scope.company);
-            getWorkerCount($scope.company);
-            getBenefitCount($scope.company);
-            getTemplateCount($scope.company);
-            return false;
           }
-          return true;
         });
     });
 
