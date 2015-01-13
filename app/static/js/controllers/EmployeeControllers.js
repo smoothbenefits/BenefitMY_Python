@@ -589,6 +589,8 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 
 
     $scope.addBasicInfo = function(){
+      var birthDate = $scope.employee.birth_date;
+      $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');
       selfInfoService.saveSelfInfo($scope.employeeId, $scope.employee, function(successResponse){
         $location.path('/employee/onboard/employment/' + $scope.employeeId);
       }, function(errorResponse){
