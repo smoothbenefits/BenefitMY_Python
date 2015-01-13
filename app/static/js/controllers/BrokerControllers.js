@@ -147,10 +147,12 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
                     hasWaivedEmployee.waivedList = [];
                   }
                   hasWaivedEmployee.waivedList.push(waived.benefit_type.name);
+                  hasWaivedEmployee.updated = new Date(waived.created_at).toDateString();
                 }
               });
               _.each($scope.employeeList, function(employee){
                 if(!employee.waivedList){
+                  employee.waivedList = [];
                   employee.waivedList.push('N/A');
                 }
               })
@@ -169,6 +171,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
             existEmployee.benefits = [];
           }
           existEmployee.benefits.push(benefit);
+          existEmployee.updated = benefit.lastUpdatedTime;
         }
       }
 
