@@ -130,6 +130,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
               _.each($scope.employeeList, function(employee){
                 if(!employee.benefits){
+                  employee.updated = 'N/A';
                   employee.benefits = [];
                   employee.benefits.push({selectedPlanName:'No Selection', lastUpdatedTime:'N/A', enrolled:[{name:'N/A'}]});
                 }
