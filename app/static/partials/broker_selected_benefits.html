@@ -25,7 +25,7 @@
             <tbody>
                 <tr ng-repeat="employee in employeeList | orderBy:'name'">
                     <td style="vertical-align: top;"><a ng-click="viewDetails(employee.user.id)">{{employee.user.first_name}} {{employee.user.last_name}}</a></td>
-                    <td colspan="3" style="padding: 0;">
+                    <td colspan="2" style="padding: 0;">
                         <table class="table">
                             <tr ng-repeat="plan in employee.benefits">
                                 <td width="300">{{plan.selectedPlanName}} 
@@ -37,10 +37,10 @@
                                         <br />
                                     </text>
                                 </td>
-                                <td width="150">{{plan.lastUpdatedTime}}</td>
                             </tr>
                         </table>
                     </td>
+                    <td width="150">{{employee.updated}}</td>
                     <td width="100">
                         <div class="inner-td-div" ng-repeat="waived in employee.waivedList">
                             {{waived}}
