@@ -181,7 +181,7 @@ benefitmyService.factory('peopleRepository', ['$resource',
     return $resource('/api/v1/people/:personId', {personId:'@personId'});
   }
 ]);
-benefitmyService.factory('EmployeeOnboardingValidationService',
+benefitmyService.factory('EmployeePreDashboardValidationService',
                          ['employeeFamily',
                           'currentUser',
                           'employmentAuthRepository',
@@ -303,27 +303,40 @@ benefitmyService.factory('EmployeeOnboardingValidationService',
         });
     };
 
-    return function(employeeId, succeeded, failed){
-      validateBasicInfo(employeeId, function(){
-        validateEmploymentAuth(employeeId, function(){
-          validateW4Info(employeeId, function(){
-            validateEmployeeSignature(employeeId,function(){
-              succeeded();
-            }, function(){
-              failed(getSignatureUrl(employeeId));
+    return {
+        onboarding: function(employeeId, succeeded, failed){
+          validateBasicInfo(employeeId, function(){
+            validateEmploymentAuth(employeeId, function(){
+              validateW4Info(employeeId, function(){
+                validateEmployeeSignature(employeeId,function(){
+                  succeeded();
+                }, function(){
+                  failed(getSignatureUrl(employeeId));
+                });
+              },
+              function(){
+                failed(getTaxUrl(employeeId));
+              });
+            },
+            function(){
+              failed(getEmploymentAuthUrl(employeeId));
             });
-          },
-          function(){
-            failed(getTaxUrl(employeeId));
+          }, function(){
+            failed(getBasicInfoUrl(employeeId));
           });
         },
-        function(){
-          failed(getEmploymentAuthUrl(employeeId));
-        });
-      }, function(){
-        failed(getBasicInfoUrl(employeeId));
-      });
-    };
+        basicInfo: function(employeeId, succeeded, failed){
+          validateBasicInfo(employeeId, function(){
+            if(succeeded){
+              succeeded();
+            }
+          }, function(){
+            if(failed){
+              failed();
+            }
+          });
+        }
+      }
   }]);
 benefitmyService.factory('EmployeeLetterSignatureValidationService',
   ['documentRepository',

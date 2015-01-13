@@ -8,7 +8,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'employeeBenefits',
      'currentUser',
      'userDocument',
-     'EmployeeOnboardingValidationService',
+     'EmployeePreDashboardValidationService',
      'EmployeeLetterSignatureValidationService',
   function employeeHome($scope,
                         $location,
@@ -17,7 +17,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
                         employeeBenefits,
                         currentUser,
                         userDocument,
-                        EmployeeOnboardingValidationService,
+                        EmployeePreDashboardValidationService,
                         EmployeeLetterSignatureValidationService){
 
     $('body').removeClass('onboarding-page');
@@ -28,7 +28,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
         var employeeRole = _.findWhere(response.roles, {company_user_type:'employee'});
         if(employeeRole && employeeRole.new_employee){
           EmployeeLetterSignatureValidationService($scope.employee_id, 'Offer Letter', function(){
-            EmployeeOnboardingValidationService($scope.employee_id, function(){
+            EmployeePreDashboardValidationService.onboarding($scope.employee_id, function(){
               return $scope.employee_id;
             }, function(redirectUrl){
               $location.path(redirectUrl);
@@ -36,6 +36,14 @@ var employeeHome = employeeControllers.controller('employeeHome',
           },function(){
             $location.path('/employee/sign_letter/' + $scope.employee_id).search({letter_type:'Offer Letter'});
           });
+        }
+        else{
+          EmployeePreDashboardValidationService.basicInfo($scope.employee_id, function(){
+            return $scope.employee_id;
+          }, function(){
+            //we need to redirect to edit profile page
+            $location.path('/settings').search({forced:1});
+          })
         }
         return $scope.employee_id;
       });
@@ -565,15 +573,15 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$routeParams', '$location', 'selfInfoService', 'currentUser', 'EmployeeOnboardingValidationService',
-  function($scope, $routeParams, $location, selfInfoService, currentUser, EmployeeOnboardingValidationService){
+  ['$scope', '$routeParams', '$location', 'selfInfoService', 'currentUser', 'EmployeePreDashboardValidationService',
+  function($scope, $routeParams, $location, selfInfoService, currentUser, EmployeePreDashboardValidationService){
 
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
     $scope.displayAll = false;
 
 
-    EmployeeOnboardingValidationService($scope.employeeId, function(){
+    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
     function(redirectUrl){
@@ -600,14 +608,14 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$routeParams', '$location', 'employmentAuthRepository', 'EmployeeOnboardingValidationService',
-  function($scope, $routeParams, $location, employmentAuthRepository, EmployeeOnboardingValidationService){
+  ['$scope', '$routeParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
+  function($scope, $routeParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
     $scope.employee = {
 
     };
     $scope.employeeId = $routeParams.employee_id;
 
-    EmployeeOnboardingValidationService($scope.employeeId, function(){
+    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
     function(redirectUrl){
@@ -670,12 +678,12 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', '$routeParams', '$location','employeeTaxRepository', 'EmployeeOnboardingValidationService',
-  function($scope, $routeParams, $location, employeeTaxRepository, EmployeeOnboardingValidationService){
+  ['$scope', '$routeParams', '$location','employeeTaxRepository', 'EmployeePreDashboardValidationService',
+  function($scope, $routeParams, $location, employeeTaxRepository, EmployeePreDashboardValidationService){
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
 
-    EmployeeOnboardingValidationService($scope.employeeId, function(){
+    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
     function(redirectUrl){
@@ -726,12 +734,12 @@ var onboardTax = employeeControllers.controller('onboardTax',
 }]);
 
 var onboardComplete = employeeControllers.controller('onboardComplete',
-  ['$scope', '$routeParams', '$location', 'employeeSignature', 'EmployeeOnboardingValidationService',
-  function($scope, $routeParams, $location, employeeSignature, EmployeeOnboardingValidationService){
+  ['$scope', '$routeParams', '$location', 'employeeSignature', 'EmployeePreDashboardValidationService',
+  function($scope, $routeParams, $location, employeeSignature, EmployeePreDashboardValidationService){
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
 
-    EmployeeOnboardingValidationService($scope.employeeId, function(){
+    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
     function(redirectUrl){
