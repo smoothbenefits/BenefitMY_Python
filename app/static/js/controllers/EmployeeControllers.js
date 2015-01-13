@@ -62,10 +62,14 @@ var employeeHome = employeeControllers.controller('employeeHome',
     benefitPromise.then(function(companyId){
       if(companyId){
         employeeBenefits.enroll().get({userId:curUserId, companyId:companyId})
-        .$promise.then(function(response){
+          .$promise.then(function(response){
                        $scope.benefits = response.benefits;
                        $scope.benefitCount = response.benefits.length;
-                               });
+          });
+        employeeBenefits.waive().query({userId:curUserId, companyId:companyId})
+          .$promise.then(function(waivedResponse){
+            $scope.waivedBenefits = waivedResponse;
+          });
       }
     });
 
@@ -87,6 +91,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
          $location.path('/employee/document/' + documentId);
      }
 
+     $scope.ViewInfo = function(type){
+      $location.path('/employee/info').search('type', type);
+     }
   }
 ]);
 
@@ -167,7 +174,7 @@ var employeeBenefitSignup = employeeControllers.controller(
             case 'individual_plus_children':
               availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
                 return elem.relationship == 'self' || elem.relationship == 'child'});
-              availFamilyList.eligibleNumber = 2;
+              availFamilyList.eligibleNumber = $scope.family.length;
             break;
             default:
             case 'family':
@@ -320,7 +327,7 @@ var employeeBenefitSignup = employeeControllers.controller(
                     ", you have to elect " + invalidEnrollNumberList[0].requiredNumber + " family members!");
             return;
           }
-
+          saveRequest.waivedRequest = {company:companyId, waived:[]};
           _.each($scope.availablePlans, function(benefitPlan){
               if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
                 var type = benefitPlan.benefit_type;
@@ -336,19 +343,16 @@ var employeeBenefitSignup = employeeControllers.controller(
                 if (type === 'Vision'){
                   typeKey = 3;
                 }
-                saveRequest.waived.push({company: companyId, benefit_type: typeKey, type_name: type});
+                saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type});
               }
             });
 
-          if (saveRequest.waived.length > 0){
-            _.each(saveRequest.waived, function(waivedPlan){
-              employeeBenefits.waive().save({userId: employeeId}, waivedPlan, function(){
-                alert('Wavied ' + waivedPlan.type_name);
-              }, function(){
-                $scope.savedSuccess = false;
-              });
+          employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
+             function(errorResponse){
+              alert('Saving waived selection failed because: ' + errorResponse.data);
+              $scope.savedSuccess = false;
             });
-          }
+        
 
           employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
               $location.path('/employee');
@@ -469,6 +473,66 @@ var viewDocument = employeeControllers.controller('viewDocument',
     }
 
 }]);
+
+var employeeInfo = employeeControllers.controller('employeeInfoController',
+  ['$scope', '$location', '$routeParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
+  function($scope, $location, $routeParams, profileSettings, currentUser, employmentAuthRepository, employeeTaxRepository){
+    var infoObject = _.findWhere(profileSettings, { name: $routeParams.type });
+    $scope.info = { type: $routeParams.type, type_display: infoObject.display_name };
+    $scope.person = { role: 'Employee' };
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      $scope.person.first_name = response.user.first_name;
+      $scope.person.last_name = response.user.last_name;
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      if ($scope.info.type === 'i9'){
+        employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
+          $scope.info.fields = convertResponse(response, $scope.info.type);
+        });
+      } else if ($scope.info.type === 'w4'){
+        employeeTaxRepository.get({userId: userId}).$promise.then(function(response){
+          $scope.info.fields = convertResponse(response, $scope.info.type);
+        });
+      }
+
+    });
+
+    var convertResponse = function(res, type){
+      var pairs = _.pairs(res);
+      var validFields = _.findWhere(profileSettings, {name: type}).valid_fields;
+      var output = [];
+      _.each(pairs, function(pair){
+        var key = pair[0];
+        var inSetting = _.findWhere(validFields, {name: key});
+        if (inSetting){
+          if (inSetting.datamap){
+            var value = pair[1];
+            var mappedValue = _.find(inSetting.datamap, function(map){
+              return map[0] === value.toString();
+            });
+            if (!mappedValue){
+              inSetting.value = 'UNKNOWN';
+            } else{
+              inSetting.value = mappedValue[1];
+            }
+          } else{
+            inSetting.value = pair[1];
+          }
+          output.push(inSetting);
+        }
+      });
+
+      return output;
+    }
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    }
+  }]);
+
 
 var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$routeParams', function($scope, $routeParams){
   $scope.employee = {};

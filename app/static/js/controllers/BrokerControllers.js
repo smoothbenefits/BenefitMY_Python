@@ -81,9 +81,9 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    '$location', 
    '$routeParams', 
    'companyRepository', 
-   'companySelectedBenefits', 
+   'companyEmployeeBenefits', 
    'employerWorkerRepository',
-    function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companySelectedBenefits, employerWorkerRepository){
+    function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companyEmployeeBenefits, employerWorkerRepository){
       var clientId = $routeParams.client_id;
       $scope.employeeList = [];
 
@@ -103,7 +103,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
           
           $scope.clientCount = $scope.employeeList.length;
 
-          companySelectedBenefits.get({companyId: clientId})
+          companyEmployeeBenefits.selected.get({companyId: clientId})
             .$promise.then(function(response){
               var selectedBenefits = response.benefits;
 
@@ -135,6 +135,26 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
                 }
               });
           });
+
+          companyEmployeeBenefits.waived.query({companyId: clientId})
+            .$promise.then(function(waivedResponse){
+              _.each(waivedResponse, function(waived){
+                var hasWaivedEmployee = _.find($scope.employeeList, function(employee){
+                  return employee.user.id === waived.user.id;
+                });
+                if(hasWaivedEmployee){
+                  if(!hasWaivedEmployee.waivedList){
+                    hasWaivedEmployee.waivedList = [];
+                  }
+                  hasWaivedEmployee.waivedList.push(waived.benefit_type.name);
+                }
+              });
+              _.each($scope.employeeList, function(employee){
+                if(!employee.waivedList){
+                  employee.waivedList.push('N/A');
+                }
+              })
+            });
 
         });
 

@@ -47,10 +47,13 @@ benefitmyService.factory('companyRepository', [
     return $resource('/api/v1/companies/:clientId', {clientId:'@id'})
   }]);
 
-benefitmyService.factory('companySelectedBenefits', [
+benefitmyService.factory('companyEmployeeBenefits', [
   '$resource',
   function($resource){
-    return $resource('/api/v1/company_users/:companyId/benefits', {companyId: '@id'})
+    return {
+      selected:$resource('/api/v1/company_users/:companyId/benefits', {companyId: '@id'}),
+      waived:$resource('/api/v1/companies/:companyId/waived_benefits', {companyId: '@id'})
+    }
   }]);
 
 benefitmyService.factory('benefitListRepository', [
