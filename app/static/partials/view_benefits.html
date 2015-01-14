@@ -19,7 +19,10 @@
             <thead>
                 <th colspan="2"><span>{{medicalBenefitGroup.groupTitle}}</span></th>
                 <th colspan="6" ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" class="benefit-name">
-                    <span>{{benefitName.name}}</span>
+                    <span>
+                        {{benefitName.name}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteBenefit(benefitName.id)" href="javascript:void(0);">X</a>
+                    </span>
                 </th>
             </thead>
             <tbody>
@@ -63,7 +66,10 @@
             <tbody>
 
                 <tr ng-repeat="benefit in benefitArray.benefitList">
-                    <td style="vertical-align: top;">{{benefit.name}}</td>
+                    <td style="vertical-align: top;">
+                        {{benefit.name}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteBenefit(benefit.id)" href="javascript:void(0);">X</a>
+                    </td>
                     <td colspan="3" style="padding: 0;">
                         <table class="table">
                             <tr ng-repeat="option in benefit.options">
