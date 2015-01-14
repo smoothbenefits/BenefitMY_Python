@@ -201,3 +201,10 @@ th .editable-container{
     font-weight: bold;
     margin-bottom:10px;
 }
+.attention{
+    font-size:12px;
+    font-weight: bold;
+    background-color: #faf8c8;
+    margin-bottom:20px;
+    padding:10px;
+}

@@ -130,6 +130,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
               _.each($scope.employeeList, function(employee){
                 if(!employee.benefits){
+                  employee.updated = 'N/A';
                   employee.benefits = [];
                   employee.benefits.push({selectedPlanName:'No Selection', lastUpdatedTime:'N/A', enrolled:[{name:'N/A'}]});
                 }
@@ -147,10 +148,12 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
                     hasWaivedEmployee.waivedList = [];
                   }
                   hasWaivedEmployee.waivedList.push(waived.benefit_type.name);
+                  hasWaivedEmployee.updated = new Date(waived.created_at).toDateString();
                 }
               });
               _.each($scope.employeeList, function(employee){
                 if(!employee.waivedList){
+                  employee.waivedList = [];
                   employee.waivedList.push('N/A');
                 }
               })
@@ -162,13 +165,14 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       var addBenefitPlanToSelectionList = function(benefit){
         var existEmployee = _.find($scope.employeeList, function(employee){
-          return employee.user.email === benefit.email;
+          return employee.user.id === benefit.userid;
         });
         if (existEmployee){
           if(!existEmployee.benefits){
             existEmployee.benefits = [];
           }
           existEmployee.benefits.push(benefit);
+          existEmployee.updated = benefit.lastUpdatedTime;
         }
       }
 
