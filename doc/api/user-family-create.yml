@@ -13,9 +13,9 @@ sample_url: /api/v1/users/207119551/family
 relationship should be one of ('self', 'spouse', 'dependent')
 
 sample_request: |
-  {
+ {
       "person_type": "family",
-      "relationship": "spouse",
+      "relationship": "self",
       "first_name": "Jim Smith",
       "last_name": "Smith",
       "birth_date": "1971-01-01",
@@ -35,8 +35,19 @@ sample_request: |
           "phone_type": "home",
           "number": "1-987-555-1234"
         }
+      ],
+     "emergency_contact": [
+     {
+        "first_name": "lin",
+        "middle_name": "XX",
+        "last_name": "yy",
+        "relationship": "friend",
+        "email": "fsfdf@gmail.com",
+        "phone": "6179037266"}
       ]
-    } 
+
+    }
+
 
 sample_response: |
 
