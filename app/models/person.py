@@ -3,6 +3,7 @@ from company import Company
 from django.contrib.auth.models import User
 from encrypted_fields import EncryptedTextField
 
+
 class Person(models.Model):
     person_type = models.CharField(max_length=30)
     first_name = models.CharField(max_length=255, null=True)
