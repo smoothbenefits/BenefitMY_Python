@@ -7,7 +7,7 @@ from benefit_plan_serializer import (
 
 class CompanyBenefitPlanOptionPostSerializer(serializers.ModelSerializer):
 
-    benefit_plan = BenefitPlanPostSerializer()
+    benefit_plan = BenefitPlanPostSerializer(allow_add_remove=True)
 
     class Meta:
 
