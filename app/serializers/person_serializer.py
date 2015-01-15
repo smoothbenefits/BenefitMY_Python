@@ -3,12 +3,14 @@ from app.models.person import Person
 
 from phone_serializer import PhoneSerializer
 from address_serializer import AddressSerializer
+from emergency_contact_serializer import EmergencyContactSerializer
 
 
 class PersonSerializer(serializers.ModelSerializer):
 
     addresses = AddressSerializer(many=True)
     phones = PhoneSerializer(many=True)
+    emergency_contact = EmergencyContactSerializer(many=True)
 
     class Meta:
 
@@ -24,13 +26,17 @@ class PersonSerializer(serializers.ModelSerializer):
                   'phones',
                   'addresses',
                   'company',
-                  'user')
+                  'user',
+                  'emergency_contact')
 
 
 class PersonFullPostSerializer(serializers.ModelSerializer):
 
     addresses = AddressSerializer(many=True, allow_add_remove=True)
     phones = PhoneSerializer(many=True, allow_add_remove=True)
+    emergency_contact = EmergencyContactSerializer(
+        many=True,
+        allow_add_remove=True)
 
     class Meta:
 
@@ -47,7 +53,8 @@ class PersonFullPostSerializer(serializers.ModelSerializer):
                   'phones',
                   'addresses',
                   'company',
-                  'user')
+                  'user',
+                  'emergency_contact')
 
 
 class PersonPostSerializer(serializers.ModelSerializer):

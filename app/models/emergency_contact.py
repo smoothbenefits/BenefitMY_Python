@@ -10,6 +10,6 @@ class EmergencyContact(models.Model):
     email = models.EmailField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=32, null=True, blank=True)
     person = models.ForeignKey(Person,
-                               related_name='ec',
+                               related_name='emergency_contact',
                                blank=True,
                                null=True)
