@@ -29,8 +29,8 @@ class PersonSerializer(serializers.ModelSerializer):
 
 class PersonFullPostSerializer(serializers.ModelSerializer):
 
-    addresses = AddressSerializer(many=True)
-    phones = PhoneSerializer(many=True)
+    addresses = AddressSerializer(many=True, allow_add_remove=True)
+    phones = PhoneSerializer(many=True, allow_add_remove=True)
 
     class Meta:
 
