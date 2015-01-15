@@ -52,7 +52,7 @@ class PersonFullPostSerializer(serializers.ModelSerializer):
 
 class PersonPostSerializer(serializers.ModelSerializer):
 
-    phones = PhoneSerializer(many=True)
+    phones = PhoneSerializer(many=True, allow_add_remove=True)
 
     class Meta:
 
