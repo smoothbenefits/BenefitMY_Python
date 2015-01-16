@@ -595,7 +595,6 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 
     $('body').addClass('onboarding-page');
 
-
     $scope.addBasicInfo = function(){
       var birthDate = $scope.employee.birth_date;
       $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');

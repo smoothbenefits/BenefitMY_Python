@@ -549,6 +549,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           $scope.employee.birth_date = selfInfo.birth_date;
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
+          $scope.employee.emergency_contact = selfInfo.emergency_contact;
         }
       });
 

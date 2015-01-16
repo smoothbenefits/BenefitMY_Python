@@ -26,8 +26,8 @@ class CompanySerializer(serializers.ModelSerializer):
 
 class CompanyPostSerializer(serializers.ModelSerializer):
 
-    addresses = AddressSerializer(many=True)
-    contacts = PersonPostSerializer(many=True)
+    addresses = AddressSerializer(many=True, allow_add_remove=True)
+    contacts = PersonPostSerializer(many=True, allow_add_remove=True)
 
     class Meta:
 
