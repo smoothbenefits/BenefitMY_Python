@@ -130,6 +130,7 @@ var settingsController = userControllers.controller('settingsController', ['$sco
       currentUser.get()
         .$promise.then(function(response){
           $scope.curUser = response.user;
+          $scope.showEmergencyContact = _.findWhere(response.roles, {company_user_type:'employee'});
           selfInfoService.getSelfInfo($scope.curUser.id, function(basicInfo){
             if(basicInfo){
               $scope.person = basicInfo;
