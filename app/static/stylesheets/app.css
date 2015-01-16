@@ -208,3 +208,6 @@ th .editable-container{
     margin-bottom:20px;
     padding:10px;
 }
+input.input-upper {
+  text-transform: uppercase;
+}
