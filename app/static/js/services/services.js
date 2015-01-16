@@ -650,6 +650,9 @@ benefitmyService.factory('selfInfoService',
                 if(selfPerson.addresses && selfPerson.addresses.length > 0){
                   selfPerson.address = selfPerson.addresses[0];
                 }
+                if(selfPerson.emergency_contact && selfPerson.emergency_contact.length > 0){
+                  selfPerson.emergency = selfPerson.emergency_contact[0];
+                }
                 if(retrievedCallBack){
                   retrievedCallBack(selfPerson);
                 }
@@ -680,6 +683,10 @@ benefitmyService.factory('selfInfoService',
             }
             if(!apiUserPerson.relationship){
               apiUserPerson.relationship = 'self';
+            }
+            apiUserPerson.emergency_contact=[];
+            if(viewPerson.emergency){
+              apiUserPerson.emergency_contact.push(viewPerson.emergency);
             }
             return apiUserPerson;
           };
