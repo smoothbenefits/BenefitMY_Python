@@ -23,7 +23,6 @@ class UserSerializer(serializers.ModelSerializer):
     def get_first_name(self, input_user):
       self_person = self._get_self_person(input_user)
       if self_person:
-        print "we have the person and name is {}".format(self_person.first_name)
         return self_person.first_name
       else:
         return ""
