@@ -105,7 +105,9 @@
                             placeholder="State"
                             name="person_address_state"
                             ng-model="person.address.state"
-                            ng-required="false">
+                            ng-required="false"
+                            class="input-upper"
+                            maxlength="2">
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -114,7 +116,8 @@
                             placeholder="Zip Code"
                             name="person_address_zip"
                             ng-model="person.address.zipcode"
-                            ng-required="false">
+                            ng-required="false"
+                            maxlength="5">
                     </div>
                 </div>
             </div>
