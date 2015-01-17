@@ -399,6 +399,7 @@ var addFamily = employeeControllers.controller('addFamily', ['$scope', '$locatio
     apiPerson.addresses.push(viewPerson.address);
     apiPerson.phones = [];
     apiPerson.phones.push(viewPerson.phone);
+    apiPerson.emergency_contact=[];
     return apiPerson;
   }
 

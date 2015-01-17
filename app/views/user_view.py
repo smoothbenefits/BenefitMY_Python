@@ -150,9 +150,10 @@ class UserFamilyView(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
-        request.DATA['user'] = pk
         user = self.get_object(pk)
-        person = self.get_person_by_user(user, 'self')
+        request.DATA['user'] = pk
+        relationship = request.DATA['relationship']
+        person = self.get_person_by_user(user, relationship)
         if person:
             serializer = PersonFullPostSerializer(person, data=request.DATA)
             if serializer.is_valid():
