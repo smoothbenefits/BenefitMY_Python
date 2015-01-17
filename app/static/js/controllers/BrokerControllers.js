@@ -1,3 +1,4 @@
+'use strict';
 var brokersControllers = angular.module('benefitmyApp.brokers.controllers',[]);
 
 var clientsController = brokersControllers.controller('clientsController',
@@ -7,15 +8,15 @@ var clientsController = brokersControllers.controller('clientsController',
     $scope.addClient = function()
     {
       $location.path('/broker/add_client');
-    }
+    };
 
     $scope.viewElegibleBenefits = function(clientId){
       $location.path('/broker/benefits/' + clientId);
-    }
+    };
 
     $scope.viewSelectedBenefits = function(clientId){
       $location.path('/broker/benefit/selected/' + clientId);
-    }
+    };
 
     var getClientList = function(theUser)
     {
@@ -33,7 +34,7 @@ var clientsController = brokersControllers.controller('clientsController',
             $scope.clientList = clientList;
 
           });
-    }
+    };
 
     currentUser.get()
     .$promise.then(function(response)
@@ -118,9 +119,9 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
                   }
                   var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: enrolled.person.relationship};
                   displayBenefit.enrolled.push(displayEnrolled);
-                })
+                });
 
-                displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name
+                displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name;
                 displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
                 displayBenefit.lastUpdatedTime = new Date(benefit.benefit.updated_at).toDateString();
                 displayBenefit.pcp = benefit.pcp;
@@ -156,7 +157,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
                   employee.waivedList = [];
                   employee.waivedList.push('N/A');
                 }
-              })
+              });
             });
 
         });
@@ -174,11 +175,11 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
           existEmployee.benefits.push(benefit);
           existEmployee.updated = benefit.lastUpdatedTime;
         }
-      }
+      };
 
       $scope.viewDetails = function(employeeId){
         $location.path('/broker/employee/' + employeeId).search('cid', clientId);
-      }
+      };
 
       $scope.back = function(){
         $location.path('/broker');
@@ -206,11 +207,11 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
 
       $scope.backToDashboard = function(){
         $location.path('/broker');
-      }
+      };
 
       $scope.backToList = function(){
         $location.path('/broker/benefit/selected/' + companyId);
-      }
+      };
     }]);
 
 var addBenefitController = brokersControllers.controller(
@@ -231,10 +232,10 @@ var addBenefitController = brokersControllers.controller(
       $scope.benefit = {
         benefit_type:'',
         benefit_option_types: [
-          {name:"Individual"},
-          {name:"Individual plus Spouse"},
-          {name:"Individual plus children"},
-          {name:"Individual plus Family"}],
+          {name:'Individual'},
+          {name:'Individual plus Spouse'},
+          {name:'Individual plus children'},
+          {name:'Individual plus Family'}],
       };
       $('#benefit_type_select').on('change', function(){
         var optionTypeInputs = $('#plan_option_table').find('input');
@@ -251,7 +252,7 @@ var addBenefitController = brokersControllers.controller(
         return benefitType !== '';
       };
 
-      $scope.benefit_types = ["Medical", "Dental", "Vision"];
+      $scope.benefit_types = ['Medical', 'Dental', 'Vision'];
 
 
       $scope.viewBenefits = function(){
@@ -273,7 +274,7 @@ var addBenefitController = brokersControllers.controller(
 
       $scope.benefitDetailArray = [];
       $scope.columnCount = 1;
-      $scope.errorString = "";
+      $scope.errorString = '';
       var benefitDetailBody = $('#details_container_table_body');
 
       var getPolicyTypeObjectById = function(policyTypeId){
@@ -605,7 +606,7 @@ var addBenefitController = brokersControllers.controller(
               }
               if(!optionPair.policy_value)
               {
-                optionPair.policy_value = "";
+                optionPair.policy_value = '';
               }
             });
           });
@@ -651,9 +652,9 @@ var addBenefitController = brokersControllers.controller(
           function(success){
             saveToBackendSequential(objArray, index+1);
           }, function(error){
-            $scope.errorString = "Add Benefit Detail Failed!";
+            $scope.errorString = 'Add Benefit Detail Failed!';
             if(error && error.data){
-              $scope.errorString += " The error is: "+ JSON.stringify(error.data);
+              $scope.errorString += ' The error is: '+ JSON.stringify(error.data);
             }
             return;
           });
@@ -699,7 +700,7 @@ var addBenefitController = brokersControllers.controller(
           },
           function(response){
             //Error condition,
-            var errorDetail = "";
+            var errorDetail = '';
             if(response && response.data){
               errorDetail = JSON.stringify(response.data);
             }
