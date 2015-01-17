@@ -443,8 +443,9 @@ var viewDocument = employeeControllers.controller('viewDocument',
       if(document.signature && document.signature.signature)
       {
         var signature = document.signature.signature;
-        var sigComponents = signature.split(',');
-        $scope.signatureImage = sigComponents[0] + ',' + encodeURIComponent(sigComponents[1]);
+        var separator = '<?xml';
+        var sigComponents = signature.split(separator);
+        $scope.signatureImage = sigComponents[0] + encodeURIComponent(separator + sigComponents[1]);
         $scope.signaturePresent = true;
       }
     });
