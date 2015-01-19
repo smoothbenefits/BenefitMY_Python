@@ -169,26 +169,31 @@ var employeeBenefitSignup = employeeControllers.controller(
             case 'individual':
               availFamilyList.familyList = _.where(angular.copy($scope.family), {relationship:'self'});
               availFamilyList.eligibleNumber = 1;
+              availFamilyList.minimumRequired = 1;
             break;
             case 'individual_plus_spouse':
               availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
                 return elem.relationship == 'self' || elem.relationship == 'spouse'});
               availFamilyList.eligibleNumber = 2;
+              availFamilyList.minimumRequired = 2;
             break;
             case 'individual_plus_one':
               availFamilyList.familyList = angular.copy($scope.family);
               availFamilyList.eligibleNumber = 2;
+              availFamilyList.minimumRequired = 2;
             break;
             case 'individual_plus_children':
               availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
                 return elem.relationship == 'self' || elem.relationship == 'child'});
               availFamilyList.eligibleNumber = $scope.family.length;
+              availFamilyList.minimumRequired = 2;
             break;
             default:
             case 'family':
             case 'individual_plus_family':
               availFamilyList.familyList = angular.copy($scope.family);
               availFamilyList.eligibleNumber = $scope.family.length;
+              availFamilyList.minimumRequired = 2;
             break;
           }
           _.each(availFamilyList.familyList, function(member){
@@ -317,14 +322,12 @@ var employeeBenefitSignup = employeeControllers.controller(
               };
               saveRequest.benefits.push(requestBenefit);
 
-              if(!(benefitTypePlan.selected.benefit.benefit_option_type ==='individual_plus_family' ||
-                   benefitTypePlan.selected.benefit.benefit_option_type === 'family') &&
-                 requestBenefit.enrolleds.length < benefitTypePlan.selected.eligibleMemberCombo.eligibleNumber)
+              if(requestBenefit.enrolleds.length < benefitTypePlan.selected.eligibleMemberCombo.minimumRequired)
               {
                 //validation failed.
                 var invalidEnrollNumber = {};
-                invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_name;
-                invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.eligibleNumber;
+                invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_plan.name;
+                invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.minimumRequired;
                 invalidEnrollNumberList.push(invalidEnrollNumber);
               }
             }
@@ -332,7 +335,7 @@ var employeeBenefitSignup = employeeControllers.controller(
 
           if(invalidEnrollNumberList.length > 0){
             alert("For benefit " + invalidEnrollNumberList[0].name +
-                    ", you have to elect " + invalidEnrollNumberList[0].requiredNumber + " family members!");
+                    ", you have to elect at least" + invalidEnrollNumberList[0].requiredNumber + " family members!");
             return;
           }
           saveRequest.waivedRequest = {company:companyId, waived:[]};
