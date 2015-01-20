@@ -22,3 +22,15 @@
 -- delete from app_w4;
 -- delete from app_person;
 -- delete from auth_user;
+
+
+-- Uncomment following command to remove all benefit plans and selections
+
+-- delete from app_enrolled;
+-- delete from app_usercompanybenefitplanoption;
+-- delete from app_usercompanywaivedbenefit;
+-- delete from app_companybenefitplanoption;
+-- delete from app_benefitdetails;
+-- delete from app_benefitpolicykey;
+-- delete from app_benefitpolicytype;
+-- delete from app_benefitplan;

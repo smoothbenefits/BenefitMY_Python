@@ -1,6 +1,5 @@
 <div ng-show="displayAll">
     <div class="breadcrumb">
-        <a href="/">Home</a>
         <span>Employee Onboard</span>
     </div>
     <div class="content-header">
@@ -117,6 +116,7 @@
                                 <div class="textbox">
                                     <input type="text"
                                         name="address_state"
+                                        class="input-upper" 
                                         ng-model="employee.address.state"
                                         ng-required="true"
                                         placeholder="State"
@@ -129,7 +129,8 @@
                                         name="address_zip"
                                         ng-model="employee.address.zipcode"
                                         ng-required="true"
-                                        placeholder="Zip Code">
+                                        placeholder="Zip Code"
+                                        maxlength="5">
                                 </div>
                             </div>
                         </div>
@@ -143,6 +144,50 @@
                                         ng-model="employee.phone.number"
                                         ng-required="true"
                                         ui-mask="(999)999-9999">
+                                </div>
+                            </div>
+                        </div>
+                        </li></ul>
+                        <h2 class="sub-title">Emergency Contact</h2>
+                        <ul class="list-group"><li class="list-group-item">
+                            <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-label">First Name</div>
+                                <div class="textbox">
+                                    <input type="text"
+                                        name="emergency_firstname"
+                                        ng-model="employee.emergency.first_name"
+                                        ng-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-label">Last Name</div>
+                                <div class="textbox">
+                                    <input type="text"
+                                        name="emergency_lastname"
+                                        ng-model="employee.emergency.last_name"
+                                        ng-required="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-label">Relationship</div>
+                                <div class="textbox">
+                                    <input type="text"
+                                        name="emergency_relationship"
+                                        ng-model="employee.emergency.relationship"
+                                        ng-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-label">Phone Number</div>
+                                <div class="textbox">
+                                    <input tyle="tel"
+                                        name="emergency_phone"
+                                        ng-model="employee.emergency.phone"
+                                        ng-required="true"
+                                        ui-mask="(999)999-9999" />
                                 </div>
                             </div>
                         </div>
