@@ -17,6 +17,11 @@ sample_request:
 {
        "company": 1,
        "company_user_type": "Employee",
+       "send_email" : "true",
+       "create_docs": "true",
+       "fields":[
+          {"company_name":"benefitmy"}, 
+          {"position": "Software Engineer"}],
         "user": {
 
             "first_name": "fiddfrstvvv5",

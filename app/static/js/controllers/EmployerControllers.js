@@ -193,10 +193,7 @@ var employerUser = employersController.controller('employerUser',
         apiUser.user.last_name = viewUser.last_name;
         apiUser.create_docs = viewUser.create_docs;
         apiUser.fields = $scope.templateFields
-        if(viewUser.phone)
-        {
-            //input phone to the apiModel here
-        }
+        apiUser.send_email = viewUser.send_email;
         return apiUser;
       }
 
@@ -214,12 +211,13 @@ var employerUser = employersController.controller('employerUser',
       }
 
       $scope.createUser = function(userType){
-        var sendEmail = $scope.addUser.send_email;
         if(validateAddUser($scope.addUser))
         {
           usersRepository.save(mapToAPIUser($scope.addUser, userType),
             function(){
-  		        alert('Email sent successful.');
+              if($scope.addUser.send_email){
+                alert('Email sent successful.');
+              }
               gotoUserView(userType);
             }, function(err){
                 if(err.status === 409){
