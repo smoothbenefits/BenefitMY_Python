@@ -83,17 +83,17 @@ class UsersView(APIView):
 
         serializer = UserSerializer(user)
 
-
         if company_user.company_user_type == 'employee':
-            # now try to create the onboard email for this user. 
-            try:
-                onboard_email("%s %s" % (user.first_name, user.last_name),
-                              request.DATA['company'],
-                              request.DATA['user']['email'],
-                              user.id
-                              )
-            except StandardError:
-                return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            if 'send_email' in request.DATA and request.DATA['send_email']:
+                # now try to create the onboard email for this user. 
+                try:
+                    onboard_email("%s %s" % (user.first_name, user.last_name),
+                                  request.DATA['company'],
+                                  request.DATA['user']['email'],
+                                  user.id
+                                  )
+                except StandardError:
+                    return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
             if ('create_docs' in request.DATA and 
                 'fields' in request.DATA and
