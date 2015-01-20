@@ -1,5 +1,4 @@
 <div class="breadcrumb">
-    <a href="/">Home</a>
     <a ng-href="/dashboard">Dashboard</a>
     <span>Account Settings</span>
 </div>
@@ -149,6 +148,7 @@
                         <div class="col-sm-6">
                             <div class="textbox">
                                 <input type="text"
+                                    class="input-upper" 
                                     name="address_state"
                                     ng-model="person.address.state"
                                     ng-required="true"
@@ -162,7 +162,8 @@
                                     name="address_zip"
                                     ng-model="person.address.zipcode"
                                     ng-required="true"
-                                    placeholder="Zip Code">
+                                    placeholder="Zip Code"
+                                    maxlength="5">
                             </div>
                         </div>
                     </div>
@@ -179,6 +180,50 @@
                             </div>
                         </div>
                     </div>
+                    </li></ul>
+                    <h2 class="sub-title" ng-if="showEmergencyContact">Emergency Contact</h2>
+                    <ul class="list-group" ng-if="showEmergencyContact"><li class="list-group-item">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-label">First Name</div>
+                                <div class="textbox">
+                                    <input type="text"
+                                        name="emergency_firstname"
+                                        ng-model="person.emergency.first_name"
+                                        ng-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-label">Last Name</div>
+                                <div class="textbox">
+                                    <input type="text"
+                                        name="emergency_lastname"
+                                        ng-model="person.emergency.last_name"
+                                        ng-required="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-label">Relationship</div>
+                                <div class="textbox">
+                                    <input type="text"
+                                        name="emergency_relationship"
+                                        ng-model="person.emergency.relationship"
+                                        ng-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-label">Phone Number</div>
+                                <div class="textbox">
+                                    <input tyle="tel"
+                                        name="emergency_phone"
+                                        ng-model="person.emergency.phone"
+                                        ng-required="true"
+                                        ui-mask="(999)999-9999" />
+                                </div>
+                            </div>
+                        </div>
                     </li></ul>
 
                     <div class="submit-box">

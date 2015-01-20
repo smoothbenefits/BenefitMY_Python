@@ -150,17 +150,20 @@ class UserFamilyView(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
-        request.DATA['user'] = pk
         user = self.get_object(pk)
-        person = self.get_person_by_user(user, 'self')
-        if person:
-            serializer = PersonFullPostSerializer(person, data=request.DATA)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-        else:    
-            serializer = PersonFullPostSerializer(data=request.DATA)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        request.DATA['user'] = pk
+        relationship = request.DATA['relationship']
+        if relationship != 'child':
+            person = self.get_person_by_user(user, relationship)
+            if person:
+                serializer = PersonFullPostSerializer(person, data=request.DATA)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = PersonFullPostSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

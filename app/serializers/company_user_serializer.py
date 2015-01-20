@@ -6,6 +6,7 @@ from app.models.company_user import CompanyUser
 
 class CompanyUserSerializer(serializers.ModelSerializer):
 
+    user = UserSerializer()
     class Meta:
         model = CompanyUser
         fields = ('id',

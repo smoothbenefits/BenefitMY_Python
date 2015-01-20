@@ -20,19 +20,34 @@ class UserSerializer(serializers.ModelSerializer):
       except Person.DoesNotExist:
         return None
 
+    def _get_user(self, input_user):
+        try:
+            u = User.objects.get(pk=input_user.id)
+            return u
+        except User.DoesNotExist:
+            return None
+
     def get_first_name(self, input_user):
-      self_person = self._get_self_person(input_user)
-      if self_person:
-        return self_person.first_name
-      else:
-        return ""
+        self_person = self._get_self_person(input_user)
+        if self_person:
+            return self_person.first_name
+        else:
+            user = self._get_user(input_user)
+            if user:
+                return user.first_name
+            else:
+                return ""
 
     def get_last_name(self, input_user):
-      self_person = self._get_self_person(input_user)
-      if self_person:
-        return self_person.last_name
-      else:
-        return ""
+        self_person = self._get_self_person(input_user)
+        if self_person:
+            return self_person.last_name
+        else:
+            user = self._get_user(input_user)
+            if user:
+                return user.last_name
+            else:
+                return ""
 
     class Meta:
         model = User
