@@ -1,6 +1,7 @@
 -- Uncomment the following command to remove all data from a database;
 
 -- delete from app_address;
+-- delete from app_emergencycontact;
 -- delete from app_benefitdetails;
 -- delete from app_benefitpolicykey;
 -- delete from app_benefitpolicytype;

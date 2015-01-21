@@ -17,6 +17,9 @@ WHERE cu.user_id IN (SELECT id FROM user_ids);
 DELETE FROM app_employmentauthorization ea
 WHERE ea.user_id IN (SELECT id FROM user_ids);
 
+DELETE FROM app_emergencycontact ec
+WHERE ec.person_id IN (SELECT id FROM person_ids);
+
 DELETE FROM app_address a
 WHERE a.person_id IN (SELECT id FROM person_ids);
 
