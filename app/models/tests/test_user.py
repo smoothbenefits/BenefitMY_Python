@@ -6,8 +6,9 @@ from emailusernames.utils import (
     user_exists)
 
 class TestUser(TestCase):
-
-    def test_user_create(self):
+    fixtures = ['user']
+    
+    def test_user_create_success_given_all_info(self):
         user_email = "user1234@live.com"
         user_password = "kaceycute"
         user_new = create_user(user_email, user_password)
@@ -17,9 +18,12 @@ class TestUser(TestCase):
         self.assertEqual(retrieved_user.email, user_email)
         self.assertTrue(retrieved_user.check_password(user_password))
 
-    fixtures = ['user']
+    def test_user_create_failed_when_email_missing(self):
+        with self.assertRaises(Exception):
+            user_error = create_user(None, "bad_password")
+            self.assertIsNone(user_error)
 
-    def test_user_basic(self):
+    def test_get_user_by_id_success_when_user_exists(self):
         user1=User.objects.get(pk=11)
         self.assertTrue(user1)
         self.assertIsNotNone(user1.email)
