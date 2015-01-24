@@ -9,16 +9,16 @@ class TestUser(TestCase):
     fixtures = ['23_auth_user']
 
     def test_user_create_success_given_all_info(self):
-        User.objects.create(email='test@testing.ave', password='password')
+        create_user('test@testing.ave', 'password')
         user = User.objects.get(email='test@testing.ave')
-        # self.assertEqual(user.pk, 1)
         self.assertIsNotNone(user)
+        self.assertEqual(user.email,'test@testing.ave')
+        self.assertTrue(user.check_password('password'))
 
     def test_user_create_success_when_email_given(self):
-        User.objects.create(email='test@testing.ave')
+        create_user(email='test@testing.ave')
         user = User.objects.get(email='test@testing.ave')
         self.assertIsNotNone(user)
-        self.assertEqual(user.password, '')
     
     def test_user_create_failed_when_email_missing(self):
         with self.assertRaises(Exception):
