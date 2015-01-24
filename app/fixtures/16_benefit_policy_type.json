@@ -1,7 +1,7 @@
 [
   {
     "fields": {
-      "name": "In network"
+      "name": "In-network"
     },
     "model": "app.benefitpolicytype",
     "pk": 1

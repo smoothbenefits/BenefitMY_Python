@@ -114,7 +114,7 @@
       "benefit_policy_key": 12,
       "benefit_policy_type": 1,
       "benefit_plan": 1,
-      "value": "Yes"
+      "value": "No"
     },
     "model": "app.benefitdetails",
     "pk": 12
@@ -354,7 +354,7 @@
       "benefit_policy_key": 12,
       "benefit_policy_type": 2,
       "benefit_plan": 2,
-      "value": "No"
+      "value": "Yes"
     },
     "model": "app.benefitdetails",
     "pk": 36
