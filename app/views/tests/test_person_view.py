@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 
 class PersonTestCase(TestCase):
     # your fixture files here
-    fixtures = ['people', 'company', 'user']
+    fixtures = ['24_person', '10_company', '23_auth_user']
 
 
     def test_get_person(self):
