@@ -6,7 +6,7 @@ from app.models.benefit_plan import BenefitPlan
 
 # Create your tests here.
 class DemoTestCase(TestCase):
-    fixtures = ['0_benefit_type']
+    fixtures = ['13_benefit_type']
 
     def setUp(self):
         benefitType = BenefitType.objects.get(name='Medical')
