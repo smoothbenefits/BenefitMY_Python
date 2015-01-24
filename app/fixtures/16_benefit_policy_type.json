@@ -12,5 +12,12 @@
     },
     "model": "app.benefitpolicytype",
     "pk": 2
+  },
+  {
+    "fields": {
+      "name": "-"
+    },
+    "model": "app.benefitpolicytype",
+    "pk": 3
   }
 ]
