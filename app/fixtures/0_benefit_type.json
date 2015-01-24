@@ -1,0 +1,25 @@
+[
+  { 
+    "model": "app.BenefitType",
+    "pk": 1,
+    "fields":{
+    "name": "Medical"
+    }
+  },
+  { 
+    "model": "app.BenefitType",
+    "pk": 2,
+    "fields":{
+    "name": "Dental"
+    } 
+  },
+  { 
+    "model": "app.BenefitType",
+    "pk": 3,
+    "fields":{
+    "name": "Vision"
+    } 
+  }
+]
+
+
