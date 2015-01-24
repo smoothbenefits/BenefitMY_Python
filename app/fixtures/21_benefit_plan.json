@@ -1,0 +1,34 @@
+[
+  {
+    "fields": {
+      "benefit_type": 1,
+      "name": "Blue Cross Blue Shield of Mass. HMO Blue"
+    },
+    "model": "app.benefitplan",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "benefit_type": 1,
+      "name": "Blue Cross Blue Shield of Mass. PPO"
+    },
+    "model": "app.benefitplan",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "benefit_type": 2,
+      "name": "Aetna Dental"
+    },
+    "model": "app.benefitplan",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "benefit_type": 3,
+      "name": "VSP Vision"
+    },
+    "model": "app.benefitplan",
+    "pk": 4
+  }
+]
