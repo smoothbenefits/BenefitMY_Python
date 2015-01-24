@@ -3,7 +3,7 @@
       "model": "app.CompanyUser",
       "pk": 1,
       "fields": {
-      "user": 1,
+      "user": 11,
       "company": 1,
       "company_user_type": "broker"
       }
@@ -12,7 +12,7 @@
       "model": "app.CompanyUser",
       "pk": 2,
       "fields": {
-      "user": 1,
+      "user": 11,
       "company": 2,
       "company_user_type": "broker"
       }
@@ -21,7 +21,7 @@
       "model": "app.CompanyUser",
       "pk": 3,
       "fields": {
-      "user": 1,
+      "user": 11,
       "company": 3,
       "company_user_type": "broker"
       }
@@ -30,7 +30,7 @@
       "model": "app.CompanyUser",
       "pk": 4,
       "fields": {
-      "user": 1,
+      "user": 11,
       "company": 4,
       "company_user_type": "broker"
       }
@@ -39,7 +39,7 @@
       "model": "app.CompanyUser",
       "pk": 5,
       "fields": {
-      "user": 2,
+      "user": 12,
       "company": 1,
       "company_user_type": "admin"
       }
@@ -48,7 +48,7 @@
       "model": "app.CompanyUser",
       "pk": 6,
       "fields": {
-      "user": 3,
+      "user": 13,
       "company": 1,
       "company_user_type": "employee"
       }
@@ -57,7 +57,7 @@
       "model": "app.CompanyUser",
       "pk": 7,
       "fields": {
-      "user": 4,
+      "user": 14,
       "company": 1,
       "company_user_type": "employee"
       }
@@ -66,7 +66,7 @@
       "model": "app.CompanyUser",
       "pk": 8,
       "fields": {
-      "user": 5,
+      "user": 15,
       "company": 2,
       "company_user_type": "admin"
       }
@@ -75,7 +75,7 @@
       "model": "app.CompanyUser",
       "pk": 9,
       "fields": {
-      "user": 6,
+      "user": 16,
       "company": 2,
       "company_user_type": "employee"
       }
@@ -84,7 +84,7 @@
       "model": "app.CompanyUser",
       "pk": 10,
       "fields": {
-      "user": 7,
+      "user": 17,
       "company": 2,
       "company_user_type": "employee"
       }
@@ -93,7 +93,7 @@
       "model": "app.CompanyUser",
       "pk": 11,
       "fields": {
-      "user": 8,
+      "user": 18,
       "company": 3,
       "company_user_type": "admin"
       }
@@ -102,7 +102,7 @@
       "model": "app.CompanyUser",
       "pk": 12,
       "fields": {
-      "user": 9,
+      "user": 19,
       "company": 4,
       "company_user_type": "admin"
       }
