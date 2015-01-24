@@ -54,7 +54,7 @@ The terms and conditions of the Employee''s employment shall, to the extent not 
 
     Employee:
     {{EmployeeName}}
-??????
+
     b. Amendments and Termination; Entire Agreement. This Agreement may not be amended or terminated except by a writing executed by all of the parties hereto. This Agreement constitutes the entire agreement of {{CompanyName}} Company and Employee relating to the subject matter hereof and supersedes all prior oral and written understandings and agreements relating to such subject matter.
 
     c. Successors and Assigns. The rights and obligations of the parties hereunder are not assignable to another person without prior written consent; provided, however, that {{CompanyName}} Company, without obtaining Employee''s consent, may assign its rights and obligations hereunder to a wholly-owned subsidiary and provided further that any post-employment restrictions shall be assignable by {{CompanyName}} to any entity which purchases all or substantially all of the Company''s assets.

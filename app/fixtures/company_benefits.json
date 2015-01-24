@@ -117,7 +117,7 @@
       }
     },
     {
-       "model": "app.CompanyBenefitPlanOption",
+      "model": "app.CompanyBenefitPlanOption",
       "pk": 10,
       "fields": { 
       "company": 1,
@@ -130,7 +130,7 @@
       }
     },
     {
-       "model": "app.CompanyBenefitPlanOption",
+      "model": "app.CompanyBenefitPlanOption",
       "pk": 11,
       "fields": { 
       "company": 1,
@@ -156,125 +156,8 @@
       }
     },
     {
-        "model": "app.CompanyBenefitPlanOption",
+      "model": "app.CompanyBenefitPlanOption",
       "pk": 13,
-      "fields": { 
-      "company": 1,
-      "benefit_plan": 7,
-      "benefit_option_type": "individual",
-      "total_cost_per_period": "200.0",
-      "employee_cost_per_period": "50.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-        "model": "app.CompanyBenefitPlanOption",
-      "pk": 14,
-      "fields": { 
-      "company": 1,
-      "benefit_plan": 7,
-      "benefit_option_type": "individual_plus_spouse",
-      "total_cost_per_period": "300.0",
-      "employee_cost_per_period": "150.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-        "model": "app.CompanyBenefitPlanOption",
-      "pk": 15,
-      "fields": { 
-      "company": 1,
-      "benefit_plan": 7,
-      "benefit_option_type": "individual_plus_family",
-      "total_cost_per_period": "500.0",
-      "employee_cost_per_period": "350.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-        "model": "app.CompanyBenefitPlanOption",
-      "pk": 16,
-      "fields": { 
-      "company": 1,
-      "benefit_plan": 6,
-      "benefit_option_type": "individual",
-      "total_cost_per_period": "300.0",
-      "employee_cost_per_period": "100.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-        "model": "app.CompanyBenefitPlanOption",
-      "pk": 17,
-      "fields": { 
-      "company": 1,
-      "benefit_plan": 6,
-      "benefit_option_type": "individual_plus_spouse",
-      "total_cost_per_period": "500.0",
-      "employee_cost_per_period": "300.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-        "model": "app.CompanyBenefitPlanOption",
-      "pk": 18,
-      "fields": { 
-      "company": 1,
-      "benefit_plan": 6,
-      "benefit_option_type": "individual_plus_family",
-      "total_cost_per_period": "700.0",
-      "employee_cost_per_period": "500.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-        "model": "app.CompanyBenefitPlanOption",
-      "pk": 19,
-      "fields": { 
-      "company": 1,
-      "benefit_plan": 8,
-      "benefit_option_type": "individual",
-      "total_cost_per_period": "20.0",
-      "employee_cost_per_period": "5.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 20,
-      "fields": { 
-      "company": 1,
-      "benefit_plan": 8,
-      "benefit_option_type": "individual_plus_spouse",
-      "total_cost_per_period": "30.0",
-      "employee_cost_per_period": "15.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 21,
-      "fields": { 
-      "company": 1,
-      "benefit_plan": 8,
-      "benefit_option_type": "individual_plus_family",
-      "total_cost_per_period": "50.0",
-      "employee_cost_per_period": "35.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 22,
       "fields": { 
       "company": 2,
       "benefit_plan": 1,
@@ -286,8 +169,8 @@
       }
     },
     {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 23,
+      "model": "app.CompanyBenefitPlanOption",
+      "pk": 14,
       "fields": { 
       "company": 2,
       "benefit_plan": 1,
@@ -299,8 +182,8 @@
       }
     },
     {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 24,
+      "model": "app.CompanyBenefitPlanOption",
+      "pk": 15,
       "fields": { 
       "company": 2,
       "benefit_plan": 1,
@@ -312,8 +195,8 @@
       }
     },
     {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 25,
+      "model": "app.CompanyBenefitPlanOption",
+      "pk": 16,
       "fields": { 
       "company": 2,
       "benefit_plan": 2,
@@ -325,8 +208,8 @@
       }
     },
     {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 26,
+      "model": "app.CompanyBenefitPlanOption",
+      "pk": 17,
       "fields": { 
       "company": 2,
       "benefit_plan": 2,
@@ -338,8 +221,8 @@
       }
     },
     {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 27,
+      "model": "app.CompanyBenefitPlanOption",
+      "pk": 18,
       "fields": { 
       "company": 2,
       "benefit_plan": 2,
@@ -351,11 +234,11 @@
       }
     },
     {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 28,
+      "model": "app.CompanyBenefitPlanOption",
+      "pk": 19,
       "fields": { 
       "company": 2,
-      "benefit_plan": 6,
+      "benefit_plan": 3,
       "benefit_option_type": "individual",
       "total_cost_per_period": "400.0",
       "employee_cost_per_period": "50.0",
@@ -364,11 +247,11 @@
       }
     },
     {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 29,
+      "model": "app.CompanyBenefitPlanOption",
+      "pk": 20,
       "fields": { 
       "company": 2,
-      "benefit_plan": 6,
+      "benefit_plan": 3,
       "benefit_option_type": "individual_plus_children",
       "total_cost_per_period": "700.0",
       "employee_cost_per_period": "200.0",
@@ -377,11 +260,11 @@
       }
     },
     {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 30,
+      "model": "app.CompanyBenefitPlanOption",
+      "pk": 21,
       "fields": { 
       "company": 2,
-      "benefit_plan": 6,
+      "benefit_plan": 3,
       "benefit_option_type": "individual_plus_family",
       "total_cost_per_period": "1000.0",
       "employee_cost_per_period": "400.0",
@@ -390,47 +273,8 @@
       }
     },
     {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 31,
-      "fields": { 
-      "company": 2,
-      "benefit_plan": 8,
-      "benefit_option_type": "individual",
-      "total_cost_per_period": "25.0",
-      "employee_cost_per_period": "0.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 32,
-      "fields": { 
-      "company": 2,
-      "benefit_plan": 8,
-      "benefit_option_type": "individual_plus_spouse",
-      "total_cost_per_period": "35.0",
-      "employee_cost_per_period": "0.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 33,
-      "fields": { 
-      "company": 2,
-      "benefit_plan": 8,
-      "benefit_option_type": "individual_plus_family",
-      "total_cost_per_period": "60.0",
-      "employee_cost_per_period": "0.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 34,
+      "model": "app.CompanyBenefitPlanOption",
+      "pk": 22,
       "fields": { 
       "company": 3,
       "benefit_plan": 3,
@@ -443,7 +287,7 @@
     },
     {
          "model": "app.CompanyBenefitPlanOption",
-      "pk": 35,
+      "pk": 23,
       "fields": { 
       "company": 3,
       "benefit_plan": 3,
@@ -456,7 +300,7 @@
     },
     {
          "model": "app.CompanyBenefitPlanOption",
-      "pk": 36,
+      "pk": 24,
       "fields": { 
       "company": 3,
       "benefit_plan": 3,
@@ -469,7 +313,7 @@
     },
     {
          "model": "app.CompanyBenefitPlanOption",
-      "pk": 37,
+      "pk": 25,
       "fields": { 
       "company": 3,
       "benefit_plan": 3,
@@ -482,7 +326,7 @@
     },
     {
          "model": "app.CompanyBenefitPlanOption",
-      "pk": 38,
+      "pk": 26,
       "fields": { 
       "company": 3,
       "benefit_plan": 5,
@@ -495,7 +339,7 @@
     },
     {
          "model": "app.CompanyBenefitPlanOption",
-      "pk": 39,
+      "pk": 27,
       "fields": { 
       "company": 3,
       "benefit_plan": 5,
@@ -508,7 +352,7 @@
     },
     {
          "model": "app.CompanyBenefitPlanOption",
-      "pk": 40,
+      "pk": 28,
       "fields": { 
       "company": 3,
       "benefit_plan": 5,
@@ -521,52 +365,13 @@
     },
     {
          "model": "app.CompanyBenefitPlanOption",
-      "pk": 41,
+      "pk": 29,
       "fields": { 
       "company": 3,
       "benefit_plan": 5,
       "benefit_option_type": "individual_plus_family",
       "total_cost_per_period": "1600.0",
       "employee_cost_per_period": "1200.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 42,
-      "fields": { 
-      "company": 3,
-      "benefit_plan": 7,
-      "benefit_option_type": "individual",
-      "total_cost_per_period": "300.0",
-      "employee_cost_per_period": "200.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 43,
-      "fields": { 
-      "company": 3,
-      "benefit_plan": 7,
-      "benefit_option_type": "individual_plus_spouse",
-      "total_cost_per_period": "500.0",
-      "employee_cost_per_period": "400.0",
-      "created_at": "2014-01-01",
-      "updated_at": "2014-01-01"
-      }
-    },
-    {
-         "model": "app.CompanyBenefitPlanOption",
-      "pk": 44,
-      "fields": { 
-      "company": 3,
-      "benefit_plan": 7,
-      "benefit_option_type": "individual_plus_family",
-      "total_cost_per_period": "800.0",
-      "employee_cost_per_period": "700.0",
       "created_at": "2014-01-01",
       "updated_at": "2014-01-01"
       }
