@@ -2,26 +2,28 @@
 
 general:
   branches:
-    ignore:
-      - master # list of branches to ignore
-      - /feature-*/ # or ignore regexes
+    only:
+      - dev
+      - staging
+      - demo
+      - beta
+      - prod
 
-database:
-  post:
-    - sh ./data_migration.sh ./data_migration
-
+test:
+  override:
+    - python manage.py test
 
 deployment:
   staging:
     branch: staging
     commands:
-      - sh ./deployment.sh benefitmy-python-staging
+      - sh ./deployment.sh benefitmy-python-staging HEROKU_POSTGRESQL_NAVY
   demo:
     branch: demo
     commands:
-      - sh ./deployment.sh benefitmy-python-demo
+      - sh ./deployment.sh benefitmy-python-demo HEROKU_POSTGRESQL_BROWN
   beta:
     branch: beta
     commands:
-      - sh ./deployment.sh benefitmy-python-beta
+      - sh ./deployment.sh benefitmy-python-beta HEROKU_POSTGRESQL_PINK
 
