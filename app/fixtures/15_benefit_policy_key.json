@@ -64,16 +64,23 @@
   },
   {
     "fields": {
-      "name": "Annual Maximum"
+      "name": "Annual Rx out of Pocket Maximum"
     },
     "model": "app.benefitpolicykey",
     "pk": 10
   },
   {
     "fields": {
-      "name": "Primary Care Physician required"
+      "name": "Annual Medical out of Pocket Maximum"
     },
     "model": "app.benefitpolicykey",
     "pk": 11
+  },
+  {
+    "fields": {
+      "name": "Primary Care Physician required"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 12
   }
 ]
