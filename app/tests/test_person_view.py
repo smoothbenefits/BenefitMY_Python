@@ -1,20 +1,22 @@
 from django.test import TestCase
 import django
-django.test.utils.setup_test_environment()
+from django.core.urlresolvers import reverse
+
 
 PREFIX = "api/v1"
 
 
 class PersonTestCase(TestCase):
     # your fixture files here
-    fixtures = ['app/fixtures/people.json', 'company.json', 'user.json']
+    fixtures = ['people', 'company', 'user']
 
 
     def test_get_person(self):
-        response = self.client.get('api/v1/person/1')
+        response = self.client.get(reverse('people_api', kwargs={'pk': 1}))
         print "response", response
         print "content", response.content
         print "context", response.context
         print "client", response.client
-        #self.assertEqual(response.status_code, 200)
-        #self.assertEqual(response.content, "")
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        
