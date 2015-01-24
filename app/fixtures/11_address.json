@@ -1,0 +1,58 @@
+[
+  {
+    "fields": {
+      "street_1": "558 Mass Ave",
+      "city": "Cambridge",
+      "street_2": "",
+      "address_type": "home",
+      "zipcode": "02141",
+      "person": 1,
+      "company": null,
+      "state": "MA"
+    },
+    "model": "app.address",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "street_1": "78 Mt Auburn St.",
+      "city": "Somerville",
+      "street_2": "",
+      "address_type": "home",
+      "zipcode": "02144",
+      "person": 2,
+      "company": null,
+      "state": "MA"
+    },
+    "model": "app.address",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "street_1": "17 Walnut St.",
+      "city": "Lexington",
+      "street_2": "",
+      "address_type": "home",
+      "zipcode": "02422",
+      "person": 3,
+      "company": null,
+      "state": "MA"
+    },
+    "model": "app.address",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "street_1": "17 Walnut St.",
+      "city": "Lexington",
+      "street_2": "",
+      "address_type": "home",
+      "zipcode": "02422",
+      "person": 4,
+      "company": null,
+      "state": "MA"
+    },
+    "model": "app.address",
+    "pk": 4
+  }
+]

@@ -41,4 +41,4 @@ Employee Name Printed: {{EmployeeName}}
 EXHIBIT A
 EMPLOYEE BENEFITS SUMMARY
 (if none then leave blank)'
-where name='Offer Letter'
+where name='Offer Letter';

@@ -1,0 +1,42 @@
+[
+  {
+    "fields": {
+      "user": 1,
+      "company_user_type": "broker",
+      "new_employee": true,
+      "company": 1
+    },
+    "model": "app.companyuser",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "user": 2,
+      "company_user_type": "admin",
+      "new_employee": true,
+      "company": 1
+    },
+    "model": "app.companyuser",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "user": 3,
+      "company_user_type": "employee",
+      "new_employee": true,
+      "company": 1
+    },
+    "model": "app.companyuser",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "user": 4,
+      "company_user_type": "employee",
+      "new_employee": true,
+      "company": 1
+    },
+    "model": "app.companyuser",
+    "pk": 4
+  }
+]

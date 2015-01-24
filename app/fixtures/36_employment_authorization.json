@@ -1,0 +1,16 @@
+[
+  {
+    "fields": {
+      "user": 3,
+      "signature": 2,
+      "worker_type": "Citizen",
+      "expiration_date": "2015-01-24",
+      "uscis_number": null,
+      "country": null,
+      "i_94": null,
+      "passport": null
+    },
+    "model": "app.employmentauthorization",
+    "pk": 1
+  }
+]

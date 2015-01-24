@@ -1,0 +1,15 @@
+[
+  {
+    "fields": {
+      "person": 3,
+      "relationship": "Spouse",
+      "first_name": "Christina",
+      "phone": "7469390394",
+      "middle_name": null,
+      "last_name": "Cowell",
+      "email": null
+    },
+    "model": "app.emergencycontact",
+    "pk": 1
+  }
+]

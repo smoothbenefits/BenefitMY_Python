@@ -1,0 +1,35 @@
+[
+  {
+    "fields": {
+      "user": 3,
+      "created_at": "2015-01-24T16:19:54.581Z",
+      "pcp": "89-767896",
+      "updated_at": "2015-01-24T16:19:54.581Z",
+      "benefit": 2
+    },
+    "model": "app.usercompanybenefitplanoption",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "user": 3,
+      "created_at": "2015-01-24T16:19:54.586Z",
+      "pcp": "",
+      "updated_at": "2015-01-24T16:19:54.586Z",
+      "benefit": 10
+    },
+    "model": "app.usercompanybenefitplanoption",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "user": 3,
+      "created_at": "2015-01-24T16:19:54.589Z",
+      "pcp": "",
+      "updated_at": "2015-01-24T16:19:54.589Z",
+      "benefit": 13
+    },
+    "model": "app.usercompanybenefitplanoption",
+    "pk": 3
+  }
+]

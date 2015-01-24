@@ -1,0 +1,22 @@
+[
+  {
+    "model": "app.Template",
+    "pk": 1,
+    "fields":{
+	  "company": 1,
+	  "document_type": 1,
+	  "name": "Company1 Standard Offer Letter",
+	  "content": "Dear {{FullName}},\n{{CompanyName}} is pleased to offer you the position of {{Title}} with a starting salary of {{Salary}} per year, with a sttarting date of {{StartDate}}. {{CompanyName}} also offers a generous benefits package. Welcome to the {{CompanyName}} Team!\n\nSincerely,\nMafalda Hopkirk\nVP of Human Resources\n"
+    }
+  },
+  {
+    "model": "app.Template",
+    "pk": 2,
+    "fields":{
+	    "company": 1,
+	    "document_type": 2,
+	    "name": "Company1 Standard Employee Agreement",
+	    "content": "You, {{FullName}}, agree to follow the policies of {{CompanyName}}. You agree not to talk about the business of {{CompanyName}} with anyone outside of {{CompanyName}}.\n"
+	}
+  }
+]

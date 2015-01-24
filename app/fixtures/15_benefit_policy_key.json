@@ -1,0 +1,79 @@
+[
+  {
+    "fields": {
+      "name": "Individual Deductables"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "Family Deductables"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "Hospital-Inpatient"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "name": "Out-patient Day Surgery"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "name": "MRI/CT/PET Scans"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "name": "Lab work/X-Ray"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "name": "Chiropractic"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "name": "Prescription Drugs-30 days"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 8
+  },
+  {
+    "fields": {
+      "name": "Mail order drugs-90 days"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 9
+  },
+  {
+    "fields": {
+      "name": "Annual Maximum"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 10
+  },
+  {
+    "fields": {
+      "name": "Primary Care Physician required"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 11
+  }
+]

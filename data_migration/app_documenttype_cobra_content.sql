@@ -76,4 +76,4 @@ To protect your family’s rights, let the Plan Administrator know about any cha
 Plan contact information
 
 Please contact HR person at {{CompanyName}} and/or the broker of {{CompanyName}}.  '
-where name='Cobra'
+where name='COBRA';

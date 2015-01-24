@@ -1,0 +1,47 @@
+[
+  {
+    "fields": {
+      "person": 4,
+      "user_company_benefit_plan_option": 1,
+      "pcp": null
+    },
+    "model": "app.enrolled",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "person": 3,
+      "user_company_benefit_plan_option": 1,
+      "pcp": null
+    },
+    "model": "app.enrolled",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "person": 4,
+      "user_company_benefit_plan_option": 2,
+      "pcp": null
+    },
+    "model": "app.enrolled",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "person": 3,
+      "user_company_benefit_plan_option": 2,
+      "pcp": null
+    },
+    "model": "app.enrolled",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "person": 3,
+      "user_company_benefit_plan_option": 3,
+      "pcp": null
+    },
+    "model": "app.enrolled",
+    "pk": 5
+  }
+]
