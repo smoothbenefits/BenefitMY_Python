@@ -104,10 +104,20 @@
       "benefit_policy_key": 11,
       "benefit_policy_type": 1,
       "benefit_plan": 1,
-      "value": "$50"
+      "value": "$1200"
     },
     "model": "app.benefitdetails",
     "pk": 11
+  },
+  {
+    "fields": {
+      "benefit_policy_key": 12,
+      "benefit_policy_type": 1,
+      "benefit_plan": 1,
+      "value": "Yes"
+    },
+    "model": "app.benefitdetails",
+    "pk": 12
   },
   {
     "fields": {
@@ -117,7 +127,7 @@
       "value": "$20"
     },
     "model": "app.benefitdetails",
-    "pk": 12
+    "pk": 13
   },
   {
     "fields": {
@@ -127,7 +137,7 @@
       "value": "$40"
     },
     "model": "app.benefitdetails",
-    "pk": 13
+    "pk": 14
   },
   {
     "fields": {
@@ -137,7 +147,7 @@
       "value": "$50"
     },
     "model": "app.benefitdetails",
-    "pk": 14
+    "pk": 15
   },
   {
     "fields": {
@@ -147,7 +157,7 @@
       "value": "$100"
     },
     "model": "app.benefitdetails",
-    "pk": 15
+    "pk": 16
   },
   {
     "fields": {
@@ -157,7 +167,7 @@
       "value": "$0/$0/$0"
     },
     "model": "app.benefitdetails",
-    "pk": 16
+    "pk": 17
   },
   {
     "fields": {
@@ -167,21 +177,11 @@
       "value": "$20/$30"
     },
     "model": "app.benefitdetails",
-    "pk": 17
-  },
-  {
-    "fields": {
-      "benefit_policy_key": 7,
-      "benefit_policy_type": 1,
-      "benefit_plan": 2,
-      "value": "$50"
-    },
-    "model": "app.benefitdetails",
     "pk": 18
   },
   {
     "fields": {
-      "benefit_policy_key": 8,
+      "benefit_policy_key": 7,
       "benefit_policy_type": 1,
       "benefit_plan": 2,
       "value": "$50"
@@ -191,33 +191,53 @@
   },
   {
     "fields": {
-      "benefit_policy_key": 9,
+      "benefit_policy_key": 8,
       "benefit_policy_type": 1,
       "benefit_plan": 2,
-      "value": "$10"
+      "value": "$50"
     },
     "model": "app.benefitdetails",
     "pk": 20
   },
   {
     "fields": {
-      "benefit_policy_key": 10,
+      "benefit_policy_key": 9,
       "benefit_policy_type": 1,
       "benefit_plan": 2,
-      "value": "$2500"
+      "value": "$10"
     },
     "model": "app.benefitdetails",
     "pk": 21
   },
   {
     "fields": {
-      "benefit_policy_key": 11,
+      "benefit_policy_key": 10,
       "benefit_policy_type": 1,
       "benefit_plan": 2,
-      "value": "$100"
+      "value": "$1200"
     },
     "model": "app.benefitdetails",
     "pk": 22
+  },
+  {
+    "fields": {
+      "benefit_policy_key": 11,
+      "benefit_policy_type": 1,
+      "benefit_plan": 2,
+      "value": "$1000"
+    },
+    "model": "app.benefitdetails",
+    "pk": 23
+  },
+  {
+    "fields": {
+      "benefit_policy_key": 12,
+      "benefit_policy_type": 1,
+      "benefit_plan": 2,
+      "value": "Yes"
+    },
+    "model": "app.benefitdetails",
+    "pk": 24
   },
   {
     "fields": {
@@ -227,7 +247,7 @@
       "value": "$20"
     },
     "model": "app.benefitdetails",
-    "pk": 23
+    "pk": 25
   },
   {
     "fields": {
@@ -237,7 +257,7 @@
       "value": "$40"
     },
     "model": "app.benefitdetails",
-    "pk": 24
+    "pk": 26
   },
   {
     "fields": {
@@ -247,7 +267,7 @@
       "value": "$100"
     },
     "model": "app.benefitdetails",
-    "pk": 25
+    "pk": 27
   },
   {
     "fields": {
@@ -257,7 +277,7 @@
       "value": "$100"
     },
     "model": "app.benefitdetails",
-    "pk": 26
+    "pk": 28
   },
   {
     "fields": {
@@ -267,7 +287,7 @@
       "value": "$10/$15/$25"
     },
     "model": "app.benefitdetails",
-    "pk": 27
+    "pk": 29
   },
   {
     "fields": {
@@ -277,7 +297,7 @@
       "value": "$25/$30"
     },
     "model": "app.benefitdetails",
-    "pk": 28
+    "pk": 30
   },
   {
     "fields": {
@@ -287,7 +307,7 @@
       "value": "$50"
     },
     "model": "app.benefitdetails",
-    "pk": 29
+    "pk": 31
   },
   {
     "fields": {
@@ -297,7 +317,7 @@
       "value": "$100"
     },
     "model": "app.benefitdetails",
-    "pk": 30
+    "pk": 32
   },
   {
     "fields": {
@@ -307,7 +327,7 @@
       "value": "$25"
     },
     "model": "app.benefitdetails",
-    "pk": 31
+    "pk": 33
   },
   {
     "fields": {
@@ -317,16 +337,26 @@
       "value": "$2500"
     },
     "model": "app.benefitdetails",
-    "pk": 32
+    "pk": 34
   },
   {
     "fields": {
       "benefit_policy_key": 11,
       "benefit_policy_type": 2,
       "benefit_plan": 2,
-      "value": "$100"
+      "value": "$2100"
     },
     "model": "app.benefitdetails",
-    "pk": 33
+    "pk": 35
+  },
+  {
+    "fields": {
+      "benefit_policy_key": 12,
+      "benefit_policy_type": 2,
+      "benefit_plan": 2,
+      "value": "No"
+    },
+    "model": "app.benefitdetails",
+    "pk": 36
   }
 ]
