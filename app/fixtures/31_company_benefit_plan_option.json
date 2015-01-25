@@ -6,7 +6,7 @@
       "total_cost_per_period": "678.87",
       "updated_at": "2015-01-24T15:58:25.398Z",
       "created_at": "2015-01-24T15:58:25.398Z",
-      "employee_cost_per_period": "460.60",
+      "employee_cost_per_period": "230.60",
       "company": 1
     },
     "model": "app.companybenefitplanoption",
@@ -19,7 +19,7 @@
       "total_cost_per_period": "887.00",
       "updated_at": "2015-01-24T15:58:25.493Z",
       "created_at": "2015-01-24T15:58:25.493Z",
-      "employee_cost_per_period": "687.90",
+      "employee_cost_per_period": "287.90",
       "company": 1
     },
     "model": "app.companybenefitplanoption",
@@ -32,7 +32,7 @@
       "total_cost_per_period": "1024.45",
       "updated_at": "2015-01-24T15:58:25.596Z",
       "created_at": "2015-01-24T15:58:25.596Z",
-      "employee_cost_per_period": "899.67",
+      "employee_cost_per_period": "399.67",
       "company": 1
     },
     "model": "app.companybenefitplanoption",
@@ -45,7 +45,7 @@
       "total_cost_per_period": "1223.46",
       "updated_at": "2015-01-24T15:58:25.689Z",
       "created_at": "2015-01-24T15:58:25.689Z",
-      "employee_cost_per_period": "1101.23",
+      "employee_cost_per_period": "501.23",
       "company": 1
     },
     "model": "app.companybenefitplanoption",
@@ -71,7 +71,7 @@
       "total_cost_per_period": "1000.00",
       "updated_at": "2015-01-24T16:00:53.397Z",
       "created_at": "2015-01-24T16:00:53.397Z",
-      "employee_cost_per_period": "500.00",
+      "employee_cost_per_period": "50.00",
       "company": 1
     },
     "model": "app.companybenefitplanoption",
@@ -84,7 +84,7 @@
       "total_cost_per_period": "1200.00",
       "updated_at": "2015-01-24T16:00:53.493Z",
       "created_at": "2015-01-24T16:00:53.493Z",
-      "employee_cost_per_period": "600.00",
+      "employee_cost_per_period": "60.00",
       "company": 1
     },
     "model": "app.companybenefitplanoption",
@@ -97,7 +97,7 @@
       "total_cost_per_period": "1400.00",
       "updated_at": "2015-01-24T16:00:53.597Z",
       "created_at": "2015-01-24T16:00:53.597Z",
-      "employee_cost_per_period": "700.00",
+      "employee_cost_per_period": "70.00",
       "company": 1
     },
     "model": "app.companybenefitplanoption",
