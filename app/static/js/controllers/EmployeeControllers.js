@@ -734,7 +734,19 @@ var onboardTax = employeeControllers.controller('onboardTax',
       return total;
     };
 
+    $scope.acknowledgeW4 = function(){
+      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    };
+
     $scope.submit=function(){
+      if(!$scope.employee.downloadW4){
+        alert('Please verify you have downloaded and read the entire W-4 form');
+        return;
+      }
+      if(!$scope.employee.dependent_count){
+        alert('Please enter the number of dependents');
+        return;
+      }
       var empAuth = {
         marriage: getMarriageNumber(),
         dependencies: $scope.employee.dependent_count,
