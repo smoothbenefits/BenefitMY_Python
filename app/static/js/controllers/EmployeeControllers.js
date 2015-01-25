@@ -666,9 +666,17 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       $sigdiv.jSignature("reset");
       signatureUpdated = false;
     };
+
+    $scope.acknowledgedI9=function(){
+      $scope.employee.downloadI9 = !$scope.employee.downloadI9;
+    };
+
     $scope.signDocument = function(){
       if(!signatureUpdated){
         alert('Please sign your name on the signature pad');
+      }
+      else if(!$scope.employee.downloadI9){
+        alert('Please download the I-9 document and acknowledge you have read the entire form above.');
       }
       else
       {
@@ -726,7 +734,19 @@ var onboardTax = employeeControllers.controller('onboardTax',
       return total;
     };
 
+    $scope.acknowledgeW4 = function(){
+      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    };
+
     $scope.submit=function(){
+      if(!$scope.employee.downloadW4){
+        alert('Please verify you have downloaded and read the entire W-4 form');
+        return;
+      }
+      if(!$scope.employee.dependent_count){
+        alert('Please enter the number of dependents');
+        return;
+      }
       var empAuth = {
         marriage: getMarriageNumber(),
         dependencies: $scope.employee.dependent_count,
