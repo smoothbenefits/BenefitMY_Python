@@ -36,8 +36,9 @@
 
         <div class="col-md-8">
             <div class="form-holder">
+                <h4>Please provide your eligibility of employment</h4>
                 <form name="form">
-                    <ul class="list-group"><li class="list-group-item">
+                    <ul><li class="list-group-item">
                     <div class="form-label">I am</div>
                     <div class="select-box">
                         <select name="authorization_type"
@@ -118,6 +119,15 @@
                                     <div id="auth_signature" class="signature-pad"></div>
                                 </div>
                             </div>
+                            <div ng-click="acknowledgedI9()" class="inner-td-div">
+                                <a target="_blank" href="/static/documents/i-9.pdf">
+                                    <input type="checkbox" 
+                                        name="downloadI_9"
+                                        id="downloadI_9"
+                                        ng-model="employee.downloadI9"/>
+                                <span>Click to download I-9 and acknowledge you have read the entire I-9 form
+                                </span></a>
+                            </div>
                             <div class="submit-box">
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -126,7 +136,7 @@
                                         </button>
                                     </div>
                                     <div class="col-sm-6">
-                                        <button ng-click="signDocument()" class="btn green">
+                                        <button ng-click="signDocument()" class="btn green" ng-disabled="!employee.downloadI9">
                                             Submit and Next
                                         </button>
                                     </div>

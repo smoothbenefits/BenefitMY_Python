@@ -373,44 +373,30 @@ var employeeBenefitSignup = employeeControllers.controller(
         }
       }]);
 
-var addFamily = employeeControllers.controller('addFamily', ['$scope', '$location', '$routeParams', 'employeeFamily',
-  function addFamily($scope, $location, $routeParams, employeeFamily){
+var addFamily = employeeControllers.controller('addFamily', 
+ ['$scope', 
+  '$location', 
+  '$routeParams', 
+  'personInfoService',
+  function addFamily(
+    $scope, 
+    $location, 
+    $routeParams, 
+    personInfoService){
 
-    var employeeId = $routeParams.employee_id;
-    $scope.employeeId = employeeId;
-  $scope.person = {};
-
-  var mapPerson = function(viewPerson){
-    if(typeof(viewPerson.address)=='undefined'){
-      viewPerson.address={};
+  var employeeId = $routeParams.employee_id;
+  $scope.employeeId = employeeId;
+  $scope.person = {person_type:'family'};
+  personInfoService.getPersonInfo(employeeId, function(retrievedInfo){
+    if(retrievedInfo){
+      $scope.person.address = retrievedInfo.address;
+      $scope.person.phone = retrievedInfo.phone;
     }
-    viewPerson.address.address_type = 'home';
-    if(typeof(viewPerson.phone)=='undefined'){
-      viewPerson.phone = {};
-    }
-    viewPerson.phone.phone_type = 'home';
-    var apiPerson = {};
-    apiPerson.person_type = "family";
-    apiPerson.email = viewPerson.email;
-    apiPerson.first_name = viewPerson.first_name;
-    apiPerson.last_name = viewPerson.last_name;
-    apiPerson.birth_date = viewPerson.birth_date;
-    apiPerson.ssn = viewPerson.ssn;
-    apiPerson.relationship = viewPerson.relationship;
-    apiPerson.addresses = [];
-    viewPerson.address.state = viewPerson.address.state.toUpperCase();
-    apiPerson.addresses.push(viewPerson.address);
-    apiPerson.phones = [];
-    apiPerson.phones.push(viewPerson.phone);
-    apiPerson.emergency_contact=[];
-    return apiPerson;
-  }
+  });
 
 
   $scope.addMember = function(){
-    var viewPerson = $scope.person;
-    var apiPerson = mapPerson(viewPerson);
-    employeeFamily.save({userId:employeeId}, apiPerson, function(){
+    personInfoService.savePersonInfo(employeeId, $scope.person, function(successResponse){
       $location.path('/employee/benefit/' + employeeId);
     }, function(errorResponse){
           alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
@@ -581,8 +567,8 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$route
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$routeParams', '$location', 'selfInfoService', 'currentUser', 'EmployeePreDashboardValidationService',
-  function($scope, $routeParams, $location, selfInfoService, currentUser, EmployeePreDashboardValidationService){
+  ['$scope', '$routeParams', '$location', 'personInfoService', 'currentUser', 'EmployeePreDashboardValidationService',
+  function($scope, $routeParams, $location, personInfoService, currentUser, EmployeePreDashboardValidationService){
 
     $scope.employee = {};
     $scope.employeeId = $routeParams.employee_id;
@@ -606,7 +592,7 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     $scope.addBasicInfo = function(){
       var birthDate = $scope.employee.birth_date;
       $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');
-      selfInfoService.saveSelfInfo($scope.employeeId, $scope.employee, function(successResponse){
+      personInfoService.savePersonInfo($scope.employeeId, $scope.employee, function(successResponse){
         $location.path('/employee/onboard/employment/' + $scope.employeeId);
       }, function(errorResponse){
           alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
@@ -666,9 +652,17 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       $sigdiv.jSignature("reset");
       signatureUpdated = false;
     };
+
+    $scope.acknowledgedI9=function(){
+      $scope.employee.downloadI9 = !$scope.employee.downloadI9;
+    };
+
     $scope.signDocument = function(){
       if(!signatureUpdated){
         alert('Please sign your name on the signature pad');
+      }
+      else if(!$scope.employee.downloadI9){
+        alert('Please download the I-9 document and acknowledge you have read the entire form above.');
       }
       else
       {
@@ -726,7 +720,19 @@ var onboardTax = employeeControllers.controller('onboardTax',
       return total;
     };
 
+    $scope.acknowledgeW4 = function(){
+      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    };
+
     $scope.submit=function(){
+      if(!$scope.employee.downloadW4){
+        alert('Please verify you have downloaded and read the entire W-4 form');
+        return;
+      }
+      if(!$scope.employee.dependent_count){
+        alert('Please enter the number of dependents');
+        return;
+      }
       var empAuth = {
         marriage: getMarriageNumber(),
         dependencies: $scope.employee.dependent_count,

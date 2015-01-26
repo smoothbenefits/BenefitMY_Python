@@ -1,14 +1,14 @@
 [
   {
     "fields": {
-      "name": "Individual Deductables"
+      "name": "Individual Deductible"
     },
     "model": "app.benefitpolicykey",
     "pk": 1
   },
   {
     "fields": {
-      "name": "Family Deductables"
+      "name": "Family Deductible"
     },
     "model": "app.benefitpolicykey",
     "pk": 2
