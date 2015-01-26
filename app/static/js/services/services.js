@@ -635,11 +635,11 @@ benefitmyService.factory(
     };
   }]);
 
-benefitmyService.factory('selfInfoService',
+benefitmyService.factory('personInfoService',
   ['employeeFamily',
     function(employeeFamily){
       return{
-        getSelfInfo: function(uId, retrievedCallBack){
+        getPersonInfo: function(uId, retrievedCallBack){
           employeeFamily.get({userId:uId})
             .$promise.then(function(userPerson){
               var selfPerson = _.findWhere(userPerson.family, {relationship:'self'});
@@ -663,7 +663,7 @@ benefitmyService.factory('selfInfoService',
             });
         },
 
-        saveSelfInfo: function(uId, viewInfo, success, error){
+        savePersonInfo: function(uId, viewInfo, success, error){
           var mapUserPerson = function(viewPerson){
             viewPerson.birth_date = moment(viewPerson.birth_date).format('YYYY-MM-DD');
             var apiUserPerson = viewPerson;

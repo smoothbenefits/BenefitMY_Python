@@ -260,8 +260,8 @@ var addBenefitController = brokersControllers.controller(
       };
 
       $scope.policyKeyArray = [
-        {position:0, name:'Individual Deductables'},
-        {position:1, name:'Family Deductables'},
+        {position:0, name:'Individual Deductible'},
+        {position:1, name:'Family Deductible'},
         {position:2, name:'Hospital-Inpatient'},
         {position:3, name:'Out-patient Day Surgery'},
         {position:4, name:'MRI/CT/PET Scans'},
