@@ -269,8 +269,9 @@ var addBenefitController = brokersControllers.controller(
         {position:6, name:'Chiropractic'},
         {position:7, name:'Prescription Drugs-30 days'},
         {position:8, name:'Mail order drugs-90 days'},
-        {position:9, name:'Annual Maximum'},
-        {position:10, name:'Primary Care Physician required'}];
+        {position:9, name:'Annual Rx out of Pocket Maximum'},
+        {position:10, name:'Annual Medical out of Pocket Maximum'},
+        {position:11, name:'Primary Care Physician required'}];
 
       $scope.benefitDetailArray = [];
       $scope.columnCount = 1;

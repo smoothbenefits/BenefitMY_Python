@@ -464,7 +464,8 @@ var viewDocument = employeeControllers.controller('viewDocument',
      signatureUpdated = true;
     });
     $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset")
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
     };
     $scope.signDocument = function(){
       if(!signatureUpdated){
@@ -662,7 +663,8 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
      signatureUpdated = true;
     });
     $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset")
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
     };
     $scope.signDocument = function(){
       if(!signatureUpdated){
@@ -769,7 +771,8 @@ var onboardComplete = employeeControllers.controller('onboardComplete',
      signatureUpdated = true;
     });
     $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset")
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
     };
     $scope.submit=function(){
       if(!signatureUpdated){
@@ -830,7 +833,8 @@ var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocum
     });
 
     $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset")
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
     };
 
     $scope.submit = function(){

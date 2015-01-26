@@ -1,0 +1,16 @@
+[
+  {
+    "fields": {
+      "name": "BenefitMy Inc."
+    },
+    "model": "app.company",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "Startup.Com"
+    },
+    "model": "app.company",
+    "pk": 2
+  }
+]
