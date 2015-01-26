@@ -1,0 +1,14 @@
+[
+  {
+    "fields": {
+      "user": 3,
+      "tax_credit": 0,
+      "marriage": 2,
+      "total_points": 3,
+      "dependencies": 0,
+      "head": 1
+    },
+    "model": "app.w4",
+    "pk": 1
+  }
+]

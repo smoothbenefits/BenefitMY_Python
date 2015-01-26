@@ -1,0 +1,23 @@
+[
+  {
+    "fields": {
+      "name": "In network"
+    },
+    "model": "app.benefitpolicytype",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "Out of network"
+    },
+    "model": "app.benefitpolicytype",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "-"
+    },
+    "model": "app.benefitpolicytype",
+    "pk": 3
+  }
+]

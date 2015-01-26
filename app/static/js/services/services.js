@@ -425,7 +425,7 @@ benefitmyService.factory('benefitDisplayService',
             }
 
             var optionColSpan = 3;
-            var optionEmployeeLabel = 'Employee';
+            var optionEmployeeLabel = 'Employee\n(per pay period)';
             if(isEmployeeView){
               optionColSpan = 6;
               optionEmployeeLabel = '';
@@ -435,7 +435,7 @@ benefitmyService.factory('benefitDisplayService',
 
               group.benefitNameArray.push({id:benefit.benefitId, name:benefit.benefitName});
               if(!isEmployeeView){
-                group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Total', colspan:optionColSpan});
+                group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Total\n(per month)', colspan:optionColSpan});
               }
               group.benefitOptionMetaArray.push({id:benefit.benefitId, name: optionEmployeeLabel, colspan:optionColSpan});
             }
