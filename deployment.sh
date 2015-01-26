@@ -10,6 +10,9 @@ case $APP_NAME in
 	*"demo"*)
 		sh ./deployment_beta.sh $APP_NAME $DB_NAME
 		;;
+	*"beta"*)
+		sh ./deployment_beta.sh $APP_NAME $DB_NAME
+		;;
 	*"prod"*)
 		sh ./deployment_prod.sh $APP_NAME $DB_NAME # have not created yet
 		;;
