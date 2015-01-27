@@ -1,0 +1,28 @@
+{
+  "name": "BenefitMY_Python",
+  "version": "0.7.1",
+  "homepage": "https://github.com/smoothbenefits/BenefitMY_Python",
+  "authors": [
+    "Xiaoyu Lei <thunder.rain.a@gmail.com>"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-route": "~1.3.11",
+    "jquery": "~2.1.3",
+    "underscore": "~1.7.0",
+    "jquery-ui": "~1.11.2",
+    "angular-resource": "~1.3.11",
+    "angular-ui": "~0.4.0"
+  }
+}
