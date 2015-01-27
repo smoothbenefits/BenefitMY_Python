@@ -102,18 +102,35 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/staticfiles/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 STATICFILES_DIRS = (
     # location of your application, should not be public web accessible
     os.path.join(os.path.join(BASE_DIR, 'app'), 'static'),
+    os.path.join(BASE_DIR, 'bower_components'),
 )
+
+# Bower package manager set up
+# http://www.revsys.com/blog/2014/oct/21/ultimate-front-end-development-setup/
+# STATICFILES_FINDERS = (
+#     'django.contrib.staticfiles.finders.FileSystemFinder',
+#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#     'djangobower.finders.BowerFinder',
+# )
+
+# PROJECT_ROOT = os.path.abspath(
+#     os.path.join(os.path.dirname(__file__), ".."),
+# )
+
+# BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
+
+# BOWER_INSTALLED_APPS = (
+# )
 
 #Pipeline variables
 PIPELINE_CSS_COMPRESSOR = ''
 PIPELINE_JS_COMPRESSOR = ''
-
 
 PIPELINE_CSS = {
     'home':{
