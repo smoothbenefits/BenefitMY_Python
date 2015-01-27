@@ -123,7 +123,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
                 displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name;
                 displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
-                displayBenefit.lastUpdatedTime = new Date(benefit.benefit.updated_at).toDateString();
+                displayBenefit.lastUpdatedTime = new Date(benefit.updated_at).toDateString();
                 displayBenefit.pcp = benefit.pcp;
 
                 addBenefitPlanToSelectionList(displayBenefit);
