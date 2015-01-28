@@ -14,6 +14,10 @@ Please follow the following steps to start the app on your local machine
  pip install django-email-as-username
  pip install django-encrypted-fields
 
+1.1. Install bower and its pacakges
+`npm install
+`bower install
+
 2. Install postgres
 
 3. Create DB "Benefits_DB"
