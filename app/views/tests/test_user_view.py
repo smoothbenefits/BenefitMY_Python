@@ -82,3 +82,38 @@ class UserTestCase(TestCase):
         self.assertEqual(result['user']['last_name'], 'McLaurren')
         self.assertEqual(result['user']['id'], 2)
         self.assertEqual(result['user']['email'], 'user2@benefitmy.com')
+
+
+    def test_get_user_family(self):
+        response = self.client.get(reverse('user_family_api',
+                                           kwargs={'pk': 1}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(type(result), dict)
+        self.assertEqual(type(result['family']), list)
+        self.assertEqual(result['first_name'], 'John')
+        self.assertEqual(result['last_name'], 'Hancock')
+        self.assertEqual(result['id'], 1)
+        self.assertEqual(result['email'], 'user1@benefitmy.com')
+        self.assertEqual(result['family'][0]['id'], 1)
+        self.assertEqual(result['family'][0]['relationship'], 'self')
+        self.assertEqual(result['family'][0]['birth_date'], '1978-09-05')
+
+        response = self.client.get(reverse('user_family_api',
+                                           kwargs={'pk': 3}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(type(result), dict)
+        self.assertEqual(type(result['family']), list)
+        self.assertEqual(result['first_name'], 'Simon')
+        self.assertEqual(result['last_name'], 'Cowell')
+        self.assertEqual(result['id'], 3)
+        self.assertEqual(result['email'], 'user3@benefitmy.com')
+        self.assertEqual(result['family'][0]['id'], 4)
+        self.assertEqual(result['family'][0]['relationship'], 'spouse')
+        self.assertEqual(result['family'][0]['birth_date'], '1983-01-02')
+        self.assertEqual(result['family'][1]['id'], 3)
+        self.assertEqual(result['family'][1]['relationship'], 'self')
+        self.assertEqual(result['family'][1]['birth_date'], '1988-05-27')
