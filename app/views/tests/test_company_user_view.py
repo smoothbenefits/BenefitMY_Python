@@ -39,3 +39,19 @@ class CompanyUsersTestCase(TestCase):
         self.assertEqual(result['user_roles'][3]['user']['email'],
                          'user4@benefitmy.com')
         self.assertEqual(result['user_roles'][3]['new_employee'], True)
+
+
+    def test_get_company_employee_count(self):
+        response = self.client.get(reverse('company_employee_count',
+                                   kwargs={'pk': 1}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(result['employees_count'], 2)
+
+        response = self.client.get(reverse('company_employee_count',
+                                   kwargs={'pk': 2}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(result['employees_count'], 0)
