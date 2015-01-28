@@ -55,3 +55,19 @@ class CompanyUsersTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
         self.assertEqual(result['employees_count'], 0)
+
+
+    def test_get_company_broker_count(self):
+        response = self.client.get(reverse('company_broker_count',
+                                   kwargs={'pk': 1}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(result['brokers_count'], 1)
+
+        response = self.client.get(reverse('company_broker_count',
+                                   kwargs={'pk': 3}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(result['brokers_count'], 0)
