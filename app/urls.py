@@ -95,7 +95,7 @@ urlpatterns = patterns('app.views',
         CompanyUsersBenefitPlanOptionView.as_view()),
 
     url(r'^%s/companies/(?P<pk>[0-9]+)/?$' % PREFIX, CompanyView.as_view()),
-    url(r'^%s/companies/(?P<pk>[0-9]+)/users/?$' % PREFIX, CompanyUserView.as_view()),
+    url(r'^%s/companies/(?P<pk>[0-9]+)/users/?$' % PREFIX, CompanyUserView.as_view(), name='company_users_api'),
     url(r'^%s/companies/(?P<pk>[0-9]+)/documents/?$' % PREFIX, CompanyDocumentView.as_view()),
     url(r'^%s/companies/(?P<pk>[0-9]+)/templates/?$' % PREFIX, CompanyTemplatesView.as_view()),
     url(r'^%s/company_employees_count/(?P<pk>[0-9]+)/?$' % PREFIX, CompanyEmployeeCountView.as_view()),
