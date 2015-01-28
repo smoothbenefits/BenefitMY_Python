@@ -47,3 +47,38 @@ class UserTestCase(TestCase):
         self.assertEqual(result['users'][1]['last_name'], 'McLaurren')
         self.assertEqual(result['users'][1]['id'], 2)
         self.assertEqual(result['users'][1]['email'], 'user2@benefitmy.com')
+
+
+    def test_post_users(self):
+        pass
+
+
+    def test_get_current_user(self):
+        response = self.client.get(reverse('current_user_api'))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 404)
+
+        self.client.login(email='user1@benefitmy.com', password='foobar')
+        response = self.client.get(reverse('current_user_api'))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(result['user']['first_name'], 'John')
+        self.assertEqual(result['user']['last_name'], 'Hancock')
+        self.assertEqual(result['user']['id'], 1)
+        self.assertEqual(result['user']['email'], 'user1@benefitmy.com')
+
+        self.client.logout()
+        response = self.client.get(reverse('current_user_api'))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 404)
+
+        self.client.login(email='user2@benefitmy.com', password='foobar')
+        response = self.client.get(reverse('current_user_api'))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(result['user']['first_name'], 'Francis')
+        self.assertEqual(result['user']['last_name'], 'McLaurren')
+        self.assertEqual(result['user']['id'], 2)
+        self.assertEqual(result['user']['email'], 'user2@benefitmy.com')

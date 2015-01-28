@@ -69,7 +69,7 @@ urlpatterns = patterns('app.views',
 
 
     url(r'^%s/users/?$' % PREFIX, UsersView.as_view(), name='users_api'),
-    url(r'^%s/users/current/?$' % PREFIX, CurrentUserView.as_view()),
+    url(r'^%s/users/current/?$' % PREFIX, CurrentUserView.as_view(), name='current_user_api'),
     url(r'^%s/users/(?P<pk>[0-9]+)/?$' % PREFIX, UserView.as_view(), name='user_api'),
     url(r'^%s/users/(?P<pk>[0-9]+)/family/?$' % PREFIX, UserFamilyView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/documents/?$' % PREFIX, UserDocumentView.as_view()),
