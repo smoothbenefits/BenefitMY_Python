@@ -30,9 +30,6 @@ heroku config:set DJANGO_SETTINGS_MODULE=Smoothbenefits.$APP_NAME-settings --app
 # reset database to clean up all existing data
 heroku pg:reset $DB_NAME --app $APP_NAME --confirm $APP_NAME
 
-heroku run pip install -r --app $APP_NAME
-heroku run python manage.py collectstatic --app $APP_NAME
-
 # run database migrations to restore lastest database schema
 heroku run python manage.py migrate --app $APP_NAME
 
