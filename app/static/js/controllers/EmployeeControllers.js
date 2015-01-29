@@ -206,7 +206,7 @@ var employeeBenefitSignup = employeeControllers.controller(
         };
 
         companyIdPromise.then(function(companyId){
-          benefitDisplayService(companyId, true, function(groupObj, nonMedicalArray, benefitCount){
+          benefitDisplayService(companyId, false, function(groupObj, nonMedicalArray, benefitCount){
             $scope.medicalBenefitGroup = groupObj;
             $scope.nonMedicalBenefitArray = nonMedicalArray;
           });
