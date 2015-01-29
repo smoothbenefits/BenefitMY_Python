@@ -159,6 +159,7 @@ var employerUser = employersController.controller('employerUser',
       $scope.addUser = {send_email:true, new_employee:true, create_docs:true};
       $scope.brokers = [];
       $scope.templateFields = [];
+      $scope.docTypeArray = [];
       employerWorkerRepository.get({companyId:compId})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
@@ -177,6 +178,9 @@ var employerUser = employersController.controller('employerUser',
         .$promise.then(function(fields){
           $scope.templateFields = fields;
         });
+      documentTypeService.getDocumentTypes(compId, function(response){
+        $scope.docTypeArray = response;
+      });
 
       var gotoUserView = function(userType){
         $location.path('/admin/' + userType + '/' + compId);
@@ -246,15 +250,14 @@ var employerUser = employersController.controller('employerUser',
       {
         userDocument.query({userId:employeeId})
         .$promise.then(function(response){
-          var doc = _.filter(response, function(doc){return doc.document_type.id === docType});
+          var doc = _.filter(response, function(doc){return doc.document_type.id === docType.id});
           var pathKey = 'create_letter';
           if(doc && doc.length > 0)
           {
             pathKey='view_letter';
           }
-          documentTypeService.getDocumentTypeById(compId, docType, function(docType){
-            $location.search({type:docType.name}).path('/admin/' + pathKey + '/' +compId +'/'+employeeId);
-          });
+          
+          $location.search({type:docType.name}).path('/admin/' + pathKey + '/' +compId +'/'+employeeId);
         });
       };
 
