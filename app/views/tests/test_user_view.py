@@ -117,3 +117,37 @@ class UserTestCase(TestCase):
         self.assertEqual(result['family'][1]['id'], 3)
         self.assertEqual(result['family'][1]['relationship'], 'self')
         self.assertEqual(result['family'][1]['birth_date'], '1988-05-27')
+
+
+    def test_post_user_family(self):
+        # TODO
+        family = {
+                  "person_type": "family",
+                  "relationship": "self",
+                  "first_name": "Jim Smith",
+                  "last_name": "Smith",
+                  "birth_date": "1971-01-01",
+                  "ssn": "123-45-6789",
+                  "email": "ggg@gmail.com",
+                  "addresses": [{"address_type": "home",
+                                 "street_1": "10 Tin Pan Alley",
+                                 "city": "Pleasantville",
+                                 "state": "MA",
+                                 "zipcode": "01234"
+                                }],
+                  "phones": [{
+                                "phone_type": "home",
+                                "number": "1-987-555-1234"
+                            }],
+                  "emergency_contact": [{
+                            "first_name": "lin",
+                            "middle_name": "XX",
+                            "last_name": "yy",
+                            "relationship": "friend",
+                            "email": "fsfdf@gmail.com",
+                            "phone": "6179037266"}
+                            ]}
+        print family, family['phones'], family['addresses']
+        response = self.client.post(reverse('user_family_api', kwargs={'pk': 1}),
+                                    family)
+        print response
