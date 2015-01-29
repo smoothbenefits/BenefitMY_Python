@@ -5,18 +5,31 @@ describe('brokerController', function() {
   controller;
 
   beforeEach(function(){
-  	module('BenefitMyApp')
+    angular.mock.module('BenefitMyApp')
   });
 
   describe('client controller', function(){
-  	beforeEach(inject(function($rootScope, $controller){
+  	beforeEach(angular.mock.inject(function($rootScope, $controller){
   		scope = $rootScope.$new();
   		controller = $controller('clientsController', {$scope: scope});
   	}));
 
-  	it('test', function(){
-  		expect(scope.name).toBe('');
+  	it('assign value to scope', function(){
+      scope.name = 'hello';
+  		expect(scope.name).toBe('hello');
   	});
 
+  });
+
+  describe('selected benefits Controller', function(){
+    beforeEach(angular.mock.inject(function($rootScope, $controller){
+      scope = $rootScope.$new();
+      controller = $controller('selectedBenefitsController', {$scope: scope});
+    }));
+
+    it('verify setup state', function(){
+      expect(scope.employeeList.length).toBe(0);
+    });
+    
   });
 });
