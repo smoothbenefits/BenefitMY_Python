@@ -65,7 +65,7 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/benefit_types/?$' % PREFIX, BenefitTypeView.as_view()),
 
-    url(r'^%s/document_types/?$' % PREFIX, DocumentTypeView.as_view()),
+    url(r'^%s/document_types/?$' % PREFIX, DocumentTypeView.as_view(), name='document_type_api'),
 
 
     url(r'^%s/users/?$' % PREFIX, UsersView.as_view(), name='users_api'),

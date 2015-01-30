@@ -147,7 +147,7 @@ class UserTestCase(TestCase):
                             "email": "fsfdf@gmail.com",
                             "phone": "6179037266"}
                             ]}
-        print family, family['phones'], family['addresses']
-        response = self.client.post(reverse('user_family_api', kwargs={'pk': 1}),
-                                    family)
-        print response
+        #print family, family['phones'], family['addresses']
+        #response = self.client.post(reverse('user_family_api', kwargs={'pk': 1}),
+        #                            family)
+        #print response
