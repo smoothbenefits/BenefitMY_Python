@@ -1,0 +1,140 @@
+import json
+from django.test import TestCase
+from django.core.urlresolvers import reverse
+from django.contrib.auth.models import AnonymousUser, User
+
+
+
+class UserViewTestCase(TestCase):
+    # your fixture files here
+    fixtures = ['24_person', '23_auth_user', '10_company', '34_company_user']
+
+    def setUp(self):
+        self.user_password = 'foobar'
+        self.broker_user = User.objects.get(email='user1@benefitmy.com')
+        self.broker_user.set_password(self.user_password)
+        self.broker_user.save()
+        self.admin_user = User.objects.get(email='user2@benefitmy.com')
+        self.admin_user.set_password(self.user_password)
+        self.admin_user.save()
+        self.employee_user = User.objects.get(email='user3@benefitmy.com')
+        self.employee_user.set_password(self.user_password)
+        self.employee_user.save()
+
+    def test_get_cur_user_broker(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.broker_user.get_username(), 'password':self.user_password})
+        response = self.client.get(reverse('current_user'))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.content, '')
+        user_data = json.loads(response.content)
+        self.assertTrue('user' in user_data)
+        cur_user = user_data['user']
+        self.assertTrue('id' in cur_user and cur_user['id'] == 1)
+        self.assertTrue('first_name' in cur_user and cur_user['first_name'] == 'John')
+        self.assertTrue('last_name' in cur_user and cur_user['last_name'] == 'Hancock')
+        self.assertTrue('email' in cur_user and cur_user['email'] == 'user1@benefitmy.com')
+        self.assertIn('roles', user_data)
+        roles = user_data['roles']
+        for user_role in roles:
+            self.assertTrue('company_user_type' in user_role and user_role['company_user_type'] == 'broker')
+
+    def test_get_cur_user_employer(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        response = self.client.get(reverse('current_user'))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.content, '')
+        user_data = json.loads(response.content)
+        self.assertTrue('user' in user_data)
+        cur_user = user_data['user']
+        self.assertTrue('id' in cur_user and cur_user['id'] == 2)
+        self.assertTrue('first_name' in cur_user and cur_user['first_name'] == 'Francis')
+        self.assertTrue('last_name' in cur_user and cur_user['last_name'] == 'McLaurren')
+        self.assertTrue('email' in cur_user and cur_user['email'] == 'user2@benefitmy.com')
+        self.assertIn('roles', user_data)
+        roles = user_data['roles']
+        for user_role in roles:
+            self.assertTrue('company_user_type' in user_role and user_role['company_user_type'] == 'admin')
+
+    def test_get_cur_user_employee(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.employee_user.get_username(), 'password':self.user_password})
+        response = self.client.get(reverse('current_user'))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.content, '')
+        user_data = json.loads(response.content)
+        self.assertTrue('user' in user_data)
+        cur_user = user_data['user']
+        self.assertTrue('id' in cur_user and cur_user['id'] == 3)
+        self.assertTrue('first_name' in cur_user and cur_user['first_name'] == 'Simon')
+        self.assertTrue('last_name' in cur_user and cur_user['last_name'] == 'Cowell')
+        self.assertTrue('email' in cur_user and cur_user['email'] == 'user3@benefitmy.com')
+        self.assertIn('roles', user_data)
+        roles = user_data['roles']
+        for user_role in roles:
+            self.assertTrue('company_user_type' in user_role and user_role['company_user_type'] == 'employee')
+
+    def test_get_user_by_id_cur_user(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.employee_user.get_username(), 'password':self.user_password})
+        response=self.client.get(reverse('user_by_id', kwargs={'pk':3}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.content, '')
+        user_data = json.loads(response.content)
+        self.assertTrue('user' in user_data)
+        cur_user = user_data['user']
+        self.assertTrue('id' in cur_user and cur_user['id'] == 3)
+        self.assertTrue('first_name' in cur_user and cur_user['first_name'] == 'Simon')
+        self.assertTrue('last_name' in cur_user and cur_user['last_name'] == 'Cowell')
+        self.assertTrue('email' in cur_user and cur_user['email'] == 'user3@benefitmy.com')
+
+    def test_get_user_by_id_existing_user(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.employee_user.get_username(), 'password':self.user_password})
+        response=self.client.get(reverse('user_by_id', kwargs={'pk':1}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.content, '')
+        user_data = json.loads(response.content)
+        self.assertTrue('user' in user_data)
+        cur_user = user_data['user']
+        self.assertTrue('id' in cur_user and cur_user['id'] == 1)
+        self.assertTrue('first_name' in cur_user and cur_user['first_name'] == 'John')
+        self.assertTrue('last_name' in cur_user and cur_user['last_name'] == 'Hancock')
+        self.assertTrue('email' in cur_user and cur_user['email'] == 'user1@benefitmy.com')
+
+    def test_get_user_by_id_nonexisting(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.broker_user.get_username(), 'password':self.user_password})
+        response=self.client.get(reverse('user_by_id', kwargs={'pk':5000}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_user_by_id_not_logged(self):
+        response=self.client.get(reverse('user_by_id', kwargs={'pk':1}))
+        self.assertIsNotNone(response)
+        # With proper authentication, the status code check below should be 401
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_all_users(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.employee_user.get_username(), 'password':self.user_password})
+        response=self.client.get(reverse('all_users'))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.content, '')
+        all_user_data = json.loads(response.content)
+        self.assertTrue('users' in all_user_data)
+        all_users = all_user_data['users']
+        self.assertEqual(len(all_users), 4)
+        for user in all_users:
+            self.assertIn('id', user)
+            self.assertIn('first_name', user)
+            self.assertIn('last_name', user)
+            self.assertIn('email', user)
+    
+    def test_get_all_users_not_logged(self):
+        response=self.client.get(reverse('all_users'))
+        self.assertIsNotNone(response)
+        # With proper authentication, the status code check below should be 401
+        self.assertEqual(response.status_code, 200)
+
+        
