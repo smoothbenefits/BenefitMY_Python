@@ -85,7 +85,7 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/templates/(?P<pk>[0-9]+)/?$' % PREFIX, TemplateView.as_view()),
     url(r'^%s/companies/(?P<pk>[0-9]+)/template_fields/?$' % PREFIX, TemplateFieldView.as_view()),
-    url(r'^%s/benefits/(?P<pk>[0-9]+)/?$' % PREFIX, CompanyBenefitPlanOptionView.as_view()),
+    url(r'^%s/benefits/(?P<pk>[0-9]+)/?$' % PREFIX, CompanyBenefitPlanOptionView.as_view(), name='benefit_plan_api'),
     url(r'^%s/benefit_details/plan=(?P<pk>[0-9]+)/?$' % PREFIX, BenefitDetailsView.as_view()),
 
     url(r'^%s/benefit_details/(?P<pk>[0-9]+)/?$' % PREFIX, delete_benefit_details),
