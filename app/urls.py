@@ -90,7 +90,7 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/benefit_details/(?P<pk>[0-9]+)/?$' % PREFIX, delete_benefit_details),
     url(r'^%s/companies/(?P<pk>[0-9]+)/benefits/?$' % PREFIX,
-        CompanyBenefitPlansView.as_view()),
+        CompanyBenefitPlansView.as_view(), name='company_benefit_plan_api'),
     url(r'^%s/company_users/(?P<pk>[0-9]+)/benefits/?$' % PREFIX,
         CompanyUsersBenefitPlanOptionView.as_view()),
 
