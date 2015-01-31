@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 
 class LoginViewTestCase(TestCase):
-    fixtures = ['24_person', '23_auth_user']
+    fixtures = ['24_person', '23_auth_user', '10_company']
 
     def setUp(self):
         self.user_password = 'foobar'

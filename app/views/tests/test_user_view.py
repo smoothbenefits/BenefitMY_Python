@@ -130,11 +130,143 @@ class UserViewTestCase(TestCase):
             self.assertIn('first_name', user)
             self.assertIn('last_name', user)
             self.assertIn('email', user)
-    
+
     def test_get_all_users_not_logged(self):
         response=self.client.get(reverse('all_users'))
         self.assertIsNotNone(response)
         # With proper authentication, the status code check below should be 401
         self.assertEqual(response.status_code, 200)
 
+    def test_user_create_new_success(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        new_user = {
+            'user': {
+                'first_name':'fiddfrstvvv5', 
+                'last_name':'lastvvfdvv5', 
+                'email':'user456@smoothbenefits.com'
+                },
+            'company': 1,
+            'company_user_type': 'employee',
+            'send_email': 'true',
+            'create_docs': 'true',
+            'fields':[
+                {'company_name':'benefitmy'}, 
+                {'position': 'Software Engineer'}]
+        }
+        response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 201)
+        created_user = json.loads(response.content)
+        self.assertTrue('id' in created_user and created_user['id'])
+        self.assertTrue('first_name' in created_user and created_user['first_name'] == new_user['user']['first_name'])
+        self.assertTrue('last_name' in created_user and created_user['last_name'] == new_user['user']['last_name'])
+        self.assertTrue('email' in created_user and created_user['email'] == new_user['user']['email'])
+
+    def test_user_create_no_send_email_success(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        new_user = {
+            'user': {
+                'first_name':'fiddfrstvvv5', 
+                'last_name':'lastvvfdvv5', 
+                'email':'user456@smoothbenefits.com'
+                },
+            'company': 1,
+            'company_user_type': 'employee',
+            'send_email': 'false',
+            'create_docs': 'true',
+            'fields':[
+                {'company_name':'benefitmy'}, 
+                {'position': 'Software Engineer'}]
+        }
+        response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 201)
+        created_user = json.loads(response.content)
+        self.assertTrue('id' in created_user and created_user['id'])
+        self.assertTrue('first_name' in created_user and created_user['first_name'] == new_user['user']['first_name'])
+        self.assertTrue('last_name' in created_user and created_user['last_name'] == new_user['user']['last_name'])
+        self.assertTrue('email' in created_user and created_user['email'] == new_user['user']['email'])
+
+    def test_user_create_no_create_docs_success(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        new_user = {
+            'user': {
+                'first_name':'fiddfrstvvv5', 
+                'last_name':'lastvvfdvv5', 
+                'email':'user456@smoothbenefits.com'
+                },
+            'company': 1,
+            'company_user_type': 'employee',
+            'send_email': 'false',
+            'create_docs': 'false'
+        }
+        response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 201)
+        created_user = json.loads(response.content)
+        self.assertTrue('id' in created_user and created_user['id'])
+        self.assertTrue('first_name' in created_user and created_user['first_name'] == new_user['user']['first_name'])
+        self.assertTrue('last_name' in created_user and created_user['last_name'] == new_user['user']['last_name'])
+        self.assertTrue('email' in created_user and created_user['email'] == new_user['user']['email'])
+
+
+    def test_user_create_no_company(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        new_user = {
+            'user': {
+                'first_name':'fiddfrstvvv5', 
+                'last_name':'lastvvfdvv5', 
+                'email':'user456@smoothbenefits.com'
+                },
+            'company_user_type': 'employee',
+        }
+        response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content, '')
+
+    def test_user_create_no_company_user_type(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        new_user = {
+            'user': {
+                'first_name':'fiddfrstvvv5', 
+                'last_name':'lastvvfdvv5', 
+                'email':'user456@smoothbenefits.com'
+                },
+            'company': 1,
+        }
+        response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content, '')
         
+    def test_user_create_non_existing_company(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        new_user = {
+            'user': {
+                'first_name':'fiddfrstvvv5', 
+                'last_name':'lastvvfdvv5', 
+                'email':'user456@smoothbenefits.com'
+                },
+            'company': 300,
+            'company_user_type': 'employee',
+        }
+        response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 404)
+
+    def test_user_create_conflict(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        new_user = {
+            'user': {
+                'first_name':'fiddfrstvvv5', 
+                'last_name':'lastvvfdvv5', 
+                'email':'user3@benefitmy.com'
+                },
+            'company': 1,
+            'company_user_type': 'employee',
+        }
+        response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.content, '')

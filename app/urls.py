@@ -61,7 +61,7 @@ PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
     url(r'^dashboard/?$', dashboard_view.index, name='dashboard'),
-    url(r'^%s/people/(?P<pk>[0-9]+)/?$' % PREFIX, PersonView.as_view(), name='people_api'),
+    url(r'^%s/people/(?P<pk>[0-9]+)/?$' % PREFIX, PersonView.as_view(), name='people_by_id'),
 
     url(r'^%s/benefit_types/?$' % PREFIX, BenefitTypeView.as_view()),
 
@@ -71,7 +71,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/?$' % PREFIX, UsersView.as_view(), name='all_users'),
     url(r'^%s/users/current/?$' % PREFIX, CurrentUserView.as_view(), name='current_user'),
     url(r'^%s/users/(?P<pk>[0-9]+)/?$' % PREFIX, UserView.as_view(), name='user_by_id'),
-    url(r'^%s/users/(?P<pk>[0-9]+)/family/?$' % PREFIX, UserFamilyView.as_view()),
+    url(r'^%s/users/(?P<pk>[0-9]+)/family/?$' % PREFIX, UserFamilyView.as_view(), name='user_family'),
     url(r'^%s/users/(?P<pk>[0-9]+)/documents/?$' % PREFIX, UserDocumentView.as_view()),
     url(r'^%s/users/(?P<pk>[0-9]+)/benefits/?$' % PREFIX,
         UserCompanyBenefitPlanOptionView.as_view()),
