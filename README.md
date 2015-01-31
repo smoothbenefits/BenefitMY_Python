@@ -4,15 +4,21 @@ BenefitMY_Python
 Please follow the following steps to start the app on your local machine
 
 0. Install coffeescript component. This is for the coffee javascript files
-`sudo npm install -g coffee-script`
+sudo npm install -g coffee-script
 
 1. Install django
-`sudo apt-get install python-psycopg2`
-`pip install django`
-`pip install djangorestframework`
- pip install django-pipeline
- pip install django-email-as-username
- pip install django-encrypted-fields
+sudo apt-get install python-psycopg2
+pip install django
+pip install djangorestframework
+pip install django-pipeline
+pip install django-email-as-username
+pip install django-encrypted-fields
+
+1.1. Install required pacakges through npm
+npm install
+
+1.2 (optional) if you want to run karma tests easily, you can install karma-cli
+npm install -g karma-cli
 
 2. Install postgres
 
