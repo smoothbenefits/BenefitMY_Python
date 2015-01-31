@@ -38,7 +38,27 @@
                     </div>
                 </div>
             </div><!-- / .form-holder -->
-            <div ng-show="benefitTypeSelected(benefit.benefit_type)">
+
+            <div class="row" ng-show="isTypeLifeInsurance(benefit.benefit_type)">
+                <div class="table-responsive table-holder">
+                    <table class="table table-striped benefit-table" id="plan_option_table">
+                        <thead>
+                            <th><div></div></th>
+                            <th><div>Minimum</div></th>
+                            <th><div>Maximum</div></th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Coverage</td>
+                                <td>$ <input type="number" placeholder="Min coverage" show-dollar="1" value="{{option.min_coverage}}" /></td>
+                                <td>$ <input type="number" placeholder="Max coverage" show-dollar="1" value="{{option.max_coverage}}" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div ng-show="baseBenefitTypeSelected(benefit.benefit_type)">
                 <div class="row">
                     <div class="table-responsive table-holder">
                         <table class="table table-striped benefit-table" id="plan_option_table">

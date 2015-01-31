@@ -393,8 +393,6 @@ benefitmyService.factory('benefitDisplayService',
 
 
         var convertToDisplayGroup = function(group, medicalArray){
-
-
           var optionNameList = [];
           _.each(medicalArray, function(benefit){
             _.each(benefit.benefitOptionArray, function(benefitOption){
@@ -510,10 +508,7 @@ benefitmyService.factory('benefitDisplayService',
                 }
               });
             });
-
           });
-
-
         };
 
         var insertIntoBenefitArray = function(companyBenefitsArray, benefit)
