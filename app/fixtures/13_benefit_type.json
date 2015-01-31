@@ -19,5 +19,14 @@
     },
     "model": "app.benefittype",
     "pk": 3
-  }
+  },
+  {
+    "fields": {
+      "name": "Life"
+    },
+    "model": "app.benefittype",
+    "pk": 4
+  },
+
+
 ]
