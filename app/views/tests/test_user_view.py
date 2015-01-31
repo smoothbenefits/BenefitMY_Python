@@ -176,6 +176,7 @@ class UserViewTestCase(TestCase):
         self.assertEqual(result['family'][1]['relationship'], 'self')
         self.assertEqual(result['family'][1]['birth_date'], '1988-05-27')
 
+
     def test_user_create_new_success(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {

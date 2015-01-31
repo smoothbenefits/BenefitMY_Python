@@ -59,4 +59,3 @@ class PersonTestCase(TestCase):
         self.assertIn('emergency_contact', person)
         person_emergency_contact = person['emergency_contact']
         self.assertEqual(len(person_emergency_contact), 0) 
-
