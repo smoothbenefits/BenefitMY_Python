@@ -211,3 +211,6 @@ th .editable-container{
 input.input-upper {
   text-transform: uppercase;
 }
+span.doc-buttons{
+    margin-left:5px;
+}
