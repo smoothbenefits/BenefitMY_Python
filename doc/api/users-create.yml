@@ -16,7 +16,7 @@ sample_url: /api/v1/users
 sample_request:
 {
        "company": 1,
-       "company_user_type": "Employee",
+       "company_user_type": "employee",
        "send_email" : "true",
        "create_docs": "true",
        "fields":[
@@ -33,7 +33,7 @@ sample_request:
 sample_response: |
 {
     "company": 1,
-    "company_user_type": "Employee",
+    "company_user_type": "employee",
     "user": {
         "id": 7,
         "first_name": "firstvvffffv5",

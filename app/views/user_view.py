@@ -47,9 +47,9 @@ class UsersView(APIView):
             "company_user_type" not in request.DATA or
             "user" not in request.DATA or
             "first_name" not in request.DATA['user'] or
-                "last_name" not in request.DATA['user']):
+            "last_name" not in request.DATA['user']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
+        
         try:
             c = Company.objects.get(pk=request.DATA['company'])
         except Company.DoesNotExist:

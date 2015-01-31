@@ -61,7 +61,7 @@ PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
     url(r'^dashboard/?$', dashboard_view.index, name='dashboard'),
-    url(r'^%s/people/(?P<pk>[0-9]+)/?$' % PREFIX, PersonView.as_view(), name='people_api'),
+    url(r'^%s/people/(?P<pk>[0-9]+)/?$' % PREFIX, PersonView.as_view(), name='people_by_id'),
 
     url(r'^%s/benefit_types/?$' % PREFIX, BenefitTypeView.as_view()),
 
