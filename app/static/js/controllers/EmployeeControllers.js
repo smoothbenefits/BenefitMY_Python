@@ -135,6 +135,13 @@ var employeeBenefitSignup = employeeControllers.controller(
         $scope.family = [];
         $scope.selectedBenefits =[];
         $scope.selectedBenefitHashmap = {};
+        $scope.lifeInsurance = {
+          status: "No, I want to waive the life insurance option.",
+          options: [
+            "Yes, I want to select a life insurance.", 
+            "No, I want to waive the life insurance option."
+          ]
+        };
 
         employeeFamily.get({userId:employeeId}).$promise.then(function(response){
           _.each(response.family, function(member){
@@ -210,6 +217,7 @@ var employeeBenefitSignup = employeeControllers.controller(
             $scope.medicalBenefitGroup = groupObj;
             $scope.nonMedicalBenefitArray = nonMedicalArray;
           });
+
           employeeBenefits.enroll().get({userId:employeeId, companyId:companyId})
             .$promise.then(function(response){
               $scope.selectedBenefits = response.benefits;
@@ -293,6 +301,10 @@ var employeeBenefitSignup = employeeControllers.controller(
 
         $scope.isMedicalBenefitType = function(benefit){
           return benefit && benefit.benefit_type === 'Medical';
+        };
+
+        $scope.selectLifeInsurance = function(status){
+          return status.toLowerCase().indexOf('yes') > -1;
         };
 
         $scope.save = function(){

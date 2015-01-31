@@ -237,6 +237,7 @@ var addBenefitController = brokersControllers.controller(
           {name:'Individual plus children'},
           {name:'Individual plus Family'}],
       };
+
       $('#benefit_type_select').on('change', function(){
         var optionTypeInputs = $('#plan_option_table').find('input');
         _.each(optionTypeInputs, function(input){
@@ -244,16 +245,20 @@ var addBenefitController = brokersControllers.controller(
           $(input).on('blur', lostFocusNoBlankHandler);
         });
       });
+
       $scope.isTypeMedical = function(benefitType){
         return benefitType === 'Medical';
       };
 
-      $scope.benefitTypeSelected = function(benefitType){
-        return benefitType !== '';
+      $scope.isTypeLifeInsurance = function(benefitType){
+        return benefitType === 'Life Insurance';
       };
 
-      $scope.benefit_types = ['Medical', 'Dental', 'Vision'];
+      $scope.baseBenefitTypeSelected = function(benefitType){
+        return benefitType !== '' && benefitType !== 'Life Insurance';
+      };
 
+      $scope.benefit_types = ['Medical', 'Dental', 'Vision', 'Life Insurance'];
 
       $scope.viewBenefits = function(){
         $location.path('/broker/benefits/'+clientId);
@@ -661,52 +666,59 @@ var addBenefitController = brokersControllers.controller(
           });
       };
 
-      $scope.addBenefit = function(){
+      function saveLifeInsurancePlan(benefit){
+        return;
+      }
 
+      $scope.addBenefit = function(){
         if(!validateBenefitFields()){
           alert('There are errors associated with your data form. The data is not saved. If you do not know what the error is, please refresh the page and try again.');
         }
         else{
-          //save to data store
-          var requestList = [];
-          _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
-            requestList.push({
-              company: clientId,
-              benefit: {
-                benefit_type: $scope.benefit.benefit_type,
-                benefit_name: $scope.benefit.benefit_name,
-                benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
-                total_cost_per_period: optionTypeItem.total_cost_per_period,
-                employee_cost_per_period: optionTypeItem.employee_cost_per_period
-              }
-            });
-          });
-
-        //save the request list to the backend.
-
-          saveBenefitOptionPlan(requestList, 0, function(){
-            var apiObjectArray = [];
-            _.each($scope.benefitDetailArray, function(benefitTypeContent){
-              _.each(benefitTypeContent.policy_array, function(optionPair){
-                var apiObject = {
-                    value: optionPair.policy_value,
-                    key: optionPair.policy_key,
-                    type: benefitTypeContent.policy_type,
-                    benefit_plan_id: $scope.addedBenefit.benefits.benefit_plan.id};
-                apiObjectArray.push(apiObject);
+          if ($scope.benefit.benefit_type !== 'Life Insurance'){
+            //save to data store
+            var requestList = [];
+            _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
+              requestList.push({
+                company: clientId,
+                benefit: {
+                  benefit_type: $scope.benefit.benefit_type,
+                  benefit_name: $scope.benefit.benefit_name,
+                  benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
+                  total_cost_per_period: optionTypeItem.total_cost_per_period,
+                  employee_cost_per_period: optionTypeItem.employee_cost_per_period
+                }
               });
             });
 
-            saveToBackendSequential(apiObjectArray, 0);
-          },
-          function(response){
-            //Error condition,
-            var errorDetail = '';
-            if(response && response.data){
-              errorDetail = JSON.stringify(response.data);
-            }
-            alert('Error while saving Benefits! Details: ' + errorDetail);
-          });
+            //save the request list to the backend.
+            saveBenefitOptionPlan(requestList, 0, function(){
+              var apiObjectArray = [];
+              _.each($scope.benefitDetailArray, function(benefitTypeContent){
+                _.each(benefitTypeContent.policy_array, function(optionPair){
+                  var apiObject = {
+                      value: optionPair.policy_value,
+                      key: optionPair.policy_key,
+                      type: benefitTypeContent.policy_type,
+                      benefit_plan_id: $scope.addedBenefit.benefits.benefit_plan.id};
+                  apiObjectArray.push(apiObject);
+                });
+              });
+
+              saveToBackendSequential(apiObjectArray, 0);
+            },
+            function(response){
+              //Error condition,
+              var errorDetail = '';
+              if(response && response.data){
+                errorDetail = JSON.stringify(response.data);
+              }
+              alert('Error while saving Benefits! Details: ' + errorDetail);
+            });
+          }
+          else{
+            saveLifeInsurancePlan(benefit);
+          }
         }
       };
   }]);

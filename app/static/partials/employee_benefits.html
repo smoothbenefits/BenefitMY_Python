@@ -44,6 +44,29 @@
             </div>
         </div>
     </div>
+    <div class="panel">
+        <div class="panel-head">Life Insurance Plan</div>
+        <div class="panel-body">
+            <div class="select-box">
+                <select ng-model="lifeInsurance.status" 
+                        ng-required="true" 
+                        ng-options="option for option in lifeInsurance.options" 
+                        class="form-control">
+                </select>
+            </div>
+            <div class="row" ng-show="selectLifeInsurance(lifeInsurance.status)">
+                <div class="col-md-4">
+                    <div class="form-label">Enter insurance coverage</div>
+                    <div class="form-sub-text">
+                        Coverage number should be a number between ${{lifeInsurance.min}} and ${{lifeInsurance.max}}
+                    </div>
+                </div>
+                <div class="col-md-4 col-offset-1">
+                    $ <input type="number" placeholder="coverage" ng-model="lifeInsurance.coverage" show-dollar="1" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="form-holder">
         <div class="row">
             <div class="col-sm-6">
@@ -122,7 +145,6 @@
                         </table>
                     </td>
                 </tr>
-
             </tbody>
         </table>
     </div>
