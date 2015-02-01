@@ -51,9 +51,10 @@
                         <tbody>
                             <tr>
                                 <td>Coverage</td>
-                                <td>$ <input type="number" placeholder="Min coverage" show-dollar="1" value="{{option.min_coverage}}" /></td>
-                                <td>$ <input type="number" placeholder="Max coverage" show-dollar="1" value="{{option.max_coverage}}" /></td>
-                                <td>$ <input type="number" placeholder="Increments" show-dollar="1" value="{{option.increments}}" /></td>
+                                <td>$ <input type="number" placeholder="Min coverage" show-dollar="1" ng-model="{{benefit.min_coverage}}" required></td>
+                                <td>$ <input type="number" placeholder="Max coverage" show-dollar="1" ng-model="{{benefit.max_coverage}}" required></td>
+                                <td>$ <input type="number" placeholder="Increments" show-dollar="1" ng-model="{{benefit.increments}}" required></td>
+                                <span class="error" ng-show="form.input.$error.required">All three values are required!</span><br>
                             </tr>
                         </tbody>
                     </table>
