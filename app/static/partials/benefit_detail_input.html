@@ -30,7 +30,7 @@
                             </tr>
                         </thead>
                         <tbody id="details_container_table_body">
-                            <tr ng-repeat="policyKey in policyKeyArray" option-key="{{policyKey.position}}">
+                            <tr ng-repeat="policyKey in policyKeyArray | orderBy:position" option-key="{{policyKey.position}}">
                                 <td>{{policyKey.name}}</td>
                                 <td></td>
                             </tr>
