@@ -208,6 +208,14 @@ th .editable-container{
     margin-bottom:20px;
     padding:10px;
 }
-input.input-upper {
+.delete-cross{
+    font-size:12px;
+    font-weight: bold;
+    color:red;
+    margin-left:5px;
+}input.input-upper {
   text-transform: uppercase;
+}
+span.doc-buttons{
+    margin-left:5px;
 }

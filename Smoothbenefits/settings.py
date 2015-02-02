@@ -111,23 +111,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'bower_components'),
 )
 
-# Bower package manager set up
-# http://www.revsys.com/blog/2014/oct/21/ultimate-front-end-development-setup/
-# STATICFILES_FINDERS = (
-#     'django.contrib.staticfiles.finders.FileSystemFinder',
-#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#     'djangobower.finders.BowerFinder',
-# )
-
-# PROJECT_ROOT = os.path.abspath(
-#     os.path.join(os.path.dirname(__file__), ".."),
-# )
-
-# BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
-
-# BOWER_INSTALLED_APPS = (
-# )
-
 #Pipeline variables
 PIPELINE_CSS_COMPRESSOR = ''
 PIPELINE_JS_COMPRESSOR = ''
