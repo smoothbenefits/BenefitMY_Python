@@ -11,8 +11,7 @@ general:
 
 test:
   pre:
-    - npm install
-    - python manage.py collectstatic
+    - python manage.py collectstatic --noinput --no-post-process
   override:
     - python manage.py test
 
