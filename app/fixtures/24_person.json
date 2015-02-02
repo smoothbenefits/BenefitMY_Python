@@ -8,7 +8,7 @@
       "first_name": "John",
       "ssn": "759439758",
       "middle_name": null,
-      "company": null,
+      "company": 1,
       "last_name": "Hancock",
       "email": null
     },
@@ -42,7 +42,7 @@
       "middle_name": null,
       "company": null,
       "last_name": "Cowell",
-      "email": null
+      "email": "user3@benefitmy.com"
     },
     "model": "app.person",
     "pk": 3
@@ -58,7 +58,7 @@
       "middle_name": null,
       "company": null,
       "last_name": "Cowell",
-      "email": "user3@benefitmy.com"
+      "email": "christina.cowell@hotmail.com"
     },
     "model": "app.person",
     "pk": 4
