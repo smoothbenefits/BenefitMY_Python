@@ -11,7 +11,7 @@ general:
 
 test:
   pre:
-    - python manage.py collectstatic --noinput --no-post-process
+    - python manage.py collectstatic --noinput
   override:
     - python manage.py test
 
