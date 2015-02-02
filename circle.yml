@@ -10,6 +10,9 @@ general:
       - prod
 
 test:
+  pre:
+    - npm install
+    - python manage.py collectstatic
   override:
     - python manage.py test
 
