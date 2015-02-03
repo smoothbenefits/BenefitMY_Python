@@ -27,10 +27,9 @@
                 <tr ng-repeat="employee in employees">
                     <td><a ng-click="viewEmployeeDetail(employee)">{{employee.user.first_name}} {{employee.user.last_name}}</a></td>
                     <td>
-                        <span class="btn inline" ng-click="documentLink(employee.user.id, 1)">Offer Letter</span>
-                        <span class="btn inline" ng-click="documentLink(employee.user.id, 2)">Employee Agreement</span>
-                        <span class="btn inline" ng-click="documentLink(employee.user.id, 3)">Non-Disclosure Agreement</span>
-                        <span class="btn inline" ng-click="documentLink(employee.user.id, 4)">COBRA document</span>
+                        <span class="btn inline doc-buttons" ng-click="documentLink(employee.user.id, docType)" ng-repeat="docType in docTypeArray">
+                            {{docType.name}}
+                        </span>
                     </td>
                 </tr>
             </tbody>
