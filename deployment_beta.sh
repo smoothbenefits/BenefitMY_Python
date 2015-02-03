@@ -21,6 +21,8 @@ if test $MIGRATION_CHANGES -gt 0; then
   heroku scale worker=0 --app $APP_NAME
 fi
 
+echo $APP_NAME
+
 # deploy code changes (and implicitly restart the app and any running workers)
 git push heroku $CIRCLE_SHA1:master
 
