@@ -68,10 +68,13 @@ benefitmyService.factory('benefitDetailsRepository', [
       return $resource('/api/v1/benefit_details/plan=:planId/', {planId:'@id'});
     }]);
 
-benefitmyService.factory('addBenefitRepository', [
+benefitmyService.factory('benefitPlanRepository', [
     '$resource',
     function($resource){
-        return $resource('/api/v1/benefits/', {})
+        return {
+          group:$resource('/api/v1/benefits/', {}),
+          individual:$resource('/api/v1/benefits/:id', {id:'@id'})
+        }
     }]);
 
 
@@ -365,7 +368,7 @@ benefitmyService.factory('benefitDisplayService',
    'benefitDetailsRepository',
    function(benefitListRepository,
             benefitDetailsRepository){
-    return function(companyId, isEmployeeView, populatedFunc){
+    return function(companyId, showEmployeePremium, populatedFunc){
 
         var populateMedicalArray = function(array, benefitOption){
           var member = _.findWhere(array, {benefitId:benefitOption.benefit_plan.id});
@@ -426,7 +429,7 @@ benefitmyService.factory('benefitDisplayService',
 
             var optionColSpan = 3;
             var optionEmployeeLabel = 'Employee\n(per pay period)';
-            if(isEmployeeView){
+            if(showEmployeePremium){
               optionColSpan = 6;
               optionEmployeeLabel = '';
             }
@@ -434,7 +437,7 @@ benefitmyService.factory('benefitDisplayService',
             if(!_.contains(group.benefitNameArray, benefit.benefitName)){
 
               group.benefitNameArray.push({id:benefit.benefitId, name:benefit.benefitName});
-              if(!isEmployeeView){
+              if(!showEmployeePremium){
                 group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Total\n(per month)', colspan:optionColSpan});
               }
               group.benefitOptionMetaArray.push({id:benefit.benefitId, name: optionEmployeeLabel, colspan:optionColSpan});
@@ -461,7 +464,7 @@ benefitmyService.factory('benefitDisplayService',
                 totalCostValue = '$' + foundOption.totalCost;
                 employeeCostValue = '$' + foundOption.employeeCost;
               }
-              if(!isEmployeeView){
+              if(!showEmployeePremium){
                 groupOption.benefitCostArray.push({colspan:optionColSpan, value:totalCostValue});
               }
               groupOption.benefitCostArray.push({colspan:optionColSpan, value:employeeCostValue});
@@ -532,6 +535,7 @@ benefitmyService.factory('benefitDisplayService',
             {
               var sameNameBenefit = {};
               sameNameBenefit.name = benefitName;
+              sameNameBenefit.id = benefit.benefit_plan.id;
               sameNameBenefit.options = [];
               sameNameBenefit.options.push({
                   optionType:benefit.benefit_option_type,
