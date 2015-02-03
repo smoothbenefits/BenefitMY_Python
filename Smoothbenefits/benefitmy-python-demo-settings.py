@@ -114,6 +114,7 @@ STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 STATICFILES_DIRS = (
     # location of your application, should not be public web accessible
     os.path.join(os.path.join(BASE_DIR, 'app'), 'static'),
+    os.path.join(BASE_DIR, 'bower_components'),
 )
 
 #Pipeline variables
