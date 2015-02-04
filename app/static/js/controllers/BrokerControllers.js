@@ -63,7 +63,6 @@ var benefitsController = brokersControllers.controller(
      benefitPlanRepository){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
-<<<<<<< HEAD
         $scope.predicate = 'name';
         $scope.reverseOrder = function(){
           if($scope.predicate.indexOf('-') > -1){
@@ -74,9 +73,7 @@ var benefitsController = brokersControllers.controller(
           }
         };
 
-=======
         $scope.benefitDeletable = true;
->>>>>>> master
         benefitDisplayService($routeParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
           $scope.medicalBenefitGroup = groupObj;
           $scope.nonMedicalBenefitArray = nonMedicalArray;
