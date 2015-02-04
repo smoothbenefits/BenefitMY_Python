@@ -3,7 +3,7 @@
 general:
   branches:
     only:
-      - dev
+      - master
       - staging
       - demo
       - beta
