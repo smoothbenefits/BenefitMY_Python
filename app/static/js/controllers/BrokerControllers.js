@@ -51,14 +51,19 @@ var benefitsController = brokersControllers.controller(
    ['$scope',
     '$location',
     '$routeParams',
+    '$route',
     'benefitDisplayService',
+    'benefitPlanRepository',
     function benefitController(
      $scope,
      $location,
      $routeParams,
-     benefitDisplayService){
+     $route,
+     benefitDisplayService,
+     benefitPlanRepository){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
+<<<<<<< HEAD
         $scope.predicate = 'name';
         $scope.reverseOrder = function(){
           if($scope.predicate.indexOf('-') > -1){
@@ -69,6 +74,9 @@ var benefitsController = brokersControllers.controller(
           }
         };
 
+=======
+        $scope.benefitDeletable = true;
+>>>>>>> master
         benefitDisplayService($routeParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
           $scope.medicalBenefitGroup = groupObj;
           $scope.nonMedicalBenefitArray = nonMedicalArray;
@@ -82,6 +90,14 @@ var benefitsController = brokersControllers.controller(
         $scope.addBenefitLinkClicked = function(){
           $location.path('/broker/add_benefit/' + $routeParams.clientId);
         };
+
+        $scope.deleteBenefit = function(benefit_id){
+          if(benefit_id && confirm('Delete the benefit?')){
+            benefitPlanRepository.individual.delete({id:benefit_id}, function(){
+              $route.reload();
+            });
+          }
+        }
 }]);
 
 
@@ -229,13 +245,13 @@ var addBenefitController = brokersControllers.controller(
   ['$scope',
    '$location',
    '$routeParams',
-   'addBenefitRepository',
+   'benefitPlanRepository',
    'benefitDetailsRepository',
     function addBenefitController(
       $scope,
       $location,
       $routeParams,
-      addBenefitRepository,
+      benefitPlanRepository,
       benefitDetailsRepository){
 
       var clientId = $routeParams.clientId;
@@ -641,7 +657,7 @@ var addBenefitController = brokersControllers.controller(
             return;
           }
         }
-        addBenefitRepository.save(objArray[index], function(addedBenefit){
+        benefitPlanRepository.group.save(objArray[index], function(addedBenefit){
           $scope.addedBenefit = addedBenefit;
           saveBenefitOptionPlan(objArray, index+1, completed, error);
         }, function(errorResponse){

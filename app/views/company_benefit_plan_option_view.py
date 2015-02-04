@@ -11,6 +11,7 @@ from app.serializers.company_benefit_plan_option_serializer import (
     CompanyBenefitPlanOptionSerializer,
     CompanyBenefitPlanOptionPostSerializer,
     CompanyBenefitPlanSerializer)
+from app.serializers.benefit_plan_serializer import BenefitPlanSerializer
 
 TYPE = {"Medical": 1,
         "Dental": 2,
@@ -29,6 +30,16 @@ class CompanyBenefitPlanOptionView(APIView):
         plan_option = self.get_object(pk)
         serializer = CompanyBenefitPlanOptionSerializer(plan_option)
         return Response({'benefit': serializer.data})
+
+    def delete(self, request, pk, format=None):
+        benefit_plan = BenefitPlan.objects.get(pk=pk)
+        if benefit_plan:
+            benefit_plan_serialized = BenefitPlanSerializer(benefit_plan)
+            benefit_plan.delete()
+            return Response({'benefit': benefit_plan_serialized.data})
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 @api_view(['POST'])
