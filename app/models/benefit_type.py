@@ -2,8 +2,7 @@ from django.db import models
 
 TYPES = (('Medical', 'Medical'),
          ('Dental', 'Dental'),
-         ('Vision', 'Vision'),
-         ('Life', 'Life'))
+         ('Vision', 'Vision'))
 
 
 class BenefitType(models.Model):
