@@ -14,8 +14,7 @@ from app.serializers.company_benefit_plan_option_serializer import (
 
 TYPE = {"Medical": 1,
         "Dental": 2,
-        "Vision": 3,
-        "Life": 4}
+        "Vision": 3}
 
 
 class CompanyBenefitPlanOptionView(APIView):
