@@ -3,13 +3,15 @@
 general:
   branches:
     only:
-      - dev
+      - master
       - staging
       - demo
       - beta
       - prod
 
 test:
+  pre:
+    - python manage.py collectstatic --noinput
   override:
     - python manage.py test
 

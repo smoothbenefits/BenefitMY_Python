@@ -68,10 +68,13 @@ benefitmyService.factory('benefitDetailsRepository', [
       return $resource('/api/v1/benefit_details/plan=:planId/', {planId:'@id'});
     }]);
 
-benefitmyService.factory('addBenefitRepository', [
+benefitmyService.factory('benefitPlanRepository', [
     '$resource',
     function($resource){
-        return $resource('/api/v1/benefits/', {})
+        return {
+          group:$resource('/api/v1/benefits/', {}),
+          individual:$resource('/api/v1/benefits/:id', {id:'@id'})
+        }
     }]);
 
 
@@ -527,6 +530,7 @@ benefitmyService.factory('benefitDisplayService',
             {
               var sameNameBenefit = {};
               sameNameBenefit.name = benefitName;
+              sameNameBenefit.id = benefit.benefit_plan.id;
               sameNameBenefit.options = [];
               sameNameBenefit.options.push({
                   optionType:benefit.benefit_option_type,

@@ -51,14 +51,29 @@ var benefitsController = brokersControllers.controller(
    ['$scope',
     '$location',
     '$routeParams',
+    '$route',
     'benefitDisplayService',
+    'benefitPlanRepository',
     function benefitController(
      $scope,
      $location,
      $routeParams,
-     benefitDisplayService){
+     $route,
+     benefitDisplayService,
+     benefitPlanRepository){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
+        $scope.predicate = 'name';
+        $scope.reverseOrder = function(){
+          if($scope.predicate.indexOf('-') > -1){
+            $scope.predicate = $scope.predicate.substring(1);
+          }
+          else{
+            $scope.predicate = '-' + $scope.predicate;
+          }
+        };
+
+        $scope.benefitDeletable = true;
         benefitDisplayService($routeParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
           $scope.medicalBenefitGroup = groupObj;
           $scope.nonMedicalBenefitArray = nonMedicalArray;
@@ -72,6 +87,14 @@ var benefitsController = brokersControllers.controller(
         $scope.addBenefitLinkClicked = function(){
           $location.path('/broker/add_benefit/' + $routeParams.clientId);
         };
+
+        $scope.deleteBenefit = function(benefit_id){
+          if(benefit_id && confirm('Delete the benefit?')){
+            benefitPlanRepository.individual.delete({id:benefit_id}, function(){
+              $route.reload();
+            });
+          }
+        }
 }]);
 
 
@@ -219,13 +242,13 @@ var addBenefitController = brokersControllers.controller(
   ['$scope',
    '$location',
    '$routeParams',
-   'addBenefitRepository',
+   'benefitPlanRepository',
    'benefitDetailsRepository',
     function addBenefitController(
       $scope,
       $location,
       $routeParams,
-      addBenefitRepository,
+      benefitPlanRepository,
       benefitDetailsRepository){
 
       var clientId = $routeParams.clientId;
@@ -254,8 +277,8 @@ var addBenefitController = brokersControllers.controller(
         return benefitType === 'Life Insurance';
       };
 
-      $scope.baseBenefitTypeSelected = function(benefitType){
-        return benefitType !== '' && benefitType !== 'Life Insurance';
+      $scope.benefitTypeSelected = function(benefitType){
+        return benefitType !== '';
       };
 
       $scope.benefit_types = ['Medical', 'Dental', 'Vision', 'Life Insurance'];
@@ -595,8 +618,6 @@ var addBenefitController = brokersControllers.controller(
             $scope.noCostError = false;
           }
 
-
-
           //now we validate the details array
           if($scope.benefitDetailArray.length <= 0)
           {
@@ -633,7 +654,7 @@ var addBenefitController = brokersControllers.controller(
             return;
           }
         }
-        addBenefitRepository.save(objArray[index], function(addedBenefit){
+        benefitPlanRepository.group.save(objArray[index], function(addedBenefit){
           $scope.addedBenefit = addedBenefit;
           saveBenefitOptionPlan(objArray, index+1, completed, error);
         }, function(errorResponse){
