@@ -19,3 +19,17 @@ class DirectDepositView(APIView):
         dd = self._get_object(pk)
         serializer = DirectDepositSerializer(dd)
         return Response(serializer.data)
+
+    def post(self, request, pk, format=None):
+        request.DATA['user'] = pk
+
+        try:
+            dd = DirectDeposit.objects.get(user=pk)
+            return Response(status=status.HTTP_409_CONFLICT)
+        except DirectDeposit.DoesNotExist:
+            serializer = DirectDepositSerializer(data=request.DATA)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
