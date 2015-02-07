@@ -4,7 +4,7 @@
       "user": 3,
       "signature": 2,
       "worker_type": "Citizen",
-      "expiration_date": "2015-01-24",
+      "expiration_date": null,
       "uscis_number": null,
       "country": null,
       "i_94": null,
