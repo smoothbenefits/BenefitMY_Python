@@ -57,6 +57,7 @@ from app.views.benefit_details_view import (
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
+from app.views.direct_deposit_view import DirectDepositView
 
 PREFIX = "api/v1"
 
@@ -109,6 +110,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/documents/(?P<pk>[0-9]+)/?$' % PREFIX, DocumentView.as_view()),
     url(r'^%s/documents/(?P<pk>[0-9]+)/signature/?$' % PREFIX, DocumentSignatureView.as_view()),
 
+    url(r'^%s/direct_deposit/(?P<pk>[0-9]+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
     url(r'^%s/benefits/?$' % PREFIX, benefits),
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
