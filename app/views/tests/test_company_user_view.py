@@ -66,7 +66,7 @@ class CompanyUsersTestCase(TestCase):
         self.assertEqual(result['brokers_count'], 1)
 
         response = self.client.get(reverse('company_broker_count',
-                                   kwargs={'pk': 3}))
+                                   kwargs={'pk': 2}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
