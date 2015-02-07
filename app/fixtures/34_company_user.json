@@ -38,5 +38,25 @@
     },
     "model": "app.companyuser",
     "pk": 4
+  },
+  {
+    "fields": {
+      "user": 5,
+      "company_user_type": "broker",
+      "new_employee": true,
+      "company": 3
+    },
+    "model": "app.companyuser",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "user": 6,
+      "company_user_type": "admin",
+      "new_employee": true,
+      "company": 3
+    },
+    "model": "app.companyuser",
+    "pk": 3
   }
 ]
