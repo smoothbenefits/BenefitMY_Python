@@ -1,3 +1,0 @@
-from address_serializer import AddressSerializer
-from phone_serializer import PhoneSerializer
-from person_serializer import PersonSerializer
