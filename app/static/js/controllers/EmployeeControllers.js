@@ -411,6 +411,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
     $scope.document = {};
     var documentId = $routeParams.doc_id;
     var signatureUpdated = false;
+    $scope.signatureCreatedDate = moment().format('MMM Do YYYY');
     var userPromise = currentUser.get().$promise
       .then(function(response){
         $scope.employee_id = response.user.id;
@@ -437,6 +438,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
         var sigComponents = signature.split(separator);
         $scope.signatureImage = sigComponents[0] + encodeURIComponent(separator + sigComponents[1]);
         $scope.signaturePresent = true;
+        $scope.signatureCreatedDate = moment(document.signature.created_at).format('MMM Do YYYY');
       }
     });
 

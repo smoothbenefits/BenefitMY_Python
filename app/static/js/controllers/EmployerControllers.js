@@ -473,15 +473,12 @@ var employerViewLetter = employersController.controller('employerViewLetter',
     $scope.documentList = [];
     $scope.activeDocument = {};
     $scope.signaturePresent = false;
+    $scope.signatureCreatedDate = moment().format('MMM Do YYYY');
 
-    documentRepository.byUser.query({userId:employeeId})
-      .$promise.then(function(response){
-
-        var unsortedDocumentList = _.filter(
-            response,
-            function(doc){
-              return doc.document_type.name === $scope.documentType
-            });
+    documentRepository.byUser.query({userId:employeeId}).$promise.then(function(response){
+      var unsortedDocumentList = _.filter(response, function(doc){
+          return doc.document_type.name === $scope.documentType
+        });
         $scope.documentList = _.sortBy(unsortedDocumentList, function(elm){return elm.id;}).reverse();
       });
 
@@ -521,6 +518,7 @@ var employerViewLetter = employersController.controller('employerViewLetter',
       if (doc.signature && doc.signature.signature){
         $scope.signatureImage = doc.signature.signature;
         $scope.signaturePresent = true;
+        $scope.signatureCreatedDate = moment(doc.signature.created_at).format('MMM Do YYYY');
       }
     };
 
