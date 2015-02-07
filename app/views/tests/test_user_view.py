@@ -120,6 +120,7 @@ class UserViewTestCase(TestCase):
         # With proper authentication, the status code check below should be 401
         self.assertEqual(response.status_code, 200)
 
+    # what is this test about?
     def test_get_all_users(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.employee_user.get_username(), 'password':self.user_password})
         response=self.client.get(reverse('all_users'))
@@ -129,7 +130,7 @@ class UserViewTestCase(TestCase):
         all_user_data = json.loads(response.content)
         self.assertTrue('users' in all_user_data)
         all_users = all_user_data['users']
-        self.assertEqual(len(all_users), 4)
+        self.assertEqual(len(all_users), 6)
         for user in all_users:
             self.assertIn('id', user)
             self.assertIn('first_name', user)
