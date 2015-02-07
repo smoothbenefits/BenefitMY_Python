@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
-from app.models.user_company_life_insurance_plan import \
+from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
 
-from app.serializers.life_insurance_enrolled_serializer import \
+from life_insurance_enrolled_serializer import \
     LifeInsuranceEnrolledSerializer
 
 

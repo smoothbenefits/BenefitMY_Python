@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from app.models.life_insurance_enrolled import LifeInsuranceEnrolled
+from app.models.insurance.life_insurance_enrolled import LifeInsuranceEnrolled
 from person_serializer import PersonSerializer
 
 
