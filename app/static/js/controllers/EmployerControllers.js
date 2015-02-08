@@ -641,3 +641,40 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       $location.path('/admin/employee/' + compId);
     }
 }]);
+
+var employerBenefitsSelected = employersController.controller('employerBenefitsSelected', [
+  '$scope', 
+  '$location', 
+  '$routeParams', 
+  'companyRepository',
+  'employeeBenefitElections',
+  function($scope, 
+           $location, 
+           $routeParams, 
+           companyRepository,
+           employeeBenefitElections){
+    var company_id = $routeParams.company_id;
+    $scope.employeeList = [];
+
+    companyRepository.get({clientId: company_id}).$promise.then(function(response){
+        $scope.companyName = response.name;
+      });
+
+      var promise = employeeBenefitElections(company_id);
+      promise.then(function(employeeList){
+        $scope.clientCount = _.size(employeeList);
+        $scope.employeeList = employeeList;
+      }, function(errorResponse){
+        alert(errorResponse.content);
+      });
+
+
+    $scope.viewDetails = function(employeeId){
+        $location.path('/admin/employee_detail/' + company_id).search('eid', employeeId);
+    };
+
+    $scope.back = function(){
+      $location.path('/admin');
+    };
+}]);
+

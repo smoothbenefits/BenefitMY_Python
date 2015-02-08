@@ -3,6 +3,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ngResource',
     'ui.mask',
     'benefitmyService',
+    'benefitmyModels',
     'benefitmyApp.constants',
     'benefitmyApp.users.controllers',
     'benefitmyApp.brokers.controllers',
@@ -52,7 +53,7 @@ BenefitMyApp.config(['$routeProvider',
                 controller: 'addBenefitController'
             }).
             when('/broker/benefit/selected/:client_id', {
-                templateUrl: '/static/partials/broker_selected_benefits.html',
+                templateUrl: '/static/partials/selected_benefits_company.html',
                 controller: 'selectedBenefitsController'
             }).
             when('/broker/benefit/add_details/:client_id/:benefit_id', {
@@ -110,6 +111,10 @@ BenefitMyApp.config(['$routeProvider',
             when('/admin/employee_detail/:company_id', {
                 templateUrl: '/static/partials/employee_detail.html',
                 controller: 'employerViewEmployeeDetail'
+            }).
+            when('/admin/benefit/election/:company_id',{
+                templateUrl:'/static/partials/selected_benefits_company.html',
+                controller: 'employerBenefitsSelected'
             }).
             when('/employee',{
                 templateUrl: '/static/partials/employee_dashboard.html',
