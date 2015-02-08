@@ -95,9 +95,9 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    '$location', 
    '$routeParams', 
    'companyRepository', 
-   'companyEmployeeBenefits', 
+   'BenefitElectionService', 
    'employerWorkerRepository',
-    function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companyEmployeeBenefits, employerWorkerRepository){
+    function selectedBenefitsController($scope, $location, $routeParams, companyRepository, BenefitElectionService, employerWorkerRepository){
       var clientId = $routeParams.client_id;
       $scope.employeeList = [];
 
@@ -117,77 +117,47 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
           
           $scope.clientCount = $scope.employeeList.length;
 
-          companyEmployeeBenefits.selected.get({companyId: clientId})
-            .$promise.then(function(response){
-              var selectedBenefits = response.benefits;
-
-              _.each(selectedBenefits, function(benefit){
-                var displayBenefit = { enrolled: [] };
-
-                _.each(benefit.enrolleds, function(enrolled){
-                  if (enrolled.person.relationship === 'self'){
-                    displayBenefit.userid = enrolled.person.user;
-                    displayBenefit.name = enrolled.person.first_name + ' ' + enrolled.person.last_name;
-                    displayBenefit.email = enrolled.person.email;
-                  }
-                  var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: enrolled.person.relationship};
-                  displayBenefit.enrolled.push(displayEnrolled);
-                });
-
-                displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name;
-                displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
-                displayBenefit.lastUpdatedTime = new Date(benefit.updated_at).toDateString();
-                displayBenefit.pcp = benefit.pcp;
-
-                addBenefitPlanToSelectionList(displayBenefit);
-              });
-
-              _.each($scope.employeeList, function(employee){
+          BenefitElectionService.getBenefitElectionsByCompany(clientId, function(array){
+            addBenefitPlanToSelectionList(array);
+             _.each($scope.employeeList, function(employee){
                 if(!employee.benefits){
                   employee.updated = 'N/A';
                   employee.benefits = [];
                   employee.benefits.push({selectedPlanName:'No Selection', lastUpdatedTime:'N/A', enrolled:[{name:'N/A'}]});
                 }
-              });
-          });
-
-          companyEmployeeBenefits.waived.query({companyId: clientId})
-            .$promise.then(function(waivedResponse){
-              _.each(waivedResponse, function(waived){
-                var hasWaivedEmployee = _.find($scope.employeeList, function(employee){
-                  return employee.user.id === waived.user.id;
-                });
-                if(hasWaivedEmployee){
-                  if(!hasWaivedEmployee.waivedList){
-                    hasWaivedEmployee.waivedList = [];
-                  }
-                  hasWaivedEmployee.waivedList.push(waived.benefit_type.name);
-                  hasWaivedEmployee.updated = new Date(waived.created_at).toDateString();
-                }
-              });
-              _.each($scope.employeeList, function(employee){
                 if(!employee.waivedList){
                   employee.waivedList = [];
                   employee.waivedList.push('N/A');
                 }
               });
-            });
+          }, function(errorResponse){
+            alert(errorResponse.content);
+          });
 
         });
 
       
 
-      var addBenefitPlanToSelectionList = function(benefit){
-        var existEmployee = _.find($scope.employeeList, function(employee){
-          return employee.user.id === benefit.userid;
-        });
-        if (existEmployee){
-          if(!existEmployee.benefits){
-            existEmployee.benefits = [];
+      var addBenefitPlanToSelectionList = function(benefitSelectionArray){
+        _.each(benefitSelectionArray, function(benefitSelectionItem){
+          var existEmployee = _.find($scope.employeeList, function(employee){
+            return employee.user.id === benefitSelectionItem.userId;
+          });
+          if (existEmployee){
+            if(!existEmployee.benefits){
+              existEmployee.benefits = [];
+            }
+            existEmployee.benefits.push(benefitSelectionItem);
+            existEmployee.updated = benefitSelectionItem.lastUpdatedTime;
+            if(!existEmployee.waivedList){
+              existEmployee.waivedList = [];
+            }
+            if(benefitSelectionItem.waivedList && benefitSelectionItem.updated){
+              existEmployee.waivedList = benefitSelectionItem.waivedList;
+              existEmployee.updated = benefitSelectionItem.updated;
+            }
           }
-          existEmployee.benefits.push(benefit);
-          existEmployee.updated = benefit.lastUpdatedTime;
-        }
+        });
       };
 
       $scope.viewDetails = function(employeeId){
