@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from app.models.phone import Phone
+from hash_pk_serializer_base import HashPkSerializerBase
 
 
-class PhoneSerializer(serializers.ModelSerializer):
+class PhoneSerializer(HashPkSerializerBase):
 
     class Meta:
         model = Phone

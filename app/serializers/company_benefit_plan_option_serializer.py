@@ -4,8 +4,10 @@ from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
 from benefit_plan_serializer import (
     BenefitPlanSerializer,
     BenefitPlanPostSerializer)
+from company_serializer import ShallowCompanySerializer
+from hash_pk_serializer_base import HashPkSerializerBase
 
-class CompanyBenefitPlanOptionPostSerializer(serializers.ModelSerializer):
+class CompanyBenefitPlanOptionPostSerializer(HashPkSerializerBase):
 
     benefit_plan = BenefitPlanPostSerializer()
 
@@ -20,7 +22,10 @@ class CompanyBenefitPlanOptionPostSerializer(serializers.ModelSerializer):
                   'benefit_plan')
 
 
-class CompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
+class CompanyBenefitPlanOptionSerializer(HashPkSerializerBase):
+
+    company = ShallowCompanySerializer()
+    benefit_plan = BenefitPlanSerializer()
 
     class Meta:
 
@@ -31,10 +36,9 @@ class CompanyBenefitPlanOptionSerializer(serializers.ModelSerializer):
                   'benefit_option_type',
                   'company',
                   'benefit_plan')
-        depth = 2
 
 
-class CompanyBenefitPlanSerializer(serializers.ModelSerializer):
+class CompanyBenefitPlanSerializer(HashPkSerializerBase):
 
     benefit_plan = BenefitPlanSerializer()
 

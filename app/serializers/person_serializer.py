@@ -4,13 +4,17 @@ from app.models.person import Person
 from phone_serializer import PhoneSerializer
 from address_serializer import AddressSerializer
 from emergency_contact_serializer import EmergencyContactSerializer
+from hash_pk_serializer_base import HashPkSerializerBase
+from custom_fields.hash_field import HashField
 
 
-class PersonSerializer(serializers.ModelSerializer):
+class PersonSerializer(HashPkSerializerBase):
 
     addresses = AddressSerializer(many=True)
     phones = PhoneSerializer(many=True)
     emergency_contact = EmergencyContactSerializer(many=True)
+    company = HashField(source="company.id")
+    user = HashField(source="user.id")
 
     class Meta:
 
@@ -30,13 +34,15 @@ class PersonSerializer(serializers.ModelSerializer):
                   'emergency_contact')
 
 
-class PersonFullPostSerializer(serializers.ModelSerializer):
+class PersonFullPostSerializer(HashPkSerializerBase):
 
     addresses = AddressSerializer(many=True, allow_add_remove=True)
     phones = PhoneSerializer(many=True, allow_add_remove=True)
     emergency_contact = EmergencyContactSerializer(
         many=True,
         allow_add_remove=True)
+    company = HashField()
+    user = HashField()
 
     class Meta:
 
@@ -57,9 +63,10 @@ class PersonFullPostSerializer(serializers.ModelSerializer):
                   'emergency_contact')
 
 
-class PersonPostSerializer(serializers.ModelSerializer):
+class PersonPostSerializer(HashPkSerializerBase):
 
     phones = PhoneSerializer(many=True, allow_add_remove=True)
+    user = HashField()
 
     class Meta:
 
