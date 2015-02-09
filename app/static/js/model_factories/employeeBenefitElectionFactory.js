@@ -1,7 +1,7 @@
-var benefitmyModels = angular.module('benefitmyModels', ['benefitmyService']);
+var benefitmyModelFactories = angular.module('benefitmyModelFactories', ['benefitmyService']);
 
 
-benefitmyModels.factory('employeeBenefitElections',
+benefitmyModelFactories.factory('employeeBenefitElectionFactory',
     ['BenefitElectionService',
      'employerWorkerRepository',
      '$q',

@@ -647,12 +647,12 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   '$location', 
   '$routeParams', 
   'companyRepository',
-  'employeeBenefitElections',
+  'employeeBenefitElectionFactory',
   function($scope, 
            $location, 
            $routeParams, 
            companyRepository,
-           employeeBenefitElections){
+           employeeBenefitElectionFactory){
     var company_id = $routeParams.company_id;
     $scope.employeeList = [];
 
@@ -660,7 +660,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         $scope.companyName = response.name;
       });
 
-      var promise = employeeBenefitElections(company_id);
+      var promise = employeeBenefitElectionFactory(company_id);
       promise.then(function(employeeList){
         $scope.clientCount = _.size(employeeList);
         $scope.employeeList = employeeList;

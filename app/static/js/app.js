@@ -3,7 +3,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ngResource',
     'ui.mask',
     'benefitmyService',
-    'benefitmyModels',
+    'benefitmyModelFactories',
     'benefitmyApp.constants',
     'benefitmyApp.users.controllers',
     'benefitmyApp.brokers.controllers',
