@@ -1,14 +1,16 @@
 from rest_framework import serializers
-
 from app.models.company_user import CompanyUser
+from company_serializer import ShallowCompanySerializer
+from hash_pk_serializer_base import HashPkSerializerBase
 
 
-class UserCompanyRolesSerializer(serializers.ModelSerializer):
+class UserCompanyRolesSerializer(HashPkSerializerBase):
 
-    class Meta:
-        model = CompanyUser
-        fields = ('id',
-                  'company_user_type',
-                  'company', 
-                  'new_employee')
-        depth = 1
+	company = ShallowCompanySerializer()
+
+	class Meta:
+		model = CompanyUser
+		fields = ('id',
+			'company_user_type',
+			'company', 
+			'new_employee')
