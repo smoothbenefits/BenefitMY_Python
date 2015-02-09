@@ -16,7 +16,7 @@
             <div class='panel'>
                 <div class="panel-body">
                     <ul class="list-group">
-                        <li class="list-group-item" ng-if="field.value" ng-repeat="field in info.fields | orderBy: field.id">
+                        <li class="list-group-item" ng-repeat="field in info.fields | orderBy: field.id">
                             <h4 class="col-md-5"> {{field.display_name}}</h4>
                             <div class="col-md-7">
                                 {{field.value}}
