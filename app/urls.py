@@ -56,7 +56,6 @@ from app.views.benefit_details_view import (
     delete_benefit_details)
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
-from app.views.user_benefit_option_view import BrokerUserBenefitOptionView
 
 
 PREFIX = "api/v1"
@@ -92,8 +91,6 @@ urlpatterns = patterns('app.views',
     url(r'^%s/benefit_details/(?P<pk>[0-9]+)/?$' % PREFIX, delete_benefit_details),
     url(r'^%s/companies/(?P<pk>[0-9]+)/benefits/?$' % PREFIX,
         CompanyBenefitPlansView.as_view(), name='company_benefit_plan_api'),
-    url(r'^%s/brokers/(?P<broker_user_id>[0-9]+)/benefit_selections/?$' % PREFIX, 
-        BrokerUserBenefitOptionView.as_view(), name='use_benefit_selection_by_broker'),
     url(r'^%s/company_users/(?P<pk>[0-9]+)/benefits/?$' % PREFIX,
         CompanyUsersBenefitPlanOptionView.as_view()),
 
