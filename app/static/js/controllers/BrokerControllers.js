@@ -32,7 +32,7 @@ var clientsController = brokersControllers.controller('clientsController',
                 }
               });
             $scope.clientList = clientList;
-
+            $scope.clientCount = _.size(clientList);
           });
     };
 
