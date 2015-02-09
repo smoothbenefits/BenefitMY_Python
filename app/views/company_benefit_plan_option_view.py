@@ -74,7 +74,9 @@ def benefits(request):
             benefit_option_type=request.DATA["benefit"]["benefit_option_type"],
             total_cost_per_period=request.DATA["benefit"]["total_cost_per_period"],
             employee_cost_per_period=request.DATA["benefit"]["employee_cost_per_period"],
-            benefit_plan=b_plan)
+            benefit_plan=b_plan,
+            pcp_link = request.DATA["benefit"]["pcp_link"]
+            )
         company_benefit.save()
         serializer = CompanyBenefitPlanSerializer(company_benefit)
         return Response({'benefits': serializer.data})
@@ -86,6 +88,7 @@ def benefits(request):
             "benefit_option_type": request.DATA["benefit"]["benefit_option_type"],
             "total_cost_per_period": request.DATA["benefit"]["total_cost_per_period"],
             "employee_cost_per_period": request.DATA["benefit"]["employee_cost_per_period"],
+            "pcp_link": request.DATA["benefit"]["pcp_link"],
             "benefit_plan":
                 {
                     "name": request.DATA["benefit"]["benefit_name"],
