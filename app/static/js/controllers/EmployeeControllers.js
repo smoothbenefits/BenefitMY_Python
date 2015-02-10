@@ -734,7 +734,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
         alert('Please verify you have downloaded and read the entire W-4 form');
         return;
       }
-      if(!$scope.employee.dependent_count && $scope.employee.dependent_count != 0){
+      if(typeof($scope.employee.dependent_count) === 'undefined'){
         alert('Please enter the number of dependents');
         return;
       }
