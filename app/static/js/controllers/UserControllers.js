@@ -134,6 +134,7 @@ var settingsController = userControllers.controller('settingsController', ['$sco
           personInfoService.getPersonInfo($scope.curUser.id, function(basicInfo){
             if(basicInfo){
               $scope.person = basicInfo;
+              $scope.person.hasInfo = true;
             }
           })
         });

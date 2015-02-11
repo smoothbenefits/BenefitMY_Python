@@ -226,9 +226,10 @@ var addBenefitController = brokersControllers.controller(
         return _.findWhere($scope.benefitDetailArray, {policy_type_id: policyTypeId});
       };
 
-      var createInputElement = function(policyTypeId, optionKey, placeHolderText, inputType, showDollar, noBlurBlank){
+      var createInputElement = function(policyTypeId, optionKey, fieldValue, placeHolderText, inputType, showDollar){
           var valueInput = $(document.createElement('input'));
           valueInput.attr('type', inputType);
+          valueInput.attr('value', fieldValue);
           valueInput.attr('placeholder', placeHolderText);
           if(optionKey){
             valueInput.attr('key', optionKey);
@@ -241,13 +242,7 @@ var addBenefitController = brokersControllers.controller(
             valueInput.attr('show-dollar', showDollar);
           }
           valueInput.on('keypress', changeInputKeyPress);
-
-          if(noBlurBlank){
-            valueInput.on('blur', lostFocusNoBlankHandler)
-          }
-          else{
-            valueInput.on('blur', lostFocusHandler);
-          }
+          valueInput.on('blur', lostFocusNoBlankHandler)
 
           return valueInput;
       };
@@ -289,7 +284,7 @@ var addBenefitController = brokersControllers.controller(
           if(rowKey){
             var tableCellArray = $(row).children('td')
             var lastTableCell = tableCellArray[tableCellArray.length -1];
-            $(lastTableCell).append(createInputElement(policyTypeId, rowKey, 'Add option value', 'text', false, true));
+            $(lastTableCell).append(createInputElement(policyTypeId, rowKey, '', 'Add option value', 'text', false));
             $(lastTableCell).attr('policy-type-id', policyTypeId);
             var newTableCell = $(document.createElement('td'));
             $(row).append(newTableCell);
@@ -367,6 +362,7 @@ var addBenefitController = brokersControllers.controller(
           else{
             contentSpan.append(placeHolder);
           }
+          contentSpan.attr('placeholder', placeHolder);
           contentSpan.on('click', handleEditElement);
           saveTextContainer.append(contentSpan);
           if(showDelete){
@@ -445,13 +441,10 @@ var addBenefitController = brokersControllers.controller(
         tryCommitInputValue(inputElement);
       }
 
-      function lostFocusHandler(blurEvent){
-        tryCommitInputValue($(blurEvent.target));
-      };
-
       function handleEditElement (clickEvent){
         var container = $(clickEvent.target).parent().parent();
-        var placeHolderText = $(clickEvent.target).html();
+        var fieldValue = $(clickEvent.target).html();
+        var placeHolderText = $(clickEvent.target).attr('placeholder')
         var curPolicyTypeId = $(clickEvent.target).attr('policy-type-id');
         var showDollar = $(clickEvent.target).attr('show-dollar');
         var originalType = $(clickEvent.target).attr('original-type');
@@ -459,7 +452,7 @@ var addBenefitController = brokersControllers.controller(
           curPolicyTypeId = $scope.columnCount;
         }
         var curOptionKey = $(clickEvent.target).attr('key');
-        var typeTextInput = createInputElement(curPolicyTypeId, curOptionKey, placeHolderText, originalType, showDollar, false);
+        var typeTextInput = createInputElement(curPolicyTypeId, curOptionKey, fieldValue, placeHolderText, originalType, showDollar);
         container.empty();
         if(showDollar){
           container.append('$ ');
