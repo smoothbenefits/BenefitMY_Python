@@ -41,8 +41,6 @@ class PersonFullPostSerializer(HashPkSerializerBase):
     emergency_contact = EmergencyContactSerializer(
         many=True,
         allow_add_remove=True)
-    company = HashField()
-    user = HashField()
 
     class Meta:
 
@@ -66,7 +64,6 @@ class PersonFullPostSerializer(HashPkSerializerBase):
 class PersonPostSerializer(HashPkSerializerBase):
 
     phones = PhoneSerializer(many=True, allow_add_remove=True)
-    user = HashField()
 
     class Meta:
 

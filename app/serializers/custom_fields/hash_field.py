@@ -1,17 +1,17 @@
 from rest_framework import serializers
-from app.service.common_service import CommonService
+from app.service.hash_key_service import HashKeyService
 
 """ A custom serializer field that automatically
-	hash the field value based on the connical
+	hash the field value based on the canonical
 	method.
 """
 class HashField(serializers.Field):
 
 	def to_native(self, obj):
-		common_service = CommonService()
-		return common_service.encode_key(obj)
+		hash_key_service = HashKeyService()
+		return hash_key_service.encode_key(obj)
 
 	def from_native(self, data):
-		common_service = CommonService()
-		return common_service.decode_key(data)
+		hash_key_service = HashKeyService()
+		return hash_key_service.decode_key(data)
 
