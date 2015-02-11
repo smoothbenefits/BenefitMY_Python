@@ -75,7 +75,7 @@
                             name="first_name"
                             ng-model="person.first_name"
                             ng-required="true">
-                        <div class="form-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
+                        <div class="form-validation-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
                           <span ng-show="form.first_name.$error.required">First Name field is required</span>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                             name="last_name"
                             ng-model="person.last_name"
                             ng-required="true">
-                        <div class="form-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
+                        <div class="form-validation-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
                           <span ng-show="form.last_name.$error.required">Last Name field is required</span>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                             ng-required="true"
                             min="1900-01-01"
                             placeholder="yyyy-mm-dd">
-                        <div class="form-error" ng-show="form.birth_date.$dirty && form.birth_date.$invalid">
+                        <div class="form-validation-error" ng-show="form.birth_date.$dirty && form.birth_date.$invalid">
                             <span ng-show="form.birth_date.$error.required">Date of Birth field is required</span>
                             <span ng-show="form.birth_date.$invalid">Please enter a valid Date of Birth</span>
                         </div>
@@ -111,10 +111,9 @@
                         <input type="tel"
                             name="person_ssn"
                             ng-model="person.ssn"
-                            ng-required="true"
+                            ng-required="!person.hasInfo"
                             ui-mask="999-99-9999">
-                        <div class="form-error" ng-show="form.person_.$dirty && form.person_ssn.$invalid">
-                            <span ng-show="form.person_ssn.$error.required">SSN field is required</span>
+                        <div class="form-validation-error" ng-show="form.person_ssn.$dirty && form.person_ssn.$invalid">
                             <span ng-show="form.person_ssn.$invalid">Please enter a valid Social Security Number</span>
                         </div>
                     </div>
