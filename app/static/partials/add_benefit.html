@@ -39,30 +39,9 @@
                 </div>
             </div><!-- / .form-holder -->
 
-            <div class="row" ng-show="isTypeLifeInsurance(benefit.benefit_type)">
-                <div class="table-responsive table-holder">
-                    <table class="table table-striped benefit-table" id="plan_option_table">
-                        <thead>
-                            <th><div></div></th>
-                            <th><div>Minimum</div></th>
-                            <th><div>Maximum</div></th>
-                            <th><div>Increments</div></th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Coverage</td>
-                                <td>$ <input type="number" placeholder="Min coverage" show-dollar="1" ng-model="{{benefit.min_coverage}}" required></td>
-                                <td>$ <input type="number" placeholder="Max coverage" show-dollar="1" ng-model="{{benefit.max_coverage}}" required></td>
-                                <td>$ <input type="number" placeholder="Increments" show-dollar="1" ng-model="{{benefit.increments}}" required></td>
-                                <span class="error" ng-show="form.input.$error.required">All three values are required!</span><br>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
-            <div ng-show="baseBenefitTypeSelected(benefit.benefit_type)">
-                <div class="row">
+            <div ng-show="benefitTypeSelected(benefit.benefit_type)">
+                <div class="row" ng-hide="isTypeLifeInsurance(benefit.benefit_type)">
                     <div class="table-responsive table-holder">
                         <table class="table table-striped benefit-table" id="plan_option_table">
                             <thead>
@@ -79,6 +58,27 @@
                                     <td b-option="{{option.name}}" field-name="employee">
                                         $ <input type="number" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" />
                                     </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row" ng-show="isTypeInsurance(benefit.benefit_type)">
+                    <div class="table-responsive table-holder">
+                        <table class="table table-striped benefit-table" id="life_insurance_table">
+                            <thead>
+                                <th><div></div></th>
+                                <th><div>Minimum</div></th>
+                                <th><div>Maximum</div></th>
+                                <th><div>Increments</div></th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Coverage</td>
+                                    <td>$ <input type="number" placeholder="Min coverage" show-dollar="1" ng-model="{{benefit.min_coverage}}" required></td>
+                                    <td>$ <input type="number" placeholder="Max coverage" show-dollar="1" ng-model="{{benefit.max_coverage}}" required></td>
+                                    <td>$ <input type="number" placeholder="Increments" show-dollar="1" ng-model="{{benefit.increments}}" required></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -104,7 +104,7 @@
                                 </tr>
                             </thead>
                             <tbody id="details_container_table_body">
-                                <tr ng-repeat="policyKey in policyKeyArray | orderBy:position" option-key="{{policyKey.name}}">
+                                <tr ng-repeat="policyKey in policyKeyArray" option-key="{{policyKey.name}}">
                                     <td>{{policyKey.name}}</td>
                                     <td></td>
                                 </tr>
