@@ -73,6 +73,7 @@ var benefitsController = brokersControllers.controller(
           }
         };
 
+        $scope.benefitDeletable = true;
         benefitDisplayService($routeParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
           $scope.medicalBenefitGroup = groupObj;
           $scope.nonMedicalBenefitArray = nonMedicalArray;
