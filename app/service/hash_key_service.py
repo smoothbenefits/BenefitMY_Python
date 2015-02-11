@@ -3,15 +3,21 @@ from django.conf import settings
 
 ''' Provide non-domain-specific common services
 '''
-class CommonService(object):
+class HashKeyService(object):
+
+	''' Prefix for all hashed tokens '''
+	HASH_TOKEN_PREFIX = 'BMH'
+
+	''' Regex pattern to match hashed tokens'''
+	HASH_TOKEN_REGEX_PATTERN = r'BMH_[0-9]+_\w+'
 
 	''' produce a "encoded" version of the given key (any type), in the format of
 		original Id concatnated with its MD5 hash (and output to all HEX code for URL safety).
-		Also prefix with "BMH".
+		Also prefix with the HASH_TOKEN_PREFIX.
 	'''
 	def encode_key(self, key):
 		return "{0}_{1}_{2}".format(
-			"BMH", key, md5("{0}{1}".format(settings.HASH_KEY, key)).hexdigest())
+			self.HASH_TOKEN_PREFIX, key, md5("{0}{1}".format(settings.HASH_KEY, key)).hexdigest())
 
 
 	''' Validate the integrity of the encoded key and
@@ -23,7 +29,7 @@ class CommonService(object):
 		if (len(tokens) != 3):
 			return None
 
-		if (tokens[0] != 'BMH'):
+		if (tokens[0] != self.HASH_TOKEN_PREFIX):
 			return None
 
 		h = self.encode_key(tokens[1])
