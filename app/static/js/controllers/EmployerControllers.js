@@ -12,6 +12,7 @@ var employerHome = employersController.controller('employerHome',
                                                   'benefitListRepository',
                                                   'countRepository',
                                                   'documentTypeService',
+                                                  'BenefitElectionService',
   function employerHome($scope,
                         $location,
                         employerRepository,
@@ -21,7 +22,8 @@ var employerHome = employersController.controller('employerHome',
                         templateRepository,
                         benefitListRepository,
                         countRepository,
-                        documentTypeService){
+                        documentTypeService,
+                        BenefitElectionService){
 
     $scope.employeeCount = 0;
     $scope.brokerCount = 0;
@@ -74,6 +76,24 @@ var employerHome = employersController.controller('employerHome',
         });
     };
 
+    var getBenefitElectionCount = function(company){
+      var selectedEmployeeArray = [];
+      BenefitElectionService.getBenefitElectionsByCompany(company.id, 
+        function(benefitSelectionArray){
+          _.each(benefitSelectionArray, function(benefitItem){
+            var existingEmployee = _.find(selectedEmployeeArray, function(employee){
+              return employee.userId === selectedEmployeeArray.userId;
+            });
+            if(!existingEmployee){
+              selectedEmployeeArray.push(benefitItem);
+            }
+          });
+          $scope.benefitEnrollCount = _.size(selectedEmployeeArray);
+        }, function(error){
+
+        });
+    };
+
     var userPromise = currentUser.get()
       .$promise.then(function(response)
          {
@@ -98,6 +118,7 @@ var employerHome = employersController.controller('employerHome',
               getWorkerCount($scope.company);
               getBenefitCount($scope.company);
               getTemplateCount($scope.company);
+              getBenefitElectionCount($scope.company);
             });
           }
         });
@@ -131,6 +152,11 @@ var employerHome = employersController.controller('employerHome',
     $scope.templateClick = function(companyId, docType)
     {
        $location.search({type:docType.name}).path('/admin/generate_template/'+ companyId);
+    };
+
+    $scope.viewBenefitElection = function(companyId)
+    {
+      $location.path('/admin/benefit/election/'+companyId);
     }
   }
 ]);
@@ -613,3 +639,40 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       $location.path('/admin/employee/' + compId);
     }
 }]);
+
+var employerBenefitsSelected = employersController.controller('employerBenefitsSelected', [
+  '$scope', 
+  '$location', 
+  '$routeParams', 
+  'companyRepository',
+  'employeeBenefitElectionFactory',
+  function($scope, 
+           $location, 
+           $routeParams, 
+           companyRepository,
+           employeeBenefitElectionFactory){
+    var company_id = $routeParams.company_id;
+    $scope.employeeList = [];
+
+    companyRepository.get({clientId: company_id}).$promise.then(function(response){
+        $scope.companyName = response.name;
+      });
+
+      var promise = employeeBenefitElectionFactory(company_id);
+      promise.then(function(employeeList){
+        $scope.clientCount = _.size(employeeList);
+        $scope.employeeList = employeeList;
+      }, function(errorResponse){
+        alert(errorResponse.content);
+      });
+
+
+    $scope.viewDetails = function(employeeId){
+        $location.path('/admin/employee_detail/' + company_id).search('eid', employeeId);
+    };
+
+    $scope.back = function(){
+      $location.path('/admin');
+    };
+}]);
+
