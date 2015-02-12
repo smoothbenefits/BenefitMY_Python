@@ -8,7 +8,8 @@ class HashPkValidationMiddleware(object):
 	def process_request(self, request):
 		''' Would also need to decode anything from the request post data, if it is JSON
 		'''
-		if (request.method == 'POST' and request.META.get('CONTENT_TYPE').find('application/json') >= 0):
+		if ((request.method == 'POST' or request.method == 'PUT')
+				 and request.META.get('CONTENT_TYPE').find('application/json') >= 0):
 		
 			# find and decode all hashed keys from the post body
 			body = re.sub(HashKeyService.HASH_TOKEN_REGEX_PATTERN, lambda x: self._decode_value(x.group(0)), request.body)

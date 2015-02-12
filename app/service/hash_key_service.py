@@ -1,7 +1,7 @@
 from hashlib import md5
 from django.conf import settings
 
-''' Provide non-domain-specific common services
+''' Provides service to handle hash and unhash of keys
 '''
 class HashKeyService(object):
 
