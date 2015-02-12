@@ -411,6 +411,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
     $scope.document = {};
     var documentId = $routeParams.doc_id;
     var signatureUpdated = false;
+    $scope.signatureCreatedDate = moment().format('MMM Do YYYY');
     var userPromise = currentUser.get().$promise
       .then(function(response){
         $scope.employee_id = response.user.id;
@@ -437,6 +438,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
         var sigComponents = signature.split(separator);
         $scope.signatureImage = sigComponents[0] + encodeURIComponent(separator + sigComponents[1]);
         $scope.signaturePresent = true;
+        $scope.signatureCreatedDate = moment(document.signature.created_at).format('MMM Do YYYY');
       }
     });
 
@@ -622,10 +624,8 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 
     $('body').addClass('onboarding-page');
     var mapContract = function(viewObject, signature){
-      var expirationDate = moment(viewObject.auth_expiration);
       var contract = {
         'worker_type': viewObject.auth_type,
-        'expiration_date': expirationDate.format('YYYY-MM-DD'),
         'uscis_number': viewObject.authNumber,
         'i_94': viewObject.I94Id,
         'passport': viewObject.passportId,
@@ -635,6 +635,11 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
           'signature_type': 'work_auth'
         }
       };
+
+      if (viewObject.auth_expiration){
+        contract.expiration_date = moment(viewObject.auth_expiration).format('YYYY-MM-DD');
+      }
+
       return contract;
     };
 
@@ -729,7 +734,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
         alert('Please verify you have downloaded and read the entire W-4 form');
         return;
       }
-      if(!$scope.employee.dependent_count){
+      if(typeof($scope.employee.dependent_count) === 'undefined'){
         alert('Please enter the number of dependents');
         return;
       }

@@ -219,7 +219,8 @@ PIPELINE_JS = {
             'js/services/services.js',
             'js/pixel-admin.min.js',
             'js/jquery.scrollspy.js',
-            'js/moment.min.js',
+            'js/moment.min.js',            
+            'js/model_factories/employeeBenefitElectionFactory.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }

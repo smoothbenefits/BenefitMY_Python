@@ -102,6 +102,22 @@
                             <div style="clear:both"></div>
                         </li>
                     </ul>
+                    <h4 style="margin-top:40px;" ng-show="employee.i9"> I-9 Information</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="entry in employee.i9">
+                            <h4 class="col-md-5">{{entry.display_name}}</h4>
+                            <div class="col-md-7">{{entry.value}}</div>
+                            <div style="clear:both"></div>
+                        </li>
+                    </ul>
+                    <h4 style="margin-top:40px;" ng-show="employee.i9"> W4 Information</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="entry in employee.w4">
+                            <h4 class="col-md-5">{{entry.display_name}}</h4>
+                            <div class="col-md-7">{{entry.value}}</div>
+                            <div style="clear:both"></div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
