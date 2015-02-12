@@ -6,7 +6,6 @@ resource: user
 resource_url: /api/v1/fsa/#/
 description: >
   GET/POST/PUT/DELETE the fsa for an user,
-
 Note:
 1. For GET, # is the user id.  returns user fsa info 
 2. PUT/DELETE, # is the record id
@@ -16,7 +15,6 @@ Note:
 GET: /api/v1/fsa/1/
 
 sample_response: |
-
 {
     "id": 1, 
     "primary_amount_per_year": "2500.00", 
@@ -26,9 +24,6 @@ sample_response: |
     "created_at": null, 
     "updated_at": null
 }
-
-
-
 POST: /api/v1/fsa/3/
 
 sample_request: |
@@ -38,7 +33,6 @@ sample_request: |
     "user": 4, 
     "update_reason": "new enroll", 
 }
-
 sample_response: |
 HTTP 201 CREATED
 {
@@ -50,9 +44,6 @@ HTTP 201 CREATED
     "created_at": "2015-02-16T02:24:19.619Z", 
     "updated_at": "2015-02-16T02:24:19.619Z"
 }
-
-
-
 PUT: /api/v1/fsa/5/
 
 sample_request: |
@@ -62,7 +53,6 @@ sample_request: |
     "user": 4, 
     "update_reason": "new enroll"
 }
-
 sample_response: |
 HTTP 200 OK
 {
@@ -74,10 +64,6 @@ HTTP 200 OK
     "created_at": "2015-02-16T02:24:19.619Z", 
     "updated_at": "2015-02-16T02:29:28.208Z"
 }
-
-
-
 delete: /api/v1/fsa/5/
 sample_response: |
-
 HTTP 204 NO CONTENT
