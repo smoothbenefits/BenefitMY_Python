@@ -10,8 +10,12 @@ class FSA(models.Model):
     user = models.ForeignKey(User,
                              related_name="fsa")
     person = models.ForeignKey(Person,
-                               related_name="fsa")
+                               unique=True,
+                               related_name="fsa",
+                               blank=True,
+                               null=True)
 
+    update_reason = models.CharField(max_length=1024, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True,
                                       blank=True,
