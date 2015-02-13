@@ -2,10 +2,11 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser, User
+from view_test_base import ViewTestBase
 
 
 
-class UserViewTestCase(TestCase):
+class UserViewTestCase(TestCase, ViewTestBase):
 
     fixtures = ['24_person', 
                 '10_company', 
@@ -35,7 +36,7 @@ class UserViewTestCase(TestCase):
         user_data = json.loads(response.content)
         self.assertTrue('user' in user_data)
         cur_user = user_data['user']
-        self.assertTrue('id' in cur_user and cur_user['id'] == 1)
+        self.assertTrue('id' in cur_user and cur_user['id'] == self.normalize_key(1))
         self.assertTrue('first_name' in cur_user and cur_user['first_name'] == 'John')
         self.assertTrue('last_name' in cur_user and cur_user['last_name'] == 'Hancock')
         self.assertTrue('email' in cur_user and cur_user['email'] == 'user1@benefitmy.com')
@@ -53,7 +54,7 @@ class UserViewTestCase(TestCase):
         user_data = json.loads(response.content)
         self.assertTrue('user' in user_data)
         cur_user = user_data['user']
-        self.assertTrue('id' in cur_user and cur_user['id'] == 2)
+        self.assertTrue('id' in cur_user and cur_user['id'] == self.normalize_key(2))
         self.assertTrue('first_name' in cur_user and cur_user['first_name'] == 'Francis')
         self.assertTrue('last_name' in cur_user and cur_user['last_name'] == 'McLaurren')
         self.assertTrue('email' in cur_user and cur_user['email'] == 'user2@benefitmy.com')
@@ -71,7 +72,7 @@ class UserViewTestCase(TestCase):
         user_data = json.loads(response.content)
         self.assertTrue('user' in user_data)
         cur_user = user_data['user']
-        self.assertTrue('id' in cur_user and cur_user['id'] == 3)
+        self.assertTrue('id' in cur_user and cur_user['id'] == self.normalize_key(3))
         self.assertTrue('first_name' in cur_user and cur_user['first_name'] == 'Simon')
         self.assertTrue('last_name' in cur_user and cur_user['last_name'] == 'Cowell')
         self.assertTrue('email' in cur_user and cur_user['email'] == 'user3@benefitmy.com')
@@ -82,40 +83,40 @@ class UserViewTestCase(TestCase):
 
     def test_get_user_by_id_cur_user(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.employee_user.get_username(), 'password':self.user_password})
-        response=self.client.get(reverse('user_by_id', kwargs={'pk':3}))
+        response=self.client.get(reverse('user_by_id', kwargs={'pk':self.normalize_key(3)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.content, '')
         user_data = json.loads(response.content)
         self.assertTrue('user' in user_data)
         cur_user = user_data['user']
-        self.assertTrue('id' in cur_user and cur_user['id'] == 3)
+        self.assertTrue('id' in cur_user and cur_user['id'] == self.normalize_key(3))
         self.assertTrue('first_name' in cur_user and cur_user['first_name'] == 'Simon')
         self.assertTrue('last_name' in cur_user and cur_user['last_name'] == 'Cowell')
         self.assertTrue('email' in cur_user and cur_user['email'] == 'user3@benefitmy.com')
 
     def test_get_user_by_id_existing_user(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.employee_user.get_username(), 'password':self.user_password})
-        response=self.client.get(reverse('user_by_id', kwargs={'pk':1}))
+        response=self.client.get(reverse('user_by_id', kwargs={'pk':self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.content, '')
         user_data = json.loads(response.content)
         self.assertTrue('user' in user_data)
         cur_user = user_data['user']
-        self.assertTrue('id' in cur_user and cur_user['id'] == 1)
+        self.assertTrue('id' in cur_user and cur_user['id'] == self.normalize_key(1))
         self.assertTrue('first_name' in cur_user and cur_user['first_name'] == 'John')
         self.assertTrue('last_name' in cur_user and cur_user['last_name'] == 'Hancock')
         self.assertTrue('email' in cur_user and cur_user['email'] == 'user1@benefitmy.com')
 
     def test_get_user_by_id_nonexisting(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.broker_user.get_username(), 'password':self.user_password})
-        response=self.client.get(reverse('user_by_id', kwargs={'pk':5000}))
+        response=self.client.get(reverse('user_by_id', kwargs={'pk':self.normalize_key(5000)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 404)
 
     def test_get_user_by_id_not_logged(self):
-        response=self.client.get(reverse('user_by_id', kwargs={'pk':1}))
+        response=self.client.get(reverse('user_by_id', kwargs={'pk':self.normalize_key(1)}))
         self.assertIsNotNone(response)
         # With proper authentication, the status code check below should be 401
         self.assertEqual(response.status_code, 200)
@@ -145,7 +146,7 @@ class UserViewTestCase(TestCase):
 
     def test_get_user_family(self):
         response = self.client.get(reverse('user_family_api',
-                                           kwargs={'pk': 1}))
+                                           kwargs={'pk': self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
@@ -153,14 +154,14 @@ class UserViewTestCase(TestCase):
         self.assertEqual(type(result['family']), list)
         self.assertEqual(result['first_name'], 'John')
         self.assertEqual(result['last_name'], 'Hancock')
-        self.assertEqual(result['id'], 1)
+        self.assertEqual(result['id'], self.normalize_key(1))
         self.assertEqual(result['email'], 'user1@benefitmy.com')
-        self.assertEqual(result['family'][0]['id'], 1)
+        self.assertEqual(result['family'][0]['id'], self.normalize_key(1))
         self.assertEqual(result['family'][0]['relationship'], 'self')
         self.assertEqual(result['family'][0]['birth_date'], '1978-09-05')
 
         response = self.client.get(reverse('user_family_api',
-                                           kwargs={'pk': 3}))
+                                           kwargs={'pk': self.normalize_key(3)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
@@ -168,12 +169,12 @@ class UserViewTestCase(TestCase):
         self.assertEqual(type(result['family']), list)
         self.assertEqual(result['first_name'], 'Simon')
         self.assertEqual(result['last_name'], 'Cowell')
-        self.assertEqual(result['id'], 3)
+        self.assertEqual(result['id'], self.normalize_key(3))
         self.assertEqual(result['email'], 'user3@benefitmy.com')
-        self.assertEqual(result['family'][0]['id'], 4)
+        self.assertEqual(result['family'][0]['id'], self.normalize_key(4))
         self.assertEqual(result['family'][0]['relationship'], 'spouse')
         self.assertEqual(result['family'][0]['birth_date'], '1983-01-02')
-        self.assertEqual(result['family'][1]['id'], 3)
+        self.assertEqual(result['family'][1]['id'], self.normalize_key(3))
         self.assertEqual(result['family'][1]['relationship'], 'self')
         self.assertEqual(result['family'][1]['birth_date'], '1988-05-27')
 
@@ -211,7 +212,7 @@ class UserViewTestCase(TestCase):
                 'last_name':'lastvvfdvv5', 
                 'email':'user456@smoothbenefits.com'
                 },
-            'company': 1,
+            'company': self.normalize_key(1),
             'company_user_type': 'employee',
             'send_email': 'false',
             'create_docs': 'true',
@@ -236,7 +237,7 @@ class UserViewTestCase(TestCase):
                 'last_name':'lastvvfdvv5', 
                 'email':'user456@smoothbenefits.com'
                 },
-            'company': 1,
+            'company': self.normalize_key(1),
             'company_user_type': 'employee',
             'send_email': 'false',
             'create_docs': 'false'
@@ -274,7 +275,7 @@ class UserViewTestCase(TestCase):
                 'last_name':'lastvvfdvv5', 
                 'email':'user456@smoothbenefits.com'
                 },
-            'company': 1,
+            'company': self.normalize_key(1),
         }
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
         self.assertIsNotNone(response)
@@ -304,7 +305,7 @@ class UserViewTestCase(TestCase):
                 'last_name':'lastvvfdvv5', 
                 'email':'user3@benefitmy.com'
                 },
-            'company': 1,
+            'company': self.normalize_key(1),
             'company_user_type': 'employee',
         }
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
