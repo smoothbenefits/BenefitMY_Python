@@ -5,12 +5,14 @@ method: GET/POST/PUT/DELETE
 resource: user
 resource_url: /api/v1/direct_deposit/#/
 description: >
-  GET/POST/PUT/DELETE a direct_deposit for a user, `#` is the user id
+        GET: a direct_deposit for a user, `#` is the user id
+        POST: a direct_deposit for a user, `#` is useless
+        PUT/DELETE: a direct_deposit for a user, `#` is record ID
 
 Note:
 1. direct deposit is one to one map to the user, so we always use the user id here
 2. two bank accounts. first one is must, second one is optional.
-3. two method to specify the deposit amount, amount or percentage, just choose one
+3. two methods to specify the deposit amount, amount or percentage, just choose one
 
 
 GET: /api/v1/direct_deposit/1/
@@ -39,11 +41,6 @@ sample_response: |
 
 
 
-
-
-
-
-
 POST: /api/v1/direct_deposit/3/
 
 sample_request: |
@@ -61,7 +58,8 @@ sample_request: |
     "bank_name2": "Citi Bank", 
     "attachment2": "s3://ab12222222cdefdfg", 
     "amount2": "0.00", 
-    "percentage2": "60.00"
+    "percentage2": "60.00",
+    "user": 3
 }
 
 sample_response: |
@@ -130,9 +128,6 @@ sample_response: |
     "created_at": "2015-02-12T03:56:04.630Z", 
     "updated_at": "2015-02-12T03:58:09.911Z"
 }
-
-
-
 
 
 delete: /api/v1/direct_deposit/3/
