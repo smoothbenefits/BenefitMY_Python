@@ -7,9 +7,16 @@ from person_serializer import (
 
 
 from address_serializer import AddressSerializer
+from hash_pk_serializer_base import HashPkSerializerBase
 
+class ShallowCompanySerializer(HashPkSerializerBase):
+  class Meta:
 
-class CompanySerializer(serializers.ModelSerializer):
+        model = Company
+        fields = ('id',
+                  'name')
+
+class CompanySerializer(HashPkSerializerBase):
 
     addresses = AddressSerializer(many=True)
     contacts = PersonSerializer(many=True)
@@ -21,10 +28,8 @@ class CompanySerializer(serializers.ModelSerializer):
                   'name',
                   'contacts',
                   'addresses')
-        depth = 1
 
-
-class CompanyPostSerializer(serializers.ModelSerializer):
+class CompanyPostSerializer(HashPkSerializerBase):
 
     addresses = AddressSerializer(many=True, allow_add_remove=True)
     contacts = PersonPostSerializer(many=True, allow_add_remove=True)

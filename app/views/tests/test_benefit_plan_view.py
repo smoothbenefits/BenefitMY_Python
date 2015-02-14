@@ -1,15 +1,16 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from view_test_base import ViewTestBase
 import json
 
 
-class BenefitPlanTestCase(TestCase):
+class BenefitPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '10_company', '13_benefit_type']
 
     def test_get_document_type(self):
         response = self.client.get(reverse('benefit_plan_api',
-                                           kwargs={'pk': 1}))
+                                           kwargs={'pk': self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
@@ -21,7 +22,7 @@ class BenefitPlanTestCase(TestCase):
 
 
         response = self.client.get(reverse('benefit_plan_api',
-                                           kwargs={'pk': 3}))
+                                           kwargs={'pk': self.normalize_key(3)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
@@ -31,13 +32,13 @@ class BenefitPlanTestCase(TestCase):
         self.assertEqual(result['benefit']['benefit_plan']['name'], 'Blue Cross Blue Shield of Mass. HMO Blue')
 
 
-class CompanyBenefitPlanTestCase(TestCase):
+class CompanyBenefitPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '10_company', '13_benefit_type']
 
     def test_get_document_type(self):
         response = self.client.get(reverse('company_benefit_plan_api',
-                                           kwargs={'pk': 1}))
+                                           kwargs={'pk': self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)

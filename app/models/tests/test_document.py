@@ -17,5 +17,6 @@ class DemoTestCase(TestCase):
         self.assertEqual(newPlan.name, 'test')
 
     def test_get_a_plan(self):
-        plan = BenefitPlan.objects.get(pk=1)
+        newPlan = BenefitPlan.objects.get(name='test')
+        plan = BenefitPlan.objects.get(pk=newPlan.id)
         self.assertEqual(plan.benefit_type.name, 'Medical')

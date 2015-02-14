@@ -2,9 +2,9 @@ from rest_framework import serializers
 from app.models.user import User
 from app.models.person import Person
 from app.serializers.person_serializer import PersonSerializer
+from hash_pk_serializer_base import HashPkSerializerBase
 
-
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(HashPkSerializerBase):
     """ we only use person model first/last name
     """
     first_name = serializers.SerializerMethodField('get_first_name')
@@ -57,7 +57,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'email')
 
 
-class UserFamilySerializer(serializers.ModelSerializer):
+class UserFamilySerializer(HashPkSerializerBase):
 
     family = PersonSerializer(many=True)
 
