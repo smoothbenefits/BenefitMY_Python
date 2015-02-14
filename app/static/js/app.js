@@ -129,7 +129,7 @@ BenefitMyApp.config(['$routeProvider',
                 controller: 'employeeInfoController'
             }).
             when('/employee/info/edit', {
-                templateUrl: '/static/partials/emmployee_profile_edit.html',
+                templateUrl: '/static/partials/employee_profile_edit.html',
                 controller: 'employeeInfoController'
             }).
             when('/employee/family/:employee_id', {
