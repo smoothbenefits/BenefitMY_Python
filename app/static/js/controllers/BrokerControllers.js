@@ -32,7 +32,7 @@ var clientsController = brokersControllers.controller('clientsController',
                 }
               });
             $scope.clientList = clientList;
-
+            $scope.clientCount = _.size(clientList);
           });
     };
 
@@ -105,9 +105,14 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    '$location', 
    '$routeParams', 
    'companyRepository', 
-   'companyEmployeeBenefits', 
-   'employerWorkerRepository',
-    function selectedBenefitsController($scope, $location, $routeParams, companyRepository, companyEmployeeBenefits, employerWorkerRepository){
+   'employeeBenefitElectionFactory',
+   function selectedBenefitsController(
+    $scope, 
+    $location, 
+    $routeParams, 
+    companyRepository, 
+    employeeBenefitElectionFactory){
+
       var clientId = $routeParams.client_id;
       $scope.employeeList = [];
 
@@ -116,89 +121,15 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         $scope.companyName = response.name;
       });
 
-      employerWorkerRepository.get({companyId: clientId})
-        .$promise.then(function(users){
-          _.each(users.user_roles, function(compUser){
-            if(compUser.company_user_type === 'employee'){
-              compUser.name = compUser.user.last_name;
-              $scope.employeeList.push(compUser);
-            }
-          });
-          
-          $scope.clientCount = $scope.employeeList.length;
-
-          companyEmployeeBenefits.selected.get({companyId: clientId})
-            .$promise.then(function(response){
-              var selectedBenefits = response.benefits;
-
-              _.each(selectedBenefits, function(benefit){
-                var displayBenefit = { enrolled: [] };
-
-                _.each(benefit.enrolleds, function(enrolled){
-                  if (enrolled.person.relationship === 'self'){
-                    displayBenefit.userid = enrolled.person.user;
-                    displayBenefit.name = enrolled.person.first_name + ' ' + enrolled.person.last_name;
-                    displayBenefit.email = enrolled.person.email;
-                  }
-                  var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: enrolled.person.relationship};
-                  displayBenefit.enrolled.push(displayEnrolled);
-                });
-
-                displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name;
-                displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
-                displayBenefit.lastUpdatedTime = new Date(benefit.updated_at).toDateString();
-                displayBenefit.pcp = benefit.pcp;
-
-                addBenefitPlanToSelectionList(displayBenefit);
-              });
-
-              _.each($scope.employeeList, function(employee){
-                if(!employee.benefits){
-                  employee.updated = 'N/A';
-                  employee.benefits = [];
-                  employee.benefits.push({selectedPlanName:'No Selection', lastUpdatedTime:'N/A', enrolled:[{name:'N/A'}]});
-                }
-              });
-          });
-
-          companyEmployeeBenefits.waived.query({companyId: clientId})
-            .$promise.then(function(waivedResponse){
-              _.each(waivedResponse, function(waived){
-                var hasWaivedEmployee = _.find($scope.employeeList, function(employee){
-                  return employee.user.id === waived.user.id;
-                });
-                if(hasWaivedEmployee){
-                  if(!hasWaivedEmployee.waivedList){
-                    hasWaivedEmployee.waivedList = [];
-                  }
-                  hasWaivedEmployee.waivedList.push(waived.benefit_type.name);
-                  hasWaivedEmployee.updated = new Date(waived.created_at).toDateString();
-                }
-              });
-              _.each($scope.employeeList, function(employee){
-                if(!employee.waivedList){
-                  employee.waivedList = [];
-                  employee.waivedList.push('N/A');
-                }
-              });
-            });
-
-        });
+      var promise = employeeBenefitElectionFactory(clientId);
+      promise.then(function(employeeList){
+        $scope.clientCount = _.size(employeeList);
+        $scope.employeeList = employeeList;
+      }, function(errorResponse){
+        alert(errorResponse.content);
+      });
 
       
-
-      var addBenefitPlanToSelectionList = function(benefit){
-        var existEmployee = _.find($scope.employeeList, function(employee){
-          return employee.user.id === benefit.userid;
-        });
-        if (existEmployee){
-          if(!existEmployee.benefits){
-            existEmployee.benefits = [];
-          }
-          existEmployee.benefits.push(benefit);
-          existEmployee.updated = benefit.lastUpdatedTime;
-        }
-      };
 
       $scope.viewDetails = function(employeeId){
         $location.path('/broker/employee/' + employeeId).search('cid', clientId);
@@ -310,9 +241,10 @@ var addBenefitController = brokersControllers.controller(
         return _.findWhere($scope.benefitDetailArray, {policy_type_id: policyTypeId});
       };
 
-      var createInputElement = function(policyTypeId, optionKey, placeHolderText, inputType, showDollar, noBlurBlank){
+      var createInputElement = function(policyTypeId, optionKey, fieldValue, placeHolderText, inputType, showDollar){
           var valueInput = $(document.createElement('input'));
           valueInput.attr('type', inputType);
+          valueInput.attr('value', fieldValue);
           valueInput.attr('placeholder', placeHolderText);
           if(optionKey){
             valueInput.attr('key', optionKey);
@@ -325,13 +257,7 @@ var addBenefitController = brokersControllers.controller(
             valueInput.attr('show-dollar', showDollar);
           }
           valueInput.on('keypress', changeInputKeyPress);
-
-          if(noBlurBlank){
-            valueInput.on('blur', lostFocusNoBlankHandler)
-          }
-          else{
-            valueInput.on('blur', lostFocusHandler);
-          }
+          valueInput.on('blur', lostFocusNoBlankHandler)
 
           return valueInput;
       };
@@ -373,7 +299,7 @@ var addBenefitController = brokersControllers.controller(
           if(rowKey){
             var tableCellArray = $(row).children('td')
             var lastTableCell = tableCellArray[tableCellArray.length -1];
-            $(lastTableCell).append(createInputElement(policyTypeId, rowKey, 'Add option value', 'text', false, true));
+            $(lastTableCell).append(createInputElement(policyTypeId, rowKey, '', 'Add option value', 'text', false));
             $(lastTableCell).attr('policy-type-id', policyTypeId);
             var newTableCell = $(document.createElement('td'));
             $(row).append(newTableCell);
@@ -451,6 +377,7 @@ var addBenefitController = brokersControllers.controller(
           else{
             contentSpan.append(placeHolder);
           }
+          contentSpan.attr('placeholder', placeHolder);
           contentSpan.on('click', handleEditElement);
           saveTextContainer.append(contentSpan);
           if(showDelete){
@@ -529,13 +456,10 @@ var addBenefitController = brokersControllers.controller(
         tryCommitInputValue(inputElement);
       }
 
-      function lostFocusHandler(blurEvent){
-        tryCommitInputValue($(blurEvent.target));
-      };
-
       function handleEditElement (clickEvent){
         var container = $(clickEvent.target).parent().parent();
-        var placeHolderText = $(clickEvent.target).html();
+        var fieldValue = $(clickEvent.target).html();
+        var placeHolderText = $(clickEvent.target).attr('placeholder')
         var curPolicyTypeId = $(clickEvent.target).attr('policy-type-id');
         var showDollar = $(clickEvent.target).attr('show-dollar');
         var originalType = $(clickEvent.target).attr('original-type');
@@ -543,7 +467,7 @@ var addBenefitController = brokersControllers.controller(
           curPolicyTypeId = $scope.columnCount;
         }
         var curOptionKey = $(clickEvent.target).attr('key');
-        var typeTextInput = createInputElement(curPolicyTypeId, curOptionKey, placeHolderText, originalType, showDollar, false);
+        var typeTextInput = createInputElement(curPolicyTypeId, curOptionKey, fieldValue, placeHolderText, originalType, showDollar);
         container.empty();
         if(showDollar){
           container.append('$ ');

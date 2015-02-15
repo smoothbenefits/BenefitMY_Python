@@ -12,5 +12,12 @@
     },
     "model": "app.company",
     "pk": 2
+  },
+  {
+    "fields": {
+      "name": "telamon"
+    },
+    "model": "app.company",
+    "pk": 3
   }
 ]
