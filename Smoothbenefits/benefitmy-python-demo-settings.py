@@ -20,6 +20,9 @@ SITE_URL = "https://demo.benefitmy.com/"
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'x_qz2d46!0dmvk9(lb_c-z%r)&_jq8nl+-_fvsywp1+j+y5oj1'
 
+# Hash key serving as the "secret word" to help hashing
+HASH_KEY = '5e14ca8a-4a48-4cf7-aa3b-e207eb1a9adb'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -70,6 +73,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
 )
 
 ROOT_URLCONF = 'Smoothbenefits.urls'
