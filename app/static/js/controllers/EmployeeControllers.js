@@ -558,6 +558,10 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
       $location.path('/employee/info/edit').search('type', 'i9');
     };
 
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    }
+
   }]);
 
 
