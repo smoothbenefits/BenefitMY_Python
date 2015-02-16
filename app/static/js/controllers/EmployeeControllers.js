@@ -810,6 +810,7 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
     };
   }]);
 
+<<<<<<< HEAD
 var directDeposit = employeeControllers.controller('employeeDirectDepositController',
   ['$scope',
    '$routeParams',
@@ -878,6 +879,20 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
         });
       }
     };
+=======
+var directDeposit = employeeControllers.controller('employeeDirectDeposit',
+  ['$scope',
+   '$routeParams',
+   '$location',
+   function($scope, 
+            $routeParams,
+            $location){
+    var editMode = $routeParams.edit;
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    }
+>>>>>>> initial commit for BM-194 direct deposit front end
 
    }]);
 
