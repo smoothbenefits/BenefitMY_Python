@@ -732,7 +732,6 @@ var directDeposit = employeeControllers.controller('employeeDirectDeposit',
         }
       });
     });
-
    }]);
 
 var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$routeParams', function($scope, $routeParams){
