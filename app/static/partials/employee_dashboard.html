@@ -133,6 +133,33 @@
 </div><!-- / .content-body -->
 
 <div class="content-header">
+    <h1>My Payroll</h1>
+    <span class="general-info">View/edit your payroll information here</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="table-responsive table-holder table">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Payroll Information</span></th>
+                    <th><span>Action</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Direct deposit</td>
+                    <td>
+                        <a class="btn inline" ng-click="ViewDirectDeposit(false)"> View</a>
+                        <a class="btn inline" ng-click="ViewDirectDeposit(true)"> Edit</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div><!-- / .content-body -->
+
+<div class="content-header">
     <h1>My Documents</h1>
     <span class="general-info">You have total <b>{{documentCount}}</b> documents</span>
 </div><!-- / .content-header -->

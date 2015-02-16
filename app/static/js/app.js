@@ -154,6 +154,10 @@ BenefitMyApp.config(['$routeProvider',
                 templateUrl: '/static/partials/employee_onboard/employee_view_letter.html',
                 controller: 'employeeAcceptDocument'
             }).
+            when('/employee/direct_deposit', {
+                templateUrl: '/static/partials/employee_direct_deposit.html',
+                controller: 'employeeDirectDeposit'
+            }).
             when('/employee/onboard/index/:employee_id', {
                 templateUrl: '/static/partials/employee_onboard/index.html',
                 controller: 'onboardIndex'
