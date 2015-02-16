@@ -1,0 +1,42 @@
+[
+  {
+    "fields": {
+      "user": 1,
+      "routing": "123456",
+      "account": "54321",
+      "account_type": "Checking",
+      "bank_name": "Bank of America",
+      "attachment": "s3://abcdef"
+    },
+    "model": "app.userbankaccount",
+    "pk": 1
+  },
+
+  {
+    "fields": {
+      "user": 1,
+      "routing": "2121123456",
+      "account": "5432221211",
+      "account_type": "Saving",
+      "bank_name": "Bank of America",
+      "attachment": "s3://abcdfdsfddef"
+    },
+    "model": "app.userbankaccount",
+    "pk": 2
+  },
+
+  {
+    "fields": {
+      "user": 2,
+      "routing": "11112121123456",
+      "account": "543211221211",
+      "account_type": "Saving",
+      "bank_name": "Citi bank",
+      "attachment": "s3://abcfdsfdfdsfddef"
+    },
+    "model": "app.userbankaccount",
+    "pk": 3
+  }
+
+
+]
