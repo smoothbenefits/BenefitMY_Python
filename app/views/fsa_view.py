@@ -14,15 +14,17 @@ class FSAView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        fsa = FSA.objects.filter(user=pk)
-        serializer = FSASerializer(fsa, many=True)
+        try:
+            fsa = FSA.objects.get(user=pk)
+        except FSA.DoesNotExist:
+            raise Http404
+        serializer = FSASerializer(fsa)
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
         user_id = request.DATA['user']
-        person_id = request.DATA['person']
         try:
-            fsa = FSA.objects.get(user=user_id, person=person_id)
+            fsa = FSA.objects.get(user=user_id)
             return Response(status=status.HTTP_409_CONFLICT)
         except FSA.DoesNotExist:
             serializer = FSASerializer(data=request.DATA)

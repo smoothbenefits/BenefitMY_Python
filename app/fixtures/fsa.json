@@ -2,8 +2,8 @@
   {
     "fields": {
       "user": 1,
-      "person": 1,
-      "amount_per_year": "2500.00",
+      "primary_amount_per_year": "2500.00",
+      "dependent_amount_per_year": "2500.00",
       "update_reason": "new enroll"
     },
     "model": "app.fsa",
@@ -13,9 +13,9 @@
 
   {
     "fields": {
-      "user": 1,
-      "person": 2,
-      "amount_per_year": "2500.00",
+      "user": 2,
+      "primary_amount_per_year": "500.00",
+      "dependent_amount_per_year": "500.00", 
       "update_reason": "new enroll"
     },
     "model": "app.fsa",
@@ -25,9 +25,9 @@
 
   {
     "fields": {
-      "user": 2,
-      "person": 3,
-      "amount_per_year": "2500.00",
+      "user": 3,
+      "primary_amount_per_year": "500.00",
+      "dependent_amount_per_year": "500.00", 
       "update_reason": "new enroll"
     },
     "model": "app.fsa",
