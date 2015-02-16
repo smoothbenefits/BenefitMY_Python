@@ -2,48 +2,36 @@
   {
     "fields": {
       "user": 1,
-      "routing1": "123456",
-      "account1": "54321",
-      "account_type1": "Checking",
-      "bank_name1": "Bank of America",
-      "attachment1": "s3://abcdef",
-      "amount1": "9872.00",
-      "percentage1": "0",
-
-      "routing2": "122222",
-      "account2": "67890",
-      "account_type2": "Saving",
-      "bank_name2": "Citi Bank",
-      "attachment2": "s3://abcdefdfg",
-      "amount2": "1234.00",
-      "percentage2": "0"
+      "amount": "0",
+      "percentage": "40",
+      "bank_account": 1
     },
     "model": "app.directdeposit",
     "pk": 1
   },
 
-
-   {
+  {
     "fields": {
-      "user": 2,
-      "routing1": "123422256",
-      "account1": "54321222",
-      "account_type1": "Checking",
-      "bank_name1": "Bank of America",
-      "attachment1": "s3://abcdsddsdef",
-      "amount1": "0",
-      "percentage1": "40.0",
-
-      "routing2": "122211122",
-      "account2": "6789999990",
-      "account_type2": "Saving",
-      "bank_name2": "Citi Bank",
-      "attachment2": "s3://ab12222222cdefdfg",
-      "amount2": "0",
-      "percentage2": "60.0"
+      "user": 1,
+      "amount": "0",
+      "percentage": "60",
+      "bank_account": 2
     },
     "model": "app.directdeposit",
     "pk": 2
+  },
+
+  {
+    "fields": {
+      "user": 2,
+      "amount": "8210.00",
+      "percentage": "0",
+      "bank_account": 3
+    },
+    "model": "app.directdeposit",
+    "pk": 3
   }
+
+
 
 ]
