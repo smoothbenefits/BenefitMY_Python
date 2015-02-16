@@ -5,7 +5,7 @@ from rest_framework import status
 from django.db import transaction
 
 from app.models.direct_deposit import DirectDeposit
-from app.serializers.direct_deposit_serializer import DirectDepositSerializer
+from app.serializers.direct_deposit_serializer import (DirectDepositSerializer,DirectDepositPostSerializer)
 
 
 class DirectDepositView(APIView):
@@ -31,7 +31,7 @@ class DirectDepositView(APIView):
             dd = DirectDeposit.objects.get(user=request.DATA['user'])
             return Response(status=status.HTTP_409_CONFLICT)
         except DirectDeposit.DoesNotExist:
-            serializer = DirectDepositSerializer(data=request.DATA)
+            serializer = DirectDepositPostSerializer(data=request.DATA)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)

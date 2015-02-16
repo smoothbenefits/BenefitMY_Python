@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 from app.models.fsa import FSA
-from app.serializers.fsa_serializer import FSASerializer
+from app.serializers.fsa_serializer import (FSASerializer, FSAPostSerializer)
 
 
 class FSAView(APIView):
@@ -27,7 +27,7 @@ class FSAView(APIView):
             fsa = FSA.objects.get(user=user_id)
             return Response(status=status.HTTP_409_CONFLICT)
         except FSA.DoesNotExist:
-            serializer = FSASerializer(data=request.DATA)
+            serializer = FSAPostSerializer(data=request.DATA)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -45,3 +45,4 @@ class FSAView(APIView):
         f = self._get_object(pk)
         f.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
