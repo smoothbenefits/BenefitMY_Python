@@ -130,6 +130,10 @@ var employeeHome = employeeControllers.controller('employeeHome',
           || (!employeeFamilyLifeInsurancePlan.mainPlan)
           || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
       };
+
+     $scope.ViewDirectDeposit = function(editMode){
+      $location.path('/employee/direct_deposit').search('edit', editMode);
+     };
   }
 ]);
 
@@ -686,6 +690,20 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
     };
   }]);
 
+var directDeposit = employeeControllers.controller('employeeDirectDeposit',
+  ['$scope',
+   '$routeParams',
+   '$location',
+   function($scope, 
+            $routeParams,
+            $location){
+    var editMode = $routeParams.edit;
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    }
+
+   }]);
 
 var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$routeParams', function($scope, $routeParams){
   $scope.employee = {};
