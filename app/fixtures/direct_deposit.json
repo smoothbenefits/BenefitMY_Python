@@ -1,0 +1,37 @@
+[
+  {
+    "fields": {
+      "user": 1,
+      "amount": "0",
+      "percentage": "40",
+      "bank_account": 1
+    },
+    "model": "app.directdeposit",
+    "pk": 1
+  },
+
+  {
+    "fields": {
+      "user": 1,
+      "amount": "0",
+      "percentage": "60",
+      "bank_account": 2
+    },
+    "model": "app.directdeposit",
+    "pk": 2
+  },
+
+  {
+    "fields": {
+      "user": 2,
+      "amount": "8210.00",
+      "percentage": "0",
+      "bank_account": 3
+    },
+    "model": "app.directdeposit",
+    "pk": 3
+  }
+
+
+
+]

@@ -21,7 +21,7 @@ from benefit_details import BenefitDetails
 from benefit_policy_key import BenefitPolicyKey
 from benefit_policy_type import BenefitPolicyType
 from emergency_contact import EmergencyContact
-
+from direct_deposit import DirectDeposit
 
 
 
