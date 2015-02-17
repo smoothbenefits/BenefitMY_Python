@@ -2,4 +2,6 @@ from django.db import models
 
 class LifeInsurancePlan(models.Model):
     name = models.CharField(max_length=255)
-    doc = models.CharField(max_length=1024, blank=True, null=True) #doc link
+    attachment = models.CharField(max_length=2048, blank=True, null=True) #doc s3 link
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
