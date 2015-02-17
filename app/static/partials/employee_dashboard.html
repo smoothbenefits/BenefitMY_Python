@@ -68,12 +68,16 @@
                 <tr>
                     <th><span>Account Type</span></th>
                     <th><span>Elected Annual Amount (USD)</span></th>
+                    <th><span>Last Update</span></th>
+                    <th><span>Last Update Reason</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>Primary Account</td>
                     <td>${{fsaElection.primary_amount_per_year}}</td>
+                    <td rowspan="2" style="vertical-align:middle;">{{fsaElection.last_update_date_time}}</td>
+                    <td rowspan="2" style="vertical-align:middle;">{{fsaElection.update_reason}}</td>
                 </tr>
                 <tr>
                     <td>Dependent Care Account</td>

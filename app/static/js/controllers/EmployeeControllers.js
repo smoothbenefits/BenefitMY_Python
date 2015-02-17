@@ -149,6 +149,21 @@ var employeeBenefitSignup = employeeControllers.controller(
         $scope.selectedBenefitHashmap = {};
 
         // FSA election data
+        $scope.fsaUpdateReasons = [
+          { text: '<Not making updates>', value: 0 },
+          { text: 'New Enrollment or annual enrollment changes', value: 1 },
+          { text: 'Dependent care cost provider changes', value: 2 },
+          { text: 'Dependent satisfies or ceases to satisfy dependent eligibility requirements', value: 3 },
+          { text: 'Birth/Death of spouse or dependent, adoption or placement for adoption', value: 4 },
+          { text: 'Spouse\'s employment commenced/terminated', value: 5 },
+          { text: 'Status change from full-time to part-time or vice versa by employee or spouse', value: 6 },
+          { text: 'Eligibility or Ineligibility of Medicare/Medicaid', value: 7 },
+          { text: 'Change from salaried to hourly or vice versa', value: 8 },
+          { text: 'Marriage/Divorce/Legal Separation', value: 9 },
+          { text: 'Unpaid leave of absence by employee or spouse', value: 10 },
+          { text: 'Return from unpaid leave of absence by employee or spouse', value: 11 }
+        ];
+        $scope.selectedFsaUpdateReason = $scope.fsaUpdateReasons[0];
         FsaService.getFsaElectionForUser(employeeId, function(response) {
           $scope.fsaElection = response;
         });
@@ -312,6 +327,12 @@ var employeeBenefitSignup = employeeControllers.controller(
           return benefit && benefit.benefit_type === 'Medical';
         };
 
+        // Whether the user has selected a reason for updating 
+        // his/her FSA configuration.
+        $scope.isFsaUpdateReasonSelected = function() {
+          return $scope.selectedFsaUpdateReason.value > 0;
+        };
+
         $scope.save = function(){
           var saveRequest = {benefits:[],waived:[]};
           var invalidEnrollNumberList = [];
@@ -388,9 +409,13 @@ var employeeBenefitSignup = employeeControllers.controller(
               $scope.savedSuccess = false;
             });
 
-          FsaService.saveFsaElection($scope.fsaElection, null, function() {
-            $scope.savedSuccess = false;
-          });
+          // Save FSA selection if user specifies a reason
+          if ($scope.isFsaUpdateReasonSelected()){
+            $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
+            FsaService.saveFsaElection($scope.fsaElection, null, function() {
+              $scope.savedSuccess = false;
+            });
+          }
         }
       }]);
 
