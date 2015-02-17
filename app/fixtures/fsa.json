@@ -1,0 +1,36 @@
+[
+  {
+    "fields": {
+      "user": 1,
+      "primary_amount_per_year": "2500.00",
+      "dependent_amount_per_year": "2500.00",
+      "update_reason": "new enroll"
+    },
+    "model": "app.fsa",
+    "pk": 1
+  },
+
+
+  {
+    "fields": {
+      "user": 2,
+      "primary_amount_per_year": "500.00",
+      "dependent_amount_per_year": "500.00", 
+      "update_reason": "new enroll"
+    },
+    "model": "app.fsa",
+    "pk": 2
+  },
+
+
+  {
+    "fields": {
+      "user": 3,
+      "primary_amount_per_year": "500.00",
+      "dependent_amount_per_year": "500.00", 
+      "update_reason": "new enroll"
+    },
+    "model": "app.fsa",
+    "pk": 3
+  }
+]
