@@ -10,6 +10,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'userDocument',
      'EmployeePreDashboardValidationService',
      'EmployeeLetterSignatureValidationService',
+     'FsaService',
   function employeeHome($scope,
                         $location,
                         $routeParams,
@@ -18,7 +19,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
                         currentUser,
                         userDocument,
                         EmployeePreDashboardValidationService,
-                        EmployeeLetterSignatureValidationService){
+                        EmployeeLetterSignatureValidationService,
+                        FsaService){
 
     $('body').removeClass('onboarding-page');
     var curUserId;
@@ -106,6 +108,13 @@ var employeeHome = employeeControllers.controller('employeeHome',
      $scope.ViewDirectDeposit = function(editMode){
       $location.path('/employee/direct_deposit').search('edit', editMode);
      };
+
+    // FSA election data
+    curUserPromise.then(function(userId) {
+      FsaService.getFsaElectionForUser(userId, function(response) {
+        $scope.fsaElection = response;
+      });
+    });
   }
 ]);
 
@@ -119,6 +128,7 @@ var employeeBenefitSignup = employeeControllers.controller(
    'benefitListRepository',
    'employeeFamily',
    'benefitDisplayService',
+   'FsaService',
     function employeeBenefitController(
       $scope,
       $location,
@@ -127,7 +137,8 @@ var employeeBenefitSignup = employeeControllers.controller(
       employeeBenefits,
       benefitListRepository,
       employeeFamily,
-      benefitDisplayService){
+      benefitDisplayService,
+      FsaService){
 
         var medicalPlans = [];
         var dentalPlans = [];
@@ -139,6 +150,11 @@ var employeeBenefitSignup = employeeControllers.controller(
         $scope.family = [];
         $scope.selectedBenefits =[];
         $scope.selectedBenefitHashmap = {};
+
+        // FSA election data
+        FsaService.getFsaElectionForUser(employeeId, function(response) {
+          $scope.fsaElection = response;
+        });
 
         employeeFamily.get({userId:employeeId}).$promise.then(function(response){
           _.each(response.family, function(member){
@@ -374,6 +390,10 @@ var employeeBenefitSignup = employeeControllers.controller(
             }, function(){
               $scope.savedSuccess = false;
             });
+
+          FsaService.saveFsaElection($scope.fsaElection, null, function() {
+            $scope.savedSuccess = false;
+          });
         }
       }]);
 

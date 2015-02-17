@@ -2,6 +2,8 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ngRoute',
     'ngResource',
     'ui.mask',
+    'ui.utils.masks',
+    'benefitmyDomainModelFactories',
     'benefitmyService',
     'benefitmyModelFactories',
     'benefitmyApp.constants',
