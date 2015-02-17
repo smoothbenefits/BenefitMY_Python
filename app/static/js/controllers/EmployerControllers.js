@@ -646,11 +646,13 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   '$routeParams', 
   'companyRepository',
   'employeeBenefitElectionFactory',
+  'FsaService',
   function($scope, 
            $location, 
            $routeParams, 
            companyRepository,
-           employeeBenefitElectionFactory){
+           employeeBenefitElectionFactory,
+           FsaService){
     var company_id = $routeParams.company_id;
     $scope.employeeList = [];
 
@@ -660,6 +662,16 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
 
       var promise = employeeBenefitElectionFactory(company_id);
       promise.then(function(employeeList){
+
+        // TODO: Could/should FSA information be considered one kind of benefit election
+        //       and this logic of getting FSA data for an employee be moved into the
+        //       employeeBenefitElectionFactory? 
+        _.each(employeeList, function(employee) {
+          FsaService.getFsaElectionForUser(employee.user.id, function(response) {
+            employee.fsaElection = response;
+          });
+        });
+
         $scope.clientCount = _.size(employeeList);
         $scope.employeeList = employeeList;
       }, function(errorResponse){

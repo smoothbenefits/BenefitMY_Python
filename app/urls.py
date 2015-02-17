@@ -57,6 +57,9 @@ from app.views.benefit_details_view import (
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
+from app.views.direct_deposit_view import DirectDepositView
+from app.views.fsa_view import FSAView
+
 
 PREFIX = "api/v1"
 
@@ -109,6 +112,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/documents/(?P<pk>\w+)/?$' % PREFIX, DocumentView.as_view()),
     url(r'^%s/documents/(?P<pk>\w+)/signature/?$' % PREFIX, DocumentSignatureView.as_view()),
 
+    url(r'^%s/fsa/(?P<pk>\w+)/?$' % PREFIX, FSAView.as_view(), name='fsa_api'),
+    url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
     url(r'^%s/benefits/?$' % PREFIX, benefits),
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
