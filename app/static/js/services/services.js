@@ -578,7 +578,7 @@ benefitmyService.factory('benefitDisplayService',
         benefitListRepository.get({clientId:companyId})
             .$promise.then(function(response){
                 _.each(response.benefits, function(benefitOption){
-                    if(benefitOption.benefit_plan.benefit_type.id === 1){
+                    if(benefitOption.benefit_plan.benefit_type.name === 'Medical'){
                       medicalBenefitGroup.groupTitle = benefitOption.benefit_plan.benefit_type.name;
                       populateMedicalArray(medicalArray , benefitOption);
                     }
