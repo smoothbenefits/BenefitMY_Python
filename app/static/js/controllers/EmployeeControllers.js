@@ -45,7 +45,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
           }, function(){
             //we need to redirect to edit profile page
             $location.path('/settings').search({forced:1});
-          })
+          });
         }
         return $scope.employee_id;
       });
@@ -64,7 +64,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             if (role.company_user_type === 'employee'){
               curCompanyId = role.company.id;
             }
-          })
+          });
           return curCompanyId;
       }
     });
@@ -99,11 +99,15 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
      $scope.ViewDocument = function(documentId){
          $location.path('/employee/document/' + documentId);
-     }
+     };
 
      $scope.ViewInfo = function(type){
       $location.path('/employee/info').search('type', type);
-     }
+     };
+
+     $scope.EditInfo = function(type){
+      $location.path('/employee/info/edit').search('type', type);
+     };
 
     // FSA election data
     curUserPromise.then(function(userId) {
@@ -111,7 +115,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
         $scope.fsaElection = response;
       });
     });
-
   }
 ]);
 
@@ -237,7 +240,7 @@ var employeeBenefitSignup = employeeControllers.controller(
               benefitListRepository.get({clientId:companyId})
               .$promise.then(function(response){
                 _.each(response.benefits, function(availBenefit){
-                  var benefitFamilyPlan = {benefit:availBenefit};
+                  var benefitFamilyPlan = { 'benefit': availBenefit};
                   var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
                     return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
                   }));
@@ -506,6 +509,16 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
     $scope.info = { type: $routeParams.type, type_display: infoObject.display_name };
     $scope.person = { role: 'Employee' };
 
+    if ($routeParams.type === 'i9'){
+      $scope.isUpdateW4 = false;
+      $scope.isUpdateI9 = true;
+    }
+
+    if ($routeParams.type === 'w4'){
+      $scope.isUpdateW4 = true;
+      $scope.isUpdateI9 = false;
+    }
+
     var userPromise = currentUser.get().$promise.then(function(response){
       $scope.person.first_name = response.user.first_name;
       $scope.person.last_name = response.user.last_name;
@@ -555,7 +568,20 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
 
     $scope.backToDashboard = function(){
       $location.path('/employee');
+    };
+
+    $scope.editW4 = function(){
+      $location.path('/employee/info/edit').search('type', 'w4');
+    };
+
+    $scope.editI9 = function(){
+      $location.path('/employee/info/edit').search('type', 'i9');
+    };
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
     }
+
   }]);
 
 
@@ -683,7 +709,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       $scope.employee.downloadI9 = !$scope.employee.downloadI9;
     };
 
-    $scope.signDocument = function(){
+    $scope.signDocument = function(redirectUrl){
       if(!signatureUpdated){
         alert('Please sign your name on the signature pad');
       }
@@ -702,7 +728,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
             alert('Failed to add employment information');
           });
       }
-    }
+    };
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
