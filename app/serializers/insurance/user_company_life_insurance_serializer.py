@@ -8,7 +8,7 @@ from life_insurance_beneficiary_serializer import \
 
 
 class UserCompanyLifeInsuranceSerializer(serializers.ModelSerializer):
-    life_insurance_enrolleds = LifeInsuranceBeneficiarySerializer(many=True)
+    life_insurance_beneficiary = LifeInsuranceBeneficiarySerializer(many=True)
 
     class Meta:
         model = UserCompanyLifeInsurancePlan
