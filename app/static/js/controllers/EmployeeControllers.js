@@ -689,14 +689,44 @@ var directDeposit = employeeControllers.controller('employeeDirectDeposit',
   ['$scope',
    '$routeParams',
    '$location',
+   'currentUser',
+   'employeeDirectDeposit',
    function($scope, 
             $routeParams,
-            $location){
-    var editMode = $routeParams.edit;
+            $location,
+            currentUser,
+            employeeDirectDeposit){
+    $scope.editMode = $routeParams.edit;
+
+    $scope.enableEditing = function(){
+      $scope.editMode = true;
+    };
 
     $scope.backToDashboard = function(){
       $location.path('/employee');
-    }
+    };
+
+    $scope.person = { role: 'Employee' };
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      $scope.person.first_name = response.user.first_name;
+      $scope.person.last_name = response.user.last_name;
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      employeeDirectDeposit.getByEmployeeId.get({employee_id: userId}).$promise.then(function(response){
+        $scope.direct_deposit = {
+          person: $scope.person,
+          
+        };
+      }, function(error){
+        if (error.status === 404){
+          $scope.hasDirectDeposit = false;
+          $scope.enableEditing();
+        }
+      });
+    });
 
    }]);
 
