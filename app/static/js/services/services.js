@@ -101,6 +101,13 @@ benefitmyService.factory('employeeBenefits',
     };
   }]);
 
+benefitmyService.factory('employeeDirectDeposit', ['$resource',
+  function($resource){
+    return {
+      getByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: 'employee_id'})
+    };
+  }]);
+
 benefitmyService.factory('employerWorkerRepository', ['$resource',
   function($resource){
     return $resource('/api/v1/companies/:companyId/users',
