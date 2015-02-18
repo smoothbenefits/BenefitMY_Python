@@ -23,7 +23,7 @@ from benefit_policy_type import BenefitPolicyType
 from emergency_contact import EmergencyContact
 
 from insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
-from insurance.life_insurance_enrolled import LifeInsuranceEnrolled
+from insurance.life_insurance_beneficiary import LifeInsuranceBeneficiary
 from insurance.user_company_life_insurance_plan import UserCompanyLifeInsurancePlan
 from insurance.life_insurance_plan import LifeInsurancePlan
 

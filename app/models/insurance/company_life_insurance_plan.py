@@ -1,5 +1,5 @@
 from django.db import models
-from company import Company
+from ..company import Company
 from life_insurance_plan import LifeInsurancePlan
 
 S = ["individual",
@@ -24,5 +24,5 @@ class CompanyLifeInsurancePlan(models.Model):
                                             related_name="company_life_insurance",
                                             blank=True,
                                             null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)

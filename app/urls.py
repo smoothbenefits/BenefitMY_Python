@@ -54,6 +54,14 @@ from app.views.signature_view import SignatureView
 from app.views.benefit_details_view import (
     BenefitDetailsView,
     delete_benefit_details)
+
+from app.views.insurance.company_life_insurance_plan_view import \
+    CompanyLifeInsurancePlanView
+
+from user_company_life_insurance_plan_view import (
+    UserCompanyLifeInsuranceView,
+    CompanyUsersLifeInsuranceView)
+
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
@@ -115,6 +123,17 @@ urlpatterns = patterns('app.views',
     url(r'^%s/documents/?$' % PREFIX, documents),
 
     url(r'^%s/users/settings/?$' % PREFIX, SettingView.as_view()),
+
+
+    url(r'^%s/users/(?P<pk>[0-9]+)/life_insurance/?$' % PREFIX,
+        UserCompanyLifeInsuranceView.as_view(), name='user_life_insurance_api'),
+
+    url(r'^%s/company_users/(?P<pk>[0-9]+)/life_insurance/?$' % PREFIX,
+        CompanyUsersLifeInsuranceView.as_view(), name='company_users_life_insurance_api'),
+
+    url(r'^%s/company/(?P<pk>[0-9]+)/life_insurance_plan/?$' % PREFIX,
+        CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
+
 
 
 

@@ -11,7 +11,7 @@ from app.serializers.insurance.user_company_life_insurance_serializer import (
 from app.models.company_user import CompanyUser
 
 
-class UserCompanyBenefitPlanOptionView(APIView):
+class UserCompanyLifeInsuranceView(APIView):
     """ single employee benefit """
     def _get_object(self, pk):
         try:

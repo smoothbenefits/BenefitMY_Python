@@ -2,7 +2,7 @@ from django.db import models
 from company_life_insurance_plan import CompanyLifeInsurancePlan
 
 from django.contrib.auth.models import User
-from person import Person
+from ..person import Person
 
 
 class UserCompanyLifeInsurancePlan(models.Model):
