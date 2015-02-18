@@ -839,7 +839,6 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
       $scope.direct_deposit.bank_accounts.splice(index, 1);
     };
 
-<<<<<<< HEAD
     $scope.addBankAccount = function(){
       $scope.direct_deposit.bank_accounts.push({ account_type: $scope.bankAccountTypes[0]});
     };
