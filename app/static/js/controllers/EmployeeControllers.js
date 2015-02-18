@@ -852,6 +852,20 @@ var directDeposit = employeeControllers.controller('employeeDirectDeposit',
         }
       });
     });
+
+    userPromise.then(function(userId){
+      employeeDirectDeposit.getByEmployeeId.get({employee_id: userId}).$promise.then(function(response){
+        $scope.direct_deposit = {
+          person: $scope.person,
+          
+        };
+      }, function(error){
+        if (error.status === 404){
+          $scope.hasDirectDeposit = false;
+          $scope.enableEditing();
+        }
+      });
+    });
    }]);
 
 var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$stateParams', function($scope, $stateParams){
