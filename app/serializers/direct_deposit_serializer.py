@@ -8,6 +8,7 @@ from user_bank_account_serializer import UserBankAccountSerializer
 class DirectDepositSerializer(HashPkSerializerBase):
 
     user = HashField(source="user.id")
+    bank_account = UserBankAccountSerializer()
 
     class Meta:
         model = DirectDeposit
