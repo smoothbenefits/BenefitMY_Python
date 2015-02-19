@@ -58,7 +58,7 @@ from app.views.benefit_details_view import (
 from app.views.insurance.company_life_insurance_plan_view import \
     CompanyLifeInsurancePlanView
 
-from user_company_life_insurance_plan_view import (
+from app.views.insurance.user_company_life_insurance_plan_view import (
     UserCompanyLifeInsuranceView,
     CompanyUsersLifeInsuranceView)
 
