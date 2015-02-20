@@ -17,7 +17,7 @@ class LifeInsurancePlanView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        plans = LifeInsurancePlan.objects.filter(broker=pk)
+        plans = LifeInsurancePlan.objects.filter(user=pk)
         serializer = LifeInsurancePlanSerializer(plans, many=True)
         return Response(serializer.data)
 

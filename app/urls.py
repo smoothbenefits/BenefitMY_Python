@@ -61,6 +61,7 @@ from app.views.insurance.company_life_insurance_plan_view import \
 from app.views.insurance.user_company_life_insurance_plan_view import (
     UserCompanyLifeInsuranceView,
     CompanyUsersLifeInsuranceView)
+from app.views.insurance.life_insurance_plan_view import LifeInsurancePlanView
 
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
@@ -123,6 +124,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/documents/?$' % PREFIX, documents),
 
     url(r'^%s/users/settings/?$' % PREFIX, SettingView.as_view()),
+
+    url(r'^%s/brokers/(?P<pk>[0-9]+)/life_insurance_plan/?$' % PREFIX,
+        LifeInsurancePlanView.as_view(), name='broker_life_insurance_api'),
 
 
     url(r'^%s/users/(?P<pk>[0-9]+)/life_insurance/?$' % PREFIX,
