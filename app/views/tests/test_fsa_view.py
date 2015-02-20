@@ -39,7 +39,7 @@ class FsaTestCase(TestCase, ViewTestBase):
                                               kwargs={'pk': self.normalize_key(1)}))
 
         self.assertEqual(response.status_code, 204)
-        response = self.client.get(reverse('direct_deposit_api',
+        response = self.client.get(reverse('fsa_api',
                                            kwargs={'pk': self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 404)

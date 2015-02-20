@@ -5,16 +5,12 @@ from rest_framework import status
 from django.db import transaction
 
 from app.models.direct_deposit import DirectDeposit
-from app.serializers.direct_deposit_serializer import (DirectDepositSerializer,DirectDepositPostSerializer)
+from app.serializers.direct_deposit_serializer import (
+    DirectDepositSerializer,
+    DirectDepositPostSerializer)
 
 
 class DirectDepositView(APIView):
-    def _get_user(self, pk):
-        try:
-            return DirectDeposit.objects.get(user=pk)
-        except DirectDeposit.DoesNotExist:
-            raise Http404
-
     def _get_object(self, pk):
         try:
             return DirectDeposit.objects.get(pk=pk)
@@ -22,20 +18,16 @@ class DirectDepositView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        dd = self._get_user(pk)
-        serializer = DirectDepositSerializer(dd)
+        dd = DirectDeposit.objects.filter(user=pk)
+        serializer = DirectDepositSerializer(dd, many=True)
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
-        try:
-            dd = DirectDeposit.objects.get(user=request.DATA['user'])
-            return Response(status=status.HTTP_409_CONFLICT)
-        except DirectDeposit.DoesNotExist:
-            serializer = DirectDepositPostSerializer(data=request.DATA)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = DirectDepositPostSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, format=None):
         dd = self._get_object(pk)

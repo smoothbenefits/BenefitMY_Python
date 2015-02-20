@@ -23,6 +23,6 @@ from benefit_policy_type import BenefitPolicyType
 from emergency_contact import EmergencyContact
 from direct_deposit import DirectDeposit
 from fsa import FSA
-
+from user_bank_account import UserBankAccount
 
 
