@@ -10,43 +10,86 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="table-responsive table-holder">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Name</span></th>
-                    <th width="300"><span>Selected Plan</span></th>
-                    <th width="250"><span>Enrolled Member</span></th>
-                    <th width="150"><span>Last Update</span></th>
-                    <th width="100"><span>Waived</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="employee in employeeList | orderBy:'name'">
-                    <td style="vertical-align: top;"><a ng-click="viewDetails(employee.user.id)">{{employee.user.first_name}} {{employee.user.last_name}}</a></td>
-                    <td colspan="2" style="padding: 0;">
-                        <table class="table">
-                            <tr ng-repeat="plan in employee.benefits">
-                                <td width="300">{{plan.selectedPlanName}} 
-                                    <span ng-show="plan.selectedPlanType">({{plan.selectedPlanType}})</span>
-                                    <div ng-show="plan.pcp"> PCP Number: {{plan.pcp}}</div></td>
-                                <td width="250">
-                                    <text ng-repeat="person in plan.enrolled">{{person.name}} 
-                                        <span ng-show="person.relationship">({{person.relationship}})</span> 
-                                        <br />
-                                    </text>
-                                </td>
-                            </tr>
+    <div class="panel" ng-repeat="employee in employeeList | orderBy:'name'">
+        <div class="panel-head">
+            <a ng-click="viewDetails(employee.user.id)">{{employee.user.first_name}} {{employee.user.last_name}}</a>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-2">                
+                    <div>Benefit Plan Selections</div>
+                </div>
+                <div class="col-sm-10">
+                    <div class="table-responsive table-holder">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="300"><span>Selected Plan</span></th>
+                                    <th width="250"><span>Enrolled Member</span></th>
+                                    <th width="150"><span>Last Update</span></th>
+                                    <th width="100"><span>Waived</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" style="padding: 0;">
+                                        <table class="table">
+                                            <tr ng-repeat="plan in employee.benefits">
+                                                <td width="300">{{plan.selectedPlanName}} 
+                                                    <span ng-show="plan.selectedPlanType">({{plan.selectedPlanType}})</span>
+                                                    <div ng-show="plan.pcp"> PCP Number: {{plan.pcp}}</div></td>
+                                                <td width="250">
+                                                    <text ng-repeat="person in plan.enrolled">{{person.name}} 
+                                                        <span ng-show="person.relationship">({{person.relationship}})</span> 
+                                                        <br />
+                                                    </text>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td width="150">{{employee.updated}}</td>
+                                    <td width="100">
+                                        <div class="inner-td-div" ng-repeat="waived in employee.waivedList">
+                                            {{waived}}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
-                    </td>
-                    <td width="150">{{employee.updated}}</td>
-                    <td width="100">
-                        <div class="inner-td-div" ng-repeat="waived in employee.waivedList">
-                            {{waived}}
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">    
+                    <div>Flexible Spending Accounts</div>
+                </div>
+                <div class="col-sm-10">
+                    <div class="table-responsive table-holder table">
+                        <table class="table-striped">
+                            <thead>
+                                <tr>
+                                    <th><span>Account Type</span></th>
+                                    <th><span>Elected Annual Amount (USD)</span></th>
+                                    <th><span>Last Update</span></th>
+                                    <th><span>Last Update Reason</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Primary Account</td>
+                                    <td>${{employee.fsaElection.primary_amount_per_year}}</td>
+                                    <td rowspan="2" style="vertical-align:middle;">{{employee.fsaElection.last_update_date_time}}</td>
+                                    <td rowspan="2" style="vertical-align:middle;">{{employee.fsaElection.update_reason}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Dependent Care Account</td>
+                                    <td>${{employee.fsaElection.dependent_amount_per_year}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div><!-- / .content-body -->

@@ -2,6 +2,8 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ngRoute',
     'ngResource',
     'ui.mask',
+    'ui.utils.masks',
+    'benefitmyDomainModelFactories',
     'benefitmyService',
     'benefitmyModelFactories',
     'benefitmyApp.constants',
@@ -126,6 +128,10 @@ BenefitMyApp.config(['$routeProvider',
             }).
             when('/employee/info', {
                 templateUrl: '/static/partials/employee_profile.html',
+                controller: 'employeeInfoController'
+            }).
+            when('/employee/info/edit', {
+                templateUrl: '/static/partials/employee_profile_edit.html',
                 controller: 'employeeInfoController'
             }).
             when('/employee/family/:employee_id', {

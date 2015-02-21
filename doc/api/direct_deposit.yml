@@ -1,0 +1,147 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: GET/POST/PUT/DELETE
+resource: user
+resource_url: /api/v1/direct_deposit/#/
+description: >
+        GET: a direct_deposit for a user, `#` is the user id
+        POST: add a new direct_deposit for a user, `#` is useless, (make sure it is not duplicate info)
+        PUT/DELETE: a direct_deposit for a user, `#` is record ID
+
+Note:
+1. two methods to specify the deposit amount, amount or percentage, just choose one
+
+
+GET: /api/v1/direct_deposit/1/
+
+returns http 200
+
+sample_response: |
+[
+    {
+        "bank_account": {
+            "id": 1, 
+            "routing": "123456", 
+            "account": "54321", 
+            "account_type": "Checking", 
+            "bank_name": "Bank of America", 
+            "attachment": "s3://abcdef", 
+            "user": 1, 
+            "created_at": null, 
+            "updated_at": null
+        }, 
+        "id": 1, 
+        "amount": "0.00", 
+        "percentage": "40.00", 
+        "user": 1, 
+        "created_at": null, 
+        "updated_at": null
+    }, 
+    {
+        "bank_account": {
+            "id": 2, 
+            "routing": "2121123456", 
+            "account": "5432221211", 
+            "account_type": "Saving", 
+            "bank_name": "Bank of America", 
+            "attachment": "s3://abcdfdsfddef", 
+            "user": 1, 
+            "created_at": null, 
+            "updated_at": null
+        }, 
+        "id": 2, 
+        "amount": "0.00", 
+        "percentage": "60.00", 
+        "user": 1, 
+        "created_at": null, 
+        "updated_at": null
+    }
+]
+
+
+
+POST: /api/v1/direct_deposit/3/
+
+sample_request: |
+    {
+        "bank_account": {
+            "routing": "111121211234323256", 
+            "account": "543211221211", 
+            "account_type": "Saving", 
+            "bank_name": "Citi bank", 
+            "attachment": "s3://abcfdsfdfdsfdffddef", 
+            "user": 1
+        }, 
+        "amount": "10000.00", 
+        "percentage": "0.00", 
+        "user": 1
+    }
+
+
+sample_response: |
+{
+    "bank_account": {
+        "id": 4, 
+        "routing": "111121211234323256", 
+        "account": "543211221211", 
+        "account_type": "Saving", 
+        "bank_name": "Citi bank", 
+        "attachment": "s3://abcfdsfdfdsfdffddef", 
+        "user": 1, 
+        "created_at": "2015-02-16T17:36:49.041Z", 
+        "updated_at": "2015-02-16T17:36:49.041Z"
+    }, 
+    "id": 4, 
+    "amount": "10000.00", 
+    "percentage": "0.00", 
+    "user": 1, 
+    "created_at": "2015-02-16T17:36:49.044Z", 
+    "updated_at": "2015-02-16T17:36:49.044Z"
+}
+
+
+PUT: /api/v1/direct_deposit/3/
+
+sample_request: |
+    {
+        "bank_account": {
+            "routing": "11112121123456", 
+            "account": "543211221211", 
+            "account_type": "Saving", 
+            "bank_name": "Citi bank", 
+            "attachment": "s3://abcfdsfdfdsfddef", 
+            "user": 2
+        }, 
+        "amount": "10000.00", 
+        "percentage": "0.00", 
+        "user": 2
+    }
+
+
+sample_response: |
+{
+    "bank_account": {
+        "id": 3, 
+        "routing": "11112121123456", 
+        "account": "543211221211", 
+        "account_type": "Saving", 
+        "bank_name": "Citi bank", 
+        "attachment": "s3://abcfdsfdfdsfddef", 
+        "user": 2, 
+        "created_at": null, 
+        "updated_at": "2015-02-16T15:51:26.266Z"
+    }, 
+    "id": 3, 
+    "amount": "10000.00", 
+    "percentage": "0.00", 
+    "user": 2, 
+    "created_at": null, 
+    "updated_at": "2015-02-16T15:51:26.269Z"
+}
+
+
+delete: /api/v1/direct_deposit/3/
+sample_response: |
+
+HTTP 204 NO CONTENT

@@ -10,6 +10,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'userDocument',
      'EmployeePreDashboardValidationService',
      'EmployeeLetterSignatureValidationService',
+     'FsaService',
   function employeeHome($scope,
                         $location,
                         $routeParams,
@@ -18,7 +19,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
                         currentUser,
                         userDocument,
                         EmployeePreDashboardValidationService,
-                        EmployeeLetterSignatureValidationService){
+                        EmployeeLetterSignatureValidationService,
+                        FsaService){
 
     $('body').removeClass('onboarding-page');
     var curUserId;
@@ -43,7 +45,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
           }, function(){
             //we need to redirect to edit profile page
             $location.path('/settings').search({forced:1});
-          })
+          });
         }
         return $scope.employee_id;
       });
@@ -62,7 +64,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             if (role.company_user_type === 'employee'){
               curCompanyId = role.company.id;
             }
-          })
+          });
           return curCompanyId;
       }
     });
@@ -97,11 +99,22 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
      $scope.ViewDocument = function(documentId){
          $location.path('/employee/document/' + documentId);
-     }
+     };
 
      $scope.ViewInfo = function(type){
       $location.path('/employee/info').search('type', type);
-     }
+     };
+
+     $scope.EditInfo = function(type){
+      $location.path('/employee/info/edit').search('type', type);
+     };
+
+    // FSA election data
+    curUserPromise.then(function(userId) {
+      FsaService.getFsaElectionForUser(userId, function(response) {
+        $scope.fsaElection = response;
+      });
+    });
   }
 ]);
 
@@ -115,6 +128,7 @@ var employeeBenefitSignup = employeeControllers.controller(
    'benefitListRepository',
    'employeeFamily',
    'benefitDisplayService',
+   'FsaService',
     function employeeBenefitController(
       $scope,
       $location,
@@ -123,7 +137,8 @@ var employeeBenefitSignup = employeeControllers.controller(
       employeeBenefits,
       benefitListRepository,
       employeeFamily,
-      benefitDisplayService){
+      benefitDisplayService,
+      FsaService){
 
         var medicalPlans = [];
         var dentalPlans = [];
@@ -135,6 +150,26 @@ var employeeBenefitSignup = employeeControllers.controller(
         $scope.family = [];
         $scope.selectedBenefits =[];
         $scope.selectedBenefitHashmap = {};
+
+        // FSA election data
+        $scope.fsaUpdateReasons = [
+          { text: '<Not making updates>', value: 0 },
+          { text: 'New Enrollment or annual enrollment changes', value: 1 },
+          { text: 'Dependent care cost provider changes', value: 2 },
+          { text: 'Dependent satisfies or ceases to satisfy dependent eligibility requirements', value: 3 },
+          { text: 'Birth/Death of spouse or dependent, adoption or placement for adoption', value: 4 },
+          { text: 'Spouse\'s employment commenced/terminated', value: 5 },
+          { text: 'Status change from full-time to part-time or vice versa by employee or spouse', value: 6 },
+          { text: 'Eligibility or Ineligibility of Medicare/Medicaid', value: 7 },
+          { text: 'Change from salaried to hourly or vice versa', value: 8 },
+          { text: 'Marriage/Divorce/Legal Separation', value: 9 },
+          { text: 'Unpaid leave of absence by employee or spouse', value: 10 },
+          { text: 'Return from unpaid leave of absence by employee or spouse', value: 11 }
+        ];
+        $scope.selectedFsaUpdateReason = $scope.fsaUpdateReasons[0];
+        FsaService.getFsaElectionForUser(employeeId, function(response) {
+          $scope.fsaElection = response;
+        });
 
         employeeFamily.get({userId:employeeId}).$promise.then(function(response){
           _.each(response.family, function(member){
@@ -220,7 +255,7 @@ var employeeBenefitSignup = employeeControllers.controller(
               benefitListRepository.get({clientId:companyId})
               .$promise.then(function(response){
                 _.each(response.benefits, function(availBenefit){
-                  var benefitFamilyPlan = {benefit:availBenefit};
+                  var benefitFamilyPlan = { 'benefit': availBenefit};
                   var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
                     return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
                   }));
@@ -293,6 +328,12 @@ var employeeBenefitSignup = employeeControllers.controller(
 
         $scope.isMedicalBenefitType = function(benefit){
           return benefit && benefit.benefit_type === 'Medical';
+        };
+
+        // Whether the user has selected a reason for updating 
+        // his/her FSA configuration.
+        $scope.isFsaUpdateReasonSelected = function() {
+          return $scope.selectedFsaUpdateReason.value > 0;
         };
 
         $scope.save = function(){
@@ -370,6 +411,14 @@ var employeeBenefitSignup = employeeControllers.controller(
             }, function(){
               $scope.savedSuccess = false;
             });
+
+          // Save FSA selection if user specifies a reason
+          if ($scope.isFsaUpdateReasonSelected()){
+            $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
+            FsaService.saveFsaElection($scope.fsaElection, null, function() {
+              $scope.savedSuccess = false;
+            });
+          }
         }
       }]);
 
@@ -485,6 +534,16 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
     $scope.info = { type: $routeParams.type, type_display: infoObject.display_name };
     $scope.person = { role: 'Employee' };
 
+    if ($routeParams.type === 'i9'){
+      $scope.isUpdateW4 = false;
+      $scope.isUpdateI9 = true;
+    }
+
+    if ($routeParams.type === 'w4'){
+      $scope.isUpdateW4 = true;
+      $scope.isUpdateI9 = false;
+    }
+
     var userPromise = currentUser.get().$promise.then(function(response){
       $scope.person.first_name = response.user.first_name;
       $scope.person.last_name = response.user.last_name;
@@ -534,7 +593,20 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
 
     $scope.backToDashboard = function(){
       $location.path('/employee');
+    };
+
+    $scope.editW4 = function(){
+      $location.path('/employee/info/edit').search('type', 'w4');
+    };
+
+    $scope.editI9 = function(){
+      $location.path('/employee/info/edit').search('type', 'i9');
+    };
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
     }
+
   }]);
 
 
@@ -662,7 +734,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       $scope.employee.downloadI9 = !$scope.employee.downloadI9;
     };
 
-    $scope.signDocument = function(){
+    $scope.signDocument = function(redirectUrl){
       if(!signatureUpdated){
         alert('Please sign your name on the signature pad');
       }
@@ -681,7 +753,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
             alert('Failed to add employment information');
           });
       }
-    }
+    };
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
