@@ -24,13 +24,14 @@ class PersonTestCase(TestCase, ViewTestBase):
         self.assertTrue('first_name' in person and person['first_name']=='John')
         self.assertTrue('last_name' in person and person['last_name']=='Hancock')
         self.assertTrue('email' in person and not person['email'])
+        self.assertTrue('gender' in person and person['gender']=='F')
         self.assertNotIn('ssn', person)
         self.assertTrue('birth_date' in person and person['birth_date']=='1978-09-05')
         self.assertTrue('user' in person and person['user']==self.normalize_key(1))
         self.assertTrue('company' in person and person['company']==self.normalize_key(1))
         self.assertIn('emergency_contact', person)
         person_emergency_contact = person['emergency_contact']
-        self.assertEqual(len(person_emergency_contact), 0) 
+        self.assertEqual(len(person_emergency_contact), 0)
 
     def test_get_person_non_exist(self):
         response=self.client.get(reverse('people_by_id', kwargs={'pk':self.normalize_key(444)}))
@@ -59,4 +60,4 @@ class PersonTestCase(TestCase, ViewTestBase):
         self.assertTrue('company' in person and not person['company'])
         self.assertIn('emergency_contact', person)
         person_emergency_contact = person['emergency_contact']
-        self.assertEqual(len(person_emergency_contact), 0) 
+        self.assertEqual(len(person_emergency_contact), 0)

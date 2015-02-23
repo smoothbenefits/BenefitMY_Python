@@ -31,7 +31,8 @@ class PersonSerializer(HashPkSerializerBase):
                   'addresses',
                   'company',
                   'user',
-                  'emergency_contact')
+                  'emergency_contact',
+                  'gender')
 
 
 class PersonFullPostSerializer(HashPkSerializerBase):
@@ -58,7 +59,8 @@ class PersonFullPostSerializer(HashPkSerializerBase):
                   'addresses',
                   'company',
                   'user',
-                  'emergency_contact')
+                  'emergency_contact',
+                  'gender')
 
 
 class PersonPostSerializer(HashPkSerializerBase):
@@ -75,4 +77,5 @@ class PersonPostSerializer(HashPkSerializerBase):
                   'email',
                   'phones',
                   'relationship',
-                  'user')
+                  'user',
+                  'gender')

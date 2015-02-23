@@ -3,6 +3,8 @@ from company import Company
 from django.contrib.auth.models import User
 from encrypted_fields import EncryptedTextField
 
+GENDER_TYPES = ([(item, item) for item in ['F', 'M']])
+
 
 class Person(models.Model):
     person_type = models.CharField(max_length=30)
@@ -13,6 +15,11 @@ class Person(models.Model):
     relationship = models.CharField(max_length=30, null=True)
     ssn = EncryptedTextField(null=True, blank=True)
     birth_date = models.DateField(blank=True, null=True)
+    gender = models.CharField(max_length=2,
+                              choices=GENDER_TYPES,
+                              null=True,
+                              blank=True)
+
     user = models.ForeignKey(User,
                              related_name="family",
                              null=True,
