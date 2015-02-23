@@ -942,4 +942,3 @@ var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocum
       }
     };
   }]);
-

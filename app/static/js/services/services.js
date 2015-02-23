@@ -1,24 +1,24 @@
 var benefitmyService = angular.module('benefitmyService', ['ngResource', 'benefitmyDomainModelFactories']);
 
 benefitmyService.factory('currentUser', [
-	'$resource',
-	function ($resource){
-		return $resource('/api/v1/users/current/', {})
-	}
+  '$resource',
+  function ($resource){
+    return $resource('/api/v1/users/current/', {})
+  }
 ]);
 
 benefitmyService.factory('users', [
-	'$resource',
-	function ($resource){
-		return $resource('/api/v1/users/:userId',
-			{userId:'@Id'})
-	}
+  '$resource',
+  function ($resource){
+    return $resource('/api/v1/users/:userId',
+      {userId:'@Id'})
+  }
 ]);
 
 benefitmyService.factory('userLogOut', [
      '$resource',
      function($resource){
-     	return $resource('/logout/', {})
+      return $resource('/logout/', {})
      }]
 );
 
@@ -80,7 +80,7 @@ benefitmyService.factory('benefitPlanRepository', [
 
 benefitmyService.factory('employerRepository', ['$resource',
   function($resource){
-  	return $resource('/api/v1/companies/', {})
+    return $resource('/api/v1/companies/', {})
   }
 ]);
 
@@ -103,13 +103,13 @@ benefitmyService.factory('employeeBenefits',
 
 benefitmyService.factory('employerWorkerRepository', ['$resource',
   function($resource){
-  	return $resource('/api/v1/companies/:companyId/users',
-  		{companyId:'@company_id'})
+    return $resource('/api/v1/companies/:companyId/users',
+      {companyId:'@company_id'})
   }
 ]);
 benefitmyService.factory('usersRepository', ['$resource',
   function($resource){
-  	return $resource('/api/v1/users/', {});
+    return $resource('/api/v1/users/', {});
   }
 ]);
 

@@ -1,0 +1,136 @@
+[
+  {
+    "fields": {
+      "name": "metlife",
+      "attachment": "s3://abcd",
+      "user": 1
+    },
+    "model": "app.lifeinsuranceplan",
+    "pk": 1
+  },
+
+  {
+    "fields": {
+      "name": "liberty mutual",
+      "attachment": "s3://abcde",
+      "user": 2
+    },
+    "model": "app.lifeinsuranceplan",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "geico",
+      "attachment": "s3://abcdef",
+      "user": 3
+    },
+    "model": "app.lifeinsuranceplan",
+    "pk": 3
+  },
+
+
+
+
+  {
+    "fields": {
+      "total_cost_per_period": "500.00",
+      "employee_cost_per_period": "400.00",
+      "benefit_option_type": "individual_plus_spouse",
+      "company": 1,
+      "life_insurance_plan": 1
+    },
+    "model": "app.companylifeinsuranceplan",
+    "pk": 1
+  },
+
+  {
+    "fields": {
+      "total_cost_per_period": "800.00",
+      "employee_cost_per_period": "600.00",
+      "benefit_option_type": "individual_plus_family",
+      "company": 1,
+      "life_insurance_plan": 1
+    },
+    "model": "app.companylifeinsuranceplan",
+    "pk": 2
+  },
+
+  {
+    "fields": {
+      "total_cost_per_period": "800.00",
+      "employee_cost_per_period": "600.00",
+      "benefit_option_type": "individual_plus_family",
+      "company": 2,
+      "life_insurance_plan": 2
+    },
+    "model": "app.companylifeinsuranceplan",
+    "pk": 3
+  },
+
+
+
+  {
+    "fields": {
+      "user": 1,
+      "life_insurance": 1,
+      "person": 1,
+      "insurance_amount": "100000.00"
+    },
+    "model": "app.usercompanylifeinsuranceplan",
+    "pk": 1
+   },
+
+  {
+    "fields": {
+      "user": 1,
+      "life_insurance": 1,
+      "person": 2,
+      "insurance_amount": "200000.00"
+    },
+    "model": "app.usercompanylifeinsuranceplan",
+    "pk": 2
+   },
+
+ {
+    "fields": {
+      "user": 2,
+      "life_insurance": 3,
+      "person": 3,
+      "insurance_amount": "200000.00"
+    },
+    "model": "app.usercompanylifeinsuranceplan",
+    "pk": 3
+   },
+
+
+
+  {
+    "fields": {
+      "first_name": "eric",
+      "last_name": "Lin",
+      "relationship": "spouse",
+      "email": "eric@gmail.com",
+      "phone": "6179037645",
+      "user_life_insurance_plan": 1
+    },
+    "model": "app.lifeinsurancebeneficiary",
+    "pk": 1
+   },
+
+{
+    "fields": {
+      "first_name": "eric",
+      "last_name": "wamg",
+      "relationship": "spouse",
+      "email": "wamg@gmail.com",
+      "phone": "6179dd037645",
+      "user_life_insurance_plan": 2
+    },
+    "model": "app.lifeinsurancebeneficiary",
+    "pk": 1
+   }
+
+]
+
+
+
