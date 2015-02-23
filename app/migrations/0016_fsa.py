@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('app', '0014_directdeposit'),
+        ('app', '0015_directdeposit'),
     ]
 
     operations = [
