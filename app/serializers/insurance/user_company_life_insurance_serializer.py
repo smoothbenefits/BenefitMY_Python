@@ -6,7 +6,7 @@ from app.models.insurance.user_company_life_insurance_plan import \
 from life_insurance_beneficiary_serializer import \
     LifeInsuranceBeneficiarySerializer
 
-from hash_pk_serializer_base import HashPkSerializerBase
+from ..hash_pk_serializer_base import HashPkSerializerBase
 
 
 class UserCompanyLifeInsuranceSerializer(HashPkSerializerBase):

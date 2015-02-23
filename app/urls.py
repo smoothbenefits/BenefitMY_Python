@@ -130,17 +130,17 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/users/settings/?$' % PREFIX, SettingView.as_view()),
 
-    url(r'^%s/brokers/(?P<pk>[0-9]+)/life_insurance_plan/?$' % PREFIX,
+    url(r'^%s/brokers/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         LifeInsurancePlanView.as_view(), name='broker_life_insurance_api'),
 
 
-    url(r'^%s/users/(?P<pk>[0-9]+)/life_insurance/?$' % PREFIX,
+    url(r'^%s/users/(?P<pk>\w+)/life_insurance/?$' % PREFIX,
         UserCompanyLifeInsuranceView.as_view(), name='user_life_insurance_api'),
 
-    url(r'^%s/company_users/(?P<pk>[0-9]+)/life_insurance/?$' % PREFIX,
+    url(r'^%s/company_users/(?P<pk>\w+)/life_insurance/?$' % PREFIX,
         CompanyUsersLifeInsuranceView.as_view(), name='company_users_life_insurance_api'),
 
-    url(r'^%s/company/(?P<pk>[0-9]+)/life_insurance_plan/?$' % PREFIX,
+    url(r'^%s/company/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
 
 
