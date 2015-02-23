@@ -63,16 +63,6 @@ var benefitsController = brokersControllers.controller(
      benefitPlanRepository){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
-        $scope.predicate = 'name';
-        $scope.reverseOrder = function(){
-          if($scope.predicate.indexOf('-') > -1){
-            $scope.predicate = $scope.predicate.substring(1);
-          }
-          else{
-            $scope.predicate = '-' + $scope.predicate;
-          }
-        };
-
         $scope.benefitDeletable = true;
         benefitDisplayService($routeParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
           $scope.medicalBenefitGroup = groupObj;
@@ -203,7 +193,6 @@ var addBenefitController = brokersControllers.controller(
           {name:'Individual plus children'},
           {name:'Individual plus Family'}],
       };
-
       $('#benefit_type_select').on('change', function(){
         var optionTypeInputs = $('#plan_option_table').find('input');
         _.each(optionTypeInputs, function(input){
@@ -211,20 +200,16 @@ var addBenefitController = brokersControllers.controller(
           $(input).on('blur', lostFocusNoBlankHandler);
         });
       });
-
       $scope.isTypeMedical = function(benefitType){
         return benefitType === 'Medical';
-      };
-
-      $scope.isTypeLifeInsurance = function(benefitType){
-        return benefitType === 'Life Insurance';
       };
 
       $scope.benefitTypeSelected = function(benefitType){
         return benefitType !== '';
       };
 
-      $scope.benefit_types = ['Medical', 'Dental', 'Vision', 'Life Insurance'];
+      $scope.benefit_types = ['Medical', 'Dental', 'Vision'];
+
 
       $scope.viewBenefits = function(){
         $location.path('/broker/benefits/'+clientId);
@@ -554,6 +539,8 @@ var addBenefitController = brokersControllers.controller(
             $scope.noCostError = false;
           }
 
+
+
           //now we validate the details array
           if($scope.benefitDetailArray.length <= 0)
           {
@@ -623,59 +610,52 @@ var addBenefitController = brokersControllers.controller(
           });
       };
 
-      function saveLifeInsurancePlan(benefit){
-        return;
-      }
-
       $scope.addBenefit = function(){
+
         if(!validateBenefitFields()){
           alert('There are errors associated with your data form. The data is not saved. If you do not know what the error is, please refresh the page and try again.');
         }
         else{
-          if ($scope.benefit.benefit_type !== 'Life Insurance'){
-            //save to data store
-            var requestList = [];
-            _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
-              requestList.push({
-                company: clientId,
-                benefit: {
-                  benefit_type: $scope.benefit.benefit_type,
-                  benefit_name: $scope.benefit.benefit_name,
-                  benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
-                  total_cost_per_period: optionTypeItem.total_cost_per_period,
-                  employee_cost_per_period: optionTypeItem.employee_cost_per_period
-                }
-              });
-            });
-
-            //save the request list to the backend.
-            saveBenefitOptionPlan(requestList, 0, function(){
-              var apiObjectArray = [];
-              _.each($scope.benefitDetailArray, function(benefitTypeContent){
-                _.each(benefitTypeContent.policy_array, function(optionPair){
-                  var apiObject = {
-                      value: optionPair.policy_value,
-                      key: optionPair.policy_key,
-                      type: benefitTypeContent.policy_type,
-                      benefit_plan_id: $scope.addedBenefit.benefits.benefit_plan.id};
-                  apiObjectArray.push(apiObject);
-                });
-              });
-
-              saveToBackendSequential(apiObjectArray, 0);
-            },
-            function(response){
-              //Error condition,
-              var errorDetail = '';
-              if(response && response.data){
-                errorDetail = JSON.stringify(response.data);
+          //save to data store
+          var requestList = [];
+          _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
+            requestList.push({
+              company: clientId,
+              benefit: {
+                benefit_type: $scope.benefit.benefit_type,
+                benefit_name: $scope.benefit.benefit_name,
+                benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
+                total_cost_per_period: optionTypeItem.total_cost_per_period,
+                employee_cost_per_period: optionTypeItem.employee_cost_per_period
               }
-              alert('Error while saving Benefits! Details: ' + errorDetail);
             });
-          }
-          else{
-            saveLifeInsurancePlan(benefit);
-          }
+          });
+
+        //save the request list to the backend.
+
+          saveBenefitOptionPlan(requestList, 0, function(){
+            var apiObjectArray = [];
+            _.each($scope.benefitDetailArray, function(benefitTypeContent){
+              _.each(benefitTypeContent.policy_array, function(optionPair){
+                var apiObject = {
+                    value: optionPair.policy_value,
+                    key: optionPair.policy_key,
+                    type: benefitTypeContent.policy_type,
+                    benefit_plan_id: $scope.addedBenefit.benefits.benefit_plan.id};
+                apiObjectArray.push(apiObject);
+              });
+            });
+
+            saveToBackendSequential(apiObjectArray, 0);
+          },
+          function(response){
+            //Error condition,
+            var errorDetail = '';
+            if(response && response.data){
+              errorDetail = JSON.stringify(response.data);
+            }
+            alert('Error while saving Benefits! Details: ' + errorDetail);
+          });
         }
       };
   }]);
