@@ -293,8 +293,8 @@ var employerUser = employersController.controller('employerUser',
   }
 ]);
 
-var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$routeParams', 'benefitDisplayService',
-  function employerBenefits($scope, $location, $routeParams, benefitDisplayService){
+var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$routeParams', 'benefitDisplayService', 'LifeInsuranceService',
+  function employerBenefits($scope, $location, $routeParams, benefitDisplayService, LifeInsuranceService){
     var compId = $routeParams.company_id;
     $scope.role = 'Admin';
     $scope.showAddBenefitButton = false;
@@ -307,6 +307,18 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
     $scope.backtoDashboard = function(){
       $location.path('/admin');
     };
+
+    /////////////////////////////////////////////////////////////////////
+    // Life Insurance
+    // TODO: split this off once we have tabs
+    /////////////////////////////////////////////////////////////////////
+
+    LifeInsuranceService.getLifeInsurancePlansForCompany($routeParams.company_id, function(response) {
+          $scope.lifeInsurancePlans = response;
+          _.each($scope.lifeInsurancePlans, function(companyPlan) {
+            companyPlan.created_date_for_display = new Date(companyPlan.created_at).toDateString();
+          });
+    });
   }
 ]);
 

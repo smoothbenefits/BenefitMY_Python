@@ -84,5 +84,27 @@
         </table>
     </div>
 
+    <div class="table-responsive table-holder" ng-if="lifeInsurancePlans && lifeInsurancePlans.length > 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Life Insurance</span></th>
+                    <th><span>Enrollment Date</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="lifeInsurancePlan in lifeInsurancePlans">
+                    <td>
+                        {{lifeInsurancePlan.life_insurance_plan.name}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLifeInsurancePlan(lifeInsurancePlan)" href="javascript:void(0);">X</a>
+                    </td>
+                    <td >
+                        {{lifeInsurancePlan.created_date_for_display}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <div class="back"><a href="javascript:void(0);" ng-click="backtoDashboard()">&laquo; Back</a></div>
 </div>

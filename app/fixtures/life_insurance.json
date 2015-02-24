@@ -82,9 +82,9 @@
 
   {
     "fields": {
-      "user": 1,
-      "life_insurance": 1,
-      "person": 2,
+      "user": 3,
+      "life_insurance": 3,
+      "person": 3,
       "insurance_amount": "200000.00"
     },
     "model": "app.usercompanylifeinsuranceplan",
@@ -93,10 +93,10 @@
 
  {
     "fields": {
-      "user": 2,
+      "user": 3,
       "life_insurance": 3,
-      "person": 3,
-      "insurance_amount": "200000.00"
+      "person": 4,
+      "insurance_amount": "250000.00"
     },
     "model": "app.usercompanylifeinsuranceplan",
     "pk": 3

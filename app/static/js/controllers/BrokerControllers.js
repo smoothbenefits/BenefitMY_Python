@@ -54,13 +54,15 @@ var benefitsController = brokersControllers.controller(
     '$route',
     'benefitDisplayService',
     'benefitPlanRepository',
+    'LifeInsuranceService',
     function benefitController(
      $scope,
      $location,
      $routeParams,
      $route,
      benefitDisplayService,
-     benefitPlanRepository){
+     benefitPlanRepository,
+     LifeInsuranceService){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
         $scope.benefitDeletable = true;
@@ -84,7 +86,25 @@ var benefitsController = brokersControllers.controller(
               $route.reload();
             });
           }
-        }
+        };
+
+
+        /////////////////////////////////////////////////////////////////////
+        // Life Insurance
+        // TODO: split this off once we have tabs
+        /////////////////////////////////////////////////////////////////////
+        LifeInsuranceService.getLifeInsurancePlansForCompany($routeParams.clientId, function(response) {
+          $scope.lifeInsurancePlans = response;
+          _.each($scope.lifeInsurancePlans, function(companyPlan) {
+            companyPlan.created_date_for_display = new Date(companyPlan.created_at).toDateString();
+          });
+        });
+
+        $scope.deleteLifeInsurancePlan = function(companyLifeInsurancePlan) {
+          LifeInsuranceService.deleteLifeInsurancePlanForCompany(companyLifeInsurancePlan.id, function() {
+            $route.reload();
+          });
+        };
 }]);
 
 
@@ -177,12 +197,16 @@ var addBenefitController = brokersControllers.controller(
    '$routeParams',
    'benefitPlanRepository',
    'benefitDetailsRepository',
+   'LifeInsuranceService',
+   'currentUser',
     function addBenefitController(
       $scope,
       $location,
       $routeParams,
       benefitPlanRepository,
-      benefitDetailsRepository){
+      benefitDetailsRepository,
+      LifeInsuranceService,
+      currentUser){
 
       var clientId = $routeParams.clientId;
       $scope.benefit = {
@@ -658,6 +682,35 @@ var addBenefitController = brokersControllers.controller(
           });
         }
       };
+
+      //////////////////////////////////////////////////////////
+      //  Life Insurance
+      //  TODO: look into separate this out once we have tabs
+      //////////////////////////////////////////////////////////
+
+      // Setup a new blank model
+      $scope.newLifeInsurancePlan = {};
+
+      // Need the user information for the current user (broker)
+      $scope.addLifeInsurancePlan = function() {
+        currentUser.get()
+        .$promise.then(function(response)
+             {
+                $scope.newLifeInsurancePlan.user = response.user.id;
+
+                // For now, we combine the gestures of
+                //  1. Broker creates the plan
+                //  2. Broker enrolls the company for the plan
+                LifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
+                  var planId = newPlan.id;
+                  LifeInsuranceService.enrollCompanyForLifeInsurancePlan(clientId, planId, function() {
+                    $location.path('/broker/benefits/' + clientId);
+                  });
+                });
+             }
+        );
+      };
+
   }]);
 
 var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',

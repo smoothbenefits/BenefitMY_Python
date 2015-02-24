@@ -851,3 +851,159 @@ benefitmyService.factory(
     }; 
   }
 ]);
+
+benefitmyService.factory(
+  'LifeInsuranceService', 
+  ['LifeInsurancePlanRepository',
+   'CompanyLifeInsurancePlanRepository',
+   'CompanyUserLifeInsurancePlanRepository',
+  function (
+      LifeInsurancePlanRepository,
+      CompanyLifeInsurancePlanRepository,
+      CompanyUserLifeInsurancePlanRepository
+    ){
+    return {
+      saveLifeInsurancePlan: function(planToSave, successCallBack, errorCallBack) {
+        if(!planToSave.id) {
+          // Not existing yet, POST it
+          LifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave
+            , function (successResponse) {
+                if (successCallBack) {
+                  successCallBack(successResponse);
+                }  
+              }
+            , function(errorResponse) {
+                if (errorCallBack) {
+                  errorCallBack(errorResponse);
+              }
+          });
+        }
+        else {
+          // Existing, PUT it 
+          LifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave
+            , function (successResponse) {
+                if (successCallBack) {
+                  successCallBack(successResponse);
+                }  
+              }
+            , function(errorResponse) {
+                if (errorCallBack) {
+                  errorCallBack(errorResponse);
+              }
+          });
+        }
+      },
+
+      deleteLifeInsurancePlan: function(planIdToDelete, successCallBack, errorCallBack) {
+        LifeInsurancePlanRepository.ById.delete({id:planIdToDelete}
+          , function (successResponse) {
+                if (successCallBack) {
+                  successCallBack(successResponse);
+                }  
+              }
+            , function(errorResponse) {
+                if (errorCallBack) {
+                  errorCallBack(errorResponse);
+              }
+            });
+      },
+
+      getLifeInsurancePlansForCompany: function(companyId, successCallBack, errorCallBack) {
+        CompanyLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
+          .$promise.then(function(plans) {
+            if (successCallBack) {
+              successCallBack(plans);
+            }
+          },
+          function(failedResponse) {
+            if(errorCallBack) {
+              errorCallBack(failedResponse)
+            }
+          });
+      },
+
+      enrollCompanyForLifeInsurancePlan: function(companyId, planId, successCallBack, errorCallBack) {
+        var linkToSave = { "company":companyId, "life_insurance_plan":planId };
+        CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
+          , function (successResponse) {
+              if (successCallBack) {
+                successCallBack(successResponse);
+              }  
+            }
+          , function(errorResponse) {
+              if (errorCallBack) {
+                errorCallBack(errorResponse);
+              }
+            }
+        );
+      },
+
+      deleteLifeInsurancePlanForCompany: function(companyPlanId, successCallBack, errorCallBack) {
+        CompanyLifeInsurancePlanRepository.ById.delete({id:companyPlanId}
+          , function (successResponse) {
+              if (successCallBack) {
+                successCallBack(successResponse);
+              }  
+            }
+          , function(errorResponse) {
+              if (errorCallBack) {
+                errorCallBack(errorResponse);
+              }
+            }
+        );
+      },
+
+      getInsurancePlanEnrollmentsByUser: function(userId, successCallBack, errorCallBack) {
+        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
+          .$promise.then(
+            function (successResponse) {
+              if (successCallBack) {
+                successCallBack(successResponse);
+              }  
+            },
+            function(errorResponse) {
+              if (errorCallBack) {
+                errorCallBack(errorResponse);
+              }
+            }
+          );
+      }
+
+      // saveInsurancePlanEnrollmentsByUser: function(planEnrollmentsToSave, successCallBack, errorCallBack) {
+
+      //   _.each(planEnrollmentsToSave, function(individualEnrollmentToSave) {
+      //     if(!individualEnrollmentToSave.id) {
+      //       // Not existing yet, POST it
+      //       CompanyUserLifeInsurancePlanRepository.ById.save({id:individualEnrollmentToSave.user}
+      //         , individualEnrollmentToSave
+      //         , function (successResponse) {
+      //             if (successCallBack) {
+      //               successCallBack(successResponse);
+      //             }  
+      //           }
+      //         , function(errorResponse) {
+      //             if (errorCallBack) {
+      //               errorCallBack(errorResponse);
+      //           }
+      //       });
+      //     }
+      //     else {
+      //       // Existing, PUT it 
+      //       LifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave
+      //         , function (successResponse) {
+      //             if (successCallBack) {
+      //               successCallBack(successResponse);
+      //             }  
+      //           }
+      //         , function(errorResponse) {
+      //             if (errorCallBack) {
+      //               errorCallBack(errorResponse);
+      //           }
+      //       });
+      //     }
+      //   });
+      // }
+
+    }; 
+  }
+]);
