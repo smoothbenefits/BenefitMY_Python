@@ -6,7 +6,7 @@ from rest_framework import status
 from app.models.insurance.life_insurance_plan import \
     LifeInsurancePlan
 from app.serializers.insurance.life_insurance_plan_serializer import (
-    LifeInsurancePlanSerializer)
+    LifeInsurancePlanSerializer, LifeInsurancePlanPostSerializer)
 
 
 class LifeInsurancePlanView(APIView):
@@ -35,7 +35,7 @@ class LifeInsurancePlanView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, pk, format=None):
-        serializer = LifeInsurancePlanSerializer(data=request.DATA)
+        serializer = LifeInsurancePlanPostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -659,12 +659,14 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   'companyRepository',
   'employeeBenefitElectionFactory',
   'FsaService',
+  'LifeInsuranceService',
   function($scope, 
            $location, 
            $routeParams, 
            companyRepository,
            employeeBenefitElectionFactory,
-           FsaService){
+           FsaService,
+           LifeInsuranceService){
     var company_id = $routeParams.company_id;
     $scope.employeeList = [];
 
@@ -684,12 +686,27 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
           });
         });
 
+        // TODO: like the above comment for FSA, Life Insurance, or more generally speaking,
+        //       all new benefits going forward, we should consider creating as separate 
+        //       entity and maybe avoid trying to artificially bundle them together. 
+        //       Also, once we have tabs working, we should split them into proper flows.
+        _.each(employeeList, function(employee) {
+          LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employee.user.id, function(response) {
+            employee.familyInsurancePlan = response;
+          });
+        });
+
         $scope.clientCount = _.size(employeeList);
         $scope.employeeList = employeeList;
       }, function(errorResponse){
         alert(errorResponse.content);
       });
-
+    
+    $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
+        return (!employeeFamilyLifeInsurancePlan) 
+          || (!employeeFamilyLifeInsurancePlan.mainPlan)
+          || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
+      };
 
     $scope.viewDetails = function(employeeId){
         $location.path('/admin/employee_detail/' + company_id).search('eid', employeeId);

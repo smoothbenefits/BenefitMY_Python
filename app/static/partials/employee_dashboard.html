@@ -67,7 +67,7 @@
             <thead>
                 <tr>
                     <th width="180"><span>Plan Name</span></th>
-                    <th width="200"><span>Family Member</span></th>
+                    <th width="250"><span>Family Member</span></th>
                     <th width="120"><span>Elected Coverage Amount (USD)</span></th>
                     <th width="180"><span>Beneficiary</span></th>
                     <th width="120"><span>Last Update</span></th>
@@ -75,28 +75,21 @@
             </thead>
             <tbody>
                 <tr>
-                    <td width="180">Test Plan</td>
+                    <td width="180">{{familyInsurancePlan.mainPlan.life_insurance.life_insurance_plan.name}}</td>
                     <td colspan="2" style="padding: 0;">
                         <table class="table">
-                            <tr>
-                                <td width="200">abd aaa</td>
-                                <td width="120">$5000</td>
-                            </tr>
-                            <tr>
-                                <td width="200">def aaa</td>
-                                <td width="120">$8000</td>
-                            </tr>
-                            <tr>
-                                <td width="200">omg aaa</td>
-                                <td width="120">$10000</td>
+                            <tr ng-repeat="memberPlan in familyInsurancePlan.memberPlans">
+                                <td width="250">{{memberPlan.full_name}} ({{memberPlan.relationship}})</td>
+                                <td width="120">${{memberPlan.insurance_amount}}</td>
                             </tr>
                         </table>
                     </td>
-                    <td width="180">Alibaba Omg</td>
-                    <td width="120">2014 12 23</td>
+                    <td width="180">{{familyInsurancePlan.mainPlan.beneficiary_full_name}}</td>
+                    <td width="120">{{familyInsurancePlan.mainPlan.last_update_date}}</td>
                 </tr>
             </tbody>
         </table>
+
     </div>
     <div class="table-responsive table-holder table">
         <div class="table-sub-title">Flexible Spending Account</div>
