@@ -601,6 +601,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
           $scope.employee.emergency_contact = selfInfo.emergency_contact;
+          $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
         }
       });
 

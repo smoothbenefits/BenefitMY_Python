@@ -194,6 +194,7 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
           $scope.employee.birth_date = selfInfo.birth_date;
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
+          $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
         }
       });
 
