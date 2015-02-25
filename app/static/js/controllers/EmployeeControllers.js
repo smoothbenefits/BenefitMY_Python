@@ -485,6 +485,7 @@ var employeeBenefitSignup = employeeControllers.controller(
               $scope.savedSuccess = false;
             });
           } else {
+            $scope.familyLifeInsurancePlan.selectedCompanyPlan = $scope.selectedLifeInsurancePlan.value;
             LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan, null, function() {
               $scope.savedSuccess = false;
             });

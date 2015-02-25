@@ -985,11 +985,13 @@ benefitmyService.factory(
               .$promise.then(function(familyResponse){
                 familyMembers = familyResponse.family;
 
+                var mainPlanPerson = _.findWhere(familyMembers, { relationship: 'self' });
+
                 // Plan belongs to the main account holder, the employee
-                var mainPlan = _.findWhere(planEnrollments, { person: userId });
+                var mainPlan = _.findWhere(planEnrollments, { person: mainPlanPerson.id });
 
                 if (!mainPlan) {
-                  mainPlan = { user:userId, person:userId, insurance_amount:0, life_insurance: {}, life_insurance_beneficiary:{} };
+                  mainPlan = { user:userId, person:mainPlanPerson.id, insurance_amount:0, life_insurance: {}, life_insurance_beneficiary:[] };
                 }
 
                 if (mainPlan.life_insurance_beneficiary.length > 0)
@@ -1033,11 +1035,12 @@ benefitmyService.factory(
       saveFamilyLifeInsurancePlanForUser: function(familyPlanToSave, successCallBack, errorCallBack) {
         var memberPlansToSave = [];
         var mainPlan = familyPlanToSave.mainPlan;
+
         _.each(familyPlanToSave.memberPlans, function(memberPlan) {
           var memberPlanToSave = {
             "id":memberPlan.id,
             "user":mainPlan.user,
-            "life_insurance":mainPlan.life_insurance.id,
+            "life_insurance":familyPlanToSave.selectedCompanyPlan,
             "person":memberPlan.person,
             "life_insurance_beneficiary":[],
             "insurance_amount":parseFloat(memberPlan.insurance_amount)
