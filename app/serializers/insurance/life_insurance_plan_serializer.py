@@ -10,7 +10,7 @@ class LifeInsurancePlanSerializer(HashPkSerializerBase):
     class Meta:
         model = LifeInsurancePlan
 
-class LifeInsurancePlanPostSerializer(HashPkSerializerBase):
+class LifeInsurancePlanPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LifeInsurancePlan

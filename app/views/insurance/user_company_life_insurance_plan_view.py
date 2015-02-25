@@ -7,7 +7,7 @@ from rest_framework import status
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
 from app.serializers.insurance.user_company_life_insurance_serializer import (
-    UserCompanyLifeInsuranceSerializer)
+    UserCompanyLifeInsuranceSerializer, UserCompanyLifeInsurancePostSerializer)
 from app.models.company_user import CompanyUser
 
 
@@ -31,14 +31,14 @@ class UserCompanyLifeInsuranceView(APIView):
 
     def put(self, request, pk, format=None):
         plan = self._get_object(pk)
-        serializer = UserCompanyLifeInsuranceSerializer(plan, data=request.DATA)
+        serializer = UserCompanyLifeInsurancePostSerializer(plan, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, pk, format=None):
-        serializer = UserCompanyLifeInsuranceSerializer(data=request.DATA, many=True)
+        serializer = UserCompanyLifeInsurancePostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -14,7 +14,7 @@ class CompanyLifeInsurancePlanSerializer(HashPkSerializerBase):
         model = CompanyLifeInsurancePlan
 
 
-class CompanyLifeInsurancePlanPostSerializer(HashPkSerializerBase):
+class CompanyLifeInsurancePlanPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CompanyLifeInsurancePlan

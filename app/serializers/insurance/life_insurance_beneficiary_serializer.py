@@ -12,7 +12,7 @@ class LifeInsuranceBeneficiarySerializer(HashPkSerializerBase):
         model = LifeInsuranceBeneficiary
 
 
-class LifeInsuranceBeneficiaryPostSerializer(HashPkSerializerBase):
+class LifeInsuranceBeneficiaryPostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = LifeInsuranceBeneficiary

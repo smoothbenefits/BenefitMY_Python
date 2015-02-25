@@ -1031,9 +1031,28 @@ benefitmyService.factory(
       },
 
       saveFamilyLifeInsurancePlanForUser: function(familyPlanToSave, successCallBack, errorCallBack) {
-        if(successCallBack) {
-          successCallBack();
-        }
+        var memberPlansToSave = [];
+        var mainPlan = familyPlanToSave.mainPlan;
+        _.each(familyPlanToSave.memberPlans, function(memberPlan) {
+          var memberPlanToSave = {
+            "id":memberPlan.id,
+            "user":mainPlan.user,
+            "life_insurance":mainPlan.life_insurance.id,
+            "person":memberPlan.person,
+            "life_insurance_beneficiary":[],
+            "insurance_amount":parseFloat(memberPlan.insurance_amount)
+          };
+
+          if (memberPlanToSave.person === mainPlan.person) {
+            memberPlanToSave.life_insurance_beneficiary = mainPlan.life_insurance_beneficiary;
+          }
+
+          if (!memberPlanToSave.id) {
+            CompanyUserLifeInsurancePlanRepository.ById.save({id:memberPlanToSave.user}, memberPlanToSave);
+          } else {
+            CompanyUserLifeInsurancePlanRepository.ById.update({id:memberPlanToSave.id}, memberPlanToSave);
+          }
+        });
       },
 
       deleteFamilyLifeInsurancePlanForUser: function(userId, successCallBack, errorCallBack) {
@@ -1053,41 +1072,6 @@ benefitmyService.factory(
             }
           });
       }
-
-      // saveInsurancePlanEnrollmentsByUser: function(planEnrollmentsToSave, successCallBack, errorCallBack) {
-
-      //   _.each(planEnrollmentsToSave, function(individualEnrollmentToSave) {
-      //     if(!individualEnrollmentToSave.id) {
-      //       // Not existing yet, POST it
-      //       CompanyUserLifeInsurancePlanRepository.ById.save({id:individualEnrollmentToSave.user}
-      //         , individualEnrollmentToSave
-      //         , function (successResponse) {
-      //             if (successCallBack) {
-      //               successCallBack(successResponse);
-      //             }  
-      //           }
-      //         , function(errorResponse) {
-      //             if (errorCallBack) {
-      //               errorCallBack(errorResponse);
-      //           }
-      //       });
-      //     }
-      //     else {
-      //       // Existing, PUT it 
-      //       LifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave
-      //         , function (successResponse) {
-      //             if (successCallBack) {
-      //               successCallBack(successResponse);
-      //             }  
-      //           }
-      //         , function(errorResponse) {
-      //             if (errorCallBack) {
-      //               errorCallBack(errorResponse);
-      //           }
-      //       });
-      //     }
-      //   });
-      // }
 
     }; 
   }

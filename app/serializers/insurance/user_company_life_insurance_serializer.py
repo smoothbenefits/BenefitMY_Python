@@ -21,8 +21,8 @@ class UserCompanyLifeInsuranceSerializer(HashPkSerializerBase):
         model = UserCompanyLifeInsurancePlan
 
 
-class UserCompanyLifeInsurancePostSerializer(HashPkSerializerBase):
-    life_insurance_beneficiary = LifeInsuranceBeneficiaryPostSerializer(many=True)
+class UserCompanyLifeInsurancePostSerializer(serializers.ModelSerializer):
+    life_insurance_beneficiary = LifeInsuranceBeneficiaryPostSerializer(many=True,allow_add_remove=True)
 
     class Meta:
         model = UserCompanyLifeInsurancePlan

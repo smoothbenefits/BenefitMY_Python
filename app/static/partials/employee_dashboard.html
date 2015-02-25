@@ -63,7 +63,19 @@
     </div>
     <div class="table-responsive table-holder">
         <div class="table-sub-title">Life Insurance</div>
-        <table class="table table-striped">
+        <table class="table table-striped" ng-if="isLifeInsuranceWaived(familyInsurancePlan)">
+            <thead>
+                <tr>
+                    <th width="180"><span>Life Insurance</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="180">No active life insurance plan</td>
+                </tr>
+            </tbody>    
+        </table>
+        <table class="table table-striped" ng-if="!isLifeInsuranceWaived(familyInsurancePlan)">
             <thead>
                 <tr>
                     <th width="180"><span>Plan Name</span></th>
