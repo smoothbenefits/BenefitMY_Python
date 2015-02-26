@@ -371,6 +371,11 @@ var employeeBenefitSignup = employeeControllers.controller(
           $location.path('/employee/add_family/' + employeeId);
         };
 
+        // User should be able to add up to 4 beneficiaries of life insurance
+        $scope.addBeneficiary = function(){
+          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.push({});
+        };
+
         $scope.isMedicalBenefitType = function(benefit){
           return benefit && benefit.benefit_type === 'Medical';
         };
