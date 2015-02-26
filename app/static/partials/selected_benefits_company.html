@@ -61,6 +61,57 @@
             </div>
             <div class="row">
                 <div class="col-sm-2">    
+                    <div>Life Insurance</div>
+                </div>
+                <div class="col-sm-10" ng-if="!isLifeInsuranceWaived(employee.familyInsurancePlan)">
+                    <div class="table-responsive table-holder">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="180"><span>Plan Name</span></th>
+                                    <th width="250"><span>Family Member</span></th>
+                                    <th width="120"><span>Elected Coverage Amount (USD)</span></th>
+                                    <th width="180"><span>Beneficiary</span></th>
+                                    <th width="120"><span>Last Update</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td width="180">{{employee.familyInsurancePlan.mainPlan.life_insurance.life_insurance_plan.name}}</td>
+                                    <td colspan="2" style="padding: 0;">
+                                        <table class="table">
+                                            <tr ng-repeat="memberPlan in employee.familyInsurancePlan.memberPlans">
+                                                <td width="250">{{memberPlan.full_name}} ({{memberPlan.relationship}})</td>
+                                                <td width="120">${{memberPlan.insurance_amount}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td width="180">{{employee.familyInsurancePlan.mainPlan.beneficiary_full_name}}</td>
+                                    <td width="120">{{employee.familyInsurancePlan.mainPlan.last_update_date}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-10" ng-if="isLifeInsuranceWaived(employee.familyInsurancePlan)">
+                    <div class="table-responsive table-holder">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="280"><span>Life Insurance</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td width="280">No active life insurance plan</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">    
                     <div>Flexible Spending Accounts</div>
                 </div>
                 <div class="col-sm-10">

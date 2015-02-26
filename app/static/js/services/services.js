@@ -1,24 +1,24 @@
 var benefitmyService = angular.module('benefitmyService', ['ngResource', 'benefitmyDomainModelFactories']);
 
 benefitmyService.factory('currentUser', [
-	'$resource',
-	function ($resource){
-		return $resource('/api/v1/users/current/', {})
-	}
+  '$resource',
+  function ($resource){
+    return $resource('/api/v1/users/current/', {})
+  }
 ]);
 
 benefitmyService.factory('users', [
-	'$resource',
-	function ($resource){
-		return $resource('/api/v1/users/:userId',
-			{userId:'@Id'})
-	}
+  '$resource',
+  function ($resource){
+    return $resource('/api/v1/users/:userId',
+      {userId:'@Id'})
+  }
 ]);
 
 benefitmyService.factory('userLogOut', [
      '$resource',
      function($resource){
-     	return $resource('/logout/', {})
+      return $resource('/logout/', {})
      }]
 );
 
@@ -80,7 +80,7 @@ benefitmyService.factory('benefitPlanRepository', [
 
 benefitmyService.factory('employerRepository', ['$resource',
   function($resource){
-  	return $resource('/api/v1/companies/', {})
+    return $resource('/api/v1/companies/', {})
   }
 ]);
 
@@ -103,13 +103,13 @@ benefitmyService.factory('employeeBenefits',
 
 benefitmyService.factory('employerWorkerRepository', ['$resource',
   function($resource){
-  	return $resource('/api/v1/companies/:companyId/users',
-  		{companyId:'@company_id'})
+    return $resource('/api/v1/companies/:companyId/users',
+      {companyId:'@company_id'})
   }
 ]);
 benefitmyService.factory('usersRepository', ['$resource',
   function($resource){
-  	return $resource('/api/v1/users/', {});
+    return $resource('/api/v1/users/', {});
   }
 ]);
 
@@ -848,6 +848,234 @@ benefitmyService.factory(
           });
         }
       }
+    }; 
+  }
+]);
+
+benefitmyService.factory(
+  'LifeInsuranceService', 
+  ['LifeInsurancePlanRepository',
+   'CompanyLifeInsurancePlanRepository',
+   'CompanyUserLifeInsurancePlanRepository',
+   'employeeFamily',
+  function (
+      LifeInsurancePlanRepository,
+      CompanyLifeInsurancePlanRepository,
+      CompanyUserLifeInsurancePlanRepository,
+      employeeFamily
+    ){
+    return {
+      saveLifeInsurancePlan: function(planToSave, successCallBack, errorCallBack) {
+        if(!planToSave.id) {
+          // Not existing yet, POST it
+          LifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave
+            , function (successResponse) {
+                if (successCallBack) {
+                  successCallBack(successResponse);
+                }  
+              }
+            , function(errorResponse) {
+                if (errorCallBack) {
+                  errorCallBack(errorResponse);
+              }
+          });
+        }
+        else {
+          // Existing, PUT it 
+          LifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave
+            , function (successResponse) {
+                if (successCallBack) {
+                  successCallBack(successResponse);
+                }  
+              }
+            , function(errorResponse) {
+                if (errorCallBack) {
+                  errorCallBack(errorResponse);
+              }
+          });
+        }
+      },
+
+      deleteLifeInsurancePlan: function(planIdToDelete, successCallBack, errorCallBack) {
+        LifeInsurancePlanRepository.ById.delete({id:planIdToDelete}
+          , function (successResponse) {
+                if (successCallBack) {
+                  successCallBack(successResponse);
+                }  
+              }
+            , function(errorResponse) {
+                if (errorCallBack) {
+                  errorCallBack(errorResponse);
+              }
+            });
+      },
+
+      getLifeInsurancePlansForCompany: function(companyId, successCallBack, errorCallBack) {
+        CompanyLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
+          .$promise.then(function(plans) {
+            if (successCallBack) {
+              successCallBack(plans);
+            }
+          },
+          function(failedResponse) {
+            if(errorCallBack) {
+              errorCallBack(failedResponse)
+            }
+          });
+      },
+
+      enrollCompanyForLifeInsurancePlan: function(companyId, planId, successCallBack, errorCallBack) {
+        var linkToSave = { "company":companyId, "life_insurance_plan":planId };
+        CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
+          , function (successResponse) {
+              if (successCallBack) {
+                successCallBack(successResponse);
+              }  
+            }
+          , function(errorResponse) {
+              if (errorCallBack) {
+                errorCallBack(errorResponse);
+              }
+            }
+        );
+      },
+
+      deleteLifeInsurancePlanForCompany: function(companyPlanId, successCallBack, errorCallBack) {
+        CompanyLifeInsurancePlanRepository.ById.delete({id:companyPlanId}
+          , function (successResponse) {
+              if (successCallBack) {
+                successCallBack(successResponse);
+              }  
+            }
+          , function(errorResponse) {
+              if (errorCallBack) {
+                errorCallBack(errorResponse);
+              }
+            }
+        );
+      },
+
+      getInsurancePlanEnrollmentsByUser: function(userId, successCallBack, errorCallBack) {
+        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
+          .$promise.then(
+            function (successResponse) {
+              if (successCallBack) {
+                successCallBack(successResponse);
+              }  
+            },
+            function(errorResponse) {
+              if (errorCallBack) {
+                errorCallBack(errorResponse);
+              }
+            }
+          );
+      },
+
+      getInsurancePlanEnrollmentsForAllFamilyMembersByUser: function(userId, successCallBack, errorCallBack) {
+        var familyMembers = [];
+        var planEnrollments = [];
+        var familyPlan = {};
+
+        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
+          .$promise.then(
+            function (successResponse) {
+              planEnrollments = successResponse;
+
+              employeeFamily.get({userId:userId})
+              .$promise.then(function(familyResponse){
+                familyMembers = familyResponse.family;
+
+                var mainPlanPerson = _.findWhere(familyMembers, { relationship: 'self' });
+
+                // Plan belongs to the main account holder, the employee
+                var mainPlan = _.findWhere(planEnrollments, { person: mainPlanPerson.id });
+
+                if (!mainPlan) {
+                  mainPlan = { user:userId, person:mainPlanPerson.id, insurance_amount:0, life_insurance: {}, life_insurance_beneficiary:[] };
+                }
+
+                if (mainPlan.life_insurance_beneficiary.length > 0)
+                {
+                  mainPlan.beneficiary_full_name = mainPlan.life_insurance_beneficiary[0].first_name + ' ' + mainPlan.life_insurance_beneficiary[0].last_name;
+                }
+
+                // If there are family members do not have life insurance record, add them
+                // so if the record is saved, they can be automatically added
+                _.each(familyMembers, function(familyMember) {
+                  var memberPlan = _.findWhere(planEnrollments, { person: familyMember.id });
+                  if (!memberPlan) {
+                      var newPlan = { user:userId, person:familyMember.id, insurance_amount:0, life_insurance: mainPlan.life_insurance, life_insurance_beneficiary:mainPlan.life_insurance_beneficiary };
+                      planEnrollments.push(newPlan);
+                  }
+
+                  // Find again, now we should always have a match
+                  memberPlan = _.findWhere(planEnrollments, { person: familyMember.id });
+                  memberPlan.full_name = familyMember.first_name + ' ' + familyMember.last_name; 
+                  memberPlan.relationship = familyMember.relationship;
+                  memberPlan.insurance_amount = parseFloat(memberPlan.insurance_amount);
+                  memberPlan.last_update_date = new Date(mainPlan.updated_at).toDateString();
+                });
+
+                familyPlan.memberPlans = planEnrollments;
+                familyPlan.mainPlan = mainPlan;
+
+                if (successCallBack) {
+                  successCallBack(familyPlan);
+                }  
+              });
+            },
+            function(errorResponse) {
+              if (errorCallBack) {
+                errorCallBack(errorResponse);
+              }
+            }
+          );
+      },
+
+      saveFamilyLifeInsurancePlanForUser: function(familyPlanToSave, successCallBack, errorCallBack) {
+        var memberPlansToSave = [];
+        var mainPlan = familyPlanToSave.mainPlan;
+
+        _.each(familyPlanToSave.memberPlans, function(memberPlan) {
+          var memberPlanToSave = {
+            "id":memberPlan.id,
+            "user":mainPlan.user,
+            "life_insurance":familyPlanToSave.selectedCompanyPlan,
+            "person":memberPlan.person,
+            "life_insurance_beneficiary":[],
+            "insurance_amount":parseFloat(memberPlan.insurance_amount)
+          };
+
+          if (memberPlanToSave.person === mainPlan.person) {
+            memberPlanToSave.life_insurance_beneficiary = mainPlan.life_insurance_beneficiary;
+          }
+
+          if (!memberPlanToSave.id) {
+            CompanyUserLifeInsurancePlanRepository.ById.save({id:memberPlanToSave.user}, memberPlanToSave);
+          } else {
+            CompanyUserLifeInsurancePlanRepository.ById.update({id:memberPlanToSave.id}, memberPlanToSave);
+          }
+        });
+      },
+
+      deleteFamilyLifeInsurancePlanForUser: function(userId, successCallBack, errorCallBack) {
+        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
+          .$promise.then(function(plans) {
+            _.each(plans, function(plan) {
+              CompanyUserLifeInsurancePlanRepository.ById.delete({id:plan.id});
+            });
+
+            if (successCallBack) {
+              successCallBack();
+            }
+
+          }, function(error) {
+            if (errorCallBack) {
+              errorCallBack(error);
+            }
+          });
+      }
+
     }; 
   }
 ]);

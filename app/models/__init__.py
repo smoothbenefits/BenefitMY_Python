@@ -24,5 +24,10 @@ from emergency_contact import EmergencyContact
 from direct_deposit import DirectDeposit
 from fsa import FSA
 from user_bank_account import UserBankAccount
+from insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
+from insurance.life_insurance_beneficiary import LifeInsuranceBeneficiary
+from insurance.user_company_life_insurance_plan import UserCompanyLifeInsurancePlan
+from insurance.life_insurance_plan import LifeInsurancePlan
+
 
 
