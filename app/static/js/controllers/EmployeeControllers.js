@@ -11,6 +11,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'EmployeePreDashboardValidationService',
      'EmployeeLetterSignatureValidationService',
      'FsaService',
+     'LifeInsuranceService',
   function employeeHome($scope,
                         $location,
                         $routeParams,
@@ -20,7 +21,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
                         userDocument,
                         EmployeePreDashboardValidationService,
                         EmployeeLetterSignatureValidationService,
-                        FsaService){
+                        FsaService,
+                        LifeInsuranceService){
 
     $('body').removeClass('onboarding-page');
     var curUserId;
@@ -115,6 +117,19 @@ var employeeHome = employeeControllers.controller('employeeHome',
         $scope.fsaElection = response;
       });
     });
+
+    // Life Insurance
+    curUserPromise.then(function(userId) {
+      LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(userId, function(response) {
+        $scope.familyInsurancePlan = response;
+      });
+    });
+
+    $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
+        return (!employeeFamilyLifeInsurancePlan) 
+          || (!employeeFamilyLifeInsurancePlan.mainPlan)
+          || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
+      };
   }
 ]);
 
@@ -129,6 +144,7 @@ var employeeBenefitSignup = employeeControllers.controller(
    'employeeFamily',
    'benefitDisplayService',
    'FsaService',
+   'LifeInsuranceService',
     function employeeBenefitController(
       $scope,
       $location,
@@ -138,7 +154,8 @@ var employeeBenefitSignup = employeeControllers.controller(
       benefitListRepository,
       employeeFamily,
       benefitDisplayService,
-      FsaService){
+      FsaService,
+      LifeInsuranceService){
 
         var medicalPlans = [];
         var dentalPlans = [];
@@ -308,6 +325,34 @@ var employeeBenefitSignup = employeeControllers.controller(
           });
         });
 
+        // Life Insurance 
+        $scope.lifeInsurancePlans = [ { text: '<Waive Life Insurance>', value: '0' } ];
+        $scope.selectedLifeInsurancePlan = $scope.lifeInsurancePlans[0];
+
+        companyIdPromise.then(function(companyId){
+          LifeInsuranceService.getLifeInsurancePlansForCompany(companyId, function(plans) {
+
+            // Populate available company plans
+            _.each(plans, function(plan) {
+              $scope.lifeInsurancePlans.push({ text: plan.life_insurance_plan.name, value: plan.id });
+            });
+
+            // Get current user's family life insurance plan situation
+            LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employeeId, function(familyPlan) {
+              $scope.familyLifeInsurancePlan = familyPlan;
+
+              // Determine the right plan option to select
+              if (!$scope.isLifeInsuranceWaived($scope.familyLifeInsurancePlan)) {
+                var optionToSelect = _.where($scope.lifeInsurancePlans, {value:$scope.familyLifeInsurancePlan.mainPlan.life_insurance.life_insurance_plan.id});
+                if (optionToSelect.length > 0) {
+                  $scope.selectedLifeInsurancePlan = optionToSelect[0];
+                }
+              }
+            });
+          });
+        });
+
+
         $scope.memberSelected = function(selectedBenefitFamily, member){
           var selectedMemberList = _.where(selectedBenefitFamily.eligibleMemberCombo.familyList, {selected:true});
           if(selectedMemberList.length > selectedBenefitFamily.eligibleMemberCombo.eligibleNumber){
@@ -334,6 +379,19 @@ var employeeBenefitSignup = employeeControllers.controller(
         // his/her FSA configuration.
         $scope.isFsaUpdateReasonSelected = function() {
           return $scope.selectedFsaUpdateReason.value > 0;
+        };
+
+        // Whether the user selected to waive life insurance
+        $scope.isWaiveLifeInsuranceSelected = function() {
+          return $scope.selectedLifeInsurancePlan.value === "0";
+        };
+
+        // Whether the current status of the given employee's family life insurance
+        // plan indicates a waived/not-yet-enrolled state
+        $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
+          return (!employeeFamilyLifeInsurancePlan) 
+            || (!employeeFamilyLifeInsurancePlan.mainPlan)
+            || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
         };
 
         $scope.save = function(){
@@ -419,6 +477,19 @@ var employeeBenefitSignup = employeeControllers.controller(
               $scope.savedSuccess = false;
             });
           }
+
+          // Save life insurance
+          if ($scope.isWaiveLifeInsuranceSelected()) {
+            // Waive selected. Delete all user plans for this user
+            LifeInsuranceService.deleteFamilyLifeInsurancePlanForUser(employeeId, null, function() {
+              $scope.savedSuccess = false;
+            });
+          } else {
+            $scope.familyLifeInsurancePlan.selectedCompanyPlan = $scope.selectedLifeInsurancePlan.value;
+            LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan, null, function() {
+              $scope.savedSuccess = false;
+            });
+          }  
         }
       }]);
 

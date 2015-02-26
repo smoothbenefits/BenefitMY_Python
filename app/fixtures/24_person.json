@@ -10,7 +10,8 @@
       "middle_name": null,
       "company": 1,
       "last_name": "Hancock",
-      "email": null
+      "email": null,
+      "gender": "F"
     },
     "model": "app.person",
     "pk": 1
@@ -26,7 +27,8 @@
       "middle_name": null,
       "company": null,
       "last_name": "McLaurren",
-      "email": null
+      "email": null,
+      "gender": "F"
     },
     "model": "app.person",
     "pk": 2
@@ -42,7 +44,8 @@
       "middle_name": null,
       "company": null,
       "last_name": "Cowell",
-      "email": "user3@benefitmy.com"
+      "email": "user3@benefitmy.com",
+      "gender": "F"
     },
     "model": "app.person",
     "pk": 3
@@ -58,7 +61,8 @@
       "middle_name": null,
       "company": null,
       "last_name": "Cowell",
-      "email": "christina.cowell@hotmail.com"
+      "email": "christina.cowell@hotmail.com",
+      "gender": "F"
     },
     "model": "app.person",
     "pk": 4
@@ -74,7 +78,8 @@
       "middle_name": null,
       "company": null,
       "last_name": "Glario",
-      "email": "broker@telamonins.com"
+      "email": "broker@telamonins.com",
+      "gender": "M"
     },
     "model": "app.person",
     "pk": 5
@@ -90,7 +95,8 @@
       "middle_name": null,
       "company": null,
       "last_name": "Brown",
-      "email": "employer@telamonins.com"
+      "email": "employer@telamonins.com",
+      "gender": "M"
     },
     "model": "app.person",
     "pk": 6

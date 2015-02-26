@@ -45,6 +45,109 @@
         </div>
     </div>
     <div class="panel">
+        <div class="panel-head">Life Insurance</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-label">Please select life insurance plan to enroll</div>
+                </div>
+            </div>
+            <div class="row" style="margin-top:10px;">
+                <div class="col-md-offset-2 col-md-6">
+                    <div class="select-box">
+                        <select ng-model="selectedLifeInsurancePlan"
+                            ng-options="lifeInsurancePlan as lifeInsurancePlan.text for lifeInsurancePlan in lifeInsurancePlans"
+                            class="form-control"></select>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!isWaiveLifeInsuranceSelected()">
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-4">
+                        <div class="form-label">Elected Insurance Amount</div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:3px;" ng-repeat="memberPlan in familyLifeInsurancePlan.memberPlans">
+                    <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
+                        <div>{{memberPlan.full_name}} ({{memberPlan.relationship}})</div>
+                    </div>
+                    <div class="col-md-2 input-group">
+                        <span class="input-group-addon">$</span>
+                        <input class="form-control" type="text" min="0" max="2550" ui-number-mask="0" ng-model="memberPlan.insurance_amount" />
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-4">
+                        <div class="form-label">Insurance Beneficiary</div>
+                    </div>
+                </div>
+                <div class="row"  style="margin-top:10px;">
+                    <div class="col-md-offset-2 col-md-6">
+                        <div class="form-holder">
+                            <form name="form">
+                                <div class="row">
+                                    <div class="form-label">First Name</div>
+                                    <div class="textbox">
+                                        <input type="text"
+                                            name="beneficiary_firstname"
+                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].first_name"
+                                            ng-required="true" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Middle Name</div>
+                                    <div class="textbox">
+                                        <input type="text"
+                                            name="beneficiary_middlename"
+                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].middle_name"
+                                            ng-required="false" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Last Name</div>
+                                    <div class="textbox">
+                                        <input type="text"
+                                            name="beneficiary_lastname"
+                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].last_name"
+                                            ng-required="true" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Relationship</div>
+                                    <div class="textbox">
+                                        <input type="text"
+                                            name="beneficiary_relationship"
+                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].relationship"
+                                            ng-required="true" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Phone Number</div>
+                                    <div class="textbox">
+                                        <input tyle="tel"
+                                            name="beneficiary_phone"
+                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].phone"
+                                            ng-required="true"
+                                            ui-mask="(999)999-9999" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Email</div>
+                                    <div class="textbox">
+                                        <input type="email"
+                                            name="beneficiary_email"
+                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].email"
+                                            ng-required="true"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
         <div class="panel-head">Flexible Spending Accounts</div>
         <div class="panel-body">
             <div class="row">
