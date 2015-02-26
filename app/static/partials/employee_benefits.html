@@ -143,12 +143,22 @@
                                             ng-required="true"/>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="form-label">Percentage (Please make sure percentage for all beneficiaries adds up to 100%)</div>
+                                    <div class="textbox">
+                                        <input type="number"
+                                            name="beneficiary_percentage"
+                                            ng-model="beneficiary.percentage"
+                                            ng-required="true"/>%
+                                    </div>
+                                </div>
                             </form>
                         </div>
                         <div class="add-box" style="max-width: 200px;">
                             <a ng-click="addBeneficiary()"
                                 class="btn green"
                                 ng-disabled="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.length >= 4"> + Add a new beneficiary </a>
+                            <div class="form-label">You can select up to 4 beneficiaries.</div>
                         </div>
                     </div>
                 </div>
