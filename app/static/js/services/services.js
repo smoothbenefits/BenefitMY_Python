@@ -1051,9 +1051,11 @@ benefitmyService.factory(
           }
 
           if (!memberPlanToSave.id) {
-            CompanyUserLifeInsurancePlanRepository.ById.save({id:memberPlanToSave.user}, memberPlanToSave);
+            CompanyUserLifeInsurancePlanRepository.ById.save({id:memberPlanToSave.user}, memberPlanToSave)
+              .$promise.then(null, errorCallBack(error));
           } else {
-            CompanyUserLifeInsurancePlanRepository.ById.update({id:memberPlanToSave.id}, memberPlanToSave);
+            CompanyUserLifeInsurancePlanRepository.ById.update({id:memberPlanToSave.id}, memberPlanToSave)
+              .$promise.then(null, errorCallBack(error));
           }
         });
       },
