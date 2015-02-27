@@ -97,7 +97,7 @@
                         </table>
                     </td>
                     <td width="180">
-                        <span class="inline" ng-repeat="beneficiary in familyInsurancePlan.mainPlan.life_insurance_beneficiary">{{beneficiary.first_name}} {{beneficiary.last_name}}; </span>
+                        <span class="inline" ng-repeat="beneficiary in familyInsurancePlan.mainPlan.life_insurance_beneficiary"> {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br></span>
                     </td>
                     <td width="120">{{familyInsurancePlan.mainPlan.last_update_date}}</td>
                 </tr>
