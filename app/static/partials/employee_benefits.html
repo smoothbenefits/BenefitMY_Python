@@ -84,13 +84,16 @@
                 <div class="row"  style="margin-top:10px;">
                     <div class="col-md-offset-2 col-md-6">
                         <div class="form-holder">
-                            <form name="form">
+                            <form name="form" ng-repeat="beneficiary in familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary">
+                                <div class="row">
+                                    <div class="label label-info">Beneficiary - {{$index + 1}}</div>
+                                </div>
                                 <div class="row">
                                     <div class="form-label">First Name</div>
                                     <div class="textbox">
                                         <input type="text"
                                             name="beneficiary_firstname"
-                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].first_name"
+                                            ng-model="beneficiary.first_name"
                                             ng-required="true" />
                                     </div>
                                 </div>
@@ -99,7 +102,7 @@
                                     <div class="textbox">
                                         <input type="text"
                                             name="beneficiary_middlename"
-                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].middle_name"
+                                            ng-model="beneficiary.middle_name"
                                             ng-required="false" />
                                     </div>
                                 </div>
@@ -108,7 +111,7 @@
                                     <div class="textbox">
                                         <input type="text"
                                             name="beneficiary_lastname"
-                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].last_name"
+                                            ng-model="beneficiary.last_name"
                                             ng-required="true" />
                                     </div>
                                 </div>
@@ -117,7 +120,7 @@
                                     <div class="textbox">
                                         <input type="text"
                                             name="beneficiary_relationship"
-                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].relationship"
+                                            ng-model="beneficiary.relationship"
                                             ng-required="true" />
                                     </div>
                                 </div>
@@ -126,7 +129,7 @@
                                     <div class="textbox">
                                         <input tyle="tel"
                                             name="beneficiary_phone"
-                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].phone"
+                                            ng-model="beneficiary.phone"
                                             ng-required="true"
                                             ui-mask="(999)999-9999" />
                                     </div>
@@ -136,11 +139,29 @@
                                     <div class="textbox">
                                         <input type="email"
                                             name="beneficiary_email"
-                                            ng-model="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary[0].email"
+                                            ng-model="beneficiary.email"
+                                            ng-required="true"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Percentage 
+                                    (Please make sure percentage for all beneficiaries adds up to 100%)</div>
+                                    <div class="textbox">
+                                        <input type="text"
+                                            max="100.0"
+                                            min="0.0"
+                                            name="beneficiary_percentage"
+                                            ng-model="beneficiary.percentage"
                                             ng-required="true"/>
                                     </div>
                                 </div>
                             </form>
+                        </div>
+                        <div class="add-box" style="max-width: 200px;">
+                            <a ng-click="addBeneficiary()"
+                                class="btn green"
+                                ng-disabled="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.length >= 4"> + Add a new beneficiary </a>
+                            <div class="form-label">You can select up to 4 beneficiaries.</div>
                         </div>
                     </div>
                 </div>
