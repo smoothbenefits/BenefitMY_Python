@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from app.models.address import Address
+from hash_pk_serializer_base import HashPkSerializerBase
 
 
-class AddressSerializer(serializers.ModelSerializer):
+class AddressSerializer(HashPkSerializerBase):
 
     class Meta:
         model = Address

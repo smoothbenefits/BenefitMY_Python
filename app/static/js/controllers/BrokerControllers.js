@@ -54,13 +54,15 @@ var benefitsController = brokersControllers.controller(
     '$route',
     'benefitDisplayService',
     'benefitPlanRepository',
+    'LifeInsuranceService',
     function benefitController(
      $scope,
      $location,
      $routeParams,
      $route,
      benefitDisplayService,
-     benefitPlanRepository){
+     benefitPlanRepository,
+     LifeInsuranceService){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
         $scope.benefitDeletable = true;
@@ -84,7 +86,25 @@ var benefitsController = brokersControllers.controller(
               $route.reload();
             });
           }
-        }
+        };
+
+
+        /////////////////////////////////////////////////////////////////////
+        // Life Insurance
+        // TODO: split this off once we have tabs
+        /////////////////////////////////////////////////////////////////////
+        LifeInsuranceService.getLifeInsurancePlansForCompany($routeParams.clientId, function(response) {
+          $scope.lifeInsurancePlans = response;
+          _.each($scope.lifeInsurancePlans, function(companyPlan) {
+            companyPlan.created_date_for_display = new Date(companyPlan.created_at).toDateString();
+          });
+        });
+
+        $scope.deleteLifeInsurancePlan = function(companyLifeInsurancePlan) {
+          LifeInsuranceService.deleteLifeInsurancePlanForCompany(companyLifeInsurancePlan.id, function() {
+            $route.reload();
+          });
+        };
 }]);
 
 
@@ -96,12 +116,16 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    '$routeParams', 
    'companyRepository', 
    'employeeBenefitElectionFactory',
+   'FsaService',
+   'LifeInsuranceService',
    function selectedBenefitsController(
     $scope, 
     $location, 
     $routeParams, 
     companyRepository, 
-    employeeBenefitElectionFactory){
+    employeeBenefitElectionFactory,
+    FsaService,
+    LifeInsuranceService){
 
       var clientId = $routeParams.client_id;
       $scope.employeeList = [];
@@ -113,13 +137,37 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       var promise = employeeBenefitElectionFactory(clientId);
       promise.then(function(employeeList){
+        
+        // TODO: Could/should FSA information be considered one kind of benefit election
+        //       and this logic of getting FSA data for an employee be moved into the
+        //       employeeBenefitElectionFactory? 
+        _.each(employeeList, function(employee) {
+          FsaService.getFsaElectionForUser(employee.user.id, function(response) {
+            employee.fsaElection = response;
+          });
+        });
+
+        // TODO: like the above comment for FSA, Life Insurance, or more generally speaking,
+        //       all new benefits going forward, we should consider creating as separate 
+        //       entity and maybe avoid trying to artificially bundle them together. 
+        //       Also, once we have tabs working, we should split them into proper flows.
+        _.each(employeeList, function(employee) {
+          LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employee.user.id, function(response) {
+            employee.familyInsurancePlan = response;
+          });
+        });
+
         $scope.clientCount = _.size(employeeList);
         $scope.employeeList = employeeList;
       }, function(errorResponse){
         alert(errorResponse.content);
       });
 
-      
+      $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
+        return (!employeeFamilyLifeInsurancePlan) 
+          || (!employeeFamilyLifeInsurancePlan.mainPlan)
+          || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
+      };
 
       $scope.viewDetails = function(employeeId){
         $location.path('/broker/employee/' + employeeId).search('cid', clientId);
@@ -146,6 +194,7 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
           $scope.employee.birth_date = selfInfo.birth_date;
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
+          $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
         }
       });
 
@@ -165,12 +214,16 @@ var addBenefitController = brokersControllers.controller(
    '$routeParams',
    'benefitPlanRepository',
    'benefitDetailsRepository',
+   'LifeInsuranceService',
+   'currentUser',
     function addBenefitController(
       $scope,
       $location,
       $routeParams,
       benefitPlanRepository,
-      benefitDetailsRepository){
+      benefitDetailsRepository,
+      LifeInsuranceService,
+      currentUser){
 
       var clientId = $routeParams.clientId;
       $scope.benefit = {
@@ -646,6 +699,35 @@ var addBenefitController = brokersControllers.controller(
           });
         }
       };
+
+      //////////////////////////////////////////////////////////
+      //  Life Insurance
+      //  TODO: look into separate this out once we have tabs
+      //////////////////////////////////////////////////////////
+
+      // Setup a new blank model
+      $scope.newLifeInsurancePlan = {};
+
+      // Need the user information for the current user (broker)
+      $scope.addLifeInsurancePlan = function() {
+        currentUser.get()
+        .$promise.then(function(response)
+             {
+                $scope.newLifeInsurancePlan.user = response.user.id;
+
+                // For now, we combine the gestures of
+                //  1. Broker creates the plan
+                //  2. Broker enrolls the company for the plan
+                LifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
+                  var planId = newPlan.id;
+                  LifeInsuranceService.enrollCompanyForLifeInsurancePlan(clientId, planId, function() {
+                    $location.path('/broker/benefits/' + clientId);
+                  });
+                });
+             }
+        );
+      };
+
   }]);
 
 var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',

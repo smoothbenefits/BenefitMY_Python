@@ -61,6 +61,75 @@
             </tbody>
         </table>
     </div>
+    <div class="table-responsive table-holder">
+        <div class="table-sub-title">Life Insurance</div>
+        <table class="table table-striped" ng-if="isLifeInsuranceWaived(familyInsurancePlan)">
+            <thead>
+                <tr>
+                    <th width="180"><span>Life Insurance</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="180">No active life insurance plan</td>
+                </tr>
+            </tbody>    
+        </table>
+        <table class="table table-striped" ng-if="!isLifeInsuranceWaived(familyInsurancePlan)">
+            <thead>
+                <tr>
+                    <th width="180"><span>Plan Name</span></th>
+                    <th width="250"><span>Family Member</span></th>
+                    <th width="120"><span>Elected Coverage Amount (USD)</span></th>
+                    <th width="180"><span>Beneficiary</span></th>
+                    <th width="120"><span>Last Update</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="180">{{familyInsurancePlan.mainPlan.life_insurance.life_insurance_plan.name}}</td>
+                    <td colspan="2" style="padding: 0;">
+                        <table class="table">
+                            <tr ng-repeat="memberPlan in familyInsurancePlan.memberPlans">
+                                <td width="250">{{memberPlan.full_name}} ({{memberPlan.relationship}})</td>
+                                <td width="120">${{memberPlan.insurance_amount}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="180">
+                        <span class="inline" ng-repeat="beneficiary in familyInsurancePlan.mainPlan.life_insurance_beneficiary"> {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br></span>
+                    </td>
+                    <td width="120">{{familyInsurancePlan.mainPlan.last_update_date}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="table-responsive table-holder table">
+        <div class="table-sub-title">Flexible Spending Account</div>
+        <table class="table-striped">
+            <thead>
+                <tr>
+                    <th><span>Account Type</span></th>
+                    <th><span>Elected Annual Amount (USD)</span></th>
+                    <th><span>Last Update</span></th>
+                    <th><span>Last Update Reason</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Primary Account</td>
+                    <td>${{fsaElection.primary_amount_per_year}}</td>
+                    <td rowspan="2" style="vertical-align:middle;">{{fsaElection.last_update_date_time}}</td>
+                    <td rowspan="2" style="vertical-align:middle;">{{fsaElection.update_reason}}</td>
+                </tr>
+                <tr>
+                    <td>Dependent Care Account</td>
+                    <td>${{fsaElection.dependent_amount_per_year}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div><!-- / .content-body -->
 
 <div class="content-header">
@@ -106,11 +175,17 @@
             <tbody>
                 <tr>
                     <td>I-9</td>
-                    <td><a class="btn inline" ng-click="ViewInfo('i9')"> View </a></td>
+                    <td>
+                        <a class="btn inline" ng-click="ViewInfo('i9')"> View </a>
+                        <!-- <a class="btn inline" ng-click="EditInfo('i9')"> Edit </a> -->
+                    </td>
                 </tr>
                 <tr>
                     <td>W-4</td>
-                    <td><a class="btn inline" ng-click="ViewInfo('w4')"> View </a></td>
+                    <td>
+                        <a class="btn inline" ng-click="ViewInfo('w4')"> View </a>
+                        <!-- <a class="btn inline" ng-click="EditInfo('w4')"> Edit </a> -->
+                    </td>
                 </tr>
             </tbody>
         </table>

@@ -52,6 +52,15 @@
                             </div>
                             <div style="clear:both"></div>
                         </li>
+                        <li class="list-group-item" ng-if='employee.gender'>
+                            <h4 class="col-md-5">
+                                 Gender
+                            </h4>
+                            <div class="col-md-7">
+                                {{employee.gender}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
                         <li class="list-group-item" ng-repeat="phone in employee.phones">
                             <h4 class="col-md-5">
                                 {{phone.phone_type.capitalize()}} Phone

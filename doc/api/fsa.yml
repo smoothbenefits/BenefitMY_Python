@@ -1,0 +1,69 @@
+version: v1.0
+response_format: JSON
+authentication: None
+method: GET/POST/PUT/DELETE
+resource: user
+resource_url: /api/v1/fsa/#/
+description: >
+  GET/POST/PUT/DELETE the fsa for an user,
+Note:
+1. For GET, # is the user id.  returns user fsa info 
+2. PUT/DELETE, # is the record id
+3. POST, # is useless, all the info is in the request
+
+
+GET: /api/v1/fsa/1/
+
+sample_response: |
+{
+    "id": 1, 
+    "primary_amount_per_year": "2500.00", 
+    "dependent_amount_per_year": "2500.00", 
+    "user": 1, 
+    "update_reason": "new enroll", 
+    "created_at": null, 
+    "updated_at": null
+}
+POST: /api/v1/fsa/3/
+
+sample_request: |
+{
+    "primary_amount_per_year": "2500.00", 
+    "dependent_amount_per_year": "2500.00", 
+    "user": 4, 
+    "update_reason": "new enroll", 
+}
+sample_response: |
+HTTP 201 CREATED
+{
+    "id": 4, 
+    "primary_amount_per_year": "2500.00", 
+    "dependent_amount_per_year": "2500.00", 
+    "user": 4, 
+    "update_reason": "new enroll", 
+    "created_at": "2015-02-16T02:24:19.619Z", 
+    "updated_at": "2015-02-16T02:24:19.619Z"
+}
+PUT: /api/v1/fsa/5/
+
+sample_request: |
+{
+    "primary_amount_per_year": "100.00", 
+    "dependent_amount_per_year": "100.00", 
+    "user": 4, 
+    "update_reason": "new enroll"
+}
+sample_response: |
+HTTP 200 OK
+{
+    "id": 4, 
+    "primary_amount_per_year": "100.00", 
+    "dependent_amount_per_year": "100.00", 
+    "user": 4, 
+    "update_reason": "new enroll", 
+    "created_at": "2015-02-16T02:24:19.619Z", 
+    "updated_at": "2015-02-16T02:29:28.208Z"
+}
+delete: /api/v1/fsa/5/
+sample_response: |
+HTTP 204 NO CONTENT
