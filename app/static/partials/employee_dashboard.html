@@ -96,7 +96,9 @@
                             </tr>
                         </table>
                     </td>
-                    <td width="180">{{familyInsurancePlan.mainPlan.beneficiary_full_name}}</td>
+                    <td width="180">
+                        <span class="inline" ng-repeat="beneficiary in familyInsurancePlan.mainPlan.life_insurance_beneficiary">{{beneficiary.first_name}} {{beneficiary.last_name}}; </span>
+                    </td>
                     <td width="120">{{familyInsurancePlan.mainPlan.last_update_date}}</td>
                 </tr>
             </tbody>
