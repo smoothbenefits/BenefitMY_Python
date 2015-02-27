@@ -999,11 +999,6 @@ benefitmyService.factory(
                   mainPlan.beneficiary_full_name = mainPlan.life_insurance_beneficiary[0].first_name + ' ' + mainPlan.life_insurance_beneficiary[0].last_name;
                 }
 
-                // Need to explicit parse percentage to integer
-                _.each(mainPlan.life_insurance_beneficiary, function(beneficiary){
-                  beneficiary.percentage = parseInt(beneficiary.percentage);
-                });
-
                 // If there are family members do not have life insurance record, add them
                 // so if the record is saved, they can be automatically added
                 _.each(familyMembers, function(familyMember) {
