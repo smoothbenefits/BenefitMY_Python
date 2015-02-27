@@ -486,13 +486,14 @@ var employeeBenefitSignup = employeeControllers.controller(
           // Save life insurance
           if ($scope.isWaiveLifeInsuranceSelected()) {
             // Waive selected. Delete all user plans for this user
-            LifeInsuranceService.deleteFamilyLifeInsurancePlanForUser(employeeId, null, function() {
+            LifeInsuranceService.deleteFamilyLifeInsurancePlanForUser(employeeId, null, function(error) {
               $scope.savedSuccess = false;
             });
           } else {
             $scope.familyLifeInsurancePlan.selectedCompanyPlan = $scope.selectedLifeInsurancePlan.value;
-            LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan, null, function() {
+            LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan, null, function(error) {
               $scope.savedSuccess = false;
+              alert('');
             });
           }  
         }
