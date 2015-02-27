@@ -679,11 +679,6 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
     $scope.editI9 = function(){
       $location.path('/employee/info/edit').search('type', 'i9');
     };
-
-    $scope.backToDashboard = function(){
-      $location.path('/employee');
-    }
-
   }]);
 
 
@@ -755,7 +750,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
   ['$scope', '$routeParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
   function($scope, $routeParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
     $scope.employee = {
-
+      auth_type: ''
     };
     $scope.employeeId = $routeParams.employee_id;
 
