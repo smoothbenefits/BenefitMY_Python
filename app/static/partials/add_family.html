@@ -46,6 +46,17 @@
                     <span ng-show="form.person_birth_date.$invalid">Please enter a valid Date of Birth</span>
                 </div>
             </div>
+            <div class="form-label">Gender</div>
+            <div class="select-box">
+                <select
+                    class="form-control"
+                    name="person_gender"
+                    ng-model="person.gender"
+                    ng-required="true">
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+            </div>
 
             <div class="form-label">Social Security Number*</div>
             <div class="textbox">

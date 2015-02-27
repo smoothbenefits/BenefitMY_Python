@@ -293,8 +293,8 @@ var employerUser = employersController.controller('employerUser',
   }
 ]);
 
-var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$routeParams', 'benefitDisplayService',
-  function employerBenefits($scope, $location, $routeParams, benefitDisplayService){
+var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$routeParams', 'benefitDisplayService', 'LifeInsuranceService',
+  function employerBenefits($scope, $location, $routeParams, benefitDisplayService, LifeInsuranceService){
     var compId = $routeParams.company_id;
     $scope.role = 'Admin';
     $scope.showAddBenefitButton = false;
@@ -307,6 +307,18 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
     $scope.backtoDashboard = function(){
       $location.path('/admin');
     };
+
+    /////////////////////////////////////////////////////////////////////
+    // Life Insurance
+    // TODO: split this off once we have tabs
+    /////////////////////////////////////////////////////////////////////
+
+    LifeInsuranceService.getLifeInsurancePlansForCompany($routeParams.company_id, function(response) {
+          $scope.lifeInsurancePlans = response;
+          _.each($scope.lifeInsurancePlans, function(companyPlan) {
+            companyPlan.created_date_for_display = new Date(companyPlan.created_at).toDateString();
+          });
+    });
   }
 ]);
 
@@ -589,6 +601,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
           $scope.employee.emergency_contact = selfInfo.emergency_contact;
+          $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
         }
       });
 
@@ -646,11 +659,15 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   '$routeParams', 
   'companyRepository',
   'employeeBenefitElectionFactory',
+  'FsaService',
+  'LifeInsuranceService',
   function($scope, 
            $location, 
            $routeParams, 
            companyRepository,
-           employeeBenefitElectionFactory){
+           employeeBenefitElectionFactory,
+           FsaService,
+           LifeInsuranceService){
     var company_id = $routeParams.company_id;
     $scope.employeeList = [];
 
@@ -660,12 +677,37 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
 
       var promise = employeeBenefitElectionFactory(company_id);
       promise.then(function(employeeList){
+
+        // TODO: Could/should FSA information be considered one kind of benefit election
+        //       and this logic of getting FSA data for an employee be moved into the
+        //       employeeBenefitElectionFactory? 
+        _.each(employeeList, function(employee) {
+          FsaService.getFsaElectionForUser(employee.user.id, function(response) {
+            employee.fsaElection = response;
+          });
+        });
+
+        // TODO: like the above comment for FSA, Life Insurance, or more generally speaking,
+        //       all new benefits going forward, we should consider creating as separate 
+        //       entity and maybe avoid trying to artificially bundle them together. 
+        //       Also, once we have tabs working, we should split them into proper flows.
+        _.each(employeeList, function(employee) {
+          LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employee.user.id, function(response) {
+            employee.familyInsurancePlan = response;
+          });
+        });
+
         $scope.clientCount = _.size(employeeList);
         $scope.employeeList = employeeList;
       }, function(errorResponse){
         alert(errorResponse.content);
       });
-
+    
+    $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
+        return (!employeeFamilyLifeInsurancePlan) 
+          || (!employeeFamilyLifeInsurancePlan.mainPlan)
+          || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
+      };
 
     $scope.viewDetails = function(employeeId){
         $location.path('/admin/employee_detail/' + company_id).search('eid', employeeId);
