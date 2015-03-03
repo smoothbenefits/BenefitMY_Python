@@ -86,7 +86,8 @@
                         <div class="form-holder">
                             <form name="form" ng-repeat="beneficiary in familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary">
                                 <div class="row">
-                                    <div class="label label-info">Beneficiary - {{$index + 1}}</div>
+                                    <div class="label label-info">Beneficiary - {{$index + 1}} </div>
+                                    <a type="button" ng-click="removeBeneficiary(beneficiary)"> (Remove this) </a>
                                 </div>
                                 <div class="row">
                                     <div class="form-label">First Name</div>
