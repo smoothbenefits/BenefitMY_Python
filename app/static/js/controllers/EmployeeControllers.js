@@ -213,6 +213,7 @@ var employeeBenefitSignup = employeeControllers.controller(
           if(selected)
           {
             _.each(selected.enrolleds, function(enrolled){
+              enrolled.person.pcp = enrolled.pcp;
               selectedMemberHash[enrolled.person.id] = enrolled.person;
             });
           }
@@ -262,6 +263,7 @@ var employeeBenefitSignup = employeeControllers.controller(
             $scope.medicalBenefitGroup = groupObj;
             $scope.nonMedicalBenefitArray = nonMedicalArray;
           });
+
           employeeBenefits.enroll().get({userId:employeeId, companyId:companyId})
             .$promise.then(function(response){
               $scope.selectedBenefits = response.benefits;
@@ -269,8 +271,8 @@ var employeeBenefitSignup = employeeControllers.controller(
                 benefitMember.benefit.pcp = benefitMember.pcp;
                 $scope.selectedBenefitHashmap[benefitMember.benefit.id] = benefitMember.benefit;
               });
-              benefitListRepository.get({clientId:companyId})
-              .$promise.then(function(response){
+
+              benefitListRepository.get({clientId:companyId}).$promise.then(function(response){
                 _.each(response.benefits, function(availBenefit){
                   var benefitFamilyPlan = { 'benefit': availBenefit};
                   var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
