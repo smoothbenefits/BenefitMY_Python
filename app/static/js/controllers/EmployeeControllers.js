@@ -376,6 +376,11 @@ var employeeBenefitSignup = employeeControllers.controller(
           $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.push({});
         };
 
+        $scope.removeBeneficiary = function(beneficiary){
+          var index = $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.indexOf(beneficiary);
+          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.splice(index, 1);
+        }
+
         $scope.isMedicalBenefitType = function(benefit){
           return benefit && benefit.benefit_type === 'Medical';
         };
