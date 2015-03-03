@@ -153,7 +153,7 @@ class UserFamilyView(APIView):
         user = self.get_object(pk)
         request.DATA['user'] = pk
         relationship = request.DATA['relationship']
-        if relationship != 'child':
+        if relationship != 'dependent':
             person = self.get_person_by_user(user, relationship)
             if person:
                 serializer = PersonFullPostSerializer(person, data=request.DATA)
