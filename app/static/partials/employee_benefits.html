@@ -39,7 +39,9 @@
                     </div>
                 </div>
                 <div class="col-md-8 pcp-container">
-                    <input type="text" ng-model="benefitTypePlan.selected.pcp"/>
+                    <div ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList" ng-show="member.selected">
+                        PCP# of {{member.first_name}} {{member.last_name}}:  <input type="text" ng-model="member.pcp"/> ; 
+                    </div>
                 </div>
             </div>
         </div>
