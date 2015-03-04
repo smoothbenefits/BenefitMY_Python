@@ -276,7 +276,7 @@ var employeeBenefitSignup = employeeControllers.controller(
                   var member = _.find($scope.family, function(familyMember){
                     return familyMember.id === enrolled.person.id;
                   });
-                  if (member){
+                  if (member && !member.pcp){
                     member.pcp = enrolled.pcp;
                   }
                 })
