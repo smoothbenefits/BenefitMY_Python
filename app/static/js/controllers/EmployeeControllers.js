@@ -213,6 +213,7 @@ var employeeBenefitSignup = employeeControllers.controller(
           if(selected)
           {
             _.each(selected.enrolleds, function(enrolled){
+              enrolled.person.pcp = enrolled.pcp;
               selectedMemberHash[enrolled.person.id] = enrolled.person;
             });
           }
@@ -262,15 +263,26 @@ var employeeBenefitSignup = employeeControllers.controller(
             $scope.medicalBenefitGroup = groupObj;
             $scope.nonMedicalBenefitArray = nonMedicalArray;
           });
+
           employeeBenefits.enroll().get({userId:employeeId, companyId:companyId})
             .$promise.then(function(response){
               $scope.selectedBenefits = response.benefits;
               _.each($scope.selectedBenefits, function(benefitMember){
                 benefitMember.benefit.pcp = benefitMember.pcp;
                 $scope.selectedBenefitHashmap[benefitMember.benefit.id] = benefitMember.benefit;
+
+                // Need to pass PCP number from enrolled to family object
+                _.each(benefitMember.enrolleds, function(enrolled){
+                  var member = _.find($scope.family, function(familyMember){
+                    return familyMember.id === enrolled.person.id;
+                  });
+                  if (member && !member.pcp){
+                    member.pcp = enrolled.pcp;
+                  }
+                })
               });
-              benefitListRepository.get({clientId:companyId})
-              .$promise.then(function(response){
+
+              benefitListRepository.get({clientId:companyId}).$promise.then(function(response){
                 _.each(response.benefits, function(availBenefit){
                   var benefitFamilyPlan = { 'benefit': availBenefit};
                   var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
@@ -414,7 +426,7 @@ var employeeBenefitSignup = employeeControllers.controller(
               _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
                 if(member.selected)
                 {
-                  enrolledList.push({id:member.id});
+                  enrolledList.push({id:member.id, pcp:member.pcp});
                 }
               });
             }
@@ -424,8 +436,7 @@ var employeeBenefitSignup = employeeControllers.controller(
               var requestBenefit = {
                 benefit:{
                   id:benefitTypePlan.selected.benefit.id,
-                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name,
-                  pcp:benefitTypePlan.selected.pcp
+                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
                 },
                 enrolleds:enrolledList
               };
@@ -466,6 +477,8 @@ var employeeBenefitSignup = employeeControllers.controller(
                 saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type});
               }
             });
+
+          console.log(saveRequest);
 
           employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
              function(errorResponse){
