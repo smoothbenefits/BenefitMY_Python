@@ -1,0 +1,36 @@
+[
+{
+  "model": "app.UserCompanyWaivedBenefit",
+  "pk": 1,
+  "fields":{
+  	"user": 1,
+  	"company": 1,
+  	"benefit_type": 3,
+	"reason": "Do not need"
+  }
+},
+
+{
+  "model": "app.UserCompanyWaivedBenefit",
+  "pk": 2,
+  "fields":{
+  	"user": 1,
+  	"company": 1,
+  	"benefit_type": 2,
+	"reason": "Buy it by myself"
+  }
+},
+
+{
+  "model": "app.UserCompanyWaivedBenefit",
+  "pk": 3,
+  "fields":{
+  	"user": 2,
+  	"company": 1,
+  	"benefit_type": 2,
+	"reason": "Do not need"
+  }
+}
+
+]
+

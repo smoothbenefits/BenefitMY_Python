@@ -38,7 +38,8 @@ class UserCompanyWaivedBenefitView(APIView):
                 w = UserCompanyWaivedBenefit(
                     user_id=pk,
                     company_id=comp_id,
-                    benefit_type_id=input_waive['benefit_type'])
+                    benefit_type_id=input_waive['benefit_type'],
+                    reason=input_waive['reason'])
 
                 w.save()
             return Response({'Success':'true'})
