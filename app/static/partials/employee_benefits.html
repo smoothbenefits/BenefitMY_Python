@@ -20,7 +20,7 @@
                     ng-options="plan.benefit.benefit_plan.name + ', ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
                     class="form-control"></select>
             </div>
-            <div class="row">
+            <div class="row" ng-hide="isWaived(benefitTypePlan.selected)">
                 <div class="col-sm-4"><div class="form-label">Select Members:</div></div>
                 <div class="col-sm-8">
                     <span class="checkbox" ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList">
@@ -31,7 +31,7 @@
                     </span>
                 </div>
             </div>
-            <div class="row benefit-pcp-row" ng-if="isMedicalBenefitType(benefitTypePlan)">
+            <div class="row benefit-pcp-row" ng-show="isMedicalBenefitType(benefitTypePlan) && !isWaived(benefitTypePlan.selected)">
                 <div class="col-md-4">
                     <div class="form-label">Primary Care Physician Number</div>
                     <div class="form-sub-text">
@@ -42,6 +42,16 @@
                     <div ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList" ng-show="member.selected">
                         PCP# of {{member.first_name}} {{member.last_name}}:  <input type="text" ng-model="member.pcp"/> ; 
                     </div>
+                </div>
+            </div>
+            <div class="row waive-reason-row" ng-show="isMedicalBenefitType(benefitTypePlan) && isWaived(benefitTypePlan.selected)">
+                <div class="col-md-2"><div class="form-label">Select a reason: </div></div>
+                <div class="col-md-10">
+                    <select ng-model="benefitTypePlan.selected.benefit.reason"
+                            ng-required="true"
+                            name="medical_waive_reason"
+                            ng-options="reason for reason in medicalWaiveReasons"
+                            class="form-control"></select>
                 </div>
             </div>
         </div>
