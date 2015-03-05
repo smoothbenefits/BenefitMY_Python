@@ -385,6 +385,20 @@ var employeeBenefitSignup = employeeControllers.controller(
           return benefit && benefit.benefit_type === 'Medical';
         };
 
+        $scope.isWaived = function(selectedPlan){
+          if (!selectedPlan.benefit){
+            return true;
+          }
+          return selectedPlan.benefit.benefit_plan.name.toLowerCase() === 'waive';
+        };
+
+        $scope.medicalWaiveReasons = [
+          'I am covered under another plan as a spouse or dependent',
+          'I am covered by MassHealth, Medicare, Commonwealth Health Connector plan, non-group, or Veterans program',
+          'I am covered under another plan sponsored by a second employer',
+          'I am covered by another health plan sponsored by this employer'
+        ];
+
         // Whether the user has selected a reason for updating 
         // his/her FSA configuration.
         $scope.isFsaUpdateReasonSelected = function() {
@@ -450,7 +464,13 @@ var employeeBenefitSignup = employeeControllers.controller(
           saveRequest.waivedRequest = {company:companyId, waived:[]};
           _.each($scope.availablePlans, function(benefitPlan){
               if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
+                if (!benefitPlan.selected.benefit.reason){
+                  alert("Please select a reason to waive medical plan.");
+                  return;
+                }
+
                 var type = benefitPlan.benefit_type;
+                var waiveReason = benefitPlan.selected.benefit.reason;
                 //This code below is such an hack. We need to get the type key from the server!
                 //CHANGE THIS
                 var typeKey = 0;
@@ -463,7 +483,7 @@ var employeeBenefitSignup = employeeControllers.controller(
                 if (type === 'Vision'){
                   typeKey = 3;
                 }
-                saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type});
+                saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
               }
             });
 

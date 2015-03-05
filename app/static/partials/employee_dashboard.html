@@ -52,11 +52,13 @@
             <thead>
                 <tr>
                     <th><span>Benefit Type Name</span></th>
+                    <th><span>Reason</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="waivedBenefit in waivedBenefits">
                     <td >{{waivedBenefit.benefit_type.name}}</td>
+                    <td >{{waivedBenefit.reason}}</td>
                 </tr>
             </tbody>
         </table>
