@@ -182,13 +182,100 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="add-box col-md-4" style="max-width: 200px;">
+                        <div class="form-holder">
+                            <form name="form" ng-repeat="beneficiary in familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary">
+                                <div class="row">
+                                    <div class="label label-warning">Contingent Beneficiary - {{$index + 1}} </div>
+                                    <a type="button" ng-click="removeContingentBeneficiary(beneficiary)"> (Remove this) </a>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">First Name</div>
+                                    <div class="textbox">
+                                        <input type="text"
+                                            name="beneficiary_firstname"
+                                            ng-model="beneficiary.first_name"
+                                            ng-required="true" />
+                                        <div class="form-error" ng-show="form.beneficiary_firstname.$dirty && form.beneficiary_firstname.$invalid">
+                                            <span ng-show="form.beneficiary_firstname.$error.required">First name field is required</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Middle Name</div>
+                                    <div class="textbox">
+                                        <input type="text"
+                                            name="beneficiary_middlename"
+                                            ng-model="beneficiary.middle_name"
+                                            ng-required="false" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Last Name</div>
+                                    <div class="textbox">
+                                        <input type="text"
+                                            name="beneficiary_lastname"
+                                            ng-model="beneficiary.last_name"
+                                            ng-required="true" />
+                                        <div class="form-error" ng-show="form.beneficiary_lastname.$dirty && form.beneficiary_lastname.$invalid">
+                                            <span ng-show="form.beneficiary_lastname.$error.required">Last name field is required</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Relationship</div>
+                                    <div class="textbox">
+                                        <input type="text"
+                                            name="beneficiary_relationship"
+                                            ng-model="beneficiary.relationship"
+                                            ng-required="true" />
+                                        <div class="form-error" ng-show="form.beneficiary_relationship.$dirty && form.beneficiary_relationship.$invalid">
+                                            <span ng-show="form.beneficiary_relationship.$error.required">Relationship is required</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Phone Number</div>
+                                    <div class="textbox">
+                                        <input tyle="tel"
+                                            name="beneficiary_phone"
+                                            ng-model="beneficiary.phone"
+                                            ng-required="false"
+                                            ui-mask="(999)999-9999" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Email</div>
+                                    <div class="textbox">
+                                        <input type="email"
+                                            name="beneficiary_email"
+                                            ng-model="beneficiary.email"
+                                            ng-required="false"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-label">Percentage 
+                                    (Please make sure percentage for all beneficiaries adds up to 100%)</div>
+                                    <div class="textbox">
+                                        <input type="text"
+                                            max="100.0"
+                                            min="0.0"
+                                            name="beneficiary_percentage"
+                                            ng-model="beneficiary.percentage"
+                                            ng-required="true"/>
+                                        <div class="form-error" ng-show="form.beneficiary_percentage.$dirty && form.beneficiary_percentage.$invalid">
+                                            <span ng-show="form.beneficiary_percentage.$error.required">Percentage is required</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="add-box" style="max-width: 200px;">
                             <a ng-click="addBeneficiary()"
                                 class="btn green"
                                 ng-disabled="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.length >= 4"> + Add a new beneficiary </a>
                             <div class="form-label">You can select up to 4 beneficiaries.</div>
                         </div>
-                        <div class="add-box col-md-4 col-md-offset-2" style="max-width: 200px;">
+                        <div class="add-box" style="max-width: 250px;">
                             <a ng-click="addContingentBeneficiary()"
                                 class="btn green"
                                 ng-disabled="familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.length >= 4"> + Add a new contingent beneficiary </a>

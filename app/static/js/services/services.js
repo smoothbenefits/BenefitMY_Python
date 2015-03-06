@@ -991,7 +991,13 @@ benefitmyService.factory(
                 var mainPlan = _.findWhere(planEnrollments, { person: mainPlanPerson.id });
 
                 if (!mainPlan) {
-                  mainPlan = { user:userId, person:mainPlanPerson.id, insurance_amount:0, life_insurance: {}, life_insurance_beneficiary:[] };
+                  mainPlan = { 
+                    user:userId, person:mainPlanPerson.id, 
+                    insurance_amount:0, 
+                    life_insurance: {}, 
+                    life_insurance_beneficiary:[],
+                    life_insurance_contingent_beneficiary:[] 
+                  };
                 }
 
                 if (mainPlan.life_insurance_beneficiary.length > 0)
