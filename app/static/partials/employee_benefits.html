@@ -182,11 +182,17 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="add-box" style="max-width: 200px;">
+                        <div class="add-box col-md-4" style="max-width: 200px;">
                             <a ng-click="addBeneficiary()"
                                 class="btn green"
                                 ng-disabled="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.length >= 4"> + Add a new beneficiary </a>
                             <div class="form-label">You can select up to 4 beneficiaries.</div>
+                        </div>
+                        <div class="add-box col-md-4 col-md-offset-2" style="max-width: 200px;">
+                            <a ng-click="addContingentBeneficiary()"
+                                class="btn green"
+                                ng-disabled="familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.length >= 4"> + Add a new contingent beneficiary </a>
+                            <div class="form-label">You can select up to 4 contingent beneficiaries.</div>
                         </div>
                     </div>
                 </div>
