@@ -54,16 +54,6 @@
                             class="form-control"></select>
                 </div>
             </div>
-            <div class="row waive-reason-row" ng-show="isMedicalBenefitType(benefitTypePlan) && isWaived(benefitTypePlan.selected)">
-                <div class="col-md-2"><div class="form-label">Select a reason: </div></div>
-                <div class="col-md-10">
-                    <select ng-model="benefitTypePlan.selected.benefit.reason"
-                            ng-required="true"
-                            name="medical_waive_reason"
-                            ng-options="reason for reason in medicalWaiveReasons"
-                            class="form-control"></select>
-                </div>
-            </div>
         </div>
     </div>
     <div class="panel">

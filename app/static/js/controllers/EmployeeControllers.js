@@ -475,18 +475,20 @@ var employeeBenefitSignup = employeeControllers.controller(
           saveRequest.waivedRequest = {company:companyId, waived:[]};
           _.each($scope.availablePlans, function(benefitPlan){
               if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
-                if (!benefitPlan.selected.benefit.reason){
+                if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
                   alert("Please select a reason to waive medical plan.");
+                  $location.path('/employee/benefit/' + $scope.employee_id);
                   return;
                 }
 
                 var type = benefitPlan.benefit_type;
-                var waiveReason = benefitPlan.selected.benefit.reason;
+                var waiveReason = 'Not applicable';
                 //This code below is such an hack. We need to get the type key from the server!
                 //CHANGE THIS
                 var typeKey = 0;
                 if (type === 'Medical'){
                   typeKey = 1;
+                  waiveReason = benefitPlan.selected.benefit.reason;
                 }
                 if (type === 'Dental'){
                   typeKey = 2;
@@ -531,7 +533,7 @@ var employeeBenefitSignup = employeeControllers.controller(
             $scope.familyLifeInsurancePlan.selectedCompanyPlan = $scope.selectedLifeInsurancePlan.value;
             LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan, null, function(error) {
               $scope.savedSuccess = false;
-              alert('');
+              alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
             });
           }  
         }
