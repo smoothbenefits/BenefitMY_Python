@@ -739,7 +739,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
     $scope.editMode = $routeParams.edit;
     $scope.person = { role: 'Employee' };
     $scope.direct_deposit = { bank_accounts: [] };
-    $scope.bankAccountTypes = ['Checking Account', 'Saving Account'];
+    $scope.bankAccountTypes = ['Checking', 'Saving'];
 
     $scope.enableEditing = function(){
       $scope.editMode = true;
@@ -759,9 +759,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
     };
 
     var userPromise = currentUser.get().$promise.then(function(response){
-      $scope.person.first_name = response.user.first_name;
-      $scope.person.last_name = response.user.last_name;
-      $scope.person.userId = response.user.id;
+      $scope.person = response.user;
       return response.user.id;
     });
 
@@ -784,15 +782,16 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
     });
 
     $scope.submitDirectDeposit = function(){
+      var request_body = { user: $scope.person.id, bank_account: $scope.direct_deposit.bank_accounts };
       if ($scope.hasDirectDeposit){
-        DirectDepositService.updateDirectDepositByUserId($scope.person.userId, $scope.direct_deposit, function(response){
+        DirectDepositService.updateDirectDepositByUserId($scope.person.id, request_body, function(response){
           $location.path('/employee');
         }, function(error){
           alert('Failed to save direct deposit information due to ' + error);
         });
       }
       else{
-        DirectDepositService.createDirectDepositByUserId($scope.person.userId, $scope.direct_deposit, function(response){
+        DirectDepositService.createDirectDepositByUserId($scope.person.id, request_body, function(response){
           $location.path('/employee');
         }, function(error){
           alert('Failed to create direct deposit record due to ' + error);
