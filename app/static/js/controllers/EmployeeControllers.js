@@ -844,9 +844,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
     };
 
     var userPromise = currentUser.get().$promise.then(function(response){
-      $scope.person.first_name = response.user.first_name;
-      $scope.person.last_name = response.user.last_name;
-      $scope.person.userId = response.user.id;
+      $scope.person = response.user;
       return response.user.id;
     });
 
@@ -874,7 +872,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
         });
       }
       else{
-        DirectDepositService.createDirectDepositByUserId($scope.person.userId, $scope.direct_deposit, function(response){
+        DirectDepositService.createDirectDepositByUserId($scope.person.id, request_body, function(response){
           $location.path('/employee');
         }, function(error){
           alert('Failed to create direct deposit record due to ' + error);
