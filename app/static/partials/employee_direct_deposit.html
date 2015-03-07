@@ -77,7 +77,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="form-label">Name of your Bank</div>
                 <div class="textbox">
@@ -87,6 +86,26 @@
                         ng-required="true">
                     <div class="form-error" ng-show="form.bank_name.$dirty && form.bank_name.$invalid">
                       <span ng-show="form.bank_name.$error.required">Your bank's name is required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-label">Amount</div>
+                    <div class="textbox">
+                        <input type="number"
+                            name="amount"
+                            ng-model="account.amount"
+                            ng-required="false">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-label">Percentage (without % sign)</div>
+                    <div class="text">
+                        <input type="number"
+                            name="percentage"
+                            ng-model="account.percentage"
+                            ng-required="false">
                     </div>
                 </div>
             </div>
