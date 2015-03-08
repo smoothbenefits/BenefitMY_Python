@@ -338,6 +338,7 @@ var employeeBenefitSignup = employeeControllers.controller(
         });
 
         // Life Insurance 
+        $scope.selectBasicLifeInsurance = true;
         $scope.lifeInsurancePlans = [ { text: '<Waive Life Insurance>', value: '0' } ];
         $scope.selectedLifeInsurancePlan = $scope.lifeInsurancePlans[0];
 
