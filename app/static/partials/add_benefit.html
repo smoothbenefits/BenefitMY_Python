@@ -158,13 +158,13 @@
                                     name="basic_life_insurance_plan_amount"
                                     ng-model="newLifeInsurancePlan.amount"
                                     ng-required="true">
-                                <div class="form-error" ng-show="form2.basic_life_insurance_plan_amount.$invalid">
+                                <div class="form-error" ng-show="form2.basic_life_insurance_plan_amount.$dirty && form2.basic_life_insurance_plan_amount.$invalid">
                                   <span ng-show="form2.basic_life_insurance_plan_amount.$error.required">Basic life insurance required preset amount</span>
                                 </div>
                             </div>
                         </div>
                         <div class="submit-box">
-                            <button ng-click="addLifeInsurancePlan()" class="btn green" ng-disabled="form2.$invalid">Add Plan</button>
+                            <button ng-click="addLifeInsurancePlan()" class="btn green" ng-disabled="!newLifeInsurancePlan.name">Add Plan</button>
                         </div>
                     </div>
                 </form>

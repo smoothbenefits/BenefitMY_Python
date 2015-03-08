@@ -106,6 +106,39 @@
             </tbody>
         </table>
 
+        <table class="table table-striped" ng-show="!basicLifeInsurancePlan">
+            <thead>
+                <tr>
+                    <th width="180"><span>Basic Life Insurance</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="180">No active basic life insurance plan</td>
+                </tr>
+            </tbody>    
+        </table>
+        <table class="table table-striped" ng-show="basicLifeInsurancePlan">
+            <thead>
+                <tr>
+                    <th width="180"><span>Plan Name</span></th>
+                    <th width="120"><span>Elected Coverage Amount (USD)</span></th>
+                    <th width="180"><span>Beneficiary</span></th>
+                    <th width="120"><span>Last Update</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="180">{{basicLifeInsurancePlan.life_insurance.life_insurance_plan.name}}</td>
+                    <td width="180">{{basicLifeInsurancePlan.life_insurance.insurance_amount}}</td>
+                    <td width="180">
+                        <span class="inline" ng-repeat="beneficiary in basicLifeInsurancePlan.life_insurance_beneficiary"> {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br></span>
+                    </td>
+                    <td width="120">{{basicLifeInsurancePlan.life_insurance.updated_at}}</td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
     <div class="table-responsive table-holder table">
         <div class="table-sub-title">Flexible Spending Account</div>
