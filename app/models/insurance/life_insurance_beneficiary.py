@@ -2,6 +2,9 @@ from django.db import models
 from user_company_life_insurance_plan import UserCompanyLifeInsurancePlan
 from ..person import Person
 
+TIER = ([(item, item) for item in ['1', '2']])
+
+
 class LifeInsuranceBeneficiary(models.Model):
     first_name = models.CharField(max_length=255, null=True)
     middle_name = models.CharField(max_length=255, null=True, blank=True)
@@ -17,5 +20,9 @@ class LifeInsuranceBeneficiary(models.Model):
                                     decimal_places=2,
                                     null=True,
                                     blank=True)
+    tier = models.CharField(max_length=1,
+                            choices=TIER,
+                            null=True,
+                            blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)

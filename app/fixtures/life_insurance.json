@@ -3,7 +3,8 @@
     "fields": {
       "name": "metlife",
       "attachment": "s3://abcd",
-      "user": 1
+      "user": 1,
+      "insurance_type": "Basic"
     },
     "model": "app.lifeinsuranceplan",
     "pk": 1
@@ -13,7 +14,8 @@
     "fields": {
       "name": "liberty mutual",
       "attachment": "s3://abcde",
-      "user": 2
+      "user": 2,
+      "insurance_type": "Extended"
     },
     "model": "app.lifeinsuranceplan",
     "pk": 2
@@ -22,7 +24,8 @@
     "fields": {
       "name": "geico",
       "attachment": "s3://abcdef",
-      "user": 3
+      "user": 3,
+      "insurance_type": "Extended"
     },
     "model": "app.lifeinsuranceplan",
     "pk": 3
@@ -36,6 +39,7 @@
       "total_cost_per_period": "500.00",
       "employee_cost_per_period": "400.00",
       "benefit_option_type": "individual_plus_spouse",
+      "insurance_amount": "500",
       "company": 1,
       "life_insurance_plan": 1
     },
@@ -48,6 +52,7 @@
       "total_cost_per_period": "800.00",
       "employee_cost_per_period": "600.00",
       "benefit_option_type": "individual_plus_family",
+      "insurance_amount": "600",
       "company": 1,
       "life_insurance_plan": 1
     },
@@ -73,8 +78,7 @@
     "fields": {
       "user": 1,
       "life_insurance": 1,
-      "person": 1,
-      "insurance_amount": "100000.00"
+      "person": 1
     },
     "model": "app.usercompanylifeinsuranceplan",
     "pk": 1
@@ -84,8 +88,7 @@
     "fields": {
       "user": 3,
       "life_insurance": 3,
-      "person": 3,
-      "insurance_amount": "200000.00"
+      "person": 3
     },
     "model": "app.usercompanylifeinsuranceplan",
     "pk": 2
@@ -95,8 +98,7 @@
     "fields": {
       "user": 3,
       "life_insurance": 3,
-      "person": 4,
-      "insurance_amount": "250000.00"
+      "person": 4
     },
     "model": "app.usercompanylifeinsuranceplan",
     "pk": 3
@@ -111,7 +113,7 @@
       "relationship": "spouse",
       "email": "eric@gmail.com",
       "phone": "6179037645",
-      "user_life_insurance_plan": 1
+      "user_life_insurance_plan": 2
     },
     "model": "app.lifeinsurancebeneficiary",
     "pk": 1
@@ -127,7 +129,7 @@
       "user_life_insurance_plan": 2
     },
     "model": "app.lifeinsurancebeneficiary",
-    "pk": 1
+    "pk": 2
    }
 
 ]
