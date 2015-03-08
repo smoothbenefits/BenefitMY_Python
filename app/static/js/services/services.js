@@ -992,11 +992,12 @@ benefitmyService.factory(
 
                 if (!mainPlan) {
                   mainPlan = { 
-                    user:userId, person:mainPlanPerson.id, 
-                    insurance_amount:0, 
+                    user: userId, 
+                    person: mainPlanPerson.id, 
+                    insurance_amount: 0, 
                     life_insurance: {}, 
-                    life_insurance_beneficiary:[],
-                    life_insurance_contingent_beneficiary:[] 
+                    life_insurance_beneficiary: [],
+                    life_insurance_contingent_beneficiary: []
                   };
                 }
 
