@@ -706,7 +706,7 @@ var addBenefitController = brokersControllers.controller(
       //////////////////////////////////////////////////////////
 
       // Setup a new blank model
-      $scope.newLifeInsurancePlan = {};
+      $scope.newLifeInsurancePlan = {type: 'Basic'};
 
       // Need the user information for the current user (broker)
       $scope.addLifeInsurancePlan = function() {

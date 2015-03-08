@@ -122,14 +122,45 @@
             <div class="benefit-form-holder">
                 <form name="form2" class="dynamic-form">
                     <div class="form-holder">
-                        <div class="form-label">Plan Name</div>
-                        <div class="textbox">
-                            <input type="text"
-                                name="new_life_insurance_plan_name"
-                                ng-model="newLifeInsurancePlan.name"
-                                ng-required="true">
-                            <div class="form-error" ng-show="form2.new_life_insurance_plan_name.$dirty && form2.new_life_insurance_plan_name.$invalid">
-                              <span ng-show="form2.new_life_insurance_plan_name.$error.required">Plan name field is required</span>
+                        <div class="row col-md-8">
+                            <div class="radio-label">
+                                    <label class="control-label">What is the type of the new life insurance?</label>
+                                </div>
+                                <div class="radio-container">
+                                    <div class="col-md-6 col">
+                                        <input type="radio" name="life_insurance_type" ng-model="newLifeInsurancePlan.type" value="Basic">
+                                        Basic
+                                    </div>
+                                    <div class="col-md-6 col">
+                                        <input type="radio" name="life_insurance_type" ng-model="newLifeInsurancePlan.type" value="Extended">
+                                        Supplemental
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row col-md-8">
+                            <div class="form-label">Plan Name</div>
+                            <div class="textbox">
+                                <input type="text"
+                                    name="new_life_insurance_plan_name"
+                                    ng-model="newLifeInsurancePlan.name"
+                                    ng-required="true">
+                                <div class="form-error" ng-show="form2.new_life_insurance_plan_name.$dirty && form2.new_life_insurance_plan_name.$invalid">
+                                  <span ng-show="form2.new_life_insurance_plan_name.$error.required">Plan name field is required</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="amount-countainer row col-md-8" ng-show="newLifeInsurancePlan.type === 'Basic'">
+                            <div class="form-label">Amount</div>
+                            <div class="textbox">
+                                <input type="number"
+                                    min="0.0"
+                                    name="basic_life_insurance_plan_amount"
+                                    ng-model="newLifeInsurancePlan.amount"
+                                    ng-required="true">
+                                <div class="form-error" ng-show="form2.basic_life_insurance_plan_amount.$invalid">
+                                  <span ng-show="form2.basic_life_insurance_plan_amount.$error.required">Basic life insurance required preset amount</span>
+                                </div>
                             </div>
                         </div>
                         <div class="submit-box">
