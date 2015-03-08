@@ -991,7 +991,14 @@ benefitmyService.factory(
                 var mainPlan = _.findWhere(planEnrollments, { person: mainPlanPerson.id });
 
                 if (!mainPlan) {
-                  mainPlan = { user:userId, person:mainPlanPerson.id, insurance_amount:0, life_insurance: {}, life_insurance_beneficiary:[] };
+                  mainPlan = { 
+                    user: userId, 
+                    person: mainPlanPerson.id, 
+                    insurance_amount: 0, 
+                    life_insurance: {}, 
+                    life_insurance_beneficiary: [],
+                    life_insurance_contingent_beneficiary: []
+                  };
                 }
 
                 if (mainPlan.life_insurance_beneficiary.length > 0)
@@ -1047,7 +1054,22 @@ benefitmyService.factory(
           };
 
           if (memberPlanToSave.person === mainPlan.person) {
-            memberPlanToSave.life_insurance_beneficiary = mainPlan.life_insurance_beneficiary;
+
+            // insert beneficiary tier information
+            memberPlanToSave.life_insurance_beneficiary = [];
+            if (mainPlan.life_insurance_beneficiary){
+              _.each(mainPlan.life_insurance_beneficiary, function(beneficiary){
+                beneficiary.tier = "1";
+                memberPlanToSave.life_insurance_beneficiary.push(beneficiary);
+              });
+            }
+
+            if (mainPlan.life_insurance_contingent_beneficiary){
+              _.each(mainPlan.life_insurance_contingent_beneficiary, function(beneficiary){
+                beneficiary.tier = "2";
+                memberPlanToSave.life_insurance_beneficiary.push(beneficiary);
+              });
+            }
           }
 
           if (!memberPlanToSave.id) {
