@@ -924,8 +924,8 @@ benefitmyService.factory(
           });
       },
 
-      enrollCompanyForLifeInsurancePlan: function(companyId, planId, successCallBack, errorCallBack) {
-        var linkToSave = { "company":companyId, "life_insurance_plan":planId };
+      enrollCompanyForLifeInsurancePlan: function(companyId, planId, amount, successCallBack, errorCallBack) {
+        var linkToSave = { "company":companyId, "life_insurance_plan":planId, "insurance_amount": amount };
         CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
               if (successCallBack) {

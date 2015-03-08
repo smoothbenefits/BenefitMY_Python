@@ -706,7 +706,7 @@ var addBenefitController = brokersControllers.controller(
       //////////////////////////////////////////////////////////
 
       // Setup a new blank model
-      $scope.newLifeInsurancePlan = {type: 'Basic'};
+      $scope.newLifeInsurancePlan = {insurance_type: 'Basic'};
 
       // Need the user information for the current user (broker)
       $scope.addLifeInsurancePlan = function() {
@@ -720,7 +720,12 @@ var addBenefitController = brokersControllers.controller(
                 //  2. Broker enrolls the company for the plan
                 LifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
                   var planId = newPlan.id;
-                  LifeInsuranceService.enrollCompanyForLifeInsurancePlan(clientId, planId, function() {
+                  var insurance_amount = 0.0;
+                  if ($scope.newLifeInsurancePlan.amount){
+                    insurance_amount = $scope.newLifeInsurancePlan.amount;
+                  }
+
+                  LifeInsuranceService.enrollCompanyForLifeInsurancePlan(clientId, planId, insurance_amount, function() {
                     $location.path('/broker/benefits/' + clientId);
                   });
                 });

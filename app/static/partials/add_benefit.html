@@ -128,11 +128,11 @@
                                 </div>
                                 <div class="radio-container">
                                     <div class="col-md-6 col">
-                                        <input type="radio" name="life_insurance_type" ng-model="newLifeInsurancePlan.type" value="Basic">
+                                        <input type="radio" name="life_insurance_type" ng-model="newLifeInsurancePlan.insurance_type" value="Basic">
                                         Basic
                                     </div>
                                     <div class="col-md-6 col">
-                                        <input type="radio" name="life_insurance_type" ng-model="newLifeInsurancePlan.type" value="Extended">
+                                        <input type="radio" name="life_insurance_type" ng-model="newLifeInsurancePlan.insurance_type" value="Extended">
                                         Supplemental
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="amount-countainer row col-md-8" ng-show="newLifeInsurancePlan.type === 'Basic'">
+                        <div class="amount-countainer row col-md-8" ng-show="newLifeInsurancePlan.insurance_type === 'Basic'">
                             <div class="form-label">Amount</div>
                             <div class="textbox">
                                 <input type="number"
