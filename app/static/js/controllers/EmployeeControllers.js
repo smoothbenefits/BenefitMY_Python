@@ -121,19 +121,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
     // Life Insurance
     curUserPromise.then(function(userId) {
       LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(userId, function(response) {
-        var extendedLife = [];
         $scope.familyInsurancePlan = response;
+      });
 
-        _.each(response.memberPlans, function(plan){
-          if (plan.life_insurance.life_insurance_plan.insurance_type === 'Basic'){
-            $scope.basicLifeInsurancePlan = plan;
-          }
-          if (plan.life_insurance.life_insurance_plan.insurance_type === 'Extended'){
-            extendedLife.push(plan);
-          }
-        });
-
-        $scope.familyInsurancePlan.memberPlans = extendedLife;
+      LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
+        $scope.basicLifeInsurancePlan = response;
       });
     });
 
@@ -367,6 +359,14 @@ var employeeBenefitSignup = employeeControllers.controller(
               else{
                 $scope.lifeInsurancePlans.push({ text: plan.life_insurance_plan.name, value: plan.id });  
               }
+            });
+
+            // Get current user's basic life insurance plan situation
+            LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
+              $scope.basicLifeInsurancePlan.life_insurance_beneficiary = plan.life_insurance_beneficiary;
+              $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = plan.life_insurance_contingent_beneficiary;
+            }, function(error){
+              $scope.error = true;
             });
 
             // Get current user's family life insurance plan situation

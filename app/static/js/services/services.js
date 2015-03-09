@@ -971,6 +971,40 @@ benefitmyService.factory(
           );
       },
 
+      getBasicLifeInsuranceEnrollmentByUser: function(userId, successCallBack, errorCallBack) {
+        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId: userId})
+          .$promise.then(
+            function(response){
+              planEnrollments = _.find(response, 
+                function(plan){ return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';}
+              );
+
+              if (planEnrollments){
+                planEnrollments.enrolled = true;
+              }
+              else{
+                planEnrollments = { enrolled: false, life_insurance_beneficiary: [] };
+              }
+
+              var firstTier = [];
+              var secondTier = [];
+              _.each(planEnrollments.life_insurance_beneficiary, function(beneficiary){
+                if (beneficiary.tier === '1'){
+                  firstTier.push(beneficiary);
+                }
+                if (beneficiary.tier === '2'){
+                  secondTier.push(beneficiary);
+                }
+              });
+              planEnrollments.life_insurance_beneficiary = firstTier;
+              planEnrollments.life_insurance_contingent_beneficiary = secondTier;
+
+              successCallBack(planEnrollments);
+            }, function(error){
+              errorCallBack(error);
+            });
+      },
+
       getInsurancePlanEnrollmentsForAllFamilyMembersByUser: function(userId, successCallBack, errorCallBack) {
         var familyMembers = [];
         var planEnrollments = [];
@@ -980,8 +1014,9 @@ benefitmyService.factory(
           .$promise.then(
             function (successResponse) {
               // Filter out basic life insurance enrolled by user
-              planEnrollments = _.where(successResponse, 
-                function(plan){ return plan.life_insurance.life_insurance_plan.insurance_type === 'Extended'; });
+              planEnrollments = _.filter(successResponse, 
+                function(plan){ return plan.life_insurance.life_insurance_plan.insurance_type === 'Extended'; }
+                );
 
               employeeFamily.get({userId:userId})
               .$promise.then(function(familyResponse){
@@ -1032,7 +1067,8 @@ benefitmyService.factory(
                         person:familyMember.id, 
                         insurance_amount:0, 
                         life_insurance: mainPlan.life_insurance, 
-                        life_insurance_beneficiary:mainPlan.life_insurance_beneficiary 
+                        life_insurance_beneficiary:mainPlan.life_insurance_beneficiary,
+                        life_insurance_contingent_beneficiary: mainPlan.life_insurance_contingent_beneficiary 
                       };
                       planEnrollments.push(newPlan);
                   }
