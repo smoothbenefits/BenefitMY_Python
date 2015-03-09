@@ -38,7 +38,7 @@
                     <td width="180">${{benefitElement.benefit.employee_cost_per_period}}</td>
                     <td width="300">
                         <div class="inner-td-div" ng-repeat="enrolled in benefitElement.enrolleds">
-                            {{enrolled.person.relationship.capitalize()}} : {{enrolled.person.first_name}} {{enrolled.person.last_name}}
+                            {{enrolled.person.relationship.capitalize()}} : {{enrolled.person.first_name}} {{enrolled.person.last_name}} <span ng-show="enrolled.pcp && benefitElement.benefit.benefit_plan.benefit_type.name === 'Medical'">(PCP#: {{enrolled.pcp}})</span>
                         </div>
                     </td>
                 </tr>
@@ -52,11 +52,13 @@
             <thead>
                 <tr>
                     <th><span>Benefit Type Name</span></th>
+                    <th><span>Reason</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="waivedBenefit in waivedBenefits">
                     <td >{{waivedBenefit.benefit_type.name}}</td>
+                    <td >{{waivedBenefit.reason}}</td>
                 </tr>
             </tbody>
         </table>
@@ -100,6 +102,39 @@
                         <span class="inline" ng-repeat="beneficiary in familyInsurancePlan.mainPlan.life_insurance_beneficiary"> {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br></span>
                     </td>
                     <td width="120">{{familyInsurancePlan.mainPlan.last_update_date}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-striped" ng-show="!basicLifeInsurancePlan">
+            <thead>
+                <tr>
+                    <th width="180"><span>Basic Life Insurance</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="180">No active basic life insurance plan</td>
+                </tr>
+            </tbody>    
+        </table>
+        <table class="table table-striped" ng-show="basicLifeInsurancePlan">
+            <thead>
+                <tr>
+                    <th width="180"><span>Plan Name</span></th>
+                    <th width="120"><span>Elected Coverage Amount (USD)</span></th>
+                    <th width="180"><span>Beneficiary</span></th>
+                    <th width="120"><span>Last Update</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="180">{{basicLifeInsurancePlan.life_insurance.life_insurance_plan.name}}</td>
+                    <td width="180">{{basicLifeInsurancePlan.life_insurance.insurance_amount}}</td>
+                    <td width="180">
+                        <span class="inline" ng-repeat="beneficiary in basicLifeInsurancePlan.life_insurance_beneficiary"> {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br></span>
+                    </td>
+                    <td width="120">{{basicLifeInsurancePlan.life_insurance.updated_at}}</td>
                 </tr>
             </tbody>
         </table>
