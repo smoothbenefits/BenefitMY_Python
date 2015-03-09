@@ -603,7 +603,8 @@ var employeeBenefitSignup = employeeControllers.controller(
                 return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';
               });
               if (enrolledBasic){
-                $scope.basicLifeInsurancePlan.enrolled = true;  
+                $scope.basicLifeInsurancePlan.enrolled = true;
+                $scope.basicLifeInsurancePlan.id = enrolledBasic.id;
               }
               else{
                 $scope.basicLifeInsurancePlan.enrolled = false;
