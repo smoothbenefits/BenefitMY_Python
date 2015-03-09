@@ -121,7 +121,19 @@ var employeeHome = employeeControllers.controller('employeeHome',
     // Life Insurance
     curUserPromise.then(function(userId) {
       LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(userId, function(response) {
+        var extendedLife = [];
         $scope.familyInsurancePlan = response;
+
+        _.each(response.memberPlans, function(plan){
+          if (plan.life_insurance.life_insurance_plan.insurance_type === 'Basic'){
+            $scope.basicLifeInsurancePlan = plan;
+          }
+          if (plan.life_insurance.life_insurance_plan.insurance_type === 'Extended'){
+            extendedLife.push(plan);
+          }
+        });
+
+        $scope.familyInsurancePlan.memberPlans = extendedLife;
       });
     });
 
@@ -346,7 +358,15 @@ var employeeBenefitSignup = employeeControllers.controller(
 
             // Populate available company plans
             _.each(plans, function(plan) {
-              $scope.lifeInsurancePlans.push({ text: plan.life_insurance_plan.name, value: plan.id });
+              // separate basic life insurance from supplemental life insurance.
+              // for now, it will pick the last basic life insurance defined by broker.
+              if (plan.life_insurance_plan.insurance_type === 'Basic'){
+                $scope.basicLifeInsurancePlan = plan;
+                $scope.basicLifeInsurancePlan.selected = true;
+              }
+              else{
+                $scope.lifeInsurancePlans.push({ text: plan.life_insurance_plan.name, value: plan.id });  
+              }
             });
 
             // Get current user's family life insurance plan situation
@@ -388,11 +408,25 @@ var employeeBenefitSignup = employeeControllers.controller(
           $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.push({});
         };
 
+        $scope.addBeneficiaryToBasic = function(){
+          if (!$scope.basicLifeInsurancePlan.life_insurance_beneficiary){
+            $scope.basicLifeInsurancePlan.life_insurance_beneficiary = []
+          }
+          $scope.basicLifeInsurancePlan.life_insurance_beneficiary.push({});
+        };
+
         $scope.addContingentBeneficiary = function(){
           if (!$scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary){
             $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary = [];
           }
           $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.push({});
+        };
+
+        $scope.addContingentBeneficiaryToBasic = function(){
+          if (!$scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary){
+            $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = []
+          }
+          $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary.push({});
         };
 
         $scope.removeBeneficiary = function(beneficiary){
@@ -403,6 +437,11 @@ var employeeBenefitSignup = employeeControllers.controller(
         $scope.removeContingentBeneficiary = function(beneficiary){
           var index = $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.indexOf(beneficiary);
           $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.splice(index, 1);
+        };
+
+        $scope.removeFromList = function(item, list){
+          var index = list.indexOf(item);
+          list.splice(index, 1);
         };
 
         $scope.isMedicalBenefitType = function(benefit){
@@ -547,8 +586,40 @@ var employeeBenefitSignup = employeeControllers.controller(
               $scope.savedSuccess = false;
               alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
             });
-          }  
-        }
+          }
+
+          ///////////////////////////////////////////////////////////////////////////
+          // Save basic life insurance
+          // TO-DO: Need to better organize the logic to save basic life insurance
+          ///////////////////////////////////////////////////////////////////////////
+          if (!$scope.basicLifeInsurancePlan.selected){
+            LifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId, null, function(error) {
+              $scope.savedSuccess = false;
+            });
+          }
+          else{
+            LifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
+              var enrolledBasic = _.find(enrolledPlans, function(plan){ 
+                return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';
+              });
+              if (enrolledBasic){
+                $scope.basicLifeInsurancePlan.enrolled = true;  
+              }
+              else{
+                $scope.basicLifeInsurancePlan.enrolled = false;
+              }
+              
+              $scope.basicLifeInsurancePlan.currentUserId = employeeId;
+
+              LifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, null, function(error){
+                $scope.savedSuccess = false;
+                alert('Failed to save basic life insurance. Please make sure all required fields have been filled.')
+              });
+            }, function(error) {
+              $scope.savedSuccess = false;
+            });
+          }
+        };
       }]);
 
 var addFamily = employeeControllers.controller('addFamily', 

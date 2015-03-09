@@ -924,8 +924,8 @@ benefitmyService.factory(
           });
       },
 
-      enrollCompanyForLifeInsurancePlan: function(companyId, planId, successCallBack, errorCallBack) {
-        var linkToSave = { "company":companyId, "life_insurance_plan":planId };
+      enrollCompanyForLifeInsurancePlan: function(companyId, planId, amount, successCallBack, errorCallBack) {
+        var linkToSave = { "company":companyId, "life_insurance_plan":planId, "insurance_amount": amount };
         CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
               if (successCallBack) {
@@ -979,7 +979,9 @@ benefitmyService.factory(
         CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(
             function (successResponse) {
-              planEnrollments = successResponse;
+              // Filter out basic life insurance enrolled by user
+              planEnrollments = _.where(successResponse, 
+                function(plan){ return plan.life_insurance.life_insurance_plan.insurance_type === 'Extended'; });
 
               employeeFamily.get({userId:userId})
               .$promise.then(function(familyResponse){
@@ -1001,6 +1003,20 @@ benefitmyService.factory(
                   };
                 }
 
+                // Categorize beneficiary
+                var firstTier = [];
+                var secondTier = [];
+                _.each(mainPlan.life_insurance_beneficiary, function(beneficiary){
+                  if (beneficiary.tier === '1'){
+                    firstTier.push(benefitciary);
+                  }
+                  if (beneficiary.tier === '2'){
+                    secondTier.push(benefitciary);
+                  }
+                });
+                mainPlan.life_insurance_beneficiary = firstTier;
+                mainPlan.life_insurance_contingent_beneficiary = secondTier;
+
                 if (mainPlan.life_insurance_beneficiary.length > 0)
                 {
                   mainPlan.beneficiary_full_name = mainPlan.life_insurance_beneficiary[0].first_name + ' ' + mainPlan.life_insurance_beneficiary[0].last_name;
@@ -1011,7 +1027,13 @@ benefitmyService.factory(
                 _.each(familyMembers, function(familyMember) {
                   var memberPlan = _.findWhere(planEnrollments, { person: familyMember.id });
                   if (!memberPlan) {
-                      var newPlan = { user:userId, person:familyMember.id, insurance_amount:0, life_insurance: mainPlan.life_insurance, life_insurance_beneficiary:mainPlan.life_insurance_beneficiary };
+                      var newPlan = { 
+                        user:userId, 
+                        person:familyMember.id, 
+                        insurance_amount:0, 
+                        life_insurance: mainPlan.life_insurance, 
+                        life_insurance_beneficiary:mainPlan.life_insurance_beneficiary 
+                      };
                       planEnrollments.push(newPlan);
                   }
 
@@ -1037,6 +1059,52 @@ benefitmyService.factory(
               }
             }
           );
+      },
+
+      saveBasicLifeInsurancePlanForUser: function(basicLifeToSave, successCallBack, errorCallBack) {
+        var userId = basicLifeToSave.currentUserId;
+        employeeFamily.get({userId:userId}).$promise.then(function(familyResponse){
+          var mainPlanPerson = _.findWhere(familyResponse.family, { relationship: 'self' });
+
+          var planToSave = {
+            "id": basicLifeToSave.id,
+            "user": userId,
+            "person": mainPlanPerson.id,
+            "life_insurance": basicLifeToSave.life_insurance_plan.id,
+            "life_insurance_beneficiary": [],
+            "insurance_amount": basicLifeToSave.insurance_amount
+          };
+
+          // Map beneficiary to according tiers
+          if (basicLifeToSave.life_insurance_beneficiary){
+            _.each(basicLifeToSave.life_insurance_beneficiary, function(beneficiary){
+              beneficiary.tier = "1";
+              planToSave.life_insurance_beneficiary.push(beneficiary);
+            });
+          }
+          
+          if (basicLifeToSave.life_insurance_contingent_beneficiary){
+            _.each(basicLifeToSave.life_insurance_contingent_beneficiary, function(beneficiary){
+              beneficiary.tier = "2";
+              planToSave.life_insurance_beneficiary.push(beneficiary);
+            });
+          }
+
+          // Save basic life insurance
+          if (!basicLifeToSave.enrolled) {
+            CompanyUserLifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave)
+              .$promise.then(null, function(response){
+                errorCallBack(response);
+              });
+          } else {
+            CompanyUserLifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave)
+              .$promise.then(null, function(response){
+                errorCallBack(response);
+              });
+          }
+        }, function(error){
+          errorCallBack(error);
+        });
       },
 
       saveFamilyLifeInsurancePlanForUser: function(familyPlanToSave, successCallBack, errorCallBack) {
@@ -1090,7 +1158,9 @@ benefitmyService.factory(
         CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(function(plans) {
             _.each(plans, function(plan) {
-              CompanyUserLifeInsurancePlanRepository.ById.delete({id:plan.id});
+              if (plan.life_insurance_plan && plan.life_insurance_plan.insurance_type === 'Extended'){
+                CompanyUserLifeInsurancePlanRepository.ById.delete({id:plan.id});
+              }
             });
 
             if (successCallBack) {
@@ -1102,8 +1172,26 @@ benefitmyService.factory(
               errorCallBack(error);
             }
           });
-      }
+      },
 
+      deleteBasicLifeInsurancePlanForUser: function(userId, successCallBack, errorCallBack) {
+        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
+          .$promise.then(function(plans){
+            _.each(plans, function(plan){
+              if (plan.life_insurance_plan && plan.life_insurance_plan.insurance_type === 'Basic'){
+                CompanyUserLifeInsurancePlanRepository.ById.delete({id: plan.id});
+              }
+            });
+
+            if (successCallBack){
+              successCallBack();
+            }
+          }, function(error){
+            if (errorCallBack){
+              errorCallBack(error);
+            }
+          });
+      }
     }; 
   }
 ]);
