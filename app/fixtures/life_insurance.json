@@ -4,7 +4,7 @@
       "name": "metlife",
       "attachment": "s3://abcd",
       "user": 1,
-      "insurance_type": "Extended"
+      "insurance_type": "Basic"
     },
     "model": "app.lifeinsuranceplan",
     "pk": 1
@@ -24,7 +24,7 @@
     "fields": {
       "name": "geico",
       "attachment": "s3://abcdef",
-      "user": 3,
+      "user": 4,
       "insurance_type": "Extended"
     },
     "model": "app.lifeinsuranceplan",
