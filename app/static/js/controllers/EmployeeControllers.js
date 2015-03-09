@@ -123,6 +123,10 @@ var employeeHome = employeeControllers.controller('employeeHome',
       LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(userId, function(response) {
         $scope.familyInsurancePlan = response;
       });
+
+      LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
+        $scope.basicLifeInsurancePlan = response;
+      });
     });
 
     $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
@@ -213,6 +217,7 @@ var employeeBenefitSignup = employeeControllers.controller(
           if(selected)
           {
             _.each(selected.enrolleds, function(enrolled){
+              enrolled.person.pcp = enrolled.pcp;
               selectedMemberHash[enrolled.person.id] = enrolled.person;
             });
           }
@@ -236,7 +241,7 @@ var employeeBenefitSignup = employeeControllers.controller(
             break;
             case 'individual_plus_children':
               availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
-                return elem.relationship == 'self' || elem.relationship == 'child'});
+                return elem.relationship == 'self' || elem.relationship == 'dependent'});
               availFamilyList.eligibleNumber = $scope.family.length;
               availFamilyList.minimumRequired = 2;
             break;
@@ -262,15 +267,26 @@ var employeeBenefitSignup = employeeControllers.controller(
             $scope.medicalBenefitGroup = groupObj;
             $scope.nonMedicalBenefitArray = nonMedicalArray;
           });
+
           employeeBenefits.enroll().get({userId:employeeId, companyId:companyId})
             .$promise.then(function(response){
               $scope.selectedBenefits = response.benefits;
               _.each($scope.selectedBenefits, function(benefitMember){
                 benefitMember.benefit.pcp = benefitMember.pcp;
                 $scope.selectedBenefitHashmap[benefitMember.benefit.id] = benefitMember.benefit;
+
+                // Need to pass PCP number from enrolled to family object
+                _.each(benefitMember.enrolleds, function(enrolled){
+                  var member = _.find($scope.family, function(familyMember){
+                    return familyMember.id === enrolled.person.id;
+                  });
+                  if (member && !member.pcp){
+                    member.pcp = enrolled.pcp;
+                  }
+                })
               });
-              benefitListRepository.get({clientId:companyId})
-              .$promise.then(function(response){
+
+              benefitListRepository.get({clientId:companyId}).$promise.then(function(response){
                 _.each(response.benefits, function(availBenefit){
                   var benefitFamilyPlan = { 'benefit': availBenefit};
                   var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
@@ -334,7 +350,23 @@ var employeeBenefitSignup = employeeControllers.controller(
 
             // Populate available company plans
             _.each(plans, function(plan) {
-              $scope.lifeInsurancePlans.push({ text: plan.life_insurance_plan.name, value: plan.id });
+              // separate basic life insurance from supplemental life insurance.
+              // for now, it will pick the last basic life insurance defined by broker.
+              if (plan.life_insurance_plan.insurance_type === 'Basic'){
+                $scope.basicLifeInsurancePlan = plan;
+                $scope.basicLifeInsurancePlan.selected = true;
+              }
+              else{
+                $scope.lifeInsurancePlans.push({ text: plan.life_insurance_plan.name, value: plan.id });  
+              }
+            });
+
+            // Get current user's basic life insurance plan situation
+            LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
+              $scope.basicLifeInsurancePlan.life_insurance_beneficiary = plan.life_insurance_beneficiary;
+              $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = plan.life_insurance_contingent_beneficiary;
+            }, function(error){
+              $scope.error = true;
             });
 
             // Get current user's family life insurance plan situation
@@ -376,9 +408,59 @@ var employeeBenefitSignup = employeeControllers.controller(
           $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.push({});
         };
 
+        $scope.addBeneficiaryToBasic = function(){
+          if (!$scope.basicLifeInsurancePlan.life_insurance_beneficiary){
+            $scope.basicLifeInsurancePlan.life_insurance_beneficiary = []
+          }
+          $scope.basicLifeInsurancePlan.life_insurance_beneficiary.push({});
+        };
+
+        $scope.addContingentBeneficiary = function(){
+          if (!$scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary){
+            $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary = [];
+          }
+          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.push({});
+        };
+
+        $scope.addContingentBeneficiaryToBasic = function(){
+          if (!$scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary){
+            $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = []
+          }
+          $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary.push({});
+        };
+
+        $scope.removeBeneficiary = function(beneficiary){
+          var index = $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.indexOf(beneficiary);
+          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.splice(index, 1);
+        };
+
+        $scope.removeContingentBeneficiary = function(beneficiary){
+          var index = $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.indexOf(beneficiary);
+          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.splice(index, 1);
+        };
+
+        $scope.removeFromList = function(item, list){
+          var index = list.indexOf(item);
+          list.splice(index, 1);
+        };
+
         $scope.isMedicalBenefitType = function(benefit){
           return benefit && benefit.benefit_type === 'Medical';
         };
+
+        $scope.isWaived = function(selectedPlan){
+          if (!selectedPlan.benefit){
+            return true;
+          }
+          return selectedPlan.benefit.benefit_plan.name.toLowerCase() === 'waive';
+        };
+
+        $scope.medicalWaiveReasons = [
+          'I am covered under another plan as a spouse or dependent',
+          'I am covered by MassHealth, Medicare, Commonwealth Health Connector plan, non-group, or Veterans program',
+          'I am covered under another plan sponsored by a second employer',
+          'I am covered by another health plan sponsored by this employer'
+        ];
 
         // Whether the user has selected a reason for updating 
         // his/her FSA configuration.
@@ -409,7 +491,7 @@ var employeeBenefitSignup = employeeControllers.controller(
               _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
                 if(member.selected)
                 {
-                  enrolledList.push({id:member.id});
+                  enrolledList.push({id:member.id, pcp:member.pcp});
                 }
               });
             }
@@ -419,8 +501,7 @@ var employeeBenefitSignup = employeeControllers.controller(
               var requestBenefit = {
                 benefit:{
                   id:benefitTypePlan.selected.benefit.id,
-                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name,
-                  pcp:benefitTypePlan.selected.pcp
+                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
                 },
                 enrolleds:enrolledList
               };
@@ -445,12 +526,20 @@ var employeeBenefitSignup = employeeControllers.controller(
           saveRequest.waivedRequest = {company:companyId, waived:[]};
           _.each($scope.availablePlans, function(benefitPlan){
               if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
+                if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
+                  alert("Please select a reason to waive medical plan.");
+                  $location.path('/employee/benefit/' + $scope.employee_id);
+                  return;
+                }
+
                 var type = benefitPlan.benefit_type;
+                var waiveReason = 'Not applicable';
                 //This code below is such an hack. We need to get the type key from the server!
                 //CHANGE THIS
                 var typeKey = 0;
                 if (type === 'Medical'){
                   typeKey = 1;
+                  waiveReason = benefitPlan.selected.benefit.reason;
                 }
                 if (type === 'Dental'){
                   typeKey = 2;
@@ -458,9 +547,11 @@ var employeeBenefitSignup = employeeControllers.controller(
                 if (type === 'Vision'){
                   typeKey = 3;
                 }
-                saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type});
+                saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
               }
             });
+
+          console.log(saveRequest);
 
           employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
              function(errorResponse){
@@ -493,10 +584,43 @@ var employeeBenefitSignup = employeeControllers.controller(
             $scope.familyLifeInsurancePlan.selectedCompanyPlan = $scope.selectedLifeInsurancePlan.value;
             LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan, null, function(error) {
               $scope.savedSuccess = false;
-              alert('');
+              alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
             });
-          }  
-        }
+          }
+
+          ///////////////////////////////////////////////////////////////////////////
+          // Save basic life insurance
+          // TO-DO: Need to better organize the logic to save basic life insurance
+          ///////////////////////////////////////////////////////////////////////////
+          if (!$scope.basicLifeInsurancePlan.selected){
+            LifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId, null, function(error) {
+              $scope.savedSuccess = false;
+            });
+          }
+          else{
+            LifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
+              var enrolledBasic = _.find(enrolledPlans, function(plan){ 
+                return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';
+              });
+              if (enrolledBasic){
+                $scope.basicLifeInsurancePlan.enrolled = true;
+                $scope.basicLifeInsurancePlan.id = enrolledBasic.id;
+              }
+              else{
+                $scope.basicLifeInsurancePlan.enrolled = false;
+              }
+              
+              $scope.basicLifeInsurancePlan.currentUserId = employeeId;
+
+              LifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, null, function(error){
+                $scope.savedSuccess = false;
+                alert('Failed to save basic life insurance. Please make sure all required fields have been filled.')
+              });
+            }, function(error) {
+              $scope.savedSuccess = false;
+            });
+          }
+        };
       }]);
 
 var addFamily = employeeControllers.controller('addFamily', 

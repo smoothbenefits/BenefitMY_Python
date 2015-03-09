@@ -15,8 +15,9 @@ class UserCompanyLifeInsurancePlan(models.Model):
 
     person = models.ForeignKey(Person,
                                related_name="life_insurance")
+    # for extend life insurance only
     insurance_amount = models.DecimalField(
-        max_digits=20, decimal_places=2)
+        max_digits=20, decimal_places=2, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True,
                                       blank=True,
                                       null=True)
