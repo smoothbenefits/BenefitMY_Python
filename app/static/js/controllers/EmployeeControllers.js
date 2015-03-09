@@ -124,7 +124,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
         var extendedLife = [];
         $scope.familyInsurancePlan = response;
 
-
         _.each(response.memberPlans, function(plan){
           if (plan.life_insurance.life_insurance_plan.insurance_type === 'Basic'){
             $scope.basicLifeInsurancePlan = plan;

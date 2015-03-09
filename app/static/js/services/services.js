@@ -1007,10 +1007,10 @@ benefitmyService.factory(
                 var firstTier = [];
                 var secondTier = [];
                 _.each(mainPlan.life_insurance_beneficiary, function(beneficiary){
-                  if (benefitciary.tier === '1'){
+                  if (beneficiary.tier === '1'){
                     firstTier.push(benefitciary);
                   }
-                  if (benefitciary.tier === '2'){
+                  if (beneficiary.tier === '2'){
                     secondTier.push(benefitciary);
                   }
                 });
@@ -1158,7 +1158,7 @@ benefitmyService.factory(
         CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(function(plans) {
             _.each(plans, function(plan) {
-              if (plan.life_insurance_plan.insurance_type === 'Extended'){
+              if (plan.life_insurance_plan && plan.life_insurance_plan.insurance_type === 'Extended'){
                 CompanyUserLifeInsurancePlanRepository.ById.delete({id:plan.id});
               }
             });
@@ -1178,7 +1178,7 @@ benefitmyService.factory(
         CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(function(plans){
             _.each(plans, function(plan){
-              if (plan.life_insurance_plan.insurance_type === 'Basic'){
+              if (plan.life_insurance_plan && plan.life_insurance_plan.insurance_type === 'Basic'){
                 CompanyUserLifeInsurancePlanRepository.ById.delete({id: plan.id});
               }
             });

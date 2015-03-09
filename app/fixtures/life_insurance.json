@@ -4,7 +4,7 @@
       "name": "metlife",
       "attachment": "s3://abcd",
       "user": 1,
-      "insurance_type": "Basic"
+      "insurance_type": "Extended"
     },
     "model": "app.lifeinsuranceplan",
     "pk": 1
