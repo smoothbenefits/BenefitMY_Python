@@ -126,6 +126,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
       LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
         $scope.basicLifeInsurancePlan = response;
+        $scope.basicLifeInsurancePlan.life_insurance.last_update_date = moment(response.life_insurance.updated_at).format('l');
       });
     });
 
@@ -191,6 +192,9 @@ var employeeBenefitSignup = employeeControllers.controller(
         FsaService.getFsaElectionForUser(employeeId, function(response) {
           $scope.fsaElection = response;
         });
+
+        // Valid relationship for life insurance beneficiary
+        $scope.beneficiaryRelationships = ['Self', 'Spouse', 'Dependent'];
 
         employeeFamily.get({userId:employeeId}).$promise.then(function(response){
           _.each(response.family, function(member){
