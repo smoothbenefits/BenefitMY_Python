@@ -1008,10 +1008,10 @@ benefitmyService.factory(
                 var secondTier = [];
                 _.each(mainPlan.life_insurance_beneficiary, function(beneficiary){
                   if (beneficiary.tier === '1'){
-                    firstTier.push(benefitciary);
+                    firstTier.push(beneficiary);
                   }
                   if (beneficiary.tier === '2'){
-                    secondTier.push(benefitciary);
+                    secondTier.push(beneficiary);
                   }
                 });
                 mainPlan.life_insurance_beneficiary = firstTier;
