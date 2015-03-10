@@ -120,12 +120,10 @@
                                 <div class="row">
                                     <div class="form-label">Relationship</div>
                                     <div class="textbox">
-                                        <select class="form-control"
+                                        <input type="text"
                                             name="beneficiary_relationship"
-                                            required="true"
                                             ng-model="beneficiary.relationship"
-                                            ng-options="relationship for relationship in beneficiaryRelationships">
-                                        </select>
+                                            ng-required="true" />
                                         <div class="form-error" ng-show="form.beneficiary_relationship.$dirty && form.beneficiary_relationship.$invalid">
                                             <span ng-show="form.beneficiary_relationship.$error.required">Relationship is required</span>
                                         </div>
@@ -215,12 +213,10 @@
                                 <div class="row">
                                     <div class="form-label">Relationship</div>
                                     <div class="textbox">
-                                        <select class="form-control"
+                                        <input type="text"
                                             name="beneficiary_relationship"
-                                            required="true"
                                             ng-model="beneficiary.relationship"
-                                            ng-options="relationship for relationship in beneficiaryRelationships">
-                                        </select>
+                                            ng-required="true" />
                                         <div class="form-error" ng-show="form.beneficiary_relationship.$dirty && form.beneficiary_relationship.$invalid">
                                             <span ng-show="form.beneficiary_relationship.$error.required">Relationship is required</span>
                                         </div>

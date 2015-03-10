@@ -193,9 +193,6 @@ var employeeBenefitSignup = employeeControllers.controller(
           $scope.fsaElection = response;
         });
 
-        // Valid relationship for life insurance beneficiary
-        $scope.beneficiaryRelationships = ['Self', 'Spouse', 'Dependent'];
-
         employeeFamily.get({userId:employeeId}).$promise.then(function(response){
           _.each(response.family, function(member){
             member.ticked = false;
