@@ -7,16 +7,19 @@ from django.db import transaction
 
 import xlwt
 
-from app.models.enrolled import Enrolled
-from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
-from app.serializers.user_company_benefit_plan_option_serializer import (
-    UserCompanyBenefitPlanOptionSerializer)
-
-
 from app.models.company_user import CompanyUser
 from app.models.person import Person
 from app.models.phone import Phone
 from app.models.address import Address
+from app.models.user import User
+from app.models.user_company_benefit_plan_option import \
+    UserCompanyBenefitPlanOption
+from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
+from app.models.insurance.user_company_life_insurance_plan import \
+    UserCompanyLifeInsurancePlan
+from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
+from app.models.insurance.life_insurance_plan import LifeInsurancePlan
+from app.models.fsa import FSA
 
 class CompanyUsersSummaryExcelExportView(APIView):
 
@@ -56,7 +59,18 @@ class CompanyUsersSummaryExcelExportView(APIView):
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep Birth Date ' + `i+1`)
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep Relationship ' + `i+1`)
 
-        
+        col_num = self._write_field(excelSheet, 0, col_num, 'Med Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Med Option Elected')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Med Cost / Pay')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Dental Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Dental Option Elected')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Dental Cost / Pay')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Vision Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Vision Option Elected')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Vision Cost / Pay')
+
+        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Amount')
 
         return
 
@@ -88,6 +102,10 @@ class CompanyUsersSummaryExcelExportView(APIView):
     def _write_employee(self, employee_user_id, excelSheet, row_num):
         start_column_num = 0
         start_column_num = self._write_employee_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_all_health_benefits_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_basic_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_optional_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_fsa_info(employee_user_id, excelSheet, row_num, start_column_num)
         return
 
     def _write_employee_personal_info(self, employee_user_id, excelSheet, row_num, start_column_num):
@@ -180,6 +198,55 @@ class CompanyUsersSummaryExcelExportView(APIView):
 
         # Skip the relationship column
         return col_num + 1 
+
+    def _write_employee_all_health_benefits_info(self, employee_user_id, excelSheet, row_num, col_num):
+        user_benefit_plan_options = UserCompanyBenefitPlanOption.objects.filter(user=employee_user_id)
+
+        col_num = self._write_employee_health_benefit_info(user_benefit_plan_options, 'Medical', excelSheet, row_num, col_num)
+        col_num = self._write_employee_health_benefit_info(user_benefit_plan_options, 'Dental', excelSheet, row_num, col_num)
+        col_num = self._write_employee_health_benefit_info(user_benefit_plan_options, 'Vision', excelSheet, row_num, col_num)
+
+        return col_num
+
+    def _write_employee_health_benefit_info(self, employee_health_benefit_options, benefit_type, excelSheet, row_num, col_num):
+        user_benefit_options = employee_health_benefit_options.filter(benefit__benefit_plan__benefit_type__name=benefit_type)
+        
+        if (len(user_benefit_options) > 0):
+            user_benefit_option = user_benefit_options[0]
+            company_plan_option = user_benefit_option.benefit
+            benefit_plan = company_plan_option.benefit_plan
+
+            col_num = self._write_field(excelSheet, row_num, col_num, benefit_plan.name)
+            col_num = self._write_field(excelSheet, row_num, col_num, company_plan_option.benefit_option_type)
+            col_num = self._write_field(excelSheet, row_num, col_num, company_plan_option.employee_cost_per_period)
+            
+            return col_num
+
+        # Skip the columns if no matching benefit 
+        return col_num + 3
+
+    def _write_employee_basic_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
+        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(life_insurance__life_insurance_plan__insurance_type='Basic')
+        if (len(employee_plans) > 0):
+            employee_plan = employee_plans[0]
+            company_plan = employee_plan.life_insurance
+            plan = company_plan.life_insurance_plan
+            col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
+            col_num = self._write_field(excelSheet, row_num, col_num, company_plan.insurance_amount)
+
+            return col_num
+
+        return col_num + 2   
+
+    def _write_employee_optional_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
+        # TODO:
+        # Stub as placeholder 
+        return col_num
+
+    def _write_employee_fsa_info(self, employee_user_id, excelSheet, row_num, col_num):
+        # TODO:
+        # Stub as placeholder 
+        return col_num
 
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
