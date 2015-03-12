@@ -113,26 +113,34 @@ class CompanyUsersSummaryExcelExportView(APIView):
 
     def _write_employee_personal_info(self, employee_user_id, excelSheet, row_num, start_column_num):
         cur_column_num = start_column_num
+
+        person = None
+
         try:
             person = Person.objects.get(user=employee_user_id, relationship='self')
-            cur_column_num = self._write_person_basic_info(person, excelSheet, row_num, cur_column_num)
-            cur_column_num = self._write_field(excelSheet, row_num, cur_column_num, person.email)
-
-            # Write out phone number info
-            cur_column_num = self._write_person_phone_info(person, 'work', excelSheet, row_num, cur_column_num)
-            cur_column_num = self._write_person_phone_info(person, 'home', excelSheet, row_num, cur_column_num)
-
-            # Write out address info
-            cur_column_num = self._write_person_address_info(person, 'home', excelSheet, row_num, cur_column_num)
-
-            # Write family personal_info
-            cur_column_num = self._write_all_family_members_personal_info(person, excelSheet, row_num, cur_column_num)
 
         except Person.DoesNotExist:
             pass
+
+        # All helpers are built with capability of skiping proper number of columns when 
+        # person given is None. This is to ensure other information written after these
+        # would be written to the right columns
+        cur_column_num = self._write_person_basic_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
+        cur_column_num = self._write_person_email_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
+
+        # Write out phone number info
+        cur_column_num = self._write_person_phone_info(person, 'work', excelSheet, row_num, cur_column_num)
+        cur_column_num = self._write_person_phone_info(person, 'home', excelSheet, row_num, cur_column_num)
+
+        # Write out address info
+        cur_column_num = self._write_person_address_info(person, 'home', excelSheet, row_num, cur_column_num)
+
+        # Write family personal_info
+        cur_column_num = self._write_all_family_members_personal_info(person, excelSheet, row_num, cur_column_num)
+
         return cur_column_num
 
-    def _write_person_basic_info(self, person_model, excelSheet, row_num, col_num):
+    def _write_person_basic_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
         if (person_model):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.first_name)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.middle_name)
@@ -141,9 +149,44 @@ class CompanyUsersSummaryExcelExportView(APIView):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.gender)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.birth_date, CompanyUsersSummaryExcelExportView.date_field_format)
             return col_num
+        elif (employee_user_id):
+            # TODO:
+            # This is not a clean solution, but is the only one we have for the short term
+            # The desire is to also include some basic information for an employee, even if
+            # he has not gone through on-boarding yet
+            # So without the person profile that is filled out during onboarding, all we can
+            # do for now is to grab the basic information from the user account. 
+            users = User.objects.filter(pk=employee_user_id)
+            if (len(users) > 0):
+                user = users[0]
+                col_num = self._write_field(excelSheet, row_num, col_num, user.first_name)
+                col_num = self._write_field(excelSheet, row_num, col_num, None)
+                col_num = self._write_field(excelSheet, row_num, col_num, user.last_name)
+
+                # now skip 3 more columns to align with the normal person profile output
+                return col_num + 3
 
         # Skip the columns
         return col_num + 6
+
+    def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
+        if (person_model):
+            col_num = self._write_field(excelSheet, row_num, col_num, person_model.email)
+            return col_num
+        elif (employee_user_id):
+            # TODO:
+            # This is not a clean solution, but is the only one we have for the short term
+            # The desire is to also include some basic information for an employee, even if
+            # he has not gone through on-boarding yet
+            # So without the person profile that is filled out during onboarding, all we can
+            # do for now is to grab the basic information from the user account. 
+            users = User.objects.filter(pk=employee_user_id)
+            if (len(users) > 0):
+                user = users[0]
+                col_num = self._write_field(excelSheet, row_num, col_num, user.email)
+                return col_num
+
+        return col_num + 1
 
     def _write_person_phone_info(self, person_model, phone_type, excelSheet, row_num, col_num):
         if (person_model):
