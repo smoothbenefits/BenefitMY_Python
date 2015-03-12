@@ -69,6 +69,8 @@ from app.views.user_settings_view import SettingView
 from app.views.direct_deposit_view import DirectDepositView
 from app.views.fsa_view import FSAView
 
+from app.views.company_user_summary_view import CompanyUsersSummaryExcelExportView
+
 
 PREFIX = "api/v1"
 
@@ -113,6 +115,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company_employees_count/(?P<pk>\w+)/?$' % PREFIX, CompanyEmployeeCountView.as_view(), name='company_employee_count'),
     url(r'^%s/company_brokers_count/(?P<pk>\w+)/?$' % PREFIX, CompanyBrokerCountView.as_view(), name='company_broker_count'),
     url(r'^%s/broker_company_count/(?P<pk>\w+)/?$' % PREFIX, BrokerCompanyCountView.as_view(), name='broker_company_count'),
+    url(r'^%s/companies/(?P<pk>\w+)/users/excel/?$' % PREFIX, CompanyUsersSummaryExcelExportView.as_view()),
 
     url(r'^%s/documents/companies/(?P<pk>\w+)/users/(?P<pd>\w+)/?$' % PREFIX,
         CompanyUserDocumentView.as_view()),
