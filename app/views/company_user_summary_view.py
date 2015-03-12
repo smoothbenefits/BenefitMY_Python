@@ -72,6 +72,9 @@ class CompanyUsersSummaryExcelExportView(APIView):
         col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Amount')
 
+        col_num = self._write_field(excelSheet, 0, col_num, 'FSA Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Dependent FSA Amount')
+
         return
 
     ''' Sadly Python does not support the ++ operator, or else we don't need
@@ -143,31 +146,33 @@ class CompanyUsersSummaryExcelExportView(APIView):
         return col_num + 6
 
     def _write_person_phone_info(self, person_model, phone_type, excelSheet, row_num, col_num):
-        phones = person_model.phones.filter(phone_type=phone_type)
-        phone_num = None
-        if(len(phones) > 0):
-            phone_num = phones[0].number
-        return self._write_field(excelSheet, row_num, col_num, phone_num)  
+        if (person_model):
+            phones = person_model.phones.filter(phone_type=phone_type)
+            phone_num = None
+            if(len(phones) > 0):
+                phone_num = phones[0].number
+            return self._write_field(excelSheet, row_num, col_num, phone_num)  
+        return col_num + 1
 
     def _write_person_address_info(self, person_model, address_type, excelSheet, row_num, col_num):
-        addresses = person_model.addresses.filter(address_type=address_type)
-        if (len(addresses) > 0):
-            address = addresses[0]
-            col_num = self._write_field(excelSheet, row_num, col_num, address.street_1) 
-            col_num = self._write_field(excelSheet, row_num, col_num, address.street_2)
-            col_num = self._write_field(excelSheet, row_num, col_num, address.city)
-            col_num = self._write_field(excelSheet, row_num, col_num, address.state)
-            col_num = self._write_field(excelSheet, row_num, col_num, address.zipcode)
-            return col_num
+        if (person_model):
+            addresses = person_model.addresses.filter(address_type=address_type)
+            if (len(addresses) > 0):
+                address = addresses[0]
+                col_num = self._write_field(excelSheet, row_num, col_num, address.street_1) 
+                col_num = self._write_field(excelSheet, row_num, col_num, address.street_2)
+                col_num = self._write_field(excelSheet, row_num, col_num, address.city)
+                col_num = self._write_field(excelSheet, row_num, col_num, address.state)
+                col_num = self._write_field(excelSheet, row_num, col_num, address.zipcode)
+                return col_num
 
         # Found no address, skip over the columns
         return col_num + 5
 
     def _write_all_family_members_personal_info(self, person_model, excelSheet, row_num, col_num):
-        # TODO:
-        # BSS only wants spouse and dependent info, maybe we need to better define what relationships
-        # are considered "dependent", and white list here instead
-        family_members = Person.objects.filter(user=person_model.user).exclude(relationship='self')
+        family_members = Person.objects.none()
+        if (person_model):
+            family_members = Person.objects.filter(user=person_model.user).exclude(relationship='self')
 
         # Write spouse
         spouse_set = family_members.filter(relationship='spouse')
@@ -244,9 +249,14 @@ class CompanyUsersSummaryExcelExportView(APIView):
         return col_num
 
     def _write_employee_fsa_info(self, employee_user_id, excelSheet, row_num, col_num):
-        # TODO:
-        # Stub as placeholder 
-        return col_num
+        fsas = FSA.objects.filter(user=employee_user_id)
+        if (len(fsas) > 0):
+            fsa = fsas[0]
+            col_num = self._write_field(excelSheet, row_num, col_num, fsa.primary_amount_per_year)
+            col_num = self._write_field(excelSheet, row_num, col_num, fsa.dependent_amount_per_year)
+            return col_num
+
+        return col_num + 2
 
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
