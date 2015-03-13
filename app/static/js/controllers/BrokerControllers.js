@@ -96,8 +96,13 @@ var benefitsController = brokersControllers.controller(
 
         $scope.medicalPolicyPredictor = 'orderIndex';
 
-        $scope.sortBy = function(predictor){
-          $scope.medicalPolicyPredictor = predictor;
+        $scope.sortBy = function(predicate){
+          if ($scope.medicalPolicyPredicate === predicate){
+            $scope.medicalPolicyReverse = !$scope.medicalPolicyReverse;
+          }
+          else{
+            $scope.medicalPolicyPredicate = predicate;
+          }
         };
 
 

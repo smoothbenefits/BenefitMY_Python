@@ -41,7 +41,7 @@
                         <span>{{benefitPolicy.name}}</span>
                     </td>
                 </tr>
-                <tr class="value-row" ng-repeat="policyListMember in medicalBenefitGroup.policyList | orderBy: medicalPolicyPredictor">
+                <tr class="value-row" ng-repeat="policyListMember in medicalBenefitGroup.policyList | orderBy: medicalPolicyPredicate : medicalPolicyReverse">
                     <td colspan="2" class="row-head"><span>{{policyListMember.name}}</span></td>
                     <td ng-repeat="policyValue in policyListMember.valueArray", colspan="{{policyValue.colspan}}">
                         <span>{{policyValue.value}}</span>
