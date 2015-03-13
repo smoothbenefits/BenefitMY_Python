@@ -94,6 +94,12 @@ var benefitsController = brokersControllers.controller(
           }
         };
 
+        $scope.medicalPolicyPredictor = 'orderIndex';
+
+        $scope.sortBy = function(predictor){
+          $scope.medicalPolicyPredictor = predictor;
+        };
+
 
         /////////////////////////////////////////////////////////////////////
         // Life Insurance
