@@ -82,6 +82,7 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/document_types/?$' % PREFIX, DocumentTypeView.as_view(), name='document_type_api'),
 
+    url(r'^%s/users/settings/?$' % PREFIX, SettingView.as_view()),
     url(r'^%s/users/?$' % PREFIX, UsersView.as_view(), name='all_users'),
     url(r'^%s/users/current/?$' % PREFIX, CurrentUserView.as_view(), name='current_user'),
     url(r'^%s/users/(?P<pk>\w+)/?$' % PREFIX, UserView.as_view(), name='user_by_id'),
@@ -131,7 +132,6 @@ urlpatterns = patterns('app.views',
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
 
-    url(r'^%s/users/settings/?$' % PREFIX, SettingView.as_view()),
 
     url(r'^%s/brokers/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         LifeInsurancePlanView.as_view(), name='broker_life_insurance_api'),
