@@ -41,8 +41,21 @@ var findViewController = userControllers.controller('findViewController',
     }
 ]);
 
-var userController = userControllers.controller('userController', ['$scope', '$http', 'currentUser','users', 'userLogOut', 'clientListRepository','$location',
-  function userController($scope, $http, currentUser, users, userLogOut, clientListRepository, $location) {
+var userController = userControllers.controller('userController', 
+  ['$scope', 
+   '$http', 
+   'currentUser',
+   'users', 
+   'userLogOut', 
+   'clientListRepository',
+   '$location',
+  function userController($scope, 
+                          $http, 
+                          currentUser, 
+                          users, 
+                          userLogOut, 
+                          clientListRepository, 
+                          $location) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var userPromise = currentUser.get()
@@ -67,6 +80,7 @@ var userController = userControllers.controller('userController', ['$scope', '$h
             window.location = '/';
           });
     };
+
     $scope.getCurRoleFromPath = function(){
       var curPath = $location.path();
       if(curPath[0] === '/'){
@@ -82,9 +96,11 @@ var userController = userControllers.controller('userController', ['$scope', '$h
         return undefined;
       }
     };
+
     var getIdByRole = function(role){
       return $scope.curUser.id;
     };
+
     $scope.getActiveRoleClass = function(checkPath){
       var curPath = $location.path();
 
@@ -97,6 +113,7 @@ var userController = userControllers.controller('userController', ['$scope', '$h
         return "inactive";
       }
     };
+
     $scope.goToFunctionalView = function(viewLink, parameter){
       var curRole = $scope.getCurRoleFromPath();
       if(curRole)
@@ -111,6 +128,15 @@ var userController = userControllers.controller('userController', ['$scope', '$h
         }
       }
     };
+
+    $scope.goToFunctionalViewByCompanyId = function(viewLink, parameter){
+      currentUser.get().$promise.then(function(user){
+        clientListRepository.get({userId: user.user.id}).$promise.then(function(response){
+          var company = _.find(response.company_roles, {company_user_type: 'admin'});
+          $location.path(viewLink + company.company.id).search(parameter);
+        });
+      });
+    }
 
     $scope.gotoSettings = function(){
       $location.path('/settings');
