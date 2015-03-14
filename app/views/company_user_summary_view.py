@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 from django.http import Http404
 from django.db import transaction
+from django.db.models import Count, Max
 
 import xlwt
 
@@ -26,7 +27,26 @@ class CompanyUsersSummaryExcelExportView(APIView):
     date_field_format = xlwt.XFStyle()
     date_field_format.num_format_str= 'mm-dd-yyyy'
 
-    def _write_headers(self, excelSheet):
+    def _get_max_dependents_count(self, company_id):
+        users_id = self._get_all_employee_user_ids_for_company(company_id)
+
+        persons = Person.objects.filter(user__in=users_id).exclude(relationship='self').exclude(relationship='spouse')
+
+        max_dependents = persons.values('user').annotate(num_dependents=Count('pk')).aggregate(max=Max('num_dependents'))
+
+        return max_dependents['max']
+
+    def _get_all_employee_user_ids_for_company(self, company_id):
+        # Get all employees for the company
+        users_id = []
+        users = CompanyUser.objects.filter(company=company_id,
+                                           company_user_type='employee')
+        for user in users:
+            users_id.append(user.user_id)
+
+        return users_id
+
+    def _write_headers(self, excelSheet, max_dependents):
         col_num = 0
         col_num = self._write_field(excelSheet, 0, col_num, 'First Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Middle Initial')
@@ -50,15 +70,6 @@ class CompanyUsersSummaryExcelExportView(APIView):
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Birth Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Relationship')
 
-        for i in range(0, 10):
-            col_num = self._write_field(excelSheet, 0, col_num, 'Dep First Name ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Middle Initial ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Last Name ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Dep SSN ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Gender ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Birth Date ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Relationship ' + `i+1`)
-
         col_num = self._write_field(excelSheet, 0, col_num, 'Med Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Med Option Elected')
         col_num = self._write_field(excelSheet, 0, col_num, 'Med Cost / Pay')
@@ -75,6 +86,15 @@ class CompanyUsersSummaryExcelExportView(APIView):
         col_num = self._write_field(excelSheet, 0, col_num, 'FSA Amount')
         col_num = self._write_field(excelSheet, 0, col_num, 'Dependent FSA Amount')
 
+        for i in range(0, max_dependents):
+            col_num = self._write_field(excelSheet, 0, col_num, 'Dep First Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Middle Initial ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Last Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Dep SSN ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Gender ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Birth Date ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Relationship ' + `i+1`)
+
         return
 
     ''' Sadly Python does not support the ++ operator, or else we don't need
@@ -89,12 +109,7 @@ class CompanyUsersSummaryExcelExportView(APIView):
         return col_num + 1
 
     def _write_company(self, company_id, excelSheet):
-        # Get all employees for the company
-        users_id = []
-        users = CompanyUser.objects.filter(company=company_id,
-                                           company_user_type='employee')
-        for user in users:
-            users_id.append(user.user_id)
+        users_id = self._get_all_employee_user_ids_for_company(company_id)
 
         # For each of them, write out his/her information
         for i in range(len(users_id)):
@@ -109,30 +124,39 @@ class CompanyUsersSummaryExcelExportView(APIView):
         start_column_num = self._write_employee_basic_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_optional_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_fsa_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_all_dependents_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
         return
 
     def _write_employee_personal_info(self, employee_user_id, excelSheet, row_num, start_column_num):
         cur_column_num = start_column_num
+
+        person = None
+
         try:
             person = Person.objects.get(user=employee_user_id, relationship='self')
-            cur_column_num = self._write_person_basic_info(person, excelSheet, row_num, cur_column_num)
-            cur_column_num = self._write_field(excelSheet, row_num, cur_column_num, person.email)
-
-            # Write out phone number info
-            cur_column_num = self._write_person_phone_info(person, 'work', excelSheet, row_num, cur_column_num)
-            cur_column_num = self._write_person_phone_info(person, 'home', excelSheet, row_num, cur_column_num)
-
-            # Write out address info
-            cur_column_num = self._write_person_address_info(person, 'home', excelSheet, row_num, cur_column_num)
-
-            # Write family personal_info
-            cur_column_num = self._write_all_family_members_personal_info(person, excelSheet, row_num, cur_column_num)
 
         except Person.DoesNotExist:
             pass
+
+        # All helpers are built with capability of skiping proper number of columns when 
+        # person given is None. This is to ensure other information written after these
+        # would be written to the right columns
+        cur_column_num = self._write_person_basic_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
+        cur_column_num = self._write_person_email_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
+
+        # Write out phone number info
+        cur_column_num = self._write_person_phone_info(person, 'work', excelSheet, row_num, cur_column_num)
+        cur_column_num = self._write_person_phone_info(person, 'home', excelSheet, row_num, cur_column_num)
+
+        # Write out address info
+        cur_column_num = self._write_person_address_info(person, 'home', excelSheet, row_num, cur_column_num)
+
+        # Write family personal_info
+        cur_column_num = self._write_spouse_personal_info(person, excelSheet, row_num, cur_column_num)
+
         return cur_column_num
 
-    def _write_person_basic_info(self, person_model, excelSheet, row_num, col_num):
+    def _write_person_basic_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
         if (person_model):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.first_name)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.middle_name)
@@ -141,9 +165,44 @@ class CompanyUsersSummaryExcelExportView(APIView):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.gender)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.birth_date, CompanyUsersSummaryExcelExportView.date_field_format)
             return col_num
+        elif (employee_user_id):
+            # TODO:
+            # This is not a clean solution, but is the only one we have for the short term
+            # The desire is to also include some basic information for an employee, even if
+            # he has not gone through on-boarding yet
+            # So without the person profile that is filled out during onboarding, all we can
+            # do for now is to grab the basic information from the user account. 
+            users = User.objects.filter(pk=employee_user_id)
+            if (len(users) > 0):
+                user = users[0]
+                col_num = self._write_field(excelSheet, row_num, col_num, user.first_name)
+                col_num = self._write_field(excelSheet, row_num, col_num, None)
+                col_num = self._write_field(excelSheet, row_num, col_num, user.last_name)
+
+                # now skip 3 more columns to align with the normal person profile output
+                return col_num + 3
 
         # Skip the columns
         return col_num + 6
+
+    def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
+        if (person_model):
+            col_num = self._write_field(excelSheet, row_num, col_num, person_model.email)
+            return col_num
+        elif (employee_user_id):
+            # TODO:
+            # This is not a clean solution, but is the only one we have for the short term
+            # The desire is to also include some basic information for an employee, even if
+            # he has not gone through on-boarding yet
+            # So without the person profile that is filled out during onboarding, all we can
+            # do for now is to grab the basic information from the user account. 
+            users = User.objects.filter(pk=employee_user_id)
+            if (len(users) > 0):
+                user = users[0]
+                col_num = self._write_field(excelSheet, row_num, col_num, user.email)
+                return col_num
+
+        return col_num + 1
 
     def _write_person_phone_info(self, person_model, phone_type, excelSheet, row_num, col_num):
         if (person_model):
@@ -169,27 +228,29 @@ class CompanyUsersSummaryExcelExportView(APIView):
         # Found no address, skip over the columns
         return col_num + 5
 
-    def _write_all_family_members_personal_info(self, person_model, excelSheet, row_num, col_num):
+    def _write_spouse_personal_info(self, person_model, excelSheet, row_num, col_num):
         family_members = Person.objects.none()
         if (person_model):
-            family_members = Person.objects.filter(user=person_model.user).exclude(relationship='self')
+            family_members = Person.objects.filter(user=person_model.user).filter(relationship='spouse')
 
-        # Write spouse
-        spouse_set = family_members.filter(relationship='spouse')
         spouse = None
-        if (len(spouse_set) > 0):
-            spouse = spouse_set[0]
+        if (len(family_members) > 0):
+            spouse = family_members[0]
         col_num = self._write_family_member_personal_info(spouse, excelSheet, row_num, col_num)
 
-        # Write all other family members
-        # TODO:
-        #   BSS's spreadsheet makes space for 10 dependents. Is there a better way to not be so 
-        #   rigid? Or is this actually good enough?
-        other_members = family_members.exclude(relationship='spouse')
-        members_array = [None] * 10
-        for i in range(min(len(other_members), 10)):
-            members_array[i] = other_members[i]
-        for member in members_array:
+        return col_num
+
+    def _write_all_dependents_personal_info(self, employee_user_id, excelSheet, row_num, col_num):
+        persons = Person.objects.filter(user=employee_user_id)
+        person_model = None
+        if (len(persons) > 0):
+            person_model = persons[0]
+
+        family_members = Person.objects.none()
+        if (person_model):
+            family_members = Person.objects.filter(user=person_model.user).exclude(relationship='self').exclude(relationship='spouse')
+
+        for member in family_members:
             col_num = self._write_family_member_personal_info(member, excelSheet, row_num, col_num)
 
         return col_num
@@ -261,8 +322,15 @@ class CompanyUsersSummaryExcelExportView(APIView):
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('All Employee Summary')
-        self._write_headers(sheet)
+
+        # Pre compute the max number of dependents across all employees of 
+        # the company, so we know how many sets of headers for dependent 
+        # info we need to populate
+        max_dependents = self._get_max_dependents_count(pk)
+        self._write_headers(sheet, max_dependents)
+
         self._write_company(pk, sheet)
+
         response = HttpResponse(content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename=employee_summary.xls'
         book.save(response)
