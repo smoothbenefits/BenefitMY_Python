@@ -70,12 +70,6 @@ var benefitsController = brokersControllers.controller(
           $scope.medicalBenefitGroup = groupObj;
           $scope.nonMedicalBenefitArray = nonMedicalArray;
           $scope.benefitCount = benefitCount;
-
-          // add numberic index to medical policy array for ordering
-          _.each($scope.medicalBenefitGroup.policyList, function(policy){
-            var id = parseInt(policy.id.substring(5, 7).replace("_", ""));
-            policy.orderingIndex = id;
-          });
         });
 
         $scope.backtoDashboard = function(){
@@ -94,7 +88,7 @@ var benefitsController = brokersControllers.controller(
           }
         };
 
-        $scope.medicalPolicyPredictor = 'orderIndex';
+        $scope.medicalPolicyPredicate = 'orderIndex';
 
         $scope.sortBy = function(predicate){
           if ($scope.medicalPolicyPredicate === predicate){
