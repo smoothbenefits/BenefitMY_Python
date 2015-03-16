@@ -30,7 +30,6 @@ var employerHome = employersController.controller('employerHome',
     $scope.benefitCount = 0;
     $scope.templateCountArray = [];
 
-
     var getTemplates = function(company){
       templateRepository.byCompany.get({companyId:company.id}).$promise.then(function(response){
         $scope.templateArray = response.templates;
@@ -303,6 +302,15 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
       $scope.nonMedicalBenefitArray = nonMedicalArray;
       $scope.benefitCount = benefitCount;
     });
+
+    $scope.sortBy = function(predicate){
+      if ($scope.medicalPolicyPredicate === predicate){
+        $scope.medicalPolicyReverse = !$scope.medicalPolicyReverse;
+      }
+      else{
+        $scope.medicalPolicyPredicate = predicate;
+      }
+    };
 
     $scope.backtoDashboard = function(){
       $location.path('/admin');
