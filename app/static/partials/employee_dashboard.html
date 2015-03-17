@@ -63,7 +63,7 @@
             </tbody>
         </table>
     </div>
-    <div class="table-responsive table-holder">
+    <div class="table-responsive table-holder" ng-show="supplementalLifeInsuranceEnabled">
         <div class="table-sub-title">Life Insurance</div>
         <table class="table table-striped" ng-if="isLifeInsuranceWaived(familyInsurancePlan)">
             <thead>
@@ -105,7 +105,8 @@
                 </tr>
             </tbody>
         </table>
-
+    </div>
+    <div class="table-responsive table-holder">
         <table class="table table-striped" ng-show="!basicLifeInsurancePlan">
             <thead>
                 <tr>
