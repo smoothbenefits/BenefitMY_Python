@@ -205,7 +205,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       };
 
       $scope.exportCompanyEmployeeSummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryExcelUrl(clientId);
-
+      $scope.exportCompanyEmployeeLifeBeneficiarySummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl(clientId);
 }]);
 
 var brokerEmployeeController = brokersControllers.controller('brokerEmployeeController',
