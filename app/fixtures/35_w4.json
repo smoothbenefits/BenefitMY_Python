@@ -7,7 +7,7 @@
       "total_points": 3,
       "dependencies": 0,
       "head": 1,
-      "overwrite_points": 5,
+      "final_points": 5,
       "extra_amount": 100.00
     },
     "model": "app.w4",

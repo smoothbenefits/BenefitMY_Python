@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='w4',
-            name='overwrite_points',
+            name='final_points',
             field=models.IntegerField(null=True, blank=True),
             preserve_default=True,
         ),
