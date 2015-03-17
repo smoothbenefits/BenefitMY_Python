@@ -118,6 +118,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    'employeeBenefitElectionFactory',
    'FsaService',
    'LifeInsuranceService',
+   'CompanyEmployeeSummaryService',
    function selectedBenefitsController(
     $scope, 
     $location, 
@@ -125,7 +126,8 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
     companyRepository, 
     employeeBenefitElectionFactory,
     FsaService,
-    LifeInsuranceService){
+    LifeInsuranceService,
+    CompanyEmployeeSummaryService){
 
       var clientId = $routeParams.client_id;
       $scope.employeeList = [];
@@ -176,6 +178,8 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       $scope.back = function(){
         $location.path('/broker');
       };
+
+      $scope.exportCompanyEmployeeSummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryExcelUrl(clientId);
 
 }]);
 
