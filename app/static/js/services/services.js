@@ -1231,3 +1231,15 @@ benefitmyService.factory(
     }; 
   }
 ]);
+
+benefitmyService.factory(
+  'CompanyEmployeeSummaryService', 
+  [
+  function (){
+    return {
+      getCompanyEmployeeSummaryExcelUrl: function(companyId) {
+        return '/api/v1/companies/' + companyId + '/users/excel';
+      }
+    }; 
+  }
+]);
