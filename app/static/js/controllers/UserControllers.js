@@ -44,18 +44,20 @@ var findViewController = userControllers.controller('findViewController',
 var userController = userControllers.controller('userController', 
   ['$scope', 
    '$http', 
+   '$location', 
    'currentUser',
    'users', 
    'userLogOut', 
    'clientListRepository',
-   '$location',
+   'benefitSectionGlobalConfig',
   function userController($scope, 
                           $http, 
+                          $location, 
                           currentUser, 
                           users, 
                           userLogOut, 
-                          clientListRepository, 
-                          $location) {
+                          clientListRepository,
+                          benefitSectionGlobalConfig) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var userPromise = currentUser.get()
@@ -136,11 +138,16 @@ var userController = userControllers.controller('userController',
           $location.path(viewLink + company.company.id);
         });
       });
-    }
+    };
 
     $scope.gotoSettings = function(){
       $location.path('/settings');
-    }
+    };
+
+    // turn on/off benefit section globally here
+    // need to move to a company profile which controls sections by company
+    $scope.supplementalLifeInsuranceEnabled = 
+      (_.find(benefitSectionGlobalConfig, {section_name: 'supplemental_life_insurance'})).enabled;
 }]);
 
 var settingsController = userControllers.controller('settingsController', ['$scope',
