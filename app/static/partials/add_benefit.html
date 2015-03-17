@@ -122,7 +122,7 @@
             <div class="benefit-form-holder">
                 <form name="form2" class="dynamic-form">
                     <div class="form-holder">
-                        <div class="row col-md-8">
+                        <div class="row">
                             <div class="radio-label">
                                     <label class="control-label">What is the type of the new life insurance?</label>
                                 </div>
@@ -151,9 +151,13 @@
                             </div>
                         </div>
                         <div class="amount-countainer row col-md-8" ng-show="newLifeInsurancePlan.insurance_type === 'Basic'">
-                            <div class="form-label">Amount</div>
-                            <div class="textbox">
-                                <input type="number"
+                            <div class="col-md-4" style="margin-top:7px;">
+                                <div>Amount (no comma)</div>
+                            </div>                            
+                            <div class="col-md-8 input-group" style="padding-buttom:10px;">
+                                <span class="input-group-addon">$</span>
+                                <input class="form-control"
+                                    type="number"
                                     min="0.0"
                                     name="basic_life_insurance_plan_amount"
                                     ng-model="newLifeInsurancePlan.amount"
@@ -163,8 +167,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="submit-box">
-                            <button ng-click="addLifeInsurancePlan()" class="btn green" ng-disabled="!newLifeInsurancePlan.name">Add Plan</button>
+                        <div class="row col-md-8">
+                            <div class="submit-box">
+                                <button ng-click="addLifeInsurancePlan()" class="btn green" ng-disabled="!newLifeInsurancePlan.name">Add Plan</button>
+                            </div>
                         </div>
                     </div>
                 </form>
