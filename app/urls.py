@@ -69,7 +69,9 @@ from app.views.user_settings_view import SettingView
 from app.views.direct_deposit_view import DirectDepositView
 from app.views.fsa_view import FSAView
 
-from app.views.company_user_summary_view import CompanyUsersSummaryExcelExportView
+from app.views.company_user_summary_view import (
+    CompanyUsersSummaryExcelExportView,
+    CompanyUsersLifeInsuranceBeneficiaryExcelExportView) 
 
 
 PREFIX = "api/v1"
@@ -82,6 +84,7 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/document_types/?$' % PREFIX, DocumentTypeView.as_view(), name='document_type_api'),
 
+    url(r'^%s/users/settings/?$' % PREFIX, SettingView.as_view()),
     url(r'^%s/users/?$' % PREFIX, UsersView.as_view(), name='all_users'),
     url(r'^%s/users/current/?$' % PREFIX, CurrentUserView.as_view(), name='current_user'),
     url(r'^%s/users/(?P<pk>\w+)/?$' % PREFIX, UserView.as_view(), name='user_by_id'),
@@ -116,6 +119,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company_brokers_count/(?P<pk>\w+)/?$' % PREFIX, CompanyBrokerCountView.as_view(), name='company_broker_count'),
     url(r'^%s/broker_company_count/(?P<pk>\w+)/?$' % PREFIX, BrokerCompanyCountView.as_view(), name='broker_company_count'),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/?$' % PREFIX, CompanyUsersSummaryExcelExportView.as_view()),
+    url(r'^%s/companies/(?P<pk>\w+)/users/excel/life_beneficiary?$' % PREFIX, CompanyUsersLifeInsuranceBeneficiaryExcelExportView.as_view()),
 
     url(r'^%s/documents/companies/(?P<pk>\w+)/users/(?P<pd>\w+)/?$' % PREFIX,
         CompanyUserDocumentView.as_view()),
@@ -131,7 +135,6 @@ urlpatterns = patterns('app.views',
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
 
-    url(r'^%s/users/settings/?$' % PREFIX, SettingView.as_view()),
 
     url(r'^%s/brokers/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         LifeInsurancePlanView.as_view(), name='broker_life_insurance_api'),
