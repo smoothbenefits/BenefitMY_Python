@@ -50,23 +50,23 @@ var benefitsController = brokersControllers.controller(
    'benefitsController',
    ['$scope',
     '$location',
-    '$routeParams',
-    '$route',
+    '$stateParams',
+    '$state',
     'benefitDisplayService',
     'benefitPlanRepository',
     'LifeInsuranceService',
     function benefitController(
      $scope,
      $location,
-     $routeParams,
-     $route,
+     $stateParams,
+     $state,
      benefitDisplayService,
      benefitPlanRepository,
      LifeInsuranceService){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
         $scope.benefitDeletable = true;
-        benefitDisplayService($routeParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
+        benefitDisplayService($stateParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
           $scope.medicalBenefitGroup = groupObj;
           $scope.nonMedicalBenefitArray = nonMedicalArray;
           $scope.benefitCount = benefitCount;
@@ -77,14 +77,25 @@ var benefitsController = brokersControllers.controller(
         };
 
         $scope.addBenefitLinkClicked = function(){
-          $location.path('/broker/add_benefit/' + $routeParams.clientId);
+          $location.path('/broker/add_benefit/' + $stateParams.clientId);
         };
 
         $scope.deleteBenefit = function(benefit_id){
           if(benefit_id && confirm('Delete the benefit?')){
             benefitPlanRepository.individual.delete({id:benefit_id}, function(){
-              $route.reload();
+              $state.reload();
             });
+          }
+        };
+
+        $scope.medicalPolicyPredicate = 'orderIndex';
+
+        $scope.sortBy = function(predicate){
+          if ($scope.medicalPolicyPredicate === predicate){
+            $scope.medicalPolicyReverse = !$scope.medicalPolicyReverse;
+          }
+          else{
+            $scope.medicalPolicyPredicate = predicate;
           }
         };
 
@@ -93,7 +104,7 @@ var benefitsController = brokersControllers.controller(
         // Life Insurance
         // TODO: split this off once we have tabs
         /////////////////////////////////////////////////////////////////////
-        LifeInsuranceService.getLifeInsurancePlansForCompany($routeParams.clientId, function(response) {
+        LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId, function(response) {
           $scope.lifeInsurancePlans = response;
           _.each($scope.lifeInsurancePlans, function(companyPlan) {
             companyPlan.created_date_for_display = new Date(companyPlan.created_at).toDateString();
@@ -102,7 +113,7 @@ var benefitsController = brokersControllers.controller(
 
         $scope.deleteLifeInsurancePlan = function(companyLifeInsurancePlan) {
           LifeInsuranceService.deleteLifeInsurancePlanForCompany(companyLifeInsurancePlan.id, function() {
-            $route.reload();
+            $state.reload();
           });
         };
 }]);
@@ -113,7 +124,7 @@ var benefitsController = brokersControllers.controller(
 var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
   ['$scope', 
    '$location', 
-   '$routeParams', 
+   '$stateParams', 
    'companyRepository', 
    'employeeBenefitElectionFactory',
    'FsaService',
@@ -122,14 +133,14 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    function selectedBenefitsController(
     $scope, 
     $location, 
-    $routeParams, 
+    $stateParams, 
     companyRepository, 
     employeeBenefitElectionFactory,
     FsaService,
     LifeInsuranceService,
     CompanyEmployeeSummaryService){
 
-      var clientId = $routeParams.client_id;
+      var clientId = $stateParams.client_id;
       $scope.employeeList = [];
 
 
@@ -194,14 +205,14 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       };
 
       $scope.exportCompanyEmployeeSummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryExcelUrl(clientId);
-
+      $scope.exportCompanyEmployeeLifeBeneficiarySummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl(clientId);
 }]);
 
 var brokerEmployeeController = brokersControllers.controller('brokerEmployeeController',
-  ['$scope', '$location', '$routeParams', 'employeeFamily',
-    function brokerEmployeeController($scope, $location, $routeParams, employeeFamily){
-      var employeeId = $routeParams.employee_id;
-      var companyId = $routeParams.cid;
+  ['$scope', '$location', '$stateParams', 'employeeFamily',
+    function brokerEmployeeController($scope, $location, $stateParams, employeeFamily){
+      var employeeId = $stateParams.employee_id;
+      var companyId = $stateParams.cid;
       $scope.employee = {};
       employeeFamily.get({userId:employeeId}).$promise.then(function(employeeDetail){
         $scope.employee.first_name = employeeDetail.first_name;
@@ -229,7 +240,7 @@ var addBenefitController = brokersControllers.controller(
   'addBenefitController',
   ['$scope',
    '$location',
-   '$routeParams',
+   '$stateParams',
    'benefitPlanRepository',
    'benefitDetailsRepository',
    'LifeInsuranceService',
@@ -237,13 +248,13 @@ var addBenefitController = brokersControllers.controller(
     function addBenefitController(
       $scope,
       $location,
-      $routeParams,
+      $stateParams,
       benefitPlanRepository,
       benefitDetailsRepository,
       LifeInsuranceService,
       currentUser){
 
-      var clientId = $routeParams.clientId;
+      var clientId = $stateParams.clientId;
       $scope.benefit = {
         benefit_type:'',
         benefit_option_types: [
@@ -798,15 +809,15 @@ var addClientController = brokersControllers.controller('addClientController', [
 var benefitInputDetailsController = brokersControllers.controller('benefitInputDetailsController',
     ['$scope',
      '$location',
-     '$routeParams',
+     '$stateParams',
      'benefitListRepository',
      'benefitDetailsRepository',
      function benefitInputDetailsController ($scope,
                                              $location,
-                                             $routeParams,
+                                             $stateParams,
                                              benefitListRepository,
                                              benefitDetailsRepository){
-      $scope.clientId = parseInt($routeParams.client_id);
-      $scope.benefitId = parseInt($routeParams.benefit_id);
+      $scope.clientId = parseInt($stateParams.client_id);
+      $scope.benefitId = parseInt($stateParams.benefit_id);
 
 }]);

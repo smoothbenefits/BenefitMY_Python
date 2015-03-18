@@ -1239,7 +1239,11 @@ benefitmyService.factory(
     return {
       getCompanyEmployeeSummaryExcelUrl: function(companyId) {
         return '/api/v1/companies/' + companyId + '/users/excel';
-      }
+      },
+
+      getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl: function(companyId) {
+        return '/api/v1/companies/' + companyId + '/users/excel/life_beneficiary';
+      },
     }; 
   }
 ]);

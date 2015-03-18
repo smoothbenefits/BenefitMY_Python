@@ -44,18 +44,20 @@ var findViewController = userControllers.controller('findViewController',
 var userController = userControllers.controller('userController', 
   ['$scope', 
    '$http', 
+   '$location', 
    'currentUser',
    'users', 
    'userLogOut', 
    'clientListRepository',
-   '$location',
+   'benefitSectionGlobalConfig',
   function userController($scope, 
                           $http, 
+                          $location, 
                           currentUser, 
                           users, 
                           userLogOut, 
-                          clientListRepository, 
-                          $location) {
+                          clientListRepository,
+                          benefitSectionGlobalConfig) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var userPromise = currentUser.get()
@@ -129,30 +131,41 @@ var userController = userControllers.controller('userController',
       }
     };
 
-    $scope.goToFunctionalViewByCompanyId = function(viewLink){
+    $scope.goToFunctionalViewByCompanyId = function(viewLink, parameter){
       currentUser.get().$promise.then(function(user){
         clientListRepository.get({userId: user.user.id}).$promise.then(function(response){
           var company = _.find(response.company_roles, {company_user_type: 'admin'});
-          $location.path(viewLink + company.company.id);
+
+          if (parameter){
+            $location.path(viewLink + company.company.id).search(parameter);  
+          }
+          else{
+            $location.path(viewLink + company.company.id).search('');
+          }
         });
       });
-    }
+    };
 
     $scope.gotoSettings = function(){
       $location.path('/settings');
-    }
+    };
+
+    // turn on/off benefit section globally here
+    // need to move to a company profile which controls sections by company
+    $scope.supplementalLifeInsuranceEnabled = 
+      (_.find(benefitSectionGlobalConfig, {section_name: 'supplemental_life_insurance'})).enabled;
 }]);
 
 var settingsController = userControllers.controller('settingsController', ['$scope',
    '$location',
-   '$routeParams',
+   '$stateParams',
    'currentUser',
    'userSettingService',
    'personInfoService',
-   function settingsController ($scope, $location, $routeParams, currentUser, userSettingService, personInfoService){
+   function settingsController ($scope, $location, $stateParams, currentUser, userSettingService, personInfoService){
       $('body').removeClass('onboarding-page');
       $scope.profile = {};
-      $scope.forced = $routeParams.forced;
+      $scope.forced = $stateParams.forced;
       currentUser.get()
         .$promise.then(function(response){
           $scope.curUser = response.user;

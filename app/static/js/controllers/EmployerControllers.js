@@ -30,7 +30,6 @@ var employerHome = employersController.controller('employerHome',
     $scope.benefitCount = 0;
     $scope.templateCountArray = [];
 
-
     var getTemplates = function(company){
       templateRepository.byCompany.get({companyId:company.id}).$promise.then(function(response){
         $scope.templateArray = response.templates;
@@ -164,7 +163,7 @@ var employerHome = employersController.controller('employerHome',
 var employerUser = employersController.controller('employerUser',
   ['$scope',
    '$location',
-   '$routeParams',
+   '$stateParams',
    'employerWorkerRepository',
    'usersRepository',
    'userDocument',
@@ -173,14 +172,14 @@ var employerUser = employersController.controller('employerUser',
    'templateRepository',
   function employerUser($scope,
                         $location,
-                        $routeParams,
+                        $stateParams,
                         employerWorkerRepository,
                         usersRepository,
                         userDocument,
                         emailRepository,
                         documentTypeService,
                         templateRepository){
-      var compId = $routeParams.company_id;
+      var compId = $stateParams.company_id;
       $scope.employees=[];
       $scope.addUser = {send_email:true, new_employee:true, create_docs:true};
       $scope.brokers = [];
@@ -293,16 +292,25 @@ var employerUser = employersController.controller('employerUser',
   }
 ]);
 
-var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$routeParams', 'benefitDisplayService', 'LifeInsuranceService',
-  function employerBenefits($scope, $location, $routeParams, benefitDisplayService, LifeInsuranceService){
-    var compId = $routeParams.company_id;
+var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$stateParams', 'benefitDisplayService', 'LifeInsuranceService',
+  function employerBenefits($scope, $location, $stateParams, benefitDisplayService, LifeInsuranceService){
+    var compId = $stateParams.company_id;
     $scope.role = 'Admin';
     $scope.showAddBenefitButton = false;
-    benefitDisplayService($routeParams.company_id, false, function(groupObj, nonMedicalArray, benefitCount){
+    benefitDisplayService($stateParams.company_id, false, function(groupObj, nonMedicalArray, benefitCount){
       $scope.medicalBenefitGroup = groupObj;
       $scope.nonMedicalBenefitArray = nonMedicalArray;
       $scope.benefitCount = benefitCount;
     });
+
+    $scope.sortBy = function(predicate){
+      if ($scope.medicalPolicyPredicate === predicate){
+        $scope.medicalPolicyReverse = !$scope.medicalPolicyReverse;
+      }
+      else{
+        $scope.medicalPolicyPredicate = predicate;
+      }
+    };
 
     $scope.backtoDashboard = function(){
       $location.path('/admin');
@@ -313,7 +321,7 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
     // TODO: split this off once we have tabs
     /////////////////////////////////////////////////////////////////////
 
-    LifeInsuranceService.getLifeInsurancePlansForCompany($routeParams.company_id, function(response) {
+    LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
           $scope.lifeInsurancePlans = response;
           _.each($scope.lifeInsurancePlans, function(companyPlan) {
             companyPlan.created_date_for_display = new Date(companyPlan.created_at).toDateString();
@@ -323,11 +331,11 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
 ]);
 
 var employerLetterTemplate = employersController.controller('employerLetterTemplate',
-  ['$scope', '$location', '$route', '$routeParams', 'templateRepository', 'documentTypeService',
-  function employerLetterTemplate($scope, $location, $route, $routeParams, templateRepository, documentTypeService){
-    $scope.documentType = $routeParams.type;
-    $scope.addMode = $routeParams.add;
-    $scope.companyId = $routeParams.company_id;
+  ['$scope', '$location', '$state', '$stateParams', 'templateRepository', 'documentTypeService',
+  function employerLetterTemplate($scope, $location, $state, $stateParams, templateRepository, documentTypeService){
+    $scope.documentType = $stateParams.type;
+    $scope.addMode = $stateParams.add;
+    $scope.companyId = $stateParams.company_id;
     $scope.viewTitle = 'Create ' + $scope.documentType + ' Template';
     $scope.showEditButton = false;
     $scope.existingTemplateList = [];
@@ -337,7 +345,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
     };
 
     var updateExistingTemplateList = function(){
-      templateRepository.byCompany.get({companyId:$routeParams.company_id})
+      templateRepository.byCompany.get({companyId:$stateParams.company_id})
         .$promise.then(function(response){
           $scope.existingTemplateList = _.sortBy(
             _.filter(response.templates,
@@ -428,20 +436,20 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
 var employerCreateLetter = employersController.controller('employerCreateLetter',
                                                           ['$scope',
                                                           '$location',
-                                                          '$routeParams',
+                                                          '$stateParams',
                                                           'documentRepository',
                                                           'templateRepository',
   function employerCreateLetter($scope,
                                 $location,
-                                $routeParams,
+                                $stateParams,
                                 documentRepository,
                                 templateRepository){
-    $scope.companyId = $routeParams.company_id;
-    var employeeId = $routeParams.employee_id;
+    $scope.companyId = $stateParams.company_id;
+    var employeeId = $stateParams.employee_id;
     $scope.newDoc = {};
 
 
-    $scope.documentType = $routeParams.type;
+    $scope.documentType = $stateParams.type;
 
     templateRepository.byCompany.get({companyId:$scope.companyId})
       .$promise.then(function(response){
@@ -497,17 +505,17 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
 var employerViewLetter = employersController.controller('employerViewLetter',
                                                           ['$scope',
                                                           '$location',
-                                                          '$route',
-                                                          '$routeParams',
+                                                          '$state',
+                                                          '$stateParams',
                                                           'documentRepository',
   function employerViewLetter($scope,
                               $location,
-                              $route,
-                              $routeParams,
+                              $state,
+                              $stateParams,
                               documentRepository){
-    $scope.companyId = $routeParams.company_id;
-    var employeeId = $routeParams.employee_id;
-    $scope.documentType = $routeParams.type;
+    $scope.companyId = $stateParams.company_id;
+    var employeeId = $stateParams.employee_id;
+    $scope.documentType = $stateParams.type;
     $scope.documentList = [];
     $scope.activeDocument = {};
     $scope.signaturePresent = false;
@@ -524,7 +532,7 @@ var employerViewLetter = employersController.controller('employerViewLetter',
       documentRepository.getById.delete({id: doc.id}).$promise
         .then(function(response){
           alert("Deleted document " + doc.name);
-          $route.reload();
+          $state.reload();
         });
     };
 
@@ -572,21 +580,21 @@ var employerViewLetter = employersController.controller('employerViewLetter',
 var employerViewEmployeeDetail = employersController.controller('employerViewEmployeeDetail', [
   '$scope', 
   '$location', 
-  '$routeParams', 
+  '$stateParams', 
   'profileSettings', 
   'employeeFamily',
   'employmentAuthRepository',
   'employeeTaxRepository',
   function($scope, 
            $location, 
-           $routeParams, 
+           $stateParams, 
            profileSettings,
            employeeFamily,
            employmentAuthRepository,
            employeeTaxRepository){
 
-    var compId = $routeParams.company_id;
-    var employeeId = $routeParams.eid;
+    var compId = $stateParams.company_id;
+    var employeeId = $stateParams.eid;
     $scope.employee = {};
     $scope.showEditButton = false;
 
@@ -656,7 +664,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
 var employerBenefitsSelected = employersController.controller('employerBenefitsSelected', [
   '$scope', 
   '$location', 
-  '$routeParams', 
+  '$stateParams', 
   'companyRepository',
   'employeeBenefitElectionFactory',
   'FsaService',
@@ -664,13 +672,13 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   'CompanyEmployeeSummaryService',
   function($scope, 
            $location, 
-           $routeParams, 
+           $stateParams, 
            companyRepository,
            employeeBenefitElectionFactory,
            FsaService,
            LifeInsuranceService,
            CompanyEmployeeSummaryService){
-    var company_id = $routeParams.company_id;
+    var company_id = $stateParams.company_id;
     $scope.employeeList = [];
 
     companyRepository.get({clientId: company_id}).$promise.then(function(response){
@@ -720,5 +728,6 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     };
 
     $scope.exportCompanyEmployeeSummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryExcelUrl(company_id);
+    $scope.exportCompanyEmployeeLifeBeneficiarySummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl(company_id);
 }]);
 
