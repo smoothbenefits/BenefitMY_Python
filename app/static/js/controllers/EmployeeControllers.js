@@ -986,10 +986,17 @@ var onboardTax = employeeControllers.controller('onboardTax',
     };
 
     $scope.calculateTotal = function(){
-      var total = getMarriageNumber() + 1;
+      var total = getMarriageNumber();
       total += $scope.employee.dependent_count;
-      if($scope.employee.childExpense){
-        total ++;
+      if($scope.employee.childExpense && total){
+        total += parseInt($scope.employee.childExpense);
+      }
+      if($scope.employee.headOfHousehold && total){
+        total += parseInt($scope.employee.headOfHousehold);
+      }
+      if(!total)
+      {
+        total = undefined;
       }
       $scope.employee.calculated_points = total;
       if(!$scope.employee.user_defined_set){
