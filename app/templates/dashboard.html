@@ -18,7 +18,6 @@
     <script type="text/javascript" src='{% static 'jquery-ui/jquery-ui.min.js' %}'></script>
     <script type="text/javascript" src='{% static 'angular/angular.min.js' %}'></script>
     <script type="text/javascript" src='{% static 'angular-resource/angular-resource.min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'angular-route/angular-route.min.js' %}'></script>
     <script type="text/javascript" src='{% static 'angular-ui/build/angular-ui.min.js' %}'></script>
     <script type="text/javascript" src='{% static 'angular-ui-router/release/angular-ui-router.min.js' %}'></script>
     <script type="text/javascript" src='{% static 'angular-ui-utils/ui-utils.min.js' %}'></script>
@@ -127,7 +126,7 @@
         </div><!-- / #sidebar -->
 
 
-        <div id="content-wrapper"><div ng-view></div></div> <!-- / #content-wrapper -->
+        <div id="content-wrapper"><div ui-view></div></div> <!-- / #content-wrapper -->
     </div> <!-- / #dashboard-wrapper -->
     <script type="text/javascript">
         if(!init)
