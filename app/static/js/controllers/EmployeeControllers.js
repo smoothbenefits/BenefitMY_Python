@@ -985,14 +985,21 @@ var onboardTax = employeeControllers.controller('onboardTax',
       }
     };
 
-    var getTotalPoints = function(){
+    $scope.calculateTotal = function(){
       var total = getMarriageNumber() + 1;
       total += $scope.employee.dependent_count;
       if($scope.employee.childExpense){
         total ++;
       }
-      return total;
+      $scope.employee.total_points = total;
+      if(!$scope.employee.final_set){
+        $scope.employee.final_points = $scope.employee.total_points;
+      }
     };
+
+    $scope.setFinalPoints = function(){
+      $scope.employee.final_set = true;
+    }
 
     $scope.acknowledgeW4 = function(){
       $scope.employee.downloadW4 = !$scope.employee.downloadW4;
@@ -1007,12 +1014,22 @@ var onboardTax = employeeControllers.controller('onboardTax',
         alert('Please enter the number of dependents');
         return;
       }
+      if(typeof($scope.employee.final_points) === 'undefined'){
+        alert('Please enter the final withholding number (line 5 on your W-4)');
+        return;
+      }
+      if(typeof($scope.employee.extra_amount) === 'undefined'){
+        alert('Please enter the extra amount of your paycheck to withhold (Line 6 on your W-4)');
+        return;
+      }
       var empAuth = {
         marriage: getMarriageNumber(),
         dependencies: $scope.employee.dependent_count,
         head: $scope.employee.headOfHousehold,
         tax_credit: $scope.employee.childExpense,
-        total_points: getTotalPoints()
+        total_points: $scope.employee.total_points,
+        final_points: $scope.employee.final_points,
+        extra_amount: $scope.employee.extra_amount
       };
       employeeTaxRepository.save({userId:$scope.employeeId}, empAuth,
         function(response){
