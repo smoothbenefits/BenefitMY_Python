@@ -282,7 +282,10 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     var validateW4Info = function(employeeId, succeeded, failed){
       employeeTaxRepository.get({userId:employeeId})
         .$promise.then(function(response){
-          if(!response || !response.user_defined_points || response.user_defined_points <= 0){
+          if(!response || 
+             (!response.user_defined_points || response.user_defined_points <= 0) && 
+             (!response.total_points || response.total_points <= 0)){
+            //For backwards compatibility, we need to check both fields.
             failed(response);
           }
           else{
