@@ -8,7 +8,7 @@ class w4TestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['23_auth_user', '35_w4']
 
-    def test_get_fsa(self):
+    def test_get_w4(self):
         response = self.client.get(reverse('w4_api',
                                            kwargs={'pk': self.normalize_key(3)}))
         self.assertIsNotNone(response)
@@ -21,33 +21,10 @@ class w4TestCase(TestCase, ViewTestBase):
         self.assertEqual(result['tax_credit'], 0)
         self.assertEqual(result['user'], 3)
         self.assertEqual(result['extra_amount'], '100.00')
+        self.assertEqual(result['user_defined_points'], 5)
+        self.assertEqual(result['calculated_points'], 3)
 
-    """"
-    def test_delete_fsa(self):
-        response = self.client.get(reverse('w4_api',
-                                           kwargs={'pk': self.normalize_key(3)}))
-        self.assertIsNotNone(response)
-        self.assertEqual(response.status_code, 200)
 
-        result = json.loads(response.content)
-        self.assertEqual(type(result), dict)
-
-        self.assertEqual(result['marriage'], 2)
-        self.assertEqual(result['tax_credit'], 0)
-        self.assertEqual(result['user'], 3)
-        self.assertEqual(result['extra_amount'], '100.00')
-
-        response = self.client.delete(reverse('w4_api',
-                                              kwargs={'pk': self.normalize_key(1)}))
-
-        self.assertEqual(response.status_code, 204)
-        response = self.client.get(reverse('w4_api',
-                                           kwargs={'pk': self.normalize_key(3)}))
-        self.assertIsNotNone(response)
-        self.assertEqual(response.status_code, 404)
-        result = json.loads(response.content)
-        self.assertEqual(result['detail'], 'Not found')
-    """
 
     def test_post_w4(self):
 
@@ -77,3 +54,5 @@ class w4TestCase(TestCase, ViewTestBase):
         self.assertEqual(result['tax_credit'], 1)
         self.assertEqual(result['user'], 1)
         self.assertEqual(result['extra_amount'], '100.00')
+        self.assertEqual(result['user_defined_points'], 5)
+        self.assertEqual(result['calculated_points'], 3)
