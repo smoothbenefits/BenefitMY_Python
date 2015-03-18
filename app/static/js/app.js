@@ -153,7 +153,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller:'employeeBenefitSignup'
             }).
             state('/employee/info', {
-                url: '/employee/info',
+                url: '/employee/info?type',
                 templateUrl: '/static/partials/employee_profile.html',
                 controller: 'employeeInfoController'
             }).
