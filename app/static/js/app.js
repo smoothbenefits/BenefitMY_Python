@@ -38,7 +38,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
 
         $stateProvider.
             state('/settings', {
-                url: "/settings",
+                url: "/settings?forced",
                 templateUrl: '/static/partials/settings.html',
                 controller: 'settingsController'
             }).
@@ -73,7 +73,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'benefitInputDetailsController'
             }).
             state('/broker/employee/:employee_id', {
-                url: '/broker/employee/:employee_id',
+                url: '/broker/employee/:employee_id?cid',
                 templateUrl: '/static/partials/employee_detail.html',
                 controller: 'brokerEmployeeController'
             }).
@@ -113,17 +113,17 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller:'employerUser'
             }).
             state('/admin/generate_template/:company_id', {
-                url: '/admin/generate_template/:company_id',
+                url: '/admin/generate_template/:company_id?type&add',
                 templateUrl:'/static/partials/template.html',
                 controller:'employerLetterTemplate'
             }).
             state('/admin/create_letter/:company_id/:employee_id', {
-                url: '/admin/create_letter/:company_id/:employee_id',
+                url: '/admin/create_letter/:company_id/:employee_id?type',
                 templateUrl:'/static/partials/create_letter.html',
                 controller:'employerCreateLetter'
             }).
             state('/admin/view_letter/:company_id/:employee_id', {
-                url: '/admin/view_letter/:company_id/:employee_id',
+                url: '/admin/view_letter/:company_id/:employee_id?type',
                 templateUrl:'/static/partials/view_letter.html',
                 controller:'employerViewLetter'
             }).
@@ -133,7 +133,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'employerViewDraft'
             }).
             state('/admin/employee_detail/:company_id', {
-                url: '/admin/employee_detail/:company_id',
+                url: '/admin/employee_detail/:company_id?eid',
                 templateUrl: '/static/partials/employee_detail.html',
                 controller: 'employerViewEmployeeDetail'
             }).
@@ -158,7 +158,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'employeeInfoController'
             }).
             state('/employee/info/edit', {
-                url: '/employee/info/edit',
+                url: '/employee/info/edit?type',
                 templateUrl: '/static/partials/employee_profile_edit.html',
                 controller: 'employeeInfoController'
             }).
@@ -183,7 +183,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'viewDocument'
             }).
             state('/employee/sign_letter/:employee_id', {
-                url: '/employee/sign_letter/:employee_id',
+                url: '/employee/sign_letter/:employee_id?letter_type',
                 templateUrl: '/static/partials/employee_onboard/employee_view_letter.html',
                 controller: 'employeeAcceptDocument'
             }).
