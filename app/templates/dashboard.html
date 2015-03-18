@@ -69,11 +69,14 @@
                         <button data-toggle="collapse" data-target="#hr-nav" aria-expanded="false" aria-controls="hr-nav"><span class="flaticon flaticon-user135"></span>HR</button>
                     </div>
                     <div class="sub-nav collapse" id="hr-nav">
-                        <a ng-click="goToFunctionalView('/admin/employee/add/')">Add Employee</a>
-                        <a ng-click="goToFunctionalView('/admin/employee/')">View Employees</a>
-                        <a ng-click="goToFunctionalView('/admin/generate_template/', {type:'Offer'})">Offer Letter Template</a>
-                        <a ng-click="goToFunctionalView('/admin/generate_template/', {type:'Employee Agreement'})">Employee Agreement Template</a>
-                        <a ng-click="goToFunctionalView('/admin/generate_template/', {type:'NDA'})">NDA Template</a>
+                        <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/add/')">Add Employee</a>
+                        <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/')">View Employees</a>
+                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'COBRA'})">COBRA</a>
+                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Employee Handbook'})">Employee Handbook</a>
+                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Employment Agreement'})">Employee Agreement Template</a>
+                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'NDA'})">NDA Template</a>
+                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Offer Letter'})">Offer Letter Template</a>
+                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Privacy Policy'})">Privacy Policy</a>
                     </div>
                 </li>
                 <li class="expandable" ng-show="getCurRoleFromPath() === 'admin'">
@@ -81,8 +84,8 @@
                         <button data-toggle="collapse" data-target="#employer-benefit-nav" aria-expanded="false" aria-controls="employer-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
                     </div>
                     <div class="sub-nav collapse" id="employer-benefit-nav">
-                        <a ng-click="goToFunctionalView('/admin/broker/add/')">Add Broker Info</a>
-                        <a ng-click="goToFunctionalView('/admin/broker/')">View Broker Info</a>
+                        <a ng-click="goToFunctionalViewByCompanyId('/admin/broker/add/')">Add Broker Info</a>
+                        <a ng-click="goToFunctionalViewByCompanyId('/admin/broker/')">View Broker Info</a>
                         <a ng-click="goToFunctionalViewByCompanyId('/admin/benefits/')">View Benefits</a>
                     </div>
                 </li>

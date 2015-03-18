@@ -131,11 +131,17 @@ var userController = userControllers.controller('userController',
       }
     };
 
-    $scope.goToFunctionalViewByCompanyId = function(viewLink){
+    $scope.goToFunctionalViewByCompanyId = function(viewLink, parameter){
       currentUser.get().$promise.then(function(user){
         clientListRepository.get({userId: user.user.id}).$promise.then(function(response){
           var company = _.find(response.company_roles, {company_user_type: 'admin'});
-          $location.path(viewLink + company.company.id);
+
+          if (parameter){
+            $location.path(viewLink + company.company.id).search(parameter);  
+          }
+          else{
+            $location.path(viewLink + company.company.id).search('');
+          }
         });
       });
     };
