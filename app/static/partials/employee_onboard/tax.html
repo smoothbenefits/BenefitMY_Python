@@ -59,14 +59,40 @@
                         </li>
                         <li class="list-group-item">
                             <label class="control-label">Enter the number of dependents&nbsp;</label>
-                            <span class="textbox">
+                            <span class="textbox col-xs-12">
                                 <input type="number"
                                     min="0"
                                     ng-model="employee.dependent_count"
                                     ng-required="true"
-                                    ng-name = "dependent_count" />
+                                    ng-name = "dependent_count"
+                                    ng-change = "calculateTotal()" />
                             </span>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="control-label">Enter the final withholding number you would like to appear on your W4 (line 5 on your W-4)</label>
+                            <span class="textbox col-xs-12">
+                                <input type="number"
+                                    min="0"
+                                    ng-model="employee.final_points"
+                                    ng-required="true"
+                                    ng-name = "final_points"
+                                    ng-change="setFinalPoints()" />
+                            </span>
+                            <div style="clear:both"></div>
 
+                        </li>
+                        <li class="list-group-item">
+                            <label class="control-label">Enter the extra amount from your paycheck you would like to withhold for tax purpose (line 6 on your W-4)</label>
+                            <span class="input-group-addon col-xs-1" style="padding:13.5px">$</span>
+                            <input class="col-xs-11"
+                                style="padding:10px"
+                                type="number"
+                                min="0"
+                                width="400"
+                                ng-model="employee.extra_amount"
+                                ng-required="true"/>
+                            <div style="clear:both"></div>
                         </li>
                         <li class="list-group-item">
                             <div class="radio-label">
