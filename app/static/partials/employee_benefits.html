@@ -81,7 +81,7 @@
                         <div class="form-holder">
                             <form name="form" ng-repeat="beneficiary in basicLifeInsurancePlan.life_insurance_beneficiary">
                                 <div class="row">
-                                    <div class="label label-info">Beneficiary - {{$index + 1}} </div>
+                                    <div class="label label-info" style="margin-top:10px;">Beneficiary - {{$index + 1}} </div>
                                     <a type="button" ng-click="removeFromList(beneficiary, basicLifeInsurancePlan.life_insurance_beneficiary)"> (Remove this) </a>
                                 </div>
                                 <div class="row">
@@ -151,13 +151,15 @@
                                 <div class="row">
                                     <div class="form-label">Percentage 
                                     (Please make sure percentage for all beneficiaries adds up to 100%)</div>
-                                    <div class="textbox">
-                                        <input type="text"
+                                    <div class="input-group">
+                                        <input class="form-control"
+                                            type="text"
                                             max="100.0"
                                             min="0.0"
                                             name="beneficiary_percentage"
                                             ng-model="beneficiary.percentage"
                                             ng-required="true"/>
+                                        <span class="input-group-addon"> % </span>
                                         <div class="form-error" ng-show="form.beneficiary_percentage.$dirty && form.beneficiary_percentage.$invalid">
                                             <span ng-show="form.beneficiary_percentage.$error.required">Percentage is required</span>
                                         </div>
@@ -165,7 +167,7 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="add-box" style="max-width: 200px;">
+                        <div class="add-box" style="max-width: 200px;padding-top:20px;">
                             <a ng-click="addBeneficiaryToBasic()"
                                 class="btn green"
                                 ng-disabled="basicLifeInsurancePlan.life_insurance_beneficiary.length >= 4"> + Add a new beneficiary </a>
@@ -174,7 +176,7 @@
                         <div class="form-holder">
                             <form name="form" ng-repeat="beneficiary in basicLifeInsurancePlan.life_insurance_contingent_beneficiary">
                                 <div class="row">
-                                    <div class="label label-warning">Contingent Beneficiary - {{$index + 1}} </div>
+                                    <div class="label label-warning" style="margin-top:10px;">Contingent Beneficiary - {{$index + 1}} </div>
                                     <a type="button" ng-click="removeFromList(beneficiary, basicLifeInsurancePlan.life_insurance_contingent_beneficiary)"> (Remove this) </a>
                                 </div>
                                 <div class="row">
@@ -244,13 +246,15 @@
                                 <div class="row">
                                     <div class="form-label">Percentage 
                                     (Please make sure percentage for all beneficiaries adds up to 100%)</div>
-                                    <div class="textbox">
-                                        <input type="text"
+                                    <div class="input-group">
+                                        <input class="form-control"
+                                            type="text"
                                             max="100.0"
                                             min="0.0"
                                             name="beneficiary_percentage"
                                             ng-model="beneficiary.percentage"
                                             ng-required="true"/>
+                                        <span class="input-group-addon">%</span>
                                         <div class="form-error" ng-show="form.beneficiary_percentage.$dirty && form.beneficiary_percentage.$invalid">
                                             <span ng-show="form.beneficiary_percentage.$error.required">Percentage is required</span>
                                         </div>
@@ -258,7 +262,7 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="add-box" style="max-width: 260px;">
+                        <div class="add-box" style="max-width: 260px;padding-top:20px;">
                             <a ng-click="addContingentBeneficiaryToBasic()"
                                 class="btn green"
                                 ng-disabled="basicLifeInsurancePlan.life_insurance_contingent_beneficiary.length >= 4"> + Add a new contingent beneficiary </a>
@@ -271,7 +275,7 @@
     </div>
 
     <!-- Supplemental life insurance -->
-    <div class="panel" ng-show="lifeInsurancePlans && lifeInsurancePlans.length > 0">
+    <div class="panel" ng-show="supplementalLifeInsuranceEnabled && lifeInsurancePlans && lifeInsurancePlans.length > 0">
         <div class="panel-head">Supplemental Life Insurance</div>
         <div class="panel-body">
             <div class="row">
@@ -313,7 +317,7 @@
                         <div class="form-holder">
                             <form name="form" ng-repeat="beneficiary in familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary">
                                 <div class="row">
-                                    <div class="label label-info">Beneficiary - {{$index + 1}} </div>
+                                    <div class="label label-info" style="margin-top:10px;">Beneficiary - {{$index + 1}} </div>
                                     <a type="button" ng-click="removeBeneficiary(beneficiary)"> (Remove this) </a>
                                 </div>
                                 <div class="row">
@@ -383,13 +387,15 @@
                                 <div class="row">
                                     <div class="form-label">Percentage 
                                     (Please make sure percentage for all beneficiaries adds up to 100%)</div>
-                                    <div class="textbox">
-                                        <input type="text"
+                                    <div class="input-group">
+                                        <input class="form-control"
+                                            type="text"
                                             max="100.0"
                                             min="0.0"
                                             name="beneficiary_percentage"
                                             ng-model="beneficiary.percentage"
                                             ng-required="true"/>
+                                        <span class="input-group-addon">%</span>
                                         <div class="form-error" ng-show="form.beneficiary_percentage.$dirty && form.beneficiary_percentage.$invalid">
                                             <span ng-show="form.beneficiary_percentage.$error.required">Percentage is required</span>
                                         </div>
@@ -397,7 +403,7 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="add-box" style="max-width: 200px;">
+                        <div class="add-box" style="max-width: 200px;padding-top:20px;">
                             <a ng-click="addBeneficiary()"
                                 class="btn green"
                                 ng-disabled="familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.length >= 4"> + Add a new beneficiary </a>
@@ -406,7 +412,7 @@
                         <div class="form-holder">
                             <form name="form" ng-repeat="beneficiary in familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary">
                                 <div class="row">
-                                    <div class="label label-warning">Contingent Beneficiary - {{$index + 1}} </div>
+                                    <div class="label label-warning" style="margin-top:10px;">Contingent Beneficiary - {{$index + 1}} </div>
                                     <a type="button" ng-click="removeContingentBeneficiary(beneficiary)"> (Remove this) </a>
                                 </div>
                                 <div class="row">
@@ -476,13 +482,15 @@
                                 <div class="row">
                                     <div class="form-label">Percentage 
                                     (Please make sure percentage for all beneficiaries adds up to 100%)</div>
-                                    <div class="textbox">
-                                        <input type="text"
+                                    <div class="input-group">
+                                        <input class="form-control"
+                                            type="text"
                                             max="100.0"
                                             min="0.0"
                                             name="beneficiary_percentage"
                                             ng-model="beneficiary.percentage"
                                             ng-required="true"/>
+                                        <span class="input-group-addon">%</span>
                                         <div class="form-error" ng-show="form.beneficiary_percentage.$dirty && form.beneficiary_percentage.$invalid">
                                             <span ng-show="form.beneficiary_percentage.$error.required">Percentage is required</span>
                                         </div>
@@ -490,7 +498,7 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="add-box" style="max-width: 260px;">
+                        <div class="add-box" style="max-width: 260px;padding-top:20px;">
                             <a ng-click="addContingentBeneficiary()"
                                 class="btn green"
                                 ng-disabled="familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.length >= 4"> + Add a new contingent beneficiary </a>
