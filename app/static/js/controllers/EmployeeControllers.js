@@ -991,14 +991,14 @@ var onboardTax = employeeControllers.controller('onboardTax',
       if($scope.employee.childExpense){
         total ++;
       }
-      $scope.employee.total_points = total;
-      if(!$scope.employee.final_set){
-        $scope.employee.final_points = $scope.employee.total_points;
+      $scope.employee.calculated_points = total;
+      if(!$scope.employee.user_defined_set){
+        $scope.employee.user_defined_points = $scope.employee.calculated_points;
       }
     };
 
-    $scope.setFinalPoints = function(){
-      $scope.employee.final_set = true;
+    $scope.userDefinedPointsSet = function(){
+      $scope.employee.user_defined_set = true;
     }
 
     $scope.acknowledgeW4 = function(){
@@ -1014,7 +1014,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
         alert('Please enter the number of dependents');
         return;
       }
-      if(typeof($scope.employee.final_points) === 'undefined'){
+      if(typeof($scope.employee.user_defined_points) === 'undefined'){
         alert('Please enter the final withholding number (line 5 on your W-4)');
         return;
       }
@@ -1027,8 +1027,8 @@ var onboardTax = employeeControllers.controller('onboardTax',
         dependencies: $scope.employee.dependent_count,
         head: $scope.employee.headOfHousehold,
         tax_credit: $scope.employee.childExpense,
-        total_points: $scope.employee.total_points,
-        final_points: $scope.employee.final_points,
+        calculated_points: $scope.employee.calculated_points,
+        user_defined_points: $scope.employee.user_defined_points,
         extra_amount: $scope.employee.extra_amount
       };
       employeeTaxRepository.save({userId:$scope.employeeId}, empAuth,
