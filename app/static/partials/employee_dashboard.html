@@ -107,7 +107,7 @@
         </table>
     </div>
     <div class="table-responsive table-holder">
-        <table class="table table-striped" ng-show="!basicLifeInsurancePlan">
+        <table class="table table-striped" ng-show="!basicLifeInsurancePlan.enrolled">
             <thead>
                 <tr>
                     <th width="180"><span>Basic Life Insurance</span></th>
@@ -119,7 +119,7 @@
                 </tr>
             </tbody>    
         </table>
-        <table class="table table-striped" ng-show="basicLifeInsurancePlan">
+        <table class="table table-striped" ng-show="basicLifeInsurancePlan.enrolled">
             <thead>
                 <tr>
                     <th width="180"><span>Plan Name</span></th>
