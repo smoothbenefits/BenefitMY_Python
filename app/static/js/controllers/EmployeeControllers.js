@@ -3,7 +3,7 @@ var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]
 var employeeHome = employeeControllers.controller('employeeHome',
     ['$scope',
      '$location',
-     '$stateParams',
+     '$routeParams',
      'clientListRepository',
      'employeeBenefits',
      'currentUser',
@@ -14,7 +14,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'LifeInsuranceService',
   function employeeHome($scope,
                         $location,
-                        $stateParams,
+                        $routeParams,
                         clientListRepository,
                         employeeBenefits,
                         currentUser,
@@ -142,7 +142,7 @@ var employeeBenefitSignup = employeeControllers.controller(
   'employeeBenefitSignup',
   ['$scope',
    '$location',
-   '$stateParams',
+   '$routeParams',
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
@@ -153,7 +153,7 @@ var employeeBenefitSignup = employeeControllers.controller(
     function employeeBenefitController(
       $scope,
       $location,
-      $stateParams,
+      $routeParams,
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
@@ -165,7 +165,7 @@ var employeeBenefitSignup = employeeControllers.controller(
         var medicalPlans = [];
         var dentalPlans = [];
         var visionPlans = [];
-        var employeeId = $stateParams.employee_id;
+        var employeeId = $routeParams.employee_id;
         var companyId;
         $scope.employee_id = employeeId;
         $scope.availablePlans = [];
@@ -627,15 +627,15 @@ var employeeBenefitSignup = employeeControllers.controller(
 var addFamily = employeeControllers.controller('addFamily', 
  ['$scope', 
   '$location', 
-  '$stateParams', 
+  '$routeParams', 
   'personInfoService',
   function addFamily(
     $scope, 
     $location, 
-    $stateParams, 
+    $routeParams, 
     personInfoService){
 
-  var employeeId = $stateParams.employee_id;
+  var employeeId = $routeParams.employee_id;
   $scope.employeeId = employeeId;
   $scope.person = {person_type:'family'};
   personInfoService.getPersonInfo(employeeId, function(retrievedInfo){
@@ -657,10 +657,10 @@ var addFamily = employeeControllers.controller('addFamily',
 
 
 var viewDocument = employeeControllers.controller('viewDocument',
-  ['$scope', '$location', '$stateParams', 'userDocument', 'currentUser', 'documentRepository',
-  function viewDocument($scope, $location, $stateParams, userDocument, currentUser, documentRepository){
+  ['$scope', '$location', '$routeParams', 'userDocument', 'currentUser', 'documentRepository',
+  function viewDocument($scope, $location, $routeParams, userDocument, currentUser, documentRepository){
     $scope.document = {};
-    var documentId = $stateParams.doc_id;
+    var documentId = $routeParams.doc_id;
     var signatureUpdated = false;
     $scope.signatureCreatedDate = moment().format('MMM Do YYYY');
     var userPromise = currentUser.get().$promise
@@ -730,18 +730,18 @@ var viewDocument = employeeControllers.controller('viewDocument',
 }]);
 
 var employeeInfo = employeeControllers.controller('employeeInfoController',
-  ['$scope', '$location', '$stateParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
-  function($scope, $location, $stateParams, profileSettings, currentUser, employmentAuthRepository, employeeTaxRepository){
-    var infoObject = _.findWhere(profileSettings, { name: $stateParams.type });
-    $scope.info = { type: $stateParams.type, type_display: infoObject.display_name };
+  ['$scope', '$location', '$routeParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
+  function($scope, $location, $routeParams, profileSettings, currentUser, employmentAuthRepository, employeeTaxRepository){
+    var infoObject = _.findWhere(profileSettings, { name: $routeParams.type });
+    $scope.info = { type: $routeParams.type, type_display: infoObject.display_name };
     $scope.person = { role: 'Employee' };
 
-    if ($stateParams.type === 'i9'){
+    if ($routeParams.type === 'i9'){
       $scope.isUpdateW4 = false;
       $scope.isUpdateI9 = true;
     }
 
-    if ($stateParams.type === 'w4'){
+    if ($routeParams.type === 'w4'){
       $scope.isUpdateW4 = true;
       $scope.isUpdateI9 = false;
     }
@@ -807,9 +807,9 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
   }]);
 
 
-var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$stateParams', function($scope, $stateParams){
+var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$routeParams', function($scope, $routeParams){
   $scope.employee = {};
-  $scope.employee.id = $stateParams.employee_id;
+  $scope.employee.id = $routeParams.employee_id;
   $scope.employee.username = '';
   $scope.employee.password = '';
 
@@ -819,10 +819,10 @@ var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$state
   }
 }]);
 
-var signup = employeeControllers.controller('employeeSignup', ['$scope', '$stateParams', '$location',
-  function($scope, $stateParams, $location){
+var signup = employeeControllers.controller('employeeSignup', ['$scope', '$routeParams', '$location',
+  function($scope, $routeParams, $location){
     $scope.employee = {};
-    $scope.employee.id = $stateParams.signup_number;
+    $scope.employee.id = $routeParams.signup_number;
 
     $scope.submit = function(employee) {
       if($scope.employee.password !== $scope.employee.password_confirm)
@@ -838,11 +838,11 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$state
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$stateParams', '$location', 'personInfoService', 'currentUser', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, personInfoService, currentUser, EmployeePreDashboardValidationService){
+  ['$scope', '$routeParams', '$location', 'personInfoService', 'currentUser', 'EmployeePreDashboardValidationService',
+  function($scope, $routeParams, $location, personInfoService, currentUser, EmployeePreDashboardValidationService){
 
     $scope.employee = {};
-    $scope.employeeId = $stateParams.employee_id;
+    $scope.employeeId = $routeParams.employee_id;
     $scope.displayAll = false;
 
 
@@ -872,12 +872,12 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
+  ['$scope', '$routeParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
+  function($scope, $routeParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
     $scope.employee = {
       auth_type: ''
     };
-    $scope.employeeId = $stateParams.employee_id;
+    $scope.employeeId = $routeParams.employee_id;
 
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
@@ -954,10 +954,10 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', '$stateParams', '$location','employeeTaxRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employeeTaxRepository, EmployeePreDashboardValidationService){
+  ['$scope', '$routeParams', '$location','employeeTaxRepository', 'EmployeePreDashboardValidationService',
+  function($scope, $routeParams, $location, employeeTaxRepository, EmployeePreDashboardValidationService){
     $scope.employee = {};
-    $scope.employeeId = $stateParams.employee_id;
+    $scope.employeeId = $routeParams.employee_id;
 
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
@@ -1022,10 +1022,10 @@ var onboardTax = employeeControllers.controller('onboardTax',
 }]);
 
 var onboardComplete = employeeControllers.controller('onboardComplete',
-  ['$scope', '$stateParams', '$location', 'employeeSignature', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employeeSignature, EmployeePreDashboardValidationService){
+  ['$scope', '$routeParams', '$location', 'employeeSignature', 'EmployeePreDashboardValidationService',
+  function($scope, $routeParams, $location, employeeSignature, EmployeePreDashboardValidationService){
     $scope.employee = {};
-    $scope.employeeId = $stateParams.employee_id;
+    $scope.employeeId = $routeParams.employee_id;
 
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
@@ -1076,9 +1076,9 @@ var onboardComplete = employeeControllers.controller('onboardComplete',
 }]);
 
 var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocument',
-  ['$scope', '$stateParams', '$location', 'documentRepository', 'EmployeeLetterSignatureValidationService',
-  function($scope, $stateParams, $location, documentRepository, EmployeeLetterSignatureValidationService){
-    $scope.employeeId = $stateParams.employee_id;
+  ['$scope', '$routeParams', '$location', 'documentRepository', 'EmployeeLetterSignatureValidationService',
+  function($scope, $routeParams, $location, documentRepository, EmployeeLetterSignatureValidationService){
+    $scope.employeeId = $routeParams.employee_id;
     var letterType = $location.search().letter_type;
     if(!letterType){
       letterType = 'Offer Letter';
