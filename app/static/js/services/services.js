@@ -1217,7 +1217,8 @@ benefitmyService.factory(
         CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(function(plans){
             _.each(plans, function(plan){
-              if (plan.life_insurance_plan && plan.life_insurance_plan.insurance_type === 'Basic'){
+              if (plan.life_insurance.life_insurance_plan 
+                  && plan.life_insurance.life_insurance_plan.insurance_type === 'Basic'){
                 CompanyUserLifeInsurancePlanRepository.ById.delete({id: plan.id});
               }
             });
