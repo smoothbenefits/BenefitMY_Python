@@ -66,9 +66,19 @@ settings.constant('profileSettings', [
                 id: 4
             },
             {
-                name: 'total_points',
-                display_name: 'Total points',
+                name: 'calculated_points',
+                display_name: 'Calculated withhold number (based on your dependents and withold type)',
                 id: 5
+            },
+            {
+                name: 'user_defined_points',
+                display_name: 'W-4 paycheck withhold number',
+                id: 6
+            },
+            {
+                name: 'extra_amount',
+                display_name: 'Extra amount to withhold annually from paycheck for Tax',
+                id: 7
             }
         ]
     }

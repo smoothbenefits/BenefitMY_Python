@@ -985,14 +985,28 @@ var onboardTax = employeeControllers.controller('onboardTax',
       }
     };
 
-    var getTotalPoints = function(){
-      var total = getMarriageNumber() + 1;
+    $scope.calculateTotal = function(){
+      var total = getMarriageNumber();
       total += $scope.employee.dependent_count;
-      if($scope.employee.childExpense){
-        total ++;
+      if($scope.employee.childExpense && total){
+        total += parseInt($scope.employee.childExpense);
       }
-      return total;
+      if($scope.employee.headOfHousehold && total){
+        total += parseInt($scope.employee.headOfHousehold);
+      }
+      if(!total)
+      {
+        total = undefined;
+      }
+      $scope.employee.calculated_points = total;
+      if(!$scope.employee.user_defined_set){
+        $scope.employee.user_defined_points = $scope.employee.calculated_points;
+      }
     };
+
+    $scope.userDefinedPointsSet = function(){
+      $scope.employee.user_defined_set = true;
+    }
 
     $scope.acknowledgeW4 = function(){
       $scope.employee.downloadW4 = !$scope.employee.downloadW4;
@@ -1007,12 +1021,22 @@ var onboardTax = employeeControllers.controller('onboardTax',
         alert('Please enter the number of dependents');
         return;
       }
+      if(typeof($scope.employee.user_defined_points) === 'undefined'){
+        alert('Please enter the final withholding number (line 5 on your W-4)');
+        return;
+      }
+      if(typeof($scope.employee.extra_amount) === 'undefined'){
+        alert('Please enter the extra amount of your paycheck to withhold (Line 6 on your W-4)');
+        return;
+      }
       var empAuth = {
         marriage: getMarriageNumber(),
         dependencies: $scope.employee.dependent_count,
         head: $scope.employee.headOfHousehold,
         tax_credit: $scope.employee.childExpense,
-        total_points: getTotalPoints()
+        calculated_points: $scope.employee.calculated_points,
+        user_defined_points: $scope.employee.user_defined_points,
+        extra_amount: $scope.employee.extra_amount
       };
       employeeTaxRepository.save({userId:$scope.employeeId}, empAuth,
         function(response){
