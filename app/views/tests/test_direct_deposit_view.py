@@ -56,22 +56,33 @@ class DirectDepositTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertEqual(result, [])
 
-    """
-    def test_post_direct_deposit(self):
-        dd_data={ "bank_account": {
-                                    "routing": "111121211234323256",
-                                    "account": "543211221211",
-                                    "account_type": "Saving",
-                                    "bank_name": "Citi bank",
-                                    "attachment": "s3://abcfdsfdfdsfdffddef",
-                                    "user": 3
-                                },
-                    "amount": "10000.00",
-                    "percentage": "0.00",
-                    "user": 3
-                }
 
-        response = self.client.post(reverse('direct_deposit_api', kwargs={'pk': 1}),
+    """ post and put with nested data structure does not work, work in progress
+    def test_post_direct_deposit(self):
+        dd_data = [{"user": 1,
+                   "bank_account": {
+                       "routing": "2121",
+                       "account": "54321",
+                       "account_type": "Saving",
+                       "bank_name": "Bank of America",
+                       "attachment": "s3://a",
+                       "user": 1},
+                    "amount": "0.00",
+                    "percentage": "70.00"},
+                   {"user": 1,
+                    "bank_account": {
+                       "routing": "111",
+                       "account": "2222",
+                       "account_type": "Saving",
+                       "bank_name": "Bank of America",
+                       "attachment": "s3://a",
+                       "user": 1},
+                    "amount": "0.00",
+                    "percentage": "30.00"}
+                   ]
+
+
+        response = self.client.post(reverse('direct_deposit_api', kwargs={'pk': self.normalize_key(1)}),
                                     dd_data)
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
@@ -89,36 +100,33 @@ class DirectDepositTestCase(TestCase, ViewTestBase):
         self.assertEqual(result[0]['bank_account']['account'], '543211221211')
 
     def test_put_direct_deposit(self):
-        dd_data = {"routing1": "123422252226",
-                   "account1": "54321222",
-                   "account_type1": "Checking",
-                   "bank_name1": "Bank of America",
-                   "attachment1": "s3://abcdsddsdef",
-                   "amount1": "0.00",
-                   "percentage1": "40.00",
-                   "routing2": "122211122",
-                   "account2": "6789999990",
-                   "account_type2": "Saving",
-                   "bank_name2": "Citi Bank",
-                   "attachment2": "s3://ab12222222cdefdfg",
-                   "amount2": "0.00",
-                   "percentage2": "60.00",
-                   "user": 1}
+        dd_data = {"user": 1,
+                   "bank_account": {
+                       "routing": "2121",
+                       "account": "54321",
+                       "account_type": "Saving",
+                       "bank_name": "Bank of America",
+                       "attachment": "s3://a",
+                       "user": 1},
+                "amount": "0.00",
+                "percentage": "70.00"}
+
+
         response = self.client.get(reverse('direct_deposit_api',
-                                           kwargs={'pk': 1}))
+                                           kwargs={'pk': self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
         result = json.loads(response.content)
-        self.assertEqual(type(result), dict)
+        self.assertEqual(type(result), list)
 
-        self.assertEqual(result['routing1'], '123456')
-        self.assertEqual(result['bank_name1'], 'Bank of America')
-        self.assertEqual(result['bank_name1'], 'Bank of America')
-        self.assertEqual(result['attachment1'], 's3://abcdef')
-        self.assertEqual(result['account2'], '67890')
+        self.assertEqual(result[0]['percentage'], '40.00')
+        self.assertEqual(result[0]['user'], self.normalize_key(1))
+        self.assertEqual(result[0]['bank_account']['attachment'], 's3://abcdef')
+        self.assertEqual(result[0]['bank_account']['routing'], '123456')
+        self.assertEqual(result[0]['bank_account']['account'], '54321')
 
-        response = self.client.put(reverse('direct_deposit_api', kwargs={'pk': 1}),
+        response = self.client.put(reverse('direct_deposit_api', kwargs={'pk': self.normalize_key(1)}),
                                    dd_data,
                                    content_type='application/x-www-form-urlencoded')
         print response
@@ -126,7 +134,7 @@ class DirectDepositTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 201)
 
         response = self.client.get(reverse('direct_deposit_api',
-                                           kwargs={'pk': 1}))
+                                           kwargs={'pk': self.normalize_key(1)}))
         print response
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
@@ -134,8 +142,9 @@ class DirectDepositTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertEqual(type(result), dict)
 
-        self.assertEqual(result['routing1'], '123422252226')
-        self.assertEqual(result['bank_name1'], 'Bank of America')
-        self.assertEqual(result['attachment1'], 's3://abcdsddsdef')
-        self.assertEqual(result['account2'], '6789999990')
+        self.assertEqual(result[0]['percentage'], '70.00')
+        self.assertEqual(result[0]['user'], self.normalize_key(1))
+        self.assertEqual(result[0]['bank_account']['attachment'], 's3://a')
+        self.assertEqual(result[0]['bank_account']['routing'], '2121')
+        self.assertEqual(result[0]['bank_account']['account'], '54321')
         """
