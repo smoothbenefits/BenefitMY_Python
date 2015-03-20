@@ -1102,6 +1102,18 @@ benefitmyService.factory(
 
       saveBasicLifeInsurancePlanForUser: function(basicLifeToSave, successCallBack, errorCallBack) {
         var userId = basicLifeToSave.currentUserId;
+        var getFilteredPercentageNumber = function(rawPercent){
+          var reg = new RegExp(/^[0-9]+([\.][0-9]+)*/g);
+          var matchedArray = reg.exec(rawPercent);
+          if(matchedArray){
+            var matchedPercentDigit = matchedArray[0];
+            var matchedPercentNumber = parseFloat(matchedPercentDigit).toFixed(2);
+            if(matchedPercentNumber > 0 && matchedPercentNumber < 100){
+              return matchedPercentNumber;
+            }
+          }
+          return rawPercent;
+        };
         employeeFamily.get({userId:userId}).$promise.then(function(familyResponse){
           var mainPlanPerson = _.findWhere(familyResponse.family, { relationship: 'self' });
 
@@ -1118,6 +1130,7 @@ benefitmyService.factory(
           if (basicLifeToSave.life_insurance_beneficiary){
             _.each(basicLifeToSave.life_insurance_beneficiary, function(beneficiary){
               beneficiary.tier = "1";
+              beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
               planToSave.life_insurance_beneficiary.push(beneficiary);
             });
           }
