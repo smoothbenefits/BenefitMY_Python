@@ -861,7 +861,6 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
       });
     });
 
-
     $scope.submitDirectDeposit = function(){
       var request_body = { user: $scope.person.id, bank_account: $scope.direct_deposit.bank_accounts };
       if ($scope.hasDirectDeposit){
