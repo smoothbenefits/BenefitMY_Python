@@ -865,8 +865,20 @@ benefitmyService.factory(
       LifeInsurancePlanRepository,
       CompanyLifeInsurancePlanRepository,
       CompanyUserLifeInsurancePlanRepository,
-      employeeFamily
-    ){
+      employeeFamily){
+
+    var getFilteredPercentageNumber = function(rawPercent){
+        var reg = new RegExp(/^[0-9]+([\.][0-9]+)*/g);
+        var matchedArray = reg.exec(rawPercent);
+        if(matchedArray){
+          var matchedPercentDigit = matchedArray[0];
+          var matchedPercentNumber = parseFloat(matchedPercentDigit).toFixed(2);
+          if(matchedPercentNumber > 0 && matchedPercentNumber < 100){
+            return matchedPercentNumber;
+          }
+        }
+        return rawPercent;
+      };
     return {
       saveLifeInsurancePlan: function(planToSave, successCallBack, errorCallBack) {
         if(!planToSave.id) {
@@ -1118,6 +1130,7 @@ benefitmyService.factory(
           if (basicLifeToSave.life_insurance_beneficiary){
             _.each(basicLifeToSave.life_insurance_beneficiary, function(beneficiary){
               beneficiary.tier = "1";
+              beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
               planToSave.life_insurance_beneficiary.push(beneficiary);
             });
           }
@@ -1125,6 +1138,7 @@ benefitmyService.factory(
           if (basicLifeToSave.life_insurance_contingent_beneficiary){
             _.each(basicLifeToSave.life_insurance_contingent_beneficiary, function(beneficiary){
               beneficiary.tier = "2";
+              beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
               planToSave.life_insurance_beneficiary.push(beneficiary);
             });
           }
@@ -1167,6 +1181,7 @@ benefitmyService.factory(
             if (mainPlan.life_insurance_beneficiary){
               _.each(mainPlan.life_insurance_beneficiary, function(beneficiary){
                 beneficiary.tier = "1";
+                beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
                 memberPlanToSave.life_insurance_beneficiary.push(beneficiary);
               });
             }
@@ -1174,6 +1189,7 @@ benefitmyService.factory(
             if (mainPlan.life_insurance_contingent_beneficiary){
               _.each(mainPlan.life_insurance_contingent_beneficiary, function(beneficiary){
                 beneficiary.tier = "2";
+                beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
                 memberPlanToSave.life_insurance_beneficiary.push(beneficiary);
               });
             }
