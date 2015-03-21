@@ -1254,7 +1254,6 @@ benefitmyService.factory(
       getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl: function(companyId) {
         return '/api/v1/companies/' + companyId + '/users/excel/life_beneficiary';
       }
-
     }; 
   }
 ]);
