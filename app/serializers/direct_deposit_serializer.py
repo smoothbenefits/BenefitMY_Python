@@ -15,7 +15,8 @@ class DirectDepositSerializer(HashPkSerializerBase):
 
 
 class DirectDepositPostSerializer(HashPkSerializerBase):
-
+	
+    user = HashField(source="user.id")
     bank_account = UserBankAccountSerializer()
 
     class Meta:

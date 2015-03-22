@@ -101,6 +101,13 @@ benefitmyService.factory('employeeBenefits',
     };
   }]);
 
+benefitmyService.factory('employeeDirectDeposit', ['$resource',
+  function($resource){
+    return {
+      getByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: 'employee_id'})
+    };
+  }]);
+
 benefitmyService.factory('employerWorkerRepository', ['$resource',
   function($resource){
     return $resource('/api/v1/companies/:companyId/users',
@@ -282,7 +289,10 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     var validateW4Info = function(employeeId, succeeded, failed){
       employeeTaxRepository.get({userId:employeeId})
         .$promise.then(function(response){
-          if(!response || !response.total_points || response.total_points <= 0){
+          if(!response || 
+             (!response.user_defined_points || response.user_defined_points <= 0) && 
+             (!response.total_points || response.total_points <= 0)){
+            //For backwards compatibility, we need to check both fields.
             failed(response);
           }
           else{
@@ -852,8 +862,7 @@ benefitmyService.factory(
   }
 ]);
 
-benefitmyService.factory(
-  'LifeInsuranceService', 
+benefitmyService.factory('LifeInsuranceService', 
   ['LifeInsurancePlanRepository',
    'CompanyLifeInsurancePlanRepository',
    'CompanyUserLifeInsurancePlanRepository',
@@ -862,8 +871,20 @@ benefitmyService.factory(
       LifeInsurancePlanRepository,
       CompanyLifeInsurancePlanRepository,
       CompanyUserLifeInsurancePlanRepository,
-      employeeFamily
-    ){
+      employeeFamily){
+
+    var getFilteredPercentageNumber = function(rawPercent){
+        var reg = new RegExp(/^[0-9]+([\.][0-9]+)*/g);
+        var matchedArray = reg.exec(rawPercent);
+        if(matchedArray){
+          var matchedPercentDigit = matchedArray[0];
+          var matchedPercentNumber = parseFloat(matchedPercentDigit).toFixed(2);
+          if(matchedPercentNumber > 0 && matchedPercentNumber < 100){
+            return matchedPercentNumber;
+          }
+        }
+        return rawPercent;
+      };
     return {
       saveLifeInsurancePlan: function(planToSave, successCallBack, errorCallBack) {
         if(!planToSave.id) {
@@ -1115,6 +1136,7 @@ benefitmyService.factory(
           if (basicLifeToSave.life_insurance_beneficiary){
             _.each(basicLifeToSave.life_insurance_beneficiary, function(beneficiary){
               beneficiary.tier = "1";
+              beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
               planToSave.life_insurance_beneficiary.push(beneficiary);
             });
           }
@@ -1122,6 +1144,7 @@ benefitmyService.factory(
           if (basicLifeToSave.life_insurance_contingent_beneficiary){
             _.each(basicLifeToSave.life_insurance_contingent_beneficiary, function(beneficiary){
               beneficiary.tier = "2";
+              beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
               planToSave.life_insurance_beneficiary.push(beneficiary);
             });
           }
@@ -1164,6 +1187,7 @@ benefitmyService.factory(
             if (mainPlan.life_insurance_beneficiary){
               _.each(mainPlan.life_insurance_beneficiary, function(beneficiary){
                 beneficiary.tier = "1";
+                beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
                 memberPlanToSave.life_insurance_beneficiary.push(beneficiary);
               });
             }
@@ -1171,6 +1195,7 @@ benefitmyService.factory(
             if (mainPlan.life_insurance_contingent_beneficiary){
               _.each(mainPlan.life_insurance_contingent_beneficiary, function(beneficiary){
                 beneficiary.tier = "2";
+                beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
                 memberPlanToSave.life_insurance_beneficiary.push(beneficiary);
               });
             }
@@ -1214,7 +1239,8 @@ benefitmyService.factory(
         CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(function(plans){
             _.each(plans, function(plan){
-              if (plan.life_insurance_plan && plan.life_insurance_plan.insurance_type === 'Basic'){
+              if (plan.life_insurance.life_insurance_plan 
+                  && plan.life_insurance.life_insurance_plan.insurance_type === 'Basic'){
                 CompanyUserLifeInsurancePlanRepository.ById.delete({id: plan.id});
               }
             });
@@ -1243,7 +1269,38 @@ benefitmyService.factory(
 
       getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl: function(companyId) {
         return '/api/v1/companies/' + companyId + '/users/excel/life_beneficiary';
-      },
+      }
     }; 
   }
 ]);
+
+benefitmyService.factory(
+  'DirectDepositService',
+  ['DirectDepositRepository',
+  function(DirectDepositRepository){
+    return {
+      getDirectDepositByUserId: function(userId, successCallBack, errorCallBack){
+        DirectDepositRepository.ByEmployeeId.query({id: userId}).$promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      },
+
+      updateDirectDepositByUserId: function(userId, directDeposit, successCallBack, errorCallBack){
+        DirectDepositRepository.UpdateByEmployeeId.update({id: userId}, directDeposit).$promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      },
+
+      createDirectDepositByUserId: function(userId, directDeposit, successCallBack, errorCallBack){
+        DirectDepositRepository.CreateByEmployeeId.post({id: userId}, directDeposit). $promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      }
+    }
+  }]);
