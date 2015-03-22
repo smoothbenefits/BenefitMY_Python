@@ -1,0 +1,121 @@
+<div class="breadcrumb">
+    <a ng-click="backToDashboard()">{{person.role}} Dashboard</a>
+    <span>{{person.first_name}} {{person.last_name}}</span>
+</div>
+
+<div class="content-header">
+    <h1>{{info.type_display}} Information of {{person.first_name}} {{person.last_name}}</h1>
+    <div class="cta" ng-hide="editMode"><a ng-click="enableEditing()" class="btn green">Edit</a></div>
+
+    <div class="row" ng-hide="hasDirectDeposit">
+        <div class="panel-body">
+            <ul class="list-group">
+                <h4>You do not have direct deposit with us yet.</h4>
+            </ul>
+        </div>
+    </div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <!-- Here is the info table for the employee direct deposit -->
+    <div class="row" ng-show="hasDirectDeposit && !editMode">
+        <div class="col-md-10 col-md-offset-1">
+            <div class='panel'>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-if="field.value != null" ng-repeat="field in direct_deposit | orderBy: field.id">
+                            <h4 class="col-md-5"> {{field.display_name}}</h4>
+                            <div class="col-md-7">
+                                {{field.value}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Here is the edit table for the employee direct deposit -->
+    <div class="form-holder col-md-10 col-md-offset-1" ng-show="editMode">
+        <form name="form" ng-repeat="account in direct_deposit.bank_accounts">
+            <div class="row">
+                <div class="label label-info">Bank Account - {{$index + 1}} </div>
+                <a type="button" ng-click="removeBankAccount(account)"> (Remove this) </a>
+            </div>
+            <div class="row">
+                <div class="form-label">Account Type</div>
+                <div class="textbox">
+                    <select ng-model="account.account_type"
+                        ng-required="true"
+                        name="account.account_type"
+                        ng-options="type for type in bankAccountTypes"
+                        class="form-control"></select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-label">Routing Number</div>
+                <div class="textbox">
+                    <input type="text"
+                        name="routing_number"
+                        ng-model="account.routing"
+                        ng-required="true">
+                    <div class="form-error" ng-show="form.routing_number.$dirty && form.routing_number.$invalid">
+                      <span ng-show="form.routing_number.$error.required">Routing number is required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-label">Account Number</div>
+                <div class="textbox">
+                    <input type="text"
+                        name="account_number"
+                        ng-model="account.account"
+                        ng-required="true">
+                    <div class="form-error" ng-show="form.account_number.$dirty && form.account_number.$invalid">
+                      <span ng-show="form.account_number.$error.required">Account number is required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-label">Name of your Bank</div>
+                <div class="textbox">
+                    <input type="text"
+                        name="bank_name"
+                        ng-model="account.bank_name"
+                        ng-required="true">
+                    <div class="form-error" ng-show="form.bank_name.$dirty && form.bank_name.$invalid">
+                      <span ng-show="form.bank_name.$error.required">Your bank's name is required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-label">Amount</div>
+                    <div class="textbox">
+                        <input type="number"
+                            name="amount"
+                            ng-model="account.amount"
+                            ng-required="false">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-label">Percentage (without % sign)</div>
+                    <div class="text">
+                        <input type="number"
+                            name="percentage"
+                            ng-model="account.percentage"
+                            ng-required="false">
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="add-box" style="padding-bottom:10px;">
+            <button ng-click="addBankAccount()" class="btn green"> + Add Account </button>
+        </div>
+        <div class="submit-box">
+            <button ng-click="submitDirectDeposit()" class="btn green" ng-disabled="form.$invalid">Submit</button>
+        </div>
+    </div><!-- / .form-holder -->
+    <div class="back col-md-12"><a href="javascript:void(0);" ng-click="backToDashboard()">&laquo; Back</a></div>
+</div> <!-- content-header -->

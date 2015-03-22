@@ -135,6 +135,10 @@ var employeeHome = employeeControllers.controller('employeeHome',
           || (!employeeFamilyLifeInsurancePlan.mainPlan)
           || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
       };
+
+     $scope.ViewDirectDeposit = function(editMode){
+      $location.path('/employee/direct_deposit').search('edit', editMode);
+     };
   }
 ]);
 
@@ -806,6 +810,75 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
     };
   }]);
 
+var directDeposit = employeeControllers.controller('employeeDirectDepositController',
+  ['$scope',
+   '$routeParams',
+   '$location',
+   'currentUser',
+   'DirectDepositService',
+   function($scope, 
+            $routeParams,
+            $location,
+            currentUser,
+            DirectDepositService){
+    $scope.editMode = $routeParams.edit;
+    $scope.person = { role: 'Employee' };
+    $scope.direct_deposit = { bank_accounts: [] };
+    $scope.bankAccountTypes = ['Checking', 'Saving'];
+
+    $scope.enableEditing = function(){
+      $scope.editMode = true;
+    };
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    };
+
+    $scope.removeBankAccount = function(account){
+      var index = $scope.direct_deposit.bank_accounts.indexOf(account);
+      $scope.direct_deposit.bank_accounts.splice(index, 1);
+    };
+
+    $scope.addBankAccount = function(){
+      $scope.direct_deposit.bank_accounts.push({ account_type: $scope.bankAccountTypes[0]});
+    };
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      $scope.person = response.user;
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      DirectDepositService.getDirectDepositByUserId(userId, function(response){
+        $scope.direct_deposit.bank_accounts = response;
+        if (response.length === 0){
+          $scope.hasDirectDeposit = false;
+          $scope.direct_deposit.bank_accounts.push({ account_type: $scope.bankAccountTypes[0]});
+        }
+        else {
+          $scope.hasDirectDeposit = true;
+        }
+      });
+    });
+
+    $scope.submitDirectDeposit = function(){
+      var request_body = { user: $scope.person.id, bank_account: $scope.direct_deposit.bank_accounts };
+      if ($scope.hasDirectDeposit){
+        DirectDepositService.updateDirectDepositByUserId($scope.person.id, request_body, function(response){
+          $location.path('/employee');
+        }, function(error){
+          alert('Failed to save direct deposit information due to ' + error);
+        });
+      }
+      else{
+        DirectDepositService.createDirectDepositByUserId($scope.person.id, request_body, function(response){
+          $location.path('/employee');
+        }, function(error){
+          alert('Failed to create direct deposit record due to ' + error);
+        });
+      }
+    };
+  }]);
 
 var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$stateParams', function($scope, $stateParams){
   $scope.employee = {};

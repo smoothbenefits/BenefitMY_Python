@@ -101,6 +101,13 @@ benefitmyService.factory('employeeBenefits',
     };
   }]);
 
+benefitmyService.factory('employeeDirectDeposit', ['$resource',
+  function($resource){
+    return {
+      getByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: 'employee_id'})
+    };
+  }]);
+
 benefitmyService.factory('employerWorkerRepository', ['$resource',
   function($resource){
     return $resource('/api/v1/companies/:companyId/users',
@@ -855,8 +862,7 @@ benefitmyService.factory(
   }
 ]);
 
-benefitmyService.factory(
-  'LifeInsuranceService', 
+benefitmyService.factory('LifeInsuranceService', 
   ['LifeInsurancePlanRepository',
    'CompanyLifeInsurancePlanRepository',
    'CompanyUserLifeInsurancePlanRepository',
@@ -1263,7 +1269,38 @@ benefitmyService.factory(
 
       getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl: function(companyId) {
         return '/api/v1/companies/' + companyId + '/users/excel/life_beneficiary';
-      },
+      }
     }; 
   }
 ]);
+
+benefitmyService.factory(
+  'DirectDepositService',
+  ['DirectDepositRepository',
+  function(DirectDepositRepository){
+    return {
+      getDirectDepositByUserId: function(userId, successCallBack, errorCallBack){
+        DirectDepositRepository.ByEmployeeId.query({id: userId}).$promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      },
+
+      updateDirectDepositByUserId: function(userId, directDeposit, successCallBack, errorCallBack){
+        DirectDepositRepository.UpdateByEmployeeId.update({id: userId}, directDeposit).$promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      },
+
+      createDirectDepositByUserId: function(userId, directDeposit, successCallBack, errorCallBack){
+        DirectDepositRepository.CreateByEmployeeId.post({id: userId}, directDeposit). $promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      }
+    }
+  }]);
