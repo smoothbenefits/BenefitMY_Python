@@ -187,7 +187,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_onboard/employee_view_letter.html',
                 controller: 'employeeAcceptDocument'
             }).
-            state('/employee/direct_deposit', {
+            state('/employee/direct_deposit?edit', {
                 url: '/employee/direct_deposit',
                 templateUrl: '/static/partials/employee_direct_deposit.html',
                 controller: 'employeeDirectDepositController'
