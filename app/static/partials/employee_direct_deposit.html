@@ -38,7 +38,7 @@
 
     <!-- Here is the edit table for the employee direct deposit -->
     <div class="form-holder col-md-10 col-md-offset-1" ng-show="editMode">
-        <form name="form" ng-repeat="account in direct_deposit.bank_accounts">
+        <form name="form" ng-repeat="account in directDepositAccounts">
             <div class="row">
                 <div class="label label-info">Bank Account - {{$index + 1}} </div>
                 <a type="button" ng-click="removeBankAccount(account)"> (Remove this) </a>

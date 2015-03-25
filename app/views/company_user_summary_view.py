@@ -28,6 +28,7 @@ class ExportViewBase(APIView):
 
         persons = Person.objects.filter(user__in=users_id).exclude(relationship='self').exclude(relationship='spouse')
 
+        # persons.groupby('user').count('pk').max()
         max_dependents = persons.values('user').annotate(num_dependents=Count('pk')).aggregate(max=Max('num_dependents'))
 
         result = max_dependents['max']
@@ -61,6 +62,25 @@ class ExcelExportViewBase(ExportViewBase):
         else:
             excelSheet.write(row_num, col_num, value)
         return col_num + 1
+
+class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
+
+    def get(self, request, pk, format=None):
+        book = xlwt.Workbook(encoding='utf8')
+        sheet = book.add_sheet('All Employee Summary')
+
+        # Pre compute the max number of dependents across all employees of 
+        # the company, so we know how many sets of headers for dependent 
+        # info we need to populate
+        max_dependents = self._get_max_dependents_count(pk)
+        self._write_headers(sheet, max_dependents)
+
+        self._write_company(pk, sheet)
+
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=employee_summary.xls'
+        book.save(response)
+        return response
 
 class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 

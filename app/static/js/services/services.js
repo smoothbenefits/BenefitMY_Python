@@ -1313,6 +1313,32 @@ benefitmyService.factory(
         }, function(error){
           errorCallBack(error);
         });
+      },
+
+      mapViewDirectDepositToDto: function(userId, viewDirectDeposit){
+        var dto = [];
+        _.each(viewDirectDeposit, function(account){
+          var accountDto = {
+            user: userId, 
+            bank_account: account,
+            amount: account.amount,
+            percentage: account.percentage
+          };
+          accountDto.bank_account.user = userId;
+          dto.push(accountDto);
+        })
+        return dto;
+      },
+
+      mapDtoToViewDirectDeposit: function(directDepositDto){
+        var viewDirectDepositAccounts = [];
+        _.each(directDepositDto, function(account){
+          var viewModel = account.bank_account;
+          viewModel.amount = account.amount;
+          viewModel.percentage = account.percentage;
+          viewDirectDepositAccounts.push(viewModel);
+        });
+        return viewDirectDepositAccounts;
       }
     }
   }]);
