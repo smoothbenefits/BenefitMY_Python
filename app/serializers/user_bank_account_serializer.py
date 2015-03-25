@@ -9,3 +9,8 @@ class UserBankAccountSerializer(HashPkSerializerBase):
     user = HashField(source="user.id")
     class Meta:
         model = UserBankAccount
+
+class UserBankAccountPostSerializer(HashPkSerializerBase):
+
+    class Meta:
+		model = UserBankAccount
