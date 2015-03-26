@@ -76,7 +76,21 @@ class ExcelExportViewBase(ExportViewBase):
 
 class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
 
-    def _write_header(self, excelSheet, max_direct_deposits):
+    def _write_headers(self, excelSheet, max_direct_deposits):
+        col_num = 0
+        col_num = self._write_field(excelSheet, 0, col_num, 'First Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Middle Initial')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Last Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Gender')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Account Type')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Account Issurer')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Routing Number')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Account Number')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Attachment URL')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Percentage')
+
         return
 
     def _write_company(self, company_id, excelSheet):
@@ -106,7 +120,6 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
         # person given is None. This is to ensure other information written after these
         # would be written to the right columns
         cur_column_num = self._write_person_basic_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
-        cur_column_num = self._write_person_email_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
 
         return cur_column_num
 
@@ -115,7 +128,6 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.first_name)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.middle_name)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.last_name)
-            col_num = self._write_field(excelSheet, row_num, col_num, person_model.ssn)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.gender)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.birth_date, ExcelExportViewBase.date_field_format)
             return col_num
@@ -145,27 +157,25 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
         direct_deposit = None
         direct_deposits = DirectDeposit.objects.filter(user_id=employee_user_id)
         for i in range(len(direct_deposits)):
-            current_col_num = self._write_direct_deposit(direct_deposit, excelSheet, row_num, start_col_num)
+            current_col_num = self._write_direct_deposit(direct_deposits[i], excelSheet, row_num, start_col_num)
 
         return current_col_num
 
     def _write_direct_deposit(self, direct_deposit, excelSheet, row_num, start_col_num):
         current_col_num = start_col_num
 
-        user_bank_account = UserBankAccount.objects.filter(pk=direct_deposit.bank_account)
+        # each direct deposit has only one bank account
+        user_bank_account = UserBankAccount.objects.filter(pk=direct_deposit.bank_account.id)[0]
 
-        current_col_num = _write_field(excelSheet, row_num, current_col_num, user_bank_account.account_type)
-        current_col_num = _write_field(excelSheet, row_num, current_col_num, user_bank_account.bank_name)
-        current_col_num = _write_field(excelSheet, row_num, current_col_num, user_bank_account.routing)
-        current_col_num = _write_field(excelSheet, row_num, current_col_num, user_bank_account.account)
-        current_col_num = _write_field(excelSheet, row_num, current_col_num, user_bank_account.attachment)
-        current_col_num = _write_field(excelSheet, row_num, current_col_num, user_bank_account.created_at)
-        current_col_num = _write_field(excelSheet, row_num, current_col_num, user_bank_account.updated_at)
-        current_col_num = _write_field(excelSheet, row_num, current_col_num, direct_deposit.amount)
-        current_col_num = _write_field(excelSheet, row_num, current_col_num, direct_deposit.percentage)
+        current_col_num = self._write_field(excelSheet, row_num, current_col_num, user_bank_account.account_type)
+        current_col_num = self._write_field(excelSheet, row_num, current_col_num, user_bank_account.bank_name)
+        current_col_num = self._write_field(excelSheet, row_num, current_col_num, user_bank_account.routing)
+        current_col_num = self._write_field(excelSheet, row_num, current_col_num, user_bank_account.account)
+        current_col_num = self._write_field(excelSheet, row_num, current_col_num, user_bank_account.attachment)
+        current_col_num = self._write_field(excelSheet, row_num, current_col_num, direct_deposit.amount)
+        current_col_num = self._write_field(excelSheet, row_num, current_col_num, direct_deposit.percentage)
 
         return current_col_num
-
 
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
