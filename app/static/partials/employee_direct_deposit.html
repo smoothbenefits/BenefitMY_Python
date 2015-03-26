@@ -20,14 +20,43 @@
     <!-- Here is the info table for the employee direct deposit -->
     <div class="row" ng-show="hasDirectDeposit && !editMode">
         <div class="col-md-10 col-md-offset-1">
-            <div class='panel'>
+            <div class="panel" ng-repeat="account in directDepositAccounts">
+                <h4 class="label label-info col-md-5">Direct Deposit #{{$index + 1}}</h4>
                 <div class="panel-body">
                     <ul class="list-group">
-                        <li class="list-group-item" ng-if="field.value != null" ng-repeat="field in direct_deposit | orderBy: field.id">
-                            <h4 class="col-md-5"> {{field.display_name}}</h4>
-                            <div class="col-md-7">
-                                {{field.value}}
-                            </div>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">Account Type</h4>
+                            <div class="col-md-7">{{account.account_type}}</div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">Account Issurer</h4>
+                            <div class="col-md-7">{{account.bank_name}}</div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">Routing Number</h4>
+                            <div class="col-md-7">{{account.routing}}</div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">Account Number</h4>
+                            <div class="col-md-7">{{account.account}}</div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">Amount</h4>
+                            <div class="col-md-7">{{account.amount}}</div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">Percentage</h4>
+                            <div class="col-md-7">{{account.percentage}} %</div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item" ng-if="account.attachment">
+                            <h4 class="col-md-5">Attachment</h4>
+                            <div class="col-md-7">{{account.attachment}}</div>
                             <div style="clear:both"></div>
                         </li>
                     </ul>
@@ -101,7 +130,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-label">Percentage (without % sign)</div>
-                    <div class="text">
+                    <div class="textbox">
                         <input type="number"
                             name="percentage"
                             ng-model="account.percentage"

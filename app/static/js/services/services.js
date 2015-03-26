@@ -1340,8 +1340,8 @@ benefitmyService.factory(
         var viewDirectDepositAccounts = [];
         _.each(directDepositDto, function(account){
           var viewModel = account.bank_account;
-          viewModel.amount = account.amount;
-          viewModel.percentage = account.percentage;
+          viewModel.amount = Number(account.amount);
+          viewModel.percentage = Number(account.percentage);
           viewDirectDepositAccounts.push(viewModel);
         });
         return viewDirectDepositAccounts;
