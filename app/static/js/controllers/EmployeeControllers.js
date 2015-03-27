@@ -651,7 +651,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
 
     $scope.userDefinedPointsSet = function(){
       $scope.employee.user_defined_set = true;
-    }
+    };
 
     $scope.acknowledgeW4 = function(){
       $scope.employee.downloadW4 = !$scope.employee.downloadW4;
@@ -687,7 +687,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
         function(response){
           $location.path('/employee/onboard/complete/'+$scope.employeeId);
         });
-    }
+    };
 }]);
 
 var onboardComplete = employeeControllers.controller('onboardComplete',
