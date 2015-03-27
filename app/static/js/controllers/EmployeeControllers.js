@@ -327,22 +327,21 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
 
 var directDeposit = employeeControllers.controller('employeeDirectDepositController',
   ['$scope',
+   '$state', 
    '$stateParams',
    '$location',
    'currentUser',
    'DirectDepositService',
-   function($scope, 
+   function($scope,
+            $state,  
             $stateParams,
             $location,
             currentUser,
             DirectDepositService){
+    var existingDirectDepositAccountIds = [];
     $scope.editMode = $stateParams.edit;
     $scope.directDepositAccounts = [];
     $scope.bankAccountTypes = ['Checking', 'Saving'];
-
-    $scope.enableEditing = function(){
-      $scope.editMode = true;
-    };
 
     $scope.backToDashboard = function(){
       $location.path('/employee');
@@ -353,8 +352,53 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
       $scope.direct_deposit.bank_accounts.splice(index, 1);
     };
 
+    $scope.editDirectDeposit = function(account){
+      account.inEditMode = true;
+    };
+
+    $scope.exitEditMode = function(account){
+      account.inEditMode = false;
+    };
+
+    $scope.viewExistingDirectDepositAccounts = function(){
+      $scope.addingNewAccount = false;
+      $scope.newDirectDepositAccounts = [];
+    };
+
     $scope.addBankAccount = function(){
-      $scope.direct_deposit.bank_accounts.push({ account_type: $scope.bankAccountTypes[0]});
+      $scope.newDirectDepositAccounts.push({ account_type: $scope.bankAccountTypes[0]});
+    };
+
+    $scope.addNewDirectDepositAccount = function(){
+      $scope.addingNewAccount = true;
+      $scope.newDirectDepositAccounts = [];
+      $scope.newDirectDepositAccounts.push({account_type: $scope.bankAccountTypes[0]});
+    };
+
+    $scope.deleteDirectDeposit = function(account){
+
+      var confirmed = confirm('About to delete a direct deposit account. Are you sure?');
+      if (confirmed === true){
+        var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
+        DirectDepositService.deleteDirectDepositById(directDeposit, function(response){
+          getDirectDeposit(account.user);
+        }, function(error){
+          alert('Failed to delete direct deposit account. Please try again later.');
+        });
+      }
+    };
+
+    $scope.updateDirectDeposit = function(account){
+      var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
+      DirectDepositService.updateDirectDepositByUserId(directDeposit, function(response){
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+      }, function(error){
+        alert('Failed to update direct deposit account. Please try again later.');
+      });
     };
 
     var userPromise = currentUser.get().$promise.then(function(response){
@@ -363,35 +407,48 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
       return response.user.id;
     });
 
-    userPromise.then(function(userId){
+    var getDirectDeposit = function(userId){
       DirectDepositService.getDirectDepositByUserId(userId, function(response){
         $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDeposit(response);
         if (response.length === 0){
           $scope.hasDirectDeposit = false;
-          $scope.directDepositAccounts.push({ account_type: $scope.bankAccountTypes[0]});
+          $scope.directDepositAccounts.push({ account_type: $scope.bankAccountTypes[0], inEditMode: false });
         }
         else {
           $scope.hasDirectDeposit = true;
+          existingDirectDepositAccountIds = _.map($scope.directDepositAccounts, function(account){
+            return account.id;
+          });
+
+          _.each($scope.directDepositAccounts, function(account){
+            account.inEditMode = false;
+          });
         }
       });
+    };
+
+    userPromise.then(function(userId){
+      getDirectDeposit(userId);
     });
 
     $scope.submitDirectDeposit = function(){
-      var directDepositDto = DirectDepositService.mapViewDirectDepositToDto($scope.person.id, $scope.directDepositAccounts);
-      if ($scope.hasDirectDeposit){
-        DirectDepositService.updateDirectDepositByUserId($scope.person.id, directDepositDto, function(response){
-          $location.path('/employee');
-        }, function(error){
-          alert('Failed to save direct deposit information due to ' + error);
+      var directDepositDtos = [];
+      // Map direct deposit domain model to DTO, one by one
+      _.each($scope.newDirectDepositAccounts, function(account){
+        account.user = $scope.person.id;
+        var dto = DirectDepositService.mapViewDirectDepositToDto(account);
+        directDepositDtos.push(dto);
+      });
+
+      DirectDepositService.createDirectDepositByUserId($scope.person.id, directDepositDtos, function(response){
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
         });
-      }
-      else{
-        DirectDepositService.createDirectDepositByUserId($scope.person.id, directDepositDto, function(response){
-          $location.path('/employee');
-        }, function(error){
-          alert('Failed to create direct deposit record due to ' + error);
-        });
-      }
+      }, function(error){
+        alert('Failed to create direct deposit record due to ' + error);
+      });
     };
   }]);
 
