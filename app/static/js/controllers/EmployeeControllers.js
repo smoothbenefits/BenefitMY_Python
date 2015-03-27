@@ -245,8 +245,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
     $scope.goToDashboard = function()
     {
       $location.path('/employee');
-    }
-
+    };
 }]);
 
 var employeeInfo = employeeControllers.controller('employeeInfoController',
