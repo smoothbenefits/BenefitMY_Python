@@ -14,7 +14,7 @@
         <div class="table-sub-title">
             Selected Benefits
         </div>
-        <table class="table-striped">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th><span>Benefit Name</span></th>
@@ -48,7 +48,7 @@
     </div>
     <div class="table-responsive table-holder table" ng-if="waivedBenefits.length>0">
         <div class="table-sub-title">Waived Benefits</div>
-        <table class="table-striped">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th><span>Benefit Type Name</span></th>
@@ -119,6 +119,7 @@
                 </tr>
             </tbody>    
         </table>
+        <div class="table-sub-title" ng-show="basicLifeInsurancePlan.enrolled">Basic Life Insurance</div>
         <table class="table table-striped" ng-show="basicLifeInsurancePlan.enrolled">
             <thead>
                 <tr>
