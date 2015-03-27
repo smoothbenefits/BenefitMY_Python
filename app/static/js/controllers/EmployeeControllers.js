@@ -126,7 +126,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
       LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
         $scope.basicLifeInsurancePlan = response;
-        $scope.basicLifeInsurancePlan.life_insurance.last_update_date = moment(response.life_insurance.updated_at).format('l');
+        if($scope.basicLifeInsurancePlan && $scope.basicLifeInsurancePlan.enrolled){
+          $scope.basicLifeInsurancePlan.life_insurance.last_update_date = moment(response.life_insurance.updated_at).format('l');
+        }
       });
     });
 
@@ -243,8 +245,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
     $scope.goToDashboard = function()
     {
       $location.path('/employee');
-    }
-
+    };
 }]);
 
 var employeeInfo = employeeControllers.controller('employeeInfoController',
@@ -919,6 +920,7 @@ var healthBenefitsSignup = employeeControllers.controller(
             $scope.nonMedicalBenefitArray = nonMedicalArray;
           });
 
+          //First get all the enrolled benefit list
           employeeBenefits.enroll().get({userId:employeeId, companyId:companyId})
             .$promise.then(function(response){
               $scope.selectedBenefits = response.benefits;
@@ -937,58 +939,84 @@ var healthBenefitsSignup = employeeControllers.controller(
                 })
               });
 
-              benefitListRepository.get({clientId:companyId}).$promise.then(function(response){
-                _.each(response.benefits, function(availBenefit){
-                  var benefitFamilyPlan = { 'benefit': availBenefit};
-                  var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
-                    return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
-                  }));
+              //Then get all the waived list
+              employeeBenefits.waive().query({userId:employeeId})
+                .$promise.then(function(response){
+                  $scope.waivedBenefits = _.filter(response, function(waived){
+                    return waived.company.id == companyId;
+                  });
 
-                  benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
-                  var benefitType = availBenefit.benefit_plan.benefit_type.name;
-                  var curTypePlan = _.find($scope.availablePlans, function(plans){
-                    var hit = _.find(plans.benefitList, function(benefit){
-                      return benefit.benefit.benefit_plan.benefit_type.name == benefitType;
-                    });
-                    if (hit){
-                      return true;
-                    }
-                    return false;
-                  })
-                  if(!curTypePlan)
-                  {
-                    curTypePlan = {type:availBenefit.benefit_type, benefitList:[], selected:{}};
 
-                    var waiveOption = {
-                                        benefit: {
-                                          benefit_plan: {
-                                            name: 'Waive',
-                                            employee_cost_per_period: 0,
-                                            benefit_type: {
-                                              name: availBenefit.benefit_type
+                  //Then get all the benefits associated with the company
+                  benefitListRepository.get({clientId:companyId}).$promise.then(function(response){
+                    _.each(response.benefits, function(availBenefit){
+                      var benefitFamilyPlan = { 'benefit': availBenefit};
+                      var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
+                        return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
+                      }));
+
+                      benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
+                      var benefitType = availBenefit.benefit_plan.benefit_type.name;
+                      var curTypePlan = _.find($scope.availablePlans, function(plans){
+                        var hit = _.find(plans.benefitList, function(benefit){
+                          return benefit.benefit.benefit_plan.benefit_type.name == benefitType;
+                        });
+                        if (hit){
+                          return true;
+                        }
+                        return false;
+                      })
+                      if(!curTypePlan)
+                      {
+                        curTypePlan = {type:availBenefit.benefit_plan.benefit_type, benefitList:[]};
+
+                        var waiveOption = {
+                                            benefit: {
+                                              id:-1,
+                                              benefit_plan: {
+                                                name: 'Waive',
+                                                employee_cost_per_period: 0,
+                                                benefit_type: {
+                                                  name: availBenefit.benefit_type
+                                                }
+                                              },
+                                              employee_cost_per_period: 0,
+                                              benefit_option_type: 'all'
                                             }
-                                          },
-                                          employee_cost_per_period: 0,
-                                          benefit_option_type: 'all'
-                                        }
-                                      };
-                    curTypePlan.benefitList.push(waiveOption);
-                    $scope.availablePlans.push(curTypePlan);
-                  }
-                  curTypePlan.benefitList.push(benefitFamilyPlan);
-                  curTypePlan.benefit_type = benefitType;
-                });
-                _.each($scope.availablePlans, function(typedPlan){
-                  _.each(typedPlan.benefitList, function(curBenefit){
-                    var retrievedBenefit = $scope.selectedBenefitHashmap[curBenefit.benefit.id];
-                    if(retrievedBenefit)
-                    {
-                      typedPlan.selected = curBenefit;
-                      typedPlan.selected.pcp = retrievedBenefit.pcp;
-                    }
+                                          };
+                        curTypePlan.benefitList.push(waiveOption);
+                        $scope.availablePlans.push(curTypePlan);
+                      }
+                      curTypePlan.benefitList.push(benefitFamilyPlan);
+                      curTypePlan.benefit_type = benefitType;
+                    });
+
+                    //Now match the selected with the actual benefit plan(medical, dental, vision)
+                    _.each($scope.availablePlans, function(typedPlan){
+                      _.each(typedPlan.benefitList, function(curBenefit){
+                        var retrievedBenefit = $scope.selectedBenefitHashmap[curBenefit.benefit.id];
+                        if(retrievedBenefit){
+                          typedPlan.selected = curBenefit;
+                          typedPlan.selected.pcp = retrievedBenefit.pcp;
+                        }
+                      });
+                      if(!typedPlan.selected){
+                        //Now, we cannot find a selected benefit plan. 
+                        //check if it is waived.
+                        var waivedBenefitOfType = _.find($scope.waivedBenefits, function(waived){
+                          return waived.benefit_type.id == typedPlan.type.id;
+                        });
+                        if(waivedBenefitOfType){
+                          typedPlan.selected = _.find(typedPlan.benefitList, function(benefitMember){
+                            return benefitMember.benefit.id == -1;
+                          });
+                          typedPlan.selected.benefit.reason = waivedBenefitOfType.reason;
+                        }
+                      
+                      }
+                    });
                   });
                 });
-              });
           });
         });
 
@@ -1011,10 +1039,10 @@ var healthBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.isWaived = function(selectedPlan){
-          if (!selectedPlan.benefit){
+          if (!selectedPlan ||!selectedPlan.benefit){
             return true;
           }
-          return selectedPlan.benefit.benefit_plan.name.toLowerCase() === 'waive';
+          return selectedPlan.benefit.id === -1;
         };
 
         $scope.medicalWaiveReasons = [
