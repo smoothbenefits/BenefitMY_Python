@@ -126,7 +126,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
       LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
         $scope.basicLifeInsurancePlan = response;
-        $scope.basicLifeInsurancePlan.life_insurance.last_update_date = moment(response.life_insurance.updated_at).format('l');
+        if($scope.basicLifeInsurancePlan && $scope.basicLifeInsurancePlan.enrolled){
+          $scope.basicLifeInsurancePlan.life_insurance.last_update_date = moment(response.life_insurance.updated_at).format('l');
+        }
       });
     });
 
@@ -1038,10 +1040,10 @@ var healthBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.isWaived = function(selectedPlan){
-          if (!selectedPlan.benefit){
+          if (!selectedPlan ||!selectedPlan.benefit){
             return true;
           }
-          return selectedPlan.benefit.benefit_plan.name.toLowerCase() === 'waive';
+          return selectedPlan.benefit.id === -1;
         };
 
         $scope.medicalWaiveReasons = [
