@@ -1152,14 +1152,26 @@ benefitmyService.factory('LifeInsuranceService',
           // Save basic life insurance
           if (!basicLifeToSave.enrolled) {
             CompanyUserLifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave)
-              .$promise.then(null, function(response){
-                errorCallBack(response);
-              });
+              .$promise.then(
+                function(response){
+                  if (successCallBack) {
+                    successCallBack(response);
+                  }
+                }, 
+                function(response){
+                  errorCallBack(response);
+                });
           } else {
             CompanyUserLifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave)
-              .$promise.then(null, function(response){
-                errorCallBack(response);
-              });
+              .$promise.then(
+                function(response){
+                  if (successCallBack) {
+                    successCallBack(response);
+                  }
+                }, 
+                function(response){
+                  errorCallBack(response);
+                });
           }
         }, function(error){
           errorCallBack(error);
