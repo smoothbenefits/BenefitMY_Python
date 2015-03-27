@@ -3,6 +3,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ui.router',
     'ui.mask',
     'ui.utils.masks',
+    'ui.bootstrap',
     'benefitmyDomainModelFactories',
     'benefitmyService',
     'benefitmyModelFactories',
@@ -147,10 +148,30 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_dashboard.html',
                 controller: 'employeeHome'
             }).
-            state('/employee/benefit/:employee_id', {
-                url: '/employee/benefit/:employee_id',
-                templateUrl: '/static/partials/employee_benefits.html',
-                controller:'employeeBenefitSignup'
+            state('employee_benefit_signup', {
+                url: '/employee/benefits/:employee_id',
+                templateUrl: '/static/partials/benefit_selection/main.html',
+                controller:'employeeBenefitsSignup'
+            }).
+            state('employee_benefit_signup.health', {
+                url: '/health_benefits',
+                templateUrl: '/static/partials/benefit_selection/tab_health_benefits.html',
+                controller:'healthBenefitsSignup'
+            }).
+            state('employee_benefit_signup.fsa', {
+                url: '/fsa',
+                templateUrl: '/static/partials/benefit_selection/tab_fsa.html',
+                controller:'fsaBenefitsSignup'
+            }).
+            state('employee_benefit_signup.basic_life', {
+                url: '/basic_life',
+                templateUrl: '/static/partials/benefit_selection/tab_basic_life.html',
+                controller:'basicLifeBenefitsSignup'
+            }).
+            state('employee_benefit_signup.optional_life', {
+                url: '/basic_life',
+                templateUrl: '/static/partials/benefit_selection/tab_optional_life.html',
+                controller:'optionalLifeBenefitsSignup'
             }).
             state('/employee/info', {
                 url: '/employee/info?type',

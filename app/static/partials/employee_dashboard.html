@@ -5,7 +5,7 @@
 <div class="content-header">
     <h1>My Benefits</h1>
     <span class="general-info">You have total <b>{{benefitCount}}</b> benefits</span>
-    <div class="cta"><a href="#/employee/benefit/{{employee_id}}" class="btn green" >Modify Benefits</a></div>
+    <div class="cta"><a href="#/employee/benefits/{{employee_id}}" class="btn green" >Modify Benefits</a></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
@@ -14,7 +14,7 @@
         <div class="table-sub-title">
             Selected Benefits
         </div>
-        <table class="table-striped">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th><span>Benefit Name</span></th>
@@ -48,7 +48,7 @@
     </div>
     <div class="table-responsive table-holder table" ng-if="waivedBenefits.length>0">
         <div class="table-sub-title">Waived Benefits</div>
-        <table class="table-striped">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th><span>Benefit Type Name</span></th>
@@ -119,6 +119,7 @@
                 </tr>
             </tbody>    
         </table>
+        <div class="table-sub-title" ng-show="basicLifeInsurancePlan.enrolled">Basic Life Insurance</div>
         <table class="table table-striped" ng-show="basicLifeInsurancePlan.enrolled">
             <thead>
                 <tr>

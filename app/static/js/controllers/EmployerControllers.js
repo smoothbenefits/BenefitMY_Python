@@ -705,6 +705,10 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
           LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employee.user.id, function(response) {
             employee.familyInsurancePlan = response;
           });
+          
+          LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+            employee.basicLifeInsurancePlan = response;
+          });
         });
 
         $scope.clientCount = _.size(employeeList);
