@@ -24,6 +24,7 @@ from app.models.fsa import FSA
 from app.models.direct_deposit import DirectDeposit
 from app.models.user_bank_account import UserBankAccount
 
+
 class ExportViewBase(APIView):
     def _get_max_dependents_count(self, company_id):
         users_id = self._get_all_employee_user_ids_for_company(company_id)
@@ -278,7 +279,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         if (len(persons) > 0):
             person = persons[0]
 
-        # All helpers are built with capability of skiping proper number of columns when 
+        # All helpers are built with capability of skiping proper number of columns when
         # person given is None. This is to ensure other information written after these
         # would be written to the right columns
         cur_column_num = self._write_person_basic_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
@@ -312,7 +313,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             # The desire is to also include some basic information for an employee, even if
             # he has not gone through on-boarding yet
             # So without the person profile that is filled out during onboarding, all we can
-            # do for now is to grab the basic information from the user account. 
+            # do for now is to grab the basic information from the user account.
             users = User.objects.filter(pk=employee_user_id)
             if (len(users) > 0):
                 user = users[0]
@@ -336,7 +337,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             # The desire is to also include some basic information for an employee, even if
             # he has not gone through on-boarding yet
             # So without the person profile that is filled out during onboarding, all we can
-            # do for now is to grab the basic information from the user account. 
+            # do for now is to grab the basic information from the user account.
             users = User.objects.filter(pk=employee_user_id)
             if (len(users) > 0):
                 user = users[0]
@@ -351,7 +352,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             phone_num = None
             if(len(phones) > 0):
                 phone_num = phones[0].number
-            return self._write_field(excelSheet, row_num, col_num, phone_num)  
+            return self._write_field(excelSheet, row_num, col_num, phone_num)
         return col_num + 1
 
     def _write_person_address_info(self, person_model, address_type, excelSheet, row_num, col_num):
@@ -359,7 +360,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             addresses = person_model.addresses.filter(address_type=address_type)
             if (len(addresses) > 0):
                 address = addresses[0]
-                col_num = self._write_field(excelSheet, row_num, col_num, address.street_1) 
+                col_num = self._write_field(excelSheet, row_num, col_num, address.street_1)
                 col_num = self._write_field(excelSheet, row_num, col_num, address.street_2)
                 col_num = self._write_field(excelSheet, row_num, col_num, address.city)
                 col_num = self._write_field(excelSheet, row_num, col_num, address.state)
@@ -404,7 +405,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             return col_num
 
         # Skip the relationship column
-        return col_num + 1 
+        return col_num + 1
 
     def _write_employee_all_health_benefits_info(self, employee_user_id, excelSheet, row_num, col_num):
         user_benefit_plan_options = UserCompanyBenefitPlanOption.objects.filter(user=employee_user_id)
@@ -417,7 +418,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
     def _write_employee_health_benefit_info(self, employee_health_benefit_options, benefit_type, excelSheet, row_num, col_num):
         user_benefit_options = employee_health_benefit_options.filter(benefit__benefit_plan__benefit_type__name=benefit_type)
-        
+
         if (len(user_benefit_options) > 0):
             user_benefit_option = user_benefit_options[0]
             company_plan_option = user_benefit_option.benefit
@@ -426,10 +427,10 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, row_num, col_num, benefit_plan.name)
             col_num = self._write_field(excelSheet, row_num, col_num, company_plan_option.benefit_option_type)
             col_num = self._write_field(excelSheet, row_num, col_num, company_plan_option.employee_cost_per_period)
-            
+
             return col_num
 
-        # Skip the columns if no matching benefit 
+        # Skip the columns if no matching benefit
         return col_num + 3
 
     def _write_employee_basic_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
@@ -443,11 +444,11 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
             return col_num
 
-        return col_num + 2   
+        return col_num + 2
 
     def _write_employee_optional_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
         # TODO:
-        # Stub as placeholder 
+        # Stub as placeholder
         return col_num
 
     def _write_employee_fsa_info(self, employee_user_id, excelSheet, row_num, col_num):
@@ -464,8 +465,8 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('All Employee Summary')
 
-        # Pre compute the max number of dependents across all employees of 
-        # the company, so we know how many sets of headers for dependent 
+        # Pre compute the max number of dependents across all employees of
+        # the company, so we know how many sets of headers for dependent
         # info we need to populate
         max_dependents = self._get_max_dependents_count(pk)
         self._write_headers(sheet, max_dependents)
@@ -476,6 +477,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         response['Content-Disposition'] = 'attachment; filename=employee_summary.xls'
         book.save(response)
         return response
+
 
 class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersSummaryExcelExportView):
     def _write_headers(self, excelSheet):
