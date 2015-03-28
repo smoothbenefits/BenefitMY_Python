@@ -327,71 +327,128 @@ var employeeInfo = employeeControllers.controller('employeeInfoController',
 
 var directDeposit = employeeControllers.controller('employeeDirectDepositController',
   ['$scope',
-   '$routeParams',
+   '$state', 
+   '$stateParams',
    '$location',
    'currentUser',
    'DirectDepositService',
-   function($scope, 
-            $routeParams,
+   function($scope,
+            $state,  
+            $stateParams,
             $location,
             currentUser,
             DirectDepositService){
-    $scope.editMode = $routeParams.edit;
-    $scope.person = { role: 'Employee' };
-    $scope.direct_deposit = { bank_accounts: [] };
+    var existingDirectDepositAccountIds = [];
+    $scope.editMode = $stateParams.edit;
+    $scope.directDepositAccounts = [];
     $scope.bankAccountTypes = ['Checking', 'Saving'];
-
-    $scope.enableEditing = function(){
-      $scope.editMode = true;
-    };
 
     $scope.backToDashboard = function(){
       $location.path('/employee');
     };
 
     $scope.removeBankAccount = function(account){
-      var index = $scope.direct_deposit.bank_accounts.indexOf(account);
-      $scope.direct_deposit.bank_accounts.splice(index, 1);
+      var index = $scope.newDirectDepositAccounts.indexOf(account);
+      $scope.newDirectDepositAccounts.splice(index, 1);
+    };
+
+    $scope.editDirectDeposit = function(account){
+      account.inEditMode = true;
+    };
+
+    $scope.exitEditMode = function(account){
+      account.inEditMode = false;
+    };
+
+    $scope.viewExistingDirectDepositAccounts = function(){
+      $scope.addingNewAccount = false;
+      $scope.newDirectDepositAccounts = [];
     };
 
     $scope.addBankAccount = function(){
-      $scope.direct_deposit.bank_accounts.push({ account_type: $scope.bankAccountTypes[0]});
+      $scope.newDirectDepositAccounts.push({ account_type: $scope.bankAccountTypes[0]});
+    };
+
+    $scope.addNewDirectDepositAccount = function(){
+      $scope.addingNewAccount = true;
+      $scope.newDirectDepositAccounts = [];
+      $scope.newDirectDepositAccounts.push({account_type: $scope.bankAccountTypes[0]});
+    };
+
+    $scope.deleteDirectDeposit = function(account){
+
+      var confirmed = confirm('About to delete a direct deposit account. Are you sure?');
+      if (confirmed === true){
+        var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
+        DirectDepositService.deleteDirectDepositById(directDeposit, function(response){
+          getDirectDeposit(account.user);
+        }, function(error){
+          alert('Failed to delete direct deposit account. Please try again later.');
+        });
+      }
+    };
+
+    $scope.updateDirectDeposit = function(account){
+      var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
+      DirectDepositService.updateDirectDepositByUserId(directDeposit, function(response){
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+      }, function(error){
+        alert('Failed to update direct deposit account. Please try again later.');
+      });
     };
 
     var userPromise = currentUser.get().$promise.then(function(response){
       $scope.person = response.user;
+      $scope.person.role = 'Employee';
       return response.user.id;
     });
 
-    userPromise.then(function(userId){
+    var getDirectDeposit = function(userId){
       DirectDepositService.getDirectDepositByUserId(userId, function(response){
-        $scope.direct_deposit.bank_accounts = response;
+        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDeposit(response);
         if (response.length === 0){
           $scope.hasDirectDeposit = false;
-          $scope.direct_deposit.bank_accounts.push({ account_type: $scope.bankAccountTypes[0]});
+          $scope.directDepositAccounts.push({ account_type: $scope.bankAccountTypes[0], inEditMode: false });
         }
         else {
           $scope.hasDirectDeposit = true;
+          existingDirectDepositAccountIds = _.map($scope.directDepositAccounts, function(account){
+            return account.id;
+          });
+
+          _.each($scope.directDepositAccounts, function(account){
+            account.inEditMode = false;
+          });
         }
       });
+    };
+
+    userPromise.then(function(userId){
+      getDirectDeposit(userId);
     });
 
     $scope.submitDirectDeposit = function(){
-      var request_body = { user: $scope.person.id, bank_account: $scope.direct_deposit.bank_accounts };
-      if ($scope.hasDirectDeposit){
-        DirectDepositService.updateDirectDepositByUserId($scope.person.id, request_body, function(response){
-          $location.path('/employee');
-        }, function(error){
-          alert('Failed to save direct deposit information due to ' + error);
+      var directDepositDtos = [];
+      // Map direct deposit domain model to DTO, one by one
+      _.each($scope.newDirectDepositAccounts, function(account){
+        account.user = $scope.person.id;
+        var dto = DirectDepositService.mapViewDirectDepositToDto(account);
+        directDepositDtos.push(dto);
+      });
+
+      DirectDepositService.createDirectDepositByUserId($scope.person.id, directDepositDtos, function(response){
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
         });
-      }
-      else{
-        DirectDepositService.createDirectDepositByUserId($scope.person.id, request_body, function(response){
-          $location.path('/employee');
-        }, function(error){
-          alert('Failed to create direct deposit record due to ' + error);
-        });
-      }
+      }, function(error){
+        alert('Failed to create direct deposit record due to ' + error);
+      });
     };
   }]);
 
@@ -594,7 +651,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
 
     $scope.userDefinedPointsSet = function(){
       $scope.employee.user_defined_set = true;
-    }
+    };
 
     $scope.acknowledgeW4 = function(){
       $scope.employee.downloadW4 = !$scope.employee.downloadW4;
@@ -630,7 +687,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
         function(response){
           $location.path('/employee/onboard/complete/'+$scope.employeeId);
         });
-    }
+    };
 }]);
 
 var onboardComplete = employeeControllers.controller('onboardComplete',
