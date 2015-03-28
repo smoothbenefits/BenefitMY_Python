@@ -711,6 +711,19 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
           });
         });
 
+        // TODO: the same as FSA and life insurance
+        _.each(employeeList, function(employee) {
+          LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+            if (response.enrolled){
+              employee.basicLifeInsurancePlan = response;
+              employee.basicLifeInsurancePlan.life_insurance.updated_at = moment(response.life_insurance.updated_at).format('l');
+            }
+            else{
+              employee.basicLifeInsurancePlan = {enrolled: false};
+            }
+          });
+        });
+
         $scope.clientCount = _.size(employeeList);
         $scope.employeeList = employeeList;
       }, function(errorResponse){
