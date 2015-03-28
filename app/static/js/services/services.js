@@ -1306,7 +1306,7 @@ benefitmyService.factory(
       },
 
       updateDirectDepositByUserId: function(directDeposit, successCallBack, errorCallBack){
-        DirectDepositRepository.UpdateByEmployeeId.update({id: directDeposit.id}, directDeposit).$promise.then(function(response){
+        DirectDepositRepository.UpdateById.update({id: directDeposit.id}, directDeposit).$promise.then(function(response){
           successCallBack(response);
         }, function(error){
           errorCallBack(error);
@@ -1314,7 +1314,7 @@ benefitmyService.factory(
       },
 
       createDirectDepositByUserId: function(userId, directDeposit, successCallBack, errorCallBack){
-        DirectDepositRepository.CreateByEmployeeId.post({id: userId}, directDeposit).$promise.then(function(response){
+        DirectDepositRepository.ByEmployeeId.post({id: userId}, directDeposit).$promise.then(function(response){
           successCallBack(response);
         }, function(error){
           errorCallBack(error);

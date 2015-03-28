@@ -61,9 +61,8 @@ benefitmyDomainModelFactories.factory('CompanyUserLifeInsurancePlanRepository', 
 benefitmyDomainModelFactories.factory('DirectDepositRepository', ['$resource',
   function($resource){
     return {
-      ByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: '@id'}),
-      UpdateByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: '@id'}, {update: { method: 'PUT'}}),
-      CreateByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: '@id'}, {post: { method: 'POST', isArray: true}}),
+      ByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: '@id'}, {post: { method: 'POST', isArray: true}}),
+      UpdateById: $resource('/api/v1/direct_deposit/:id', {id: '@id'}, {update: { method: 'PUT'}}),
       DeleteById: $resource('/api/v1/direct_deposit/:id', {id: '@id'}, {delete: { method: 'DELETE'}})
     };
   }

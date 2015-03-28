@@ -83,13 +83,15 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Last Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Gender')
         col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Account Type')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Account Issurer')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Routing Number')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Account Number')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Attachment URL')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Amount')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Percentage')
+
+        for i in range(max_direct_deposits):
+            col_num = self._write_field(excelSheet, 0, col_num, 'Account Type ' + str(i + 1))
+            col_num = self._write_field(excelSheet, 0, col_num, 'Account Issurer ' + str(i + 1))
+            col_num = self._write_field(excelSheet, 0, col_num, 'Routing Number ' + str(i + 1))
+            col_num = self._write_field(excelSheet, 0, col_num, 'Account Number ' + str(i + 1))
+            col_num = self._write_field(excelSheet, 0, col_num, 'Attachment URL ' + str(i + 1))
+            col_num = self._write_field(excelSheet, 0, col_num, 'Amount ' + str(i + 1))
+            col_num = self._write_field(excelSheet, 0, col_num, 'Percentage ' + str(i + 1))
 
         return
 
@@ -156,8 +158,9 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
 
         direct_deposit = None
         direct_deposits = DirectDeposit.objects.filter(user_id=employee_user_id)
+
         for i in range(len(direct_deposits)):
-            current_col_num = self._write_direct_deposit(direct_deposits[i], excelSheet, row_num, start_col_num)
+            current_col_num = self._write_direct_deposit(direct_deposits[i], excelSheet, row_num, current_col_num)
 
         return current_col_num
 

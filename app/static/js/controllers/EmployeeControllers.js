@@ -348,8 +348,8 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
     };
 
     $scope.removeBankAccount = function(account){
-      var index = $scope.direct_deposit.bank_accounts.indexOf(account);
-      $scope.direct_deposit.bank_accounts.splice(index, 1);
+      var index = $scope.newDirectDepositAccounts.indexOf(account);
+      $scope.newDirectDepositAccounts.splice(index, 1);
     };
 
     $scope.editDirectDeposit = function(account){
