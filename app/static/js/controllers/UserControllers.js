@@ -62,18 +62,21 @@ var userController = userControllers.controller('userController',
                           CompanyEmployeeSummaryService) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
-    var userPromise = currentUser.get().$promise.then(function(response){
-      $scope.curUser = response.user;
-      $scope.currentRoleList = response.roles;
-      $scope.roleTypeDictionary = {
+    var roleTypeDictionary = {
         admin:'Employer', 
         broker:'Broker',
         employee: 'Employee'
-      }
+      };
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      $scope.curUser = response.user;
+      $scope.currentRoleList = response.roles;
 
       clientListRepository.get({userId: response.user.id}).$promise.then(function(response){
         var company = _.find(response.company_roles, {company_user_type: 'admin'});
-        $scope.company_id = company.company.id;
+        if(company){
+          $scope.company_id = company.company.id;
+        }
       });
     });
     
