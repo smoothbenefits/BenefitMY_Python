@@ -50,6 +50,7 @@ var userController = userControllers.controller('userController',
    'userLogOut', 
    'clientListRepository',
    'benefitSectionGlobalConfig',
+   'CompanyEmployeeSummaryService',
   function userController($scope, 
                           $http, 
                           $location, 
@@ -57,14 +58,27 @@ var userController = userControllers.controller('userController',
                           users, 
                           userLogOut, 
                           clientListRepository,
-                          benefitSectionGlobalConfig) {
+                          benefitSectionGlobalConfig,
+                          CompanyEmployeeSummaryService) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
-    var userPromise = currentUser.get()
-      .$promise.then(function(response){
-          $scope.curUser = response.user;
-          $scope.currentRoleList = response.roles;
-       });
+    var roleTypeDictionary = {
+        admin:'Employer', 
+        broker:'Broker',
+        employee: 'Employee'
+      };
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      $scope.curUser = response.user;
+      $scope.currentRoleList = response.roles;
+
+      clientListRepository.get({userId: response.user.id}).$promise.then(function(response){
+        var company = _.find(response.company_roles, {company_user_type: 'admin'});
+        if(company){
+          $scope.company_id = company.company.id;
+        }
+      });
+    });
     
     $scope.isRoleActive = function(checkRole){
       var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});
@@ -99,6 +113,23 @@ var userController = userControllers.controller('userController',
       }
     };
 
+    $scope.getCurRoleString = function(){
+      return roleTypeDictionary[$scope.getCurRoleFromPath()];
+    }
+
+    $scope.isCurRoleAdmin = function(){
+      return $scope.getCurRoleFromPath() === 'admin';
+    };
+
+    $scope.isCurRoleBroker = function(){
+      return $scope.getCurRoleFromPath() === 'broker';
+    };
+
+    $scope.isCurRoleEmployee = function(){
+      return $scope.getCurRoleFromPath() === 'employee';
+    };
+
+
     var getIdByRole = function(role){
       return $scope.curUser.id;
     };
@@ -114,6 +145,23 @@ var userController = userControllers.controller('userController',
       {
         return "inactive";
       }
+    };
+
+    // Not sure if it's a good idea to get the company id when first load the page
+    // Could it be the user act so quickly and the company id has not been returned yet?
+    $scope.downloadEmployeeSummaryReport = function(){
+      var link = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryExcelUrl($scope.company_id);
+      location.href = link;
+    };
+
+    $scope.downloadEmployeeDirectDepositReport = function(){
+      var link = CompanyEmployeeSummaryService.getCompanyEmployeeDirectDepositExcelUrl($scope.company_id);
+      location.href = link;
+    };
+
+    $scope.downloadCompanyEmployeeLifeBeneficiaryReport = function(){
+      var link = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl($scope.company_id);
+      location.href = link;
     };
 
     $scope.goToFunctionalView = function(viewLink, parameter){
@@ -132,18 +180,10 @@ var userController = userControllers.controller('userController',
     };
 
     $scope.goToFunctionalViewByCompanyId = function(viewLink, parameter){
-      currentUser.get().$promise.then(function(user){
-        clientListRepository.get({userId: user.user.id}).$promise.then(function(response){
-          var company = _.find(response.company_roles, {company_user_type: 'admin'});
-
-          if (parameter){
-            $location.path(viewLink + company.company.id).search(parameter);  
-          }
-          else{
-            $location.path(viewLink + company.company.id).search('');
-          }
-        });
-      });
+      if (!parameter){
+        parameter = '';
+      }
+      $location.path(viewLink + $scope.company_id).search(parameter);
     };
 
     $scope.gotoSettings = function(){

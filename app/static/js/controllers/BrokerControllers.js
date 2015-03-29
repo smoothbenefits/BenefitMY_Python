@@ -143,6 +143,9 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       var clientId = $stateParams.client_id;
       $scope.employeeList = [];
 
+      $scope.backToDashboard = function(){
+        $location.path('/broker');
+      };
 
       companyRepository.get({clientId: clientId}).$promise.then(function(response){
         $scope.companyName = response.name;
@@ -174,13 +177,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         // TODO: the same as FSA and life insurance
         _.each(employeeList, function(employee) {
           LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
-            if (response.enrolled){
-              employee.basicLifeInsurancePlan = response;
-              employee.basicLifeInsurancePlan.life_insurance.updated_at = moment(response.life_insurance.updated_at).format('l');
-            }
-            else{
-              employee.basicLifeInsurancePlan = {enrolled: false};
-            }
+            employee.basicLifeInsurancePlan = response;
           });
         });
 

@@ -22,7 +22,9 @@ underscore.factory('_', function(){
 
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
-}
+};
+
+var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
 
 BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs
@@ -235,7 +237,3 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             });
      }
  ]);
-
-String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-}

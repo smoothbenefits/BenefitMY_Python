@@ -1002,27 +1002,31 @@ benefitmyService.factory('LifeInsuranceService',
                 function(plan){ return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';}
               );
 
+              // Check if user enrolls basic life insurance. If yes, map response to view model
+              // If not, return simple object
               if (planEnrollments){
                 planEnrollments.enrolled = true;
+                planEnrollments.life_insurance.updated_at = moment(planEnrollments.life_insurance.updated_at).format(DATE_FORMAT_STRING);
+
+                var firstTier = [];
+                var secondTier = [];
+                _.each(planEnrollments.life_insurance_beneficiary, function(beneficiary){
+                  if (beneficiary.tier === '1'){
+                    firstTier.push(beneficiary);
+                  }
+                  if (beneficiary.tier === '2'){
+                    secondTier.push(beneficiary);
+                  }
+                });
+                planEnrollments.life_insurance_beneficiary = firstTier;
+                planEnrollments.life_insurance_contingent_beneficiary = secondTier;
               }
               else{
                 planEnrollments = { enrolled: false, life_insurance_beneficiary: [] };
               }
 
-              var firstTier = [];
-              var secondTier = [];
-              _.each(planEnrollments.life_insurance_beneficiary, function(beneficiary){
-                if (beneficiary.tier === '1'){
-                  firstTier.push(beneficiary);
-                }
-                if (beneficiary.tier === '2'){
-                  secondTier.push(beneficiary);
-                }
-              });
-              planEnrollments.life_insurance_beneficiary = firstTier;
-              planEnrollments.life_insurance_contingent_beneficiary = secondTier;
-
               successCallBack(planEnrollments);
+
             }, function(error){
               errorCallBack(error);
             });
@@ -1335,7 +1339,8 @@ benefitmyService.factory(
           user: viewDirectDeposit.user, 
           bank_account: viewDirectDeposit,
           amount: viewDirectDeposit.amount,
-          percentage: viewDirectDeposit.percentage
+          percentage: viewDirectDeposit.percentage,
+          remainder_of_all: viewDirectDeposit.remainder_of_all
         };
         dto.bank_account.user = viewDirectDeposit.user;
         return dto;
@@ -1348,6 +1353,7 @@ benefitmyService.factory(
           viewModel.direct_deposit_id = account.id;
           viewModel.amount = Number(account.amount);
           viewModel.percentage = Number(account.percentage);
+          viewModel.remainder_of_all = account.remainder_of_all;
           viewDirectDepositAccounts.push(viewModel);
         });
         return viewDirectDepositAccounts;
