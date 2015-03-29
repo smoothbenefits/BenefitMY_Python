@@ -81,8 +81,6 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'First Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Middle Initial')
         col_num = self._write_field(excelSheet, 0, col_num, 'Last Name')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Gender')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
 
         for i in range(max_direct_deposits):
             col_num = self._write_field(excelSheet, 0, col_num, 'Account Type ' + str(i + 1))
@@ -90,6 +88,7 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, 0, col_num, 'Routing Number ' + str(i + 1))
             col_num = self._write_field(excelSheet, 0, col_num, 'Account Number ' + str(i + 1))
             col_num = self._write_field(excelSheet, 0, col_num, 'Attachment URL ' + str(i + 1))
+            col_num = self._write_field(excelSheet, 0, col_num, 'Remainder of Net Pay' + str(i + 1))
             col_num = self._write_field(excelSheet, 0, col_num, 'Amount ' + str(i + 1))
             col_num = self._write_field(excelSheet, 0, col_num, 'Percentage ' + str(i + 1))
 
@@ -130,8 +129,6 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.first_name)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.middle_name)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.last_name)
-            col_num = self._write_field(excelSheet, row_num, col_num, person_model.gender)
-            col_num = self._write_field(excelSheet, row_num, col_num, person_model.birth_date, ExcelExportViewBase.date_field_format)
             return col_num
         elif (employee_user_id):
             # TODO:
@@ -175,10 +172,23 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
         current_col_num = self._write_field(excelSheet, row_num, current_col_num, user_bank_account.routing)
         current_col_num = self._write_field(excelSheet, row_num, current_col_num, user_bank_account.account)
         current_col_num = self._write_field(excelSheet, row_num, current_col_num, user_bank_account.attachment)
+
+        is_ronp = 'Yes' if self.is_remainder_of_net_pay_account(direct_deposit) else 'No' 
+
+        current_col_num = self._write_field(excelSheet, row_num, current_col_num, is_ronp)
         current_col_num = self._write_field(excelSheet, row_num, current_col_num, direct_deposit.amount)
         current_col_num = self._write_field(excelSheet, row_num, current_col_num, direct_deposit.percentage)
 
         return current_col_num
+
+    ''' Whether the given deposit model represents a DD account that is to receive "Remainder of Net Pay"
+        TODO: Due to that our data model currently does not represent this notion, here, as a shorter term
+              solution, we instead use the below predicate to infer that the account is for remainder of net 
+              pay. 
+              The predicate is that none of the percentage nor the amount has been assigned a valid value.
+    '''
+    def is_remainder_of_net_pay_account(self, direct_deposit_model):
+        return (not direct_deposit_model.amount and not direct_deposit_model.percentage) or (direct_deposit_model.amount <= 0 and direct_deposit_model.percentage <=0)
 
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
