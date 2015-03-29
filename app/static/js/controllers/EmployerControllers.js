@@ -681,6 +681,10 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     var company_id = $stateParams.company_id;
     $scope.employeeList = [];
 
+    $scope.backToDashboard = function(){
+      $location.path('/admin');
+    };
+
     companyRepository.get({clientId: company_id}).$promise.then(function(response){
         $scope.companyName = response.name;
       });
