@@ -324,7 +324,7 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
     LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
           $scope.lifeInsurancePlans = response;
           _.each($scope.lifeInsurancePlans, function(companyPlan) {
-            companyPlan.created_date_for_display = new Date(companyPlan.created_at).toDateString();
+            companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
           });
     });
   }
@@ -519,7 +519,7 @@ var employerViewLetter = employersController.controller('employerViewLetter',
     $scope.documentList = [];
     $scope.activeDocument = {};
     $scope.signaturePresent = false;
-    $scope.signatureCreatedDate = moment().format('MMM Do YYYY');
+    $scope.signatureCreatedDate = moment().format(DATE_FORMAT_STRING);
 
     documentRepository.byUser.query({userId:employeeId}).$promise.then(function(response){
       var unsortedDocumentList = _.filter(response, function(doc){
@@ -564,7 +564,7 @@ var employerViewLetter = employersController.controller('employerViewLetter',
       if (doc.signature && doc.signature.signature){
         $scope.signatureImage = doc.signature.signature;
         $scope.signaturePresent = true;
-        $scope.signatureCreatedDate = moment(doc.signature.created_at).format('MMM Do YYYY');
+        $scope.signatureCreatedDate = moment(doc.signature.created_at).format(DATE_FORMAT_STRING);
       }
     };
 
@@ -706,20 +706,6 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
             employee.familyInsurancePlan = response;
           });
           
-          LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
-            employee.basicLifeInsurancePlan = response;
-          });
-        });
-
-        // TODO: the same as FSA and life insurance
-        _.each(employeeList, function(employee) {
-          LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
-            employee.basicLifeInsurancePlan = response;
-          });
-        });
-
-        // TODO: the same as FSA and life insurance
-        _.each(employeeList, function(employee) {
           LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
             employee.basicLifeInsurancePlan = response;
           });

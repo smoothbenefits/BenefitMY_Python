@@ -1006,7 +1006,7 @@ benefitmyService.factory('LifeInsuranceService',
               // If not, return simple object
               if (planEnrollments){
                 planEnrollments.enrolled = true;
-                planEnrollments.life_insurance.updated_at = moment(planEnrollments.life_insurance.updated_at).format('l');
+                planEnrollments.life_insurance.updated_at = moment(planEnrollments.life_insurance.updated_at).format(DATE_FORMAT_STRING);
 
                 var firstTier = [];
                 var secondTier = [];
