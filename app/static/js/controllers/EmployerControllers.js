@@ -680,6 +680,11 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            CompanyEmployeeSummaryService){
     var company_id = $stateParams.company_id;
     $scope.employeeList = [];
+    $scope.user = { role: 'Admin', type: 'Employer' };
+
+    $scope.backToDashboard = function(){
+      $location.path('/admin');
+    };
 
     companyRepository.get({clientId: company_id}).$promise.then(function(response){
         $scope.companyName = response.name;
