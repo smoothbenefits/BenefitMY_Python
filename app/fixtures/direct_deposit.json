@@ -4,7 +4,8 @@
       "user": 1,
       "amount": "0",
       "percentage": "40",
-      "bank_account": 1
+      "bank_account": 1,
+      "remainder_of_all": false
     },
     "model": "app.directdeposit",
     "pk": 1
@@ -15,7 +16,8 @@
       "user": 1,
       "amount": "0",
       "percentage": "60",
-      "bank_account": 2
+      "bank_account": 2,
+      "remainder_of_all": false
     },
     "model": "app.directdeposit",
     "pk": 2
@@ -26,12 +28,21 @@
       "user": 2,
       "amount": "8210.00",
       "percentage": "0",
-      "bank_account": 3
+      "bank_account": 3,
+      "remainder_of_all": false
+    },
+    "model": "app.directdeposit",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "user": 2,
+      "amount": "0",
+      "percentage": "0",
+      "bank_account": 4,
+      "remainder_of_all": true
     },
     "model": "app.directdeposit",
     "pk": 3
   }
-
-
-
 ]
