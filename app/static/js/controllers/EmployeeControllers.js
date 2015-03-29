@@ -126,9 +126,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
       LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
         $scope.basicLifeInsurancePlan = response;
-        if($scope.basicLifeInsurancePlan && $scope.basicLifeInsurancePlan.enrolled){
-          $scope.basicLifeInsurancePlan.life_insurance.last_update_date = moment(response.life_insurance.updated_at).format('l');
-        }
       });
     });
 
@@ -182,7 +179,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
     $scope.document = {};
     var documentId = $stateParams.doc_id;
     var signatureUpdated = false;
-    $scope.signatureCreatedDate = moment().format('MMM Do YYYY');
+    $scope.signatureCreatedDate = moment().format(DATE_FORMAT_STRING);
     var userPromise = currentUser.get().$promise
       .then(function(response){
         $scope.employee_id = response.user.id;
@@ -209,7 +206,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
         var sigComponents = signature.split(separator);
         $scope.signatureImage = sigComponents[0] + encodeURIComponent(separator + sigComponents[1]);
         $scope.signaturePresent = true;
-        $scope.signatureCreatedDate = moment(document.signature.created_at).format('MMM Do YYYY');
+        $scope.signatureCreatedDate = moment(document.signature.created_at).format(DATE_FORMAT_STRING);
       }
     });
 
