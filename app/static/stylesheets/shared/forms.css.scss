@@ -77,6 +77,12 @@ div.textbox, div.submit-box, div.checkbox, div.select-box, div.datebox {
     top: 10px;
 }
 
+.form-error-relative {
+    position:relative;
+    color:red;
+    margin: 10px 0px;
+}
+
 .form-label {
     font-size: $size-xs;
     text-transform: uppercase;
