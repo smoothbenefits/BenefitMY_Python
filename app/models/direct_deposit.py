@@ -16,7 +16,7 @@ class DirectDeposit(models.Model):
     user = models.ForeignKey(User,
                              related_name="direct_deposit")
 
-    reminder_of_all = models.BooleanField(default=False)
+    remainder_of_all = models.BooleanField(default=False)
     
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     

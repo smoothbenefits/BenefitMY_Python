@@ -6,6 +6,8 @@
   .textbox input:focus, .textbox textarea:focus {
     outline: none;
     border: 1px solid #00ADEF; }
+  .textbox input:disabled, .textbox textarea:disabled {
+    background-color: #d1d1d1; }
 
 .submit-box input {
   width: 100%;

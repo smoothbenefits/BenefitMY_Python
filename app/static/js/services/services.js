@@ -1335,7 +1335,8 @@ benefitmyService.factory(
           user: viewDirectDeposit.user, 
           bank_account: viewDirectDeposit,
           amount: viewDirectDeposit.amount,
-          percentage: viewDirectDeposit.percentage
+          percentage: viewDirectDeposit.percentage,
+          remainder_of_all: viewDirectDeposit.remainder_of_all
         };
         dto.bank_account.user = viewDirectDeposit.user;
         return dto;
@@ -1348,6 +1349,7 @@ benefitmyService.factory(
           viewModel.direct_deposit_id = account.id;
           viewModel.amount = Number(account.amount);
           viewModel.percentage = Number(account.percentage);
+          viewModel.remainder_of_all = account.remainder_of_all;
           viewDirectDepositAccounts.push(viewModel);
         });
         return viewDirectDepositAccounts;
