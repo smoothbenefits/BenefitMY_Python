@@ -1002,27 +1002,31 @@ benefitmyService.factory('LifeInsuranceService',
                 function(plan){ return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';}
               );
 
+              // Check if user enrolls basic life insurance. If yes, map response to view model
+              // If not, return simple object
               if (planEnrollments){
                 planEnrollments.enrolled = true;
+                planEnrollments.life_insurance.updated_at = moment(planEnrollments.life_insurance.updated_at).format('l');
+
+                var firstTier = [];
+                var secondTier = [];
+                _.each(planEnrollments.life_insurance_beneficiary, function(beneficiary){
+                  if (beneficiary.tier === '1'){
+                    firstTier.push(beneficiary);
+                  }
+                  if (beneficiary.tier === '2'){
+                    secondTier.push(beneficiary);
+                  }
+                });
+                planEnrollments.life_insurance_beneficiary = firstTier;
+                planEnrollments.life_insurance_contingent_beneficiary = secondTier;
               }
               else{
                 planEnrollments = { enrolled: false, life_insurance_beneficiary: [] };
               }
 
-              var firstTier = [];
-              var secondTier = [];
-              _.each(planEnrollments.life_insurance_beneficiary, function(beneficiary){
-                if (beneficiary.tier === '1'){
-                  firstTier.push(beneficiary);
-                }
-                if (beneficiary.tier === '2'){
-                  secondTier.push(beneficiary);
-                }
-              });
-              planEnrollments.life_insurance_beneficiary = firstTier;
-              planEnrollments.life_insurance_contingent_beneficiary = secondTier;
-
               successCallBack(planEnrollments);
+
             }, function(error){
               errorCallBack(error);
             });
