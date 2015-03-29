@@ -23,12 +23,14 @@ class DirectDepositTestCase(TestCase, ViewTestBase):
         self.assertEqual(result[0]['bank_account']['attachment'], 's3://abcdef')
         self.assertEqual(result[0]['bank_account']['routing'], '123456')
         self.assertEqual(result[0]['bank_account']['account'], '54321')
+        self.assertEqual(result[0]['remainder_of_all'], False)
 
         self.assertEqual(result[1]['percentage'], '60.00')
         self.assertEqual(result[1]['user'], self.normalize_key(1))
         self.assertEqual(result[1]['bank_account']['attachment'], 's3://abcdfdsfddef')
         self.assertEqual(result[1]['bank_account']['routing'], '2121123456')
         self.assertEqual(result[1]['bank_account']['account'], '5432221211')
+        self.assertEqual(result[1]['remainder_of_all'], False)
 
     def test_delete_direct_deposit(self):
         response = self.client.get(reverse('direct_deposit_api',
@@ -44,6 +46,15 @@ class DirectDepositTestCase(TestCase, ViewTestBase):
         self.assertEqual(result[0]['bank_account']['attachment'], 's3://abcfdsfdfdsfddef')
         self.assertEqual(result[0]['bank_account']['routing'], '11112121123456')
         self.assertEqual(result[0]['bank_account']['account'], '543211221211')
+        self.assertEqual(result[0]['remainder_of_all'], False)
+
+        self.assertEqual(result[1]['amount'], '0.00')
+        self.assertEqual(result[1]['user'], self.normalize_key(2))
+        self.assertEqual(result[1]['id'], self.normalize_key(4))
+        self.assertEqual(result[1]['bank_account']['attachment'], 's3://54654654fdsafdsaf')
+        self.assertEqual(result[1]['bank_account']['routing'], '4324234')
+        self.assertEqual(result[1]['bank_account']['account'], '5653547665653')
+        self.assertEqual(result[1]['remainder_of_all'], True)
 
         response = self.client.delete(reverse('direct_deposit_api',
                                               kwargs={'pk': self.normalize_key(3)}))
@@ -54,7 +65,13 @@ class DirectDepositTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
-        self.assertEqual(result, [])
+        self.assertEqual(result[0]['amount'], '0.00')
+        self.assertEqual(result[0]['user'], self.normalize_key(2))
+        self.assertEqual(result[0]['id'], self.normalize_key(4))
+        self.assertEqual(result[0]['bank_account']['attachment'], 's3://54654654fdsafdsaf')
+        self.assertEqual(result[0]['bank_account']['routing'], '4324234')
+        self.assertEqual(result[0]['bank_account']['account'], '5653547665653')
+        self.assertEqual(result[0]['remainder_of_all'], True)
 
 
     """ post and put with nested data structure does not work, work in progress
