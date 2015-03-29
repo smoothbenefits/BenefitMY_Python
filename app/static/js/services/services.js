@@ -748,7 +748,7 @@ benefitmyService.factory('BenefitElectionService',
 
               displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name;
               displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
-              displayBenefit.lastUpdatedTime = new Date(benefit.updated_at).toDateString();
+              displayBenefit.lastUpdatedTime = moment(benefit.updated_at).format(DATE_FORMAT_STRING);
               displayBenefit.pcp = benefit.pcp;
 
               benefitElectedArray.push(displayBenefit);
@@ -766,10 +766,10 @@ benefitmyService.factory('BenefitElectionService',
                     selectedBenefit.waivedList = [];
                   }
                   selectedBenefit.waivedList.push(waived.benefit_type.name);
-                  selectedBenefit.updated = new Date(waived.created_at).toDateString();
+                  selectedBenefit.updated = moment(waived.created_at).format(DATE_FORMAT_STRING);
                 }
                 else{
-                  selectedBenefit = {waivedList:[], updated:new Date(waived.created_at).toDateString()};
+                  selectedBenefit = {waivedList:[], updated:moment(waived.created_at).format(DATE_FORMAT_STRING)};
                   selectedBenefit.waivedList.push(waived.benefit_type.name);
                   benefitElectedArray.push(selectedBenefit);
                 }
@@ -810,7 +810,7 @@ benefitmyService.factory(
 
             userFsa.primary_amount_per_year = parseFloat(userFsa.primary_amount_per_year);
             userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
-            userFsa.last_update_date_time = new Date(userFsa.updated_at).toDateString();
+            userFsa.last_update_date_time = moment(userFsa.updated_at).format(DATE_FORMAT_STRING);
 
             if (callBack) {
               callBack(userFsa);
@@ -936,6 +936,9 @@ benefitmyService.factory('LifeInsuranceService',
       getLifeInsurancePlansForCompany: function(companyId, successCallBack, errorCallBack) {
         CompanyLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
           .$promise.then(function(plans) {
+            _.each(plans, function(companyPlan) {
+              companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
+            });
             if (successCallBack) {
               successCallBack(plans);
             }
@@ -1006,7 +1009,7 @@ benefitmyService.factory('LifeInsuranceService',
               // If not, return simple object
               if (planEnrollments){
                 planEnrollments.enrolled = true;
-                planEnrollments.life_insurance.updated_at = moment(planEnrollments.life_insurance.updated_at).format(DATE_FORMAT_STRING);
+                planEnrollments.life_insurance.last_update_date = moment(planEnrollments.life_insurance.updated_at).format(DATE_FORMAT_STRING);
 
                 var firstTier = [];
                 var secondTier = [];
@@ -1105,7 +1108,7 @@ benefitmyService.factory('LifeInsuranceService',
                   memberPlan.full_name = familyMember.first_name + ' ' + familyMember.last_name; 
                   memberPlan.relationship = familyMember.relationship;
                   memberPlan.insurance_amount = parseFloat(memberPlan.insurance_amount);
-                  memberPlan.last_update_date = new Date(mainPlan.updated_at).toDateString();
+                  memberPlan.last_update_date = moment(mainPlan.updated_at).format(DATE_FORMAT_STRING);
                 });
 
                 familyPlan.memberPlans = planEnrollments;
