@@ -429,6 +429,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
         account.amount = 0;
         account.percentage = 0;
       }
+      return account.remainder_of_all;
     }
 
     userPromise.then(function(userId){
