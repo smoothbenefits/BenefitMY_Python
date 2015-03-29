@@ -106,9 +106,6 @@ var benefitsController = brokersControllers.controller(
         /////////////////////////////////////////////////////////////////////
         LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId, function(response) {
           $scope.lifeInsurancePlans = response;
-          _.each($scope.lifeInsurancePlans, function(companyPlan) {
-            companyPlan.created_date_for_display = new Date(companyPlan.created_at).toDateString();
-          });
         });
 
         $scope.deleteLifeInsurancePlan = function(companyLifeInsurancePlan) {
