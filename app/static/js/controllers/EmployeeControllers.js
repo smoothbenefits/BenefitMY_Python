@@ -427,6 +427,13 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
       });
     };
 
+    $scope.resetAmountAndPercent = function(account){
+      if(account.remainder_of_all){
+        account.amount = 0;
+        account.percentage = 0;
+      }
+    }
+
     userPromise.then(function(userId){
       getDirectDeposit(userId);
     });

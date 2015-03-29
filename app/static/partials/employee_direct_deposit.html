@@ -44,12 +44,15 @@
                             <div class="col-md-7">{{account.account}}</div>
                             <div style="clear:both"></div>
                         </li>
-                        <li class="list-group-item">
+                        <li class="list-group-item" ng-show="account.remainder_of_all">
+                            <h4 style="text-align:center">Remainder of Net Pay</h4>
+                        </li>
+                        <li class="list-group-item" ng-show="!account.remainder_of_all">
                             <h4 class="col-md-5">Amount</h4>
                             <div class="col-md-7">{{account.amount}}</div>
                             <div style="clear:both"></div>
                         </li>
-                        <li class="list-group-item">
+                        <li class="list-group-item" ng-show="!account.remainder_of_all">
                             <h4 class="col-md-5">Percentage</h4>
                             <div class="col-md-7">{{account.percentage}} %</div>
                             <div style="clear:both"></div>
@@ -76,24 +79,26 @@
                         <div class="row">
                             <div class="form-label">Routing Number</div>
                             <div class="textbox">
-                                <input type="text"
+                                <input type="number"
                                     name="routing_number"
                                     ng-model="account.routing"
                                     ng-required="true" />
                                 <div class="form-error" ng-show="form.routing_number.$dirty && form.routing_number.$invalid">
                                   <span ng-show="form.routing_number.$error.required">Routing number is required</span>
+                                  <span ng-show="form.routing_number.$invalid">Routing number entered is invalid</span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-label">Account Number</div>
                             <div class="textbox">
-                                <input type="text"
+                                <input type="number"
                                     name="account_number"
                                     ng-model="account.account"
                                     ng-required="true" />
                                 <div class="form-error" ng-show="form.account_number.$dirty && form.account_number.$invalid">
                                   <span ng-show="form.account_number.$error.required">Account number is required</span>
+                                  <span ng-show="form.account_number.$invalid"> Account number entered is invalid</span>
                                 </div>
                             </div>
                         </div>
@@ -110,23 +115,43 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <label class="form-label">
+                                <input type="checkbox"
+                                    name="remainder_of_all"
+                                    ng-model="account.remainder_of_all"
+                                    ng-required="false" 
+                                    ng-checked="resetAmountAndPercent(account)" />
+
+                                Remaining of Net Pay
+                             </label>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
                                 <div class="form-label">Amount</div>
                                 <div class="textbox">
                                     <input type="number"
                                         name="amount"
                                         ng-model="account.amount"
-                                        ng-required="false" />
+                                        ng-required="false" 
+                                        ng-disabled="account.remainder_of_all"/>
                                 </div>
+                                <div class="form-error-relative" ng-show="form.amount.$invalid">Amount is invalid</div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-1">
+                                <div class="form-label"> -OR- </div>
+                            </div>
+                            <div class="col-md-5">
                                 <div class="form-label">Percentage</div>
                                     <div class="textbox input-group">
                                         <input type="number"
                                             name="percentage"
                                             ng-model="account.percentage"
-                                            ng-required="false" />
+                                            ng-required="false" 
+                                            ng-disabled="account.remainder_of_all"/>
                                         <span class="input-group-addon">%</span>
+                                    </div>
+                                    <div class="form-error-relative" ng-show="form.percentage.$invalid">
+                                        Percentage is invalid
                                     </div>
                             </div>
                         </div>
@@ -169,24 +194,26 @@
             <div class="row">
                 <div class="form-label">Routing Number</div>
                 <div class="textbox">
-                    <input type="text"
+                    <input type="number"
                         name="routing_number"
                         ng-model="account.routing"
                         ng-required="true" />
                     <div class="form-error" ng-show="form.routing_number.$dirty && form.routing_number.$invalid">
                       <span ng-show="form.routing_number.$error.required">Routing number is required</span>
+                      <span ng-show="form.routing_number.$invalid"> Routing number entered is invalid</span>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-label">Account Number</div>
                 <div class="textbox">
-                    <input type="text"
+                    <input type="number"
                         name="account_number"
                         ng-model="account.account"
                         ng-required="true" />
                     <div class="form-error" ng-show="form.account_number.$dirty && form.account_number.$invalid">
-                      <span ng-show="form.account_number.$error.required">Account number is required</span>
+                        <span ng-show="form.account_number.$error.required">Account number is required</span>
+                        <span ng-show="form.account_number.$invalid"> Account number entered is invalid</span>
                     </div>
                 </div>
             </div>
@@ -203,24 +230,42 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <label class="form-label">
+                    <input type="checkbox"
+                        name="remainder_of_all"
+                        ng-model="account.remainder_of_all"
+                        ng-required="false" 
+                        ng-checked="resetAmountAndPercent(account)" />
+                        
+                    Remaining of Net Pay
+                 </label>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
                     <div class="form-label">Amount</div>
                     <div class="textbox">
                         <input type="number"
                             name="amount"
                             ng-model="account.amount"
-                            ng-required="false" />
+                            ng-required="false" 
+                            ng-disabled="account.remainder_of_all" />
                     </div>
+                    <div class="form-error-relative" ng-show="form.amount.$invalid">Amount is invalid</div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-1">
+                    <div class="form-label"> -OR- </div>
+                </div>
+                <div class="col-md-5">
                     <div class="form-label">Percentage (without % sign)</div>
                     <div class="textbox input-group">
                         <input type="number"
                             name="percentage"
                             ng-model="account.percentage"
-                            ng-required="false" />
+                            ng-required="false" 
+                            ng-disabled="account.remainder_of_all" />
                         <span class="input-group-addon">%</span>
                     </div>
+                    <div class="form-error-relative" ng-show="form.percentage.$invalid">Percentage is invalid</div>
                 </div>
             </div>
         </form>
