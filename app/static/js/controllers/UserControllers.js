@@ -65,6 +65,11 @@ var userController = userControllers.controller('userController',
     var userPromise = currentUser.get().$promise.then(function(response){
       $scope.curUser = response.user;
       $scope.currentRoleList = response.roles;
+      $scope.roleTypeDictionary = {
+        admin:'Employer', 
+        broker:'Broker',
+        employee: 'Employee'
+      }
 
       clientListRepository.get({userId: response.user.id}).$promise.then(function(response){
         var company = _.find(response.company_roles, {company_user_type: 'admin'});
@@ -104,6 +109,23 @@ var userController = userControllers.controller('userController',
         return undefined;
       }
     };
+
+    $scope.getCurRoleString = function(){
+      return roleTypeDictionary[$scope.getCurRoleFromPath()];
+    }
+
+    $scope.isCurRoleAdmin = function(){
+      return $scope.getCurRoleFromPath() === 'admin';
+    };
+
+    $scope.isCurRoleBroker = function(){
+      return $scope.getCurRoleFromPath() === 'broker';
+    };
+
+    $scope.isCurRoleEmployee = function(){
+      return $scope.getCurRoleFromPath() === 'employee';
+    };
+
 
     var getIdByRole = function(role){
       return $scope.curUser.id;

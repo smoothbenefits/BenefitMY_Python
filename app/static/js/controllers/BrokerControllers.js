@@ -142,7 +142,6 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       var clientId = $stateParams.client_id;
       $scope.employeeList = [];
-      $scope.user = { role: 'Broker', type: 'Broker' };
 
       $scope.backToDashboard = function(){
         $location.path('/broker');

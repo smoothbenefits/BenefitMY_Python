@@ -680,7 +680,6 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            CompanyEmployeeSummaryService){
     var company_id = $stateParams.company_id;
     $scope.employeeList = [];
-    $scope.user = { role: 'Admin', type: 'Employer' };
 
     $scope.backToDashboard = function(){
       $location.path('/admin');
