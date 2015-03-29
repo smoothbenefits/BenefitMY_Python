@@ -101,6 +101,14 @@
                         <a ng-click="goToFunctionalView('/employee/benefits/')">Modify Benefits</a>
                     </div>
                 </li>
+                <li class="expandable" ng-show="getCurRoleFromPath() === 'employee'">
+                    <div class="primary-nav">
+                        <button data-toggle="collapse" data-target="#employee-payroll-nav" aria-expanded="false" aria-controls="employer-benefit-nav"><span class="flaticon flaticon-user135"></span>Payroll</button>
+                    </div>
+                    <div class="sub-nav collapse" id="employee-payroll-nav">
+                        <a ng-click="goToFunctionalViewByUrl('employee/direct_deposit')">Direct Deposit</a>
+                    </div>
+                </li>
                 <!-- EMPLOYEE NAV ENDS -->
 
                 <!-- BROKER NAV STARTS -->

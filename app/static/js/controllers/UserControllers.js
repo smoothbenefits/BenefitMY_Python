@@ -116,6 +116,10 @@ var userController = userControllers.controller('userController',
       }
     };
 
+    $scope.goToFunctionalViewByUrl = function(viewLink){
+      $location.path(viewLink);
+    };
+
     $scope.goToFunctionalView = function(viewLink, parameter){
       var curRole = $scope.getCurRoleFromPath();
       if(curRole)
