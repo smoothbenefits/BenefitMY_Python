@@ -1,5 +1,7 @@
 var benefitmyService = angular.module('benefitmyService', ['ngResource', 'benefitmyDomainModelFactories']);
 
+var API_PREFIX = '/api/v1'
+
 benefitmyService.factory('currentUser', [
   '$resource',
   function ($resource){
@@ -98,6 +100,13 @@ benefitmyService.factory('employeeBenefits',
     return {
       enroll: enroll,
       waive: waive
+    };
+  }]);
+
+benefitmyService.factory('employeeDirectDeposit', ['$resource',
+  function($resource){
+    return {
+      getByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: 'employee_id'})
     };
   }]);
 
@@ -282,7 +291,10 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     var validateW4Info = function(employeeId, succeeded, failed){
       employeeTaxRepository.get({userId:employeeId})
         .$promise.then(function(response){
-          if(!response || !response.total_points || response.total_points <= 0){
+          if(!response || 
+             (!response.user_defined_points || response.user_defined_points <= 0) && 
+             (!response.total_points || response.total_points <= 0)){
+            //For backwards compatibility, we need to check both fields.
             failed(response);
           }
           else{
@@ -736,7 +748,7 @@ benefitmyService.factory('BenefitElectionService',
 
               displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name;
               displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
-              displayBenefit.lastUpdatedTime = new Date(benefit.updated_at).toDateString();
+              displayBenefit.lastUpdatedTime = moment(benefit.updated_at).format(DATE_FORMAT_STRING);
               displayBenefit.pcp = benefit.pcp;
 
               benefitElectedArray.push(displayBenefit);
@@ -754,10 +766,10 @@ benefitmyService.factory('BenefitElectionService',
                     selectedBenefit.waivedList = [];
                   }
                   selectedBenefit.waivedList.push(waived.benefit_type.name);
-                  selectedBenefit.updated = new Date(waived.created_at).toDateString();
+                  selectedBenefit.updated = moment(waived.created_at).format(DATE_FORMAT_STRING);
                 }
                 else{
-                  selectedBenefit = {waivedList:[], updated:new Date(waived.created_at).toDateString()};
+                  selectedBenefit = {waivedList:[], updated:moment(waived.created_at).format(DATE_FORMAT_STRING)};
                   selectedBenefit.waivedList.push(waived.benefit_type.name);
                   benefitElectedArray.push(selectedBenefit);
                 }
@@ -798,7 +810,7 @@ benefitmyService.factory(
 
             userFsa.primary_amount_per_year = parseFloat(userFsa.primary_amount_per_year);
             userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
-            userFsa.last_update_date_time = new Date(userFsa.updated_at).toDateString();
+            userFsa.last_update_date_time = moment(userFsa.updated_at).format(DATE_FORMAT_STRING);
 
             if (callBack) {
               callBack(userFsa);
@@ -852,8 +864,7 @@ benefitmyService.factory(
   }
 ]);
 
-benefitmyService.factory(
-  'LifeInsuranceService', 
+benefitmyService.factory('LifeInsuranceService', 
   ['LifeInsurancePlanRepository',
    'CompanyLifeInsurancePlanRepository',
    'CompanyUserLifeInsurancePlanRepository',
@@ -862,8 +873,20 @@ benefitmyService.factory(
       LifeInsurancePlanRepository,
       CompanyLifeInsurancePlanRepository,
       CompanyUserLifeInsurancePlanRepository,
-      employeeFamily
-    ){
+      employeeFamily){
+
+    var getFilteredPercentageNumber = function(rawPercent){
+        var reg = new RegExp(/^[0-9]+([\.][0-9]+)*/g);
+        var matchedArray = reg.exec(rawPercent);
+        if(matchedArray){
+          var matchedPercentDigit = matchedArray[0];
+          var matchedPercentNumber = parseFloat(matchedPercentDigit).toFixed(2);
+          if(matchedPercentNumber > 0 && matchedPercentNumber < 100){
+            return matchedPercentNumber;
+          }
+        }
+        return rawPercent;
+      };
     return {
       saveLifeInsurancePlan: function(planToSave, successCallBack, errorCallBack) {
         if(!planToSave.id) {
@@ -913,6 +936,9 @@ benefitmyService.factory(
       getLifeInsurancePlansForCompany: function(companyId, successCallBack, errorCallBack) {
         CompanyLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
           .$promise.then(function(plans) {
+            _.each(plans, function(companyPlan) {
+              companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
+            });
             if (successCallBack) {
               successCallBack(plans);
             }
@@ -979,27 +1005,31 @@ benefitmyService.factory(
                 function(plan){ return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';}
               );
 
+              // Check if user enrolls basic life insurance. If yes, map response to view model
+              // If not, return simple object
               if (planEnrollments){
                 planEnrollments.enrolled = true;
+                planEnrollments.life_insurance.last_update_date = moment(planEnrollments.life_insurance.updated_at).format(DATE_FORMAT_STRING);
+
+                var firstTier = [];
+                var secondTier = [];
+                _.each(planEnrollments.life_insurance_beneficiary, function(beneficiary){
+                  if (beneficiary.tier === '1'){
+                    firstTier.push(beneficiary);
+                  }
+                  if (beneficiary.tier === '2'){
+                    secondTier.push(beneficiary);
+                  }
+                });
+                planEnrollments.life_insurance_beneficiary = firstTier;
+                planEnrollments.life_insurance_contingent_beneficiary = secondTier;
               }
               else{
                 planEnrollments = { enrolled: false, life_insurance_beneficiary: [] };
               }
 
-              var firstTier = [];
-              var secondTier = [];
-              _.each(planEnrollments.life_insurance_beneficiary, function(beneficiary){
-                if (beneficiary.tier === '1'){
-                  firstTier.push(beneficiary);
-                }
-                if (beneficiary.tier === '2'){
-                  secondTier.push(beneficiary);
-                }
-              });
-              planEnrollments.life_insurance_beneficiary = firstTier;
-              planEnrollments.life_insurance_contingent_beneficiary = secondTier;
-
               successCallBack(planEnrollments);
+
             }, function(error){
               errorCallBack(error);
             });
@@ -1078,7 +1108,7 @@ benefitmyService.factory(
                   memberPlan.full_name = familyMember.first_name + ' ' + familyMember.last_name; 
                   memberPlan.relationship = familyMember.relationship;
                   memberPlan.insurance_amount = parseFloat(memberPlan.insurance_amount);
-                  memberPlan.last_update_date = new Date(mainPlan.updated_at).toDateString();
+                  memberPlan.last_update_date = moment(mainPlan.updated_at).format(DATE_FORMAT_STRING);
                 });
 
                 familyPlan.memberPlans = planEnrollments;
@@ -1115,6 +1145,7 @@ benefitmyService.factory(
           if (basicLifeToSave.life_insurance_beneficiary){
             _.each(basicLifeToSave.life_insurance_beneficiary, function(beneficiary){
               beneficiary.tier = "1";
+              beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
               planToSave.life_insurance_beneficiary.push(beneficiary);
             });
           }
@@ -1122,6 +1153,7 @@ benefitmyService.factory(
           if (basicLifeToSave.life_insurance_contingent_beneficiary){
             _.each(basicLifeToSave.life_insurance_contingent_beneficiary, function(beneficiary){
               beneficiary.tier = "2";
+              beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
               planToSave.life_insurance_beneficiary.push(beneficiary);
             });
           }
@@ -1129,14 +1161,26 @@ benefitmyService.factory(
           // Save basic life insurance
           if (!basicLifeToSave.enrolled) {
             CompanyUserLifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave)
-              .$promise.then(null, function(response){
-                errorCallBack(response);
-              });
+              .$promise.then(
+                function(response){
+                  if (successCallBack) {
+                    successCallBack(response);
+                  }
+                }, 
+                function(response){
+                  errorCallBack(response);
+                });
           } else {
             CompanyUserLifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave)
-              .$promise.then(null, function(response){
-                errorCallBack(response);
-              });
+              .$promise.then(
+                function(response){
+                  if (successCallBack) {
+                    successCallBack(response);
+                  }
+                }, 
+                function(response){
+                  errorCallBack(response);
+                });
           }
         }, function(error){
           errorCallBack(error);
@@ -1164,6 +1208,7 @@ benefitmyService.factory(
             if (mainPlan.life_insurance_beneficiary){
               _.each(mainPlan.life_insurance_beneficiary, function(beneficiary){
                 beneficiary.tier = "1";
+                beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
                 memberPlanToSave.life_insurance_beneficiary.push(beneficiary);
               });
             }
@@ -1171,6 +1216,7 @@ benefitmyService.factory(
             if (mainPlan.life_insurance_contingent_beneficiary){
               _.each(mainPlan.life_insurance_contingent_beneficiary, function(beneficiary){
                 beneficiary.tier = "2";
+                beneficiary.percentage = getFilteredPercentageNumber(beneficiary.percentage);
                 memberPlanToSave.life_insurance_beneficiary.push(beneficiary);
               });
             }
@@ -1214,7 +1260,8 @@ benefitmyService.factory(
         CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(function(plans){
             _.each(plans, function(plan){
-              if (plan.life_insurance_plan && plan.life_insurance_plan.insurance_type === 'Basic'){
+              if (plan.life_insurance.life_insurance_plan 
+                  && plan.life_insurance.life_insurance_plan.insurance_type === 'Basic'){
                 CompanyUserLifeInsurancePlanRepository.ById.delete({id: plan.id});
               }
             });
@@ -1238,12 +1285,81 @@ benefitmyService.factory(
   function (){
     return {
       getCompanyEmployeeSummaryExcelUrl: function(companyId) {
-        return '/api/v1/companies/' + companyId + '/users/excel';
+        return API_PREFIX + '/companies/' + companyId + '/users/excel';
+      },
+
+      getCompanyEmployeeDirectDepositExcelUrl: function(companyId) {
+        return API_PREFIX + '/companies/' + companyId + '/users/excel/direct_deposit'
       },
 
       getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl: function(companyId) {
-        return '/api/v1/companies/' + companyId + '/users/excel/life_beneficiary';
-      },
+        return API_PREFIX + '/companies/' + companyId + '/users/excel/life_beneficiary';
+      }
     }; 
   }
 ]);
+
+benefitmyService.factory(
+  'DirectDepositService',
+  ['DirectDepositRepository',
+  function(DirectDepositRepository){
+    return {
+      getDirectDepositByUserId: function(userId, successCallBack, errorCallBack){
+        DirectDepositRepository.ByEmployeeId.query({id: userId}).$promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      },
+
+      updateDirectDepositByUserId: function(directDeposit, successCallBack, errorCallBack){
+        DirectDepositRepository.UpdateById.update({id: directDeposit.id}, directDeposit).$promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      },
+
+      createDirectDepositByUserId: function(userId, directDeposit, successCallBack, errorCallBack){
+        DirectDepositRepository.ByEmployeeId.post({id: userId}, directDeposit).$promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      },
+
+      deleteDirectDepositById: function(directDeposit, successCallBack, errorCallBack){
+        DirectDepositRepository.DeleteById.delete({id: directDeposit.id}, directDeposit).$promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      },
+
+      mapViewDirectDepositToDto: function(viewDirectDeposit){
+        var dto = {
+          id: viewDirectDeposit.direct_deposit_id,
+          user: viewDirectDeposit.user, 
+          bank_account: viewDirectDeposit,
+          amount: viewDirectDeposit.amount,
+          percentage: viewDirectDeposit.percentage,
+          remainder_of_all: viewDirectDeposit.remainder_of_all
+        };
+        dto.bank_account.user = viewDirectDeposit.user;
+        return dto;
+      },
+
+      mapDtoToViewDirectDeposit: function(directDepositDto){
+        var viewDirectDepositAccounts = [];
+        _.each(directDepositDto, function(account){
+          var viewModel = account.bank_account;
+          viewModel.direct_deposit_id = account.id;
+          viewModel.amount = Number(account.amount);
+          viewModel.percentage = Number(account.percentage);
+          viewModel.remainder_of_all = account.remainder_of_all;
+          viewDirectDepositAccounts.push(viewModel);
+        });
+        return viewDirectDepositAccounts;
+      }
+    }
+  }]);

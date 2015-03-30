@@ -1,8 +1,9 @@
 var BenefitMyApp = angular.module('BenefitMyApp',[
-    'ngRoute',
     'ngResource',
+    'ui.router',
     'ui.mask',
     'ui.utils.masks',
+    'ui.bootstrap',
     'benefitmyDomainModelFactories',
     'benefitmyService',
     'benefitmyModelFactories',
@@ -21,7 +22,9 @@ underscore.factory('_', function(){
 
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
-}
+};
+
+var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
 
 BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs
@@ -31,151 +34,206 @@ BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourcePro
   $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 }]);
 
-BenefitMyApp.config(['$routeProvider',
-    function ($routeProvider) {
-        $routeProvider.
-            when('/settings', {
-                 templateUrl: '/static/partials/settings.html',
-                 controller: 'settingsController'
-             }).
-            when('/broker', {
-                 templateUrl: '/static/partials/clients.html',
-                 controller: 'clientsController'
-             }).
-            when('/broker/add_client', {
-                 templateUrl: '/static/partials/add_client.html',
-                 controller: 'addClientController'
-             }).
-            when('/broker/benefits/:clientId', {
+BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
+    function ($stateProvider, $urlRouterProvider) {
+        // For any unmatched url, redirect to state "/"
+        $urlRouterProvider.otherwise("/");    
+
+        $stateProvider.
+            state('/settings', {
+                url: "/settings?forced",
+                templateUrl: '/static/partials/settings.html',
+                controller: 'settingsController'
+            }).
+            state('/broker', {
+                url: "/broker",
+                templateUrl: '/static/partials/clients.html',
+                controller: 'clientsController'
+            }).
+            state('/broker/add_client', {
+                url: '/broker/add_client',
+                templateUrl: '/static/partials/add_client.html',
+                controller: 'addClientController'
+            }).
+            state('/broker/benefits/:clientId', {
+                url: '/broker/benefits/:clientId',
                 templateUrl: '/static/partials/view_benefits.html',
                 controller: 'benefitsController'
             }).
-            when('/broker/add_benefit/:clientId', {
+            state('/broker/add_benefit/:clientId', {
+                url: '/broker/add_benefit/:clientId',
                 templateUrl: '/static/partials/add_benefit.html',
                 controller: 'addBenefitController'
             }).
-            when('/broker/benefit/selected/:client_id', {
+            state('/broker/benefit/selected/:client_id', {
+                url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',
                 controller: 'selectedBenefitsController'
             }).
-            when('/broker/benefit/add_details/:client_id/:benefit_id', {
+            state('/broker/benefit/add_details/:client_id/:benefit_id', {
+                url: '/broker/benefit/add_details/:client_id/:benefit_id',
                 templateUrl:'/static/partials/benefit_detail_input.html',
                 controller: 'benefitInputDetailsController'
             }).
-            when('/broker/employee/:employee_id', {
+            state('/broker/employee/:employee_id', {
+                url: '/broker/employee/:employee_id?cid',
                 templateUrl: '/static/partials/employee_detail.html',
                 controller: 'brokerEmployeeController'
             }).
-            when('/', {
+            state('/', {
+                url: '/',
                 template: '',
                 controller:'findViewController'
             }).
-            when('/admin',{
+            state('/admin',{
+                url: '/admin',
                 templateUrl: '/static/partials/employer_dashboard.html',
                 controller: 'employerHome'
             }).
-            when('/admin/broker/add/:company_id', {
+            state('/admin/broker/add/:company_id', {
+                url: '/admin/broker/add/:company_id',
                 templateUrl:'/static/partials/add_broker.html',
                 controller:'employerUser'
             }).
-            when('/admin/broker/:company_id', {
+            state('/admin/broker/:company_id', {
+                url: '/admin/broker/:company_id',
                 templateUrl:'/static/partials/view_broker.html',
                 controller:'employerUser'
             }).
-            when('/admin/benefits/:company_id', {
+            state('/admin/benefits/:company_id', {
+                url: '/admin/benefits/:company_id',
                 templateUrl:'/static/partials/view_benefits.html',
                 controller:'employerBenefits'
             }).
-            when('/admin/employee/add/:company_id', {
+            state('/admin/employee/add/:company_id', {
+                url: '/admin/employee/add/:company_id',
                 templateUrl:'/static/partials/add_employee.html',
                 controller:'employerUser'
             }).
-            when('/admin/employee/:company_id', {
+            state('/admin/employee/:company_id', {
+                url: '/admin/employee/:company_id',
                 templateUrl:'/static/partials/view_employee.html',
                 controller:'employerUser'
             }).
-            when('/admin/generate_template/:company_id', {
+            state('/admin/generate_template/:company_id', {
+                url: '/admin/generate_template/:company_id?type&add',
                 templateUrl:'/static/partials/template.html',
                 controller:'employerLetterTemplate'
             }).
-            when('/admin/create_letter/:company_id/:employee_id', {
+            state('/admin/create_letter/:company_id/:employee_id', {
+                url: '/admin/create_letter/:company_id/:employee_id?type',
                 templateUrl:'/static/partials/create_letter.html',
                 controller:'employerCreateLetter'
             }).
-            when('/admin/view_letter/:company_id/:employee_id', {
+            state('/admin/view_letter/:company_id/:employee_id', {
+                url: '/admin/view_letter/:company_id/:employee_id?type',
                 templateUrl:'/static/partials/view_letter.html',
                 controller:'employerViewLetter'
             }).
-            when('/admin/view_draft/:company_id/:employee_id/:document_type_id', {
+            state('/admin/view_draft/:company_id/:employee_id/:document_type_id', {
+                url: '/admin/view_draft/:company_id/:employee_id/:document_type_id',
                 templateUrl: '/static/partials/view_draft.html',
                 controller: 'employerViewDraft'
             }).
-            when('/admin/employee_detail/:company_id', {
+            state('/admin/employee_detail/:company_id', {
+                url: '/admin/employee_detail/:company_id?eid',
                 templateUrl: '/static/partials/employee_detail.html',
                 controller: 'employerViewEmployeeDetail'
             }).
-            when('/admin/benefit/election/:company_id',{
+            state('/admin/benefit/election/:company_id',{
+                url: '/admin/benefit/election/:company_id',
                 templateUrl:'/static/partials/selected_benefits_company.html',
                 controller: 'employerBenefitsSelected'
             }).
-            when('/employee',{
+            state('/employee',{
+                url: '/employee',
                 templateUrl: '/static/partials/employee_dashboard.html',
                 controller: 'employeeHome'
             }).
-            when('/employee/benefit/:employee_id', {
-                templateUrl: '/static/partials/employee_benefits.html',
-                controller:'employeeBenefitSignup'
+            state('employee_benefit_signup', {
+                url: '/employee/benefits/:employee_id',
+                templateUrl: '/static/partials/benefit_selection/main.html',
+                controller:'employeeBenefitsSignup'
             }).
-            when('/employee/info', {
+            state('employee_benefit_signup.health', {
+                url: '/health_benefits',
+                templateUrl: '/static/partials/benefit_selection/tab_health_benefits.html',
+                controller:'healthBenefitsSignup'
+            }).
+            state('employee_benefit_signup.fsa', {
+                url: '/fsa',
+                templateUrl: '/static/partials/benefit_selection/tab_fsa.html',
+                controller:'fsaBenefitsSignup'
+            }).
+            state('employee_benefit_signup.basic_life', {
+                url: '/basic_life',
+                templateUrl: '/static/partials/benefit_selection/tab_basic_life.html',
+                controller:'basicLifeBenefitsSignup'
+            }).
+            state('employee_benefit_signup.optional_life', {
+                url: '/basic_life',
+                templateUrl: '/static/partials/benefit_selection/tab_optional_life.html',
+                controller:'optionalLifeBenefitsSignup'
+            }).
+            state('/employee/info', {
+                url: '/employee/info?type',
                 templateUrl: '/static/partials/employee_profile.html',
                 controller: 'employeeInfoController'
             }).
-            when('/employee/info/edit', {
+            state('/employee/info/edit', {
+                url: '/employee/info/edit?type',
                 templateUrl: '/static/partials/employee_profile_edit.html',
                 controller: 'employeeInfoController'
             }).
-            when('/employee/family/:employee_id', {
+            state('/employee/family/:employee_id', {
+                url: '/employee/family/:employee_id',
                 templateUrl: '/static/partials/employee_family.html',
                 controller: 'employeeFamily'
             }).
-            when('/employee/signup/:signup_number', {
+            state('/employee/signup/:signup_number', {
+                url: '/employee/signup/:signup_number',
                 templateUrl: '/static/partials/employee_signup.html',
                 controller: 'employeeSignup'
             }).
-            when('/employee/add_family/:employee_id', {
+            state('/employee/add_family/:employee_id', {
+                url: '/employee/add_family/:employee_id',
                 templateUrl: '/static/partials/add_family.html',
                 controller: 'addFamily'
             }).
-            when('/employee/document/:doc_id', {
+            state('/employee/document/:doc_id', {
+                url: '/employee/document/:doc_id',
                 templateUrl: '/static/partials/employee_view_document.html',
                 controller: 'viewDocument'
             }).
-            when('/employee/sign_letter/:employee_id', {
+            state('/employee/sign_letter/:employee_id', {
+                url: '/employee/sign_letter/:employee_id?letter_type',
                 templateUrl: '/static/partials/employee_onboard/employee_view_letter.html',
                 controller: 'employeeAcceptDocument'
             }).
-            when('/employee/onboard/index/:employee_id', {
+            state('/employee/direct_deposit?edit', {
+                url: '/employee/direct_deposit',
+                templateUrl: '/static/partials/employee_direct_deposit.html',
+                controller: 'employeeDirectDepositController'
+            }).
+            state('/employee/onboard/index/:employee_id', {
+                url: '/employee/onboard/index/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/index.html',
                 controller: 'onboardIndex'
             }).
-            when('/employee/onboard/employment/:employee_id', {
+            state('/employee/onboard/employment/:employee_id', {
+                url: '/employee/onboard/employment/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/employment.html',
                 controller: 'onboardEmployment'
             }).
-            when('/employee/onboard/tax/:employee_id', {
+            state('/employee/onboard/tax/:employee_id', {
+                url: '/employee/onboard/tax/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/tax.html',
                 controller: 'onboardTax'
             }).
-            when('/employee/onboard/complete/:employee_id', {
+            state('/employee/onboard/complete/:employee_id', {
+                url: '/employee/onboard/complete/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/complete.html',
                 controller: 'onboardComplete'
-            }).
-            otherwise({
-                redirectTo:'/'
             });
      }
  ]);
-
-String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-}

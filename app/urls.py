@@ -71,6 +71,7 @@ from app.views.fsa_view import FSAView
 
 from app.views.company_user_summary_view import (
     CompanyUsersSummaryExcelExportView,
+    CompanyUsersDirectDepositExcelExportView,
     CompanyUsersLifeInsuranceBeneficiaryExcelExportView) 
 
 
@@ -95,7 +96,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/(?P<pk>\w+)/company_roles/?$' % PREFIX, UserCompanyRolesView.as_view(), name='user_company_api'),
     url(r'^%s/users/(?P<pk>\w+)/waived_benefits/?$' % PREFIX, UserCompanyWaivedBenefitView.as_view(), name='user_waived_benefit_api'),
     url(r'^%s/companies/(?P<pk>\w+)/waived_benefits/?$' % PREFIX, CompanyWaivedBenefitView.as_view(), name='company_waived_benefit_api'),
-    url(r'^%s/users/(?P<pk>\w+)/w4/?$' % PREFIX, W4View.as_view()),
+    url(r'^%s/users/(?P<pk>\w+)/w4/?$' % PREFIX, W4View.as_view(), name='w4_api'),
     url(r'^%s/users/(?P<pk>\w+)/employment_authorization/?$' % PREFIX,
         EmploymentAuthorizationView.as_view()),
     url(r'^%s/users/(?P<pk>\w+)/signature/?$' % PREFIX, SignatureView.as_view()),
@@ -120,6 +121,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/broker_company_count/(?P<pk>\w+)/?$' % PREFIX, BrokerCompanyCountView.as_view(), name='broker_company_count'),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/?$' % PREFIX, CompanyUsersSummaryExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/life_beneficiary?$' % PREFIX, CompanyUsersLifeInsuranceBeneficiaryExcelExportView.as_view()),
+    url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view()),
 
     url(r'^%s/documents/companies/(?P<pk>\w+)/users/(?P<pd>\w+)/?$' % PREFIX,
         CompanyUserDocumentView.as_view()),

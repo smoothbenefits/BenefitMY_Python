@@ -5,7 +5,7 @@
 <div class="content-header">
     <h1>My Benefits</h1>
     <span class="general-info">You have total <b>{{benefitCount}}</b> benefits</span>
-    <div class="cta"><a href="#/employee/benefit/{{employee_id}}" class="btn green" >Modify Benefits</a></div>
+    <div class="cta"><a href="#/employee/benefits/{{employee_id}}" class="btn green" >Modify Benefits</a></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
@@ -14,7 +14,7 @@
         <div class="table-sub-title">
             Selected Benefits
         </div>
-        <table class="table-striped">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th><span>Benefit Name</span></th>
@@ -48,7 +48,7 @@
     </div>
     <div class="table-responsive table-holder table" ng-if="waivedBenefits.length>0">
         <div class="table-sub-title">Waived Benefits</div>
-        <table class="table-striped">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th><span>Benefit Type Name</span></th>
@@ -107,7 +107,7 @@
         </table>
     </div>
     <div class="table-responsive table-holder">
-        <table class="table table-striped" ng-show="!basicLifeInsurancePlan">
+        <table class="table table-striped" ng-show="!basicLifeInsurancePlan.enrolled">
             <thead>
                 <tr>
                     <th width="180"><span>Basic Life Insurance</span></th>
@@ -119,7 +119,8 @@
                 </tr>
             </tbody>    
         </table>
-        <table class="table table-striped" ng-show="basicLifeInsurancePlan">
+        <div class="table-sub-title" ng-show="basicLifeInsurancePlan.enrolled">Basic Life Insurance</div>
+        <table class="table table-striped" ng-show="basicLifeInsurancePlan.enrolled">
             <thead>
                 <tr>
                     <th width="180"><span>Plan Name</span></th>
@@ -162,6 +163,32 @@
                 <tr>
                     <td>Dependent Care Account</td>
                     <td>${{fsaElection.dependent_amount_per_year}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div><!-- / .content-body -->
+
+<div class="content-header">
+    <h1>My Payroll</h1>
+    <span class="general-info">View/edit your payroll information here</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="table-responsive table-holder table">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Payroll Information</span></th>
+                    <th><span>Action</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Direct deposit</td>
+                    <td>
+                        <a class="btn inline" ng-click="ViewDirectDeposit(false)"> View</a>
+                    </td>
                 </tr>
             </tbody>
         </table>
