@@ -36,6 +36,19 @@
     },
     "model": "app.userbankaccount",
     "pk": 3
+  },
+
+  {
+    "fields": {
+      "user": 2,
+      "routing": "4324234",
+      "account": "5653547665653",
+      "account_type": "Saving",
+      "bank_name": "Santander bank",
+      "attachment": "s3://54654654fdsafdsaf"
+    },
+    "model": "app.userbankaccount",
+    "pk": 4
   }
 
 

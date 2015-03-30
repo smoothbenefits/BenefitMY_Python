@@ -3,7 +3,7 @@ var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]
 var employeeHome = employeeControllers.controller('employeeHome',
     ['$scope',
      '$location',
-     '$routeParams',
+     '$stateParams',
      'clientListRepository',
      'employeeBenefits',
      'currentUser',
@@ -14,7 +14,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'LifeInsuranceService',
   function employeeHome($scope,
                         $location,
-                        $routeParams,
+                        $stateParams,
                         clientListRepository,
                         employeeBenefits,
                         currentUser,
@@ -126,7 +126,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
       LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
         $scope.basicLifeInsurancePlan = response;
-        $scope.basicLifeInsurancePlan.life_insurance.last_update_date = moment(response.life_insurance.updated_at).format('l');
       });
     });
 
@@ -135,14 +134,742 @@ var employeeHome = employeeControllers.controller('employeeHome',
           || (!employeeFamilyLifeInsurancePlan.mainPlan)
           || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
       };
+
+     $scope.ViewDirectDeposit = function(editMode){
+      $location.path('/employee/direct_deposit').search('edit', editMode);
+     };
   }
 ]);
 
-var employeeBenefitSignup = employeeControllers.controller(
-  'employeeBenefitSignup',
+var addFamily = employeeControllers.controller('addFamily', 
+ ['$scope', 
+  '$location', 
+  '$stateParams', 
+  'personInfoService',
+  function addFamily(
+    $scope, 
+    $location, 
+    $stateParams, 
+    personInfoService){
+
+  var employeeId = $stateParams.employee_id;
+  $scope.employeeId = employeeId;
+  $scope.person = {person_type:'family'};
+  personInfoService.getPersonInfo(employeeId, function(retrievedInfo){
+    if(retrievedInfo){
+      $scope.person.address = retrievedInfo.address;
+      $scope.person.phone = retrievedInfo.phone;
+    }
+  });
+
+
+  $scope.addMember = function(){
+    personInfoService.savePersonInfo(employeeId, $scope.person, function(successResponse){
+      $location.path('/employee/benefits/' + employeeId);
+    }, function(errorResponse){
+          alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
+    });
+  }
+}]);
+
+
+var viewDocument = employeeControllers.controller('viewDocument',
+  ['$scope', '$location', '$stateParams', 'userDocument', 'currentUser', 'documentRepository',
+  function viewDocument($scope, $location, $stateParams, userDocument, currentUser, documentRepository){
+    $scope.document = {};
+    var documentId = $stateParams.doc_id;
+    var signatureUpdated = false;
+    $scope.signatureCreatedDate = moment().format(DATE_FORMAT_STRING);
+    var userPromise = currentUser.get().$promise
+      .then(function(response){
+        $scope.employee_id = response.user.id;
+        return response.user.id;
+      });
+
+    var documentPromise = userPromise.then(function(userId){
+      var document = userDocument.query({userId:userId}).$promise
+        .then(function(response){
+          return _.find(response, function(d)
+          {
+            return d.id.toString() === documentId;
+          });
+        });
+      return document;
+    });
+
+    documentPromise.then(function(document){
+      $scope.document = document;
+      if(document.signature && document.signature.signature)
+      {
+        var signature = document.signature.signature;
+        var separator = '<?xml';
+        var sigComponents = signature.split(separator);
+        $scope.signatureImage = sigComponents[0] + encodeURIComponent(separator + sigComponents[1]);
+        $scope.signaturePresent = true;
+        $scope.signatureCreatedDate = moment(document.signature.created_at).format(DATE_FORMAT_STRING);
+      }
+    });
+
+    var $sigdiv = $("#doc_signature");
+    if(_.isUndefined($sigdiv))
+    {
+      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
+    }
+    $sigdiv.jSignature();
+    $sigdiv.bind('change', function(e){
+     signatureUpdated = true;
+    });
+    $scope.clearSignature = function(){
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
+    };
+    $scope.signDocument = function(){
+      if(!signatureUpdated){
+        alert('Please sign your name on the signature pad');
+      }
+      else
+      {
+        var signatureData = $sigdiv.jSignature('getData', 'svg');
+        var signaturePayload = "data:" + signatureData[0] + ',' + signatureData[1];
+        documentRepository.sign.save({id:$scope.document.id}, {'signature':signaturePayload, 'signature_type': 'doc_sign'}, function(successResponse){
+          $scope.signatureSaved = true;
+          $scope.signatureImage = successResponse.signature.signature;
+        }, function(failureResponse){
+          $scope.signatureSaveFailed = true;
+        });
+      }
+    };
+    $scope.goToDashboard = function()
+    {
+      $location.path('/employee');
+    };
+}]);
+
+var employeeInfo = employeeControllers.controller('employeeInfoController',
+  ['$scope', '$location', '$stateParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
+  function($scope, $location, $stateParams, profileSettings, currentUser, employmentAuthRepository, employeeTaxRepository){
+    var infoObject = _.findWhere(profileSettings, { name: $stateParams.type });
+    $scope.info = { type: $stateParams.type, type_display: infoObject.display_name };
+    $scope.person = { role: 'Employee' };
+
+    if ($stateParams.type === 'i9'){
+      $scope.isUpdateW4 = false;
+      $scope.isUpdateI9 = true;
+    }
+
+    if ($stateParams.type === 'w4'){
+      $scope.isUpdateW4 = true;
+      $scope.isUpdateI9 = false;
+    }
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      $scope.person.first_name = response.user.first_name;
+      $scope.person.last_name = response.user.last_name;
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      if ($scope.info.type === 'i9'){
+        employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
+          $scope.info.fields = convertResponse(response, $scope.info.type);
+        });
+      } else if ($scope.info.type === 'w4'){
+        employeeTaxRepository.get({userId: userId}).$promise.then(function(response){
+          $scope.info.fields = convertResponse(response, $scope.info.type);
+        });
+      }
+
+    });
+
+    var convertResponse = function(res, type){
+      var pairs = _.pairs(res);
+      var validFields = _.findWhere(profileSettings, {name: type}).valid_fields;
+      var output = [];
+      _.each(pairs, function(pair){
+        var key = pair[0];
+        var inSetting = _.findWhere(validFields, {name: key});
+        if (inSetting){
+          if (inSetting.datamap){
+            var value = pair[1];
+            var mappedValue = _.find(inSetting.datamap, function(map){
+              return map[0] === value.toString();
+            });
+            if (!mappedValue){
+              inSetting.value = 'UNKNOWN';
+            } else{
+              inSetting.value = mappedValue[1];
+            }
+          } else{
+            inSetting.value = pair[1];
+          }
+          output.push(inSetting);
+        }
+      });
+
+      return output;
+    }
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    };
+
+    $scope.editW4 = function(){
+      $location.path('/employee/info/edit').search('type', 'w4');
+    };
+
+    $scope.editI9 = function(){
+      $location.path('/employee/info/edit').search('type', 'i9');
+    };
+  }]);
+
+var directDeposit = employeeControllers.controller('employeeDirectDepositController',
   ['$scope',
+   '$state', 
+   '$stateParams',
    '$location',
-   '$routeParams',
+   'currentUser',
+   'DirectDepositService',
+   function($scope,
+            $state,  
+            $stateParams,
+            $location,
+            currentUser,
+            DirectDepositService){
+    var existingDirectDepositAccountIds = [];
+    $scope.editMode = $stateParams.edit;
+    $scope.directDepositAccounts = [];
+    $scope.bankAccountTypes = ['Checking', 'Saving'];
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    };
+
+    $scope.removeBankAccount = function(account){
+      var index = $scope.newDirectDepositAccounts.indexOf(account);
+      $scope.newDirectDepositAccounts.splice(index, 1);
+    };
+
+    $scope.editDirectDeposit = function(account){
+      account.inEditMode = true;
+    };
+
+    $scope.exitEditMode = function(account){
+      account.inEditMode = false;
+    };
+
+    $scope.viewExistingDirectDepositAccounts = function(){
+      $scope.addingNewAccount = false;
+      $scope.newDirectDepositAccounts = [];
+    };
+
+    $scope.addBankAccount = function(){
+      $scope.newDirectDepositAccounts.push({ account_type: $scope.bankAccountTypes[0]});
+    };
+
+    $scope.addNewDirectDepositAccount = function(){
+      $scope.addingNewAccount = true;
+      $scope.newDirectDepositAccounts = [];
+      $scope.newDirectDepositAccounts.push({account_type: $scope.bankAccountTypes[0]});
+    };
+
+    $scope.deleteDirectDeposit = function(account){
+
+      var confirmed = confirm('About to delete a direct deposit account. Are you sure?');
+      if (confirmed === true){
+        var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
+        DirectDepositService.deleteDirectDepositById(directDeposit, function(response){
+          getDirectDeposit(account.user);
+        }, function(error){
+          alert('Failed to delete direct deposit account. Please try again later.');
+        });
+      }
+    };
+
+    $scope.updateDirectDeposit = function(account){
+      var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
+      DirectDepositService.updateDirectDepositByUserId(directDeposit, function(response){
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+      }, function(error){
+        alert('Failed to update direct deposit account. Please try again later.');
+      });
+    };
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      $scope.person = response.user;
+      $scope.person.role = 'Employee';
+      return response.user.id;
+    });
+
+    var getDirectDeposit = function(userId){
+      DirectDepositService.getDirectDepositByUserId(userId, function(response){
+        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDeposit(response);
+        if (response.length === 0){
+          $scope.hasDirectDeposit = false;
+          $scope.directDepositAccounts.push({ account_type: $scope.bankAccountTypes[0], inEditMode: false });
+        }
+        else {
+          $scope.hasDirectDeposit = true;
+          existingDirectDepositAccountIds = _.map($scope.directDepositAccounts, function(account){
+            return account.id;
+          });
+
+          _.each($scope.directDepositAccounts, function(account){
+            account.inEditMode = false;
+          });
+        }
+      });
+    };
+
+    $scope.resetAmountAndPercent = function(account){
+      if(account.remainder_of_all){
+        account.amount = 0;
+        account.percentage = 0;
+      }
+      return account.remainder_of_all;
+    };
+
+    userPromise.then(function(userId){
+      getDirectDeposit(userId);
+    });
+
+    $scope.submitDirectDeposit = function(){
+      var directDepositDtos = [];
+      // Map direct deposit domain model to DTO, one by one
+      _.each($scope.newDirectDepositAccounts, function(account){
+        account.user = $scope.person.id;
+        var dto = DirectDepositService.mapViewDirectDepositToDto(account);
+        directDepositDtos.push(dto);
+      });
+
+      DirectDepositService.createDirectDepositByUserId($scope.person.id, directDepositDtos, function(response){
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+      }, function(error){
+        alert('Failed to create direct deposit record due to ' + error);
+      });
+    };
+  }]);
+
+var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$stateParams', function($scope, $stateParams){
+  $scope.employee = {};
+  $scope.employee.id = $stateParams.employee_id;
+  $scope.employee.username = '';
+  $scope.employee.password = '';
+
+  $scope.submit = function(employee) {
+    // Need to add actions to validate sign in credentials
+    return false;
+  }
+}]);
+
+var signup = employeeControllers.controller('employeeSignup', ['$scope', '$stateParams', '$location',
+  function($scope, $stateParams, $location){
+    $scope.employee = {};
+    $scope.employee.id = $stateParams.signup_number;
+
+    $scope.submit = function(employee) {
+      if($scope.employee.password !== $scope.employee.password_confirm)
+      {
+        alert('The passwords do not match. Please input your passwords again!');
+      }
+      else
+      {
+        // Need to communicate with API to register the new employee
+        $location.path('/employee/signin/' + $scope.employee.id);
+      }
+    }
+}]);
+
+var onboardIndex = employeeControllers.controller('onboardIndex',
+  ['$scope', '$stateParams', '$location', 'personInfoService', 'currentUser', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, personInfoService, currentUser, EmployeePreDashboardValidationService){
+
+    $scope.employee = {};
+    $scope.employeeId = $stateParams.employee_id;
+    $scope.displayAll = false;
+
+
+    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
+      $location.path('/employee');
+    },
+    function(redirectUrl){
+      if($location.path() !== redirectUrl){
+        $location.path(redirectUrl);
+      }
+      else{
+        $scope.displayAll = true;
+      }
+    });
+
+    $('body').addClass('onboarding-page');
+
+    $scope.addBasicInfo = function(){
+      var birthDate = $scope.employee.birth_date;
+      $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');
+      personInfoService.savePersonInfo($scope.employeeId, $scope.employee, function(successResponse){
+        $location.path('/employee/onboard/employment/' + $scope.employeeId);
+      }, function(errorResponse){
+          alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
+      });
+    };
+}]);
+
+var onboardEmployment = employeeControllers.controller('onboardEmployment',
+  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
+    $scope.employee = {
+      auth_type: ''
+    };
+    $scope.employeeId = $stateParams.employee_id;
+
+    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
+      $location.path('/employee');
+    },
+    function(redirectUrl){
+      if($location.path() !== redirectUrl){
+        $location.path(redirectUrl);
+      }
+      else{
+        $scope.displayAll = true;
+      }
+    });
+
+    $('body').addClass('onboarding-page');
+    var mapContract = function(viewObject, signature){
+      var contract = {
+        'worker_type': viewObject.auth_type,
+        'uscis_number': viewObject.authNumber,
+        'i_94': viewObject.I94Id,
+        'passport': viewObject.passportId,
+        'country': viewObject.passportCountry,
+        'signature': {
+          'signature': signature,
+          'signature_type': 'work_auth'
+        }
+      };
+
+      if (viewObject.auth_expiration){
+        contract.expiration_date = moment(viewObject.auth_expiration).format('YYYY-MM-DD');
+      }
+
+      return contract;
+    };
+
+    var signatureUpdated = false;
+    var $sigdiv = $("#auth_signature");
+    if(_.isUndefined($sigdiv))
+    {
+      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
+    }
+    $sigdiv.jSignature();
+    $sigdiv.bind('change', function(e){
+     signatureUpdated = true;
+    });
+    $scope.clearSignature = function(){
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
+    };
+
+    $scope.acknowledgedI9=function(){
+      $scope.employee.downloadI9 = !$scope.employee.downloadI9;
+    };
+
+    $scope.signDocument = function(redirectUrl){
+      if(!signatureUpdated){
+        alert('Please sign your name on the signature pad');
+      }
+      else if(!$scope.employee.downloadI9){
+        alert('Please download the I-9 document and acknowledge you have read the entire form above.');
+      }
+      else
+      {
+        var signatureData = $sigdiv.jSignature('getData', 'svg');
+        $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
+        var contract = mapContract($scope.employee, $scope.signatureImage);
+        employmentAuthRepository.save({userId: $scope.employeeId}, contract,
+          function(){
+            $location.path('/employee/onboard/tax/' + $scope.employeeId);
+          }, function(){
+            alert('Failed to add employment information');
+          });
+      }
+    };
+}]);
+
+var onboardTax = employeeControllers.controller('onboardTax',
+  ['$scope', '$stateParams', '$location','employeeTaxRepository', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, employeeTaxRepository, EmployeePreDashboardValidationService){
+    $scope.employee = {};
+    $scope.employeeId = $stateParams.employee_id;
+
+    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
+      $location.path('/employee');
+    },
+    function(redirectUrl){
+      if($location.path() !== redirectUrl){
+        $location.path(redirectUrl);
+      }
+      else{
+        $scope.displayAll = true;
+      }
+    });
+
+    $('body').addClass('onboarding-page');
+    $scope.employee.withholdingType = 'single';
+    $scope.employee.headOfHousehold = 0;
+    $scope.employee.childExpense = 0;
+
+    var getMarriageNumber = function(){
+      if($scope.employee.withholdingType ==='married'){
+        return 2;
+      }
+      else{
+        return 1;
+      }
+    };
+
+    $scope.calculateTotal = function(){
+      var total = getMarriageNumber();
+      total += $scope.employee.dependent_count;
+      if($scope.employee.childExpense && total){
+        total += parseInt($scope.employee.childExpense);
+      }
+      if($scope.employee.headOfHousehold && total){
+        total += parseInt($scope.employee.headOfHousehold);
+      }
+      if(!total)
+      {
+        total = undefined;
+      }
+      $scope.employee.calculated_points = total;
+      if(!$scope.employee.user_defined_set){
+        $scope.employee.user_defined_points = $scope.employee.calculated_points;
+      }
+    };
+
+    $scope.userDefinedPointsSet = function(){
+      $scope.employee.user_defined_set = true;
+    };
+
+    $scope.acknowledgeW4 = function(){
+      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    };
+
+    $scope.submit=function(){
+      if(!$scope.employee.downloadW4){
+        alert('Please verify you have downloaded and read the entire W-4 form');
+        return;
+      }
+      if(typeof($scope.employee.dependent_count) === 'undefined'){
+        alert('Please enter the number of dependents');
+        return;
+      }
+      if(typeof($scope.employee.user_defined_points) === 'undefined'){
+        alert('Please enter the final withholding number (line 5 on your W-4)');
+        return;
+      }
+      if(typeof($scope.employee.extra_amount) === 'undefined'){
+        alert('Please enter the extra amount of your paycheck to withhold (Line 6 on your W-4)');
+        return;
+      }
+      var empAuth = {
+        marriage: getMarriageNumber(),
+        dependencies: $scope.employee.dependent_count,
+        head: $scope.employee.headOfHousehold,
+        tax_credit: $scope.employee.childExpense,
+        calculated_points: $scope.employee.calculated_points,
+        user_defined_points: $scope.employee.user_defined_points,
+        extra_amount: $scope.employee.extra_amount
+      };
+      employeeTaxRepository.save({userId:$scope.employeeId}, empAuth,
+        function(response){
+          $location.path('/employee/onboard/complete/'+$scope.employeeId);
+        });
+    };
+}]);
+
+var onboardComplete = employeeControllers.controller('onboardComplete',
+  ['$scope', '$stateParams', '$location', 'employeeSignature', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, employeeSignature, EmployeePreDashboardValidationService){
+    $scope.employee = {};
+    $scope.employeeId = $stateParams.employee_id;
+
+    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
+      $location.path('/employee');
+    },
+    function(redirectUrl){
+      if($location.path() !== redirectUrl){
+        $location.path(redirectUrl);
+      }
+      else{
+        $scope.displayAll = true;
+      }
+    });
+
+    $('body').addClass('onboarding-page');
+    var signatureUpdated = false;
+    var $sigdiv = $("#term_signature");
+    if(_.isUndefined($sigdiv))
+    {
+      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
+    }
+    $sigdiv.jSignature();
+    $sigdiv.bind('change', function(e){
+     signatureUpdated = true;
+    });
+    $scope.clearSignature = function(){
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
+    };
+    $scope.submit=function(){
+      if(!signatureUpdated){
+        alert('Please sign your name on the signature pad');
+      }
+      else{
+        var signatureData = $sigdiv.jSignature('getData', 'svg');
+        $scope.termSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
+        var contract = {
+          'signature': $scope.termSignatureData,
+          'signature_type': 'final'
+        };
+        employeeSignature.save({userId: $scope.employeeId}, contract,
+          function(){
+            $location.path('/employee');
+          }, function(){
+            alert('Failed to submit signature');
+          });
+      }
+    }
+}]);
+
+var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocument',
+  ['$scope', '$stateParams', '$location', 'documentRepository', 'EmployeeLetterSignatureValidationService',
+  function($scope, $stateParams, $location, documentRepository, EmployeeLetterSignatureValidationService){
+    $scope.employeeId = $stateParams.employee_id;
+    var letterType = $location.search().letter_type;
+    if(!letterType){
+      letterType = 'Offer Letter';
+    }
+
+    var goToOnboarding = function(employeeId){
+      $location.path('/employee/onboard/index/' + employeeId);
+    };
+
+    EmployeeLetterSignatureValidationService($scope.employeeId, letterType, function(){
+      goToOnboarding($scope.employeeId);
+    }, function(){
+      $scope.displayAll = true;
+    })
+    documentRepository.byUser.query({userId:$scope.employeeId})
+      .$promise.then(function(response){
+        $scope.curLetter = _.find(response, function(letter){
+          return letter.document_type.name === letterType;
+        });
+      });
+
+    $('body').addClass('onboarding-page');
+    var signatureUpdated = false;
+    var $sigdiv = $('#letter_signature');
+    if(_.isUndefined($sigdiv))
+    {
+      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
+    }
+    $sigdiv.jSignature();
+    $sigdiv.bind('change', function(e){
+     signatureUpdated = true;
+    });
+
+    $scope.clearSignature = function(){
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
+    };
+
+    $scope.submit = function(){
+
+      if(!signatureUpdated){
+        alert('Please sign your name on the signature pad');
+      }
+      else{
+        var signatureData = $sigdiv.jSignature('getData', 'svg');
+        $scope.letterSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
+        var contract = {
+          'signature': $scope.letterSignatureData,
+          'signature_type': 'doc_sign'
+        };
+        documentRepository.sign.save({id:$scope.curLetter.id}, contract,
+         function(){
+           goToOnboarding($scope.employeeId);
+         },
+         function(err){
+          alert('The signature has not been accepted. The reason is: ' + JSON.stringify(err.data));
+         });
+      }
+    };
+  }]);
+
+var employeeBenefitsSignup = employeeControllers.controller(
+  'employeeBenefitsSignup',
+  ['$scope',
+   '$state',
+   '$stateParams',
+    function employeeBenefitsSignup(
+      $scope,
+      $state,
+      $stateParams){
+
+      var employeeId = $stateParams.employee_id;
+
+      $scope.tabs = [];
+      $scope.tabs.push({
+            "heading": "Health Benefits",
+            "active": true,
+            "state":"employee_benefit_signup.health"
+        });
+      $scope.tabs.push({
+            "heading": "Basic Life",
+            "active": false,
+            "state":"employee_benefit_signup.basic_life"
+        });
+
+      if ($scope.supplementalLifeInsuranceEnabled) {
+        $scope.tabs.push({
+              "heading": "Optional Life",
+              "active": false,
+              "state":"employee_benefit_signup.optional_life"
+          });
+      }
+
+      $scope.tabs.push({
+            "heading": "FSA",
+            "active": false,
+            "state":"employee_benefit_signup.fsa"
+        });
+
+      $scope.go_to_state = function(state) {
+        $state.go(state);
+      };
+
+      $scope.addMember = function(){
+        $state.go('/employee/add_family/:employee_id', { employee_id:employeeId });
+      };
+
+    }]);
+
+var healthBenefitsSignup = employeeControllers.controller(
+  'healthBenefitsSignup',
+  ['$scope',
+   '$state',
+   '$location',
+   '$stateParams',
+   '$controller',
+   '$modal',
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
@@ -150,10 +877,13 @@ var employeeBenefitSignup = employeeControllers.controller(
    'benefitDisplayService',
    'FsaService',
    'LifeInsuranceService',
-    function employeeBenefitController(
+    function healthBenefitsSignup(
       $scope,
+      $state,
       $location,
-      $routeParams,
+      $stateParams,
+      $controller,
+      $modal,
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
@@ -162,36 +892,19 @@ var employeeBenefitSignup = employeeControllers.controller(
       FsaService,
       LifeInsuranceService){
 
+        // Inherite scope from base 
+        $controller('benefitsSignupControllerBase', {$scope: $scope});
+
         var medicalPlans = [];
         var dentalPlans = [];
         var visionPlans = [];
-        var employeeId = $routeParams.employee_id;
+        var employeeId = $stateParams.employee_id;
         var companyId;
         $scope.employee_id = employeeId;
         $scope.availablePlans = [];
         $scope.family = [];
         $scope.selectedBenefits =[];
         $scope.selectedBenefitHashmap = {};
-
-        // FSA election data
-        $scope.fsaUpdateReasons = [
-          { text: '<Not making updates>', value: 0 },
-          { text: 'New Enrollment or annual enrollment changes', value: 1 },
-          { text: 'Dependent care cost provider changes', value: 2 },
-          { text: 'Dependent satisfies or ceases to satisfy dependent eligibility requirements', value: 3 },
-          { text: 'Birth/Death of spouse or dependent, adoption or placement for adoption', value: 4 },
-          { text: 'Spouse\'s employment commenced/terminated', value: 5 },
-          { text: 'Status change from full-time to part-time or vice versa by employee or spouse', value: 6 },
-          { text: 'Eligibility or Ineligibility of Medicare/Medicaid', value: 7 },
-          { text: 'Change from salaried to hourly or vice versa', value: 8 },
-          { text: 'Marriage/Divorce/Legal Separation', value: 9 },
-          { text: 'Unpaid leave of absence by employee or spouse', value: 10 },
-          { text: 'Return from unpaid leave of absence by employee or spouse', value: 11 }
-        ];
-        $scope.selectedFsaUpdateReason = $scope.fsaUpdateReasons[0];
-        FsaService.getFsaElectionForUser(employeeId, function(response) {
-          $scope.fsaElection = response;
-        });
 
         employeeFamily.get({userId:employeeId}).$promise.then(function(response){
           _.each(response.family, function(member){
@@ -269,6 +982,7 @@ var employeeBenefitSignup = employeeControllers.controller(
             $scope.nonMedicalBenefitArray = nonMedicalArray;
           });
 
+          //First get all the enrolled benefit list
           employeeBenefits.enroll().get({userId:employeeId, companyId:companyId})
             .$promise.then(function(response){
               $scope.selectedBenefits = response.benefits;
@@ -287,104 +1001,86 @@ var employeeBenefitSignup = employeeControllers.controller(
                 })
               });
 
-              benefitListRepository.get({clientId:companyId}).$promise.then(function(response){
-                _.each(response.benefits, function(availBenefit){
-                  var benefitFamilyPlan = { 'benefit': availBenefit};
-                  var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
-                    return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
-                  }));
+              //Then get all the waived list
+              employeeBenefits.waive().query({userId:employeeId})
+                .$promise.then(function(response){
+                  $scope.waivedBenefits = _.filter(response, function(waived){
+                    return waived.company.id == companyId;
+                  });
 
-                  benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
-                  var benefitType = availBenefit.benefit_plan.benefit_type.name;
-                  var curTypePlan = _.find($scope.availablePlans, function(plans){
-                    var hit = _.find(plans.benefitList, function(benefit){
-                      return benefit.benefit.benefit_plan.benefit_type.name == benefitType;
-                    });
-                    if (hit){
-                      return true;
-                    }
-                    return false;
-                  })
-                  if(!curTypePlan)
-                  {
-                    curTypePlan = {type:availBenefit.benefit_type, benefitList:[], selected:{}};
 
-                    var waiveOption = {
-                                        benefit: {
-                                          benefit_plan: {
-                                            name: 'Waive',
-                                            employee_cost_per_period: 0,
-                                            benefit_type: {
-                                              name: availBenefit.benefit_type
+                  //Then get all the benefits associated with the company
+                  benefitListRepository.get({clientId:companyId}).$promise.then(function(response){
+                    _.each(response.benefits, function(availBenefit){
+                      var benefitFamilyPlan = { 'benefit': availBenefit};
+                      var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
+                        return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
+                      }));
+
+                      benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
+                      var benefitType = availBenefit.benefit_plan.benefit_type.name;
+                      var curTypePlan = _.find($scope.availablePlans, function(plans){
+                        var hit = _.find(plans.benefitList, function(benefit){
+                          return benefit.benefit.benefit_plan.benefit_type.name == benefitType;
+                        });
+                        if (hit){
+                          return true;
+                        }
+                        return false;
+                      })
+                      if(!curTypePlan)
+                      {
+                        curTypePlan = {type:availBenefit.benefit_plan.benefit_type, benefitList:[]};
+
+                        var waiveOption = {
+                                            benefit: {
+                                              id:-1,
+                                              benefit_plan: {
+                                                name: 'Waive',
+                                                employee_cost_per_period: 0,
+                                                benefit_type: {
+                                                  name: availBenefit.benefit_type
+                                                }
+                                              },
+                                              employee_cost_per_period: 0,
+                                              benefit_option_type: 'all'
                                             }
-                                          },
-                                          employee_cost_per_period: 0,
-                                          benefit_option_type: 'all'
-                                        }
-                                      };
-                    curTypePlan.benefitList.push(waiveOption);
-                    $scope.availablePlans.push(curTypePlan);
-                  }
-                  curTypePlan.benefitList.push(benefitFamilyPlan);
-                  curTypePlan.benefit_type = benefitType;
-                });
-                _.each($scope.availablePlans, function(typedPlan){
-                  _.each(typedPlan.benefitList, function(curBenefit){
-                    var retrievedBenefit = $scope.selectedBenefitHashmap[curBenefit.benefit.id];
-                    if(retrievedBenefit)
-                    {
-                      typedPlan.selected = curBenefit;
-                      typedPlan.selected.pcp = retrievedBenefit.pcp;
-                    }
+                                          };
+                        curTypePlan.benefitList.push(waiveOption);
+                        $scope.availablePlans.push(curTypePlan);
+                      }
+                      curTypePlan.benefitList.push(benefitFamilyPlan);
+                      curTypePlan.benefit_type = benefitType;
+                    });
+
+                    //Now match the selected with the actual benefit plan(medical, dental, vision)
+                    _.each($scope.availablePlans, function(typedPlan){
+                      _.each(typedPlan.benefitList, function(curBenefit){
+                        var retrievedBenefit = $scope.selectedBenefitHashmap[curBenefit.benefit.id];
+                        if(retrievedBenefit){
+                          typedPlan.selected = curBenefit;
+                          typedPlan.selected.pcp = retrievedBenefit.pcp;
+                        }
+                      });
+                      if(!typedPlan.selected){
+                        //Now, we cannot find a selected benefit plan. 
+                        //check if it is waived.
+                        var waivedBenefitOfType = _.find($scope.waivedBenefits, function(waived){
+                          return waived.benefit_type.id == typedPlan.type.id;
+                        });
+                        if(waivedBenefitOfType){
+                          typedPlan.selected = _.find(typedPlan.benefitList, function(benefitMember){
+                            return benefitMember.benefit.id == -1;
+                          });
+                          typedPlan.selected.benefit.reason = waivedBenefitOfType.reason;
+                        }
+                      
+                      }
+                    });
                   });
                 });
-              });
           });
         });
-
-        // Life Insurance 
-        $scope.lifeInsurancePlans = [ { text: '<Waive Life Insurance>', value: '0' } ];
-        $scope.selectedLifeInsurancePlan = $scope.lifeInsurancePlans[0];
-
-        companyIdPromise.then(function(companyId){
-          LifeInsuranceService.getLifeInsurancePlansForCompany(companyId, function(plans) {
-
-            // Populate available company plans
-            _.each(plans, function(plan) {
-              // separate basic life insurance from supplemental life insurance.
-              // for now, it will pick the last basic life insurance defined by broker.
-              if (plan.life_insurance_plan.insurance_type === 'Basic'){
-                $scope.basicLifeInsurancePlan = plan;
-                $scope.basicLifeInsurancePlan.selected = true;
-              }
-              else{
-                $scope.lifeInsurancePlans.push({ text: plan.life_insurance_plan.name, value: plan.id });  
-              }
-            });
-
-            // Get current user's basic life insurance plan situation
-            LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
-              $scope.basicLifeInsurancePlan.life_insurance_beneficiary = plan.life_insurance_beneficiary;
-              $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = plan.life_insurance_contingent_beneficiary;
-            }, function(error){
-              $scope.error = true;
-            });
-
-            // Get current user's family life insurance plan situation
-            LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employeeId, function(familyPlan) {
-              $scope.familyLifeInsurancePlan = familyPlan;
-
-              // Determine the right plan option to select
-              if (!$scope.isLifeInsuranceWaived($scope.familyLifeInsurancePlan)) {
-                var optionToSelect = _.where($scope.lifeInsurancePlans, {value:$scope.familyLifeInsurancePlan.mainPlan.life_insurance.life_insurance_plan.id});
-                if (optionToSelect.length > 0) {
-                  $scope.selectedLifeInsurancePlan = optionToSelect[0];
-                }
-              }
-            });
-          });
-        });
-
 
         $scope.memberSelected = function(selectedBenefitFamily, member){
           var selectedMemberList = _.where(selectedBenefitFamily.eligibleMemberCombo.familyList, {selected:true});
@@ -400,60 +1096,15 @@ var employeeBenefitSignup = employeeControllers.controller(
           }
         };
 
-        $scope.addMember = function(){
-          $location.path('/employee/add_family/' + employeeId);
-        };
-
-        // User should be able to add up to 4 beneficiaries of life insurance
-        $scope.addBeneficiary = function(){
-          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.push({});
-        };
-
-        $scope.addBeneficiaryToBasic = function(){
-          if (!$scope.basicLifeInsurancePlan.life_insurance_beneficiary){
-            $scope.basicLifeInsurancePlan.life_insurance_beneficiary = []
-          }
-          $scope.basicLifeInsurancePlan.life_insurance_beneficiary.push({});
-        };
-
-        $scope.addContingentBeneficiary = function(){
-          if (!$scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary){
-            $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary = [];
-          }
-          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.push({});
-        };
-
-        $scope.addContingentBeneficiaryToBasic = function(){
-          if (!$scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary){
-            $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = []
-          }
-          $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary.push({});
-        };
-
-        $scope.removeBeneficiary = function(beneficiary){
-          var index = $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.indexOf(beneficiary);
-          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.splice(index, 1);
-        };
-
-        $scope.removeContingentBeneficiary = function(beneficiary){
-          var index = $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.indexOf(beneficiary);
-          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.splice(index, 1);
-        };
-
-        $scope.removeFromList = function(item, list){
-          var index = list.indexOf(item);
-          list.splice(index, 1);
-        };
-
         $scope.isMedicalBenefitType = function(benefit){
           return benefit && benefit.benefit_type === 'Medical';
         };
 
         $scope.isWaived = function(selectedPlan){
-          if (!selectedPlan.benefit){
+          if (!selectedPlan ||!selectedPlan.benefit){
             return true;
           }
-          return selectedPlan.benefit.benefit_plan.name.toLowerCase() === 'waive';
+          return selectedPlan.benefit.id === -1;
         };
 
         $scope.medicalWaiveReasons = [
@@ -462,25 +1113,6 @@ var employeeBenefitSignup = employeeControllers.controller(
           'I am covered under another plan sponsored by a second employer',
           'I am covered by another health plan sponsored by this employer'
         ];
-
-        // Whether the user has selected a reason for updating 
-        // his/her FSA configuration.
-        $scope.isFsaUpdateReasonSelected = function() {
-          return $scope.selectedFsaUpdateReason.value > 0;
-        };
-
-        // Whether the user selected to waive life insurance
-        $scope.isWaiveLifeInsuranceSelected = function() {
-          return $scope.selectedLifeInsurancePlan.value === "0";
-        };
-
-        // Whether the current status of the given employee's family life insurance
-        // plan indicates a waived/not-yet-enrolled state
-        $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
-          return (!employeeFamilyLifeInsurancePlan) 
-            || (!employeeFamilyLifeInsurancePlan.mainPlan)
-            || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
-        };
 
         $scope.save = function(){
           var saveRequest = {benefits:[],waived:[]};
@@ -529,7 +1161,7 @@ var employeeBenefitSignup = employeeControllers.controller(
               if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
                 if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
                   alert("Please select a reason to waive medical plan.");
-                  $location.path('/employee/benefit/' + $scope.employee_id);
+                  $location.path('/employee/benefits/' + $scope.employee_id);
                   return;
                 }
 
@@ -562,41 +1194,210 @@ var employeeBenefitSignup = employeeControllers.controller(
         
 
           employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
-              $location.path('/employee');
+              $scope.showSaveSuccessModal();
             }, function(){
               $scope.savedSuccess = false;
             });
+        };
 
+        $scope.benefit_type = 'Health Benefits';
+
+        $scope.openPlanDetailsModal = function() {
+            $scope.planDetailsModalInstance = $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_health_plan.html',
+              controller: 'healthBenefitsSignup',
+              size: 'lg',
+              scope: $scope
+            });
+        };
+
+        $scope.closePlanDetailsModal = function() {
+          if ($scope.planDetailsModalInstance) {
+            $scope.planDetailsModalInstance.dismiss();
+            $scope.planDetailsModalInstance = null;
+          }
+        };
+    }]);
+
+var fsaBenefitsSignup = employeeControllers.controller(
+  'fsaBenefitsSignup',
+  ['$scope',
+   '$state',
+   '$location',
+   '$stateParams',
+   '$controller',
+   'clientListRepository',
+   'employeeBenefits',
+   'benefitListRepository',
+   'employeeFamily',
+   'benefitDisplayService',
+   'FsaService',
+   'LifeInsuranceService',
+    function fsaBenefitsSignup(
+      $scope,
+      $state,
+      $location,
+      $stateParams,
+      $controller,
+      clientListRepository,
+      employeeBenefits,
+      benefitListRepository,
+      employeeFamily,
+      benefitDisplayService,
+      FsaService,
+      LifeInsuranceService){
+
+        // Inherite scope from base 
+        $controller('benefitsSignupControllerBase', {$scope: $scope});
+
+        var employeeId = $stateParams.employee_id;
+
+        // FSA election data
+        $scope.fsaUpdateReasons = [
+          { text: '<Not making updates>', value: 0 },
+          { text: 'New Enrollment or annual enrollment changes', value: 1 },
+          { text: 'Dependent care cost provider changes', value: 2 },
+          { text: 'Dependent satisfies or ceases to satisfy dependent eligibility requirements', value: 3 },
+          { text: 'Birth/Death of spouse or dependent, adoption or placement for adoption', value: 4 },
+          { text: 'Spouse\'s employment commenced/terminated', value: 5 },
+          { text: 'Status change from full-time to part-time or vice versa by employee or spouse', value: 6 },
+          { text: 'Eligibility or Ineligibility of Medicare/Medicaid', value: 7 },
+          { text: 'Change from salaried to hourly or vice versa', value: 8 },
+          { text: 'Marriage/Divorce/Legal Separation', value: 9 },
+          { text: 'Unpaid leave of absence by employee or spouse', value: 10 },
+          { text: 'Return from unpaid leave of absence by employee or spouse', value: 11 }
+        ];
+        $scope.selectedFsaUpdateReason = $scope.fsaUpdateReasons[0];
+        FsaService.getFsaElectionForUser(employeeId, function(response) {
+          $scope.fsaElection = response;
+        });
+
+        // Whether the user has selected a reason for updating 
+        // his/her FSA configuration.
+        $scope.isFsaUpdateReasonSelected = function() {
+          return $scope.selectedFsaUpdateReason.value > 0;
+        };
+
+        $scope.save = function(){
           // Save FSA selection if user specifies a reason
           if ($scope.isFsaUpdateReasonSelected()){
             $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
-            FsaService.saveFsaElection($scope.fsaElection, null, function() {
-              $scope.savedSuccess = false;
-            });
+            FsaService.saveFsaElection($scope.fsaElection
+              , function() {
+                $scope.showSaveSuccessModal();
+              }
+              , function() {
+                $scope.savedSuccess = false;
+              });
           }
+        };
 
-          // Save life insurance
-          if ($scope.isWaiveLifeInsuranceSelected()) {
-            // Waive selected. Delete all user plans for this user
-            LifeInsuranceService.deleteFamilyLifeInsurancePlanForUser(employeeId, null, function(error) {
-              $scope.savedSuccess = false;
+        $scope.benefit_type = 'FSA'
+
+    }]);
+
+var basicLifeBenefitsSignup = employeeControllers.controller(
+  'basicLifeBenefitsSignup',
+  ['$scope',
+   '$state',
+   '$location',
+   '$stateParams',
+   '$controller',
+   'clientListRepository',
+   'employeeBenefits',
+   'benefitListRepository',
+   'employeeFamily',
+   'benefitDisplayService',
+   'FsaService',
+   'LifeInsuranceService',
+    function basicLifeBenefitsSignup(
+      $scope,
+      $state,
+      $location,
+      $stateParams,
+      $controller,
+      clientListRepository,
+      employeeBenefits,
+      benefitListRepository,
+      employeeFamily,
+      benefitDisplayService,
+      FsaService,
+      LifeInsuranceService){
+        
+        // Inherite scope from base 
+        $controller('benefitsSignupControllerBase', {$scope: $scope});
+
+        var employeeId = $stateParams.employee_id;
+
+        var companyIdPromise =  clientListRepository.get({userId:employeeId})
+          .$promise.then(function(response){
+            var company_id;
+            _.each(response.company_roles, function(role){
+              if(role.company_user_type==='employee'){
+                company_id = role.company.id;
+                companyId = company_id;
+              }
+            })
+            return company_id;
+          });
+
+        companyIdPromise.then(function(companyId){
+          LifeInsuranceService.getLifeInsurancePlansForCompany(companyId, function(plans) {
+
+            // Populate available company plans
+            _.each(plans, function(plan) {
+              // separate basic life insurance from supplemental life insurance.
+              // for now, it will pick the last basic life insurance defined by broker.
+              if (plan.life_insurance_plan.insurance_type === 'Basic'){
+                $scope.basicLifeInsurancePlan = plan;
+                $scope.basicLifeInsurancePlan.selected = true;
+              }
             });
-          } else {
-            $scope.familyLifeInsurancePlan.selectedCompanyPlan = $scope.selectedLifeInsurancePlan.value;
-            LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan, null, function(error) {
-              $scope.savedSuccess = false;
-              alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
+
+            // Get current user's basic life insurance plan situation
+            LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
+              $scope.basicLifeInsurancePlan.life_insurance_beneficiary = plan.life_insurance_beneficiary;
+              $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = plan.life_insurance_contingent_beneficiary;
+            }, function(error){
+              $scope.error = true;
             });
+
+          });
+        });
+
+        $scope.addBeneficiaryToBasic = function(){
+          if (!$scope.basicLifeInsurancePlan.life_insurance_beneficiary){
+            $scope.basicLifeInsurancePlan.life_insurance_beneficiary = []
           }
+          $scope.basicLifeInsurancePlan.life_insurance_beneficiary.push({});
+        };
+
+        $scope.addContingentBeneficiaryToBasic = function(){
+          if (!$scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary){
+            $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = []
+          }
+          $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary.push({});
+        };
+
+        $scope.removeFromList = function(item, list){
+          var index = list.indexOf(item);
+          list.splice(index, 1);
+        };
+
+        $scope.save = function(){
 
           ///////////////////////////////////////////////////////////////////////////
           // Save basic life insurance
           // TO-DO: Need to better organize the logic to save basic life insurance
           ///////////////////////////////////////////////////////////////////////////
           if (!$scope.basicLifeInsurancePlan.selected){
-            LifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId, null, function(error) {
-              $scope.savedSuccess = false;
-            });
+            LifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
+              , function() {
+                $scope.showSaveSuccessModal();
+              }
+              , function(error) {
+                $scope.savedSuccess = false;
+              });
           }
           else{
             LifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
@@ -613,7 +1414,11 @@ var employeeBenefitSignup = employeeControllers.controller(
               
               $scope.basicLifeInsurancePlan.currentUserId = employeeId;
 
-              LifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, null, function(error){
+              LifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan
+              , function() {
+                $scope.showSaveSuccessModal();
+              }
+              , function(error){
                 $scope.savedSuccess = false;
                 alert('Failed to save basic life insurance. Please make sure all required fields have been filled.')
               });
@@ -622,520 +1427,187 @@ var employeeBenefitSignup = employeeControllers.controller(
             });
           }
         };
-      }]);
 
-var addFamily = employeeControllers.controller('addFamily', 
- ['$scope', 
-  '$location', 
-  '$routeParams', 
-  'personInfoService',
-  function addFamily(
-    $scope, 
-    $location, 
-    $routeParams, 
-    personInfoService){
+        $scope.benefit_type = 'Basic Life Insurance';
 
-  var employeeId = $routeParams.employee_id;
-  $scope.employeeId = employeeId;
-  $scope.person = {person_type:'family'};
-  personInfoService.getPersonInfo(employeeId, function(retrievedInfo){
-    if(retrievedInfo){
-      $scope.person.address = retrievedInfo.address;
-      $scope.person.phone = retrievedInfo.phone;
-    }
-  });
+    }]);
 
+var optionalLifeBenefitsSignup = employeeControllers.controller(
+  'optionalLifeBenefitsSignup',
+  ['$scope',
+   '$state',
+   '$location',
+   '$stateParams',
+   '$controller',
+   'clientListRepository',
+   'employeeBenefits',
+   'benefitListRepository',
+   'employeeFamily',
+   'benefitDisplayService',
+   'FsaService',
+   'LifeInsuranceService',
+    function optionalLifeBenefitsSignup(
+      $scope,
+      $state,
+      $location,
+      $stateParams,
+      $controller,
+      clientListRepository,
+      employeeBenefits,
+      benefitListRepository,
+      employeeFamily,
+      benefitDisplayService,
+      FsaService,
+      LifeInsuranceService){
+        
+        // Inherite scope from base 
+        $controller('benefitsSignupControllerBase', {$scope: $scope});
 
-  $scope.addMember = function(){
-    personInfoService.savePersonInfo(employeeId, $scope.person, function(successResponse){
-      $location.path('/employee/benefit/' + employeeId);
-    }, function(errorResponse){
-          alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
-    });
-  }
-}]);
+        var employeeId = $stateParams.employee_id;
 
-
-var viewDocument = employeeControllers.controller('viewDocument',
-  ['$scope', '$location', '$routeParams', 'userDocument', 'currentUser', 'documentRepository',
-  function viewDocument($scope, $location, $routeParams, userDocument, currentUser, documentRepository){
-    $scope.document = {};
-    var documentId = $routeParams.doc_id;
-    var signatureUpdated = false;
-    $scope.signatureCreatedDate = moment().format('MMM Do YYYY');
-    var userPromise = currentUser.get().$promise
-      .then(function(response){
-        $scope.employee_id = response.user.id;
-        return response.user.id;
-      });
-
-    var documentPromise = userPromise.then(function(userId){
-      var document = userDocument.query({userId:userId}).$promise
-        .then(function(response){
-          return _.find(response, function(d)
-          {
-            return d.id.toString() === documentId;
+        var companyIdPromise =  clientListRepository.get({userId:employeeId})
+          .$promise.then(function(response){
+            var company_id;
+            _.each(response.company_roles, function(role){
+              if(role.company_user_type==='employee'){
+                company_id = role.company.id;
+                companyId = company_id;
+              }
+            })
+            return company_id;
           });
-        });
-      return document;
-    });
 
-    documentPromise.then(function(document){
-      $scope.document = document;
-      if(document.signature && document.signature.signature)
-      {
-        var signature = document.signature.signature;
-        var separator = '<?xml';
-        var sigComponents = signature.split(separator);
-        $scope.signatureImage = sigComponents[0] + encodeURIComponent(separator + sigComponents[1]);
-        $scope.signaturePresent = true;
-        $scope.signatureCreatedDate = moment(document.signature.created_at).format('MMM Do YYYY');
-      }
-    });
+        $scope.lifeInsurancePlans = [ { text: '<Waive Life Insurance>', value: '0' } ];
+        $scope.selectedLifeInsurancePlan = $scope.lifeInsurancePlans[0];
 
-    var $sigdiv = $("#doc_signature");
-    if(_.isUndefined($sigdiv))
-    {
-      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
-    }
-    $sigdiv.jSignature();
-    $sigdiv.bind('change', function(e){
-     signatureUpdated = true;
-    });
-    $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset");
-      signatureUpdated = false;
-    };
-    $scope.signDocument = function(){
-      if(!signatureUpdated){
-        alert('Please sign your name on the signature pad');
-      }
-      else
-      {
-        var signatureData = $sigdiv.jSignature('getData', 'svg');
-        var signaturePayload = "data:" + signatureData[0] + ',' + signatureData[1];
-        documentRepository.sign.save({id:$scope.document.id}, {'signature':signaturePayload, 'signature_type': 'doc_sign'}, function(successResponse){
-          $scope.signatureSaved = true;
-          $scope.signatureImage = successResponse.signature.signature;
-        }, function(failureResponse){
-          $scope.signatureSaveFailed = true;
-        });
-      }
-    };
-    $scope.goToDashboard = function()
-    {
-      $location.path('/employee');
-    }
+        companyIdPromise.then(function(companyId){
+          LifeInsuranceService.getLifeInsurancePlansForCompany(companyId, function(plans) {
 
-}]);
-
-var employeeInfo = employeeControllers.controller('employeeInfoController',
-  ['$scope', '$location', '$routeParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
-  function($scope, $location, $routeParams, profileSettings, currentUser, employmentAuthRepository, employeeTaxRepository){
-    var infoObject = _.findWhere(profileSettings, { name: $routeParams.type });
-    $scope.info = { type: $routeParams.type, type_display: infoObject.display_name };
-    $scope.person = { role: 'Employee' };
-
-    if ($routeParams.type === 'i9'){
-      $scope.isUpdateW4 = false;
-      $scope.isUpdateI9 = true;
-    }
-
-    if ($routeParams.type === 'w4'){
-      $scope.isUpdateW4 = true;
-      $scope.isUpdateI9 = false;
-    }
-
-    var userPromise = currentUser.get().$promise.then(function(response){
-      $scope.person.first_name = response.user.first_name;
-      $scope.person.last_name = response.user.last_name;
-      return response.user.id;
-    });
-
-    userPromise.then(function(userId){
-      if ($scope.info.type === 'i9'){
-        employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
-          $scope.info.fields = convertResponse(response, $scope.info.type);
-        });
-      } else if ($scope.info.type === 'w4'){
-        employeeTaxRepository.get({userId: userId}).$promise.then(function(response){
-          $scope.info.fields = convertResponse(response, $scope.info.type);
-        });
-      }
-
-    });
-
-    var convertResponse = function(res, type){
-      var pairs = _.pairs(res);
-      var validFields = _.findWhere(profileSettings, {name: type}).valid_fields;
-      var output = [];
-      _.each(pairs, function(pair){
-        var key = pair[0];
-        var inSetting = _.findWhere(validFields, {name: key});
-        if (inSetting){
-          if (inSetting.datamap){
-            var value = pair[1];
-            var mappedValue = _.find(inSetting.datamap, function(map){
-              return map[0] === value.toString();
+            // Populate available company plans
+            _.each(plans, function(plan) {
+              $scope.lifeInsurancePlans.push({ text: plan.life_insurance_plan.name, value: plan.id });  
             });
-            if (!mappedValue){
-              inSetting.value = 'UNKNOWN';
-            } else{
-              inSetting.value = mappedValue[1];
-            }
-          } else{
-            inSetting.value = pair[1];
+
+            // Get current user's family life insurance plan situation
+            LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employeeId, function(familyPlan) {
+              $scope.familyLifeInsurancePlan = familyPlan;
+
+              // Determine the right plan option to select
+              if (!$scope.isLifeInsuranceWaived($scope.familyLifeInsurancePlan)) {
+                var optionToSelect = _.where($scope.lifeInsurancePlans, {value:$scope.familyLifeInsurancePlan.mainPlan.life_insurance.life_insurance_plan.id});
+                if (optionToSelect.length > 0) {
+                  $scope.selectedLifeInsurancePlan = optionToSelect[0];
+                }
+              }
+            });
+          });
+        });
+
+        // User should be able to add up to 4 beneficiaries of life insurance
+        $scope.addBeneficiary = function(){
+          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.push({});
+        };
+
+        $scope.addContingentBeneficiary = function(){
+          if (!$scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary){
+            $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary = [];
           }
-          output.push(inSetting);
-        }
-      });
-
-      return output;
-    }
-
-    $scope.backToDashboard = function(){
-      $location.path('/employee');
-    };
-
-    $scope.editW4 = function(){
-      $location.path('/employee/info/edit').search('type', 'w4');
-    };
-
-    $scope.editI9 = function(){
-      $location.path('/employee/info/edit').search('type', 'i9');
-    };
-  }]);
-
-
-var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$routeParams', function($scope, $routeParams){
-  $scope.employee = {};
-  $scope.employee.id = $routeParams.employee_id;
-  $scope.employee.username = '';
-  $scope.employee.password = '';
-
-  $scope.submit = function(employee) {
-    // Need to add actions to validate sign in credentials
-    return false;
-  }
-}]);
-
-var signup = employeeControllers.controller('employeeSignup', ['$scope', '$routeParams', '$location',
-  function($scope, $routeParams, $location){
-    $scope.employee = {};
-    $scope.employee.id = $routeParams.signup_number;
-
-    $scope.submit = function(employee) {
-      if($scope.employee.password !== $scope.employee.password_confirm)
-      {
-        alert('The passwords do not match. Please input your passwords again!');
-      }
-      else
-      {
-        // Need to communicate with API to register the new employee
-        $location.path('/employee/signin/' + $scope.employee.id);
-      }
-    }
-}]);
-
-var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$routeParams', '$location', 'personInfoService', 'currentUser', 'EmployeePreDashboardValidationService',
-  function($scope, $routeParams, $location, personInfoService, currentUser, EmployeePreDashboardValidationService){
-
-    $scope.employee = {};
-    $scope.employeeId = $routeParams.employee_id;
-    $scope.displayAll = false;
-
-
-    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
-      $location.path('/employee');
-    },
-    function(redirectUrl){
-      if($location.path() !== redirectUrl){
-        $location.path(redirectUrl);
-      }
-      else{
-        $scope.displayAll = true;
-      }
-    });
-
-    $('body').addClass('onboarding-page');
-
-    $scope.addBasicInfo = function(){
-      var birthDate = $scope.employee.birth_date;
-      $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');
-      personInfoService.savePersonInfo($scope.employeeId, $scope.employee, function(successResponse){
-        $location.path('/employee/onboard/employment/' + $scope.employeeId);
-      }, function(errorResponse){
-          alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
-      });
-    };
-}]);
-
-var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$routeParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $routeParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
-    $scope.employee = {
-      auth_type: ''
-    };
-    $scope.employeeId = $routeParams.employee_id;
-
-    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
-      $location.path('/employee');
-    },
-    function(redirectUrl){
-      if($location.path() !== redirectUrl){
-        $location.path(redirectUrl);
-      }
-      else{
-        $scope.displayAll = true;
-      }
-    });
-
-    $('body').addClass('onboarding-page');
-    var mapContract = function(viewObject, signature){
-      var contract = {
-        'worker_type': viewObject.auth_type,
-        'uscis_number': viewObject.authNumber,
-        'i_94': viewObject.I94Id,
-        'passport': viewObject.passportId,
-        'country': viewObject.passportCountry,
-        'signature': {
-          'signature': signature,
-          'signature_type': 'work_auth'
-        }
-      };
-
-      if (viewObject.auth_expiration){
-        contract.expiration_date = moment(viewObject.auth_expiration).format('YYYY-MM-DD');
-      }
-
-      return contract;
-    };
-
-    var signatureUpdated = false;
-    var $sigdiv = $("#auth_signature");
-    if(_.isUndefined($sigdiv))
-    {
-      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
-    }
-    $sigdiv.jSignature();
-    $sigdiv.bind('change', function(e){
-     signatureUpdated = true;
-    });
-    $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset");
-      signatureUpdated = false;
-    };
-
-    $scope.acknowledgedI9=function(){
-      $scope.employee.downloadI9 = !$scope.employee.downloadI9;
-    };
-
-    $scope.signDocument = function(redirectUrl){
-      if(!signatureUpdated){
-        alert('Please sign your name on the signature pad');
-      }
-      else if(!$scope.employee.downloadI9){
-        alert('Please download the I-9 document and acknowledge you have read the entire form above.');
-      }
-      else
-      {
-        var signatureData = $sigdiv.jSignature('getData', 'svg');
-        $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
-        var contract = mapContract($scope.employee, $scope.signatureImage);
-        employmentAuthRepository.save({userId: $scope.employeeId}, contract,
-          function(){
-            $location.path('/employee/onboard/tax/' + $scope.employeeId);
-          }, function(){
-            alert('Failed to add employment information');
-          });
-      }
-    };
-}]);
-
-var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', '$routeParams', '$location','employeeTaxRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $routeParams, $location, employeeTaxRepository, EmployeePreDashboardValidationService){
-    $scope.employee = {};
-    $scope.employeeId = $routeParams.employee_id;
-
-    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
-      $location.path('/employee');
-    },
-    function(redirectUrl){
-      if($location.path() !== redirectUrl){
-        $location.path(redirectUrl);
-      }
-      else{
-        $scope.displayAll = true;
-      }
-    });
-
-    $('body').addClass('onboarding-page');
-    $scope.employee.withholdingType = 'single';
-    $scope.employee.headOfHousehold = 0;
-    $scope.employee.childExpense = 0;
-
-    var getMarriageNumber = function(){
-      if($scope.employee.withholdingType ==='married'){
-        return 2;
-      }
-      else{
-        return 1;
-      }
-    };
-
-    var getTotalPoints = function(){
-      var total = getMarriageNumber() + 1;
-      total += $scope.employee.dependent_count;
-      if($scope.employee.childExpense){
-        total ++;
-      }
-      return total;
-    };
-
-    $scope.acknowledgeW4 = function(){
-      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
-    };
-
-    $scope.submit=function(){
-      if(!$scope.employee.downloadW4){
-        alert('Please verify you have downloaded and read the entire W-4 form');
-        return;
-      }
-      if(typeof($scope.employee.dependent_count) === 'undefined'){
-        alert('Please enter the number of dependents');
-        return;
-      }
-      var empAuth = {
-        marriage: getMarriageNumber(),
-        dependencies: $scope.employee.dependent_count,
-        head: $scope.employee.headOfHousehold,
-        tax_credit: $scope.employee.childExpense,
-        total_points: getTotalPoints()
-      };
-      employeeTaxRepository.save({userId:$scope.employeeId}, empAuth,
-        function(response){
-          $location.path('/employee/onboard/complete/'+$scope.employeeId);
-        });
-    }
-}]);
-
-var onboardComplete = employeeControllers.controller('onboardComplete',
-  ['$scope', '$routeParams', '$location', 'employeeSignature', 'EmployeePreDashboardValidationService',
-  function($scope, $routeParams, $location, employeeSignature, EmployeePreDashboardValidationService){
-    $scope.employee = {};
-    $scope.employeeId = $routeParams.employee_id;
-
-    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
-      $location.path('/employee');
-    },
-    function(redirectUrl){
-      if($location.path() !== redirectUrl){
-        $location.path(redirectUrl);
-      }
-      else{
-        $scope.displayAll = true;
-      }
-    });
-
-    $('body').addClass('onboarding-page');
-    var signatureUpdated = false;
-    var $sigdiv = $("#term_signature");
-    if(_.isUndefined($sigdiv))
-    {
-      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
-    }
-    $sigdiv.jSignature();
-    $sigdiv.bind('change', function(e){
-     signatureUpdated = true;
-    });
-    $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset");
-      signatureUpdated = false;
-    };
-    $scope.submit=function(){
-      if(!signatureUpdated){
-        alert('Please sign your name on the signature pad');
-      }
-      else{
-        var signatureData = $sigdiv.jSignature('getData', 'svg');
-        $scope.termSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
-        var contract = {
-          'signature': $scope.termSignatureData,
-          'signature_type': 'final'
+          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.push({});
         };
-        employeeSignature.save({userId: $scope.employeeId}, contract,
-          function(){
-            $location.path('/employee');
-          }, function(){
-            alert('Failed to submit signature');
-          });
-      }
-    }
-}]);
 
-var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocument',
-  ['$scope', '$routeParams', '$location', 'documentRepository', 'EmployeeLetterSignatureValidationService',
-  function($scope, $routeParams, $location, documentRepository, EmployeeLetterSignatureValidationService){
-    $scope.employeeId = $routeParams.employee_id;
-    var letterType = $location.search().letter_type;
-    if(!letterType){
-      letterType = 'Offer Letter';
-    }
-
-    var goToOnboarding = function(employeeId){
-      $location.path('/employee/onboard/index/' + employeeId);
-    };
-
-    EmployeeLetterSignatureValidationService($scope.employeeId, letterType, function(){
-      goToOnboarding($scope.employeeId);
-    }, function(){
-      $scope.displayAll = true;
-    })
-    documentRepository.byUser.query({userId:$scope.employeeId})
-      .$promise.then(function(response){
-        $scope.curLetter = _.find(response, function(letter){
-          return letter.document_type.name === letterType;
-        });
-      });
-
-    $('body').addClass('onboarding-page');
-    var signatureUpdated = false;
-    var $sigdiv = $('#letter_signature');
-    if(_.isUndefined($sigdiv))
-    {
-      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
-    }
-    $sigdiv.jSignature();
-    $sigdiv.bind('change', function(e){
-     signatureUpdated = true;
-    });
-
-    $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset");
-      signatureUpdated = false;
-    };
-
-    $scope.submit = function(){
-
-      if(!signatureUpdated){
-        alert('Please sign your name on the signature pad');
-      }
-      else{
-        var signatureData = $sigdiv.jSignature('getData', 'svg');
-        $scope.letterSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
-        var contract = {
-          'signature': $scope.letterSignatureData,
-          'signature_type': 'doc_sign'
+        $scope.removeBeneficiary = function(beneficiary){
+          var index = $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.indexOf(beneficiary);
+          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.splice(index, 1);
         };
-        documentRepository.sign.save({id:$scope.curLetter.id}, contract,
-         function(){
-           goToOnboarding($scope.employeeId);
-         },
-         function(err){
-          alert('The signature has not been accepted. The reason is: ' + JSON.stringify(err.data));
-         });
-      }
-    };
-  }]);
+
+        $scope.removeContingentBeneficiary = function(beneficiary){
+          var index = $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.indexOf(beneficiary);
+          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.splice(index, 1);
+        };
+
+        // Whether the user selected to waive life insurance
+        $scope.isWaiveLifeInsuranceSelected = function() {
+          return $scope.selectedLifeInsurancePlan.value === "0";
+        };
+
+        // Whether the current status of the given employee's family life insurance
+        // plan indicates a waived/not-yet-enrolled state
+        $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
+          return (!employeeFamilyLifeInsurancePlan) 
+            || (!employeeFamilyLifeInsurancePlan.mainPlan)
+            || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
+        };
+
+        $scope.save = function(){
+          // Save life insurance
+          if ($scope.isWaiveLifeInsuranceSelected()) {
+            // Waive selected. Delete all user plans for this user
+            LifeInsuranceService.deleteFamilyLifeInsurancePlanForUser(employeeId
+              , function() {
+                $scope.showSaveSuccessModal();
+              }
+              , function(error) {
+                $scope.savedSuccess = false;
+            });
+          } else {
+            $scope.familyLifeInsurancePlan.selectedCompanyPlan = $scope.selectedLifeInsurancePlan.value;
+            LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan
+              , function() {
+                $scope.showSaveSuccessModal();
+              }
+              , function(error) {
+                $scope.savedSuccess = false;
+                alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
+              });
+          }
+        };
+
+        $scope.benefit_type = 'Supplemental Life Insurance';
+
+    }]);
+
+var benefitsSignupControllerBase = employeeControllers.controller(
+  'benefitsSignupControllerBase',
+  ['$scope',
+   '$state',
+   '$modal',
+    function benefitsSignupControllerBase(
+      $scope,
+      $state,
+      $modal){
+        
+        $scope.showSaveSuccessModal = function(){
+          var modalInstance = $modal.open({
+            templateUrl: '/static/partials/benefit_selection/modal_save_success.html',
+            controller: 'benefitsSaveSuccessModalController',
+            size: 'sm',
+            backdrop: 'static',
+            resolve: {
+              benefit_type: function () {
+                return $scope.benefit_type;
+              }
+            }
+          });
+        };
+
+    }]);
+
+var benefitsSaveSuccessModalController = employeeControllers.controller(
+  'benefitsSaveSuccessModalController',
+  ['$scope',
+   '$state',
+   '$modalInstance',
+   'benefit_type',
+    function benefitsSaveSuccessModalController(
+      $scope,
+      $state,
+      $modalInstance,
+      benefit_type){
+        
+        $scope.benefit_type = benefit_type;
+
+        $scope.ok = function () {
+          $modalInstance.close();
+        };
+
+    }]);
