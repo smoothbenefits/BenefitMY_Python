@@ -20,6 +20,8 @@ class CompanyLifeInsurancePlan(models.Model):
     insurance_amount = models.DecimalField(
         max_digits=20, decimal_places=2, blank=True, null=True)
 
+    # insurance amount can be defined as X times of salary
+    salary_multiplier = models.IntegerField(blank=True, null=True)
 
     benefit_option_type = models.TextField(choices=TYPES, blank=True, null=True)
     company = models.ForeignKey(Company,
