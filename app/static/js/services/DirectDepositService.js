@@ -13,8 +13,8 @@ benefitmyService.factory(
         });
       },
 
-      updateDirectDepositByUserId: function(userId, directDeposit, successCallBack, errorCallBack){
-        DirectDepositRepository.UpdateByEmployeeId.update({id: userId}, directDeposit).$promise.then(function(response){
+      updateDirectDepositByUserId: function(directDeposit, successCallBack, errorCallBack){
+        DirectDepositRepository.UpdateById.update({id: directDeposit.id}, directDeposit).$promise.then(function(response){
           successCallBack(response);
         }, function(error){
           errorCallBack(error);
@@ -22,11 +22,45 @@ benefitmyService.factory(
       },
 
       createDirectDepositByUserId: function(userId, directDeposit, successCallBack, errorCallBack){
-        DirectDepositRepository.CreateByEmployeeId.post({id: userId}, directDeposit). $promise.then(function(response){
+        DirectDepositRepository.ByEmployeeId.post({id: userId}, directDeposit).$promise.then(function(response){
           successCallBack(response);
         }, function(error){
           errorCallBack(error);
         });
+      },
+
+      deleteDirectDepositById: function(directDeposit, successCallBack, errorCallBack){
+        DirectDepositRepository.DeleteById.delete({id: directDeposit.id}, directDeposit).$promise.then(function(response){
+          successCallBack(response);
+        }, function(error){
+          errorCallBack(error);
+        });
+      },
+
+      mapViewDirectDepositToDto: function(viewDirectDeposit){
+        var dto = {
+          id: viewDirectDeposit.direct_deposit_id,
+          user: viewDirectDeposit.user, 
+          bank_account: viewDirectDeposit,
+          amount: viewDirectDeposit.amount,
+          percentage: viewDirectDeposit.percentage,
+          remainder_of_all: viewDirectDeposit.remainder_of_all
+        };
+        dto.bank_account.user = viewDirectDeposit.user;
+        return dto;
+      },
+
+      mapDtoToViewDirectDeposit: function(directDepositDto){
+        var viewDirectDepositAccounts = [];
+        _.each(directDepositDto, function(account){
+          var viewModel = account.bank_account;
+          viewModel.direct_deposit_id = account.id;
+          viewModel.amount = Number(account.amount);
+          viewModel.percentage = Number(account.percentage);
+          viewModel.remainder_of_all = account.remainder_of_all;
+          viewDirectDepositAccounts.push(viewModel);
+        });
+        return viewDirectDepositAccounts;
       }
     }
   }]);

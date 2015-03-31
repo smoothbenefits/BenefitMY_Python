@@ -72,6 +72,9 @@ benefitmyService.factory('LifeInsuranceService',
       getLifeInsurancePlansForCompany: function(companyId, successCallBack, errorCallBack) {
         CompanyLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
           .$promise.then(function(plans) {
+            _.each(plans, function(companyPlan) {
+              companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
+            });
             if (successCallBack) {
               successCallBack(plans);
             }
@@ -138,27 +141,31 @@ benefitmyService.factory('LifeInsuranceService',
                 function(plan){ return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';}
               );
 
+              // Check if user enrolls basic life insurance. If yes, map response to view model
+              // If not, return simple object
               if (planEnrollments){
                 planEnrollments.enrolled = true;
+                planEnrollments.life_insurance.last_update_date = moment(planEnrollments.life_insurance.updated_at).format(DATE_FORMAT_STRING);
+
+                var firstTier = [];
+                var secondTier = [];
+                _.each(planEnrollments.life_insurance_beneficiary, function(beneficiary){
+                  if (beneficiary.tier === '1'){
+                    firstTier.push(beneficiary);
+                  }
+                  if (beneficiary.tier === '2'){
+                    secondTier.push(beneficiary);
+                  }
+                });
+                planEnrollments.life_insurance_beneficiary = firstTier;
+                planEnrollments.life_insurance_contingent_beneficiary = secondTier;
               }
               else{
                 planEnrollments = { enrolled: false, life_insurance_beneficiary: [] };
               }
 
-              var firstTier = [];
-              var secondTier = [];
-              _.each(planEnrollments.life_insurance_beneficiary, function(beneficiary){
-                if (beneficiary.tier === '1'){
-                  firstTier.push(beneficiary);
-                }
-                if (beneficiary.tier === '2'){
-                  secondTier.push(beneficiary);
-                }
-              });
-              planEnrollments.life_insurance_beneficiary = firstTier;
-              planEnrollments.life_insurance_contingent_beneficiary = secondTier;
-
               successCallBack(planEnrollments);
+
             }, function(error){
               errorCallBack(error);
             });
@@ -237,7 +244,7 @@ benefitmyService.factory('LifeInsuranceService',
                   memberPlan.full_name = familyMember.first_name + ' ' + familyMember.last_name; 
                   memberPlan.relationship = familyMember.relationship;
                   memberPlan.insurance_amount = parseFloat(memberPlan.insurance_amount);
-                  memberPlan.last_update_date = new Date(mainPlan.updated_at).toDateString();
+                  memberPlan.last_update_date = moment(mainPlan.updated_at).format(DATE_FORMAT_STRING);
                 });
 
                 familyPlan.memberPlans = planEnrollments;

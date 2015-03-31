@@ -64,7 +64,7 @@
                 </li>
 
                 <!-- EMPLOYER NAVS START -->
-                <li class="expandable" ng-show="getCurRoleFromPath() === 'admin'">
+                <li class="expandable" ng-show="isCurRoleAdmin()">
                     <div class="primary-nav">
                         <button data-toggle="collapse" data-target="#hr-nav" aria-expanded="false" aria-controls="hr-nav"><span class="flaticon flaticon-user135"></span>HR</button>
                     </div>
@@ -79,7 +79,7 @@
                         <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Privacy Policy'})">Privacy Policy</a>
                     </div>
                 </li>
-                <li class="expandable" ng-show="getCurRoleFromPath() === 'admin'">
+                <li class="expandable" ng-show="isCurRoleAdmin()">
                     <div class="primary-nav">
                         <button data-toggle="collapse" data-target="#employer-benefit-nav" aria-expanded="false" aria-controls="employer-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
                     </div>
@@ -89,10 +89,20 @@
                         <a ng-click="goToFunctionalViewByCompanyId('/admin/benefits/')">View Benefits</a>
                     </div>
                 </li>
+                <li class="expandable" ng-show="isCurRoleAdmin()">
+                    <div class="primary-nav">
+                        <button data-toggle="collapse" data-target="#employer-report-nav" aria-expanded="false" aria-controls="employer-report-nav"><span class="flaticon flaticon-file46"></span>Reports</button>
+                    </div>
+                    <div class="sub-nav collapse" id="employer-report-nav">
+                        <a ng-click="downloadEmployeeSummaryReport()">Complete Report</a>
+                        <a ng-click="downloadEmployeeDirectDepositReport()">Direct Deposit</a>
+                        <a ng-click="downloadCompanyEmployeeLifeBeneficiaryReport()">Life Insurance Beneficiary</a>
+                    </div>
+                </li>
                 <!-- EMPLOYER NAVS END -->
 
                 <!-- EMPLOYEE NAV STARTS -->
-                <li class="expandable" ng-show="getCurRoleFromPath() === 'employee'">
+                <li class="expandable" ng-show="isCurRoleEmployee()">
                     <div class="primary-nav">
                         <button data-toggle="collapse" data-target="#employee-benefit-nav" aria-expanded="false" aria-controls="employee-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
                     </div>
@@ -101,10 +111,18 @@
                         <a ng-click="goToFunctionalView('/employee/benefits/')">Modify Benefits</a>
                     </div>
                 </li>
+                <li class="expandable" ng-show="isCurRoleEmployee()">
+                    <div class="primary-nav">
+                        <button data-toggle="collapse" data-target="#employee-payroll-nav" aria-expanded="false" aria-controls="employee-payroll-nav"><span class="flaticon flaticon-user135"></span>Payroll</button>
+                    </div>
+                    <div class="sub-nav collapse" id="employee-payroll-nav">
+                        <a href="#/employee/direct_deposit">Direct Deposit</a>
+                    </div>
+                </li>
                 <!-- EMPLOYEE NAV ENDS -->
 
                 <!-- BROKER NAV STARTS -->
-                <li class="expandable" ng-show="getCurRoleFromPath() === 'broker'">
+                <li class="expandable" ng-show="isCurRoleBroker()">
                     <div class="primary-nav">
                         <button data-toggle="collapse" data-target="#clients-nav" aria-expanded="false" aria-controls="clients-nav"><span class="flaticon flaticon-user135"></span>Clients</button>
                     </div>

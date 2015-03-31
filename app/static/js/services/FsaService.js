@@ -14,7 +14,7 @@ benefitmyService.factory(
 
             userFsa.primary_amount_per_year = parseFloat(userFsa.primary_amount_per_year);
             userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
-            userFsa.last_update_date_time = new Date(userFsa.updated_at).toDateString();
+            userFsa.last_update_date_time = moment(userFsa.updated_at).format(DATE_FORMAT_STRING);
 
             if (callBack) {
               callBack(userFsa);

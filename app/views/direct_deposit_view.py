@@ -23,7 +23,7 @@ class DirectDepositView(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
-        serializer = DirectDepositPostSerializer(data=request.DATA)
+        serializer = DirectDepositPostSerializer(data=request.DATA, many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

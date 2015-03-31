@@ -25,7 +25,7 @@ benefitmyService.factory('BenefitElectionService',
 
               displayBenefit.selectedPlanName = benefit.benefit.benefit_plan.name;
               displayBenefit.selectedPlanType = benefit.benefit.benefit_option_type;
-              displayBenefit.lastUpdatedTime = new Date(benefit.updated_at).toDateString();
+              displayBenefit.lastUpdatedTime = moment(benefit.updated_at).format(DATE_FORMAT_STRING);
               displayBenefit.pcp = benefit.pcp;
 
               benefitElectedArray.push(displayBenefit);
@@ -43,10 +43,10 @@ benefitmyService.factory('BenefitElectionService',
                     selectedBenefit.waivedList = [];
                   }
                   selectedBenefit.waivedList.push(waived.benefit_type.name);
-                  selectedBenefit.updated = new Date(waived.created_at).toDateString();
+                  selectedBenefit.updated = moment(waived.created_at).format(DATE_FORMAT_STRING);
                 }
                 else{
-                  selectedBenefit = {waivedList:[], updated:new Date(waived.created_at).toDateString()};
+                  selectedBenefit = {waivedList:[], updated:moment(waived.created_at).format(DATE_FORMAT_STRING)};
                   selectedBenefit.waivedList.push(waived.benefit_type.name);
                   benefitElectedArray.push(selectedBenefit);
                 }

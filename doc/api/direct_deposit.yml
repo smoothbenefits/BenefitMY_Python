@@ -36,7 +36,8 @@ sample_response: |
         "percentage": "40.00", 
         "user": 1, 
         "created_at": null, 
-        "updated_at": null
+        "updated_at": null,
+        "remainder_of_all": false
     }, 
     {
         "bank_account": {
@@ -55,7 +56,8 @@ sample_response: |
         "percentage": "60.00", 
         "user": 1, 
         "created_at": null, 
-        "updated_at": null
+        "updated_at": null,
+        "remainder_of_all": false
     }
 ]
 
@@ -75,7 +77,8 @@ sample_request: |
         }, 
         "amount": "10000.00", 
         "percentage": "0.00", 
-        "user": 1
+        "user": 1,
+        "remainder_of_all": true
     }
 
 
@@ -97,7 +100,8 @@ sample_response: |
     "percentage": "0.00", 
     "user": 1, 
     "created_at": "2015-02-16T17:36:49.044Z", 
-    "updated_at": "2015-02-16T17:36:49.044Z"
+    "updated_at": "2015-02-16T17:36:49.044Z",
+    "remainder_of_all": true
 }
 
 
@@ -115,7 +119,8 @@ sample_request: |
         }, 
         "amount": "10000.00", 
         "percentage": "0.00", 
-        "user": 2
+        "user": 2,
+        "remainder_of_all": true
     }
 
 
@@ -137,7 +142,8 @@ sample_response: |
     "percentage": "0.00", 
     "user": 2, 
     "created_at": null, 
-    "updated_at": "2015-02-16T15:51:26.269Z"
+    "updated_at": "2015-02-16T15:51:26.269Z",
+    "remainder_of_all": true
 }
 
 
