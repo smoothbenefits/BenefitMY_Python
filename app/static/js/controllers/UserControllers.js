@@ -1,6 +1,58 @@
 // User controllers
 var userControllers = angular.module('benefitmyApp.users.controllers', []);
 
+var modalInstanceController = userControllers.controller(
+  'modalInstanceController',
+  ['$scope',
+   '$state',
+   '$modalInstance',
+   'title',
+   'message',
+    function modalInstanceController(
+      $scope,
+      $state,
+      $modalInstance,
+      title,
+      message){
+        
+        $scope.title = title;
+        $scope.message = message;
+
+        $scope.ok = function () {
+          $modalInstance.close();
+        };
+
+    }]);
+
+var modalMessageControllerBase = userControllers.controller(
+  'modalMessageControllerBase',
+  ['$scope',
+   '$state',
+   '$modal',
+    function modalMessageControllerBase(
+      $scope,
+      $state,
+      $modal){
+        
+        $scope.showMessageWithOkayOnly = function(title, message){
+          $scope.title = title;
+          $scope.message = message;
+          var modalInstance = $modal.open({
+            templateUrl: '/static/partials/modal_message_ok_only.html',
+            controller: 'modalInstanceController',
+            size: 'sm',
+            backdrop: 'static',
+            resolve: {
+              title: function(){
+                return $scope.title;
+              },
+              message: function(){
+                return $scope.message;
+              }
+            }
+          });
+        };
+    }]);
 
 var findViewController = userControllers.controller('findViewController',
     ['$scope', '$location', 'currentUser', 'clientListRepository',
