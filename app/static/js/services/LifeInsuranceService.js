@@ -27,6 +27,14 @@ benefitmyService.factory('LifeInsuranceService',
       };
     return {
       saveLifeInsurancePlan: function(planToSave, successCallBack, errorCallBack) {
+        // map to API fields
+        if (planToSave.amount){
+          planToSave.insurance_amount = planToSave.amount;
+        }
+        if (planToSave.multiplier){
+          planToSave.salary_multiplier = planToSave.multiplier;
+        }
+
         if(!planToSave.id) {
           // Not existing yet, POST it
           LifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave
@@ -109,8 +117,13 @@ benefitmyService.factory('LifeInsuranceService',
         return deferred.promise;
       },
 
-      enrollCompanyForLifeInsurancePlan: function(companyId, planId, amount, successCallBack, errorCallBack) {
-        var linkToSave = { "company":companyId, "life_insurance_plan":planId, "insurance_amount": amount };
+      enrollCompanyForLifeInsurancePlan: function(companyId, planId, amount, multiplier, successCallBack, errorCallBack) {
+        var linkToSave = { 
+          "company": companyId, 
+          "life_insurance_plan": planId, 
+          "insurance_amount": amount,
+          "salary_multiplier": multiplier
+        };
         CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
               if (successCallBack) {
