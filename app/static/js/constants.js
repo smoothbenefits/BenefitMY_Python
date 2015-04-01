@@ -91,3 +91,26 @@ settings.constant('benefitSectionGlobalConfig', [
         enabled: false
     }
 ]);
+
+settings.constant('tabLayoutGlobalConfig', [
+    {
+        id: 1,
+        section_name: 'broker_add_benefits',
+        tabs: [
+            {
+                id: 1,
+                verbose_name: "Health Benefits",
+                name: "health",
+                active: true,
+                state: "broker_add_benefit.health"
+            },
+            {
+                id: 1,
+                verbose_name: "Basic Life Insurance",
+                name: "basic_life",
+                active: false,
+                state: "broker_add_benefit.basic_life_insurance"
+            }
+        ]
+    }
+]);
