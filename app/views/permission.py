@@ -1,27 +1,29 @@
 import urlparse
-try:
-    from functools import wraps
-except ImportError:
-    from django.utils.functional import wraps  # Python 2.4 fallback.
+from functools import wraps
 
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.utils.decorators import available_attrs
 
+from app.models.company_user import CompanyUser
 
-def user_passes_test(test_func, login_url=None, redirect_field_name=REDIRECT_FIELD_NAME):
+
+def user_passes_test(test_func,
+                     login_url=None,
+                     redirect_field_name=REDIRECT_FIELD_NAME):
     """
     Decorator for views that checks that the user passes the given test,
     redirecting to the log-in page if necessary. The test should be a callable
     that takes the user object and returns True if the user passes.
+
+    minor changes patches to django source code
     """
 
-    """
     def decorator(view_func):
         @wraps(view_func, assigned=available_attrs(view_func))
-        def _wrapped_view(request, *args, **kwargs):
-            if test_func(request.user):
-                return view_func(request, *args, **kwargs)
+        def _wrapped_view(clz, request, *args, **kwargs):
+            if test_func(request, **kwargs):
+                return view_func(clz, request, *args, **kwargs)
             path = request.build_absolute_uri()
             # If the login url is the same scheme and net location then just
             # use the path as the "next" url.
@@ -35,13 +37,17 @@ def user_passes_test(test_func, login_url=None, redirect_field_name=REDIRECT_FIE
             return redirect_to_login(path, login_url, redirect_field_name)
         return _wrapped_view
     return decorator
-    """
-    def decorator(view_func):
-        @wraps(view_func, assigned=available_attrs(view_func))
-        def _wrapped_view(request, *args, **kwargs):
-            #print request.user
-            print "******************"
-            if test_func(request.user):
-                return view_func(request, *args, **kwargs)
-        return _wrapped_view
-    return decorator
+
+
+def check_company_employer(request, **kwargs):
+    """ check if a user is the admin of a company"""
+
+    if 'pk' not in kwargs:
+        return False
+    else:
+        company_id = kwargs['pk']
+        user_id = request.user.id
+        return CompanyUser.objects.filter(
+            user=user_id,
+            company=company_id,
+            company_user_type='admin').exists()

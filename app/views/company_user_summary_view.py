@@ -21,6 +21,10 @@ from app.models.insurance.user_company_life_insurance_plan import \
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from app.models.insurance.life_insurance_plan import LifeInsurancePlan
 from app.models.fsa import FSA
+from app.views.permission import (
+    user_passes_test,
+    check_company_employer)
+from django.contrib.auth.decorators import login_required
 
 
 class ExportViewBase(APIView):
@@ -325,6 +329,8 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
         return col_num + 2
 
+    @login_required
+    @user_passes_test(check_company_employer)
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('All Employee Summary')
@@ -419,6 +425,8 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersSummaryExc
 
         return col_num + 7
 
+    @login_required
+    @user_passes_test(check_company_employer)
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('All Employee Summary')
