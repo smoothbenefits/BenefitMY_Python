@@ -23,6 +23,9 @@ from app.models.insurance.life_insurance_plan import LifeInsurancePlan
 from app.models.fsa import FSA
 from app.models.direct_deposit import DirectDeposit
 from app.models.user_bank_account import UserBankAccount
+from app.views.permission import (
+    user_passes_test,
+    check_company_employer)
 
 
 class ExportViewBase(APIView):
@@ -108,7 +111,7 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
         start_col_num = 0
         start_col_num = self._write_employee_personal_info(employee_user_id, excelSheet, row_num, start_col_num)
         start_col_num = self._write_employee_direct_deposit(employee_user_id, excelSheet, row_num, start_col_num)
-        return 
+        return
 
     def _write_employee_personal_info(self, employee_user_id, excelSheet, row_num, start_column_num):
         cur_column_num = start_column_num
@@ -118,7 +121,7 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
         if (len(persons) > 0):
             person = persons[0]
 
-        # All helpers are built with capability of skiping proper number of columns when 
+        # All helpers are built with capability of skiping proper number of columns when
         # person given is None. This is to ensure other information written after these
         # would be written to the right columns
         cur_column_num = self._write_person_basic_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
@@ -137,7 +140,7 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
             # The desire is to also include some basic information for an employee, even if
             # he has not gone through on-boarding yet
             # So without the person profile that is filled out during onboarding, all we can
-            # do for now is to grab the basic information from the user account. 
+            # do for now is to grab the basic information from the user account.
             users = User.objects.filter(pk=employee_user_id)
             if (len(users) > 0):
                 user = users[0]
@@ -174,7 +177,7 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
         current_col_num = self._write_field(excelSheet, row_num, current_col_num, user_bank_account.account)
         current_col_num = self._write_field(excelSheet, row_num, current_col_num, user_bank_account.attachment)
 
-        is_ronp = 'Yes' if direct_deposit.remainder_of_all else 'No' 
+        is_ronp = 'Yes' if direct_deposit.remainder_of_all else 'No'
 
         current_col_num = self._write_field(excelSheet, row_num, current_col_num, is_ronp)
         current_col_num = self._write_field(excelSheet, row_num, current_col_num, direct_deposit.amount)
@@ -186,8 +189,8 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('Direct Deposit')
 
-        # Pre compute the max number of dependents across all employees of 
-        # the company, so we know how many sets of headers for dependent 
+        # Pre compute the max number of dependents across all employees of
+        # the company, so we know how many sets of headers for dependent
         # info we need to populate
         max_direct_deposits = self._get_max_direct_deposit_count(pk)
         self._write_headers(sheet, max_direct_deposits)
@@ -461,6 +464,8 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
         return col_num + 2
 
+    @login_required
+    @user_passes_test(check_company_employer)
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('All Employee Summary')
@@ -555,6 +560,8 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersSummaryExc
 
         return col_num + 7
 
+    @login_required
+    @user_passes_test(check_company_employer)
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('All Employee Summary')
