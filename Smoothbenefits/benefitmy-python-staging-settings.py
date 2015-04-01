@@ -221,6 +221,7 @@ PIPELINE_JS = {
             'js/controllers/EmployeeControllers.js',
             'js/controllers/EmployerControllers.js',
             'js/directives/ScrollTo.js',
+            'js/directives/ConfirmUnsavedOnExit.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
