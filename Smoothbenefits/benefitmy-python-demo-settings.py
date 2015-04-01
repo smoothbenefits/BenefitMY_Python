@@ -80,6 +80,8 @@ ROOT_URLCONF = 'Smoothbenefits.urls'
 
 WSGI_APPLICATION = 'Smoothbenefits.wsgi.application'
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 5 * 60
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -224,7 +226,7 @@ PIPELINE_JS = {
             'js/services/services.js',
             'js/pixel-admin.min.js',
             'js/jquery.scrollspy.js',
-            'js/moment.min.js',            
+            'js/moment.min.js',
             'js/services/employeeBenefitElectionService.js',
             'js/services/EmployeePreDashboardValidationService.js',
             'js/services/BenefitElectionService.js',

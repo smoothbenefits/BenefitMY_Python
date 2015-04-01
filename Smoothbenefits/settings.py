@@ -74,6 +74,8 @@ ROOT_URLCONF = 'Smoothbenefits.urls'
 
 WSGI_APPLICATION = 'Smoothbenefits.wsgi.application'
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 5 * 60
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
