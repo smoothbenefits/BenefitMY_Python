@@ -4,7 +4,11 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-md-4">
-                <div class="form-label">Employer sponsored basic life insurance covers up to ${{basicLifeInsurancePlan.insurance_amount}}
+                <div class="form-label" ng-show="basicLifeInsurancePlan.insurance_amount">
+                    Employer sponsored basic life insurance that covers ${{basicLifeInsurancePlan.insurance_amount}}
+                </div>
+                <div class="form-label" ng-show="basicLifeInsurancePlan.salary_multiplier">
+                    Employer sponsored basic life insurance that covers {{basicLifeInsurancePlan.salary_multiplier}} times of base salary
                 </div>
             </div>
             <div class="col-md-8">
