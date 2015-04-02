@@ -35,9 +35,6 @@ class CompanyLifeInsurancePlanView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, pk, format=None):
-
-        print pk
-        print request.DATA
         serializer = CompanyLifeInsurancePlanPostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
