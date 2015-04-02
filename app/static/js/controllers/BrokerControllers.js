@@ -291,7 +291,11 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
           }
 
           LifeInsuranceService.enrollCompanyForLifeInsurancePlan(clientId, planId, insurance_amount, multiplier, function() {
-            $scope.showMessageWithOkayOnly('Success', 'Your basic life insurance has been saved!');
+            var successMessage = "Your basic life insurance has been saved. " + 
+              "You can return to dashboard through left navigation panel, " + 
+              "or continue to add another plan use the form again."
+
+            $scope.showMessageWithOkayOnly('Success', successMessage);
           });
         });
       });
