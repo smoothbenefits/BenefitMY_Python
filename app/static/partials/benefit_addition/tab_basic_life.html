@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <div class="form-label">Amount</div>
                     <div class="textbox input-group">
                         <span class="input-group-addon">$</span>
@@ -23,23 +23,26 @@
                             type="number"
                             name="amount"
                             ng-model="newLifeInsurancePlan.amount"
-                            ng-required="false" />
+                            ng-disabled="newLifeInsurancePlan.multiplier" />
                     </div>
                     <div class="form-error-relative" ng-show="form.amount.$invalid">Amount is invalid</div>
                 </div>
-                <div class="col-md-1">
-                    <div class="form-label">OR</div>
+                <div class="col-md-2">
+                    <div class="form-label"></div>
+                    <div class="textbox input-group">
+                        <h4><b>OR</b></h4>
+                    </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <div class="form-label">Multiplier</div>
                     <div class="textbox input-group">
-                        <span class="input-group-addon">X</span>
                         <input
                             type="number"
                             min="0.0"
                             name="multiplier"
                             ng-model="newLifeInsurancePlan.multiplier"
-                            ng-required="false" />
+                            ng-disabled="newLifeInsurancePlan.amount" />
+                        <span class="input-group-addon">X Annual Base Salary</span>
                     </div>
                     <div class="form-error-relative" ng-show="form.multiplier.$invalid">
                         Multiplier is invalid
