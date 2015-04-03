@@ -860,6 +860,17 @@ var employeeBenefitsSignup = employeeControllers.controller(
         $state.go('/employee/add_family/:employee_id', { employee_id:employeeId });
       };
 
+      // TODO:
+      // This is the call back the confirm-unsaved-on-exit can call up on
+      // selection of "cancel". 
+      // Could there a be a less "by convention" way of doing this? Could 
+      // we somehow pass a callback into the directive?
+      $scope.state_exit_cancelled = function(originalState) {
+        for (i = 0; i < $scope.tabs.length; i++) {
+          $scope.tabs[i].active = ($scope.tabs[i].state === originalState.name);
+        }
+      }
+
     }]);
 
 var healthBenefitsSignup = employeeControllers.controller(
@@ -1195,6 +1206,7 @@ var healthBenefitsSignup = employeeControllers.controller(
 
           employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
               $scope.showSaveSuccessModal();
+              $scope.myForm.$setPristine();
             }, function(){
               $scope.savedSuccess = false;
             });
@@ -1285,6 +1297,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
             FsaService.saveFsaElection($scope.fsaElection
               , function() {
                 $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
               }
               , function() {
                 $scope.savedSuccess = false;
@@ -1394,6 +1407,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             LifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
               , function() {
                 $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
               }
               , function(error) {
                 $scope.savedSuccess = false;
@@ -1417,6 +1431,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               LifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan
               , function() {
                 $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
               }
               , function(error){
                 $scope.savedSuccess = false;
@@ -1545,6 +1560,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
             LifeInsuranceService.deleteFamilyLifeInsurancePlanForUser(employeeId
               , function() {
                 $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
               }
               , function(error) {
                 $scope.savedSuccess = false;
@@ -1554,6 +1570,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
             LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan
               , function() {
                 $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
               }
               , function(error) {
                 $scope.savedSuccess = false;
