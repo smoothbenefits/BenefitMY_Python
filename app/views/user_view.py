@@ -145,16 +145,6 @@ class UserFamilyView(APIView):
             return None
 
 
-    #from app.views.permission import user_passes_test
-    from django.contrib.auth.decorators import user_passes_test
-    from django.contrib.auth.decorators import login_required
-    def ck(pk):
-        print pk
-        return True
-        # return user.email.endswith('@example.com')
-
-    @login_required
-    #@user_passes_test(ck)
     def get(self, request, pk, format=None):
         print request.user
         print pk
