@@ -4,6 +4,7 @@ general:
   branches:
     only:
       - master
+      - sandbox
       - staging
       - demo
       - beta
@@ -16,6 +17,10 @@ test:
     - python manage.py test
 
 deployment:
+  sandbox:
+    branch: sandbox
+    commands:
+      - sh ./deployment.sh benefitmy-python-sandbox HEROKU_POSTGRESQL_BLACK
   staging:
     branch: staging
     commands:
