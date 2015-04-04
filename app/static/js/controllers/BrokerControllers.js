@@ -308,6 +308,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
   ['$scope',
    '$location',
    '$stateParams',
+   '$controller', 
    'benefitPlanRepository',
    'benefitDetailsRepository',
    'LifeInsuranceService',
@@ -316,10 +317,14 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       $scope,
       $location,
       $stateParams,
+      $controller, 
       benefitPlanRepository,
       benefitDetailsRepository,
       LifeInsuranceService,
       currentUser){
+
+      // Inherite scope from base 
+      $controller('modalMessageControllerBase', {$scope: $scope});
 
       var clientId = $stateParams.clientId;
       $scope.benefit = {
@@ -676,8 +681,6 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             $scope.noCostError = false;
           }
 
-
-
           //now we validate the details array
           if($scope.benefitDetailArray.length <= 0)
           {
@@ -703,8 +706,6 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         }
         return true;
       };
-
-
 
       function saveBenefitOptionPlan(objArray, index, completed, error){
         if(objArray.length <= index){
@@ -783,6 +784,10 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             });
 
             saveToBackendSequential(apiObjectArray, 0);
+
+            var successMessage = "Your health insurance has been saved. ";
+
+            $scope.showMessageWithOkayOnly('Success', successMessage);
           },
           function(response){
             //Error condition,
