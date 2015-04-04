@@ -22,6 +22,7 @@ if test $MIGRATION_CHANGES -gt 0; then
 fi
 
 # deploy code changes (and implicitly restart the app and any running workers)
+echo $CIRCLE_SHA1
 git push heroku $CIRCLE_SHA1:master
 
 # deploy the correct setting file
