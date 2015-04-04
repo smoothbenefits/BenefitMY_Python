@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from app.models.company import Company
 from django.conf import settings
+from app.service.hash_key_service import HashKeyService
 
 URL = settings.SITE_URL
 SUBJECT = "Welcome to BenefitMy"
@@ -39,7 +40,8 @@ def onboard_email(name, company_id, to, id):
     except Company.DoesNotExist:
         raise Http404
 
-    link = "%semployee/signup/%d" % (URL, id)
+    hash_key_service = HashKeyService()
+    link = "%semployee/signup/%s" % (URL, hash_key_service.encode_key(id))
 
     c = CONTENT % (name, company.name, link)
     send_mail(SUBJECT, c, FROM, [to], fail_silently=False)

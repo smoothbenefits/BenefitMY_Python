@@ -19,6 +19,7 @@ from app.serializers.person_serializer import PersonFullPostSerializer
 from app.serializers.company_user_serializer import CompanyRoleSerializer
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
+from django.conf import settings
 
 
 class UserView(APIView):
@@ -63,7 +64,7 @@ class UsersView(APIView):
                     c.user.email == request.DATA['user']['email']):
                 return Response(status=status.HTTP_409_CONFLICT)
 
-        create_user(request.DATA['user']['email'], '123456')
+        create_user(request.DATA['user']['email'], settings.DEFAULT_USER_PW)
         if not user_exists(request.DATA['user']['email']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
