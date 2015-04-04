@@ -9,7 +9,7 @@ from django.conf import settings
 
 
 @api_view(['GET'])
-def get_upload_form_policy_and_signature(request):
+def get_upload_form_policy_and_signature(request, company_id, user_id):
     if not (request.user or request.user.id > 0):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
     upload_document = json.dumps(settings.AMAZON_S3_UPLOAD_POLICY)
