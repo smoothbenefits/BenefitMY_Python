@@ -94,6 +94,24 @@ DATABASES = {
     }
 }
 
+# AMAZON AWS
+## https://benefitmy.signin.aws.amazon.com
+AMAZON_AWS_ACCESS_KEY_ID = 'AKIAIZJ3E4NCV33WGQ5Q'
+AMAZON_AWS_SECRET = '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'
+import datetime
+_expiration = datetime.datetime.utcnow() + datetime.timedelta(hours=5)
+AMAZON_S3_UPLOAD_POLICY= {
+    "expiration": _expiration.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    "conditions": [ 
+        {"bucket": "benefitmy-dev-uploads"}, 
+        ["starts-with", "$key", ""],
+        {"acl": "private"},
+        ["starts-with", "$Content-Type", ""],
+        ["starts-with", "$filename", ""],
+        ["content-length-range", 0, 52428800],
+    ]
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 

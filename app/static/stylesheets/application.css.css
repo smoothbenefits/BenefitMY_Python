@@ -13,5 +13,28 @@
  *= require_tree .
  *= require_self
  */
+.drop-box {
+  background: #F8F8F8;
+  border: 5px dashed #DDD;
+  text-align: center;
+  margin: 20px;
+  text-align: center; }
+
+.dragover {
+  background: #d4d9d8 !important;
+  border: 5px dashed #8CC63E; }
+
+.upload-button {
+  Height: 26px;
+  line-height: 30px;
+  padding: 0 10px;
+  background: #CCC;
+  appearance: button;
+  -moz-appearance: button;
+  -webkit-appearance: button;
+  position: relative;
+  text-align: center;
+  top: 7px;
+  cursor: pointer; }
 
 /*# sourceMappingURL=application.css.css.map */

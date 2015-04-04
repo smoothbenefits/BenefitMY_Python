@@ -259,3 +259,12 @@ benefitmyDomainModelFactories.factory('DirectDepositRepository', ['$resource',
     };
   }
 ]);
+
+benefitmyDomainModelFactories.factory('UploadRepository', ['$resource',
+  function($resource){
+    return {
+      metadata:$resource('/api/v1/upload/meta/'),
+      uploadsByUser:$resource('/api/v1/company/:compId/upload/:userId/', {compId:'@compId', userId:'@userId'})
+    };
+  }
+]);

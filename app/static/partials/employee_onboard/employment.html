@@ -109,6 +109,19 @@
                         </div>
                     </div>
 
+                    <div ng-show="employee.auth_type">
+                        Please upload your employment status document below
+                        <div ng-file-drop ng-file-select ng-model="files" class="drop-box" 
+                            drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
+                            ng-multiple="true" allow-dir="true"
+                            accept=".jpg,.png,.pdf">
+                            <div>Click to Select</div>
+                            <div>OR</div>
+                            <div>Drop Images or PDFs</div>
+                        </div>
+                        <div ng-no-file-drop>File Drag/Drop is not supported for this browser</div>
+                    </div>
+
                     <div class="signature-container" ng-show="employee.auth_type">
                         <div class="panel">
                             <div class="panel-heading">
