@@ -95,7 +95,7 @@
             <tbody>
                 <tr ng-repeat="lifeInsurancePlan in lifeInsurancePlans">
                     <td>
-                        {{lifeInsurancePlan.life_insurance_plan.name}}
+                        {{lifeInsurancePlan.life_insurance_plan.name}} 
                         <span ng-show="lifeInsurancePlan.life_insurance_plan.insurance_type === 'Basic' && lifeInsurancePlan.insurance_amount">({{lifeInsurancePlan.life_insurance_plan.insurance_type}} with amount of ${{lifeInsurancePlan.insurance_amount}})</span>
                         <span ng-show="lifeInsurancePlan.life_insurance_plan.insurance_type === 'Basic' && lifeInsurancePlan.salary_multiplier">({{lifeInsurancePlan.life_insurance_plan.insurance_type}} with {{lifeInsurancePlan.salary_multiplier}} times of base salary)</span>
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLifeInsurancePlan(lifeInsurancePlan)" href="javascript:void(0);">X</a>
