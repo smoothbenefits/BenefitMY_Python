@@ -1,5 +1,6 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
+from django.utils.http import urlsafe_base64_encode
 from app.forms import UserForm
 from emailusernames.utils import create_user, get_user, user_exists
 from app.models.user import User
@@ -56,7 +57,8 @@ def register_employee(request, user_id):
     # using the link provided previously
     # This is to prevent reuse of the link to change password forever
     if not employee_user.check_password(settings.DEFAULT_USER_PW):
-        return redirect('/login')
+        message = urlsafe_base64_encode("The sign-up link has been used previously to setup account. Please sign in.")
+        return redirect('user_login_with_message', info_message=message)
 
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
