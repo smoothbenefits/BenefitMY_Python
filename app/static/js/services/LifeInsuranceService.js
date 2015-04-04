@@ -285,7 +285,7 @@ benefitmyService.factory('LifeInsuranceService',
             "id": basicLifeToSave.id,
             "user": userId,
             "person": mainPlanPerson.id,
-            "life_insurance": basicLifeToSave.life_insurance_plan.id,
+            "life_insurance": basicLifeToSave.id,
             "life_insurance_beneficiary": [],
             "insurance_amount": basicLifeToSave.insurance_amount
           };
