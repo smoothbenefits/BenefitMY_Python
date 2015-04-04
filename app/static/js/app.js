@@ -6,7 +6,6 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ui.bootstrap',
     'benefitmyDomainModelFactories',
     'benefitmyService',
-    'benefitmyModelFactories',
     'benefitmyApp.constants',
     'benefitmyApp.users.controllers',
     'benefitmyApp.brokers.controllers',

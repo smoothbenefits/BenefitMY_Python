@@ -24,6 +24,9 @@ SECRET_KEY = 'x_qz2d46!0dmvk9(lb_c-z%r)&_jq8nl+-_fvsywp1+j+y5oj1'
 # Hash key serving as the "secret word" to help hashing
 HASH_KEY = '5e14ca8a-4a48-4cf7-aa3b-e207eb1a9adb'
 
+# Default password for initial user account setup
+DEFAULT_USER_PW = 'd4gf6u0hhfg48ds321cdsf'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -74,6 +77,8 @@ ROOT_URLCONF = 'Smoothbenefits.urls'
 
 WSGI_APPLICATION = 'Smoothbenefits.wsgi.application'
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 20 * 60
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -214,12 +219,23 @@ PIPELINE_JS = {
             'js/controllers/EmployeeControllers.js',
             'js/controllers/EmployerControllers.js',
             'js/directives/ScrollTo.js',
+            'js/directives/ConfirmUnsavedOnExit.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
             'js/jquery.scrollspy.js',
             'js/moment.min.js',
-            'js/model_factories/employeeBenefitElectionFactory.js',
+            'js/services/employeeBenefitElectionService.js',
+            'js/services/EmployeePreDashboardValidationService.js',
+            'js/services/BenefitElectionService.js',
+            'js/services/CompanyEmployeeSummaryService.js',
+            'js/services/DirectDepositService.js',
+            'js/services/EmployeeLetterSignatureValidationService.js',
+            'js/services/FsaService.js',
+            'js/services/LifeInsuranceService.js',
+            'js/services/benefitDisplayService.js',
+            'js/services/documentTypeService.js',
+            'js/services/personInfoService.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }
