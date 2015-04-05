@@ -5,11 +5,13 @@ benefitmyService.factory('LifeInsuranceService',
    'CompanyLifeInsurancePlanRepository',
    'CompanyUserLifeInsurancePlanRepository',
    'employeeFamily',
+   '$q',
   function (
       LifeInsurancePlanRepository,
       CompanyLifeInsurancePlanRepository,
       CompanyUserLifeInsurancePlanRepository,
-      employeeFamily){
+      employeeFamily,
+      $q){
 
     var getFilteredPercentageNumber = function(rawPercent){
         var reg = new RegExp(/^[0-9]+([\.][0-9]+)*/g);
@@ -84,6 +86,27 @@ benefitmyService.factory('LifeInsuranceService',
               errorCallBack(failedResponse)
             }
           });
+      },
+
+      getLifeInsurancePlansForCompanyByType: function(companyId, plan_type) {
+        var deferred = $q.defer();
+
+        CompanyLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
+          .$promise.then(function(plans) {
+            var resultPlans = [];
+            _.each(plans, function(companyPlan) {
+              companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
+              if (companyPlan.life_insurance_plan.insurance_type === plan_type) {
+                resultPlans.push(companyPlan);
+              }
+            });
+            deferred.resolve(resultPlans);
+          },
+          function(failedResponse) {
+            deferred.reject(failedResponse);
+          });
+
+        return deferred.promise;
       },
 
       enrollCompanyForLifeInsurancePlan: function(companyId, planId, amount, successCallBack, errorCallBack) {
