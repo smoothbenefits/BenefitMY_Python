@@ -96,6 +96,7 @@ DATABASES = {
 
 # AMAZON AWS
 ## https://benefitmy.signin.aws.amazon.com
+AMAON_S3_HOST = 'https://benefitmy-dev-uploads.s3.amazonaws.com/'
 AMAZON_AWS_ACCESS_KEY_ID = 'AKIAIZJ3E4NCV33WGQ5Q'
 AMAZON_AWS_SECRET = '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'
 import datetime
@@ -254,6 +255,7 @@ PIPELINE_JS = {
             'js/services/benefitDisplayService.js',
             'js/services/documentTypeService.js',
             'js/services/personInfoService.js',
+            'js/services/UserService.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }
