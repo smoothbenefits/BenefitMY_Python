@@ -522,8 +522,13 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
+<<<<<<< HEAD
   ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', '$upload', 'UploadRepository', 'UserService',
   function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, $upload, UploadRepository, UserService){
+=======
+  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', '$upload', 'UploadRepository',
+  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, $upload, UploadRepository){
+>>>>>>> 1eab7144ab38e647a16f12cdf5ff04f746c0c24f
     $scope.employee = {
       auth_type: ''
     };
@@ -605,37 +610,37 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
     };
 
     $scope.upload = function (files) {
-        UserService.getCurUserInfo().then(function(userInfo){
-          UploadRepository.metadata.get({compId:userInfo.currentRole.company.id, userId:userInfo.user.id})
-            .$promise.then(function(meta){
-              if (files && files.length) {
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-                    var s3Key = userInfo.currentRole.company.name + ':' + meta.fileKey + ':' + file.name;
-                    s3Key = s3Key.split(' ').join('_')
-                    $upload.upload({
-                        url: meta.s3Host,
-                        method: 'POST',
-                        fields : {
-                          key: s3Key, // the key to store the file on S3, could be file name or customized
-                          AWSAccessKeyId: meta.accessKey, 
-                          acl: 'private', // sets the access to the uploaded file in the bucket: private or public 
-                          policy: meta.policy, // base64-encoded json policy (see article below)
-                          signature: meta.signature, // base64-encoded signature based on policy string (see article below)
-                          "Content-Type": file.type != '' ? file.type : 'application/octet-stream', // content type of the file (NotEmpty)
-                          filename: file.name // this is needed for Flash polyfill IE8-9
-                        },
-                        file: file
-                    }).progress(function (evt) {
-                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                        console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
-                    }).success(function (data, status, headers, config) {
-                        console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
-                    });
-                }
+      UserService.getCurUserInfo().then(function(userInfo){
+        UploadRepository.metadata.get({compId:userInfo.currentRole.company.id, userId:userInfo.user.id})
+          .$promise.then(function(meta){
+            if (files && files.length) {
+              for (var i = 0; i < files.length; i++) {
+                  var file = files[i];
+                  var s3Key = userInfo.currentRole.company.name + ':' + meta.fileKey + ':' + file.name;
+                  s3Key = s3Key.split(' ').join('_')
+                  $upload.upload({
+                      url: meta.s3Host,
+                      method: 'POST',
+                      fields : {
+                        key: s3Key, // the key to store the file on S3, could be file name or customized
+                        AWSAccessKeyId: meta.accessKey, 
+                        acl: 'private', // sets the access to the uploaded file in the bucket: private or public 
+                        policy: meta.policy, // base64-encoded json policy (see article below)
+                        signature: meta.signature, // base64-encoded signature based on policy string (see article below)
+                        "Content-Type": file.type != '' ? file.type : 'application/octet-stream', // content type of the file (NotEmpty)
+                        filename: file.name // this is needed for Flash polyfill IE8-9
+                      },
+                      file: file
+                  }).progress(function (evt) {
+                      var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                      console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                  }).success(function (data, status, headers, config) {
+                      console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+                  });
               }
-            });
-        });
+            }
+          });
+      });
     };
 }]);
 
