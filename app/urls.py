@@ -158,7 +158,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
 
     # upload API
-    url(r'^%s/upload/meta/?$' % PREFIX, get_upload_form_policy_and_signature, name='get_upload_policy_signature'),
+    url(r'^%s/companies/(?P<pk>\w+)/upload/meta/(?P<user_id>\w+)/?$' % PREFIX, 
+        get_upload_form_policy_and_signature, 
+        name='get_upload_policy_signature'),
 )
 
 
