@@ -77,7 +77,7 @@
   {
     "fields": {
       "user": 1,
-      "life_insurance": 1,
+      "company_life_insurance": 1,
       "person": 1
     },
     "model": "app.usercompanylifeinsuranceplan",
@@ -87,7 +87,7 @@
   {
     "fields": {
       "user": 3,
-      "life_insurance": 3,
+      "company_life_insurance": 3,
       "person": 3
     },
     "model": "app.usercompanylifeinsuranceplan",
@@ -97,7 +97,7 @@
  {
     "fields": {
       "user": 3,
-      "life_insurance": 3,
+      "company_life_insurance": 3,
       "person": 4
     },
     "model": "app.usercompanylifeinsuranceplan",
