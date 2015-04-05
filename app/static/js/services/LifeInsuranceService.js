@@ -5,11 +5,13 @@ benefitmyService.factory('LifeInsuranceService',
    'CompanyLifeInsurancePlanRepository',
    'CompanyUserLifeInsurancePlanRepository',
    'employeeFamily',
+   '$q',
   function (
       LifeInsurancePlanRepository,
       CompanyLifeInsurancePlanRepository,
       CompanyUserLifeInsurancePlanRepository,
-      employeeFamily){
+      employeeFamily,
+      $q){
 
     var getFilteredPercentageNumber = function(rawPercent){
         var reg = new RegExp(/^[0-9]+([\.][0-9]+)*/g);
@@ -25,6 +27,14 @@ benefitmyService.factory('LifeInsuranceService',
       };
     return {
       saveLifeInsurancePlan: function(planToSave, successCallBack, errorCallBack) {
+        // map to API fields
+        if (planToSave.amount){
+          planToSave.insurance_amount = planToSave.amount;
+        }
+        if (planToSave.multiplier){
+          planToSave.salary_multiplier = planToSave.multiplier;
+        }
+
         if(!planToSave.id) {
           // Not existing yet, POST it
           LifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave
@@ -86,8 +96,34 @@ benefitmyService.factory('LifeInsuranceService',
           });
       },
 
-      enrollCompanyForLifeInsurancePlan: function(companyId, planId, amount, successCallBack, errorCallBack) {
-        var linkToSave = { "company":companyId, "life_insurance_plan":planId, "insurance_amount": amount };
+      getLifeInsurancePlansForCompanyByType: function(companyId, plan_type) {
+        var deferred = $q.defer();
+
+        CompanyLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
+          .$promise.then(function(plans) {
+            var resultPlans = [];
+            _.each(plans, function(companyPlan) {
+              companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
+              if (companyPlan.life_insurance_plan.insurance_type === plan_type) {
+                resultPlans.push(companyPlan);
+              }
+            });
+            deferred.resolve(resultPlans);
+          },
+          function(failedResponse) {
+            deferred.reject(failedResponse);
+          });
+
+        return deferred.promise;
+      },
+
+      enrollCompanyForLifeInsurancePlan: function(companyId, planId, amount, multiplier, successCallBack, errorCallBack) {
+        var linkToSave = { 
+          "company": companyId, 
+          "life_insurance_plan": planId, 
+          "insurance_amount": amount,
+          "salary_multiplier": multiplier
+        };
         CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
               if (successCallBack) {
@@ -272,7 +308,7 @@ benefitmyService.factory('LifeInsuranceService',
             "id": basicLifeToSave.id,
             "user": userId,
             "person": mainPlanPerson.id,
-            "life_insurance": basicLifeToSave.life_insurance_plan.id,
+            "life_insurance": basicLifeToSave.id,
             "life_insurance_beneficiary": [],
             "insurance_amount": basicLifeToSave.insurance_amount
           };

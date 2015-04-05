@@ -39,7 +39,7 @@
       "total_cost_per_period": "500.00",
       "employee_cost_per_period": "400.00",
       "benefit_option_type": "individual_plus_spouse",
-      "insurance_amount": "500",
+      "salary_multiplier": 10, 
       "company": 1,
       "life_insurance_plan": 1
     },
