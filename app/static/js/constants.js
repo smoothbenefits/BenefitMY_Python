@@ -112,5 +112,25 @@ settings.constant('tabLayoutGlobalConfig', [
                 state: "broker_add_benefit.basic_life_insurance"
             }
         ]
+    },
+    {
+        id: 2,
+        section_name: 'employee_profile',
+        tabs: [
+            {
+                id: 1,
+                verbose_name: 'I-9',
+                name: 'i9',
+                active: false,
+                state: 'employee_profile.i9'
+            },
+            {
+                id: 2, 
+                verbose_name: 'W-4',
+                name: 'w4',
+                active: false,
+                state: 'employee_profile.w4'
+            }
+        ]
     }
 ]);
