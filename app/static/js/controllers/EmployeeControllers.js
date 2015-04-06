@@ -30,6 +30,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             employeePayrollService,
             employeeProfileService){
 
+
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
