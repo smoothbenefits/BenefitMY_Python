@@ -1423,7 +1423,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           else{
             LifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
               var enrolledBasic = _.find(enrolledPlans, function(plan){ 
-                return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';
+                return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';
               });
               if (enrolledBasic){
                 $scope.basicLifeInsurancePlan.enrolled = true;

@@ -89,7 +89,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td width="180">{{familyInsurancePlan.mainPlan.life_insurance.life_insurance_plan.name}}</td>
+                    <td width="180">{{familyInsurancePlan.mainPlan.company_life_insurance.life_insurance_plan.name}}</td>
                     <td colspan="2" style="padding: 0;">
                         <table class="table">
                             <tr ng-repeat="memberPlan in familyInsurancePlan.memberPlans">
@@ -131,12 +131,12 @@
             </thead>
             <tbody>
                 <tr>
-                    <td width="180">{{basicLifeInsurancePlan.life_insurance.life_insurance_plan.name}}</td>
-                    <td width="180">{{basicLifeInsurancePlan.life_insurance.insurance_amount}}</td>
+                    <td width="180">{{basicLifeInsurancePlan.company_life_insurance.life_insurance_plan.name}}</td>
+                    <td width="180">{{basicLifeInsurancePlan.company_life_insurance.insurance_amount}}</td>
                     <td width="180">
                         <span class="inline" ng-repeat="beneficiary in basicLifeInsurancePlan.life_insurance_beneficiary"> {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br></span>
                     </td>
-                    <td width="120">{{basicLifeInsurancePlan.life_insurance.last_update_date}}</td>
+                    <td width="120">{{basicLifeInsurancePlan.company_life_insurance.last_update_date}}</td>
                 </tr>
             </tbody>
         </table>
