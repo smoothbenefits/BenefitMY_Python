@@ -184,15 +184,30 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_selection/tab_optional_life.html',
                 controller:'optionalLifeBenefitsSignup'
             }).
-            state('/employee/info', {
-                url: '/employee/info?type',
-                templateUrl: '/static/partials/employee_profile.html',
-                controller: 'employeeInfoController'
+            state('employee_profile?type', {
+                url: 'employee/profile',
+                templateUrl: '/static/partials/employee_profile/main.html',
+                controller: 'employeeProfileController'
             }).
-            state('/employee/info/edit', {
-                url: '/employee/info/edit?type',
-                templateUrl: '/static/partials/employee_profile_edit.html',
-                controller: 'employeeInfoController'
+            state('employee_profile.w4', {
+                url: '/w4',
+                templateUrl: '/static/partials/employee_profile/w4_display.html',
+                controller: 'employeeProfileW4Controller'
+            }).
+            state('employee_profile.w4_edit', {
+                url: '/w4/edit',
+                templateUrl: '/static/partials/employee_profile/w4_edit.html',
+                controller: 'employeeProfileW4Controller'
+            }).
+            state('employee_profile.i9', {
+                url: '/i9',
+                templateUrl: '/static/partials/employee_profile/i9_display.html',
+                controller: 'employeeProfileI9Controller'
+            }).
+            state('employee_profile.i9_edit', {
+                url: '/i9/edit',
+                templateUrl: '/static/partials/employee_profile/i9_edit.html',
+                controller: 'employeeProfileI9Controller'
             }).
             state('/employee/family/:employee_id', {
                 url: '/employee/family/:employee_id',
