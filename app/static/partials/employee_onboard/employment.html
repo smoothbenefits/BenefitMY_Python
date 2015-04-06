@@ -132,7 +132,7 @@
                                         <td class="file-icon" style="text-align:center">
                                             <div ng-class="file.fileType">&nbsp;</div>
                                         </td>
-                                        <td width="250" style="text-align:center"><a ng-href="{{file.s3Host + file.s3Key}}" target="_blank">{{file.fileName}}</a></td>
+                                        <td width="250" style="text-align:center"><a ng-href="{{file.s3Key}}" target="_blank">{{file.fileName}}</a></td>
                                         <td width="180" style="text-align:center">
                                             <a href="javascript:void(0)" ng-click="deleteFile(file)">Delete</a>
                                         </td>

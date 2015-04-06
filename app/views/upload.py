@@ -5,6 +5,7 @@ from datetime import datetime
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from django.http import Http404
+from datetime import datetime, timedelta
 from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
@@ -20,7 +21,10 @@ def _encode_key(company_id, user_id):
 @api_view(['GET'])
 def get_upload_form_policy_and_signature(request, pk, user_id):
     ### We need translate PK, user_id and current time to a unique reversable key
+    _expiration = datetime.utcnow() + timedelta(hours=5)
+    settings.AMAZON_S3_UPLOAD_POLICY.update({"expiration": _expiration.strftime("%Y-%m-%dT%H:%M:%SZ")})
     upload_document = json.dumps(settings.AMAZON_S3_UPLOAD_POLICY)
+
     upload_policy = base64.b64encode(upload_document)
     signature = base64.b64encode(hmac.new(settings.AMAZON_AWS_SECRET, upload_policy, hashlib.sha1).digest())
     meta = {'s3Host': settings.AMAZON_S3_HOST,

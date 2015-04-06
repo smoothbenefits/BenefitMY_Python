@@ -100,10 +100,7 @@ AMAZON_S3_BUCKET = 'benefitmy-dev-uploads'
 AMAZON_S3_HOST = 'https://{0}.s3.amazonaws.com/'.format(AMAZON_S3_BUCKET)
 AMAZON_AWS_ACCESS_KEY_ID = 'AKIAIZJ3E4NCV33WGQ5Q'
 AMAZON_AWS_SECRET = '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'
-import datetime
-_expiration = datetime.datetime.utcnow() + datetime.timedelta(hours=5)
 AMAZON_S3_UPLOAD_POLICY= {
-    "expiration": _expiration.strftime("%Y-%m-%dT%H:%M:%SZ"),
     "conditions": [ 
         {"bucket": AMAZON_S3_BUCKET}, 
         ["starts-with", "$key", ""],

@@ -45,12 +45,14 @@
   width: 60px;
   vertical-align: middle; }
 
-.pdf {
+.application-pdf {
   background-image: url("http://www.afhdr.org/AfHDR/images/pdf-icon.gif");
-  background-repeat: no-repeat; }
+  background-repeat: no-repeat;
+  width: 25px;
+  display: inline-block; }
 
 .image-png,
-.image-jpg {
+.image-jpeg {
   background-image: url("http://inspire.up.pt/images/icons/ico16_ext_jpg.png");
   background-repeat: no-repeat;
   width: 20px;

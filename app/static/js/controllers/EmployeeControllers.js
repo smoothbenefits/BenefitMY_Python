@@ -528,8 +528,22 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
-    $scope.$watch('files', function () {
-        $scope.upload($scope.files);
+    UserService.getCurUserInfo().then(function(userInfo){
+      $scope.userInfo = userInfo;
+      $scope.$watch('files', function () {
+          $scope.upload($scope.files);
+      });
+      $scope.uploadedFiles = [];
+      UploadRepository.uploadsByUser.query({compId:$scope.userInfo.currentRole.company.id, pk:$scope.userInfo.user.id})
+      .$promise.then(function(resp){
+        _.each(resp, function(upload){
+          $scope.uploadedFiles.push({
+            fileName: upload.file_name,
+            fileType: upload.file_type.replace('/', '-'),
+            s3Key: upload.S3,
+          });
+        });
+      });
     });
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
@@ -542,7 +556,6 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
         $scope.displayAll = true;
       }
     });
-    $scope.uploadedFiles = [];
 
     $('body').addClass('onboarding-page');
     var mapContract = function(viewObject, signature){
@@ -612,25 +625,12 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
         s3Key = s3Key.split(' ').join('_');
         return s3Key;
       };
-
-      UserService.getCurUserInfo().then(function(userInfo){
-        UploadRepository.metadata.get({compId:userInfo.currentRole.company.id, userId:userInfo.user.id})
+        UploadRepository.metadata.get({compId:$scope.userInfo.currentRole.company.id, userId:$scope.userInfo.user.id})
           .$promise.then(function(meta){
-            UploadRepository.uploadsByUser.query({compId:userInfo.currentRole.company.id, pk:userInfo.user.id})
-            .$promise.then(function(resp){
-              _.each(resp, function(upload){
-                $scope.uploadedFiles.push({
-                  fileName: upload.file_name,
-                  fileType: upload.file_type.replace('/', '-'),
-                  s3Key: upload.S3,
-                  s3Host: meta.s3Host
-                });
-              });
-            });
             if (files && files.length) {
               for (var i = 0; i < files.length; i++) {
                   var file = files[i];
-                  var s3Key = getS3Key(userInfo.currentRole.company.name, meta.fileKey, file.name);
+                  var s3Key = getS3Key($scope.userInfo.currentRole.company.name, meta.fileKey, file.name);
                   var file_type = file.type != '' ? file.type : 'application/octet-stream';
                   $upload.upload({
                       url: meta.s3Host,
@@ -651,20 +651,20 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
                   }).success(function (data, status, headers, config) {
                     var uploaded = {
                       'upload_type':'I9',
-                      'user': userInfo.user.id,
-                      'company':userInfo.currentRole.company.id,
-                      'S3': getS3Key(userInfo.currentRole.company.name, meta.fileKey, config.file.name),
+                      'user': $scope.userInfo.user.id,
+                      'company':$scope.userInfo.currentRole.company.id,
+                      'S3': getS3Key($scope.userInfo.currentRole.company.name, meta.fileKey, config.file.name),
                       'file_name': config.file.name,
                       'file_type': config.file.type != '' ? config.file.type : 'application/octet-stream'
                     }
                     UploadRepository.uploadsByUser.save(
-                        {compId:userInfo.currentRole.company.id, pk:userInfo.user.id}, 
+                        {compId:$scope.userInfo.currentRole.company.id, pk:$scope.userInfo.user.id}, 
                         uploaded,
                         function(response){
                           $scope.uploadedFiles.push({
                             fileName:config.file.name, 
                             fileType: (config.file.type != '' ? config.file.type : 'application/octet-stream').replace('/', '-'),
-                            s3Key: meta.s3Host + getS3Key(userInfo.currentRole.company.name, meta.fileKey, config.file.name),
+                            s3Key: meta.s3Host + getS3Key($scope.userInfo.currentRole.company.name, meta.fileKey, config.file.name),
                             s3Host: meta.s3Host});
                         }, function(error){
                           //We need to delete the file from the S3 here!
@@ -673,7 +673,6 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
               }
             }
           });
-      });
     };
 
     $scope.deleteFile = function(file){
