@@ -3,6 +3,7 @@ var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]
 var employeeHome = employeeControllers.controller('employeeHome',
     ['$scope',
      '$location',
+     '$state', 
      '$stateParams',
      'clientListRepository',
      'employeeBenefits',
@@ -13,6 +14,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'FsaService',
      'LifeInsuranceService',
   function employeeHome($scope,
+                        $state, 
                         $location,
                         $stateParams,
                         clientListRepository,
@@ -103,12 +105,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
          $location.path('/employee/document/' + documentId);
      };
 
-     $scope.ViewInfo = function(type){
-      $location.path('/employee/info').search('type', type);
-     };
-
-     $scope.EditInfo = function(type){
-      $location.path('/employee/info/edit').search('type', type);
+     $scope.goToState = function(state){
+      $state.go(state);
      };
 
     // FSA election data
@@ -244,6 +242,26 @@ var viewDocument = employeeControllers.controller('viewDocument',
       $location.path('/employee');
     };
 }]);
+
+var employeeProfile = employeeControllers.controller('employeeProfileController',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$location',
+   'benefitSectionGlobalConfig', 
+   function ($scope, 
+             $state, 
+             $stateParams, 
+             $location, 
+             benefitSectionGlobalConfig){
+    var type = $stateParams.type;
+    $scope.section = _.findWhere(benefitSectionGlobalConfig, { name: 'employee_profile'});
+
+    $scope.goToState = function(state){
+      $state.go(state);
+    }
+   }
+  ]);
 
 var employeeInfo = employeeControllers.controller('employeeInfoController',
   ['$scope', '$location', '$stateParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
