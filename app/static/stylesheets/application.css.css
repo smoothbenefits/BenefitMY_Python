@@ -13,6 +13,10 @@
  *= require_tree .
  *= require_self
  */
+.upload-functional-container {
+  margin-bottom: 10px;
+  font-size: 14px; }
+
 .drop-box {
   background: #F8F8F8;
   border: 5px dashed #DDD;
@@ -36,5 +40,20 @@
   text-align: center;
   top: 7px;
   cursor: pointer; }
+
+.file-icon {
+  width: 60px;
+  vertical-align: middle; }
+
+.pdf {
+  background-image: url("http://www.afhdr.org/AfHDR/images/pdf-icon.gif");
+  background-repeat: no-repeat; }
+
+.image-png,
+.image-jpg {
+  background-image: url("http://inspire.up.pt/images/icons/ico16_ext_jpg.png");
+  background-repeat: no-repeat;
+  width: 20px;
+  display: inline-block; }
 
 /*# sourceMappingURL=application.css.css.map */

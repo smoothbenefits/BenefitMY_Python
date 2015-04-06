@@ -161,6 +161,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/upload/meta/(?P<user_id>\w+)/?$' % PREFIX, 
         get_upload_form_policy_and_signature, 
         name='get_upload_policy_signature'),
+    url(r'^%s/companies/(?P<comp_id>\w+)/upload/(?P<pk>\w+)/?$' % PREFIX, 
+        UploadView.as_view(), 
+        name='upload_api'),
 )
 
 

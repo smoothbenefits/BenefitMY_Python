@@ -522,8 +522,8 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', '$upload', 'UploadRepository', 'UserService',
-  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, $upload, UploadRepository, UserService){
+  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', '$upload', 'UploadRepository', 'UserService', '$http',
+  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, $upload, UploadRepository, UserService, $http){
     $scope.employee = {
       auth_type: ''
     };
@@ -542,6 +542,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
         $scope.displayAll = true;
       }
     });
+    $scope.uploadedFiles = [];
 
     $('body').addClass('onboarding-page');
     var mapContract = function(viewObject, signature){
@@ -574,6 +575,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
     $sigdiv.bind('change', function(e){
      signatureUpdated = true;
     });
+
     $scope.clearSignature = function(){
       $sigdiv.jSignature("reset");
       signatureUpdated = false;
@@ -605,14 +607,31 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
     };
 
     $scope.upload = function (files) {
+      var getS3Key = function(companyName, fileKey, fileName){
+        var s3Key = companyName + ':' + fileKey + ':' + fileName;
+        s3Key = s3Key.split(' ').join('_');
+        return s3Key;
+      };
+
       UserService.getCurUserInfo().then(function(userInfo){
         UploadRepository.metadata.get({compId:userInfo.currentRole.company.id, userId:userInfo.user.id})
           .$promise.then(function(meta){
+            UploadRepository.uploadsByUser.query({compId:userInfo.currentRole.company.id, pk:userInfo.user.id})
+            .$promise.then(function(resp){
+              _.each(resp, function(upload){
+                $scope.uploadedFiles.push({
+                  fileName: upload.file_name,
+                  fileType: upload.file_type.replace('/', '-'),
+                  s3Key: upload.S3,
+                  s3Host: meta.s3Host
+                });
+              });
+            });
             if (files && files.length) {
               for (var i = 0; i < files.length; i++) {
                   var file = files[i];
-                  var s3Key = userInfo.currentRole.company.name + ':' + meta.fileKey + ':' + file.name;
-                  s3Key = s3Key.split(' ').join('_')
+                  var s3Key = getS3Key(userInfo.currentRole.company.name, meta.fileKey, file.name);
+                  var file_type = file.type != '' ? file.type : 'application/octet-stream';
                   $upload.upload({
                       url: meta.s3Host,
                       method: 'POST',
@@ -622,7 +641,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
                         acl: 'private', // sets the access to the uploaded file in the bucket: private or public 
                         policy: meta.policy, // base64-encoded json policy (see article below)
                         signature: meta.signature, // base64-encoded signature based on policy string (see article below)
-                        "Content-Type": file.type != '' ? file.type : 'application/octet-stream', // content type of the file (NotEmpty)
+                        "Content-Type": file_type, // content type of the file (NotEmpty)
                         filename: file.name // this is needed for Flash polyfill IE8-9
                       },
                       file: file
@@ -630,13 +649,48 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
                       var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                       console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
                   }).success(function (data, status, headers, config) {
-                      console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+                    var uploaded = {
+                      'upload_type':'I9',
+                      'user': userInfo.user.id,
+                      'company':userInfo.currentRole.company.id,
+                      'S3': getS3Key(userInfo.currentRole.company.name, meta.fileKey, config.file.name),
+                      'file_name': config.file.name,
+                      'file_type': config.file.type != '' ? config.file.type : 'application/octet-stream'
+                    }
+                    UploadRepository.uploadsByUser.save(
+                        {compId:userInfo.currentRole.company.id, pk:userInfo.user.id}, 
+                        uploaded,
+                        function(response){
+                          $scope.uploadedFiles.push({
+                            fileName:config.file.name, 
+                            fileType: (config.file.type != '' ? config.file.type : 'application/octet-stream').replace('/', '-'),
+                            s3Key: meta.s3Host + getS3Key(userInfo.currentRole.company.name, meta.fileKey, config.file.name),
+                            s3Host: meta.s3Host});
+                        }, function(error){
+                          //We need to delete the file from the S3 here!
+                        });
                   });
               }
             }
           });
       });
     };
+
+    $scope.deleteFile = function(file){
+      var req = {
+       method: 'DELETE',
+       url: file.s3Key,
+       headers: {
+         'Authorization': undefined
+        }      
+      };
+      $http(req).success(function(response){
+        alert('file deleted from S3!');
+      }).error(function(errorResponse){
+        alert(errorResponse);
+      });
+    };
+
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',

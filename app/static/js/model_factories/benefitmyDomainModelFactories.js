@@ -264,7 +264,7 @@ benefitmyDomainModelFactories.factory('UploadRepository', ['$resource',
   function($resource){
     return {
       metadata:$resource('/api/v1/companies/:compId/upload/meta/:userId', {compId:'@compId', userId:'@userId'}),
-      uploadsByUser:$resource('/api/v1/company/:compId/upload/:userId/', {compId:'@compId', userId:'@userId'})
+      uploadsByUser:$resource('/api/v1/companies/:compId/upload/:pk/', {compId:'@compId', pk:'@pk'})
     };
   }
 ]);
