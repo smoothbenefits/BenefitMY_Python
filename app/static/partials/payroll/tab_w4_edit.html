@@ -1,0 +1,116 @@
+<div class="form-holder">
+    <h4>Please let us know how to withhold your paycheck for Income Tax</h4>
+    <form name="taxForm">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="radio-label">
+                    <label class="control-label">How do you choose to withhold for tax?</label>
+                </div>
+                <div class="radio-container">
+                    <div class="col-md-4 col">
+                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="single" />
+                        Single
+                    </div>
+                    <div class="col-md-4 col">
+                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="married" />
+                        Married
+                    </div>
+                    <div class="col-md-12 col">
+                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="higher">
+                        Married, but withold at higher Single rate
+                    </div>
+                    <div class="notes" style="clear:both;">Note, if married, but legally separated, or spouse is a nonresident alien, check the "Single" box</div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="radio-label">
+                    <label class="control-label">Will you file as head of household on your tax return?</label>
+                </div>
+                <div class="radio-container">
+                    <div class="col-md-2">
+                        <input type="radio" name="household" ng-model="employee.headOfHousehold" value="0" checked />
+                        No
+                    </div>
+                    <div class="col-md-2">
+                        <input type="radio" name="household" ng-model="employee.headOfHousehold" value="1" />
+                        Yes
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="radio-label">
+                    <label class="control-label">Will you claim at least $1900 for tax credit as <b>child or dependent care expenses</b>?</label>
+                </div>
+                <div class="radio-container">
+                    <div class="col-md-2">
+                        <input type="radio" name="childExpense" ng-model="employee.childExpense" value="0" checked />
+                        No
+                    </div>
+                    <div class="col-md-2">
+                        <input type="radio" name="childExpense" ng-model="employee.childExpense" value="1" />
+                        Yes
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <label class="control-label">Enter the number of dependents&nbsp;</label>
+                <span class="textbox col-xs-12">
+                    <input type="number"
+                        min="0"
+                        ng-model="employee.dependent_count"
+                        ng-required="true"
+                        ng-name = "dependent_count"
+                        ng-change = "calculateTotal()" />
+                </span>
+                <div class="col-xs-9" style="height:20px"> Calculated withholding number <br />(based on your dependents and withold type)</div>
+                <div class="col-xs-3">{{employee.calculated_points}}</div>
+                <div style="clear:both"></div>
+            </li>
+            <li class="list-group-item">
+                <label class="control-label">Enter the withholding number you want to appear on your W4 (line 5 on your W-4)</label>
+                <span class="textbox col-xs-12">
+                    <input type="number"
+                        min="0"
+                        ng-model="employee.user_defined_points"
+                        ng-required="true"
+                        ng-name = "user_defined_points"
+                        ng-change="userDefinedPointsSet()" />
+                </span>
+                <div style="clear:both"></div>
+            </li>
+            <li class="list-group-item">
+                <label class="control-label">Enter the extra amount from your annual pay you want to withhold for tax (line 6 on your W-4)</label>
+                <span class="input-group-addon col-xs-1" style="padding:13.5px">$</span>
+                <input class="col-xs-11"
+                    style="padding:10px"
+                    type="number"
+                    min="0"
+                    width="400"
+                    ng-model="employee.extra_amount"
+                    ng-required="true"/>
+                <div style="clear:both"></div>
+            </li>
+        </ul>
+        <div ng-click="acknowledgeW4()" class="inner-td-div">
+            <a target="_blank" href="/static/documents/w4.pdf">
+                <input type="checkbox" 
+                    name="downloadW4"
+                    id="downloadW4"
+                    ng-model="employee.downloadW4"/>
+            <span>Click to download W-4 and acknowledge you have read the entire W-4 form
+            </span></a>
+        </div>
+        <div class="submit-box">
+            <div class="row">
+                <div class="col-sm-6"><a class="btn green">Previous</a></div>
+                <div class="col-sm-6">
+                    <button ng-click="submit()" class="btn green" ng-disabled="form.$invalid || !employee.downloadW4">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div><!-- / .form-holder -->
