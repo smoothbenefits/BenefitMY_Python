@@ -14,8 +14,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'FsaService',
      'LifeInsuranceService',
   function employeeHome($scope,
-                        $state, 
                         $location,
+                        $state,
                         $stateParams,
                         clientListRepository,
                         employeeBenefits,
@@ -109,6 +109,10 @@ var employeeHome = employeeControllers.controller('employeeHome',
       $state.go(state);
      };
 
+     $scope.editPayrollInfo = function(){
+      $state.go('employee_payroll');
+     };
+
     // FSA election data
     curUserPromise.then(function(userId) {
       FsaService.getFsaElectionForUser(userId, function(response) {
@@ -169,7 +173,6 @@ var addFamily = employeeControllers.controller('addFamily',
     });
   }
 }]);
-
 
 var viewDocument = employeeControllers.controller('viewDocument',
   ['$scope', '$location', '$stateParams', 'userDocument', 'currentUser', 'documentRepository',
@@ -242,6 +245,100 @@ var viewDocument = employeeControllers.controller('viewDocument',
       $location.path('/employee');
     };
 }]);
+
+var employeePayroll = employeeControllers.controller('employeePayrollController',
+  ['$scope',
+   '$state',
+   'tabLayoutGlobalConfig',
+   function($scope, 
+            $state,
+            tabLayoutGlobalConfig){
+    $scope.section = _.findWhere(tabLayoutGlobalConfig, {section_name: 'employee_payroll'});
+
+    $scope.goToState = function(state){
+      $state.go(state);
+    };
+   }
+  ]);
+
+var employeeW4Controller = employeeControllers.controller('employeeW4Controller', 
+  ['$scope',
+   '$state',
+   'currentUser', 
+   'employeePayrollService', 
+   function($scope, 
+            $state, 
+            currentUser, 
+            employeePayrollService){
+    var userPromise = currentUser.get().$promise.then(function(response){
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      employeePayrollService.getEmployeeTaxByUserId(userId).then(function(taxFields){
+        $scope.fields = taxFields;
+      });
+    });
+
+    $scope.calculateTotal = function(){
+      var total = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
+      total += $scope.employee.dependent_count;
+      if($scope.employee.childExpense && total){
+        total += parseInt($scope.employee.childExpense);
+      }
+      if($scope.employee.headOfHousehold && total){
+        total += parseInt($scope.employee.headOfHousehold);
+      }
+      if(!total)
+      {
+        total = undefined;
+      }
+      $scope.employee.calculated_points = total;
+      if(!$scope.employee.user_defined_set){
+        $scope.employee.user_defined_points = $scope.employee.calculated_points;
+      }
+    };
+
+    $scope.userDefinedPointsSet = function(){
+      $scope.employee.user_defined_set = true;
+    };
+
+    $scope.acknowledgeW4 = function(){
+      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    };
+
+    $scope.submit=function(){
+      if(!$scope.employee.downloadW4){
+        alert('Please verify you have downloaded and read the entire W-4 form');
+        return;
+      }
+      if(typeof($scope.employee.dependent_count) === 'undefined'){
+        alert('Please enter the number of dependents');
+        return;
+      }
+      if(typeof($scope.employee.user_defined_points) === 'undefined'){
+        alert('Please enter the final withholding number (line 5 on your W-4)');
+        return;
+      }
+      if(typeof($scope.employee.extra_amount) === 'undefined'){
+        alert('Please enter the extra amount of your paycheck to withhold (Line 6 on your W-4)');
+        return;
+      }
+
+      // Add marriage number to $scope object
+      $scope.employee.marriage = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
+      userPromise.then(function(userId){
+        employeePayrollService.saveEmployeeTaxByUserId(userId, $scope.employee).then(function(response){
+          $state.go('employee_payroll.w4');
+        });
+      });
+    };
+
+    $scope.editW4 = function(){
+      $state.go('employee_payroll.w4_edit');
+    };
+   }
+  ]);
 
 var employeeProfile = employeeControllers.controller('employeeProfileController',
   ['$scope',
