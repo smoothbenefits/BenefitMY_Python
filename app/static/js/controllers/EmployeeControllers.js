@@ -253,7 +253,6 @@ var viewDocument = employeeControllers.controller('viewDocument',
     };
 }]);
 
-<<<<<<< HEAD
 var employeePayroll = employeeControllers.controller('employeePayrollController',
   ['$scope',
    '$state',
@@ -441,25 +440,6 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
     $scope.editI9 = function(){
       $state.go('employee_profile.i9_edit');
     };
-=======
-var employeeProfile = employeeControllers.controller('employeeProfileController',
-  ['$scope',
-   '$state',
-   '$stateParams',
-   '$location',
-   'benefitSectionGlobalConfig', 
-   function ($scope, 
-             $state, 
-             $stateParams, 
-             $location, 
-             benefitSectionGlobalConfig){
-    var type = $stateParams.type;
-    $scope.section = _.findWhere(benefitSectionGlobalConfig, { name: 'employee_profile'});
-
-    $scope.goToState = function(state){
-      $state.go(state);
-    }
->>>>>>> switch to state routing
    }
   ]);
 
