@@ -132,5 +132,25 @@ settings.constant('tabLayoutGlobalConfig', [
                 state: 'employee_profile.w4'
             }
         ]
+    },
+    {
+        id: 3,
+        section_name: 'employee_payroll',
+        tabs: [
+            {
+                id: 1,
+                verbose_name: 'W4 Form',
+                name: 'w4',
+                active: true,
+                state: 'employee_payroll.w4'
+            },
+            {
+                id: 2,
+                verbose_name: 'Direct Deposit',
+                name: 'direct_deposit',
+                active: false,
+                state: 'employee_payroll.direct_deposit'
+            }
+        ]
     }
 ]);
