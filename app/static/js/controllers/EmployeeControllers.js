@@ -30,7 +30,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
             employeePayrollService,
             employeeProfileService){
 
-
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
@@ -112,7 +111,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
      $scope.goToState = function(state){
       $state.go(state);
      };
-
+     
     curUserPromise.then(function(userId) {
       // FSA election data
       FsaService.getFsaElectionForUser(userId, function(response) {
