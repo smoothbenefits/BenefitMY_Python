@@ -14,7 +14,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'FsaService',
      'LifeInsuranceService',
   function employeeHome($scope,
-                        $state, 
                         $location,
                         $state,
                         $stateParams,
@@ -108,6 +107,10 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
      $scope.goToState = function(state){
       $state.go(state);
+     };
+
+     $scope.editPayrollInfo = function(){
+      $state.go('employee_payroll');
      };
 
     // FSA election data

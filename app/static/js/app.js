@@ -215,16 +215,6 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_profile/w4_edit.html',
                 controller: 'employeeProfileW4Controller'
             }).
-            state('employee_profile.i9', {
-                url: '/i9',
-                templateUrl: '/static/partials/employee_profile/i9_display.html',
-                controller: 'employeeProfileI9Controller'
-            }).
-            state('employee_profile.i9_edit', {
-                url: '/i9/edit',
-                templateUrl: '/static/partials/employee_profile/i9_edit.html',
-                controller: 'employeeProfileI9Controller'
-            }).
             state('/employee/family/:employee_id', {
                 url: '/employee/family/:employee_id',
                 templateUrl: '/static/partials/employee_family.html',
