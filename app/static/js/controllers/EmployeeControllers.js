@@ -14,6 +14,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'FsaService',
      'LifeInsuranceService',
      'employeePayrollService', 
+     'employeeProfileService',
   function ($scope,
             $location,
             $state,
@@ -26,7 +27,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
             EmployeeLetterSignatureValidationService,
             FsaService,
             LifeInsuranceService,
-            employeePayrollService){
+            employeePayrollService,
+            employeeProfileService){
 
     $('body').removeClass('onboarding-page');
     var curUserId;
@@ -109,10 +111,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
      $scope.goToState = function(state){
       $state.go(state);
      };
-
-     $scope.editPayrollInfo = function(){
-      $state.go('employee_payroll');
-     };
     
     curUserPromise.then(function(userId) {
       // FSA election data
@@ -132,6 +130,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
       // W4 Form
       employeePayrollService.getEmployeeTaxSummaryByUserId(userId).then(function(response){
         $scope.w4Info = response;
+      });
+
+      // I9 Form
+      employeeProfileService.getEmploymentAuthSummaryByUserId(userId).then(function(response){
+        $scope.i9Info = response;
       });
     });
 
@@ -353,20 +356,90 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
 var employeeProfile = employeeControllers.controller('employeeProfileController',
   ['$scope',
    '$state',
-   '$stateParams',
    '$location',
-   'benefitSectionGlobalConfig', 
+   'tabLayoutGlobalConfig', 
    function ($scope, 
              $state, 
-             $stateParams, 
              $location, 
-             benefitSectionGlobalConfig){
-    var type = $stateParams.type;
-    $scope.section = _.findWhere(benefitSectionGlobalConfig, { name: 'employee_profile'});
+             tabLayoutGlobalConfig){
+    $scope.section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_profile'});
 
     $scope.goToState = function(state){
       $state.go(state);
+    };
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    };
+   }
+  ]);
+
+var employeeI9Controller = employeeControllers.controller('employeeI9Controller', 
+  ['$scope',
+   '$state',
+   'currentUser', 
+   'employeeProfileService', 
+   function($scope,
+            $state,
+            currentUser,
+            employeeProfileService){
+    $scope.employee = {auth_type: ''};
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      // assign user id to current employee
+      $scope.employee.userId = userId;
+
+      employeeProfileService.getEmploymentAuthByUserId(userId).then(function(response){
+        $scope.fields = response;
+      });
+    });
+
+    var signatureUpdated = false;
+    var $sigdiv = $("#auth_signature");
+    if(_.isUndefined($sigdiv))
+    {
+      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
     }
+    $sigdiv.jSignature();
+    $sigdiv.bind('change', function(e){
+     signatureUpdated = true;
+    });
+
+    $scope.clearSignature = function(){
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
+    };
+
+    $scope.acknowledgedI9 = function(){
+      $scope.employee.downloadI9 = !$scope.employee.downloadI9;
+    };
+
+    $scope.signDocument = function(){
+      if(!signatureUpdated){
+        alert('Please sign your name on the signature pad');
+      }
+      if(!$scope.employee.downloadI9){
+        alert('Please download the I-9 document and acknowledge you have read the entire form above.');
+      }
+      else
+      {
+        var signatureData = $sigdiv.jSignature('getData', 'svg');
+        $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
+        employeeProfileService.saveEmploymentAuthByUserId($scope.employee, $scope.signatureImage).then(function(response){
+          $state.go('employee_profile.i9');
+        }, function(error){
+          alert('Employment authorization has NOT been saved. Please try again later.');
+        });
+      }
+    };
+
+    $scope.editI9 = function(){
+      $state.go('employee_profile.i9_edit');
+    };
    }
   ]);
 
