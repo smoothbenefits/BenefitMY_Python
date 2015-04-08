@@ -522,29 +522,21 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', '$upload', 'UploadRepository', 'UserService', '$http',
-  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, $upload, UploadRepository, UserService, $http){
+  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', 'UploadService',
+  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, UploadService){
     $scope.employee = {
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
-    UserService.getCurUserInfo().then(function(userInfo){
-      $scope.userInfo = userInfo;
-      $scope.$watch('files', function () {
-          $scope.upload($scope.files);
-      });
-      $scope.uploadedFiles = [];
-      UploadRepository.uploadsByUser.query({compId:$scope.userInfo.currentRole.company.id, pk:$scope.userInfo.user.id})
-      .$promise.then(function(resp){
-        _.each(resp, function(upload){
-          $scope.uploadedFiles.push({
-            fileName: upload.file_name,
-            fileType: upload.file_type.replace('/', '-'),
-            s3Key: upload.S3,
-          });
-        });
-      });
+    $scope.$watch('files', function () {
+        $scope.upload($scope.files);
     });
+
+    $scope.uploadedFiles = [];
+    UploadService.getAllUploadsByCurrentUser().then(function(resp){
+      $scope.uploadedFiles = resp;
+    });
+        
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
@@ -620,73 +612,27 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
     };
 
     $scope.upload = function (files) {
-      var getS3Key = function(companyName, fileKey, fileName){
-        var s3Key = companyName + ':' + fileKey + ':' + fileName;
-        s3Key = s3Key.split(' ').join('_');
-        return s3Key;
-      };
-        UploadRepository.metadata.get({compId:$scope.userInfo.currentRole.company.id, userId:$scope.userInfo.user.id})
-          .$promise.then(function(meta){
-            if (files && files.length) {
-              for (var i = 0; i < files.length; i++) {
-                  var file = files[i];
-                  var s3Key = getS3Key($scope.userInfo.currentRole.company.name, meta.fileKey, file.name);
-                  var file_type = file.type != '' ? file.type : 'application/octet-stream';
-                  $upload.upload({
-                      url: meta.s3Host,
-                      method: 'POST',
-                      fields : {
-                        key: s3Key, // the key to store the file on S3, could be file name or customized
-                        AWSAccessKeyId: meta.accessKey, 
-                        acl: 'private', // sets the access to the uploaded file in the bucket: private or public 
-                        policy: meta.policy, // base64-encoded json policy (see article below)
-                        signature: meta.signature, // base64-encoded signature based on policy string (see article below)
-                        "Content-Type": file_type, // content type of the file (NotEmpty)
-                        filename: file.name // this is needed for Flash polyfill IE8-9
-                      },
-                      file: file
-                  }).progress(function (evt) {
-                      var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                      console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
-                  }).success(function (data, status, headers, config) {
-                    var uploaded = {
-                      'upload_type':'I9',
-                      'user': $scope.userInfo.user.id,
-                      'company':$scope.userInfo.currentRole.company.id,
-                      'S3': getS3Key($scope.userInfo.currentRole.company.name, meta.fileKey, config.file.name),
-                      'file_name': config.file.name,
-                      'file_type': config.file.type != '' ? config.file.type : 'application/octet-stream'
-                    }
-                    UploadRepository.uploadsByUser.save(
-                        {compId:$scope.userInfo.currentRole.company.id, pk:$scope.userInfo.user.id}, 
-                        uploaded,
-                        function(response){
-                          $scope.uploadedFiles.push({
-                            fileName:config.file.name, 
-                            fileType: (config.file.type != '' ? config.file.type : 'application/octet-stream').replace('/', '-'),
-                            s3Key: meta.s3Host + getS3Key($scope.userInfo.currentRole.company.name, meta.fileKey, config.file.name),
-                            s3Host: meta.s3Host});
-                        }, function(error){
-                          //We need to delete the file from the S3 here!
-                        });
-                  });
-              }
-            }
-          });
+      if (files && files.length) {
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          UploadService.uploadFile(file, 'I9').then(
+            function(fileUploaded){
+              $scope.uploadedFiles.push(fileUploaded);
+            },
+            function(error){
+              alert('upload error happened!');
+            },
+            function(evt){
+              //Here is the function for showing upload progress
+            });
+        }
+      }
     };
 
     $scope.deleteFile = function(file){
-      var req = {
-       method: 'DELETE',
-       url: file.s3Key,
-       headers: {
-         'Authorization': undefined
-        }      
-      };
-      $http(req).success(function(response){
-        alert('file deleted from S3!');
-      }).error(function(errorResponse){
-        alert(errorResponse);
+      UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
+        $scope.uploadedFiles = _.without($scope.uploadedFiles, file);
+        alert('file_deleted: ' + file.name);
       });
     };
 

@@ -73,7 +73,7 @@ from app.views.company_user_summary_view import (
     CompanyUsersSummaryExcelExportView,
     CompanyUsersDirectDepositExcelExportView,
     CompanyUsersLifeInsuranceBeneficiaryExcelExportView) 
-from app.views.upload import (get_upload_form_policy_and_signature, 
+from app.views.upload import (_get_uploads_by_user, 
                               UploadView)
 
 
@@ -158,9 +158,10 @@ urlpatterns = patterns('app.views',
     url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
 
     # upload API
-    url(r'^%s/companies/(?P<pk>\w+)/upload/meta/(?P<user_id>\w+)/?$' % PREFIX, 
-        get_upload_form_policy_and_signature, 
-        name='get_upload_policy_signature'),
+    url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX, 
+        _get_uploads_by_user, 
+        name='get_uploads_by_user'),
+    
     url(r'^%s/companies/(?P<comp_id>\w+)/upload/(?P<pk>\w+)/?$' % PREFIX, 
         UploadView.as_view(), 
         name='upload_api'),
