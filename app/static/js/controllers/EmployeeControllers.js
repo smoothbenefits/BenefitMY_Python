@@ -13,18 +13,20 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'EmployeeLetterSignatureValidationService',
      'FsaService',
      'LifeInsuranceService',
-  function employeeHome($scope,
-                        $location,
-                        $state,
-                        $stateParams,
-                        clientListRepository,
-                        employeeBenefits,
-                        currentUser,
-                        userDocument,
-                        EmployeePreDashboardValidationService,
-                        EmployeeLetterSignatureValidationService,
-                        FsaService,
-                        LifeInsuranceService){
+     'employeePayrollService', 
+  function ($scope,
+            $location,
+            $state,
+            $stateParams,
+            clientListRepository,
+            employeeBenefits,
+            currentUser,
+            userDocument,
+            EmployeePreDashboardValidationService,
+            EmployeeLetterSignatureValidationService,
+            FsaService,
+            LifeInsuranceService,
+            employeePayrollService){
 
     $('body').removeClass('onboarding-page');
     var curUserId;
@@ -87,10 +89,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
       }
     });
 
-     var curUserPromise = currentUser.get().$promise.
-         then(function(userResponse){
-             return userResponse.user.id;
-         });
+    var curUserPromise = currentUser.get().$promise.then(function(userResponse){
+      return userResponse.user.id;
+    });
 
      var documentPromise = curUserPromise.then(function(userId){
                                                return userDocument.query({userId:userId}).$promise;
@@ -112,22 +113,25 @@ var employeeHome = employeeControllers.controller('employeeHome',
      $scope.editPayrollInfo = function(){
       $state.go('employee_payroll');
      };
-
-    // FSA election data
+    
     curUserPromise.then(function(userId) {
+      // FSA election data
       FsaService.getFsaElectionForUser(userId, function(response) {
         $scope.fsaElection = response;
       });
-    });
 
-    // Life Insurance
-    curUserPromise.then(function(userId) {
+      // Life Insurance
       LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(userId, function(response) {
         $scope.familyInsurancePlan = response;
       });
 
       LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
         $scope.basicLifeInsurancePlan = response;
+      });
+
+      // W4 Form
+      employeePayrollService.getEmployeeTaxSummaryByUserId(userId).then(function(response){
+        $scope.w4Info = response;
       });
     });
 
@@ -249,14 +253,20 @@ var viewDocument = employeeControllers.controller('viewDocument',
 var employeePayroll = employeeControllers.controller('employeePayrollController',
   ['$scope',
    '$state',
+   '$location', 
    'tabLayoutGlobalConfig',
    function($scope, 
             $state,
+            $location, 
             tabLayoutGlobalConfig){
     $scope.section = _.findWhere(tabLayoutGlobalConfig, {section_name: 'employee_payroll'});
 
     $scope.goToState = function(state){
       $state.go(state);
+    };
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
     };
    }
   ]);
