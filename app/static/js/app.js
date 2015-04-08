@@ -204,15 +204,20 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/payroll/tab_direct_deposit.html',
                 controller: 'employeeDirectDepositController',
             }).
-            state('employee_profile.w4', {
-                url: '/w4',
-                templateUrl: '/static/partials/employee_profile/w4_display.html',
-                controller: 'employeeProfileW4Controller'
+            state('employee_profile', {
+                url: '/employee/profile',
+                templateUrl: '/static/partials/employee_profile/main.html',
+                controller: 'employeeProfileController'
             }).
-            state('employee_profile.w4_edit', {
-                url: '/w4/edit',
-                templateUrl: '/static/partials/employee_profile/w4_edit.html',
-                controller: 'employeeProfileW4Controller'
+            state('employee_profile.i9', {
+                url: '/i9',
+                templateUrl: '/static/partials/employee_profile/tab_i9.html',
+                controller: 'employeeI9Controller'
+            }).
+            state('employee_profile.i9_edit', {
+                url: '/i9/edit',
+                templateUrl: '/static/partials/employee_profile/tab_i9_edit.html',
+                controller: 'employeeI9Controller'
             }).
             state('/employee/family/:employee_id', {
                 url: '/employee/family/:employee_id',

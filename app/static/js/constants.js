@@ -119,17 +119,10 @@ settings.constant('tabLayoutGlobalConfig', [
         tabs: [
             {
                 id: 1,
-                verbose_name: 'I-9',
+                verbose_name: 'Employment Authorization (I9)',
                 name: 'i9',
-                active: false,
+                active: true,
                 state: 'employee_profile.i9'
-            },
-            {
-                id: 2, 
-                verbose_name: 'W-4',
-                name: 'w4',
-                active: false,
-                state: 'employee_profile.w4'
             }
         ]
     },
