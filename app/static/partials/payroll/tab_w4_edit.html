@@ -7,11 +7,11 @@
                     <label class="control-label">How do you choose to withhold for tax?</label>
                 </div>
                 <div class="radio-container">
-                    <div class="col-md-4 col">
+                    <div class="col-md-6 col">
                         <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="single" />
                         Single
                     </div>
-                    <div class="col-md-4 col">
+                    <div class="col-md-6 col">
                         <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="married" />
                         Married
                     </div>
@@ -104,7 +104,6 @@
         </div>
         <div class="submit-box">
             <div class="row">
-                <div class="col-sm-6"><a class="btn green">Previous</a></div>
                 <div class="col-sm-6">
                     <button ng-click="submit()" class="btn green" ng-disabled="form.$invalid || !employee.downloadW4">
                         Submit

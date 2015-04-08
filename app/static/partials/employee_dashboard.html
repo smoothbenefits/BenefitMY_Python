@@ -9,7 +9,6 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-
     <div class="table-responsive table-holder table" ng-if="benefits.length>0">
         <div class="table-sub-title">
             Selected Benefits
@@ -176,6 +175,37 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
+    <div class="table-responsive table-holder table">
+        <div class="table-sub-title">W4 Form</div>
+        <table class="table table-striped" ng-show="w4Info">
+            <thead>
+                <tr>
+                    <th><span>Calculated Points</span></th>
+                    <th><span>User Defined Points</span></th>
+                    <th><span>Extra Withholding Amount</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{w4Info.calculated_points}}</td>
+                    <td>{{w4Info.user_defined_points}}</td>
+                    <td>$ {{w4Info.extra_amount}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-striped" ng-hide="w4Info">
+            <thead>
+                <tr>
+                    <th width="180"><span>W4 Inforamtion</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="180">We do not have your W4 form information yet.</td>
+                </tr>
+            </tbody>    
+        </table>
+    </div>
     <div class="table-responsive table-holder table">
         <table class="table table-striped">
             <thead>
