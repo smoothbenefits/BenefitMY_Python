@@ -9,6 +9,18 @@ benefitmyService.factory('employeePayrollService',
              profileSettings){
 
      return {
+     	getEmployeeTaxSummaryByUserId: function(userId){
+     		var deferred = $q.defer();
+
+     		employeeTaxRepository.get({userId: userId}).$promise.then(function(response){
+     			deferred.resolve(response);
+     		}, function(error){
+     			deferred.reject(response);
+     		});
+
+     		return deferred.promise;
+     	},
+
 		getEmployeeTaxByUserId: function(userId){
 		  var deferred = $q.defer();
 
