@@ -205,21 +205,6 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/payroll/tab_direct_deposit.html',
                 controller: 'employeeDirectDepositController',
             }).
-            state('employee_payroll.w4', {
-                url: '/w4',
-                templateUrl: '/static/partials/payroll/tab_w4.html',
-                controller: 'employeeW4Controller'
-            }).
-            state('employee_payroll.w4_edit', {
-                url: '/edit',
-                templateUrl: '/static/partials/payroll/tab_w4_edit.html',
-                controller: 'employeeW4Controller'
-            }).
-            state('employee_payroll.direct_deposit', {
-                url: '/direct_deposit',
-                templateUrl: '/static/partials/payroll/tab_direct_deposit.html',
-                controller: 'employeeDirectDepositController',
-            }).
             state('employee_profile', {
                 url: '/employee/profile',
                 templateUrl: '/static/partials/employee_profile/main.html',
