@@ -4,6 +4,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ui.mask',
     'ui.utils.masks',
     'ui.bootstrap',
+    'angularFileUpload',
     'benefitmyDomainModelFactories',
     'benefitmyService',
     'benefitmyApp.constants',

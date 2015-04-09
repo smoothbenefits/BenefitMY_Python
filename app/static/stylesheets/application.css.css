@@ -13,5 +13,49 @@
  *= require_tree .
  *= require_self
  */
+.upload-functional-container {
+  margin-bottom: 10px;
+  font-size: 14px; }
+
+.drop-box {
+  background: #F8F8F8;
+  border: 5px dashed #DDD;
+  text-align: center;
+  margin: 20px;
+  text-align: center; }
+
+.dragover {
+  background: #d4d9d8 !important;
+  border: 5px dashed #8CC63E; }
+
+.upload-button {
+  Height: 26px;
+  line-height: 30px;
+  padding: 0 10px;
+  background: #CCC;
+  appearance: button;
+  -moz-appearance: button;
+  -webkit-appearance: button;
+  position: relative;
+  text-align: center;
+  top: 7px;
+  cursor: pointer; }
+
+.file-icon {
+  width: 60px;
+  vertical-align: middle; }
+
+.application-pdf {
+  background-image: url("http://www.afhdr.org/AfHDR/images/pdf-icon.gif");
+  background-repeat: no-repeat;
+  width: 25px;
+  display: inline-block; }
+
+.image-png,
+.image-jpeg {
+  background-image: url("http://inspire.up.pt/images/icons/ico16_ext_jpg.png");
+  background-repeat: no-repeat;
+  width: 20px;
+  display: inline-block; }
 
 /*# sourceMappingURL=application.css.css.map */

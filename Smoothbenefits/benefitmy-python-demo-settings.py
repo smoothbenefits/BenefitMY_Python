@@ -100,6 +100,23 @@ DATABASES = {
     }
 }
 
+# AMAZON AWS
+## https://benefitmy.signin.aws.amazon.com
+AMAZON_S3_BUCKET = 'benefitmy-demo-uploads'
+AMAZON_S3_HOST = 'https://{0}.s3.amazonaws.com/'.format(AMAZON_S3_BUCKET)
+AMAZON_AWS_ACCESS_KEY_ID = 'AKIAI2LOIPXMEPLCJBEA'
+AMAZON_AWS_SECRET = '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'
+AMAZON_S3_UPLOAD_POLICY= {
+    "conditions": [ 
+        {"bucket": AMAZON_S3_BUCKET}, 
+        ["starts-with", "$key", ""],
+        {"acl": "private"},
+        ["starts-with", "$Content-Type", ""],
+        ["starts-with", "$filename", ""],
+        ["content-length-range", 0, 52428800],
+    ]
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -243,6 +260,8 @@ PIPELINE_JS = {
             'js/services/benefitDisplayService.js',
             'js/services/documentTypeService.js',
             'js/services/personInfoService.js',
+            'js/services/UserService.js',
+            'js/services/UploadService.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }

@@ -73,6 +73,8 @@ from app.views.company_user_summary_view import (
     CompanyUsersSummaryExcelExportView,
     CompanyUsersDirectDepositExcelExportView,
     CompanyUsersLifeInsuranceBeneficiaryExcelExportView) 
+from app.views.upload import (_get_uploads_by_user, 
+                              UploadView)
 
 
 PREFIX = "api/v1"
@@ -151,13 +153,18 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
 
-
-
-
     # util api
 
     url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
 
+    # upload API
+    url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX, 
+        _get_uploads_by_user, 
+        name='get_uploads_by_user'),
+    
+    url(r'^%s/companies/(?P<comp_id>\w+)/upload/(?P<pk>\w+)/?$' % PREFIX, 
+        UploadView.as_view(), 
+        name='upload_api'),
 )
 
 

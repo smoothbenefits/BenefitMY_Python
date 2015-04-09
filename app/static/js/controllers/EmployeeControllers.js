@@ -522,13 +522,21 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', 'UploadService',
+  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, UploadService){
     $scope.employee = {
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
+    $scope.$watch('files', function () {
+        $scope.upload($scope.files);
+    });
 
+    $scope.uploadedFiles = [];
+    UploadService.getAllUploadsByCurrentUser().then(function(resp){
+      $scope.uploadedFiles = resp;
+    });
+        
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
@@ -572,6 +580,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
     $sigdiv.bind('change', function(e){
      signatureUpdated = true;
     });
+
     $scope.clearSignature = function(){
       $sigdiv.jSignature("reset");
       signatureUpdated = false;
@@ -601,6 +610,31 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
           });
       }
     };
+
+    $scope.upload = function (files) {
+      if (files && files.length) {
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          UploadService.uploadFile(file, 'I9').then(
+            function(fileUploaded){
+              $scope.uploadedFiles.push(fileUploaded);
+            },
+            function(error){
+              alert('upload error happened!');
+            },
+            function(evt){
+              //Here is the function for showing upload progress
+            });
+        }
+      }
+    };
+
+    $scope.deleteFile = function(file){
+      UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
+        $scope.uploadedFiles = _.without($scope.uploadedFiles, file);
+      });
+    };
+
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',

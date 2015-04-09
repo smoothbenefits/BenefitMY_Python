@@ -97,19 +97,15 @@ var userController = userControllers.controller('userController',
   ['$scope', 
    '$http', 
    '$location', 
-   'currentUser',
-   'users', 
+   'UserService',
    'userLogOut', 
-   'clientListRepository',
    'benefitSectionGlobalConfig',
    'CompanyEmployeeSummaryService',
   function userController($scope, 
                           $http, 
                           $location, 
-                          currentUser, 
-                          users, 
+                          UserService,
                           userLogOut, 
-                          clientListRepository,
                           benefitSectionGlobalConfig,
                           CompanyEmployeeSummaryService) {
     $scope.roleArray = [];
@@ -119,19 +115,11 @@ var userController = userControllers.controller('userController',
         broker:'Broker',
         employee: 'Employee'
       };
-
-    var userPromise = currentUser.get().$promise.then(function(response){
-      $scope.curUser = response.user;
-      $scope.currentRoleList = response.roles;
-
-      clientListRepository.get({userId: response.user.id}).$promise.then(function(response){
-        var company = _.find(response.company_roles, {company_user_type: 'admin'});
-        if(company){
-          $scope.company_id = company.company.id;
-        }
-      });
+    UserService.getCurUserInfo().then(function(userInfo){
+      $scope.curUser = userInfo.user;
+      $scope.currentRoleList = userInfo.roles;
+      $scope.company_id = userInfo.currentRole.company.id;
     });
-    
     $scope.isRoleActive = function(checkRole){
       var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});
       return !_.isUndefined(roleFind);
@@ -150,19 +138,7 @@ var userController = userControllers.controller('userController',
     };
 
     $scope.getCurRoleFromPath = function(){
-      var curPath = $location.path();
-      if(curPath[0] === '/'){
-        curPath = curPath.substring(1);
-      }
-      var pathArray = curPath.split('/');
-      if(pathArray.length > 0)
-      {
-        return pathArray[0];
-      }
-      else
-      {
-        return undefined;
-      }
+      return UserService.getCurrentRole()
     };
 
     $scope.getCurRoleString = function(){
