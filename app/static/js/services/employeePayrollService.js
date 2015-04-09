@@ -7,7 +7,7 @@ benefitmyService.factory('employeePayrollService',
    'profileSettings', 
    function ($q,
              employeeTaxRepository,
-             utilityServcie
+             utilityServcie, 
              profileSettings){
 
     return {

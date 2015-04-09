@@ -1,13 +1,15 @@
 var benefitmyService = angular.module('benefitmyService', ['benefitmyDomainModelFactories']);
 
 var utilityService = benefitmyService.factory('utilityServcie', 
-	['$q',
-	 'profileSettings',
-	  function($q,
-	  				 profileSettings){
-		 	var mapObjectToKeyPairArray = function(type, object){
-		 		var pairs = _.pairs(object);
-		 		var validFields = _.findWhere(profileSettings, {name: type}).valid_fields;
+  ['$q',
+   'profileSettings',
+    function($q,
+             profileSettings){
+      var mapObjectToKeyPairArray = function(type, object){
+        var fields = [];
+
+        var pairs = _.pairs(object);
+        var validFields = _.findWhere(profileSettings, {name: type}).valid_fields;
         _.each(pairs, function(pair){
           var key = pair[0];
           var inSetting = _.findWhere(validFields, {name: key});
@@ -27,13 +29,13 @@ var utilityService = benefitmyService.factory('utilityServcie',
             }
             fields.push(inSetting);
           }
-       	});
+        });
 
         return fields;
-		 	};
+      };
 
-		 	return {
-		 		mapObjectToKeyPairArray: mapObjectToKeyPairArray
-		 	};
-	  }
-	]);
+      return {
+        mapObjectToKeyPairArray: mapObjectToKeyPairArray
+      };
+    }
+  ]);

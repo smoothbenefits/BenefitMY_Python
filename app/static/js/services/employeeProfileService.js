@@ -25,7 +25,7 @@ benefitmyService.factory('employeeProfileService',
 
            deferred.resolve(info);
          }, function(error){
-           deferred.reject(response);
+           deferred.reject(error);
          });
 
          return deferred.promise;
