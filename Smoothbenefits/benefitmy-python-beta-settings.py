@@ -102,7 +102,7 @@ DATABASES = {
 
 # AMAZON AWS
 ## https://benefitmy.signin.aws.amazon.com
-AMAZON_S3_BUCKET = 'benefitmy-beta-uploads'
+AMAZON_S3_BUCKET = 'benefitmy-beta1-uploads'
 AMAZON_S3_HOST = 'https://{0}.s3.amazonaws.com/'.format(AMAZON_S3_BUCKET)
 AMAZON_AWS_ACCESS_KEY_ID = 'AKIAIYFT3OPIYKIGCTZA'
 AMAZON_AWS_SECRET = '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'
