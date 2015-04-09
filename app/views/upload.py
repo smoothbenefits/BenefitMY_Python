@@ -1,6 +1,7 @@
 import base64
 import hmac, hashlib
 import json
+from urlparse import urlparse
 from datetime import datetime
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
@@ -53,6 +54,16 @@ class UploadView(APIView):
             'fileKey': s3_key, 
         }
 
+    def _get_s3_request_datetime(self):
+        return datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
+
+    def _get_S3_request_auth(self, request_method, content_type, file_path, cur_time):
+        string_to_sign = '{0}\n\n\n{1}\n{2}\n{3}'.format(request_method, 
+                                                       content_type, 
+                                                       "x-amz-date:"+ cur_time, 
+                                                       "/" + settings.AMAZON_S3_BUCKET + file_path)
+        signature = base64.b64encode(hmac.new(settings.AMAZON_AWS_SECRET, string_to_sign, hashlib.sha1).digest())
+        return "AWS" + " " + settings.AMAZON_AWS_ACCESS_KEY_ID + ":" + signature;
 
     def get(self, request, comp_id,  pk, format=None):
         uploads = self._get_object(pk, comp_id)
@@ -80,7 +91,12 @@ class UploadView(APIView):
 
     def delete(self, request, comp_id, pk, format=None):
         upload = self._get_object(pk, comp_id)
+        s3 = upload.S3
+        parsed_s3 = urlparse(s3)
+        file_path = parsed_s3.path
+        cur_time = self._get_s3_request_datetime()
+        auth = self._get_S3_request_auth("DELETE", "", file_path, cur_time)
         if upload:
             upload.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({'auth':auth, 's3':s3, 'time': cur_time})
         return Response(status=status.HTTP_404_NOT_FOUND)

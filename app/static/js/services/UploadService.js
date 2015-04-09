@@ -57,7 +57,26 @@ benefitmyService.factory('UploadService',
               deferred.reject(data, status, headers, config);
           });
         return deferred.promise;
-    }
+    };
+
+    var _deleteFromS3 = function(s3, auth, curTime){
+        var deferred = $q.defer();
+        var req = {
+            method: 'DELETE',
+            url: s3,
+            headers: {
+              'Authorization': auth,
+              'x-amz-date': curTime
+             }      
+        };
+
+        $http(req).success(function(response){
+            deferred.resolve(response);
+        }).error(function(errorResponse){
+            deferred.reject(errorResponse);
+        });
+        return deferred.promise;
+    };
 
     var uploadFile = function(file, uploadType){
         var deferred = $q.defer();
@@ -109,6 +128,12 @@ benefitmyService.factory('UploadService',
             UploadRepository.upload.delete({compId:userInfo.currentRole.company.id, pk:id})
             .$promise.then(function(deletedFile){
                 //here is where we should delete it from S3
+                _deleteFromS3(deletedFile.s3, deletedFile.auth, deletedFile.time)
+                .then(function(deleteResponse){
+                    deferred.resolve(deleteResponse);
+                }, function(errorResponse){
+                    deferred.reject(errorResponse);
+                });
                 deferred.resolve(deletedFile);
             }, function(errorResponse){
                 deferred.reject(errorResponse);
