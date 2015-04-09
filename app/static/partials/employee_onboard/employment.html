@@ -111,7 +111,8 @@
 
                     <div class="upload-functional-container" ng-show="employee.auth_type">
                         <div>
-                            Please upload your employment status document below
+                            <div>Please upload your employment status document below. </div>
+                            <div>Only pdf, jpeg and png file types allowed.</div>
                             <div ng-file-drop ng-file-select ng-model="files" class="drop-box" 
                                 drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
                                 ng-multiple="true" allow-dir="true"
