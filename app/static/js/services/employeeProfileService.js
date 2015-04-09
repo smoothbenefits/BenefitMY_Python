@@ -3,9 +3,11 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('employeeProfileService', 
   ['$q', 
    'employmentAuthRepository',
+   'utilityServcie', 
    'profileSettings', 
    function($q,
             employmentAuthRepository,
+            utilityServcie, 
             profileSettings){
 
      return {
@@ -29,41 +31,17 @@ benefitmyService.factory('employeeProfileService',
      		return deferred.promise;
      	},
 
-       	getEmploymentAuthByUserId: function(userId){
-        	var deferred = $q.defer();
+     	getEmploymentAuthByUserId: function(userId){
+      	var deferred = $q.defer();
 
-			employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
-				var fields = [];
+  			employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
+  				var fields = utilityServcie.mapObjectToKeyPairArray('i9', response);
+  				deferred.resolve(fields);
+        }, function(error){
+        	deferred.reject(error);
+        });
 
-			  	var pairs = _.pairs(response);
-				var validFields = _.findWhere(profileSettings, {name: 'i9'}).valid_fields;
-				_.each(pairs, function(pair){
-					var key = pair[0];
-					var inSetting = _.findWhere(validFields, {name: key});
-					if (inSetting){
-					  if (inSetting.datamap){
-					    var value = pair[1];
-					    var mappedValue = _.find(inSetting.datamap, function(map){
-					      return map[0] === value.toString();
-					    });
-					    if (!mappedValue){
-					      inSetting.value = 'UNKNOWN';
-					    } else{
-					      inSetting.value = mappedValue[1];
-					    }
-					  } else{
-					    inSetting.value = pair[1];
-					  }
-					  fields.push(inSetting);
-					}
-				});
-
-				deferred.resolve(fields);
-	        }, function(error){
-	        	deferred.reject(error);
-	        });
-
-	        return deferred.promise;
+        return deferred.promise;
    		},
 
    		saveEmploymentAuthByUserId: function(employee, signature){
