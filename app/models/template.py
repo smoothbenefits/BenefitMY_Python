@@ -2,7 +2,9 @@ from django.db import models
 from company import Company
 from document_type import DocumentType
 
+import reversion
 
+@reversion.register
 class Template(models.Model):
     company = models.ForeignKey(Company,
                                 related_name="template")

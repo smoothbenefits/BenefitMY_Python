@@ -2,6 +2,7 @@ from django.db import models
 from person import Person
 from company import Company
 
+import reversion
 
 US_STATES = [
     'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL',
@@ -13,7 +14,7 @@ US_STATES = [
 
 STATES_CHOICES = sorted([(item, item) for item in US_STATES])
 
-
+@reversion.register
 class Address(models.Model):
     address_type = models.CharField(max_length=255, null=True)
     street_1 = models.CharField(max_length=255)

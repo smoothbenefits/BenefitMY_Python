@@ -1,6 +1,9 @@
 from django.db import models
 from benefit_type import BenefitType
 
+import reversion
+
+@reversion.register
 class BenefitPlan(models.Model):
     name = models.CharField(max_length=255)
     benefit_type = models.ForeignKey(BenefitType,

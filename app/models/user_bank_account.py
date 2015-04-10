@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+import reversion
 
 S = ["Checking",
      "Saving"]
 
 TYPES = ([(item, item) for item in S])
 
-
+@reversion.register
 class UserBankAccount(models.Model):
     routing = models.CharField(max_length=32)
     account = models.CharField(max_length=32)

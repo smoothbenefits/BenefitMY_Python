@@ -7,7 +7,9 @@ USER_TYPE = (("employee", "employee"),
              ("broker", "broker"),
              ("super", "super"))
 
+import reversion
 
+@reversion.register
 class CompanyUser(models.Model):
     user = models.ForeignKey(User)
     company = models.ForeignKey(Company)

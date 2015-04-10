@@ -76,6 +76,7 @@ from app.views.company_user_summary_view import (
 from app.views.upload import (_get_uploads_by_user, 
                               UploadView)
 
+from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
 
 PREFIX = "api/v1"
 
@@ -124,6 +125,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/?$' % PREFIX, CompanyUsersSummaryExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/life_beneficiary?$' % PREFIX, CompanyUsersLifeInsuranceBeneficiaryExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view()),
+
+    url(r'^%s/companies/(?P<pk>\w+)/users/modification_summary/?$' % PREFIX, CompanyUsersDataModificationSummaryView.as_view()),
 
     url(r'^%s/documents/companies/(?P<pk>\w+)/users/(?P<pd>\w+)/?$' % PREFIX,
         CompanyUserDocumentView.as_view()),

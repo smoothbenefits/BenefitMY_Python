@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'pipeline',
     'app',
     'emailusernames',
+    'reversion',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -71,7 +72,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
+    'reversion.middleware.RevisionMiddleware',
 )
+
+CRON_CLASSES = [
+    "app.jobs.notify_user_changes.MyCronJob",
+]
 
 ROOT_URLCONF = 'Smoothbenefits.urls'
 

@@ -9,7 +9,9 @@ S = ["individual",
 
 TYPES = ([(item, item) for item in S])
 
+import reversion
 
+@reversion.register
 class CompanyBenefitPlanOption(models.Model):
     total_cost_per_period = models.DecimalField(
         max_digits=20, decimal_places=2)

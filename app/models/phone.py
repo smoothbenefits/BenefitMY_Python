@@ -1,7 +1,9 @@
 from django.db import models
 from person import Person
 
+import reversion
 
+@reversion.register
 class Phone(models.Model):
     phone_type = models.CharField(max_length=10)
     number = models.CharField(max_length=32)

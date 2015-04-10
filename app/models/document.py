@@ -4,7 +4,9 @@ from company import Company
 from document_type import DocumentType
 from signature import Signature
 
+import reversion
 
+@reversion.register
 class Document(models.Model):
     company = models.ForeignKey(Company)
     user = models.ForeignKey(User)

@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'pipeline',
     'app',
     'emailusernames',
+    'reversion',
 )
 
 
@@ -77,6 +78,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
+    'reversion.middleware.RevisionMiddleware',
 )
 
 ROOT_URLCONF = 'Smoothbenefits.urls'

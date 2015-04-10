@@ -2,6 +2,8 @@ from django.db import models
 from ..company import Company
 from life_insurance_plan import LifeInsurancePlan
 
+import reversion
+
 S = ["individual",
      "individual_plus_spouse",
      "individual_plus_family",
@@ -9,7 +11,7 @@ S = ["individual",
 
 TYPES = ([(item, item) for item in S])
 
-
+@reversion.register
 class CompanyLifeInsurancePlan(models.Model):
     total_cost_per_period = models.DecimalField(
         max_digits=20, decimal_places=2, blank=True, null=True)

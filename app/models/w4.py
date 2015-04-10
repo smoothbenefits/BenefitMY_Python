@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+import reversion
 
+@reversion.register
 class W4(models.Model):
     marriage = models.IntegerField()
     dependencies = models.IntegerField()
