@@ -37,7 +37,6 @@ def user_passes_test(test_func,
 
 def company_employer(request, **kwargs):
     """ check if a user is the admin of a company"""
-    print request, kwargs
 
     if 'pk' not in kwargs:
         return False

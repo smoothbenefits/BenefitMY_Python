@@ -147,8 +147,6 @@ class UserFamilyView(APIView):
 
 
     def get(self, request, pk, format=None):
-        print request.user
-        print pk
         user = self.get_object(pk)
         serializer = UserFamilySerializer(user)
         return Response(serializer.data)
