@@ -1,0 +1,22 @@
+<html>
+    <head>
+    </head>
+    <body>
+        {% for company_users in company_users_collection %}
+            <h3>Company: {{company_users.company.name}}</h3>
+            <h4>Users made changes in the last 24 hours:</h4>
+            <ul>
+            {% for person in company_users.persons %}
+                <li>{{ person.first_name }} {{person.last_name}} ( {{person.birth_date}} )</li>
+            {% endfor %}
+            </ul>
+            <br/>
+            <hr/>
+        {% endfor %}
+
+        <a href="{{site_url}}" style="background:#6EBE4B;color:#FFF;font-weight:700;border: 1px solid #56A245;border-radius: 0;padding: 10px 6px; width: 150px;text-align: center;box-shadow: none;text-shadow: none;
+line-height: 15px;display: inline-block;margin-bottom: 0;vertical-align: middle;cursor: pointer;white-space: nowrap;font-size: 13px;">
+            Visit Site
+        </a>
+    </body>
+</html>

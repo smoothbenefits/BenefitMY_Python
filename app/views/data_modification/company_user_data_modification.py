@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 from django.http import HttpResponse
 from django.http import Http404
+from django.conf import settings
 
 from app.serializers.person_serializer import PersonSerializer
 
@@ -16,10 +17,8 @@ class CompanyUsersDataModificationSummaryView(APIView):
     def get(self, request, pk, format=None):
         mod_service = DataModificationService()
 
-        company_user_persons = mod_service.employee_modifications_summary_person_info_only(pk, 10)
+        company_user_persons = mod_service.employee_modifications_summary_person_info_only(pk, settings.DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES)
         serializer = PersonSerializer(company_user_persons,
                                         many=True)
-
-        mod_service.employee_modifications_notify_employer_for_all_companies(10)
 
         return Response({'company_users': serializer.data})

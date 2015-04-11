@@ -26,6 +26,10 @@ HASH_KEY = '5e14ca8a-4a48-4cf7-aa3b-e207eb1a9adb'
 # Default password for initial user account setup
 DEFAULT_USER_PW = 'd4gf6u0hhfg48ds321cdsf'
 
+# Default global figure of number of minutes notification facilities should
+# look back to check for user data modifications
+DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES = 1440 # 24 hours
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -48,6 +52,7 @@ INSTALLED_APPS = (
     'app',
     'emailusernames',
     'reversion',
+    'django_cron',
 )
 
 
@@ -80,6 +85,10 @@ MIDDLEWARE_CLASSES = (
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
     'reversion.middleware.RevisionMiddleware',
 )
+
+CRON_CLASSES = [
+    "app.scheduled_jobs.user_changes_notification.UserChangeNotifications",
+]
 
 ROOT_URLCONF = 'Smoothbenefits.urls'
 
