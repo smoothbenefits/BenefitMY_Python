@@ -1,0 +1,17 @@
+[
+  {
+    "fields": {
+      "feature": "FSA"
+    },
+    "model": "app.companyfeaturelist",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "feature": "DD"
+    },
+    "model": "app.companyfeaturelist",
+    "pk": 2
+  }
+
+  ]
