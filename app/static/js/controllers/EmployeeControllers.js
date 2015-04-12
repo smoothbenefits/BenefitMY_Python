@@ -15,6 +15,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'LifeInsuranceService',
    'employeePayrollService', 
    'employeeProfileService',
+   'DirectDepositService',
   function ($scope,
             $location,
             $state,
@@ -28,7 +29,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
             FsaService,
             LifeInsuranceService,
             employeePayrollService,
-            employeeProfileService){
+            employeeProfileService,
+            DirectDepositService){
 
     $('body').removeClass('onboarding-page');
     var curUserId;
@@ -135,6 +137,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
       // I9 Form
       employeeProfileService.getEmploymentAuthSummaryByUserId(userId).then(function(response){
         $scope.i9Info = response;
+      });
+
+      // Direct Deposit
+      DirectDepositService.getDirectDepositByUserId(userId).then(function(response){
+        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDeposit(response);
       });
     });
 
