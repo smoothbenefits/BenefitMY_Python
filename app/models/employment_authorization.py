@@ -1,14 +1,15 @@
+import reversion
+
 from django.db import models
 from signature import Signature
 from django.contrib.auth.models import User
-
 
 WORKER_TYPE = (("Citizen", "Citizen"),
                ("Noncitizen", "Noncitizen"),
                ("PResident", "PResident"),
                ("Aaw", "Aaw"))
 
-
+@reversion.register
 class EmploymentAuthorization(models.Model):
     worker_type = models.CharField(max_length=30,
                                    choices=WORKER_TYPE)

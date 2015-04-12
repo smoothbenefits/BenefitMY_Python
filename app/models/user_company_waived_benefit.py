@@ -1,9 +1,11 @@
+import reversion
+
 from django.db import models
 from company import Company
 from benefit_type import BenefitType
 from django.contrib.auth.models import User
 
-
+@reversion.register
 class UserCompanyWaivedBenefit(models.Model):
 
     user = models.ForeignKey(User)
