@@ -1,10 +1,10 @@
+import reversion
+
 from django.db import models
 from django.contrib.auth.models import User
 from company import Company
 from document_type import DocumentType
 from signature import Signature
-
-import reversion
 
 @reversion.register
 class Document(models.Model):

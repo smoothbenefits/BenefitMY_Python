@@ -1,9 +1,9 @@
+import reversion
+
 from django.db import models
 from benefit_policy_key import BenefitPolicyKey
 from benefit_policy_type import BenefitPolicyType
 from benefit_plan import BenefitPlan
-
-import reversion
 
 @reversion.register
 class BenefitDetails(models.Model):

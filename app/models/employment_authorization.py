@@ -1,8 +1,8 @@
+import reversion
+
 from django.db import models
 from signature import Signature
 from django.contrib.auth.models import User
-
-import reversion
 
 WORKER_TYPE = (("Citizen", "Citizen"),
                ("Noncitizen", "Noncitizen"),

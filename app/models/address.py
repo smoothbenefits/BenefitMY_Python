@@ -1,8 +1,8 @@
+import reversion
+
 from django.db import models
 from person import Person
 from company import Company
-
-import reversion
 
 US_STATES = [
     'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL',

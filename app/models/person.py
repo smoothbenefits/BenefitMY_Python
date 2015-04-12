@@ -1,9 +1,9 @@
+import reversion
+
 from django.db import models
 from company import Company
 from django.contrib.auth.models import User
 from encrypted_fields import EncryptedTextField
-
-import reversion
 
 GENDER_TYPES = ([(item, item) for item in ['F', 'M']])
 

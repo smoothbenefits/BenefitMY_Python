@@ -1,6 +1,6 @@
-from django.db import models
-
 import reversion
+
+from django.db import models
 
 @reversion.register
 class BenefitPolicyKey(models.Model):

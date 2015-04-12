@@ -1,7 +1,7 @@
+import reversion
+
 from django.db import models
 from person import Person
-
-import reversion
 
 @reversion.register
 class Phone(models.Model):

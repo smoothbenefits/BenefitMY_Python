@@ -1,10 +1,10 @@
+import reversion
+
 from django.db import models
 
 TYPES = (('Medical', 'Medical'),
          ('Dental', 'Dental'),
          ('Vision', 'Vision'))
-
-import reversion
 
 @reversion.register
 class BenefitType(models.Model):

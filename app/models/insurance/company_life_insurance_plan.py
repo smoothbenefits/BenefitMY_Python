@@ -1,8 +1,8 @@
+import reversion
+
 from django.db import models
 from ..company import Company
 from life_insurance_plan import LifeInsurancePlan
-
-import reversion
 
 S = ["individual",
      "individual_plus_spouse",

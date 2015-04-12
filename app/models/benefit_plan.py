@@ -1,7 +1,7 @@
+import reversion
+
 from django.db import models
 from benefit_type import BenefitType
-
-import reversion
 
 @reversion.register
 class BenefitPlan(models.Model):

@@ -1,7 +1,7 @@
+import reversion
+
 from person import Person
 from django.db import models
-
-import reversion
 
 @reversion.register
 class EmergencyContact(models.Model):

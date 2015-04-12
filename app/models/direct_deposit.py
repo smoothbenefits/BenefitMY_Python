@@ -1,8 +1,8 @@
+import reversion
+
 from django.db import models
 from django.contrib.auth.models import User
 from user_bank_account import UserBankAccount
-
-import reversion
 
 @reversion.register
 class DirectDeposit(models.Model):

@@ -1,3 +1,5 @@
+import reversion
+
 from django.db import models
 from company import Company
 from benefit_plan import BenefitPlan
@@ -8,8 +10,6 @@ S = ["individual",
      "individual_plus_children"]
 
 TYPES = ([(item, item) for item in S])
-
-import reversion
 
 @reversion.register
 class CompanyBenefitPlanOption(models.Model):

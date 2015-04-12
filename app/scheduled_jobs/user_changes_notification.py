@@ -8,8 +8,9 @@ from app.service.data_modification_service import DataModificationService
 '''
 class UserChangeNotifications(CronJobBase):
 
-    #schedule = Schedule(run_at_times=['06:02', '06:08', '06:12'])
-    schedule = Schedule(run_every_mins=settings.DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES) # Every 24 hours
+    # set schedule to every 1 minute, to hand over real schedule
+    # controlling to the external trigger (e.g. cron tab, scheduled task)
+    schedule = Schedule(run_every_mins=1)
     code = 'app.EmployeeDataChangeNotifications'    # a unique code
 
     # For now, notify brokers and HRs with the same schedule. 

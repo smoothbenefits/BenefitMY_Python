@@ -1,7 +1,7 @@
+import reversion
+
 from django.db import models
 from document import Document
-
-import reversion
 
 @reversion.register
 class DocumentField(models.Model):

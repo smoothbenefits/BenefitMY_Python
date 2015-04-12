@@ -1,3 +1,5 @@
+import reversion
+
 from django.db import models
 from django.contrib.auth.models import User
 from app.models.company import Company
@@ -7,7 +9,7 @@ upload_types = ["I9",
 
 TYPES = ([(item, item) for item in upload_types])
 
-
+@reversion.register
 class Upload(models.Model):
     upload_type = models.TextField(choices=TYPES)
     user = models.ForeignKey(User, related_name="user_upload")
