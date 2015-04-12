@@ -1,40 +1,46 @@
-<div class="row col-md-12">
-    <div class="table-responsive table-holder table">
-        <table class="table table-striped">
-            <thead>
-                <th><span>Account Type</span></th>
-                <th><span>Account Issuer</span></th>
-                <th><span>Routing Number</span></th>
-                <th><span>Account Number</span></th>
-                <th><span>Amount</span></th>
-                <th><span>Percentage</span></th>
-                <th><span>Reminder of Net Pay?</span></th>
-                <th><span>Action</span></th>
-            </thead>
-            <tbody>
-                <tr ng-repeat="account in direct_deposit_accounts">
-                    <td>{{account.type}}</td>
-                    <td>{{account.bank_name}}</td>
-                    <td>{{account.routing}}</td>
-                    <td>{{account.account}}</td>
-                    <td>{{account.amount}}</td>
-                    <td>{{account.percentage}}</td>
-                    <td>{{account.reminder}}</td>
-                    <td><i class="fa fa-minus-circle fa-3x"></i></td>
-                </tr>
-                <tr>
-                    <td><input ng-model="new_account.type"/></td>
-                    <td><input ng-model="new_account.type"/></td>
-                    <td><input ng-model="new_account.type"/></td>
-                    <td><input ng-model="new_account.type"/></td>
-                    <td><input ng-model="new_account.type"/></td>
-                    <td><input ng-model="new_account.type"/></td>
-                    <td><input ng-model="new_account.type"/></td>
-                    <td><i class="fa fa-plus-circle fa-3x"></i></td>
-            </tbody>
-        </table>
+<div class="row col-md-10 col-md-offset-1">
+    <div class="panel panel-info" ng-show="directDepositAccounts.length === 0">
+        <div class="panel-body">
+            You do not have direct deposit account with us yet.
+        </div>
+    </div>
+    <div class="panel panel-info" ng-repeat="account in directDepositAccounts">
+        <div class="panel-heading">Direct Deposit # {{$index + 1}}
+            <button ng-click="editDirectDepositAccount(account)" class="pull-right">Edit</button>
+            <button ng-click="deleteDirectDepositAccont(account)" class="pull-right">Delete</button>
+        </div>
+        <div class="panel-body">
+            <div class="list-group-item col-md-4">
+                <h4 class="col-md-12">Account Type</h4>
+                <div class="col-md-12 text-right">{{account.account_type}}</div>
+            </div>
+            <div class="list-group-item col-md-4">
+                <h4 class="col-md-12">Account Issuer</h4>
+                <div class="col-md-12 text-right">{{account.bank_name}}</div>
+            </div>
+            <div class="list-group-item col-md-4">
+                <h4 class="col-md-12">Routing Number</h4>
+                <div class="col-md-12 text-right">{{account.routing}}</div>
+            </div>
+            <div class="list-group-item col-md-4">
+                <h4 class="col-md-12">Account Number</h4>
+                <div class="col-md-12 text-right">{{account.account}}</div>
+            </div>
+            <div class="list-group-item col-md-4">
+                <h4 class="col-md-12">Amount</h4>
+                <div class="col-md-12 text-right">$ {{account.amount}}</div>
+            </div>
+            <div class="list-group-item col-md-4">
+                <h4 class="col-md-12">Percentage</h4>
+                <div class="col-md-12 text-right">{{account.percentage}} %</div>
+            </div>
+            <div class="list-group-item col-md-4">
+                <h4 class="col-md-12">Remainder of Net Pay</h4>
+                <div class="col-md-12 text-right">{{account.remainder_of_all}}</div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">
-    <div class="cta col-md-2 col-md-offset-5"><a ng-click="saveDirectDeposit()" class="btn green" >Save</a></div>
+    <div class="cta col-md-3 col-md-offset-5"><a ng-click="addDirectDepositAccount()" class="btn green" >Add A New Account</a></div>
 </div>
