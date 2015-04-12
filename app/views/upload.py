@@ -9,10 +9,8 @@ from rest_framework import status
 from app.models.upload import Upload
 from app.serializers.upload_serializer import UploadSerializer, UploadPostSerializer
 from app.service.amazon_s3_auth import AmazonS3AuthService
-from app.service.hash_key_service import HashKeyService
 
 _amazon_auth_service = AmazonS3AuthService()
-_hash_key_service = HashKeyService()
 
 class UserUploadView(APIView):
     def get(self, request, pk, format=None):
@@ -26,8 +24,8 @@ class UserUploadView(APIView):
 
     def post(self, request, pk, format=None):
         upload_data = request.DATA
-        comp_id = _hash_key_service.decode_key(upload_data['company'])
-        user_id = _hash_key_service.decode_key(upload_data['user'])
+        comp_id = upload_data['company']
+        user_id = upload_data['user']
         file_key = _amazon_auth_service.encode_key(comp_id, user_id)
         s3_key = _amazon_auth_service.get_s3_key(upload_data['company_name'],
                                                  upload_data['file_name'],

@@ -11,8 +11,8 @@ class UploadTestCase(TestCase, ViewTestBase):
 
     def setUp(self):
         self.upload_data = {
-            'company': 1,
-            'user': 4,
+            'company': self.normalize_key(1),
+            'user': self.normalize_key(4),
             'upload_type': 'I9',
             'file_name': 'tester.pdf',
             'file_type': 'application/pdf',
@@ -78,7 +78,8 @@ class UploadTestCase(TestCase, ViewTestBase):
     def test_post_upload_success(self):
         response = self.client.post(reverse('uploads_by_user',
                                            kwargs={'pk': self.normalize_key(4)}),
-                                    data=self.upload_data)
+                                    data=json.dumps(self.upload_data),
+                                    content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.content)
@@ -134,10 +135,11 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload2['upload_type'], self.upload_data['upload_type'])
 
     def test_upload_post_with_non_exist_user(self):
-        self.upload_data.update({'user': 128})
+        self.upload_data.update({'user': self.normalize_key(128)})
         response = self.client.post(reverse('uploads_by_user',
                                            kwargs={'pk': self.normalize_key(4)}),
-                                    data=self.upload_data)
+                                    data=json.dumps(self.upload_data),
+                                    content_type='application/json')
 
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
@@ -145,10 +147,11 @@ class UploadTestCase(TestCase, ViewTestBase):
 
 
     def test_upload_post_with_non_exist_company(self):
-        self.upload_data.update({'company': 122})
+        self.upload_data.update({'company': self.normalize_key(122)})
         response = self.client.post(reverse('uploads_by_user',
                                            kwargs={'pk': self.normalize_key(4)}),
-                                    data=self.upload_data)
+                                    data=json.dumps(self.upload_data),
+                                    content_type='application/json')
 
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
