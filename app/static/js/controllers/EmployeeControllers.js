@@ -263,11 +263,9 @@ var viewDocument = employeeControllers.controller('viewDocument',
 var employeePayroll = employeeControllers.controller('employeePayrollController',
   ['$scope',
    '$state',
-   '$location', 
    'tabLayoutGlobalConfig',
    function($scope, 
             $state,
-            $location, 
             tabLayoutGlobalConfig){
     $scope.section = _.findWhere(tabLayoutGlobalConfig, {section_name: 'employee_payroll'});
 
@@ -276,7 +274,7 @@ var employeePayroll = employeeControllers.controller('employeePayrollController'
     };
 
     $scope.backToDashboard = function(){
-      $location.path('/employee');
+      $state.go('/employee');
     };
    }
   ]);
@@ -363,11 +361,9 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
 var employeeProfile = employeeControllers.controller('employeeProfileController',
   ['$scope',
    '$state',
-   '$location',
    'tabLayoutGlobalConfig', 
    function ($scope, 
              $state, 
-             $location, 
              tabLayoutGlobalConfig){
     $scope.section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_profile'});
 
@@ -376,7 +372,7 @@ var employeeProfile = employeeControllers.controller('employeeProfileController'
     };
 
     $scope.backToDashboard = function(){
-      $location.path('/employee');
+      $state.go('/employee');
     };
    }
   ]);
@@ -450,90 +446,12 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
    }
   ]);
 
-var employeeInfo = employeeControllers.controller('employeeInfoController',
-  ['$scope', '$location', '$stateParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
-  function($scope, $location, $stateParams, profileSettings, currentUser, employmentAuthRepository, employeeTaxRepository){
-    var infoObject = _.findWhere(profileSettings, { name: $stateParams.type });
-    $scope.info = { type: $stateParams.type, type_display: infoObject.display_name };
-    $scope.person = { role: 'Employee' };
-
-    if ($stateParams.type === 'i9'){
-      $scope.isUpdateW4 = false;
-      $scope.isUpdateI9 = true;
-    }
-
-    if ($stateParams.type === 'w4'){
-      $scope.isUpdateW4 = true;
-      $scope.isUpdateI9 = false;
-    }
-
-    var userPromise = currentUser.get().$promise.then(function(response){
-      $scope.person.first_name = response.user.first_name;
-      $scope.person.last_name = response.user.last_name;
-      return response.user.id;
-    });
-
-    userPromise.then(function(userId){
-      if ($scope.info.type === 'i9'){
-        employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
-          $scope.info.fields = convertResponse(response, $scope.info.type);
-        });
-      } else if ($scope.info.type === 'w4'){
-        employeeTaxRepository.get({userId: userId}).$promise.then(function(response){
-          $scope.info.fields = convertResponse(response, $scope.info.type);
-        });
-      }
-
-    });
-
-    var convertResponse = function(res, type){
-      var pairs = _.pairs(res);
-      var validFields = _.findWhere(profileSettings, {name: type}).valid_fields;
-      var output = [];
-      _.each(pairs, function(pair){
-        var key = pair[0];
-        var inSetting = _.findWhere(validFields, {name: key});
-        if (inSetting){
-          if (inSetting.datamap){
-            var value = pair[1];
-            var mappedValue = _.find(inSetting.datamap, function(map){
-              return map[0] === value.toString();
-            });
-            if (!mappedValue){
-              inSetting.value = 'UNKNOWN';
-            } else{
-              inSetting.value = mappedValue[1];
-            }
-          } else{
-            inSetting.value = pair[1];
-          }
-          output.push(inSetting);
-        }
-      });
-
-      return output;
-    }
-
-    $scope.backToDashboard = function(){
-      $location.path('/employee');
-    };
-
-    $scope.editW4 = function(){
-      $location.path('/employee/info/edit').search('type', 'w4');
-    };
-
-    $scope.editI9 = function(){
-      $location.path('/employee/info/edit').search('type', 'i9');
-    };
-  }]);
-
 var directDeposit = employeeControllers.controller('employeeDirectDepositController',
   ['$scope',
    '$state', 
    '$stateParams',
    '$controller', 
    '$modal', 
-   '$location',
    'currentUser',
    'DirectDepositService',
    function($scope,
@@ -541,7 +459,6 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
             $stateParams,
             $controller, 
             $modal, 
-            $location,
             currentUser,
             DirectDepositService){
 
@@ -561,7 +478,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
     });
 
     $scope.backToDashboard = function(){
-      $location.path('/employee');
+      $state.go('/employee');
     };
 
     $scope.addDirectDepositAccount = function(){
