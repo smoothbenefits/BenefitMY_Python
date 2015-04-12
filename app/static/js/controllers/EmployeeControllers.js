@@ -671,6 +671,26 @@ var directDepostiModalController = employeeControllers.controller('directDeposit
         return account.remainder_of_all;
       };
 
+      $scope.amountDisabled = function(account){
+        if (account.remainder_of_all){
+          return true;
+        }
+        else if (account.percentage && account.percentage != 0){
+          return true;
+        }
+        return false;
+      };
+
+      $scope.percentageDisabled = function(account){
+        if (account.remainder_of_all){
+          return true;
+        }
+        else if (account.amount && account.amount != 0){
+          return true;
+        }
+        return false;
+      };
+
       $scope.cancel = function() {
         $modalInstance.dismiss('cancelByUser');
       };
