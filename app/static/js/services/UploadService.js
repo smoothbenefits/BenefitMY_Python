@@ -83,13 +83,15 @@ benefitmyService.factory('UploadService',
 
         _getCurrentUserInfo().then(function(userInfo){
             var fileToUpload = {
+              'company': userInfo.currentRole.company.id,
+              'user': userInfo.user.id,
               'upload_type': uploadType,
               'company_name': userInfo.currentRole.company.name,
               'file_name': file.name,
               'file_type': get_file_type(file)
             }
-            UploadRepository.upload.save(
-                {compId:userInfo.currentRole.company.id, pk:userInfo.user.id}, 
+            UploadRepository.uploadsByUser.save(
+                {pk:userInfo.user.id}, 
                 fileToUpload,
                 function(response){
                   //now we are able to actually upload to S3
@@ -122,22 +124,20 @@ benefitmyService.factory('UploadService',
         return deferred.promise;
     };
 
-    var deleteFile = function(id, s3Link){
+    var deleteFile = function(id){
         var deferred = $q.defer();
-        _getCurrentUserInfo().then(function(userInfo){
-            UploadRepository.upload.delete({compId:userInfo.currentRole.company.id, pk:id})
-            .$promise.then(function(deletedFile){
-                //here is where we should delete it from S3
-                _deleteFromS3(deletedFile.s3, deletedFile.auth, deletedFile.time)
-                .then(function(deleteResponse){
-                    deferred.resolve(deleteResponse);
-                }, function(errorResponse){
-                    deferred.reject(errorResponse);
-                });
-                deferred.resolve(deletedFile);
+        UploadRepository.upload.delete({pk:id})
+        .$promise.then(function(deletedFile){
+            //here is where we should delete it from S3
+            _deleteFromS3(deletedFile.S3, deletedFile.auth, deletedFile.time)
+            .then(function(deleteResponse){
+                deferred.resolve(deleteResponse);
             }, function(errorResponse){
                 deferred.reject(errorResponse);
             });
+            deferred.resolve(deletedFile);
+        }, function(errorResponse){
+            deferred.reject(errorResponse);
         });
         return deferred.promise;
     };
