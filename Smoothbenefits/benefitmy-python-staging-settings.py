@@ -58,7 +58,6 @@ INSTALLED_APPS = (
 
 AUTHENTICATION_BACKENDS = (
     'emailusernames.backends.EmailAuthBackend',
-    'reversion',
 )
 
 
