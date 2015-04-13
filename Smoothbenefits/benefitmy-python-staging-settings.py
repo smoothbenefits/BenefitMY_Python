@@ -31,9 +31,9 @@ DEFAULT_USER_PW = 'd4gf6u0hhfg48ds321cdsf'
 DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES = 1440 # 24 hours
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-TEMPLATE_DEBUG = False
+TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '.benefitmy.com', 'benefitmy.com.', '.heroku.com', '.herokuapp.com']
 
@@ -58,7 +58,6 @@ INSTALLED_APPS = (
 
 AUTHENTICATION_BACKENDS = (
     'emailusernames.backends.EmailAuthBackend',
-    'reversion',
 )
 
 
@@ -73,9 +72,7 @@ EMAIL_USE_TLS = True
 
 
 
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 MIDDLEWARE_CLASSES = (
-    # 'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
