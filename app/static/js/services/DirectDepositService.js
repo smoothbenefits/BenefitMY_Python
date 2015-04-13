@@ -78,6 +78,42 @@ benefitmyService.factory(
       return deferred.promise;
     };
 
+    var mapViewDirectDepositToDto = function(viewDirectDeposit){
+      var dto = {
+        id: viewDirectDeposit.direct_deposit_id,
+        user: viewDirectDeposit.user, 
+        bank_account: viewDirectDeposit,
+        amount: viewDirectDeposit.amount,
+        percentage: viewDirectDeposit.percentage,
+        remainder_of_all: viewDirectDeposit.remainder_of_all
+      };
+      dto.bank_account.user = viewDirectDeposit.user;
+      return dto;
+    };
+
+    var mapDtoToViewDirectDeposit = function(account){
+      var viewModel = account.bank_account;
+      viewModel.direct_deposit_id = account.id;
+      viewModel.amount = Number(account.amount);
+      viewModel.percentage = Number(account.percentage);
+      if (account.remainder_of_all){
+        viewModel.remainder_of_all = 'Yes';
+      }
+      else{
+        viewModel.remainder_of_all = 'No';
+      }
+      return viewModel;
+    };
+
+    var mapDtoToViewDirectDepositInBulk = function(dtos){
+      var viewDirectDepositAccounts = [];
+      _.each(dtos, function(account){
+        var viewModel = mapDtoToViewDirectDeposit(account);
+        viewDirectDepositAccounts.push(viewModel);
+      });
+      return viewDirectDepositAccounts;
+    }
+
     return {
       getDirectDepositByUserId: getDirectDepositByUserId,
 
@@ -89,35 +125,10 @@ benefitmyService.factory(
 
       getEmptyDirectDepositAccount: getEmptyDirectDepositAccount,
 
-      mapViewDirectDepositToDto: function(viewDirectDeposit){
-        var dto = {
-          id: viewDirectDeposit.direct_deposit_id,
-          user: viewDirectDeposit.user, 
-          bank_account: viewDirectDeposit,
-          amount: viewDirectDeposit.amount,
-          percentage: viewDirectDeposit.percentage,
-          remainder_of_all: viewDirectDeposit.remainder_of_all
-        };
-        dto.bank_account.user = viewDirectDeposit.user;
-        return dto;
-      },
+      mapViewDirectDepositToDto: mapViewDirectDepositToDto,
 
-      mapDtoToViewDirectDeposit: function(directDepositDto){
-        var viewDirectDepositAccounts = [];
-        _.each(directDepositDto, function(account){
-          var viewModel = account.bank_account;
-          viewModel.direct_deposit_id = account.id;
-          viewModel.amount = Number(account.amount);
-          viewModel.percentage = Number(account.percentage);
-          if (account.remainder_of_all){
-            viewModel.remainder_of_all = 'Yes';
-          }
-          else{
-            viewModel.remainder_of_all = 'No';
-          }
-          viewDirectDepositAccounts.push(viewModel);
-        });
-        return viewDirectDepositAccounts;
-      }
+      mapDtoToViewDirectDeposit: mapDtoToViewDirectDeposit,
+
+      mapDtoToViewDirectDepositInBulk: mapDtoToViewDirectDepositInBulk
     }
   }]);
