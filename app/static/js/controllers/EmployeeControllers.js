@@ -3,6 +3,7 @@ var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]
 var employeeHome = employeeControllers.controller('employeeHome',
     ['$scope',
      '$location',
+     '$state', 
      '$stateParams',
      'clientListRepository',
      'employeeBenefits',
@@ -12,17 +13,22 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'EmployeeLetterSignatureValidationService',
      'FsaService',
      'LifeInsuranceService',
-  function employeeHome($scope,
-                        $location,
-                        $stateParams,
-                        clientListRepository,
-                        employeeBenefits,
-                        currentUser,
-                        userDocument,
-                        EmployeePreDashboardValidationService,
-                        EmployeeLetterSignatureValidationService,
-                        FsaService,
-                        LifeInsuranceService){
+     'employeePayrollService', 
+     'employeeProfileService',
+  function ($scope,
+            $location,
+            $state,
+            $stateParams,
+            clientListRepository,
+            employeeBenefits,
+            currentUser,
+            userDocument,
+            EmployeePreDashboardValidationService,
+            EmployeeLetterSignatureValidationService,
+            FsaService,
+            LifeInsuranceService,
+            employeePayrollService,
+            employeeProfileService){
 
     $('body').removeClass('onboarding-page');
     var curUserId;
@@ -85,10 +91,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
       }
     });
 
-     var curUserPromise = currentUser.get().$promise.
-         then(function(userResponse){
-             return userResponse.user.id;
-         });
+    var curUserPromise = currentUser.get().$promise.then(function(userResponse){
+      return userResponse.user.id;
+    });
 
      var documentPromise = curUserPromise.then(function(userId){
                                                return userDocument.query({userId:userId}).$promise;
@@ -103,29 +108,33 @@ var employeeHome = employeeControllers.controller('employeeHome',
          $location.path('/employee/document/' + documentId);
      };
 
-     $scope.ViewInfo = function(type){
-      $location.path('/employee/info').search('type', type);
+     $scope.goToState = function(state){
+      $state.go(state);
      };
 
-     $scope.EditInfo = function(type){
-      $location.path('/employee/info/edit').search('type', type);
-     };
-
-    // FSA election data
     curUserPromise.then(function(userId) {
+      // FSA election data
       FsaService.getFsaElectionForUser(userId, function(response) {
         $scope.fsaElection = response;
       });
-    });
 
-    // Life Insurance
-    curUserPromise.then(function(userId) {
+      // Life Insurance
       LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(userId, function(response) {
         $scope.familyInsurancePlan = response;
       });
 
       LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
         $scope.basicLifeInsurancePlan = response;
+      });
+
+      // W4 Form
+      employeePayrollService.getEmployeeTaxSummaryByUserId(userId).then(function(response){
+        $scope.w4Info = response;
+      });
+
+      // I9 Form
+      employeeProfileService.getEmploymentAuthSummaryByUserId(userId).then(function(response){
+        $scope.i9Info = response;
       });
     });
 
@@ -171,7 +180,6 @@ var addFamily = employeeControllers.controller('addFamily',
     });
   }
 }]);
-
 
 var viewDocument = employeeControllers.controller('viewDocument',
   ['$scope', '$location', '$stateParams', 'userDocument', 'currentUser', 'documentRepository',
@@ -244,6 +252,196 @@ var viewDocument = employeeControllers.controller('viewDocument',
       $location.path('/employee');
     };
 }]);
+
+var employeePayroll = employeeControllers.controller('employeePayrollController',
+  ['$scope',
+   '$state',
+   '$location', 
+   'tabLayoutGlobalConfig',
+   function($scope, 
+            $state,
+            $location, 
+            tabLayoutGlobalConfig){
+    $scope.section = _.findWhere(tabLayoutGlobalConfig, {section_name: 'employee_payroll'});
+
+    $scope.goToState = function(state){
+      $state.go(state);
+    };
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    };
+   }
+  ]);
+
+var employeeW4Controller = employeeControllers.controller('employeeW4Controller', 
+  ['$scope',
+   '$state',
+   'currentUser', 
+   'employeePayrollService', 
+   function($scope, 
+            $state, 
+            currentUser, 
+            employeePayrollService){
+    var userPromise = currentUser.get().$promise.then(function(response){
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      employeePayrollService.getEmployeeTaxByUserId(userId).then(function(taxFields){
+        $scope.fields = taxFields;
+      });
+    });
+
+    $scope.calculateTotal = function(){
+      var total = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
+      total += $scope.employee.dependent_count;
+      if($scope.employee.childExpense && total){
+        total += parseInt($scope.employee.childExpense);
+      }
+      if($scope.employee.headOfHousehold && total){
+        total += parseInt($scope.employee.headOfHousehold);
+      }
+      if(!total)
+      {
+        total = undefined;
+      }
+      $scope.employee.calculated_points = total;
+      if(!$scope.employee.user_defined_set){
+        $scope.employee.user_defined_points = $scope.employee.calculated_points;
+      }
+    };
+
+    $scope.userDefinedPointsSet = function(){
+      $scope.employee.user_defined_set = true;
+    };
+
+    $scope.acknowledgeW4 = function(){
+      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    };
+
+    $scope.submit=function(){
+      if(!$scope.employee.downloadW4){
+        alert('Please verify you have downloaded and read the entire W-4 form');
+        return;
+      }
+      if(typeof($scope.employee.dependent_count) === 'undefined'){
+        alert('Please enter the number of dependents');
+        return;
+      }
+      if(typeof($scope.employee.user_defined_points) === 'undefined'){
+        alert('Please enter the final withholding number (line 5 on your W-4)');
+        return;
+      }
+      if(typeof($scope.employee.extra_amount) === 'undefined'){
+        alert('Please enter the extra amount of your paycheck to withhold (Line 6 on your W-4)');
+        return;
+      }
+
+      // Add marriage number to $scope object
+      $scope.employee.marriage = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
+      userPromise.then(function(userId){
+        employeePayrollService.saveEmployeeTaxByUserId(userId, $scope.employee).then(function(response){
+          $state.go('employee_payroll.w4');
+        });
+      });
+    };
+
+    $scope.editW4 = function(){
+      $state.go('employee_payroll.w4_edit');
+    };
+   }
+  ]);
+
+var employeeProfile = employeeControllers.controller('employeeProfileController',
+  ['$scope',
+   '$state',
+   '$location',
+   'tabLayoutGlobalConfig', 
+   function ($scope, 
+             $state, 
+             $location, 
+             tabLayoutGlobalConfig){
+    $scope.section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_profile'});
+
+    $scope.goToState = function(state){
+      $state.go(state);
+    };
+
+    $scope.backToDashboard = function(){
+      $location.path('/employee');
+    };
+   }
+  ]);
+
+var employeeI9Controller = employeeControllers.controller('employeeI9Controller', 
+  ['$scope',
+   '$state',
+   'currentUser', 
+   'employeeProfileService', 
+   function($scope,
+            $state,
+            currentUser,
+            employeeProfileService){
+    $scope.employee = {auth_type: ''};
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      // assign user id to current employee
+      $scope.employee.userId = userId;
+
+      employeeProfileService.getEmploymentAuthByUserId(userId).then(function(response){
+        $scope.fields = response;
+      });
+    });
+
+    var signatureUpdated = false;
+    var $sigdiv = $("#auth_signature");
+    if(_.isUndefined($sigdiv))
+    {
+      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
+    }
+    $sigdiv.jSignature();
+    $sigdiv.bind('change', function(e){
+     signatureUpdated = true;
+    });
+
+    $scope.clearSignature = function(){
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
+    };
+
+    $scope.acknowledgedI9 = function(){
+      $scope.employee.downloadI9 = !$scope.employee.downloadI9;
+    };
+
+    $scope.signDocument = function(){
+      if(!signatureUpdated){
+        alert('Please sign your name on the signature pad');
+      }
+      if(!$scope.employee.downloadI9){
+        alert('Please download the I-9 document and acknowledge you have read the entire form above.');
+      }
+      else
+      {
+        var signatureData = $sigdiv.jSignature('getData', 'svg');
+        $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
+        employeeProfileService.saveEmploymentAuthByUserId($scope.employee, $scope.signatureImage).then(function(response){
+          $state.go('employee_profile.i9');
+        }, function(error){
+          alert('Employment authorization has NOT been saved. Please try again later.');
+        });
+      }
+    };
+
+    $scope.editI9 = function(){
+      $state.go('employee_profile.i9_edit');
+    };
+   }
+  ]);
 
 var employeeInfo = employeeControllers.controller('employeeInfoController',
   ['$scope', '$location', '$stateParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
@@ -522,13 +720,21 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', 'UploadService',
+  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, UploadService){
     $scope.employee = {
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
+    $scope.$watch('files', function () {
+        $scope.upload($scope.files);
+    });
 
+    $scope.uploadedFiles = [];
+    UploadService.getAllUploadsByCurrentUser().then(function(resp){
+      $scope.uploadedFiles = resp;
+    });
+        
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
@@ -572,6 +778,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
     $sigdiv.bind('change', function(e){
      signatureUpdated = true;
     });
+
     $scope.clearSignature = function(){
       $sigdiv.jSignature("reset");
       signatureUpdated = false;
@@ -601,6 +808,31 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
           });
       }
     };
+
+    $scope.upload = function (files) {
+      if (files && files.length) {
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          UploadService.uploadFile(file, 'I9').then(
+            function(fileUploaded){
+              $scope.uploadedFiles.push(fileUploaded);
+            },
+            function(error){
+              alert('upload error happened!');
+            },
+            function(evt){
+              //Here is the function for showing upload progress
+            });
+        }
+      }
+    };
+
+    $scope.deleteFile = function(file){
+      UploadService.deleteFile(file.id).then(function(deletedFile){
+        $scope.uploadedFiles = _.without($scope.uploadedFiles, file);
+      });
+    };
+
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
@@ -1423,7 +1655,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           else{
             LifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
               var enrolledBasic = _.find(enrolledPlans, function(plan){ 
-                return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';
+                return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';
               });
               if (enrolledBasic){
                 $scope.basicLifeInsurancePlan.enrolled = true;

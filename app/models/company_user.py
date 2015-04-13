@@ -1,3 +1,5 @@
+import reversion
+
 from django.db import models
 from company import Company
 from django.contrib.auth.models import User
@@ -7,7 +9,7 @@ USER_TYPE = (("employee", "employee"),
              ("broker", "broker"),
              ("super", "super"))
 
-
+@reversion.register
 class CompanyUser(models.Model):
     user = models.ForeignKey(User)
     company = models.ForeignKey(Company)

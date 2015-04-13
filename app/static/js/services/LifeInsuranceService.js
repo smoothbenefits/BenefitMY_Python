@@ -174,14 +174,14 @@ benefitmyService.factory('LifeInsuranceService',
           .$promise.then(
             function(response){
               planEnrollments = _.find(response, 
-                function(plan){ return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';}
+                function(plan){ return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';}
               );
 
               // Check if user enrolls basic life insurance. If yes, map response to view model
               // If not, return simple object
               if (planEnrollments){
                 planEnrollments.enrolled = true;
-                planEnrollments.life_insurance.last_update_date = moment(planEnrollments.life_insurance.updated_at).format(DATE_FORMAT_STRING);
+                planEnrollments.last_update_date = moment(planEnrollments.updated_at).format(DATE_FORMAT_STRING);
 
                 var firstTier = [];
                 var secondTier = [];
@@ -217,7 +217,7 @@ benefitmyService.factory('LifeInsuranceService',
             function (successResponse) {
               // Filter out basic life insurance enrolled by user
               planEnrollments = _.filter(successResponse, 
-                function(plan){ return plan.life_insurance.life_insurance_plan.insurance_type === 'Extended'; }
+                function(plan){ return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Extended'; }
                 );
 
               employeeFamily.get({userId:userId})
@@ -308,7 +308,7 @@ benefitmyService.factory('LifeInsuranceService',
             "id": basicLifeToSave.id,
             "user": userId,
             "person": mainPlanPerson.id,
-            "life_insurance": basicLifeToSave.id,
+            "company_life_insurance": basicLifeToSave.life_insurance_plan.id,
             "life_insurance_beneficiary": [],
             "insurance_amount": basicLifeToSave.insurance_amount
           };
@@ -432,8 +432,8 @@ benefitmyService.factory('LifeInsuranceService',
         CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(function(plans){
             _.each(plans, function(plan){
-              if (plan.life_insurance.life_insurance_plan 
-                  && plan.life_insurance.life_insurance_plan.insurance_type === 'Basic'){
+              if (plan.company_life_insurance.life_insurance_plan 
+                  && plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic'){
                 CompanyUserLifeInsurancePlanRepository.ById.delete({id: plan.id});
               }
             });
