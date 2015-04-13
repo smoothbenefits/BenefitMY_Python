@@ -141,7 +141,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
       // Direct Deposit
       DirectDepositService.getDirectDepositByUserId(userId).then(function(response){
-        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDeposit(response);
+        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDepositInBulk(response);
       });
     });
 
@@ -452,20 +452,20 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
    '$stateParams',
    '$controller', 
    '$modal', 
-   'currentUser',
+   'UserService',
    'DirectDepositService',
    function($scope,
             $state,  
             $stateParams,
             $controller, 
             $modal, 
-            currentUser,
+            UserService,
             DirectDepositService){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
 
-    var userPromise = currentUser.get().$promise.then(function(response){
+    var userPromise = UserService.getCurUserInfo().then(function(response){
       $scope.person = response.user;
       $scope.person.role = 'Employee';
       return response.user.id;
@@ -473,7 +473,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
 
     userPromise.then(function(userId){
       DirectDepositService.getDirectDepositByUserId(userId).then(function(response){
-        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDeposit(response);
+        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDepositInBulk(response);
       });
     });
 
@@ -490,6 +490,8 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
     };
 
     $scope.editDirectDepositAccount = function(account){
+      var accountCopy = angular.copy(account);
+
       var modalInstance = $modal.open({
         templateUrl: '/static/partials/payroll/modal_direct_deposit.html',
         controller: 'directDepositModalController',
@@ -497,52 +499,30 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
         backdrop: 'static',
         resolve: {
           directDepositAccount: function () {
-            return account;
+            return accountCopy;
+          },
+          userId: function() {
+            return $scope.person.id;
           }
         }
       });
 
       modalInstance.result.then(function(account){
-
-        var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
-        return directDeposit;
-
-      }).then(function(account){
-        // check if the account has an id. If yes, update the account
-        if (account.id){
-          DirectDepositService.updateDirectDepositById(account).then(function(response){
-            return response;
-          });
-        }
-        else{
-          userPromise.then(function(userId){
-            DirectDepositService.createDirectDepositByUserId(userId, account).then(function(response){
-              return response;
-            });
-          });
-        }
-      }).then(function(response){
         var successMessage = "Your direct deposit account has been saved. " + 
               "You can return to dashboard through left navigation panel. " +
               "Or add another account using the button below.";
 
         $scope.showMessageWithOkayOnly('Success', successMessage);
 
-        // reload current state to get the latest direct deposit accounts
-        $state.transitionTo($state.current, $stateParams, {
-            reload: true,
-            inherit: false,
-            notify: true
-        });
-      }).catch(function(error){
-        // TODO: How to better handle reject from modal controller?
-        if (error === 'cancelByUser'){
-          return;
+        var updatedAccount = DirectDepositService.mapDtoToViewDirectDeposit(account);
+        var accountInView = _.findWhere($scope.directDepositAccounts, {id: updatedAccount.id});
+        if (accountInView){
+          var index = $scope.directDepositAccounts.indexOf(accountInView);
+          $scope.directDepositAccounts[index] = updatedAccount;
         }
-
-        var errorMessage = "Error occurred when tried to save your direct deposit account. " + 
-              "Please try again later. Error message: " + error;
-        $scope.showMessageWithOkayOnly('Error', errorMessage);
+        else{
+          $scope.directDepositAccounts.push(updatedAccount);
+        }
       });
     };
 
@@ -559,12 +539,12 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
 
           $scope.showMessageWithOkayOnly('Success', successMessage);
 
-          // reload current state to get the latest direct deposit accounts
-          $state.transitionTo($state.current, $stateParams, {
-              reload: true,
-              inherit: false,
-              notify: true
-          });
+          // remove deteled account from $scope object
+          var removedAccount = _.findWhere($scope.directDepositAccounts, {id: response.id});
+          if (removedAccount){
+            var index = $scope.directDepositAccounts.indexOf(removedAccount);
+            $scope.directDepositAccounts.slice(index, 1);
+          }
         }, function(error){
           var errorMessage = "Error occurred when tried to delete your direct deposit account. " + 
               "Please try again later. Error message: " + error;
@@ -578,14 +558,44 @@ var directDepostiModalController = employeeControllers.controller('directDeposit
   ['$scope',
    '$state',
    '$modalInstance',
+   '$q',
+   'DirectDepositService',
    'directDepositAccount',
+   'userId',
     function($scope,
              $state,
              $modalInstance,
-             directDepositAccount){
-        
+             $q,
+             DirectDepositService,
+             directDepositAccount,
+             userId){
+      
+      $scope.errorMessage = null;
       $scope.account = directDepositAccount;
       $scope.bankAccountTypes = ['Checking', 'Saving'];
+
+      // wrap up add/edit service call
+      var directDepositPromise = function(account){
+        var deferred = $q.defer();
+        var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
+
+        // check if the account has an id. If yes, update the account
+        if (directDeposit.id){
+          DirectDepositService.updateDirectDepositById(directDeposit).then(function(response){
+            deferred.resolve(response);
+          }, function(error){
+            deferred.reject(error);
+          });
+        }
+        else{
+          DirectDepositService.createDirectDepositByUserId(userId, directDeposit).then(function(response){
+            deferred.resolve(response);
+          }, function(error){
+            deferred.reject(error);
+          });
+        }
+        return deferred.promise;
+      };
 
       $scope.resetAmountAndPercent = function(account){
         if(account.remainder_of_all){
@@ -596,31 +606,24 @@ var directDepostiModalController = employeeControllers.controller('directDeposit
       };
 
       $scope.amountDisabled = function(account){
-        if (account.remainder_of_all){
-          return true;
-        }
-        else if (account.percentage && account.percentage != 0){
-          return true;
-        }
-        return false;
+        return account.remainder_of_all || (account.percentage && account.percentage != 0);
       };
 
       $scope.percentageDisabled = function(account){
-        if (account.remainder_of_all){
-          return true;
-        }
-        else if (account.amount && account.amount != 0){
-          return true;
-        }
-        return false;
+        return account.remainder_of_all || (account.amount && account.amount != 0);
       };
 
       $scope.cancel = function() {
         $modalInstance.dismiss('cancelByUser');
       };
 
-      $scope.save = function() {
-        $modalInstance.close($scope.account);
+      $scope.save = function(account) {
+        directDepositPromise(account).then(function(response){
+          $modalInstance.close(response);
+        }, function(error){
+          $scope.errorMessage = "Error occurred when tried to save direct deposit. Please verify " +
+            "all the information enterred are valid. Message: " + error;
+        });
       };
     }
   ]);
