@@ -2,7 +2,7 @@
   {
     "fields": {
       "company": 1,
-      "feature": 1,
+      "company_feature": 1,
       "feature_status": true
     },
     "model": "app.companyfeatures",
@@ -12,7 +12,7 @@
   {
     "fields": {
       "company": 1,
-      "feature": 2,
+      "company_feature": 2,
       "feature_status": true
     },
     "model": "app.companyfeatures",
@@ -22,7 +22,7 @@
   {
     "fields": {
       "company": 2,
-      "feature": 1,
+      "company_feature": 1,
       "feature_status": true
     },
     "model": "app.companyfeatures",
