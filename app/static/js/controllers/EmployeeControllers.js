@@ -540,11 +540,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
           $scope.showMessageWithOkayOnly('Success', successMessage);
 
           // remove deteled account from $scope object
-          var removedAccount = _.findWhere($scope.directDepositAccounts, {id: response.id});
-          if (removedAccount){
-            var index = $scope.directDepositAccounts.indexOf(removedAccount);
-            $scope.directDepositAccounts.slice(index, 1);
-          }
+          $scope.directDepositAccounts = _.reject($scope.directDepositAccounts, {id: response.id});
         }, function(error){
           var errorMessage = "Error occurred when tried to delete your direct deposit account. " + 
               "Please try again later. Error message: " + error;
