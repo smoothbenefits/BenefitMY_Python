@@ -828,7 +828,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
     };
 
     $scope.deleteFile = function(file){
-      UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
+      UploadService.deleteFile(file.id).then(function(deletedFile){
         $scope.uploadedFiles = _.without($scope.uploadedFiles, file);
       });
     };

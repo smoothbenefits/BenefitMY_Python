@@ -122,6 +122,10 @@ AMAZON_S3_UPLOAD_POLICY= {
     ]
 }
 
+# NOSE arguments for unit testing
+NOSE_ARGS = ['--nocapture',
+             '--nologcapture',]
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
