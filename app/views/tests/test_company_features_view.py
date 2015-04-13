@@ -35,11 +35,11 @@ class CompanyFeaturesTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result), list)
         self.assertEqual(result[0]['feature_status'], True)
         self.assertEqual(result[0]['company_feature'], 1)
-        self.assertEqual(result[0]['company'], 'BMHT_1_b457df460695969e8960e3f1623a3ee7')
+        self.assertEqual(result[0]['company'], self.normalize_key(1))
 
         self.assertEqual(result[1]['feature_status'], True)
         self.assertEqual(result[1]['company_feature'], 2)
-        self.assertEqual(result[1]['company'], 'BMHT_1_b457df460695969e8960e3f1623a3ee7')
+        self.assertEqual(result[1]['company'], self.normalize_key(1))
 
 
         response = self.client.delete(reverse('company_features_api',
