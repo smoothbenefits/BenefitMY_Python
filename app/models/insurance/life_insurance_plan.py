@@ -1,9 +1,11 @@
+import reversion
+
 from django.db import models
 from django.contrib.auth.models import User
 
 INSURANCE_TYPES = ([(item, item) for item in ['Basic', 'Extended']])
 
-
+@reversion.register
 class LifeInsurancePlan(models.Model):
     name = models.CharField(max_length=255)
     user = models.ForeignKey(User,

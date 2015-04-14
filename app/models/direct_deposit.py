@@ -1,8 +1,10 @@
+import reversion
+
 from django.db import models
 from django.contrib.auth.models import User
 from user_bank_account import UserBankAccount
 
-
+@reversion.register
 class DirectDeposit(models.Model):
     amount = models.DecimalField(
         max_digits=20, decimal_places=2, default=0, blank=True, null=True)

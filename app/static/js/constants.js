@@ -91,3 +91,59 @@ settings.constant('benefitSectionGlobalConfig', [
         enabled: false
     }
 ]);
+
+settings.constant('tabLayoutGlobalConfig', [
+    {
+        id: 1,
+        section_name: 'broker_add_benefits',
+        tabs: [
+            {
+                id: 1,
+                verbose_name: "Health Benefits",
+                name: "health",
+                active: true,
+                state: "broker_add_benefit.health"
+            },
+            {
+                id: 1,
+                verbose_name: "Basic Life Insurance",
+                name: "basic_life",
+                active: false,
+                state: "broker_add_benefit.basic_life_insurance"
+            }
+        ]
+    },
+    {
+        id: 2,
+        section_name: 'employee_profile',
+        tabs: [
+            {
+                id: 1,
+                verbose_name: 'Employment Authorization (I9)',
+                name: 'i9',
+                active: true,
+                state: 'employee_profile.i9'
+            }
+        ]
+    },
+    {
+        id: 3,
+        section_name: 'employee_payroll',
+        tabs: [
+            {
+                id: 1,
+                verbose_name: 'W4 Form',
+                name: 'w4',
+                active: true,
+                state: 'employee_payroll.w4'
+            },
+            {
+                id: 2,
+                verbose_name: 'Direct Deposit',
+                name: 'direct_deposit',
+                active: false,
+                state: 'employee_payroll.direct_deposit'
+            }
+        ]
+    }
+]);

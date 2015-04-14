@@ -10,8 +10,9 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     
-    url(r'^employee/signup/(?P<user_id>\d+)/$', register_view.register_employee),
+    url(r'^employee/signup/(?P<user_id>\w+)/?$', register_view.register_employee),
     url(r'^signup/$', register_view.register),
+    url(r'^login/(?P<info_message>\w+)/?$', login_view.user_login, name='user_login_with_message'),
     url(r'^login/$', login_view.user_login, name='user_login'),
     url(r'^logout/$', login_view.user_logout, name='user_logout'),
     url(r'^', include('app.urls')),

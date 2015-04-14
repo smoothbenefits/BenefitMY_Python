@@ -1,0 +1,42 @@
+var benefitmyService = angular.module('benefitmyService');
+
+benefitmyService.factory('UserService', 
+  ['currentUser',
+   'clientListRepository',
+   '$location',
+   '$q',
+  function (currentUser, clientListRepository, $location, $q){
+    var getCurRoleFromPath = function(){
+        var curPath = $location.path();
+        if(curPath[0] === '/'){
+            curPath = curPath.substring(1);
+        }
+        var pathArray = curPath.split('/');
+        if(pathArray.length > 0){
+            return pathArray[0];
+        }
+        else{
+            return undefined;
+        }
+    };
+    return {
+      getCurUserInfo: function() {
+        var deferred = $q.defer();
+        var userInfo = {};
+        currentUser.get().$promise.then(function(response){
+            userInfo.user=response.user;
+            userInfo.roles = response.roles;
+          clientListRepository.get({userId: response.user.id})
+            .$promise.then(function(response){
+            var curRole = _.find(response.company_roles, {company_user_type: getCurRoleFromPath()});
+            if(curRole){
+              userInfo.currentRole = curRole;
+            }
+            deferred.resolve(userInfo);
+          });
+        });
+        return deferred.promise;
+      },
+      getCurrentRole: getCurRoleFromPath
+    };
+}]);

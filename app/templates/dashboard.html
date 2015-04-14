@@ -25,6 +25,8 @@
     <script type="text/javascript" src='{% static 'moment/min/moment.min.js' %}'></script>
     <script type="text/javascript" src='{% static 'angular-input-masks/releases/masks.min.js' %}'></script>
     <script type="text/javascript" src='{% static 'angular-bootstrap/ui-bootstrap-tpls.min.js' %}'></script>
+    <script type="text/javascript" src='{% static 'ng-file-upload/angular-file-upload-shim.js' %}'></script>
+    <script type="text/javascript" src='{% static 'ng-file-upload/angular-file-upload.js' %}'></script>
     {% compressed_js "dashboard" %}
 </head>
 
@@ -116,6 +118,7 @@
                         <button data-toggle="collapse" data-target="#employee-payroll-nav" aria-expanded="false" aria-controls="employee-payroll-nav"><span class="flaticon flaticon-user135"></span>Payroll</button>
                     </div>
                     <div class="sub-nav collapse" id="employee-payroll-nav">
+                        <a href="#/employee/payroll/w4">W4 Form</a>
                         <a href="#/employee/direct_deposit">Direct Deposit</a>
                     </div>
                 </li>

@@ -28,7 +28,8 @@
         <div class="form-holder">
             <h2>Sign In</h2>
 <!--                   <p id="flash_alert">Your session expired. Please sign in again to continue.</p>-->  
-            <p id="flash_aLert" class="login-error">{{message}}</p>       
+            <p id="flash_aLert" class="login-error">{{message}}</p>
+            <p id="info_message" class="login-info">{{info_message}}</p>         
             <form accept-charset="UTF-8" action="/login/" class="new_user" id="new_user" method="post">
                 {% csrf_token %}
                 <div class="form-label">Email Address</div>
