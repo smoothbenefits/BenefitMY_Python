@@ -123,6 +123,7 @@ AMAZON_S3_UPLOAD_POLICY= {
         ["starts-with", "$Content-Type", ""],
         ["starts-with", "$filename", ""],
         ["content-length-range", 0, 52428800],
+        {"x-amz-server-side-encryption": "AES256"},
     ]
 }
 
