@@ -4,7 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from app.models.company_features import CompanyFeatures
-from app.serializers.company_features_serializer import CompanyFeaturesSerializer
+from app.serializers.company_features_serializer import (
+    CompanyFeaturesSerializer,
+    CompanyFeaturesPostSerializer)
 
 
 class CompanyFeaturesView(APIView):
@@ -19,9 +21,8 @@ class CompanyFeaturesView(APIView):
         serializer = CompanyFeaturesSerializer(features, many=True)
         return Response(serializer.data)
 
-
     def post(self, request, pk, format=None):
-        serializer = CompanyFeaturesSerializer(data=request.DATA, many=True)
+        serializer = CompanyFeaturesPostSerializer(data=request.DATA, many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -11,3 +11,10 @@ class CompanyFeaturesSerializer(HashPkSerializerBase):
     class Meta:
 
         model = CompanyFeatures
+
+
+class CompanyFeaturesPostSerializer(HashPkSerializerBase):
+
+    class Meta:
+
+        model = CompanyFeatures
