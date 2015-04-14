@@ -44,7 +44,8 @@ benefitmyService.factory('UploadService',
                 policy: uploadInfo.policy, // base64-encoded json policy (see article below)
                 signature: uploadInfo.signature, // base64-encoded signature based on policy string (see article below)
                 "Content-Type": get_file_type(file),// content type of the file (NotEmpty)
-                filename: file.name // this is needed for Flash polyfill IE8-9
+                filename: file.name, // this is needed for Flash polyfill IE8-9
+                "x-amz-server-side-encryption": "AES256"
               },
               file: file
           }).progress(function (evt) {
