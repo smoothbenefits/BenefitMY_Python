@@ -101,13 +101,6 @@ benefitmyDomainModelFactories.factory('employeeBenefits',
     };
   }]);
 
-benefitmyDomainModelFactories.factory('employeeDirectDeposit', ['$resource',
-  function($resource){
-    return {
-      getByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: 'employee_id'})
-    };
-  }]);
-
 benefitmyDomainModelFactories.factory('employerWorkerRepository', ['$resource',
   function($resource){
     return $resource('/api/v1/companies/:companyId/users',
@@ -253,7 +246,7 @@ benefitmyDomainModelFactories.factory('CompanyUserLifeInsurancePlanRepository', 
 benefitmyDomainModelFactories.factory('DirectDepositRepository', ['$resource',
   function($resource){
     return {
-      ByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: '@id'}, {post: { method: 'POST', isArray: true}}),
+      ByEmployeeId: $resource('/api/v1/direct_deposit/:id', {id: '@id'}, {post: { method: 'POST'}}),
       UpdateById: $resource('/api/v1/direct_deposit/:id', {id: '@id'}, {update: { method: 'PUT'}}),
       DeleteById: $resource('/api/v1/direct_deposit/:id', {id: '@id'}, {delete: { method: 'DELETE'}})
     };
