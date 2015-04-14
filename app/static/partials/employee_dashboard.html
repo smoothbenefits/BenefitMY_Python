@@ -9,7 +9,6 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-
     <div class="table-responsive table-holder table" ng-if="benefits.length>0">
         <div class="table-sub-title">
             Selected Benefits
@@ -89,7 +88,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td width="180">{{familyInsurancePlan.mainPlan.life_insurance.life_insurance_plan.name}}</td>
+                    <td width="180">{{familyInsurancePlan.mainPlan.company_life_insurance.life_insurance_plan.name}}</td>
                     <td colspan="2" style="padding: 0;">
                         <table class="table">
                             <tr ng-repeat="memberPlan in familyInsurancePlan.memberPlans">
@@ -106,7 +105,7 @@
             </tbody>
         </table>
     </div>
-    <div class="table-responsive table-holder">
+    <div class="table-responsive table-holder table">
         <table class="table table-striped" ng-show="!basicLifeInsurancePlan.enrolled">
             <thead>
                 <tr>
@@ -123,20 +122,20 @@
         <table class="table table-striped" ng-show="basicLifeInsurancePlan.enrolled">
             <thead>
                 <tr>
-                    <th width="180"><span>Plan Name</span></th>
-                    <th width="120"><span>Elected Coverage Amount (USD)</span></th>
-                    <th width="180"><span>Beneficiary</span></th>
-                    <th width="120"><span>Last Update</span></th>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Elected Coverage Amount (USD)</span></th>
+                    <th><span>Beneficiary</span></th>
+                    <th><span>Last Update</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td width="180">{{basicLifeInsurancePlan.life_insurance.life_insurance_plan.name}}</td>
-                    <td width="180">{{basicLifeInsurancePlan.life_insurance.insurance_amount}}</td>
-                    <td width="180">
+                    <td>{{basicLifeInsurancePlan.company_life_insurance.life_insurance_plan.name}}</td>
+                    <td>{{basicLifeInsurancePlan.company_life_insurance.insurance_amount}}</td>
+                    <td>
                         <span class="inline" ng-repeat="beneficiary in basicLifeInsurancePlan.life_insurance_beneficiary"> {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br></span>
                     </td>
-                    <td width="120">{{basicLifeInsurancePlan.life_insurance.last_update_date}}</td>
+                    <td>{{basicLifeInsurancePlan.last_update_date}}</td>
                 </tr>
             </tbody>
         </table>
@@ -144,7 +143,7 @@
     </div>
     <div class="table-responsive table-holder table">
         <div class="table-sub-title">Flexible Spending Account</div>
-        <table class="table-striped">
+        <table class="table-striped table">
             <thead>
                 <tr>
                     <th><span>Account Type</span></th>
@@ -172,9 +171,41 @@
 <div class="content-header">
     <h1>My Payroll</h1>
     <span class="general-info">View/edit your payroll information here</span>
+    <div class="cta"><a ng-click="goToState('employee_payroll')" class="btn green" >Modify Payroll</a></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
+    <div class="table-responsive table-holder table">
+        <div class="table-sub-title">W4 Form</div>
+        <table class="table table-striped" ng-show="w4Info">
+            <thead>
+                <tr>
+                    <th><span>Calculated Points</span></th>
+                    <th><span>User Defined Points</span></th>
+                    <th><span>Extra Withholding Amount</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{w4Info.calculated_points}}</td>
+                    <td>{{w4Info.user_defined_points}}</td>
+                    <td>$ {{w4Info.extra_amount}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-striped" ng-hide="w4Info">
+            <thead>
+                <tr>
+                    <th width="180"><span>W4 Inforamtion</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="180">We do not have your W4 form information yet.</td>
+                </tr>
+            </tbody>    
+        </table>
+    </div>
     <div class="table-responsive table-holder table">
         <table class="table table-striped">
             <thead>
@@ -224,9 +255,37 @@
 <div class="content-header">
     <h1>My Profile</h1>
     <span class="general-info">View/edit your information here</span>
+    <div class="cta"><a ng-click="goToState('employee_profile')" class="btn green" >Modify Profile</a></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
+    <div class="table-responsive table-holder table">
+        <div class="table-sub-title">Employment Authorization (I-9)</div>
+        <table class="table table-striped" ng-show="i9Info">
+            <thead>
+                <tr>
+                    <th><span>Worker Type</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{i9Info.worker_type}}</td>
+                </tr>
+            </tbody> 
+        </table>
+        <table class="table table-striped" ng-hide="i9Info">
+            <thead>
+                <tr>
+                    <th><span>Employment Authorization (I-9)</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="180">We do not have your employment authorization information yet.</td>
+                </tr>
+            </tbody>  
+        </table>
+    </div>
     <div class="table-responsive table-holder">
         <table class="table table-striped">
             <thead>
@@ -239,15 +298,15 @@
                 <tr>
                     <td>I-9</td>
                     <td>
-                        <a class="btn inline" ng-click="ViewInfo('i9')"> View </a>
-                        <!-- <a class="btn inline" ng-click="EditInfo('i9')"> Edit </a> -->
+                        <a class="btn inline" ng-click="goToState('employee_profile.i9')"> View </a>
+                        <a class="btn inline" ng-click="goToState('employee_profile.i9.edit')"> Edit </a>
                     </td>
                 </tr>
                 <tr>
                     <td>W-4</td>
                     <td>
-                        <a class="btn inline" ng-click="ViewInfo('w4')"> View </a>
-                        <!-- <a class="btn inline" ng-click="EditInfo('w4')"> Edit </a> -->
+                        <a class="btn inline" ng-click="goToState('employee_profile.w4')"> View </a>
+                        <a class="btn inline" ng-click="goToState('employee_profile.w4.edit')"> Edit </a>
                     </td>
                 </tr>
             </tbody>

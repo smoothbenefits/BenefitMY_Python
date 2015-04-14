@@ -1,8 +1,11 @@
+import reversion
+
 from django.db import models
 from benefit_policy_key import BenefitPolicyKey
 from benefit_policy_type import BenefitPolicyType
 from benefit_plan import BenefitPlan
 
+@reversion.register
 class BenefitDetails(models.Model):
     value = models.CharField(max_length=1024)
 

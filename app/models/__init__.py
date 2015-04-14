@@ -30,5 +30,6 @@ from insurance.user_company_life_insurance_plan import UserCompanyLifeInsuranceP
 from insurance.life_insurance_plan import LifeInsurancePlan
 from company_feature_list import CompanyFeatureList
 from company_features import CompanyFeatures
+from upload import Upload
 
 

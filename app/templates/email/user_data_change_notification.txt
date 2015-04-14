@@ -1,0 +1,14 @@
+{% for company_users in company_users_collection %}
+
+Company: {{company_users.company.name}}
+
+Users made changes in the last 24 hours::
+    {% for person in company_users.persons %}
+    - {{ person.first_name }} {{person.last_name}} ( {{person.birth_date}} )
+    {% endfor %}
+
+---------------------------------------------------------------------------
+
+{% endfor %}
+
+Visit the site to check them out: {{site_url}} 

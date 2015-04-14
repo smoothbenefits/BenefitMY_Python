@@ -1,10 +1,12 @@
+import reversion
+
 from django.db import models
 from user_company_life_insurance_plan import UserCompanyLifeInsurancePlan
 from ..person import Person
 
 TIER = ([(item, item) for item in ['1', '2']])
 
-
+@reversion.register
 class LifeInsuranceBeneficiary(models.Model):
     first_name = models.CharField(max_length=255, null=True)
     middle_name = models.CharField(max_length=255, null=True, blank=True)
