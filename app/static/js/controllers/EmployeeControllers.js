@@ -550,7 +550,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
     };
   }]);
 
-var directDepostiModalController = employeeControllers.controller('directDepositModalController',
+var directDepositModalController = employeeControllers.controller('directDepositModalController',
   ['$scope',
    '$state',
    '$modalInstance',
