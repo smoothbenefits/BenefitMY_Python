@@ -1594,17 +1594,12 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
         var employeeId = $scope.employeeId;
 
         $scope.companyIdPromise.then(function(companyId){
-          LifeInsuranceService.getLifeInsurancePlansForCompany(companyId, function(plans) {
+          LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic').then(function(plans) {
 
-            // Populate available company plans
-            _.each(plans, function(plan) {
-              // separate basic life insurance from supplemental life insurance.
-              // for now, it will pick the last basic life insurance defined by broker.
-              if (plan.life_insurance_plan.insurance_type === 'Basic'){
-                $scope.basicLifeInsurancePlan = plan;
-                $scope.basicLifeInsurancePlan.selected = true;
-              }
-            });
+            if (plans.length > 0) {
+              $scope.basicLifeInsurancePlan = plans[0];
+              $scope.basicLifeInsurancePlan.selected = true;
+            }
 
             // Get current user's basic life insurance plan situation
             LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
@@ -1719,11 +1714,11 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
 
         var employeeId = $scope.employeeId;
 
-        $scope.lifeInsurancePlans = [ { text: '<Waive Life Insurance>', value: '0' } ];
+        $scope.lifeInsurancePlans = [ { text: '<Waive Supplemental Life Insurance>', value: '0' } ];
         $scope.selectedLifeInsurancePlan = $scope.lifeInsurancePlans[0];
 
         $scope.companyIdPromise.then(function(companyId){
-          LifeInsuranceService.getLifeInsurancePlansForCompany(companyId, function(plans) {
+          LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Extended').then(function(plans) {
 
             // Populate available company plans
             _.each(plans, function(plan) {
@@ -1736,7 +1731,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
 
               // Determine the right plan option to select
               if (!$scope.isLifeInsuranceWaived($scope.familyLifeInsurancePlan)) {
-                var optionToSelect = _.where($scope.lifeInsurancePlans, {value:$scope.familyLifeInsurancePlan.mainPlan.life_insurance.life_insurance_plan.id});
+                var optionToSelect = _.where($scope.lifeInsurancePlans, {value:$scope.familyLifeInsurancePlan.mainPlan.company_life_insurance.id});
                 if (optionToSelect.length > 0) {
                   $scope.selectedLifeInsurancePlan = optionToSelect[0];
                 }

@@ -277,6 +277,7 @@ PIPELINE_JS = {
             'js/services/UploadService.js',
             'js/services/employeePayrollService.js',
             'js/services/employeeProfileService.js',
+            'js/services/FeatureConfigurationService.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }

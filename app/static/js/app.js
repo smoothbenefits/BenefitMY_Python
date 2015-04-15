@@ -75,6 +75,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_basic_life.html',
                 controller: 'brokerAddBasicLifeInsurance'
             }).
+            state('broker_add_benefit.supplemental_life_insurance', {
+                url: '/supplemental_life',
+                templateUrl: '/static/partials/benefit_addition/tab_supplemental_life.html',
+                controller: 'brokerAddSupplementalLifeInsurance'
+            }).
             state('/broker/benefit/selected/:client_id', {
                 url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',
