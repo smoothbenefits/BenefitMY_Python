@@ -1058,7 +1058,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if(basicLifePlans.length > 0) {
           $scope.tabs.push({
-              "heading": "Basic Life",
+              "heading": "Basic Life (AD&D)",
               "state":"employee_benefit_signup.basic_life"
           });
         }
