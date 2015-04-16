@@ -1,8 +1,8 @@
 <a ng-click="openPlanDetailsModal()"><b>View Health Plan Details</b></a>
-<div class="panel" ng-repeat="benefitTypePlan in availablePlans">
-    <div class="panel-head">{{benefitTypePlan.benefit_type}} Plan</div>
-    <div class="panel-body">
-        <form name="myForm" confirm-unsaved-on-exit>
+<form name="myForm" confirm-unsaved-on-exit>
+    <div class="panel" ng-repeat="benefitTypePlan in availablePlans">
+        <div class="panel-head">{{benefitTypePlan.benefit_type}} Plan</div>
+        <div class="panel-body">
             <div class="select-box">
                 <select ng-model="benefitTypePlan.selected"
                     ng-required="true"
@@ -44,9 +44,9 @@
                             class="form-control"></select>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</form>
 <div class="form-holder">
     <div class="row">
         <div class="col-sm-6">

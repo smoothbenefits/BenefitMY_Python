@@ -1142,7 +1142,6 @@ var healthBenefitsSignup = employeeControllers.controller(
         var dentalPlans = [];
         var visionPlans = [];
         var employeeId = $scope.employeeId;
-        var companyId;
         $scope.employee_id = employeeId;
         $scope.availablePlans = [];
         $scope.family = [];
@@ -1349,87 +1348,90 @@ var healthBenefitsSignup = employeeControllers.controller(
           var saveRequest = {benefits:[],waived:[]};
           var invalidEnrollNumberList = [];
           var noPCPError = false;
-          _.each($scope.availablePlans, function(benefitTypePlan){
-            var enrolledList = [];
-            if (typeof benefitTypePlan.selected.eligibleMemberCombo != 'undefined'){
-              _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
-                if(member.selected)
+          $scope.companyIdPromise.then(function(companyId){
+
+            _.each($scope.availablePlans, function(benefitTypePlan){
+              var enrolledList = [];
+              if (typeof benefitTypePlan.selected.eligibleMemberCombo != 'undefined'){
+                _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
+                  if(member.selected)
+                  {
+                    enrolledList.push({id:member.id, pcp:member.pcp});
+                  }
+                });
+              }
+
+              if(enrolledList.length > 0)
+              {
+                var requestBenefit = {
+                  benefit:{
+                    id:benefitTypePlan.selected.benefit.id,
+                    benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
+                  },
+                  enrolleds:enrolledList
+                };
+                saveRequest.benefits.push(requestBenefit);
+
+                if(requestBenefit.enrolleds.length < benefitTypePlan.selected.eligibleMemberCombo.minimumRequired)
                 {
-                  enrolledList.push({id:member.id, pcp:member.pcp});
+                  //validation failed.
+                  var invalidEnrollNumber = {};
+                  invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_plan.name;
+                  invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.minimumRequired;
+                  invalidEnrollNumberList.push(invalidEnrollNumber);
+                }
+              }
+            });
+
+            if(invalidEnrollNumberList.length > 0){
+              alert("For benefit " + invalidEnrollNumberList[0].name +
+                      ", you have to elect at least" + invalidEnrollNumberList[0].requiredNumber + " family members!");
+              return;
+            }
+            saveRequest.waivedRequest = {company:companyId, waived:[]};
+            _.each($scope.availablePlans, function(benefitPlan){
+                if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
+                  if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
+                    alert("Please select a reason to waive medical plan.");
+                    return;
+                  }
+
+                  var type = benefitPlan.benefit_type;
+                  var waiveReason = 'Not applicable';
+                  //This code below is such an hack. We need to get the type key from the server!
+                  //CHANGE THIS
+                  var typeKey = 0;
+                  if (type === 'Medical'){
+                    typeKey = 1;
+                    waiveReason = benefitPlan.selected.benefit.reason;
+                  }
+                  if (type === 'Dental'){
+                    typeKey = 2;
+                  }
+                  if (type === 'Vision'){
+                    typeKey = 3;
+                  }
+                  saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
                 }
               });
-            }
 
-            if(enrolledList.length > 0)
-            {
-              var requestBenefit = {
-                benefit:{
-                  id:benefitTypePlan.selected.benefit.id,
-                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
-                },
-                enrolleds:enrolledList
-              };
-              saveRequest.benefits.push(requestBenefit);
+            console.log(saveRequest);
 
-              if(requestBenefit.enrolleds.length < benefitTypePlan.selected.eligibleMemberCombo.minimumRequired)
-              {
-                //validation failed.
-                var invalidEnrollNumber = {};
-                invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_plan.name;
-                invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.minimumRequired;
-                invalidEnrollNumberList.push(invalidEnrollNumber);
-              }
-            }
+            employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
+               function(errorResponse){
+                alert('Saving waived selection failed because: ' + errorResponse.data);
+                $scope.savedSuccess = false;
+              });
+          
+
+            employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
+                $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
+              }, function(){
+                $scope.savedSuccess = false;
+              });
+
           });
-
-          if(invalidEnrollNumberList.length > 0){
-            alert("For benefit " + invalidEnrollNumberList[0].name +
-                    ", you have to elect at least" + invalidEnrollNumberList[0].requiredNumber + " family members!");
-            return;
-          }
-          saveRequest.waivedRequest = {company:companyId, waived:[]};
-          _.each($scope.availablePlans, function(benefitPlan){
-              if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
-                if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
-                  alert("Please select a reason to waive medical plan.");
-                  $location.path('/employee/benefits/' + $scope.employee_id);
-                  return;
-                }
-
-                var type = benefitPlan.benefit_type;
-                var waiveReason = 'Not applicable';
-                //This code below is such an hack. We need to get the type key from the server!
-                //CHANGE THIS
-                var typeKey = 0;
-                if (type === 'Medical'){
-                  typeKey = 1;
-                  waiveReason = benefitPlan.selected.benefit.reason;
-                }
-                if (type === 'Dental'){
-                  typeKey = 2;
-                }
-                if (type === 'Vision'){
-                  typeKey = 3;
-                }
-                saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
-              }
-            });
-
-          console.log(saveRequest);
-
-          employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
-             function(errorResponse){
-              alert('Saving waived selection failed because: ' + errorResponse.data);
-              $scope.savedSuccess = false;
-            });
-        
-
-          employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
-              $scope.showSaveSuccessModal();
-              $scope.myForm.$setPristine();
-            }, function(){
-              $scope.savedSuccess = false;
-            });
         };
 
         $scope.benefit_type = 'Health Benefits';
