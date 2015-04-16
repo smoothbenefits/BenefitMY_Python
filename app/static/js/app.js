@@ -269,6 +269,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/employee/onboard/complete/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/complete.html',
                 controller: 'onboardComplete'
+            }).
+            state('employeeUploads', {
+                url:'/employee/uploads',
+                templateUrl:'/static/partials/manage_uploads.html',
+                controller: 'manageUploadController'
             });
      }
  ]);
