@@ -143,11 +143,30 @@ benefitmyService.factory('UploadService',
         return deferred.promise;
     };
 
+    var handleUploadArea = function(files, uploadType, displayFileCollection){
+      if (files && files.length) {
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          uploadFile(file, uploadType).then(
+            function(fileUploaded){
+              displayFileCollection.push(fileUploaded);
+            },
+            function(error){
+              alert('upload error happened!');
+            },
+            function(evt){
+              //Here is the function for showing upload progress
+            });
+        }
+      }
+    };
+
     return{
         uploadFile: uploadFile,
         getFileType: get_file_type,
         getAllUploadsByCurrentUser: getAllUploadsByCurrentUser,
-        deleteFile: deleteFile
+        deleteFile: deleteFile,
+        handleUploadArea: handleUploadArea
     };
    }
 ]);
