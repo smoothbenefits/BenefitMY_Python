@@ -125,6 +125,7 @@ AMAZON_S3_UPLOAD_POLICY= {
         ["starts-with", "$Content-Type", ""],
         ["starts-with", "$filename", ""],
         ["content-length-range", 0, 52428800],
+        {"x-amz-server-side-encryption": "AES256"},
     ]
 }
 
@@ -277,6 +278,7 @@ PIPELINE_JS = {
             'js/services/UploadService.js',
             'js/services/employeePayrollService.js',
             'js/services/employeeProfileService.js',
+            'js/services/FeatureConfigurationService.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }

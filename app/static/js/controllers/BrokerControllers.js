@@ -290,13 +290,72 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
             multiplier = $scope.newLifeInsurancePlan.multiplier;
           }
 
-          LifeInsuranceService.enrollCompanyForLifeInsurancePlan(clientId, planId, insurance_amount, multiplier, function() {
-            var successMessage = "Your basic life insurance has been saved. " + 
-              "You can return to dashboard through left navigation panel, " + 
-              "or continue to add another plan use the form again."
+          LifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(clientId, planId, insurance_amount, multiplier).then(
+            function() {
+              var successMessage = "The new basic life insurance plan has been saved successfully." 
 
-            $scope.showMessageWithOkayOnly('Success', successMessage);
-          });
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            },
+            function() {
+              var failureMessage = "There was a problem saving the data. Please try again." 
+
+              $scope.showMessageWithOkayOnly('Failed', failureMessage);
+            }
+          );
+        });
+      });
+    };
+   }
+  ]);
+
+// Note:
+// This is much alike the controller for the basic life one, but I'd avoid
+// folding the 2 together too much for now, as I could imagine that the 
+// controller could grow into different directions once we have more complete
+// requirements for supplemental life plan setup. 
+var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
+  'brokerAddSupplementalLifeInsurance',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$controller',
+   'LifeInsuranceService',
+   'UserService',
+   function($scope, 
+            $state, 
+            $stateParams,
+            $controller, 
+            LifeInsuranceService,
+            UserService){
+
+    // Inherite scope from base 
+    $controller('modalMessageControllerBase', {$scope: $scope});
+    
+    var clientId = $stateParams.clientId;
+    $scope.newLifeInsurancePlan = {insurance_type: 'Extended'};
+
+    // Need the user information for the current user (broker)
+    $scope.addLifeInsurancePlan = function() {
+      UserService.getCurUserInfo().then(function(userInfo){
+        $scope.newLifeInsurancePlan.user = userInfo.user.id;
+        // For now, we combine the gestures of
+        //  1. Broker creates the plan
+        //  2. Broker enrolls the company for the plan
+        LifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
+          var planId = newPlan.id;
+
+          LifeInsuranceService.enrollCompanyForSupplementalLifeInsurancePlan(clientId, planId).then(
+            function() {
+              var successMessage = "The new supplemental life insurance plan has been saved successfully." 
+
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            },
+            function() {
+              var failureMessage = "There was a problem saving the data. Please try again." 
+
+              $scope.showMessageWithOkayOnly('Failed', failureMessage);
+            }
+          );
         });
       });
     };

@@ -117,7 +117,9 @@ benefitmyService.factory('LifeInsuranceService',
         return deferred.promise;
       },
 
-      enrollCompanyForLifeInsurancePlan: function(companyId, planId, amount, multiplier, successCallBack, errorCallBack) {
+      enrollCompanyForBasicLifeInsurancePlan: function(companyId, planId, amount, multiplier) {
+        var deferred = $q.defer();
+
         var linkToSave = { 
           "company": companyId, 
           "life_insurance_plan": planId, 
@@ -126,16 +128,33 @@ benefitmyService.factory('LifeInsuranceService',
         };
         CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
-              if (successCallBack) {
-                successCallBack(successResponse);
-              }  
+              deferred.resolve(successResponse); 
             }
           , function(errorResponse) {
-              if (errorCallBack) {
-                errorCallBack(errorResponse);
-              }
+              deferred.reject(errorResponse);
             }
         );
+
+        return deferred.promise;
+      },
+
+      enrollCompanyForSupplementalLifeInsurancePlan: function(companyId, planId) {
+        var deferred = $q.defer();
+
+        var linkToSave = { 
+          "company": companyId, 
+          "life_insurance_plan": planId
+        };
+        CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
+          , function (successResponse) {
+              deferred.resolve(successResponse);  
+            }
+          , function(errorResponse) {
+              deferred.reject(errorResponse);
+            }
+        );
+
+        return deferred.promise;
       },
 
       deleteLifeInsurancePlanForCompany: function(companyPlanId, successCallBack, errorCallBack) {
@@ -363,11 +382,13 @@ benefitmyService.factory('LifeInsuranceService',
         var memberPlansToSave = [];
         var mainPlan = familyPlanToSave.mainPlan;
 
+        var requests = [];
+
         _.each(familyPlanToSave.memberPlans, function(memberPlan) {
           var memberPlanToSave = {
             "id":memberPlan.id,
             "user":mainPlan.user,
-            "life_insurance":familyPlanToSave.selectedCompanyPlan,
+            "company_life_insurance":familyPlanToSave.selectedCompanyPlan,
             "person":memberPlan.person,
             "life_insurance_beneficiary":[],
             "insurance_amount":parseFloat(memberPlan.insurance_amount)
@@ -394,18 +415,45 @@ benefitmyService.factory('LifeInsuranceService',
             }
           }
 
+          var deferred = $q.defer();
+          requests.push(deferred);
+
           if (!memberPlanToSave.id) {
             CompanyUserLifeInsurancePlanRepository.ById.save({id:memberPlanToSave.user}, memberPlanToSave)
-              .$promise.then(null, function(response){
-                errorCallBack(response);
-              });
+              .$promise.then(
+                function(response) {
+                  deferred.resolve(response);
+                }, 
+                function(response) {
+                  deferred.reject(response);
+                });
           } else {
             CompanyUserLifeInsurancePlanRepository.ById.update({id:memberPlanToSave.id}, memberPlanToSave)
-              .$promise.then(null, function(response){
-                errorCallBack(response);
-              });
+              .$promise.then(
+              function(response) {
+                  deferred.resolve(response);
+                }, 
+                function(response) {
+                  deferred.reject(response);
+                });
           }
         });
+
+        // Note:
+        // This technique, the usage of $q.all, seems very useful, especially
+        // where you'd need to collectively wait for a list of async requests
+        // to finish. Or could also be a way to flatten chains of promises.
+        $q.all(requests).then(
+          function(response) {
+            if (successCallBack) {
+              successCallBack(response);
+            }
+          },
+          function(error) { 
+            if (errorCallBack) {
+              errorCallBack(error);
+            }
+          });
       },
 
       deleteFamilyLifeInsurancePlanForUser: function(userId, successCallBack, errorCallBack) {
