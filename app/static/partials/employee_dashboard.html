@@ -232,6 +232,7 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
+    <h4>Documents from my Employer</h4>
     <div class="table-responsive table-holder table">
         <table class="table table-striped">
             <thead>
@@ -251,6 +252,13 @@
         </table>
     </div>
 </div><!-- / .content-body -->
+<div class="content-header">
+    <h4>My Uploads</h4>
+    <div class="cta"><a ng-click="goToState('employeeUploads')" class="btn green" >Manage Uploads</a></div>
+</div>
+<div class="content-body">
+    <div ng-include="'/static/partials/common/upload.html'"></div>
+</div>
 
 <div class="content-header">
     <h1>My Profile</h1>

@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from app.models.company import Company
 
 upload_types = ["I9",
-                "Deposit"]
+                "Deposit",
+                "Manager"]
 
 TYPES = ([(item, item) for item in upload_types])
 

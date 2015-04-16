@@ -15,6 +15,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
      'LifeInsuranceService',
      'employeePayrollService', 
      'employeeProfileService',
+     'UploadService',
   function ($scope,
             $location,
             $state,
@@ -28,7 +29,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
             FsaService,
             LifeInsuranceService,
             employeePayrollService,
-            employeeProfileService){
+            employeeProfileService,
+            UploadService){
 
     $('body').removeClass('onboarding-page');
     var curUserId;
@@ -103,6 +105,16 @@ var employeeHome = employeeControllers.controller('employeeHome',
                           $scope.documents = response;
                           $scope.documentCount = response.length;
                           });
+     $scope.uploadManager = {
+       hideUploadArea: true,
+       canManageUpload: false,
+       uploadedFiles: [],
+       files: []
+     }
+     UploadService.getAllUploadsByCurrentUser().then(function(resp){
+       $scope.uploadManager.uploadedFiles = resp;
+     });
+
 
      $scope.ViewDocument = function(documentId){
          $location.path('/employee/document/' + documentId);
@@ -720,19 +732,31 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', 'UploadService',
-  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, UploadService){
+  ['$scope', '$stateParams', '$location', '$timeout', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', 'UploadService',
+  function($scope, $stateParams, $location, $timeout, employmentAuthRepository, EmployeePreDashboardValidationService, UploadService){
     $scope.employee = {
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
-    $scope.$watch('files', function () {
-        $scope.upload($scope.files);
+    $scope.uploadManager = {
+      canManageUpload: true, 
+      uploadedFiles: [],
+      files:[],
+      deleteFile: function(file){
+        UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
+          $scope.uploadManager.uploadedFiles = _.without($scope.uploadManager.uploadedFiles, file);
+          $scope.uploadManager.deleteSuccess = true;
+              $timeout(function(){
+                $scope.uploadManager.deleteSuccess = false;
+              }, 5000);
+        });
+      }};
+    $scope.$watch('uploadManager.files', function () {
+        UploadService.handleUploadArea($scope.uploadManager.files, 'I9', $scope.uploadManager.uploadedFiles);
     });
 
-    $scope.uploadedFiles = [];
     UploadService.getAllUploadsByCurrentUser().then(function(resp){
-      $scope.uploadedFiles = resp;
+      $scope.uploadManager.uploadedFiles = resp;
     });
         
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
@@ -807,30 +831,6 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
             alert('Failed to add employment information');
           });
       }
-    };
-
-    $scope.upload = function (files) {
-      if (files && files.length) {
-        for (var i = 0; i < files.length; i++) {
-          var file = files[i];
-          UploadService.uploadFile(file, 'I9').then(
-            function(fileUploaded){
-              $scope.uploadedFiles.push(fileUploaded);
-            },
-            function(error){
-              alert('upload error happened!');
-            },
-            function(evt){
-              //Here is the function for showing upload progress
-            });
-        }
-      }
-    };
-
-    $scope.deleteFile = function(file){
-      UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
-        $scope.uploadedFiles = _.without($scope.uploadedFiles, file);
-      });
     };
 
 }]);
@@ -1872,4 +1872,37 @@ var benefitsSaveSuccessModalController = employeeControllers.controller(
           $modalInstance.close();
         };
 
+    }]);
+
+var manageUploadController = employeeControllers.controller(
+    'manageUploadController',
+    ['$scope',
+     '$state',
+     '$timeout',
+     'UploadService',
+     function manageUploadController(
+      $scope,
+      $state,
+      $timeout,
+      UploadService){
+        $scope.uploadManager = {
+          hideUploadArea: false,
+          canManageUpload: true,
+          uploadedFiles: [],
+          files:[],
+          deleteFile: function(file){
+            UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
+              $scope.uploadManager.uploadedFiles = _.without($scope.uploadManager.uploadedFiles, file);
+              $scope.uploadManager.deleteSuccess = true;
+              $timeout(function(){
+                $scope.uploadManager.deleteSuccess = false;
+              }, 5000);
+            });
+          }};
+        $scope.$watch('uploadManager.files', function(){
+          UploadService.handleUploadArea($scope.uploadManager.files, 'Manager', $scope.uploadManager.uploadedFiles);
+        });
+        UploadService.getAllUploadsByCurrentUser().then(function(resp){
+          $scope.uploadManager.uploadedFiles = resp;
+        });
     }]);
