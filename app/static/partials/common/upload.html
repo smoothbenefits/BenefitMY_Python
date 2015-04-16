@@ -33,7 +33,7 @@
                 </td>
                 <td width="250" style="text-align:center"><a ng-href="{{file.S3}}" target="_blank">{{file.file_name}}</a></td>
                 <td width="180" style="text-align:center" ng-show="uploadManager.canManageUpload">
-                    <a href="javascript:void(0)" ng-click="uploadManager.deleteFile(file)">Delete</a>
+                    <a href="javascript:void(0)" ng-click="uploadManager.deleteS3File(file)">Delete</a>
                 </td>
             </tr>
         </tbody>

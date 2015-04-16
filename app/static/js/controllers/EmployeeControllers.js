@@ -107,16 +107,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
                           $scope.documents = response;
                           $scope.documentCount = response.length;
                           });
-     $scope.uploadManager = {
-       hideUploadArea: true,
-       canManageUpload: false,
-       uploadedFiles: [],
-       files: []
-     }
-     UploadService.getAllUploadsByCurrentUser().then(function(resp){
-       $scope.uploadManager.uploadedFiles = resp;
-     });
-
+     
+     UploadService.setupReadOnlyUploadView($scope);
 
      $scope.ViewDocument = function(documentId){
          $location.path('/employee/document/' + documentId);
@@ -701,32 +693,14 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', '$timeout', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', 'UploadService',
-  function($scope, $stateParams, $location, $timeout, employmentAuthRepository, EmployeePreDashboardValidationService, UploadService){
+  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', 'UploadService',
+  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, UploadService){
     $scope.employee = {
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
-    $scope.uploadManager = {
-      canManageUpload: true, 
-      uploadedFiles: [],
-      files:[],
-      deleteFile: function(file){
-        UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
-          $scope.uploadManager.uploadedFiles = _.without($scope.uploadManager.uploadedFiles, file);
-          $scope.uploadManager.deleteSuccess = true;
-              $timeout(function(){
-                $scope.uploadManager.deleteSuccess = false;
-              }, 5000);
-        });
-      }};
-    $scope.$watch('uploadManager.files', function () {
-        UploadService.handleUploadArea($scope.uploadManager.files, 'I9', $scope.uploadManager.uploadedFiles);
-    });
-
-    UploadService.getAllUploadsByCurrentUser().then(function(resp){
-      $scope.uploadManager.uploadedFiles = resp;
-    });
+    
+    UploadService.setupUploadManagerView($scope, 'I9');
         
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
@@ -1845,32 +1819,9 @@ var benefitsSaveSuccessModalController = employeeControllers.controller(
 var manageUploadController = employeeControllers.controller(
     'manageUploadController',
     ['$scope',
-     '$state',
-     '$timeout',
      'UploadService',
      function manageUploadController(
       $scope,
-      $state,
-      $timeout,
       UploadService){
-        $scope.uploadManager = {
-          hideUploadArea: false,
-          canManageUpload: true,
-          uploadedFiles: [],
-          files:[],
-          deleteFile: function(file){
-            UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
-              $scope.uploadManager.uploadedFiles = _.without($scope.uploadManager.uploadedFiles, file);
-              $scope.uploadManager.deleteSuccess = true;
-              $timeout(function(){
-                $scope.uploadManager.deleteSuccess = false;
-              }, 5000);
-            });
-          }};
-        $scope.$watch('uploadManager.files', function(){
-          UploadService.handleUploadArea($scope.uploadManager.files, 'Manager', $scope.uploadManager.uploadedFiles);
-        });
-        UploadService.getAllUploadsByCurrentUser().then(function(resp){
-          $scope.uploadManager.uploadedFiles = resp;
-        });
+        UploadService.setupUploadManagerView($scope, 'Manager');
     }]);
