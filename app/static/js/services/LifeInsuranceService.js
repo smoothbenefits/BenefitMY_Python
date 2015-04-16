@@ -117,7 +117,9 @@ benefitmyService.factory('LifeInsuranceService',
         return deferred.promise;
       },
 
-      enrollCompanyForBasicLifeInsurancePlan: function(companyId, planId, amount, multiplier, successCallBack, errorCallBack) {
+      enrollCompanyForBasicLifeInsurancePlan: function(companyId, planId, amount, multiplier) {
+        var deferred = $q.defer();
+
         var linkToSave = { 
           "company": companyId, 
           "life_insurance_plan": planId, 
@@ -126,35 +128,33 @@ benefitmyService.factory('LifeInsuranceService',
         };
         CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
-              if (successCallBack) {
-                successCallBack(successResponse);
-              }  
+              deferred.resolve(successResponse); 
             }
           , function(errorResponse) {
-              if (errorCallBack) {
-                errorCallBack(errorResponse);
-              }
+              deferred.reject(errorResponse);
             }
         );
+
+        return deferred.promise;
       },
 
-      enrollCompanyForSupplementalLifeInsurancePlan: function(companyId, planId, successCallBack, errorCallBack) {
+      enrollCompanyForSupplementalLifeInsurancePlan: function(companyId, planId) {
+        var deferred = $q.defer();
+
         var linkToSave = { 
           "company": companyId, 
           "life_insurance_plan": planId
         };
         CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
-              if (successCallBack) {
-                successCallBack(successResponse);
-              }  
+              deferred.resolve(successResponse);  
             }
           , function(errorResponse) {
-              if (errorCallBack) {
-                errorCallBack(errorResponse);
-              }
+              deferred.reject(errorResponse);
             }
         );
+
+        return deferred.promise;
       },
 
       deleteLifeInsurancePlanForCompany: function(companyPlanId, successCallBack, errorCallBack) {

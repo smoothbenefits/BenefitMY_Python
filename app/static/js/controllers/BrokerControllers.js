@@ -290,13 +290,18 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
             multiplier = $scope.newLifeInsurancePlan.multiplier;
           }
 
-          LifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(clientId, planId, insurance_amount, multiplier, function() {
-            var successMessage = "Your basic life insurance has been saved. " + 
-              "You can return to dashboard through left navigation panel, " + 
-              "or continue to add another plan use the form again."
+          LifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(clientId, planId, insurance_amount, multiplier).then(
+            function() {
+              var successMessage = "The new basic life insurance plan has been saved successfully." 
 
-            $scope.showMessageWithOkayOnly('Success', successMessage);
-          });
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            },
+            function() {
+              var failureMessage = "There was a problem saving the data. Please try again." 
+
+              $scope.showMessageWithOkayOnly('Failed', failureMessage);
+            }
+          );
         });
       });
     };
@@ -339,11 +344,18 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
         LifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
           var planId = newPlan.id;
 
-          LifeInsuranceService.enrollCompanyForSupplementalLifeInsurancePlan(clientId, planId, function() {
-            var successMessage = "The new supplemental life insurance plan has been saved successfully." 
+          LifeInsuranceService.enrollCompanyForSupplementalLifeInsurancePlan(clientId, planId).then(
+            function() {
+              var successMessage = "The new supplemental life insurance plan has been saved successfully." 
 
-            $scope.showMessageWithOkayOnly('Success', successMessage);
-          });
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            },
+            function() {
+              var failureMessage = "There was a problem saving the data. Please try again." 
+
+              $scope.showMessageWithOkayOnly('Failed', failureMessage);
+            }
+          );
         });
       });
     };
