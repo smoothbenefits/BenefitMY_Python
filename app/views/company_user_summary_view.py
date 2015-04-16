@@ -270,7 +270,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         start_column_num = self._write_employee_personal_info(employee_user_id, True, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_all_health_benefits_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_basic_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
-        start_column_num = self._write_employee_optional_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_supplemental_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_fsa_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_all_dependents_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
         return
@@ -450,7 +450,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
         return col_num + 2
 
-    def _write_employee_optional_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
+    def _write_employee_supplemental_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
         # TODO:
         # Stub as placeholder
         return col_num

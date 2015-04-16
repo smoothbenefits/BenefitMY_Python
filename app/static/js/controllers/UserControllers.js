@@ -222,7 +222,7 @@ var userController = userControllers.controller('userController',
 
     // turn on/off benefit section globally here
     // need to move to a company profile which controls sections by company
-    $scope.supplementalLifeInsuranceEnabled = FeatureConfigurationService.isFeatureOnForCompany($scope.company_id, 'supplemental_life_insurance2');
+    $scope.supplementalLifeInsuranceEnabled = FeatureConfigurationService.isFeatureOnForCompany($scope.company_id, 'supplemental_life_insurance');
 }]);
 
 var settingsController = userControllers.controller('settingsController', ['$scope',

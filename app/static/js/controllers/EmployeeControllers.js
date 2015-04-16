@@ -1098,7 +1098,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           if (optionalLifePlans.length > 0) {
             $scope.tabs.push({
                   "heading": "Optional Life",
-                  "state":"employee_benefit_signup.optional_life"
+                  "state":"employee_benefit_signup.supplemental_life"
               });
           }
         }
