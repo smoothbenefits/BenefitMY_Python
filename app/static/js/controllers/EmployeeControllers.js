@@ -1817,5 +1817,5 @@ var manageUploadController = employeeControllers.controller(
      function manageUploadController(
       $scope,
       UploadService){
-        UploadService.setupUploadManagerView($scope, 'Manager');
+        
     }]);
