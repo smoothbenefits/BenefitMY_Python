@@ -1,0 +1,57 @@
+<div class="upload-area-container" ng-if="uploadManager.canManageUpload" ng-hide="uploadManager.hideUploadArea">
+    <div>Only pdf, jpeg and png file types allowed.</div>
+    <div ng-file-drop ng-file-select ng-model="uploadManager.files" class="drop-box" 
+        drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
+        ng-multiple="true" allow-dir="true"
+        accept=".jpg,.png,.pdf">
+        <div class="upload-area-message">
+            <p>Click to Select </p>
+            <p>OR </p>
+            <p>Drop Images or PDFs </p>
+            <p>to Upload</p>
+        </div>
+    </div>
+    <div ng-no-file-drop>File Drag/Drop is not supported for this browser</div>
+</div>
+<div class="alert alert-success" ng-show="uploadManager.deleteSuccess">
+    The file has been deleted successfully
+</div>
+<div class="table-responsive table-holder table" ng-show="uploadManager.uploadedFiles.length>0">
+    <div class="table-sub-title">My Current Uploads</div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th><span>Type</span></th>
+                <th><span>Name</span></th>
+                <th ng-show="uploadManager.canManageUpload"><span>Action</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="file in uploadManager.uploadedFiles">
+                <td class="file-icon" style="text-align:center">
+                    <div ng-class="file.file_type.replace('/', '-')">&nbsp;</div>
+                </td>
+                <td width="250" style="text-align:center"><a ng-href="{{file.S3}}" target="_blank">{{file.file_name}}</a></td>
+                <td width="180" style="text-align:center" ng-show="uploadManager.canManageUpload">
+                    <a href="javascript:void(0)" ng-click="uploadManager.deleteS3File(file)">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="table-responsive table-holder table" ng-show="uploadManager.uploadedFiles.length==0">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th><span></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    You currently do not have uploads
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
