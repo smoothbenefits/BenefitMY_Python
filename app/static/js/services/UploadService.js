@@ -163,49 +163,12 @@ benefitmyService.factory('UploadService',
       }
     };
 
-    var setupReadOnlyUploadView = function($scope){
-      $scope.uploadManager = {
-        hideUploadArea: true,
-        canManageUpload: false,
-        uploadedFiles: [],
-        files: []
-      };
-      getAllUploadsByCurrentUser().then(function(resp){
-        $scope.uploadManager.uploadedFiles = resp;
-      });
-    };
-
-    var setupUploadManagerView = function($scope, uploadType){
-      $scope.uploadManager = {
-        hideUploadArea: false,
-        canManageUpload: true,
-        uploadedFiles: [],
-        files:[],
-        deleteS3File: function(file){
-          deleteFile(file.id, file.S3).then(function(deletedFile){
-            $scope.uploadManager.uploadedFiles = _.without($scope.uploadManager.uploadedFiles, file);
-            $scope.uploadManager.deleteSuccess = true;
-            $timeout(function(){
-              $scope.uploadManager.deleteSuccess = false;
-            }, 5000);
-          });
-        }};
-      $scope.$watch('uploadManager.files', function(){
-        handleUploadArea($scope.uploadManager.files, uploadType, $scope.uploadManager.uploadedFiles);
-      });
-      getAllUploadsByCurrentUser().then(function(resp){
-        $scope.uploadManager.uploadedFiles = resp;
-      });
-    };
-
     return{
         uploadFile: uploadFile,
         getFileType: get_file_type,
         getAllUploadsByCurrentUser: getAllUploadsByCurrentUser,
         deleteFile: deleteFile,
-        handleUploadArea: handleUploadArea,
-        setupReadOnlyUploadView: setupReadOnlyUploadView,
-        setupUploadManagerView: setupUploadManagerView
+        handleUploadArea: handleUploadArea
     };
    }
 ]);

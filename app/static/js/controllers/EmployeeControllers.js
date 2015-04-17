@@ -16,7 +16,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'employeePayrollService', 
    'employeeProfileService',
    'DirectDepositService',
-   'UploadService',
   function ($scope,
             $location,
             $state,
@@ -31,8 +30,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             LifeInsuranceService,
             employeePayrollService,
             employeeProfileService,
-            DirectDepositService,
-            UploadService){
+            DirectDepositService){
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
@@ -107,8 +105,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
                           $scope.documentCount = response.length;
                           });
      
-     UploadService.setupReadOnlyUploadView($scope);
-
      $scope.ViewDocument = function(documentId){
          $location.path('/employee/document/' + documentId);
      };
@@ -692,15 +688,13 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService', 'UploadService',
-  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService, UploadService){
+  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
     $scope.employee = {
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
-    
-    UploadService.setupUploadManagerView($scope, 'I9');
-        
+            
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
@@ -1813,9 +1807,7 @@ var benefitsSaveSuccessModalController = employeeControllers.controller(
 var manageUploadController = employeeControllers.controller(
     'manageUploadController',
     ['$scope',
-     'UploadService',
      function manageUploadController(
-      $scope,
-      UploadService){
+      $scope){
         
     }]);
