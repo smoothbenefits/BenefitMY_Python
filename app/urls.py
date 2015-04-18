@@ -74,8 +74,10 @@ from app.views.company_user_summary_view import (
     CompanyUsersSummaryExcelExportView,
     CompanyUsersDirectDepositExcelExportView,
     CompanyUsersLifeInsuranceBeneficiaryExcelExportView)
+
 from app.views.upload import (UserUploadView,
-                              UploadView)
+                              UploadView,
+                              get_company_uploads)
 
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
 
@@ -173,6 +175,10 @@ urlpatterns = patterns('app.views',
     url(r'^%s/upload/(?P<pk>\w+)/?$' % PREFIX,
         UploadView.as_view(),
         name='upload_api'),
+
+    url(r'^%s/companies/(?P<comp_id>\w+)/uploads/(?P<pk>\w+)/?$' % PREFIX,
+        get_company_uploads,
+        name='get_comp_uploads'),
 )
 
 

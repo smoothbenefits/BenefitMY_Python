@@ -75,6 +75,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_basic_life.html',
                 controller: 'brokerAddBasicLifeInsurance'
             }).
+            state('broker_add_benefit.supplemental_life_insurance', {
+                url: '/supplemental_life',
+                templateUrl: '/static/partials/benefit_addition/tab_supplemental_life.html',
+                controller: 'brokerAddSupplementalLifeInsurance'
+            }).
             state('/broker/benefit/selected/:client_id', {
                 url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',
@@ -155,6 +160,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl:'/static/partials/selected_benefits_company.html',
                 controller: 'employerBenefitsSelected'
             }).
+            state('admin_employee_uploads',{
+                url: '/admin/:company_id/employee/:employee_id/uploads',
+                templateUrl: '/static/partials/view_employee_uploads.html',
+                controller: 'employerViewUploads'
+            }).
             state('/employee',{
                 url: '/employee',
                 templateUrl: '/static/partials/employee_dashboard.html',
@@ -180,9 +190,9 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_selection/tab_basic_life.html',
                 controller:'basicLifeBenefitsSignup'
             }).
-            state('employee_benefit_signup.optional_life', {
+            state('employee_benefit_signup.supplemental_life', {
                 url: '/basic_life',
-                templateUrl: '/static/partials/benefit_selection/tab_optional_life.html',
+                templateUrl: '/static/partials/benefit_selection/tab_supplemental_life.html',
                 controller:'optionalLifeBenefitsSignup'
             }).
             state('employee_payroll', {
@@ -245,11 +255,6 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_onboard/employee_view_letter.html',
                 controller: 'employeeAcceptDocument'
             }).
-            state('/employee/direct_deposit?edit', {
-                url: '/employee/direct_deposit',
-                templateUrl: '/static/partials/employee_direct_deposit.html',
-                controller: 'employeeDirectDepositController'
-            }).
             state('/employee/onboard/index/:employee_id', {
                 url: '/employee/onboard/index/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/index.html',
@@ -269,6 +274,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/employee/onboard/complete/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/complete.html',
                 controller: 'onboardComplete'
+            }).
+            state('employeeUploads', {
+                url:'/employee/uploads',
+                templateUrl:'/static/partials/manage_uploads.html'            
             });
      }
  ]);

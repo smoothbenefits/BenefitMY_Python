@@ -123,6 +123,7 @@ AMAZON_S3_UPLOAD_POLICY= {
         ["starts-with", "$Content-Type", ""],
         ["starts-with", "$filename", ""],
         ["content-length-range", 0, 52428800],
+        {"x-amz-server-side-encryption": "AES256"},
     ]
 }
 
@@ -256,6 +257,8 @@ PIPELINE_JS = {
             'js/controllers/EmployerControllers.js',
             'js/directives/ScrollTo.js',
             'js/directives/ConfirmUnsavedOnExit.js',
+            'js/directives/UploadManager.js',
+            'js/directives/UploadViewer.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
@@ -276,6 +279,7 @@ PIPELINE_JS = {
             'js/services/UploadService.js',
             'js/services/employeePayrollService.js',
             'js/services/employeeProfileService.js',
+            'js/services/FeatureConfigurationService.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }

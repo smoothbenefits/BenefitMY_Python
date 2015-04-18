@@ -88,7 +88,7 @@ settings.constant('benefitSectionGlobalConfig', [
     {
         id: 1,
         section_name: 'supplemental_life_insurance',
-        enabled: false
+        enabled: true
     }
 ]);
 
@@ -105,11 +105,18 @@ settings.constant('tabLayoutGlobalConfig', [
                 state: "broker_add_benefit.health"
             },
             {
-                id: 1,
+                id: 2,
                 verbose_name: "Basic Life Insurance",
                 name: "basic_life",
                 active: false,
                 state: "broker_add_benefit.basic_life_insurance"
+            },
+            {
+                id: 3,
+                verbose_name: "Supplemental Life Insurance",
+                name: "supplemental_life",
+                active: false,
+                state: "broker_add_benefit.supplemental_life_insurance"
             }
         ]
     },
