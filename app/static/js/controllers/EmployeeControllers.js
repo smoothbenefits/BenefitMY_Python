@@ -1803,11 +1803,3 @@ var benefitsSaveSuccessModalController = employeeControllers.controller(
         };
 
     }]);
-
-var manageUploadController = employeeControllers.controller(
-    'manageUploadController',
-    ['$scope',
-     function manageUploadController(
-      $scope){
-        
-    }]);

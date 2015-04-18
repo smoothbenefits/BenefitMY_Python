@@ -26,8 +26,26 @@ BenefitMyApp.directive('bmuploadmanager',
                   }, 5000);
                 });
               }};
+
+            var handleUploadArea = function(files, uploadType){
+              if (files && files.length) {
+                for (var i = 0; i < files.length; i++) {
+                  var file = files[i];
+                  UploadService.uploadFile(file, uploadType).then(
+                    function(fileUploaded){
+                      $scope.uploadManager.uploadedFiles.unshift(fileUploaded);
+                    },
+                    function(error){
+                      alert('upload error happened!');
+                    },
+                    function(evt){
+                      //Here is the function for showing upload progress
+                    });
+                }
+              }
+            };
             $scope.$watch('uploadManager.files', function(){
-              UploadService.handleUploadArea($scope.uploadManager.files, $attrs.uploadType, $scope.uploadManager.uploadedFiles);
+              handleUploadArea($scope.uploadManager.files, $attrs.uploadType);
             });
             UploadService.getAllUploadsByCurrentUser().then(function(resp){
               $scope.uploadManager.uploadedFiles = resp;

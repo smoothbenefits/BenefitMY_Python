@@ -3,13 +3,11 @@ benefitmyService.factory('UploadService',
   ['$http',
    '$upload',
    '$q',
-   '$timeout',
    'UserService',
    'UploadRepository',
    function($http,
             $upload,
             $q,
-            $timeout,
             UserService,
             UploadRepository){
 
@@ -145,27 +143,9 @@ benefitmyService.factory('UploadService',
         return deferred.promise;
     };
 
-    var handleUploadArea = function(files, uploadType, displayFileCollection){
-      if (files && files.length) {
-        for (var i = 0; i < files.length; i++) {
-          var file = files[i];
-          uploadFile(file, uploadType).then(
-            function(fileUploaded){
-              displayFileCollection.push(fileUploaded);
-            },
-            function(error){
-              alert('upload error happened!');
-            },
-            function(evt){
-              //Here is the function for showing upload progress
-            });
-        }
-      }
-    };
-
     var getEmployeeUploads = function(companyId, employeeId){
       var deferred = $q.defer();
-      UploadRepository.uploadsForAdmin.query({compId:companyId, pk:employeeId})
+      UploadRepository.uploadsByCompany.query({compId:companyId, pk:employeeId})
       .$promise.then(function(resp){
         deferred.resolve(resp);
       }, function(errResp){
@@ -180,7 +160,6 @@ benefitmyService.factory('UploadService',
         getFileType: get_file_type,
         getAllUploadsByCurrentUser: getAllUploadsByCurrentUser,
         deleteFile: deleteFile,
-        handleUploadArea: handleUploadArea,
         getEmployeeUploads: getEmployeeUploads
     };
    }

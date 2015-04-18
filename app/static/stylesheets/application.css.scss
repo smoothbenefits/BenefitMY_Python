@@ -50,12 +50,20 @@
 .application-pdf{
     background-image: url("http://www.afhdr.org/AfHDR/images/pdf-icon.gif");
     background-repeat:no-repeat;
-    width:25px;
+    width:20px;
     display:inline-block;
 }
 .image-png,
 .image-jpeg{
     background-image: url("http://inspire.up.pt/images/icons/ico16_ext_jpg.png");
+    background-repeat:no-repeat;
+    width:20px;
+    display:inline-block;
+}
+.text-plain,
+.application-msword
+{
+    background-image: url("http://upload.wikimedia.org/wikipedia/en/0/05/File_icon.png");
     background-repeat:no-repeat;
     width:20px;
     display:inline-block;
