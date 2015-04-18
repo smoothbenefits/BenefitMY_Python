@@ -160,6 +160,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl:'/static/partials/selected_benefits_company.html',
                 controller: 'employerBenefitsSelected'
             }).
+            state('admin_employee_uploads',{
+                url: '/admin/:company_id/employee/:employee_id/uploads',
+                templateUrl: '/static/partials/view_employee_uploads.html',
+                controller: 'employerViewUploads'
+            }).
             state('/employee',{
                 url: '/employee',
                 templateUrl: '/static/partials/employee_dashboard.html',
@@ -269,6 +274,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/employee/onboard/complete/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/complete.html',
                 controller: 'onboardComplete'
+            }).
+            state('employeeUploads', {
+                url:'/employee/uploads',
+                templateUrl:'/static/partials/manage_uploads.html'            
             });
      }
  ]);
