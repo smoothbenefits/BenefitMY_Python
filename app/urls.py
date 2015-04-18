@@ -74,6 +74,18 @@ from app.views.insurance.std_insurance_plan_view import StdInsurancePlanView
 
 
 
+from app.views.insurance.company_ltd_insurance_plan_view import \
+    CompanyLtdInsurancePlanView
+
+from app.views.insurance.user_company_ltd_insurance_plan_view import (
+    UserCompanyLtdInsuranceView,
+    CompanyUsersLtdInsuranceView)
+from app.views.insurance.ltd_insurance_plan_view import LtdInsurancePlanView
+
+
+
+
+
 
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
@@ -182,6 +194,21 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
         CompanyStdInsurancePlanView.as_view(), name='company_std_insurance_plan_api'),
+
+
+
+    url(r'^%s/brokers/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
+        LtdInsurancePlanView.as_view(), name='broker_ltd_insurance_api'),
+
+
+    url(r'^%s/users/(?P<pk>\w+)/ltd_insurance/?$' % PREFIX,
+        UserCompanyLtdInsuranceView.as_view(), name='user_ltd_insurance_api'),
+
+    url(r'^%s/company_users/(?P<pk>\w+)/ltd_insurance/?$' % PREFIX,
+        CompanyUsersLtdInsuranceView.as_view(), name='company_users_ltd_insurance_api'),
+
+    url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
+        CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
 
 
     # util api

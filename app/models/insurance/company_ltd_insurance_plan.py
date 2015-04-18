@@ -2,12 +2,13 @@ import reversion
 
 from django.db import models
 from ..company import Company
-from std_insurance_plan import StdInsurancePlan
+from ltd_insurance_plan import LtdInsurancePlan
 
 
 @reversion.register
-class CompanyStdInsurancePlan(models.Model):
+class CompanyLtdInsurancePlan(models.Model):
 
+    elimination_period= models.IntegerField(blank=True, null=True)
     duration= models.IntegerField(blank=True, null=True)
     percentage_of_salary = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True)
@@ -16,11 +17,11 @@ class CompanyStdInsurancePlan(models.Model):
         max_digits=20, decimal_places=2, blank=True, null=True)
 
     company = models.ForeignKey(Company,
-                                related_name="company_std_insurance",
+                                related_name="company_ltd_insurance",
                                 blank=True,
                                 null=True)
-    std_insurance_plan = models.ForeignKey(StdInsurancePlan,
-                                           related_name="company_std_insurance",
+    ltd_insurance_plan = models.ForeignKey(LtdInsurancePlan,
+                                           related_name="company_ltd_insurance",
                                            blank=True,
                                            null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
