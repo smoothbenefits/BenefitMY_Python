@@ -258,7 +258,8 @@ benefitmyDomainModelFactories.factory('UploadRepository', ['$resource',
     return {
       upload: $resource('/api/v1/upload/:pk/', {pk:'@pk'}),
       uploadsByUser: $resource('/api/v1/users/:pk/uploads/', {pk: '@pk'}),
-      uploadsByCompany: $resource('/api/v1/companies/:pk/uploads/', {pk: '@pk'})
+      uploadsByCompany: $resource('/api/v1/companies/:compId/uploads/:pk', 
+                                 {compId:'@compId', pk: '@pk'})
     };
   }
 ]);

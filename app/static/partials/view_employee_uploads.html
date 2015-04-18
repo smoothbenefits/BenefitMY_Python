@@ -1,0 +1,50 @@
+<div class="breadcrumb">
+    <a ng-href="#/admin">Employer Dashboard</a>
+    <a ng-href="#/admin/employee/{{compId}}">View Employees</a>
+    <span>Employee Uploads</span>
+</div>
+
+<div class="content-header">
+    <h1>Uploads for {{employee.first_name}} {{employee.last_name}}</h1>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="table-responsive table-holder table" ng-show="uploads.length>0">
+        <div class="table-sub-title">My Current Uploads</div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Type</span></th>
+                    <th><span>Upload Area</span></th>
+                    <th><span>Name</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="file in uploads | orderBy:'+upload_type'">
+                    <td class="file-icon" style="text-align:center">
+                        <div ng-class="file.file_type.replace('/', '-')">&nbsp;</div>
+                    </td>
+                    <td width="180" style="text-align:center">{{file.upload_type}}</td>
+                    <td width="250" style="text-align:center"><a ng-href="{{file.S3}}" target="_blank">{{file.file_name}}</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive table-holder table" ng-show="uploads.length <= 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span></span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        No upload exists.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="back"><a ng-href="#/admin/employee/{{compId}}">&laquo; Back</a></div>
+</div>
