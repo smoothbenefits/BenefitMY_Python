@@ -63,6 +63,18 @@ from app.views.insurance.user_company_life_insurance_plan_view import (
     CompanyUsersLifeInsuranceView)
 from app.views.insurance.life_insurance_plan_view import LifeInsurancePlanView
 
+
+from app.views.insurance.company_std_insurance_plan_view import \
+    CompanyStdInsurancePlanView
+
+from app.views.insurance.user_company_std_insurance_plan_view import (
+    UserCompanyStdInsuranceView,
+    CompanyUsersStdInsuranceView)
+from app.views.insurance.std_insurance_plan_view import StdInsurancePlanView
+
+
+
+
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
@@ -72,8 +84,8 @@ from app.views.fsa_view import FSAView
 from app.views.company_user_summary_view import (
     CompanyUsersSummaryExcelExportView,
     CompanyUsersDirectDepositExcelExportView,
-    CompanyUsersLifeInsuranceBeneficiaryExcelExportView) 
-from app.views.upload import (UserUploadView, 
+    CompanyUsersLifeInsuranceBeneficiaryExcelExportView)
+from app.views.upload import (UserUploadView,
                               UploadView)
 
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
@@ -156,19 +168,35 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
 
+
+
+    url(r'^%s/brokers/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
+        StdInsurancePlanView.as_view(), name='broker_std_insurance_api'),
+
+
+    url(r'^%s/users/(?P<pk>\w+)/std_insurance/?$' % PREFIX,
+        UserCompanyStdInsuranceView.as_view(), name='user_std_insurance_api'),
+
+    url(r'^%s/company_users/(?P<pk>\w+)/std_insurance/?$' % PREFIX,
+        CompanyUsersStdInsuranceView.as_view(), name='company_users_std_insurance_api'),
+
+    url(r'^%s/company/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
+        CompanyStdInsurancePlanView.as_view(), name='company_std_insurance_plan_api'),
+
+
     # util api
 
     url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
 
     # upload API
-    url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX, 
-        UserUploadView.as_view(), 
-        name='uploads_by_user'), 
+    url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX,
+        UserUploadView.as_view(),
+        name='uploads_by_user'),
     # GET and POST
-    
+
     # GET PUT and DELETE
-    url(r'^%s/upload/(?P<pk>\w+)/?$' % PREFIX, 
-        UploadView.as_view(), 
+    url(r'^%s/upload/(?P<pk>\w+)/?$' % PREFIX,
+        UploadView.as_view(),
         name='upload_api'),
 )
 
