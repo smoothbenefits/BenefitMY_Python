@@ -1,25 +1,25 @@
 <!-- Basic life insurance -->
 <div class="panel" ng-show="basicLifeInsurancePlan">
-    <div class="panel-head">Basic Life Insurance</div>
+    <div class="panel-head">Basic Life Insurance (AD&D)</div>
     <div class="panel-body">
         <form name="myForm" confirm-unsaved-on-exit>
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-label" ng-show="basicLifeInsurancePlan.insurance_amount">
-                        Employer sponsored basic life insurance that covers ${{basicLifeInsurancePlan.insurance_amount}}
+                        Employer sponsored basic life insurance (AD&D) that covers ${{basicLifeInsurancePlan.insurance_amount}}
                     </div>
                     <div class="form-label" ng-show="basicLifeInsurancePlan.salary_multiplier">
-                        Employer sponsored basic life insurance that covers {{basicLifeInsurancePlan.salary_multiplier}} times of base salary
+                        Employer sponsored basic life insurance (AD&D) that covers {{basicLifeInsurancePlan.salary_multiplier}} times of base salary
                     </div>
                 </div>
                 <div class="col-md-8">
                     <div ng-show="!basicLifeInsurancePlan.selected" style="padding-bottom: 10px;">
-                        <span class="label label-danger">You have choosed NOT to enrolled in the basic life insurance.</span>
+                        <span class="label label-danger">You have choosed NOT to enrolled in the basic life insurance (AD&D).</span>
                     </div>
                     <div class="check-box">
                         <input type="checkbox"
                             ng-model="basicLifeInsurancePlan.selected"
-                            name="basic_life_insurance"> Yes, I want to enroll in the basic life insurance provided by my employer.
+                            name="basic_life_insurance"> Yes, I want to enroll in the basic life insurance (AD&D) provided by my employer.
                     </div>
                 </div>
                 <div class="row"  style="margin-top:10px;">

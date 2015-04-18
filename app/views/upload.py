@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from rest_framework.response import Response
 from rest_framework import status
 from app.models.upload import Upload
+from app.models.company_user import CompanyUser, USER_TYPE
 from app.serializers.upload_serializer import UploadSerializer, UploadPostSerializer
 from app.service.amazon_s3_auth import AmazonS3AuthService
 
@@ -65,3 +66,25 @@ class UploadView(APIView):
             upload.delete()
             return Response({'auth':auth, 'S3':s3, 'time': cur_time})
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def get_company_uploads(request, comp_id, pk, format=None):
+    # We need to do some validation on the request itself.
+    admin_id = request.user.id
+
+    # Validate the current user is an admin of the company specified
+    try:
+        comp_users = CompanyUser.objects.get(company=comp_id, user=admin_id, company_user_type="admin")
+    except CompanyUser.DoesNotExist:
+        return Response({'message': 'The company and the current user do not match'}, status=405)
+    
+    # Validate the employee id provided is an employee of the company specified
+    try:
+        employee_users = CompanyUser.objects.get(company=comp_id, user=pk, company_user_type="employee")
+    except CompanyUser.DoesNotExist:
+        return Response({'message': 'The company and the employee do not match'}, status=405)        
+
+    uploads = Upload.objects.filter(company=comp_id, user=pk)
+    serialized = UploadSerializer(uploads, many=True)
+    return Response(serialized.data) 
+

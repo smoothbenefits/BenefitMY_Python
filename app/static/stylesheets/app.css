@@ -219,3 +219,17 @@ th .editable-container{
 span.doc-buttons{
     margin-left:5px;
 }
+#dashboard-wrapper #content-wrapper .content-body #onboard_upload .table-holder{
+    margin-left:0px;
+    margin-right:0px;
+}
+.upload-area-container .drop-box{
+    min-height: 100px;
+    vertical-align: middle;
+    display: inline-flex;
+    min-width: 400px;
+    text-align: center;
+}
+.drop-box .upload-area-message{
+    margin: auto;
+}
