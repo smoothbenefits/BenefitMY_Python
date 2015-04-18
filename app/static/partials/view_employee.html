@@ -30,6 +30,9 @@
                         <span class="btn inline doc-buttons" ng-click="documentLink(employee.user.id, docType)" ng-repeat="docType in docTypeArray">
                             {{docType.name}}
                         </span>
+                        <span class="btn inline doc-buttons" ng-click="uploadLink(employee.user.id)">
+                            Uploads 
+                        </span>
                     </td>
                 </tr>
             </tbody>

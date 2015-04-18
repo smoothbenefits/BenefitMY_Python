@@ -163,12 +163,25 @@ benefitmyService.factory('UploadService',
       }
     };
 
+    var getEmployeeUploads = function(companyId, employeeId){
+      var deferred = $q.defer();
+      UploadRepository.uploadsForAdmin.query({compId:companyId, pk:employeeId})
+      .$promise.then(function(resp){
+        deferred.resolve(resp);
+      }, function(errResp){
+        deferred.reject(errResp);
+      });
+
+      return deferred.promise;
+    };
+
     return{
         uploadFile: uploadFile,
         getFileType: get_file_type,
         getAllUploadsByCurrentUser: getAllUploadsByCurrentUser,
         deleteFile: deleteFile,
-        handleUploadArea: handleUploadArea
+        handleUploadArea: handleUploadArea,
+        getEmployeeUploads: getEmployeeUploads
     };
    }
 ]);
