@@ -7,7 +7,7 @@ import json
 
 class CompanyFeaturesTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['10_company', 'company_features', 'company_feature_list', '23_auth_user']
+    fixtures = ['10_company', 'company_features', 'sys_application_feature' , '23_auth_user']
 
     def test_get_company_features(self):
         response = self.client.get(reverse('company_features_api',
