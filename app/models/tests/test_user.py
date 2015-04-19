@@ -21,8 +21,8 @@ class TestUser(TestCase):
         self.assertIsNotNone(user)
     
     def test_user_create_failed_when_email_missing(self):
-        with self.assertRaises(Exception):
-            user_error = create_user(None, "bad_password")
+        with self.assertRaises(ValueError):
+            user_error = User.objects.create_user(None, "bad_password")
             self.assertIsNone(user_error)
 
     def test_get_user_by_id_success_when_user_exists(self):
@@ -45,3 +45,24 @@ class TestUser(TestCase):
         with self.assertRaises(User.DoesNotExist):
             user_non_exist = User.objects.get(pk=55)
 
+    def test_manager_user_exists_returns_true_when_user_exists(self):
+        manager = AuthUserManager()
+        exists = manager.user_exists(email='user1@benefitmy.com')
+        self.assertTrue(exists)
+
+    def test_manager_user_exists_returns_false_when_user_not_exists(self):
+        manager = AuthUserManager()
+        exists = manager.user_exists(email='this_user@not.exists')
+        self.assertFalse(exists)
+
+    def test_manager_get_user_return_correct_value(self):
+        manager = AuthUserManager()
+        expectedEmail = 'user1@benefitmy.com'
+        user = manager.get_user(expectedEmail)
+        self.assertEqual(expectedEmail, user.email)
+
+    def test_manager_get_user_return_none_when_user_not_exists(self):
+        manager = AuthUserManager()
+        email = 'this_user@not.exists'
+        user = manager.get_user(email)
+        self.assertEqual(None, user)
