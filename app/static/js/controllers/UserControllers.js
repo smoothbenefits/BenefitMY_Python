@@ -1,6 +1,58 @@
 // User controllers
 var userControllers = angular.module('benefitmyApp.users.controllers', []);
 
+var modalInstanceController = userControllers.controller(
+  'modalInstanceController',
+  ['$scope',
+   '$state',
+   '$modalInstance',
+   'title',
+   'message',
+    function modalInstanceController(
+      $scope,
+      $state,
+      $modalInstance,
+      title,
+      message){
+        
+        $scope.title = title;
+        $scope.message = message;
+
+        $scope.ok = function () {
+          $modalInstance.close();
+        };
+
+    }]);
+
+var modalMessageControllerBase = userControllers.controller(
+  'modalMessageControllerBase',
+  ['$scope',
+   '$state',
+   '$modal',
+    function modalMessageControllerBase(
+      $scope,
+      $state,
+      $modal){
+        
+        $scope.showMessageWithOkayOnly = function(title, message){
+          $scope.title = title;
+          $scope.message = message;
+          var modalInstance = $modal.open({
+            templateUrl: '/static/partials/modal_message_ok_only.html',
+            controller: 'modalInstanceController',
+            size: 'sm',
+            backdrop: 'static',
+            resolve: {
+              title: function(){
+                return $scope.title;
+              },
+              message: function(){
+                return $scope.message;
+              }
+            }
+          });
+        };
+    }]);
 
 var findViewController = userControllers.controller('findViewController',
     ['$scope', '$location', 'currentUser', 'clientListRepository',
@@ -45,21 +97,19 @@ var userController = userControllers.controller('userController',
   ['$scope', 
    '$http', 
    '$location', 
-   'currentUser',
-   'users', 
+   'UserService',
    'userLogOut', 
-   'clientListRepository',
    'benefitSectionGlobalConfig',
    'CompanyEmployeeSummaryService',
+   'FeatureConfigurationService',
   function userController($scope, 
                           $http, 
                           $location, 
-                          currentUser, 
-                          users, 
+                          UserService,
                           userLogOut, 
-                          clientListRepository,
                           benefitSectionGlobalConfig,
-                          CompanyEmployeeSummaryService) {
+                          CompanyEmployeeSummaryService,
+                          FeatureConfigurationService) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var roleTypeDictionary = {
@@ -67,19 +117,11 @@ var userController = userControllers.controller('userController',
         broker:'Broker',
         employee: 'Employee'
       };
-
-    var userPromise = currentUser.get().$promise.then(function(response){
-      $scope.curUser = response.user;
-      $scope.currentRoleList = response.roles;
-
-      clientListRepository.get({userId: response.user.id}).$promise.then(function(response){
-        var company = _.find(response.company_roles, {company_user_type: 'admin'});
-        if(company){
-          $scope.company_id = company.company.id;
-        }
-      });
+    UserService.getCurUserInfo().then(function(userInfo){
+      $scope.curUser = userInfo.user;
+      $scope.currentRoleList = userInfo.roles;
+      $scope.company_id = userInfo.currentRole.company.id;
     });
-    
     $scope.isRoleActive = function(checkRole){
       var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});
       return !_.isUndefined(roleFind);
@@ -98,19 +140,7 @@ var userController = userControllers.controller('userController',
     };
 
     $scope.getCurRoleFromPath = function(){
-      var curPath = $location.path();
-      if(curPath[0] === '/'){
-        curPath = curPath.substring(1);
-      }
-      var pathArray = curPath.split('/');
-      if(pathArray.length > 0)
-      {
-        return pathArray[0];
-      }
-      else
-      {
-        return undefined;
-      }
+      return UserService.getCurrentRole()
     };
 
     $scope.getCurRoleString = function(){
@@ -192,8 +222,7 @@ var userController = userControllers.controller('userController',
 
     // turn on/off benefit section globally here
     // need to move to a company profile which controls sections by company
-    $scope.supplementalLifeInsuranceEnabled = 
-      (_.find(benefitSectionGlobalConfig, {section_name: 'supplemental_life_insurance'})).enabled;
+    $scope.supplementalLifeInsuranceEnabled = FeatureConfigurationService.isFeatureOnForCompany($scope.company_id, 'supplemental_life_insurance');
 }]);
 
 var settingsController = userControllers.controller('settingsController', ['$scope',

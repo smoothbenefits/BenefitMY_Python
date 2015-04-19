@@ -19,6 +19,7 @@ from app.serializers.person_serializer import PersonFullPostSerializer
 from app.serializers.company_user_serializer import CompanyRoleSerializer
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
+from django.conf import settings
 
 
 class UserView(APIView):
@@ -49,7 +50,7 @@ class UsersView(APIView):
             "first_name" not in request.DATA['user'] or
             "last_name" not in request.DATA['user']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         try:
             c = Company.objects.get(pk=request.DATA['company'])
         except Company.DoesNotExist:
@@ -63,7 +64,7 @@ class UsersView(APIView):
                     c.user.email == request.DATA['user']['email']):
                 return Response(status=status.HTTP_409_CONFLICT)
 
-        create_user(request.DATA['user']['email'], '123456')
+        create_user(request.DATA['user']['email'], settings.DEFAULT_USER_PW)
         if not user_exists(request.DATA['user']['email']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -75,7 +76,7 @@ class UsersView(APIView):
         company_user = CompanyUser(company_id=request.DATA['company'],
                                    user=user,
                                    company_user_type=request.DATA['company_user_type'])
-        
+
         if 'new_employee' in request.DATA:
             company_user.new_employee = request.DATA['new_employee']
 
@@ -85,7 +86,7 @@ class UsersView(APIView):
 
         if company_user.company_user_type == 'employee':
             if 'send_email' in request.DATA and request.DATA['send_email']:
-                # now try to create the onboard email for this user. 
+                # now try to create the onboard email for this user.
                 try:
                     onboard_email("%s %s" % (user.first_name, user.last_name),
                                   request.DATA['company'],
@@ -95,7 +96,7 @@ class UsersView(APIView):
                 except StandardError:
                     return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-            if ('create_docs' in request.DATA and 
+            if ('create_docs' in request.DATA and
                 'fields' in request.DATA and
                 request.DATA['create_docs']):
                 #Let's create the documents for this new user
@@ -143,6 +144,7 @@ class UserFamilyView(APIView):
                 return None
         except Person.DoesNotExist:
             return None
+
 
     def get(self, request, pk, format=None):
         user = self.get_object(pk)

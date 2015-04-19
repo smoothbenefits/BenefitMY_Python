@@ -4,9 +4,9 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ui.mask',
     'ui.utils.masks',
     'ui.bootstrap',
+    'angularFileUpload',
     'benefitmyDomainModelFactories',
     'benefitmyService',
-    'benefitmyModelFactories',
     'benefitmyApp.constants',
     'benefitmyApp.users.controllers',
     'benefitmyApp.brokers.controllers',
@@ -60,10 +60,25 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/view_benefits.html',
                 controller: 'benefitsController'
             }).
-            state('/broker/add_benefit/:clientId', {
+            state('broker_add_benefit', {
                 url: '/broker/add_benefit/:clientId',
-                templateUrl: '/static/partials/add_benefit.html',
-                controller: 'addBenefitController'
+                templateUrl: '/static/partials/benefit_addition/main.html',
+                controller: 'brokerAddBenefits'
+            }).
+            state('broker_add_benefit.health', {
+                url: '/health',
+                templateUrl: '/static/partials/benefit_addition/tab_health_benefit.html',
+                controller: 'brokerAddHealthBenefits'
+            }).
+            state('broker_add_benefit.basic_life_insurance', {
+                url: '/basic_life',
+                templateUrl: '/static/partials/benefit_addition/tab_basic_life.html',
+                controller: 'brokerAddBasicLifeInsurance'
+            }).
+            state('broker_add_benefit.supplemental_life_insurance', {
+                url: '/supplemental_life',
+                templateUrl: '/static/partials/benefit_addition/tab_supplemental_life.html',
+                controller: 'brokerAddSupplementalLifeInsurance'
             }).
             state('/broker/benefit/selected/:client_id', {
                 url: '/broker/benefit/selected/:client_id',
@@ -145,6 +160,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl:'/static/partials/selected_benefits_company.html',
                 controller: 'employerBenefitsSelected'
             }).
+            state('admin_employee_uploads',{
+                url: '/admin/:company_id/employee/:employee_id/uploads',
+                templateUrl: '/static/partials/view_employee_uploads.html',
+                controller: 'employerViewUploads'
+            }).
             state('/employee',{
                 url: '/employee',
                 templateUrl: '/static/partials/employee_dashboard.html',
@@ -170,20 +190,45 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_selection/tab_basic_life.html',
                 controller:'basicLifeBenefitsSignup'
             }).
-            state('employee_benefit_signup.optional_life', {
+            state('employee_benefit_signup.supplemental_life', {
                 url: '/basic_life',
-                templateUrl: '/static/partials/benefit_selection/tab_optional_life.html',
+                templateUrl: '/static/partials/benefit_selection/tab_supplemental_life.html',
                 controller:'optionalLifeBenefitsSignup'
             }).
-            state('/employee/info', {
-                url: '/employee/info?type',
-                templateUrl: '/static/partials/employee_profile.html',
-                controller: 'employeeInfoController'
+            state('employee_payroll', {
+                url: '/employee/payroll',
+                templateUrl: '/static/partials/payroll/main.html',
+                controller: 'employeePayrollController'
             }).
-            state('/employee/info/edit', {
-                url: '/employee/info/edit?type',
-                templateUrl: '/static/partials/employee_profile_edit.html',
-                controller: 'employeeInfoController'
+            state('employee_payroll.w4', {
+                url: '/w4',
+                templateUrl: '/static/partials/payroll/tab_w4.html',
+                controller: 'employeeW4Controller'
+            }).
+            state('employee_payroll.w4_edit', {
+                url: '/edit',
+                templateUrl: '/static/partials/payroll/tab_w4_edit.html',
+                controller: 'employeeW4Controller'
+            }).
+            state('employee_payroll.direct_deposit', {
+                url: '/direct_deposit',
+                templateUrl: '/static/partials/payroll/tab_direct_deposit.html',
+                controller: 'employeeDirectDepositController',
+            }).
+            state('employee_profile', {
+                url: '/employee/profile',
+                templateUrl: '/static/partials/employee_profile/main.html',
+                controller: 'employeeProfileController'
+            }).
+            state('employee_profile.i9', {
+                url: '/i9',
+                templateUrl: '/static/partials/employee_profile/tab_i9.html',
+                controller: 'employeeI9Controller'
+            }).
+            state('employee_profile.i9_edit', {
+                url: '/i9/edit',
+                templateUrl: '/static/partials/employee_profile/tab_i9_edit.html',
+                controller: 'employeeI9Controller'
             }).
             state('/employee/family/:employee_id', {
                 url: '/employee/family/:employee_id',
@@ -210,11 +255,6 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_onboard/employee_view_letter.html',
                 controller: 'employeeAcceptDocument'
             }).
-            state('/employee/direct_deposit?edit', {
-                url: '/employee/direct_deposit',
-                templateUrl: '/static/partials/employee_direct_deposit.html',
-                controller: 'employeeDirectDepositController'
-            }).
             state('/employee/onboard/index/:employee_id', {
                 url: '/employee/onboard/index/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/index.html',
@@ -234,6 +274,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/employee/onboard/complete/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/complete.html',
                 controller: 'onboardComplete'
+            }).
+            state('employeeUploads', {
+                url:'/employee/uploads',
+                templateUrl:'/static/partials/manage_uploads.html'            
             });
      }
  ]);

@@ -24,6 +24,13 @@ SECRET_KEY = 'x_qz2d46!0dmvk9(lb_c-z%r)&_jq8nl+-_fvsywp1+j+y5oj1'
 # Hash key serving as the "secret word" to help hashing
 HASH_KEY = '5e14ca8a-4a48-4cf7-aa3b-e207eb1a9adb'
 
+# Default password for initial user account setup
+DEFAULT_USER_PW = 'd4gf6u0hhfg48ds321cdsf'
+
+# Default global figure of number of minutes notification facilities should
+# look back to check for user data modifications
+DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES = 1440 # 24 hours
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -44,6 +51,8 @@ INSTALLED_APPS = (
     'pipeline',
     'app',
     'emailusernames',
+    'reversion',
+    'django_cron',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -68,12 +77,19 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
+    'reversion.middleware.RevisionMiddleware',
 )
+
+CRON_CLASSES = [
+    "app.scheduled_jobs.user_changes_notification.UserChangeNotifications",
+]
 
 ROOT_URLCONF = 'Smoothbenefits.urls'
 
 WSGI_APPLICATION = 'Smoothbenefits.wsgi.application'
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 120 * 60
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -88,6 +104,28 @@ DATABASES = {
         'PORT': '',
     }
 }
+
+# AMAZON AWS
+## https://benefitmy.signin.aws.amazon.com
+AMAZON_S3_BUCKET = 'benefitmy-dev-uploads'
+AMAZON_S3_HOST = 'https://{0}.s3.amazonaws.com/'.format(AMAZON_S3_BUCKET)
+AMAZON_AWS_ACCESS_KEY_ID = 'AKIAIZJ3E4NCV33WGQ5Q'
+AMAZON_AWS_SECRET = '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'
+AMAZON_S3_UPLOAD_POLICY= {
+    "conditions": [ 
+        {"bucket": AMAZON_S3_BUCKET}, 
+        ["starts-with", "$key", ""],
+        {"acl": "private"},
+        ["starts-with", "$Content-Type", ""],
+        ["starts-with", "$filename", ""],
+        ["content-length-range", 0, 52428800],
+        {"x-amz-server-side-encryption": "AES256"},
+    ]
+}
+
+# NOSE arguments for unit testing
+NOSE_ARGS = ['--nocapture',
+             '--nologcapture',]
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -203,23 +241,43 @@ PIPELINE_JS = {
             'js/bootstrap.js',
             'js/demo-mock.js',
             'js/front_end.js.js',
+            'js/flashcanvas.js', 
             'js/google_analytics.js.js',
             'js/ie.js',
             'js/jquery-select2.js',
             'js/jquery-ui-extras.js',
             'js/jquery.mockjax.js',
+            'js/jSignature.min.js', 
             'js/users.js.js',
             'js/controllers/UserControllers.js',
             'js/controllers/BrokerControllers.js',
             'js/controllers/EmployeeControllers.js',
             'js/controllers/EmployerControllers.js',
             'js/directives/ScrollTo.js',
+            'js/directives/ConfirmUnsavedOnExit.js',
+            'js/directives/UploadManager.js',
+            'js/directives/UploadViewer.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
             'js/jquery.scrollspy.js',
             'js/moment.min.js',
-            'js/model_factories/employeeBenefitElectionFactory.js',
+            'js/services/employeeBenefitElectionService.js',
+            'js/services/EmployeePreDashboardValidationService.js',
+            'js/services/BenefitElectionService.js',
+            'js/services/CompanyEmployeeSummaryService.js',
+            'js/services/DirectDepositService.js',
+            'js/services/EmployeeLetterSignatureValidationService.js',
+            'js/services/FsaService.js',
+            'js/services/LifeInsuranceService.js',
+            'js/services/benefitDisplayService.js',
+            'js/services/documentTypeService.js',
+            'js/services/personInfoService.js',
+            'js/services/UserService.js',
+            'js/services/UploadService.js',
+            'js/services/employeePayrollService.js',
+            'js/services/employeeProfileService.js',
+            'js/services/FeatureConfigurationService.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }

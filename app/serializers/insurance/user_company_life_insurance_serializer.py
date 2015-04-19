@@ -14,7 +14,7 @@ from ..custom_fields.hash_field import HashField
 class UserCompanyLifeInsuranceSerializer(HashPkSerializerBase):
     life_insurance_beneficiary = LifeInsuranceBeneficiarySerializer(many=True)
     user = HashField(source="user.id")
-    life_insurance = CompanyLifeInsurancePlanSerializer()
+    company_life_insurance = CompanyLifeInsurancePlanSerializer()
     person = HashField(source="person.id")
 
     class Meta:

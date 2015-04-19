@@ -13,3 +13,5 @@ django-sslify>=0.2
 django-email-as-username>=1.6.7
 django-encrypted-fields==1.1.1
 xlwt==0.7.5
+django-reversion==1.8.5
+django-cron==0.3.6

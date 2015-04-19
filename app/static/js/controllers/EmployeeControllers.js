@@ -1,29 +1,36 @@
 var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]);
 
 var employeeHome = employeeControllers.controller('employeeHome',
-    ['$scope',
-     '$location',
-     '$stateParams',
-     'clientListRepository',
-     'employeeBenefits',
-     'currentUser',
-     'userDocument',
-     'EmployeePreDashboardValidationService',
-     'EmployeeLetterSignatureValidationService',
-     'FsaService',
-     'LifeInsuranceService',
-  function employeeHome($scope,
-                        $location,
-                        $stateParams,
-                        clientListRepository,
-                        employeeBenefits,
-                        currentUser,
-                        userDocument,
-                        EmployeePreDashboardValidationService,
-                        EmployeeLetterSignatureValidationService,
-                        FsaService,
-                        LifeInsuranceService){
-
+  ['$scope',
+   '$location',
+   '$state', 
+   '$stateParams',
+   'clientListRepository',
+   'employeeBenefits',
+   'currentUser',
+   'userDocument',
+   'EmployeePreDashboardValidationService',
+   'EmployeeLetterSignatureValidationService',
+   'FsaService',
+   'LifeInsuranceService',
+   'employeePayrollService', 
+   'employeeProfileService',
+   'DirectDepositService',
+  function ($scope,
+            $location,
+            $state,
+            $stateParams,
+            clientListRepository,
+            employeeBenefits,
+            currentUser,
+            userDocument,
+            EmployeePreDashboardValidationService,
+            EmployeeLetterSignatureValidationService,
+            FsaService,
+            LifeInsuranceService,
+            employeePayrollService,
+            employeeProfileService,
+            DirectDepositService){
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
@@ -85,10 +92,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
       }
     });
 
-     var curUserPromise = currentUser.get().$promise.
-         then(function(userResponse){
-             return userResponse.user.id;
-         });
+    var curUserPromise = currentUser.get().$promise.then(function(userResponse){
+      return userResponse.user.id;
+    });
 
      var documentPromise = curUserPromise.then(function(userId){
                                                return userDocument.query({userId:userId}).$promise;
@@ -98,34 +104,43 @@ var employeeHome = employeeControllers.controller('employeeHome',
                           $scope.documents = response;
                           $scope.documentCount = response.length;
                           });
-
+     
      $scope.ViewDocument = function(documentId){
          $location.path('/employee/document/' + documentId);
      };
 
-     $scope.ViewInfo = function(type){
-      $location.path('/employee/info').search('type', type);
+     $scope.goToState = function(state){
+      $state.go(state);
      };
 
-     $scope.EditInfo = function(type){
-      $location.path('/employee/info/edit').search('type', type);
-     };
-
-    // FSA election data
     curUserPromise.then(function(userId) {
+      // FSA election data
       FsaService.getFsaElectionForUser(userId, function(response) {
         $scope.fsaElection = response;
       });
-    });
 
-    // Life Insurance
-    curUserPromise.then(function(userId) {
+      // Life Insurance
       LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(userId, function(response) {
         $scope.familyInsurancePlan = response;
       });
 
       LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
         $scope.basicLifeInsurancePlan = response;
+      });
+
+      // W4 Form
+      employeePayrollService.getEmployeeTaxSummaryByUserId(userId).then(function(response){
+        $scope.w4Info = response;
+      });
+
+      // I9 Form
+      employeeProfileService.getEmploymentAuthSummaryByUserId(userId).then(function(response){
+        $scope.i9Info = response;
+      });
+
+      // Direct Deposit
+      DirectDepositService.getDirectDepositByUserId(userId).then(function(response){
+        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDepositInBulk(response);
       });
     });
 
@@ -171,7 +186,6 @@ var addFamily = employeeControllers.controller('addFamily',
     });
   }
 }]);
-
 
 var viewDocument = employeeControllers.controller('viewDocument',
   ['$scope', '$location', '$stateParams', 'userDocument', 'currentUser', 'documentRepository',
@@ -245,217 +259,369 @@ var viewDocument = employeeControllers.controller('viewDocument',
     };
 }]);
 
-var employeeInfo = employeeControllers.controller('employeeInfoController',
-  ['$scope', '$location', '$stateParams', 'profileSettings', 'currentUser', 'employmentAuthRepository', 'employeeTaxRepository',
-  function($scope, $location, $stateParams, profileSettings, currentUser, employmentAuthRepository, employeeTaxRepository){
-    var infoObject = _.findWhere(profileSettings, { name: $stateParams.type });
-    $scope.info = { type: $stateParams.type, type_display: infoObject.display_name };
-    $scope.person = { role: 'Employee' };
+var employeePayroll = employeeControllers.controller('employeePayrollController',
+  ['$scope',
+   '$state',
+   'tabLayoutGlobalConfig',
+   function($scope, 
+            $state,
+            tabLayoutGlobalConfig){
+    $scope.section = _.findWhere(tabLayoutGlobalConfig, {section_name: 'employee_payroll'});
 
-    if ($stateParams.type === 'i9'){
-      $scope.isUpdateW4 = false;
-      $scope.isUpdateI9 = true;
-    }
+    $scope.goToState = function(state){
+      $state.go(state);
+    };
 
-    if ($stateParams.type === 'w4'){
-      $scope.isUpdateW4 = true;
-      $scope.isUpdateI9 = false;
-    }
+    $scope.backToDashboard = function(){
+      $state.go('/employee');
+    };
+   }
+  ]);
 
+var employeeW4Controller = employeeControllers.controller('employeeW4Controller', 
+  ['$scope',
+   '$state',
+   'currentUser', 
+   'employeePayrollService', 
+   function($scope, 
+            $state, 
+            currentUser, 
+            employeePayrollService){
     var userPromise = currentUser.get().$promise.then(function(response){
-      $scope.person.first_name = response.user.first_name;
-      $scope.person.last_name = response.user.last_name;
       return response.user.id;
     });
 
     userPromise.then(function(userId){
-      if ($scope.info.type === 'i9'){
-        employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
-          $scope.info.fields = convertResponse(response, $scope.info.type);
-        });
-      } else if ($scope.info.type === 'w4'){
-        employeeTaxRepository.get({userId: userId}).$promise.then(function(response){
-          $scope.info.fields = convertResponse(response, $scope.info.type);
-        });
-      }
-
+      employeePayrollService.getEmployeeTaxByUserId(userId).then(function(taxFields){
+        $scope.fields = taxFields;
+      });
     });
 
-    var convertResponse = function(res, type){
-      var pairs = _.pairs(res);
-      var validFields = _.findWhere(profileSettings, {name: type}).valid_fields;
-      var output = [];
-      _.each(pairs, function(pair){
-        var key = pair[0];
-        var inSetting = _.findWhere(validFields, {name: key});
-        if (inSetting){
-          if (inSetting.datamap){
-            var value = pair[1];
-            var mappedValue = _.find(inSetting.datamap, function(map){
-              return map[0] === value.toString();
-            });
-            if (!mappedValue){
-              inSetting.value = 'UNKNOWN';
-            } else{
-              inSetting.value = mappedValue[1];
-            }
-          } else{
-            inSetting.value = pair[1];
-          }
-          output.push(inSetting);
-        }
+    $scope.calculateTotal = function(){
+      var total = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
+      total += $scope.employee.dependent_count;
+      if($scope.employee.childExpense && total){
+        total += parseInt($scope.employee.childExpense);
+      }
+      if($scope.employee.headOfHousehold && total){
+        total += parseInt($scope.employee.headOfHousehold);
+      }
+      if(!total)
+      {
+        total = undefined;
+      }
+      $scope.employee.calculated_points = total;
+      if(!$scope.employee.user_defined_set){
+        $scope.employee.user_defined_points = $scope.employee.calculated_points;
+      }
+    };
+
+    $scope.userDefinedPointsSet = function(){
+      $scope.employee.user_defined_set = true;
+    };
+
+    $scope.acknowledgeW4 = function(){
+      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    };
+
+    $scope.submit=function(){
+      if(!$scope.employee.downloadW4){
+        alert('Please verify you have downloaded and read the entire W-4 form');
+        return;
+      }
+      if(typeof($scope.employee.dependent_count) === 'undefined'){
+        alert('Please enter the number of dependents');
+        return;
+      }
+      if(typeof($scope.employee.user_defined_points) === 'undefined'){
+        alert('Please enter the final withholding number (line 5 on your W-4)');
+        return;
+      }
+      if(typeof($scope.employee.extra_amount) === 'undefined'){
+        alert('Please enter the extra amount of your paycheck to withhold (Line 6 on your W-4)');
+        return;
+      }
+
+      // Add marriage number to $scope object
+      $scope.employee.marriage = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
+      userPromise.then(function(userId){
+        employeePayrollService.saveEmployeeTaxByUserId(userId, $scope.employee).then(function(response){
+          $state.go('employee_payroll.w4');
+        });
       });
-
-      return output;
-    }
-
-    $scope.backToDashboard = function(){
-      $location.path('/employee');
     };
 
     $scope.editW4 = function(){
-      $location.path('/employee/info/edit').search('type', 'w4');
+      $state.go('employee_payroll.w4_edit');
+    };
+   }
+  ]);
+
+var employeeProfile = employeeControllers.controller('employeeProfileController',
+  ['$scope',
+   '$state',
+   'tabLayoutGlobalConfig', 
+   function ($scope, 
+             $state, 
+             tabLayoutGlobalConfig){
+    $scope.section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_profile'});
+
+    $scope.goToState = function(state){
+      $state.go(state);
+    };
+
+    $scope.backToDashboard = function(){
+      $state.go('/employee');
+    };
+   }
+  ]);
+
+var employeeI9Controller = employeeControllers.controller('employeeI9Controller', 
+  ['$scope',
+   '$state',
+   'currentUser', 
+   'employeeProfileService', 
+   function($scope,
+            $state,
+            currentUser,
+            employeeProfileService){
+    $scope.employee = {auth_type: ''};
+
+    var userPromise = currentUser.get().$promise.then(function(response){
+      return response.user.id;
+    });
+
+    userPromise.then(function(userId){
+      // assign user id to current employee
+      $scope.employee.userId = userId;
+
+      employeeProfileService.getEmploymentAuthByUserId(userId).then(function(response){
+        $scope.fields = response;
+      });
+    });
+
+    var signatureUpdated = false;
+    var $sigdiv = $("#auth_signature");
+    if(_.isUndefined($sigdiv))
+    {
+      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
+    }
+    $sigdiv.jSignature();
+    $sigdiv.bind('change', function(e){
+     signatureUpdated = true;
+    });
+
+    $scope.clearSignature = function(){
+      $sigdiv.jSignature("reset");
+      signatureUpdated = false;
+    };
+
+    $scope.acknowledgedI9 = function(){
+      $scope.employee.downloadI9 = !$scope.employee.downloadI9;
+    };
+
+    $scope.signDocument = function(){
+      if(!signatureUpdated){
+        alert('Please sign your name on the signature pad');
+      }
+      if(!$scope.employee.downloadI9){
+        alert('Please download the I-9 document and acknowledge you have read the entire form above.');
+      }
+      else
+      {
+        var signatureData = $sigdiv.jSignature('getData', 'svg');
+        $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
+        employeeProfileService.saveEmploymentAuthByUserId($scope.employee, $scope.signatureImage).then(function(response){
+          $state.go('employee_profile.i9');
+        }, function(error){
+          alert('Employment authorization has NOT been saved. Please try again later.');
+        });
+      }
     };
 
     $scope.editI9 = function(){
-      $location.path('/employee/info/edit').search('type', 'i9');
+      $state.go('employee_profile.i9_edit');
     };
-  }]);
+   }
+  ]);
 
 var directDeposit = employeeControllers.controller('employeeDirectDepositController',
   ['$scope',
    '$state', 
    '$stateParams',
-   '$location',
-   'currentUser',
+   '$controller', 
+   '$modal', 
+   'UserService',
    'DirectDepositService',
    function($scope,
             $state,  
             $stateParams,
-            $location,
-            currentUser,
+            $controller, 
+            $modal, 
+            UserService,
             DirectDepositService){
-    var existingDirectDepositAccountIds = [];
-    $scope.editMode = $stateParams.edit;
-    $scope.directDepositAccounts = [];
-    $scope.bankAccountTypes = ['Checking', 'Saving'];
 
-    $scope.backToDashboard = function(){
-      $location.path('/employee');
-    };
+    // Inherit base modal controller for dialog window
+    $controller('modalMessageControllerBase', {$scope: $scope});
 
-    $scope.removeBankAccount = function(account){
-      var index = $scope.newDirectDepositAccounts.indexOf(account);
-      $scope.newDirectDepositAccounts.splice(index, 1);
-    };
-
-    $scope.editDirectDeposit = function(account){
-      account.inEditMode = true;
-    };
-
-    $scope.exitEditMode = function(account){
-      account.inEditMode = false;
-    };
-
-    $scope.viewExistingDirectDepositAccounts = function(){
-      $scope.addingNewAccount = false;
-      $scope.newDirectDepositAccounts = [];
-    };
-
-    $scope.addBankAccount = function(){
-      $scope.newDirectDepositAccounts.push({ account_type: $scope.bankAccountTypes[0]});
-    };
-
-    $scope.addNewDirectDepositAccount = function(){
-      $scope.addingNewAccount = true;
-      $scope.newDirectDepositAccounts = [];
-      $scope.newDirectDepositAccounts.push({account_type: $scope.bankAccountTypes[0]});
-    };
-
-    $scope.deleteDirectDeposit = function(account){
-
-      var confirmed = confirm('About to delete a direct deposit account. Are you sure?');
-      if (confirmed === true){
-        var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
-        DirectDepositService.deleteDirectDepositById(directDeposit, function(response){
-          getDirectDeposit(account.user);
-        }, function(error){
-          alert('Failed to delete direct deposit account. Please try again later.');
-        });
-      }
-    };
-
-    $scope.updateDirectDeposit = function(account){
-      var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
-      DirectDepositService.updateDirectDepositByUserId(directDeposit, function(response){
-        $state.transitionTo($state.current, $stateParams, {
-            reload: true,
-            inherit: false,
-            notify: true
-        });
-      }, function(error){
-        alert('Failed to update direct deposit account. Please try again later.');
-      });
-    };
-
-    var userPromise = currentUser.get().$promise.then(function(response){
+    var userPromise = UserService.getCurUserInfo().then(function(response){
       $scope.person = response.user;
       $scope.person.role = 'Employee';
       return response.user.id;
     });
 
-    var getDirectDeposit = function(userId){
-      DirectDepositService.getDirectDepositByUserId(userId, function(response){
-        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDeposit(response);
-        if (response.length === 0){
-          $scope.hasDirectDeposit = false;
-          $scope.directDepositAccounts.push({ account_type: $scope.bankAccountTypes[0], inEditMode: false });
-        }
-        else {
-          $scope.hasDirectDeposit = true;
-          existingDirectDepositAccountIds = _.map($scope.directDepositAccounts, function(account){
-            return account.id;
-          });
-
-          _.each($scope.directDepositAccounts, function(account){
-            account.inEditMode = false;
-          });
-        }
-      });
-    };
-
-    $scope.resetAmountAndPercent = function(account){
-      if(account.remainder_of_all){
-        account.amount = 0;
-        account.percentage = 0;
-      }
-      return account.remainder_of_all;
-    };
-
     userPromise.then(function(userId){
-      getDirectDeposit(userId);
+      DirectDepositService.getDirectDepositByUserId(userId).then(function(response){
+        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDepositInBulk(response);
+      });
     });
 
-    $scope.submitDirectDeposit = function(){
-      var directDepositDtos = [];
-      // Map direct deposit domain model to DTO, one by one
-      _.each($scope.newDirectDepositAccounts, function(account){
-        account.user = $scope.person.id;
-        var dto = DirectDepositService.mapViewDirectDepositToDto(account);
-        directDepositDtos.push(dto);
-      });
+    $scope.backToDashboard = function(){
+      $state.go('/employee');
+    };
 
-      DirectDepositService.createDirectDepositByUserId($scope.person.id, directDepositDtos, function(response){
-        $state.transitionTo($state.current, $stateParams, {
-            reload: true,
-            inherit: false,
-            notify: true
-        });
+    $scope.addDirectDepositAccount = function(){
+      DirectDepositService.getEmptyDirectDepositAccount().then(function(account){
+        $scope.editDirectDepositAccount(account);
       }, function(error){
-        alert('Failed to create direct deposit record due to ' + error);
+        alert('Found error when tried to add a new account. Please try again later.');
       });
     };
+
+    $scope.editDirectDepositAccount = function(account){
+      var accountCopy = angular.copy(account);
+
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/payroll/modal_direct_deposit.html',
+        controller: 'directDepositModalController',
+        size: 'lg',
+        backdrop: 'static',
+        resolve: {
+          directDepositAccount: function () {
+            return accountCopy;
+          },
+          userId: function() {
+            return $scope.person.id;
+          }
+        }
+      });
+
+      modalInstance.result.then(function(account){
+        var successMessage = "Your direct deposit account has been saved. " + 
+              "You can return to dashboard through left navigation panel. " +
+              "Or add another account using the button below.";
+
+        $scope.showMessageWithOkayOnly('Success', successMessage);
+
+        var updatedAccount = DirectDepositService.mapDtoToViewDirectDeposit(account);
+        var accountInView = _.findWhere($scope.directDepositAccounts, {id: updatedAccount.id});
+        if (accountInView){
+          var index = $scope.directDepositAccounts.indexOf(accountInView);
+          $scope.directDepositAccounts[index] = updatedAccount;
+        }
+        else{
+          $scope.directDepositAccounts.push(updatedAccount);
+        }
+      });
+    };
+
+    $scope.deleteDirectDepositAccont = function(account){
+
+      var confirmed = confirm('About to delete a direct deposit account. Are you sure?');
+      if (confirmed === true){
+
+        var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
+        DirectDepositService.deleteDirectDepositById(directDeposit).then(function(response){
+          var successMessage = "Your direct deposit account has been deleted. " + 
+              "You can return to dashboard through left navigation panel. " +
+              "Or add another account using the button below.";
+
+          $scope.showMessageWithOkayOnly('Success', successMessage);
+
+          // remove deteled account from $scope object
+          $scope.directDepositAccounts = _.reject($scope.directDepositAccounts, {id: response.id});
+        }, function(error){
+          var errorMessage = "Error occurred when tried to delete your direct deposit account. " + 
+              "Please try again later. Error message: " + error;
+          $scope.showMessageWithOkayOnly('Error', errorMessage);
+        });
+      }
+    };
   }]);
+
+var directDepositModalController = employeeControllers.controller('directDepositModalController',
+  ['$scope',
+   '$state',
+   '$modalInstance',
+   '$q',
+   'DirectDepositService',
+   'directDepositAccount',
+   'userId',
+    function($scope,
+             $state,
+             $modalInstance,
+             $q,
+             DirectDepositService,
+             directDepositAccount,
+             userId){
+      
+      $scope.errorMessage = null;
+      $scope.account = directDepositAccount;
+      $scope.bankAccountTypes = ['Checking', 'Saving'];
+
+      // wrap up add/edit service call
+      var directDepositPromise = function(account){
+        var deferred = $q.defer();
+        var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
+
+        // check if the account has an id. If yes, update the account
+        if (directDeposit.id){
+          DirectDepositService.updateDirectDepositById(directDeposit).then(function(response){
+            deferred.resolve(response);
+          }, function(error){
+            deferred.reject(error);
+          });
+        }
+        else{
+          DirectDepositService.createDirectDepositByUserId(userId, directDeposit).then(function(response){
+            deferred.resolve(response);
+          }, function(error){
+            deferred.reject(error);
+          });
+        }
+        return deferred.promise;
+      };
+
+      $scope.resetAmountAndPercent = function(account){
+        if(account.remainder_of_all){
+          account.amount = 0;
+          account.percentage = 0;
+        }
+        return account.remainder_of_all;
+      };
+
+      $scope.amountDisabled = function(account){
+        return account.remainder_of_all || (account.percentage && account.percentage != 0);
+      };
+
+      $scope.percentageDisabled = function(account){
+        return account.remainder_of_all || (account.amount && account.amount != 0);
+      };
+
+      $scope.cancel = function() {
+        $modalInstance.dismiss('cancelByUser');
+      };
+
+      $scope.save = function(account) {
+        directDepositPromise(account).then(function(response){
+          $modalInstance.close(response);
+        }, function(error){
+          $scope.errorMessage = "Error occurred when tried to save direct deposit. Please verify " +
+            "all the information enterred are valid. Message: " + error;
+        });
+      };
+    }
+  ]);
 
 var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$stateParams', function($scope, $stateParams){
   $scope.employee = {};
@@ -528,7 +694,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
-
+            
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
@@ -572,6 +738,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
     $sigdiv.bind('change', function(e){
      signatureUpdated = true;
     });
+
     $scope.clearSignature = function(){
       $sigdiv.jSignature("reset");
       signatureUpdated = false;
@@ -819,38 +986,69 @@ var employeeBenefitsSignup = employeeControllers.controller(
   ['$scope',
    '$state',
    '$stateParams',
+   '$controller',
+   'LifeInsuranceService',
     function employeeBenefitsSignup(
       $scope,
       $state,
-      $stateParams){
+      $stateParams,
+      $controller,
+      LifeInsuranceService){
 
-      var employeeId = $stateParams.employee_id;
+      // Inherite scope from base 
+      $controller('benefitsSignupControllerBase', {$scope: $scope});
 
-      $scope.tabs = [];
-      $scope.tabs.push({
-            "heading": "Health Benefits",
-            "active": true,
-            "state":"employee_benefit_signup.health"
-        });
-      $scope.tabs.push({
-            "heading": "Basic Life",
-            "active": false,
-            "state":"employee_benefit_signup.basic_life"
-        });
+      var employeeId = $scope.employeeId;
 
-      if ($scope.supplementalLifeInsuranceEnabled) {
+      var basicLifePlans;
+      var optionalLifePlans;
+
+      var promise = $scope.companyIdPromise.then(function(companyId){
+        return LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic');
+      })
+      .then(function(basicPlans) {
+        basicLifePlans = basicPlans;
+        return LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Extended');
+      })
+      .then(function(optionalPlans) {
+        optionalLifePlans = optionalPlans;
+      })
+
+      promise.then(function(result){
+        
+        $scope.tabs = [];
         $scope.tabs.push({
-              "heading": "Optional Life",
-              "active": false,
-              "state":"employee_benefit_signup.optional_life"
-          });
-      }
-
-      $scope.tabs.push({
-            "heading": "FSA",
-            "active": false,
-            "state":"employee_benefit_signup.fsa"
+              "heading": "Health Benefits",
+              "state":"employee_benefit_signup.health"
         });
+
+        if(basicLifePlans.length > 0) {
+          $scope.tabs.push({
+              "heading": "Basic Life (AD&D)",
+              "state":"employee_benefit_signup.basic_life"
+          });
+        }
+
+        if ($scope.supplementalLifeInsuranceEnabled) {
+          if (optionalLifePlans.length > 0) {
+            $scope.tabs.push({
+                  "heading": "Optional Life",
+                  "state":"employee_benefit_signup.supplemental_life"
+              });
+          }
+        }
+
+        $scope.tabs.push({
+              "heading": "FSA",
+              "state":"employee_benefit_signup.fsa"
+          });
+
+        // Always default to set the first tab be active.
+        if ($scope.tabs.length > 0) {
+          $scope.tabs[0].active = true;
+        }
+
+      });
 
       $scope.go_to_state = function(state) {
         $state.go(state);
@@ -859,6 +1057,17 @@ var employeeBenefitsSignup = employeeControllers.controller(
       $scope.addMember = function(){
         $state.go('/employee/add_family/:employee_id', { employee_id:employeeId });
       };
+
+      // TODO:
+      // This is the call back the confirm-unsaved-on-exit can call up on
+      // selection of "cancel". 
+      // Could there a be a less "by convention" way of doing this? Could 
+      // we somehow pass a callback into the directive?
+      $scope.state_exit_cancelled = function(originalState) {
+        for (i = 0; i < $scope.tabs.length; i++) {
+          $scope.tabs[i].active = ($scope.tabs[i].state === originalState.name);
+        }
+      }
 
     }]);
 
@@ -898,8 +1107,7 @@ var healthBenefitsSignup = employeeControllers.controller(
         var medicalPlans = [];
         var dentalPlans = [];
         var visionPlans = [];
-        var employeeId = $stateParams.employee_id;
-        var companyId;
+        var employeeId = $scope.employeeId;
         $scope.employee_id = employeeId;
         $scope.availablePlans = [];
         $scope.family = [];
@@ -912,18 +1120,6 @@ var healthBenefitsSignup = employeeControllers.controller(
             $scope.family.push(member);
           });
         });
-
-        var companyIdPromise =  clientListRepository.get({userId:employeeId})
-          .$promise.then(function(response){
-            var company_id;
-            _.each(response.company_roles, function(role){
-              if(role.company_user_type==='employee'){
-                company_id = role.company.id;
-                companyId = company_id;
-              }
-            })
-            return company_id;
-          });
 
         var getEligibleFamilyMember = function(benefit, selected){
           var availFamilyList = {};
@@ -976,7 +1172,7 @@ var healthBenefitsSignup = employeeControllers.controller(
           return availFamilyList;
         };
 
-        companyIdPromise.then(function(companyId){
+        $scope.companyIdPromise.then(function(companyId){
           benefitDisplayService(companyId, false, function(groupObj, nonMedicalArray, benefitCount){
             $scope.medicalBenefitGroup = groupObj;
             $scope.nonMedicalBenefitArray = nonMedicalArray;
@@ -1118,86 +1314,90 @@ var healthBenefitsSignup = employeeControllers.controller(
           var saveRequest = {benefits:[],waived:[]};
           var invalidEnrollNumberList = [];
           var noPCPError = false;
-          _.each($scope.availablePlans, function(benefitTypePlan){
-            var enrolledList = [];
-            if (typeof benefitTypePlan.selected.eligibleMemberCombo != 'undefined'){
-              _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
-                if(member.selected)
+          $scope.companyIdPromise.then(function(companyId){
+
+            _.each($scope.availablePlans, function(benefitTypePlan){
+              var enrolledList = [];
+              if (typeof benefitTypePlan.selected.eligibleMemberCombo != 'undefined'){
+                _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
+                  if(member.selected)
+                  {
+                    enrolledList.push({id:member.id, pcp:member.pcp});
+                  }
+                });
+              }
+
+              if(enrolledList.length > 0)
+              {
+                var requestBenefit = {
+                  benefit:{
+                    id:benefitTypePlan.selected.benefit.id,
+                    benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
+                  },
+                  enrolleds:enrolledList
+                };
+                saveRequest.benefits.push(requestBenefit);
+
+                if(requestBenefit.enrolleds.length < benefitTypePlan.selected.eligibleMemberCombo.minimumRequired)
                 {
-                  enrolledList.push({id:member.id, pcp:member.pcp});
+                  //validation failed.
+                  var invalidEnrollNumber = {};
+                  invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_plan.name;
+                  invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.minimumRequired;
+                  invalidEnrollNumberList.push(invalidEnrollNumber);
+                }
+              }
+            });
+
+            if(invalidEnrollNumberList.length > 0){
+              alert("For benefit " + invalidEnrollNumberList[0].name +
+                      ", you have to elect at least" + invalidEnrollNumberList[0].requiredNumber + " family members!");
+              return;
+            }
+            saveRequest.waivedRequest = {company:companyId, waived:[]};
+            _.each($scope.availablePlans, function(benefitPlan){
+                if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
+                  if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
+                    alert("Please select a reason to waive medical plan.");
+                    return;
+                  }
+
+                  var type = benefitPlan.benefit_type;
+                  var waiveReason = 'Not applicable';
+                  //This code below is such an hack. We need to get the type key from the server!
+                  //CHANGE THIS
+                  var typeKey = 0;
+                  if (type === 'Medical'){
+                    typeKey = 1;
+                    waiveReason = benefitPlan.selected.benefit.reason;
+                  }
+                  if (type === 'Dental'){
+                    typeKey = 2;
+                  }
+                  if (type === 'Vision'){
+                    typeKey = 3;
+                  }
+                  saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
                 }
               });
-            }
 
-            if(enrolledList.length > 0)
-            {
-              var requestBenefit = {
-                benefit:{
-                  id:benefitTypePlan.selected.benefit.id,
-                  benefit_type:benefitTypePlan.selected.benefit.benefit_plan.benefit_type.name
-                },
-                enrolleds:enrolledList
-              };
-              saveRequest.benefits.push(requestBenefit);
+            console.log(saveRequest);
 
-              if(requestBenefit.enrolleds.length < benefitTypePlan.selected.eligibleMemberCombo.minimumRequired)
-              {
-                //validation failed.
-                var invalidEnrollNumber = {};
-                invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_plan.name;
-                invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.minimumRequired;
-                invalidEnrollNumberList.push(invalidEnrollNumber);
-              }
-            }
+            employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
+               function(errorResponse){
+                alert('Saving waived selection failed because: ' + errorResponse.data);
+                $scope.savedSuccess = false;
+              });
+          
+
+            employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
+                $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
+              }, function(){
+                $scope.savedSuccess = false;
+              });
+
           });
-
-          if(invalidEnrollNumberList.length > 0){
-            alert("For benefit " + invalidEnrollNumberList[0].name +
-                    ", you have to elect at least" + invalidEnrollNumberList[0].requiredNumber + " family members!");
-            return;
-          }
-          saveRequest.waivedRequest = {company:companyId, waived:[]};
-          _.each($scope.availablePlans, function(benefitPlan){
-              if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
-                if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
-                  alert("Please select a reason to waive medical plan.");
-                  $location.path('/employee/benefits/' + $scope.employee_id);
-                  return;
-                }
-
-                var type = benefitPlan.benefit_type;
-                var waiveReason = 'Not applicable';
-                //This code below is such an hack. We need to get the type key from the server!
-                //CHANGE THIS
-                var typeKey = 0;
-                if (type === 'Medical'){
-                  typeKey = 1;
-                  waiveReason = benefitPlan.selected.benefit.reason;
-                }
-                if (type === 'Dental'){
-                  typeKey = 2;
-                }
-                if (type === 'Vision'){
-                  typeKey = 3;
-                }
-                saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
-              }
-            });
-
-          console.log(saveRequest);
-
-          employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
-             function(errorResponse){
-              alert('Saving waived selection failed because: ' + errorResponse.data);
-              $scope.savedSuccess = false;
-            });
-        
-
-          employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
-              $scope.showSaveSuccessModal();
-            }, function(){
-              $scope.savedSuccess = false;
-            });
         };
 
         $scope.benefit_type = 'Health Benefits';
@@ -1250,7 +1450,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
-        var employeeId = $stateParams.employee_id;
+        var employeeId = $scope.employeeId;
 
         // FSA election data
         $scope.fsaUpdateReasons = [
@@ -1285,6 +1485,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
             FsaService.saveFsaElection($scope.fsaElection
               , function() {
                 $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
               }
               , function() {
                 $scope.savedSuccess = false;
@@ -1327,32 +1528,15 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
-        var employeeId = $stateParams.employee_id;
+        var employeeId = $scope.employeeId;
 
-        var companyIdPromise =  clientListRepository.get({userId:employeeId})
-          .$promise.then(function(response){
-            var company_id;
-            _.each(response.company_roles, function(role){
-              if(role.company_user_type==='employee'){
-                company_id = role.company.id;
-                companyId = company_id;
-              }
-            })
-            return company_id;
-          });
+        $scope.companyIdPromise.then(function(companyId){
+          LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic').then(function(plans) {
 
-        companyIdPromise.then(function(companyId){
-          LifeInsuranceService.getLifeInsurancePlansForCompany(companyId, function(plans) {
-
-            // Populate available company plans
-            _.each(plans, function(plan) {
-              // separate basic life insurance from supplemental life insurance.
-              // for now, it will pick the last basic life insurance defined by broker.
-              if (plan.life_insurance_plan.insurance_type === 'Basic'){
-                $scope.basicLifeInsurancePlan = plan;
-                $scope.basicLifeInsurancePlan.selected = true;
-              }
-            });
+            if (plans.length > 0) {
+              $scope.basicLifeInsurancePlan = plans[0];
+              $scope.basicLifeInsurancePlan.selected = true;
+            }
 
             // Get current user's basic life insurance plan situation
             LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
@@ -1394,6 +1578,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             LifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
               , function() {
                 $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
               }
               , function(error) {
                 $scope.savedSuccess = false;
@@ -1402,7 +1587,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           else{
             LifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
               var enrolledBasic = _.find(enrolledPlans, function(plan){ 
-                return plan.life_insurance.life_insurance_plan.insurance_type === 'Basic';
+                return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';
               });
               if (enrolledBasic){
                 $scope.basicLifeInsurancePlan.enrolled = true;
@@ -1417,6 +1602,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               LifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan
               , function() {
                 $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
               }
               , function(error){
                 $scope.savedSuccess = false;
@@ -1463,25 +1649,13 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
-        var employeeId = $stateParams.employee_id;
+        var employeeId = $scope.employeeId;
 
-        var companyIdPromise =  clientListRepository.get({userId:employeeId})
-          .$promise.then(function(response){
-            var company_id;
-            _.each(response.company_roles, function(role){
-              if(role.company_user_type==='employee'){
-                company_id = role.company.id;
-                companyId = company_id;
-              }
-            })
-            return company_id;
-          });
-
-        $scope.lifeInsurancePlans = [ { text: '<Waive Life Insurance>', value: '0' } ];
+        $scope.lifeInsurancePlans = [ { text: '<Waive Supplemental Life Insurance>', value: '0' } ];
         $scope.selectedLifeInsurancePlan = $scope.lifeInsurancePlans[0];
 
-        companyIdPromise.then(function(companyId){
-          LifeInsuranceService.getLifeInsurancePlansForCompany(companyId, function(plans) {
+        $scope.companyIdPromise.then(function(companyId){
+          LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Extended').then(function(plans) {
 
             // Populate available company plans
             _.each(plans, function(plan) {
@@ -1494,7 +1668,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
 
               // Determine the right plan option to select
               if (!$scope.isLifeInsuranceWaived($scope.familyLifeInsurancePlan)) {
-                var optionToSelect = _.where($scope.lifeInsurancePlans, {value:$scope.familyLifeInsurancePlan.mainPlan.life_insurance.life_insurance_plan.id});
+                var optionToSelect = _.where($scope.lifeInsurancePlans, {value:$scope.familyLifeInsurancePlan.mainPlan.company_life_insurance.id});
                 if (optionToSelect.length > 0) {
                   $scope.selectedLifeInsurancePlan = optionToSelect[0];
                 }
@@ -1545,6 +1719,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
             LifeInsuranceService.deleteFamilyLifeInsurancePlanForUser(employeeId
               , function() {
                 $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
               }
               , function(error) {
                 $scope.savedSuccess = false;
@@ -1554,6 +1729,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
             LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan
               , function() {
                 $scope.showSaveSuccessModal();
+                $scope.myForm.$setPristine();
               }
               , function(error) {
                 $scope.savedSuccess = false;
@@ -1570,12 +1746,30 @@ var benefitsSignupControllerBase = employeeControllers.controller(
   'benefitsSignupControllerBase',
   ['$scope',
    '$state',
+   '$stateParams',
    '$modal',
+   'clientListRepository',
     function benefitsSignupControllerBase(
       $scope,
       $state,
-      $modal){
+      $stateParams,
+      $modal,
+      clientListRepository){
         
+        $scope.employeeId = $stateParams.employee_id;
+
+        $scope.companyIdPromise =  clientListRepository.get({userId:$scope.employeeId})
+          .$promise.then(function(response){
+            var company_id;
+            _.each(response.company_roles, function(role){
+              if(role.company_user_type==='employee'){
+                company_id = role.company.id;
+                companyId = company_id;
+              }
+            })
+            return company_id;
+          });
+
         $scope.showSaveSuccessModal = function(){
           var modalInstance = $modal.open({
             templateUrl: '/static/partials/benefit_selection/modal_save_success.html',

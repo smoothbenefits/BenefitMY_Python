@@ -1,7 +1,9 @@
+import reversion
+
 from person import Person
 from django.db import models
 
-
+@reversion.register
 class EmergencyContact(models.Model):
     first_name = models.CharField(max_length=255, null=True)
     middle_name = models.CharField(max_length=255, null=True, blank=True)
