@@ -1,10 +1,10 @@
 import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from view_test_base import ViewTestBase
 
-
+User = get_user_model()
 
 class LoginViewTestCase(TestCase, ViewTestBase):
     fixtures = ['24_person', '23_auth_user', '10_company']

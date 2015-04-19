@@ -1,22 +1,22 @@
-from app.models.user import User
 from django.test import TestCase
-from emailusernames.utils import (
-    create_user,
-    get_user,
-    user_exists)
+from django.contrib.auth import get_user_model
+
+from app.custom_authentication import AuthUserManager
+
+User = get_user_model()
 
 class TestUser(TestCase):
     fixtures = ['23_auth_user']
 
     def test_user_create_success_given_all_info(self):
-        create_user('test@testing.ave', 'password')
+        User.objects.create_user(email='test@testing.ave', password='password')
         user = User.objects.get(email='test@testing.ave')
         self.assertIsNotNone(user)
         self.assertEqual(user.email,'test@testing.ave')
         self.assertTrue(user.check_password('password'))
 
     def test_user_create_success_when_email_given(self):
-        create_user(email='test@testing.ave')
+        User.objects.create_user(email='test@testing.ave')
         user = User.objects.get(email='test@testing.ave')
         self.assertIsNotNone(user)
     

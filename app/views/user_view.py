@@ -21,6 +21,7 @@ from django.conf import settings
 User = get_user_model()
 
 class UserView(APIView):
+
     def get_object(self, pk):
         try:
             return User.objects.get(pk=pk)
@@ -62,11 +63,13 @@ class UsersView(APIView):
                     c.user.email == request.DATA['user']['email']):
                 return Response(status=status.HTTP_409_CONFLICT)
 
-        AuthUserManager.create_user(request.DATA['user']['email'], settings.DEFAULT_USER_PW)
-        if not AuthUserManager.user_exists(request.DATA['user']['email']):
+        userManager = AuthUserManager()
+
+        User.objects.create_user(request.DATA['user']['email'], settings.DEFAULT_USER_PW)
+        if not userManager.user_exists(request.DATA['user']['email']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        user = AuthUserManager.get_user(request.DATA['user']['email'])
+        user = userManager.get_user(request.DATA['user']['email'])
         user.first_name = request.DATA['user']['first_name']
         user.last_name = request.DATA['user']['last_name']
         user.save()

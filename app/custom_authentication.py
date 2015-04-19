@@ -33,7 +33,7 @@ class AuthUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def user_exist(self, email):
+    def user_exists(self, email):
         return AuthUser.objects.filter(email=email).exists()
 
     def get_user(self, email):
