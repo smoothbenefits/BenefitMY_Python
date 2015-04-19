@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import EmailValidator
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
@@ -37,7 +38,10 @@ class AuthUserManager(BaseUserManager):
         return AuthUser.objects.filter(email=email).exists()
 
     def get_user(self, email):
-        return AuthUser.objects.get(email=email)
+        try:
+            return AuthUser.objects.get(email=email)
+        except AuthUser.DoesNotExist:
+            return None
 
 
 class AuthUser(AbstractBaseUser):
@@ -46,6 +50,7 @@ class AuthUser(AbstractBaseUser):
         max_length=255,
         db_index=True,
         unique=True,
+        validators=[EmailValidator],
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
