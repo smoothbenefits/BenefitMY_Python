@@ -1,3 +1,5 @@
+import reversion
+
 from django.db import models
 from ..company import Company
 from life_insurance_plan import LifeInsurancePlan
@@ -9,7 +11,7 @@ S = ["individual",
 
 TYPES = ([(item, item) for item in S])
 
-
+@reversion.register
 class CompanyLifeInsurancePlan(models.Model):
     total_cost_per_period = models.DecimalField(
         max_digits=20, decimal_places=2, blank=True, null=True)
@@ -20,6 +22,8 @@ class CompanyLifeInsurancePlan(models.Model):
     insurance_amount = models.DecimalField(
         max_digits=20, decimal_places=2, blank=True, null=True)
 
+    # insurance amount can be defined as X times of salary
+    salary_multiplier = models.IntegerField(blank=True, null=True)
 
     benefit_option_type = models.TextField(choices=TYPES, blank=True, null=True)
     company = models.ForeignKey(Company,

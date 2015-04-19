@@ -1,0 +1,22 @@
+<div class="breadcrumb">
+    <a href="#/employee">Employee Dashboard</a>
+    <span>Payroll Information</span>
+</div>
+
+<div class="content-header">
+    <h1>Your Payroll Information</h1>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <tabset type="pills">
+                <tab ng-repeat="tab in section.tabs" heading="{{tab.verbose_name}}" active="tab.active" select="goToState(tab.state)"/>
+            </tabset>
+
+            <div ui-view></div>
+        </div>
+    </div>
+</div>
+
+<div class="back"><a href="javascript:void(0);" ng-click="backToDashboard()">&laquo; Back</a></div>

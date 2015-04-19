@@ -1,50 +1,52 @@
 <a ng-click="openPlanDetailsModal()"><b>View Health Plan Details</b></a>
-<div class="panel" ng-repeat="benefitTypePlan in availablePlans">
-    <div class="panel-head">{{benefitTypePlan.benefit_type}} Plan</div>
-    <div class="panel-body">
-        <div class="select-box">
-            <select ng-model="benefitTypePlan.selected"
-                ng-required="true"
-                name="{{benefitTypePlan.type}}_benefit_plan"
-                ng-options="plan.benefit.benefit_plan.name + ', ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
-                class="form-control"></select>
-        </div>
-        <div class="row" ng-hide="isWaived(benefitTypePlan.selected)">
-            <div class="col-sm-4"><div class="form-label">Select Members:</div></div>
-            <div class="col-sm-8">
-                <span class="checkbox" ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList">
-                    <label>
-                        <input type="checkbox" class="px" ng-model="member.selected" id="{{benefitTypePlan.type}}_family" ng-change="memberSelected(benefitTypePlan.selected, member)">
-                        <span class="lbl">{{member.first_name}} {{member.last_name}}</span>
-                    </label>
-                </span>
+<form name="myForm" confirm-unsaved-on-exit>
+    <div class="panel" ng-repeat="benefitTypePlan in availablePlans">
+        <div class="panel-head">{{benefitTypePlan.benefit_type}} Plan</div>
+        <div class="panel-body">
+            <div class="select-box">
+                <select ng-model="benefitTypePlan.selected"
+                    ng-required="true"
+                    name="{{benefitTypePlan.type}}_benefit_plan"
+                    ng-options="plan.benefit.benefit_plan.name + ', ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
+                    class="form-control"></select>
             </div>
-        </div>
-        <div class="row benefit-pcp-row" ng-show="isMedicalBenefitType(benefitTypePlan) && !isWaived(benefitTypePlan.selected)">
-            <div class="col-md-4">
-                <div class="form-label">Primary Care Physician Number</div>
-                <div class="form-sub-text">
-                    You can retrieve your Primary Care Physician Number at the benefit provider website
+            <div class="row" ng-hide="isWaived(benefitTypePlan.selected)">
+                <div class="col-sm-4"><div class="form-label">Select Members:</div></div>
+                <div class="col-sm-8">
+                    <span class="checkbox" ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList">
+                        <label>
+                            <input type="checkbox" class="px" ng-model="member.selected" id="{{benefitTypePlan.type}}_family" ng-change="memberSelected(benefitTypePlan.selected, member)">
+                            <span class="lbl">{{member.first_name}} {{member.last_name}}</span>
+                        </label>
+                    </span>
                 </div>
             </div>
-            <div class="col-md-8 pcp-container">
-                <div ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList" ng-show="member.selected">
-                    PCP# of {{member.first_name}} {{member.last_name}}:  <input type="text" ng-model="member.pcp"/> ; 
+            <div class="row benefit-pcp-row" ng-show="isMedicalBenefitType(benefitTypePlan) && !isWaived(benefitTypePlan.selected)">
+                <div class="col-md-4">
+                    <div class="form-label">Primary Care Physician Number</div>
+                    <div class="form-sub-text">
+                        You can retrieve your Primary Care Physician Number at the benefit provider website
+                    </div>
+                </div>
+                <div class="col-md-8 pcp-container">
+                    <div ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList" ng-show="member.selected">
+                        PCP# of {{member.first_name}} {{member.last_name}}:  <input type="text" ng-model="member.pcp"/> ; 
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row waive-reason-row" ng-show="isMedicalBenefitType(benefitTypePlan) && isWaived(benefitTypePlan.selected)">
-            <div class="col-md-2"><div class="form-label">Select a reason: </div></div>
-            <div class="col-md-10">
-                <select ng-model="benefitTypePlan.selected.benefit.reason"
-                        ng-required="true"
-                        name="medical_waive_reason"
-                        ng-options="reason for reason in medicalWaiveReasons"
-                        class="form-control"></select>
+            <div class="row waive-reason-row" ng-show="isMedicalBenefitType(benefitTypePlan) && isWaived(benefitTypePlan.selected)">
+                <div class="col-md-2"><div class="form-label">Select a reason: </div></div>
+                <div class="col-md-10">
+                    <select ng-model="benefitTypePlan.selected.benefit.reason"
+                            ng-required="true"
+                            name="medical_waive_reason"
+                            ng-options="reason for reason in medicalWaiveReasons"
+                            class="form-control"></select>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 <div class="form-holder">
     <div class="row">
         <div class="col-sm-6">

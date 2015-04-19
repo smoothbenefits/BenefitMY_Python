@@ -115,15 +115,12 @@ var benefitsController = brokersControllers.controller(
         };
 }]);
 
-
-
-
 var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
   ['$scope', 
    '$location', 
    '$stateParams', 
    'companyRepository', 
-   'employeeBenefitElectionFactory',
+   'employeeBenefitElectionService',
    'FsaService',
    'LifeInsuranceService',
    'CompanyEmployeeSummaryService',
@@ -132,7 +129,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
     $location, 
     $stateParams, 
     companyRepository, 
-    employeeBenefitElectionFactory,
+    employeeBenefitElectionService,
     FsaService,
     LifeInsuranceService,
     CompanyEmployeeSummaryService){
@@ -148,12 +145,12 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         $scope.companyName = response.name;
       });
 
-      var promise = employeeBenefitElectionFactory(clientId);
+      var promise = employeeBenefitElectionService(clientId);
       promise.then(function(employeeList){
         
         // TODO: Could/should FSA information be considered one kind of benefit election
         //       and this logic of getting FSA data for an employee be moved into the
-        //       employeeBenefitElectionFactory? 
+        //       employeeBenefitElectionService? 
         _.each(employeeList, function(employee) {
           FsaService.getFsaElectionForUser(employee.user.id, function(response) {
             employee.fsaElection = response;
@@ -230,23 +227,163 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
       };
     }]);
 
-var addBenefitController = brokersControllers.controller(
-  'addBenefitController',
+var brokerAddBenefits = brokersControllers.controller(
+  'brokerAddBenefits',
+  ['$scope',
+   '$location',
+   '$state',
+   '$stateParams',
+   'tabLayoutGlobalConfig',
+  function($scope, $location, $state, $stateParams, tabLayoutGlobalConfig){
+    var clientId = $stateParams.clientId;
+
+    $scope.section = _.findWhere(tabLayoutGlobalConfig, {section_name: 'broker_add_benefits'});
+
+    $scope.viewBenefits = function(){
+      $location.path('/broker/benefits/' + clientId);
+    };
+
+    $scope.goToState = function(state){
+      $state.go(state);
+    };
+  }
+]);
+
+var brokerAddBasicLifeInsurance = brokersControllers.controller(
+  'brokerAddBasicLifeInsurance',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$controller',
+   'currentUser',
+   'LifeInsuranceService',
+   function($scope, 
+            $state, 
+            $stateParams,
+            $controller, 
+            currentUser,
+            LifeInsuranceService){
+
+    // Inherite scope from base 
+    $controller('modalMessageControllerBase', {$scope: $scope});
+    
+    var clientId = $stateParams.clientId;
+    $scope.newLifeInsurancePlan = {insurance_type: 'Basic'};
+
+
+    // Need the user information for the current user (broker)
+    $scope.addLifeInsurancePlan = function() {
+      currentUser.get().$promise.then(function(response){
+        $scope.newLifeInsurancePlan.user = response.user.id;
+
+        // For now, we combine the gestures of
+        //  1. Broker creates the plan
+        //  2. Broker enrolls the company for the plan
+        LifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
+          var planId = newPlan.id;
+          var insurance_amount;
+          var multiplier;
+          if ($scope.newLifeInsurancePlan.amount){
+            insurance_amount = $scope.newLifeInsurancePlan.amount;
+          }
+          if ($scope.newLifeInsurancePlan.multiplier){
+            multiplier = $scope.newLifeInsurancePlan.multiplier;
+          }
+
+          LifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(clientId, planId, insurance_amount, multiplier).then(
+            function() {
+              var successMessage = "The new basic life insurance plan has been saved successfully." 
+
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            },
+            function() {
+              var failureMessage = "There was a problem saving the data. Please try again." 
+
+              $scope.showMessageWithOkayOnly('Failed', failureMessage);
+            }
+          );
+        });
+      });
+    };
+   }
+  ]);
+
+// Note:
+// This is much alike the controller for the basic life one, but I'd avoid
+// folding the 2 together too much for now, as I could imagine that the 
+// controller could grow into different directions once we have more complete
+// requirements for supplemental life plan setup. 
+var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
+  'brokerAddSupplementalLifeInsurance',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$controller',
+   'LifeInsuranceService',
+   'UserService',
+   function($scope, 
+            $state, 
+            $stateParams,
+            $controller, 
+            LifeInsuranceService,
+            UserService){
+
+    // Inherite scope from base 
+    $controller('modalMessageControllerBase', {$scope: $scope});
+    
+    var clientId = $stateParams.clientId;
+    $scope.newLifeInsurancePlan = {insurance_type: 'Extended'};
+
+    // Need the user information for the current user (broker)
+    $scope.addLifeInsurancePlan = function() {
+      UserService.getCurUserInfo().then(function(userInfo){
+        $scope.newLifeInsurancePlan.user = userInfo.user.id;
+        // For now, we combine the gestures of
+        //  1. Broker creates the plan
+        //  2. Broker enrolls the company for the plan
+        LifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
+          var planId = newPlan.id;
+
+          LifeInsuranceService.enrollCompanyForSupplementalLifeInsurancePlan(clientId, planId).then(
+            function() {
+              var successMessage = "The new supplemental life insurance plan has been saved successfully." 
+
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            },
+            function() {
+              var failureMessage = "There was a problem saving the data. Please try again." 
+
+              $scope.showMessageWithOkayOnly('Failed', failureMessage);
+            }
+          );
+        });
+      });
+    };
+   }
+  ]);
+
+var brokerAddHealthBenefits = brokersControllers.controller(
+  'brokerAddHealthBenefits',
   ['$scope',
    '$location',
    '$stateParams',
+   '$controller', 
    'benefitPlanRepository',
    'benefitDetailsRepository',
    'LifeInsuranceService',
    'currentUser',
-    function addBenefitController(
+    function brokerAddHealthBenefits(
       $scope,
       $location,
       $stateParams,
+      $controller, 
       benefitPlanRepository,
       benefitDetailsRepository,
       LifeInsuranceService,
       currentUser){
+
+      // Inherite scope from base 
+      $controller('modalMessageControllerBase', {$scope: $scope});
 
       var clientId = $stateParams.clientId;
       $scope.benefit = {
@@ -603,8 +740,6 @@ var addBenefitController = brokersControllers.controller(
             $scope.noCostError = false;
           }
 
-
-
           //now we validate the details array
           if($scope.benefitDetailArray.length <= 0)
           {
@@ -630,8 +765,6 @@ var addBenefitController = brokersControllers.controller(
         }
         return true;
       };
-
-
 
       function saveBenefitOptionPlan(objArray, index, completed, error){
         if(objArray.length <= index){
@@ -696,7 +829,6 @@ var addBenefitController = brokersControllers.controller(
           });
 
         //save the request list to the backend.
-
           saveBenefitOptionPlan(requestList, 0, function(){
             var apiObjectArray = [];
             _.each($scope.benefitDetailArray, function(benefitTypeContent){
@@ -711,6 +843,10 @@ var addBenefitController = brokersControllers.controller(
             });
 
             saveToBackendSequential(apiObjectArray, 0);
+
+            var successMessage = "Your health insurance has been saved. ";
+
+            $scope.showMessageWithOkayOnly('Success', successMessage);
           },
           function(response){
             //Error condition,
@@ -722,40 +858,6 @@ var addBenefitController = brokersControllers.controller(
           });
         }
       };
-
-      //////////////////////////////////////////////////////////
-      //  Life Insurance
-      //  TODO: look into separate this out once we have tabs
-      //////////////////////////////////////////////////////////
-
-      // Setup a new blank model
-      $scope.newLifeInsurancePlan = {insurance_type: 'Basic'};
-
-      // Need the user information for the current user (broker)
-      $scope.addLifeInsurancePlan = function() {
-        currentUser.get()
-        .$promise.then(function(response)
-             {
-                $scope.newLifeInsurancePlan.user = response.user.id;
-
-                // For now, we combine the gestures of
-                //  1. Broker creates the plan
-                //  2. Broker enrolls the company for the plan
-                LifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
-                  var planId = newPlan.id;
-                  var insurance_amount = 0.0;
-                  if ($scope.newLifeInsurancePlan.amount){
-                    insurance_amount = $scope.newLifeInsurancePlan.amount;
-                  }
-
-                  LifeInsuranceService.enrollCompanyForLifeInsurancePlan(clientId, planId, insurance_amount, function() {
-                    $location.path('/broker/benefits/' + clientId);
-                  });
-                });
-             }
-        );
-      };
-
   }]);
 
 var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',

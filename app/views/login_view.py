@@ -1,12 +1,13 @@
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 
 
-def user_login(request):
+def user_login(request, info_message=None):
     # Like before, obtain the context for the user's request.
     context = RequestContext(request)
 
@@ -46,7 +47,10 @@ def user_login(request):
     else:
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
-        return render_to_response('login.html', {'message':''}, context)
+        infoMessage = ""
+        if (info_message) :
+            infoMessage = urlsafe_base64_decode(info_message)
+        return render_to_response('login.html', {'message':'', 'info_message':infoMessage}, context)
 
 @require_http_methods(['DELETE'])
 @csrf_exempt

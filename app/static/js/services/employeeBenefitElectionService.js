@@ -1,7 +1,6 @@
-var benefitmyModelFactories = angular.module('benefitmyModelFactories', ['benefitmyService']);
+var benefitmyService = angular.module('benefitmyService');
 
-
-benefitmyModelFactories.factory('employeeBenefitElectionFactory',
+benefitmyService.factory('employeeBenefitElectionService',
     ['BenefitElectionService',
      'employerWorkerRepository',
      '$q',
@@ -64,5 +63,3 @@ benefitmyModelFactories.factory('employeeBenefitElectionFactory',
         return deferred.promise;
     };
 }]);
-
-
