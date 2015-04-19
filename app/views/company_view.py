@@ -1,16 +1,18 @@
 from rest_framework.views import APIView
-from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-
 from django.db import transaction
+from django.http import Http404
+from django.contrib.auth import get_user_model
+
 from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.serializers.company_serializer import (
     CompanySerializer,
     CompanyPostSerializer)
-from app.custom_authentication import AuthUserManager
+
+User = get_user_model()
 
 class CompanyView(APIView):
     def get_object(self, pk):
@@ -34,7 +36,7 @@ def companies(request):
 
     if contact_size:
         primary_contact = request.DATA['contacts'][0]
-        u = AuthUserManager.create_user(primary_contact['email'], 'temp')
+        u = User.objects.create_user(primary_contact['email'], 'temp')
         if u and primary_contact['first_name'] and primary_contact['last_name']:
             u.first_name = primary_contact['first_name']
             u.last_name = primary_contact['last_name']
