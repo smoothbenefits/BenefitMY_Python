@@ -1,110 +1,98 @@
 [
   {
     "fields": {
-      "groups": [],
-      "date_joined": "2015-01-20T00:00:00Z",
-      "user_permissions": [],
+      "date_created": "2015-01-20T00:00:00Z",
       "email": "user1@benefitmy.com",
       "first_name": "John",
       "last_login": "2015-01-24T16:22:53.911Z",
-      "is_staff": false,
-      "username": "a6n6NphST1x048_S8sRA4H4j0tTUqU",
+      "last_updated": "2015-01-24T16:22:53.911Z",
+      "is_admin": false,
       "last_name": "Hancock",
       "is_superuser": false,
       "is_active": true,
       "password": "pbkdf2_sha256$12000$vpHcwHRlbNCs$cr/ZIE62o9iJ8S9F8lnOCcbkmpLEb3QCnnsJfYsXY24="
     },
-    "model": "auth.user",
+    "model": "app.authuser",
     "pk": 1
   },
   {
     "fields": {
-      "groups": [],
-      "date_joined": "2015-01-20T00:00:00Z",
-      "user_permissions": [],
+      "date_created": "2015-01-20T00:00:00Z",
       "email": "user2@benefitmy.com",
       "first_name": "Francis",
       "last_login": "2015-01-24T16:22:32.992Z",
-      "is_staff": false,
-      "username": "lwdEYHHwZ1sW_xOC8gt5v3dQpONOi0",
+      "last_updated": "2015-01-24T16:22:53.911Z",
+      "is_admin": false,
       "last_name": "McLaurren",
       "is_superuser": false,
       "is_active": true,
       "password": "pbkdf2_sha256$12000$Pf4Z2JPZtTcA$/dtBuf0Iu8r5RqEzje6pcfh2yndeRnsC2HSrkBs6Rn4="
     },
-    "model": "auth.user",
+    "model": "app.authuser",
     "pk": 2
   },
   {
     "fields": {
-      "groups": [],
-      "date_joined": "2015-01-24T16:11:42.362Z",
-      "user_permissions": [],
+      "date_created": "2015-01-24T16:11:42.362Z",
       "email": "user3@benefitmy.com",
       "first_name": "Simon",
       "last_login": "2015-01-24T16:15:52.149Z",
-      "is_staff": false,
-      "username": "5qLinjXC988pYh4jOmF6Tei7peamxW",
+      "last_updated": "2015-01-24T16:22:53.911Z",
+      "is_admin": false,
       "last_name": "Cowell",
       "is_superuser": false,
       "is_active": true,
       "password": "pbkdf2_sha256$12000$84lAIvyQ9VhQ$VcKNTTk/dicN3iN+dqH6CFCTqSicjCGF0669Mt8uLr4="
     },
-    "model": "auth.user",
+    "model": "app.authuser",
     "pk": 3
   },
   {
     "fields": {
-      "groups": [],
-      "date_joined": "2015-01-24T16:15:13.441Z",
-      "user_permissions": [],
+      "date_created": "2015-01-24T16:15:13.441Z",
       "email": "user4@benefitmy.com",
       "first_name": "Jenn",
       "last_login": "2015-01-24T16:21:37.412Z",
-      "is_staff": false,
-      "username": "HmAYZYLdAOKsL8IFQC0MhUAbgc36wv",
+      "last_updated": "2015-01-24T16:22:53.911Z",
+      "is_admin": false,
       "last_name": "Glovorski",
       "is_superuser": false,
       "is_active": true,
       "password": "pbkdf2_sha256$12000$bj4e47R3rFGR$/KTMm9O5igIZKoUqKM5GIPeJzIf95x8BSjGQxCxv520="
     },
-    "model": "auth.user",
+    "model": "app.authuser",
     "pk": 4
   },
   {
     "fields": {
-      "groups": [],
-      "date_joined": "2015-02-05T16:15:13.441Z",
-      "user_permissions": [],
+      "date_created": "2015-02-05T16:15:13.441Z",
       "email": "broker@telamonins.com",
       "first_name": "Woodie",
       "last_login": "2015-02-05T16:21:37.412Z",
-      "is_staff": false,
-      "username": "Wepa0qN0GzviRa-iUJwlaoYrdmGxc8",
+      "last_updated": "2015-01-24T16:22:53.911Z",
+      "is_admin": false,
       "last_name": "Glario",
       "is_superuser": false,
       "is_active": true,
       "password": "pbkdf2_sha256$12000$vU4J1n6ei1sA$KpoUksxSoRBp8FxPvYQZYKhUZu48uup9Q31QCrDCQdc="
     },
-    "model": "auth.user",
+    "model": "app.authuser",
     "pk": 5
   },
   {
     "fields": {
-      "groups": [],
-      "date_joined": "2015-02-05T16:15:13.441Z",
-      "user_permissions": [],
+      "date_created": "2015-02-05T16:15:13.441Z",
       "email": "employer@telamonins.com",
       "first_name": "Henry",
       "last_login": "2015-02-05T16:21:37.412Z",
-      "is_staff": false,
-      "username": "OAQEod4LmL5fd2xm4yad7LlyKfBcqR",
+      "last_updated": "2015-01-24T16:22:53.911Z",
+      "is_admin": false,
       "last_name": "Brown",
       "is_superuser": false,
       "is_active": true,
       "password": "pbkdf2_sha256$12000$MCRzcSmYTLbv$qDxX9WitBarjJOscTSAmRqy8gpJOuZoMaUlDzEEywjk="
     },
-    "model": "auth.user",
+    "model": "app.authuser",
     "pk": 6
   }
 ]

@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.http import Http404
 from django.db import transaction
 from django.db.models import Count, Max
+from django.contrib.auth import get_user_model
 
 import xlwt
 
@@ -12,7 +13,6 @@ from app.models.company_user import CompanyUser
 from app.models.person import Person
 from app.models.phone import Phone
 from app.models.address import Address
-from app.models.user import User
 from app.models.user_company_benefit_plan_option import \
     UserCompanyBenefitPlanOption
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
@@ -28,6 +28,7 @@ from app.views.permission import (
     company_employer,
     company_employer_or_broker)
 
+User = get_user_model()
 
 class ExportViewBase(APIView):
     def _get_max_dependents_count(self, company_id):

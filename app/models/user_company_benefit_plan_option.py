@@ -4,12 +4,12 @@ from django.db import models
 from company_benefit_plan_option import CompanyBenefitPlanOption
 from user_company_waived_benefit import UserCompanyWaivedBenefit
 
-from django.contrib.auth.models import User
+from django.conf import settings
 
 @reversion.register
 class UserCompanyBenefitPlanOption(models.Model):
 
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name="user_company_benefit_plan")
     benefit = models.ForeignKey(
         CompanyBenefitPlanOption,

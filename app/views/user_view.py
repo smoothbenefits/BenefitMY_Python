@@ -5,13 +5,10 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from django.db import transaction
-from emailusernames.utils import (
-    create_user,
-    get_user,
-    user_exists)
+from django.contrib.auth import get_user_model
 from app.models.company_user import CompanyUser
 from app.models.company import Company
-from app.models.user import User
+from app.custom_authentication import AuthUserManager
 from app.models.person import Person
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
@@ -21,6 +18,7 @@ from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
 from django.conf import settings
 
+User = get_user_model()
 
 class UserView(APIView):
     def get_object(self, pk):
@@ -64,11 +62,11 @@ class UsersView(APIView):
                     c.user.email == request.DATA['user']['email']):
                 return Response(status=status.HTTP_409_CONFLICT)
 
-        create_user(request.DATA['user']['email'], settings.DEFAULT_USER_PW)
-        if not user_exists(request.DATA['user']['email']):
+        AuthUserManager.create_user(request.DATA['user']['email'], settings.DEFAULT_USER_PW)
+        if not AuthUserManager.user_exists(request.DATA['user']['email']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        user = get_user(request.DATA['user']['email'])
+        user = AuthUserManager.get_user(request.DATA['user']['email'])
         user.first_name = request.DATA['user']['first_name']
         user.last_name = request.DATA['user']['last_name']
         user.save()

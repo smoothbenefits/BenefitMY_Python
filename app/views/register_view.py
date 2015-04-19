@@ -1,11 +1,10 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
 from django.utils.http import urlsafe_base64_encode
-from app.forms import UserForm
-from emailusernames.utils import create_user, get_user, user_exists
-from app.models.user import User
 from django.conf import settings
 
+from app.forms import UserForm
+from app.custom_authentication import AuthUserManager, AuthUser
 
 def register(request):
     # Like before, get the request's context.
@@ -21,7 +20,7 @@ def register(request):
         user_form = UserForm(data=request.POST)
         # If the two forms are valid...
         if user_form.is_valid():
-            create_user(request.POST['email'], request.POST['password'])
+            AuthUserManager.create_user(request.POST['email'], request.POST['password'])
 
             registered = True
             # Update our variable to tell the template registration was successful.
@@ -48,7 +47,7 @@ def register_employee(request, user_id):
     error_message = ""
 
     try:
-        employee_user = User.objects.get(pk=user_id)
+        employee_user = AuthUser.objects.get(pk=user_id)
         user_email = employee_user.email
     except User.DoesNotExist:
             error_message = "We cannot find the user based on the URL. Please contact your HR."

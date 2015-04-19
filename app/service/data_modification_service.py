@@ -4,15 +4,17 @@ from django import template
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import get_template
+from django.contrib.auth import get_user_model
 
 from app.models.company import Company
 from app.models.company_user import CompanyUser
 from app.models.person import Person
 from app.models.phone import Phone
 from app.models.address import Address
-from app.models.user import User
 
 from reversion.models import Revision
+
+User = get_user_model()
 
 ''' Provides services to detect/collect modification to the
     data store, and provide surrounding services for this 
