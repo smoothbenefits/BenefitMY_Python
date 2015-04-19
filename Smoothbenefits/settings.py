@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
 SITE_URL = "https://localhost:8000/"
 
 # Quick-start development settings - unsuitable for production
@@ -40,6 +39,8 @@ ALLOWED_HOSTS = ['localhost', '.benefitmy.com', 'benefitmy.com.', '.heroku.com',
 
 # Application definition
 
+AUTH_USER_MODEL = 'app.AuthUser'
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,13 +51,13 @@ INSTALLED_APPS = (
     'rest_framework',
     'pipeline',
     'app',
-    'emailusernames',
+    # 'emailusernames',
     'reversion',
     'django_cron',
 )
 
 AUTHENTICATION_BACKENDS = (
-    'emailusernames.backends.EmailAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 ENCRYPTED_FIELDS_KEYDIR = 'fieldkeys'

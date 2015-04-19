@@ -10,7 +10,7 @@ from app.models.company import Company
 from app.serializers.company_serializer import (
     CompanySerializer,
     CompanyPostSerializer)
-from emailusernames.utils import create_user
+from app.custom_authentication import AuthUserManager
 
 class CompanyView(APIView):
     def get_object(self, pk):
@@ -34,7 +34,7 @@ def companies(request):
 
     if contact_size:
         primary_contact = request.DATA['contacts'][0]
-        u = create_user(primary_contact['email'], 'temp')
+        u = AuthUserManager.create_user(primary_contact['email'], 'temp')
         if u and primary_contact['first_name'] and primary_contact['last_name']:
             u.first_name = primary_contact['first_name']
             u.last_name = primary_contact['last_name']
