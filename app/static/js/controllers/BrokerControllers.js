@@ -55,6 +55,7 @@ var benefitsController = brokersControllers.controller(
     'benefitDisplayService',
     'benefitPlanRepository',
     'LifeInsuranceService',
+    'StdService',
     function benefitController(
      $scope,
      $location,
@@ -62,7 +63,8 @@ var benefitsController = brokersControllers.controller(
      $state,
      benefitDisplayService,
      benefitPlanRepository,
-     LifeInsuranceService){
+     LifeInsuranceService,
+     StdService){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
         $scope.benefitDeletable = true;
@@ -99,17 +101,22 @@ var benefitsController = brokersControllers.controller(
           }
         };
 
-
-        /////////////////////////////////////////////////////////////////////
-        // Life Insurance
-        // TODO: split this off once we have tabs
-        /////////////////////////////////////////////////////////////////////
         LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId, function(response) {
           $scope.lifeInsurancePlans = response;
         });
 
         $scope.deleteLifeInsurancePlan = function(companyLifeInsurancePlan) {
           LifeInsuranceService.deleteLifeInsurancePlanForCompany(companyLifeInsurancePlan.id, function() {
+            $state.reload();
+          });
+        };
+
+        StdService.getStdPlansForCompany($stateParams.clientId).then(function(plans) {
+          $scope.stdPlans = plans;
+        });
+
+        $scope.deleteStdPlan = function(companyStdPlanToDelete) {
+          StdService.deleteCompanyStdPlan(companyStdPlanToDelete.id).then(function() {
             $state.reload();
           });
         };
@@ -360,6 +367,46 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
       });
     };
    }
+  ]);
+
+var brokerAddStdPlanController = brokersControllers.controller(
+  'brokerAddStdPlanController',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$controller',
+   'UserService',
+   'StdService',
+    function($scope, 
+            $state, 
+            $stateParams,
+            $controller, 
+            UserService,
+            StdService){
+
+        // Inherite scope from base 
+        $controller('modalMessageControllerBase', {$scope: $scope});
+        
+        var clientId = $stateParams.clientId;
+        $scope.newPlan = {};
+
+        // Need the user information for the current user (broker)
+        $scope.saveNewPlan = function() {
+            UserService.getCurUserInfo().then(function(userInfo){
+                $scope.newPlan.user = userInfo.user.id;
+
+                StdService.addPlanForCompany($scope.newPlan, clientId).then(
+                    function(response) {
+                        var successMessage = "The new STD plan has been saved successfully." 
+                        $scope.showMessageWithOkayOnly('Success', successMessage);
+                    },
+                    function(response) {
+                        var failureMessage = "There was a problem saving the data. Please try again." 
+                        $scope.showMessageWithOkayOnly('Failed', failureMessage);
+                    });
+            });
+        };
+    }
   ]);
 
 var brokerAddHealthBenefits = brokersControllers.controller(
