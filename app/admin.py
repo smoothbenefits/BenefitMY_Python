@@ -5,6 +5,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from app.custom_authentication import AuthUser
+from app.models import Company, CompanyUser, Person
 
 # Register your models here.
 class UserCreationForm(forms.ModelForm):
@@ -75,8 +76,27 @@ class AuthUserAdmin(UserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    fields = ['name']
+
+class CompanyUserAdmin(admin.ModelAdmin):
+    list_display = ('user', 'company', 'company_user_type')
+    fields = ['user', 'company', 'company_user_type']
+
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ('first_name', 'last_name', 'user', 'company')
+    fieldsets = (
+        (None, {'fields': ('first_name', 'last_name')}),
+        ('User Relation', {'fields': ('user',)}),
+        ('Company Relation', {'fields': ('company',)}),
+    )
+
 # Now register the new UserAdmin...
 admin.site.register(AuthUser, AuthUserAdmin)
+admin.site.register(Company, CompanyAdmin)
+admin.site.register(CompanyUser, CompanyUserAdmin)
+admin.site.register(Person, PersonAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
