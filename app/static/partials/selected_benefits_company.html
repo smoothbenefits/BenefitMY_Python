@@ -159,6 +159,37 @@
                     </div>
                 </div>
             </div>
+            <div class="row" ng-show="employee.userStdPlan">
+                <div class="col-sm-2">    
+                    <div>Short Term Disability Benefits</div>
+                </div>
+                <div class="col-sm-10">
+                    <div class="table-responsive table-holder">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><span>Plan Name</span></th>
+                                    <th><span>Benefit Amount</span></th>
+                                    <th><span>Max Benefit</span></th>
+                                    <th><span>Duration</span></th>
+                                    <th><span>Elimination Period</span></th>
+                                    <th><span>Last Updated</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{employee.userStdPlan.company_std_insurance.std_insurance_plan.name}}</td>
+                                    <td>{{employee.userStdPlan.company_std_insurance.percentage_of_salary}}% of Base Salary</td>
+                                    <td>${{employee.userStdPlan.company_std_insurance.max_benefit_weekly}}/Week</td>
+                                    <td>{{employee.userStdPlan.company_std_insurance.duration_in_weeks}} Weeks</td>
+                                    <td>{{employee.userStdPlan.company_std_insurance.elimination_period_in_days}} Days</td>
+                                    <td>{{employee.userStdPlan.last_update_date_time}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm-2">    
                     <div>Flexible Spending Accounts</div>

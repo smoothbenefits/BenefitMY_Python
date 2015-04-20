@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h4 class="modal-title">Short Term Disability Benefits Details</h4>
+</div>
+<div class="modal-body">
+    <h2>STD benefits details from your company:</h2>
+    <div class="table-responsive table-holder" ng-if="companyStdPlan">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                    <th><span>Elimination Period</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{companyStdPlan.std_insurance_plan.name}}</td>
+                    <td>{{companyStdPlan.percentage_of_salary}}% of Base Salary</td>
+                    <td>${{companyStdPlan.max_benefit_weekly}}/Week</td>
+                    <td>{{companyStdPlan.duration_in_weeks}} Weeks</td>
+                    <td>{{companyStdPlan.elimination_period_in_days}} Days</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
+</div>
