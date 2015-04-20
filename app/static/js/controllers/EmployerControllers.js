@@ -162,8 +162,9 @@ var employerHome = employersController.controller('employerHome',
 
 var employerUser = employersController.controller('employerUser',
   ['$scope',
-   '$location',
+   '$state',
    '$stateParams',
+   '$location',
    'employerWorkerRepository',
    'usersRepository',
    'userDocument',
@@ -171,8 +172,9 @@ var employerUser = employersController.controller('employerUser',
    'documentTypeService',
    'templateRepository',
   function employerUser($scope,
-                        $location,
+                        $state,
                         $stateParams,
+                        $location,
                         employerWorkerRepository,
                         usersRepository,
                         userDocument,
@@ -236,7 +238,7 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.addLink = function(userType)
       {
-        $location.path('/admin/'+ userType + '/add/'+compId);
+        $location.path('/admin/'+ userType + '/add/'+compId)
       }
 
       $scope.createUser = function(userType){
@@ -267,7 +269,7 @@ var employerUser = employersController.controller('employerUser',
         }
       }
       $scope.gotoEmployerDashboardLink = function(){
-        $location.path('/admin');
+        $state.go('/admin');
       }
       $scope.gotoUserViewLink = gotoUserView;
 
@@ -282,13 +284,17 @@ var employerUser = employersController.controller('employerUser',
             pathKey='view_letter';
           }
           
-          $location.search({type:docType.name}).path('/admin/' + pathKey + '/' +compId +'/'+employeeId);
+          $location.path('/admin/' + pathKey + '/' +compId +'/'+employeeId).search({'type': docType.name});
         });
       };
 
       $scope.viewEmployeeDetail = function(employee){
-        $location.path('/admin/employee_detail/' + compId).search('eid', employee.user.id);
+        $location.path('/admin/employee_detail/' + compId).search({'eid': employee.user.id});
       };
+
+      $scope.uploadLink = function(employeeId){
+        $state.go('admin_employee_uploads', {company_id:compId, employee_id:employeeId});
+      }
   }
 ]);
 
@@ -739,4 +745,28 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     $scope.exportCompanyEmployeeDirectDepositUrl = CompanyEmployeeSummaryService.getCompanyEmployeeDirectDepositExcelUrl(company_id);
     $scope.exportCompanyEmployeeLifeBeneficiarySummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl(company_id);
 }]);
+
+var employerViewUploads = employersController.controller('employerViewUploads', [
+  '$scope', 
+  '$stateParams', 
+  'UploadService',
+  'users',
+  function($scope, 
+           $stateParams,
+           UploadService,
+           users){
+    $scope.compId = $stateParams.company_id;
+    $scope.uploads = [];
+    UploadService.getEmployeeUploads($scope.compId, $stateParams.employee_id)
+    .then(function(resp){
+      $scope.uploads = resp;
+    }, function(err){
+      alert(err);
+    });
+    users.get({userId:$stateParams.employee_id})
+    .$promise.then(function(resp){
+      $scope.employee = resp.user;
+    });
+  }
+]);
 

@@ -34,13 +34,13 @@
                 </div>
                 <div class="row" style="margin-top:10px;">
                     <div class="col-md-4">
-                        <div class="form-label">Insurance Beneficiary</div>
+                        <div class="form-label">Beneficiary</div>
                     </div>
                 </div>
                 <div class="row"  style="margin-top:10px;">
                     <div class="col-md-offset-2 col-md-6">
                         <div class="form-holder">
-                            <form name="form" ng-repeat="beneficiary in familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary">
+                            <div ng-repeat="beneficiary in familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary">
                                 <div class="row">
                                     <div class="label label-info" style="margin-top:10px;">Beneficiary - {{$index + 1}} </div>
                                     <a type="button" ng-click="removeBeneficiary(beneficiary)"> (Remove this) </a>
@@ -126,7 +126,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         <div class="add-box" style="max-width: 200px;padding-top:20px;">
                             <a ng-click="addBeneficiary()"
@@ -135,7 +135,7 @@
                         </div>
                         <div class="form-label">You can select up to 4 beneficiaries.</div>
                         <div class="form-holder">
-                            <form name="form" ng-repeat="beneficiary in familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary">
+                            <div ng-repeat="beneficiary in familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary">
                                 <div class="row">
                                     <div class="label label-warning" style="margin-top:10px;">Contingent Beneficiary - {{$index + 1}} </div>
                                     <a type="button" ng-click="removeContingentBeneficiary(beneficiary)"> (Remove this) </a>
@@ -221,7 +221,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         <div class="add-box" style="max-width: 260px;padding-top:20px;">
                             <a ng-click="addContingentBeneficiary()"

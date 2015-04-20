@@ -7,7 +7,7 @@ from view_test_base import ViewTestBase
 
 class UploadTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['23_auth_user', 'upload', '10_company']
+    fixtures = ['23_auth_user', 'upload', '10_company', '34_company_user']
 
     def setUp(self):
         self.upload_data = {
@@ -213,3 +213,94 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 404)
         self.assertIsNotNone(response.content)
+
+    def test_get_uploads_by_employer_success(self):
+        user_id = self.normalize_key(3)
+        comp_id = self.normalize_key(1)
+        # need to login
+        login_resp = self.client.login(username='user2@benefitmy.com', password='foobar')
+        self.assertTrue(login_resp)
+        self.assertIn('_auth_user_id', self.client.session)
+        self.assertEqual(self.client.session['_auth_user_id'], 2)
+        response = self.client.get(reverse('get_comp_uploads', 
+                                           kwargs={'comp_id': comp_id, 
+                                                   'pk': user_id}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        uploads = json.loads(response.content)
+        self.assertEqual(len(uploads), 2)
+        upload1 = None
+        for x in uploads:
+            if x['id'] == self.normalize_key(1):
+                upload1 = x
+                break
+        self.assertEqual(upload1['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_3_company_id_1_passport.jpg')
+        self.assertEqual(upload1['file_type'], 'image/jpeg')
+        self.assertEqual(upload1['file_name'], 'passport.jpg')
+        self.assertEqual(upload1['company'], self.normalize_key(1))
+        self.assertEqual(upload1['user'], self.normalize_key(3))
+        self.assertEqual(upload1['id'], self.normalize_key(1))
+        self.assertEqual(upload1['upload_type'], 'I9')
+        upload2 = None
+        for x in uploads:
+            if x['id'] == self.normalize_key(2):
+                upload2 = x
+                break
+        self.assertEqual(upload2['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_3_company_id_1_driverlicense.png')
+        self.assertEqual(upload2['file_type'], 'image/png')
+        self.assertEqual(upload2['file_name'], 'driverlicense.png')
+        self.assertEqual(upload2['company'], self.normalize_key(1))
+        self.assertEqual(upload2['user'], self.normalize_key(3))
+        self.assertEqual(upload2['id'], self.normalize_key(2))
+        self.assertEqual(upload2['upload_type'], 'I9')
+
+    def test_get_uploads_by_employer_bad_current_user(self):
+        user_id = self.normalize_key(3)
+        comp_id = self.normalize_key(1)
+        # need to login
+        login_resp = self.client.login(username='user4@benefitmy.com', password='foobar')
+        self.assertTrue(login_resp)
+        self.assertIn('_auth_user_id', self.client.session)
+        self.assertEqual(self.client.session['_auth_user_id'], 4)
+        response = self.client.get(reverse('get_comp_uploads', 
+                                           kwargs={'comp_id': comp_id, 
+                                                   'pk': user_id}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 405)
+        uploads = json.loads(response.content)
+        self.assertIn('message', uploads)
+        self.assertIn('do not match', uploads['message'])
+
+    def test_get_uploads_by_employer_bad_company(self):
+        user_id = self.normalize_key(3)
+        comp_id = self.normalize_key(44)
+        # need to login
+        login_resp = self.client.login(username='user2@benefitmy.com', password='foobar')
+        self.assertTrue(login_resp)
+        self.assertIn('_auth_user_id', self.client.session)
+        self.assertEqual(self.client.session['_auth_user_id'], 2)
+        response = self.client.get(reverse('get_comp_uploads', 
+                                           kwargs={'comp_id': comp_id, 
+                                                   'pk': user_id}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 405)
+        uploads = json.loads(response.content)
+        self.assertIn('message', uploads)
+        self.assertIn('do not match', uploads['message'])
+
+    def test_get_uploads_by_employer_bad_employee(self):
+        user_id = self.normalize_key(55)
+        comp_id = self.normalize_key(1)
+        # need to login
+        login_resp = self.client.login(username='user2@benefitmy.com', password='foobar')
+        self.assertTrue(login_resp)
+        self.assertIn('_auth_user_id', self.client.session)
+        self.assertEqual(self.client.session['_auth_user_id'], 2)
+        response = self.client.get(reverse('get_comp_uploads', 
+                                           kwargs={'comp_id': comp_id, 
+                                                   'pk': user_id}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 405)
+        uploads = json.loads(response.content)
+        self.assertIn('message', uploads)
+        self.assertIn('do not match', uploads['message'])

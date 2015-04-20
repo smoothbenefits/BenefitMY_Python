@@ -270,7 +270,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         start_column_num = self._write_employee_personal_info(employee_user_id, True, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_all_health_benefits_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_basic_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
-        start_column_num = self._write_employee_optional_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_supplemental_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_fsa_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_all_dependents_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
         return
@@ -438,10 +438,10 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         return col_num + 3
 
     def _write_employee_basic_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
-        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(life_insurance__life_insurance_plan__insurance_type='Basic')
+        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
         if (len(employee_plans) > 0):
             employee_plan = employee_plans[0]
-            company_plan = employee_plan.life_insurance
+            company_plan = employee_plan.company_life_insurance
             plan = company_plan.life_insurance_plan
             col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
             col_num = self._write_field(excelSheet, row_num, col_num, company_plan.insurance_amount)
@@ -450,7 +450,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
         return col_num + 2
 
-    def _write_employee_optional_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
+    def _write_employee_supplemental_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
         # TODO:
         # Stub as placeholder
         return col_num
@@ -535,7 +535,7 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersSummaryExc
 
     def _write_employee_life_insurance_beneficiary_info_by_tier(self, employee_user_id, beneficiary_tier, excelSheet, row_num, col_num):
         beneficiary_set = [None] * 4
-        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(life_insurance__life_insurance_plan__insurance_type='Basic')
+        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
         if (len(employee_plans) > 0):
             employee_plan = employee_plans[0]
             beneficiaries = employee_plan.life_insurance_beneficiary.filter(tier=beneficiary_tier)
