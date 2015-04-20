@@ -108,5 +108,33 @@
         </table>
     </div>
 
+    <div class="table-responsive table-holder" ng-if="stdPlans && stdPlans.length > 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>STD Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                    <th><span>Elimination Period</span></th>
+                    <th><span>Enrollment Date</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="stdPlan in stdPlans">
+                    <td>
+                        {{stdPlan.std_insurance_plan.name}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteStdPlan(stdPlan)" href="javascript:void(0);">X</a>
+                    </td>
+                    <td>{{stdPlan.percentage_of_salary}}% of Base Salary</td>
+                    <td>${{stdPlan.max_benefit_weekly}}/Week</td>
+                    <td>{{stdPlan.duration_in_weeks}} Weeks</td>
+                    <td>{{stdPlan.elimination_period_in_days}} Days</td>
+                    <td>{{stdPlan.created_date_for_display}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <div class="back"><a href="javascript:void(0);" ng-click="backtoDashboard()">&laquo; Back</a></div>
 </div>

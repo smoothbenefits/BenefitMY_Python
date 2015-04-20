@@ -263,3 +263,12 @@ benefitmyDomainModelFactories.factory('UploadRepository', ['$resource',
     };
   }
 ]);
+
+benefitmyDomainModelFactories.factory('StdRepository', ['$resource',
+  function($resource){
+    return {
+      ByCompany: $resource('/api/v1/fsa/:pk/', {pk:'@pk'}),
+      ByUser: $resource('/api/v1/fsa/:pk/', {pk:'@pk'})
+    };
+  }
+]);
