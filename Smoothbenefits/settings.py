@@ -51,7 +51,6 @@ INSTALLED_APPS = (
     'rest_framework',
     'pipeline',
     'app',
-    # 'emailusernames',
     'reversion',
     'django_cron',
 )
