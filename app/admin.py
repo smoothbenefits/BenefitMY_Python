@@ -81,8 +81,8 @@ class CompanyAdmin(admin.ModelAdmin):
     fields = ['name']
 
 class CompanyUserAdmin(admin.ModelAdmin):
-    list_display = ('user', 'company', 'company_user_type')
-    fields = ['user', 'company', 'company_user_type']
+    list_display = ('user', 'company', 'company_user_type', 'new_employee')
+    fields = ['user', 'company', 'company_user_type', 'new_employee']
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'user', 'company')
