@@ -17,6 +17,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'employeeProfileService',
    'DirectDepositService',
    'StdService',
+   'LtdService',
   function ($scope,
             $location,
             $state,
@@ -32,7 +33,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
             employeePayrollService,
             employeeProfileService,
             DirectDepositService,
-            StdService){
+            StdService,
+            LtdService){
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
@@ -148,6 +150,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
       // STD
       StdService.getUserEnrolledStdPlanByUser(userId).then(function(response){
         $scope.userStdPlan = response;
+      });
+
+      // LTD
+      LtdService.getUserEnrolledLtdPlanByUser(userId).then(function(response){
+        $scope.userLtdPlan = response;
       });
 
     });
@@ -997,13 +1004,15 @@ var employeeBenefitsSignup = employeeControllers.controller(
    '$controller',
    'LifeInsuranceService',
    'StdService',
+   'LtdService',
     function employeeBenefitsSignup(
       $scope,
       $state,
       $stateParams,
       $controller,
       LifeInsuranceService,
-      StdService){
+      StdService,
+      LtdService){
 
       // Inherite scope from base 
       $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1013,6 +1022,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var basicLifePlans;
       var optionalLifePlans;
       var stdPlans;
+      var ltdPlans;
 
       var promise = $scope.companyIdPromise.then(function(companyId){
         return LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic');
@@ -1027,7 +1037,11 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(stdPlansResponse) {
         stdPlans = stdPlansResponse;
+        return LtdService.getLtdPlansForCompany(companyId);
       })
+      .then(function(ltdPlansResponse) {
+        ltdPlans = ltdPlansResponse;
+      });
 
       promise.then(function(result){
         
@@ -1062,6 +1076,13 @@ var employeeBenefitsSignup = employeeControllers.controller(
             $scope.tabs.push({
                 "heading": "STD",
                 "state": "employee_benefit_signup.std"
+            });
+        }
+
+        if (ltdPlans.length > 0) {
+            $scope.tabs.push({
+                "heading": "LTD",
+                "state": "employee_benefit_signup.ltd"
             });
         }
 
@@ -1817,6 +1838,73 @@ var stdBenefitsSignup = employeeControllers.controller(
             $scope.planDetailsModalInstance = $modal.open({
               templateUrl: '/static/partials/benefit_selection/modal_std_plan_details.html',
               controller: 'stdBenefitsSignup',
+              size: 'md',
+              scope: $scope
+            });
+        };
+
+        $scope.closePlanDetailsModal = function() {
+          if ($scope.planDetailsModalInstance) {
+            $scope.planDetailsModalInstance.dismiss();
+            $scope.planDetailsModalInstance = null;
+          }
+        };
+
+    }]);
+
+var ltdBenefitsSignup = employeeControllers.controller(
+  'ltdBenefitsSignup',
+  ['$scope',
+   '$controller',
+   '$modal',
+   'LtdService',
+    function ltdBenefitsSignup(
+      $scope,
+      $controller,
+      $modal,
+      LtdService){
+        
+        // Inherite scope from base 
+        $controller('benefitsSignupControllerBase', {$scope: $scope});
+
+        var employeeId = $scope.employeeId;
+
+        $scope.enrollBenefits = true;
+
+        $scope.companyIdPromise.then(function(companyId){
+
+            LtdService.getLtdPlansForCompany(companyId).then(function(ltdPlans) {
+
+                // For now, similar to basic life, simplify the problem space by
+                // taking the first available plan for the company.
+                if (ltdPlans.length > 0) {
+                    $scope.companyLtdPlan = ltdPlans[0];
+                }
+            });
+
+        })
+
+        $scope.save = function() {
+            // Save ltd
+            var savePromise = $scope.enrollBenefits ? 
+                LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan) :
+                LtdService.deleteLtdPlansForUser(employeeId);
+
+            savePromise.then(
+                function() {
+                    $scope.showSaveSuccessModal();
+                    $scope.myForm.$setPristine();
+                }
+              , function(error) {
+                    alert('Failed to save your benefits election. Please try again later.');
+                }
+            );
+        };
+
+        $scope.openPlanDetailsModal = function() {
+            $scope.planDetailsModalInstance = $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_ltd_plan_details.html',
+              controller: 'ltdBenefitsSignup',
               size: 'md',
               scope: $scope
             });

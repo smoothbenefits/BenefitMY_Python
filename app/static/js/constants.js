@@ -124,6 +124,13 @@ settings.constant('tabLayoutGlobalConfig', [
                 name: "std",
                 active: false,
                 state: "broker_add_benefit.std"
+            },
+            {
+                id: 5,
+                verbose_name: "LTD",
+                name: "ltd",
+                active: false,
+                state: "broker_add_benefit.ltd"
             }
         ]
     },

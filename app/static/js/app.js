@@ -85,6 +85,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_std.html',
                 controller: 'brokerAddStdPlanController'
             }).
+            state('broker_add_benefit.ltd', {
+                url: '/ltd',
+                templateUrl: '/static/partials/benefit_addition/tab_ltd.html',
+                controller: 'brokerAddLtdPlanController'
+            }).
             state('/broker/benefit/selected/:client_id', {
                 url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',
@@ -204,6 +209,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/std',
                 templateUrl: '/static/partials/benefit_selection/tab_std.html',
                 controller:'stdBenefitsSignup'
+            }).
+            state('employee_benefit_signup.ltd', {
+                url: '/ltd',
+                templateUrl: '/static/partials/benefit_selection/tab_ltd.html',
+                controller:'ltdBenefitsSignup'
             }).
             state('employee_payroll', {
                 url: '/employee/payroll',

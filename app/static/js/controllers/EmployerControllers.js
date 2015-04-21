@@ -305,7 +305,15 @@ var employerBenefits = employersController.controller('employerBenefits',
     'benefitDisplayService', 
     'LifeInsuranceService', 
     'StdService',
-  function employerBenefits($scope, $location, $stateParams, benefitDisplayService, LifeInsuranceService, StdService){
+    'LtdService',
+  function employerBenefits(
+    $scope, 
+    $location, 
+    $stateParams, 
+    benefitDisplayService, 
+    LifeInsuranceService, 
+    StdService,
+    LtdService){
     var compId = $stateParams.company_id;
     $scope.role = 'Admin';
     $scope.showAddBenefitButton = false;
@@ -337,6 +345,10 @@ var employerBenefits = employersController.controller('employerBenefits',
 
     StdService.getStdPlansForCompany($stateParams.company_id).then(function(plans) {
         $scope.stdPlans = plans;
+    });
+
+    LtdService.getLtdPlansForCompany($stateParams.company_id).then(function(plans) {
+        $scope.ltdPlans = plans;
     });
   }
 ]);
@@ -682,6 +694,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   'LifeInsuranceService',
   'CompanyEmployeeSummaryService',
   'StdService',
+  'LtdService',
   function($scope, 
            $location, 
            $stateParams, 
@@ -690,7 +703,8 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            FsaService,
            LifeInsuranceService,
            CompanyEmployeeSummaryService,
-           StdService){
+           StdService,
+           LtdService){
     var company_id = $stateParams.company_id;
     $scope.employeeList = [];
 
@@ -731,6 +745,12 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
           StdService.getUserEnrolledStdPlanByUser(employee.user.id).then(function(response){
             employee.userStdPlan = response;
           });
+
+          // LTD
+          LtdService.getUserEnrolledLtdPlanByUser(employee.user.id).then(function(response){
+            employee.userLtdPlan = response;
+          });
+
         });
 
         $scope.clientCount = _.size(employeeList);

@@ -136,5 +136,33 @@
         </table>
     </div>
 
+    <div class="table-responsive table-holder" ng-if="ltdPlans && ltdPlans.length > 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>LTD Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                    <th><span>Elimination Period</span></th>
+                    <th><span>Enrollment Date</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="ltdPlan in ltdPlans">
+                    <td>
+                        {{ltdPlan.ltd_insurance_plan.name}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLtdPlan(ltdPlan)" href="javascript:void(0);">X</a>
+                    </td>
+                    <td>{{ltdPlan.percentage_of_salary}}% of Base Salary</td>
+                    <td>${{ltdPlan.max_benefit_monthly}}/Month</td>
+                    <td>{{ltdPlan.duration_in_weeks}} Weeks</td>
+                    <td>{{ltdPlan.elimination_period_in_days}} Days</td>
+                    <td>{{ltdPlan.created_date_for_display}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <div class="back"><a href="javascript:void(0);" ng-click="backtoDashboard()">&laquo; Back</a></div>
 </div>

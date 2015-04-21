@@ -56,6 +56,7 @@ var benefitsController = brokersControllers.controller(
     'benefitPlanRepository',
     'LifeInsuranceService',
     'StdService',
+    'LtdService',
     function benefitController(
      $scope,
      $location,
@@ -64,7 +65,8 @@ var benefitsController = brokersControllers.controller(
      benefitDisplayService,
      benefitPlanRepository,
      LifeInsuranceService,
-     StdService){
+     StdService,
+     LtdService){
         $scope.role = 'Broker';
         $scope.showAddBenefitButton = true;
         $scope.benefitDeletable = true;
@@ -117,6 +119,16 @@ var benefitsController = brokersControllers.controller(
 
         $scope.deleteStdPlan = function(companyStdPlanToDelete) {
           StdService.deleteCompanyStdPlan(companyStdPlanToDelete.id).then(function() {
+            $state.reload();
+          });
+        };
+
+        LtdService.getLtdPlansForCompany($stateParams.clientId).then(function(plans) {
+          $scope.ltdPlans = plans;
+        });
+
+        $scope.deleteLtdPlan = function(companyLtdPlanToDelete) {
+          LtdService.deleteCompanyLtdPlan(companyLtdPlanToDelete.id).then(function() {
             $state.reload();
           });
         };
@@ -398,6 +410,46 @@ var brokerAddStdPlanController = brokersControllers.controller(
                 StdService.addPlanForCompany($scope.newPlan, clientId).then(
                     function(response) {
                         var successMessage = "The new STD plan has been saved successfully." 
+                        $scope.showMessageWithOkayOnly('Success', successMessage);
+                    },
+                    function(response) {
+                        var failureMessage = "There was a problem saving the data. Please try again." 
+                        $scope.showMessageWithOkayOnly('Failed', failureMessage);
+                    });
+            });
+        };
+    }
+  ]);
+
+var brokerAddLtdPlanController = brokersControllers.controller(
+  'brokerAddLtdPlanController',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$controller',
+   'UserService',
+   'LtdService',
+    function($scope, 
+            $state, 
+            $stateParams,
+            $controller, 
+            UserService,
+            LtdService){
+
+        // Inherite scope from base 
+        $controller('modalMessageControllerBase', {$scope: $scope});
+        
+        var clientId = $stateParams.clientId;
+        $scope.newPlan = {};
+
+        // Need the user information for the current user (broker)
+        $scope.saveNewPlan = function() {
+            UserService.getCurUserInfo().then(function(userInfo){
+                $scope.newPlan.user = userInfo.user.id;
+
+                LtdService.addPlanForCompany($scope.newPlan, clientId).then(
+                    function(response) {
+                        var successMessage = "The new LTD plan has been saved successfully." 
                         $scope.showMessageWithOkayOnly('Success', successMessage);
                     },
                     function(response) {
