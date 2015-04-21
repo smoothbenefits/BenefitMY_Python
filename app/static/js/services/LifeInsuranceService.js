@@ -84,6 +84,9 @@ benefitmyService.factory('LifeInsuranceService',
           .$promise.then(function(plans) {
             _.each(plans, function(companyPlan) {
               companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
+              if (companyPlan.life_insurance_plan.insurance_type.toLowerCase() === 'basic'){
+                companyPlan.life_insurance_plan.insurance_type = 'Basic and AD&D';
+              }
             });
             if (successCallBack) {
               successCallBack(plans);
