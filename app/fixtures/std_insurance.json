@@ -33,7 +33,7 @@
   {
     "fields": {
       "percentage_of_salary": "70.00",
-      "max_benefit": "10000", 
+      "max_benefit_monthly": "10000", 
       "company": 1,
       "std_insurance_plan": 1
     },
@@ -45,7 +45,7 @@
   {
     "fields": {
       "percentage_of_salary": "80.00",
-      "max_benefit": "20000", 
+      "max_benefit_monthly": "20000", 
       "company": 1,
       "std_insurance_plan": 2
     },
@@ -56,7 +56,7 @@
   {
     "fields": {
       "percentage_of_salary": "70.00",
-      "max_benefit": "130000", 
+      "max_benefit_monthly": "130000", 
       "company": 2,
       "std_insurance_plan": 3
     },
