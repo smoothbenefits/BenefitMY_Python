@@ -239,8 +239,8 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Vision Option Elected')
         col_num = self._write_field(excelSheet, 0, col_num, 'Vision Cost / Pay')
 
-        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Plan Name')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life (AD&D) Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life (AD&D) Amount')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'FSA Amount')
         col_num = self._write_field(excelSheet, 0, col_num, 'Dependent FSA Amount')

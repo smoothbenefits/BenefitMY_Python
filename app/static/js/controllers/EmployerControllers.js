@@ -298,8 +298,17 @@ var employerUser = employersController.controller('employerUser',
   }
 ]);
 
-var employerBenefits = employersController.controller('employerBenefits', ['$scope', '$location', '$stateParams', 'benefitDisplayService', 'LifeInsuranceService',
-  function employerBenefits($scope, $location, $stateParams, benefitDisplayService, LifeInsuranceService){
+var employerBenefits = employersController.controller('employerBenefits', 
+  ['$scope', 
+   '$location', 
+   '$stateParams', 
+   'benefitDisplayService', 
+   'LifeInsuranceService',
+  function ($scope, 
+            $location, 
+            $stateParams, 
+            benefitDisplayService, 
+            LifeInsuranceService){
     var compId = $stateParams.company_id;
     $scope.role = 'Admin';
     $scope.showAddBenefitButton = false;
@@ -328,10 +337,7 @@ var employerBenefits = employersController.controller('employerBenefits', ['$sco
     /////////////////////////////////////////////////////////////////////
 
     LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
-          $scope.lifeInsurancePlans = response;
-          _.each($scope.lifeInsurancePlans, function(companyPlan) {
-            companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
-          });
+      $scope.lifeInsurancePlans = response;
     });
   }
 ]);
