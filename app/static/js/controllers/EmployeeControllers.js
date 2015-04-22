@@ -1467,9 +1467,14 @@ var fsaBenefitsSignup = employeeControllers.controller(
           { text: 'Unpaid leave of absence by employee or spouse', value: 10 },
           { text: 'Return from unpaid leave of absence by employee or spouse', value: 11 }
         ];
-        $scope.selectedFsaUpdateReason = $scope.fsaUpdateReasons[0];
+
         FsaService.getFsaElectionForUser(employeeId, function(response) {
           $scope.fsaElection = response;
+          if (response.update_reason && response.update_reason.length > 0){
+            $scope.selectedFsaUpdateReason = _.findWhere($scope.fsaUpdateReasons, {text: response.update_reason});
+          } else{
+            $scope.selectedFsaUpdateReason = $scope.fsaUpdateReasons[0];
+          }
         });
 
         // Whether the user has selected a reason for updating 
