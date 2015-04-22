@@ -91,14 +91,17 @@ from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
 from app.views.direct_deposit_view import DirectDepositView
+from app.views.company_features_view import CompanyFeaturesView
 from app.views.fsa_view import FSAView
 
 from app.views.company_user_summary_view import (
     CompanyUsersSummaryExcelExportView,
     CompanyUsersDirectDepositExcelExportView,
     CompanyUsersLifeInsuranceBeneficiaryExcelExportView)
+
 from app.views.upload import (UserUploadView,
-                              UploadView)
+                              UploadView,
+                              get_company_uploads)
 
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
 
@@ -161,6 +164,8 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/fsa/(?P<pk>\w+)/?$' % PREFIX, FSAView.as_view(), name='fsa_api'),
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
+    url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
+
     url(r'^%s/benefits/?$' % PREFIX, benefits),
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
@@ -225,6 +230,10 @@ urlpatterns = patterns('app.views',
     url(r'^%s/upload/(?P<pk>\w+)/?$' % PREFIX,
         UploadView.as_view(),
         name='upload_api'),
+
+    url(r'^%s/companies/(?P<comp_id>\w+)/uploads/(?P<pk>\w+)/?$' % PREFIX,
+        get_company_uploads,
+        name='get_comp_uploads'),
 )
 
 
