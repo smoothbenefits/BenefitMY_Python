@@ -337,10 +337,7 @@ var employerBenefits = employersController.controller('employerBenefits',
     };
 
     LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
-          $scope.lifeInsurancePlans = response;
-          _.each($scope.lifeInsurancePlans, function(companyPlan) {
-            companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
-          });
+      $scope.lifeInsurancePlans = response;
     });
 
     StdService.getStdPlansForCompany($stateParams.company_id).then(function(plans) {
