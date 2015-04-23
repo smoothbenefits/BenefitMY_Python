@@ -150,17 +150,15 @@
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
-                    <th><span>Elimination Period</span></th>
                     <th><span>Last Updated</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{{userStdPlan.company_std_insurance.std_insurance_plan.name}}</td>
-                    <td>{{userStdPlan.company_std_insurance.percentage_of_salary}}% of Base Salary</td>
-                    <td>${{userStdPlan.company_std_insurance.max_benefit_weekly}}/Week</td>
-                    <td>{{userStdPlan.company_std_insurance.duration_in_weeks}} Weeks</td>
-                    <td>{{userStdPlan.company_std_insurance.elimination_period_in_days}} Days</td>
+                    <td>{{userStdPlan.plan_name}}</td>
+                    <td>{{userStdPlan.percentage_of_salary}}% of Base Salary</td>
+                    <td>${{userStdPlan.max_benefit_weekly}}/Week</td>
+                    <td>{{userStdPlan.duration}} Weeks</td>
                     <td>{{userStdPlan.last_update_date_time}}</td>
                 </tr>
             </tbody>
@@ -175,17 +173,15 @@
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
-                    <th><span>Elimination Period</span></th>
                     <th><span>Last Updated</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{{userLtdPlan.company_ltd_insurance.ltd_insurance_plan.name}}</td>
-                    <td>{{userLtdPlan.company_ltd_insurance.percentage_of_salary}}% of Base Salary</td>
-                    <td>${{userLtdPlan.company_ltd_insurance.max_benefit_monthly}}/Month</td>
-                    <td>{{userLtdPlan.company_ltd_insurance.duration_in_weeks}} Weeks</td>
-                    <td>{{userLtdPlan.company_ltd_insurance.elimination_period_in_days}} Days</td>
+                    <td>{{userLtdPlan.plan_name}}</td>
+                    <td>{{userLtdPlan.percentage_of_salary}}% of Base Salary</td>
+                    <td>${{userLtdPlan.max_benefit_monthly}}/Month</td>
+                    <td>{{userLtdPlan.duration}} Weeks</td>
                     <td>{{userLtdPlan.last_update_date_time}}</td>
                 </tr>
             </tbody>

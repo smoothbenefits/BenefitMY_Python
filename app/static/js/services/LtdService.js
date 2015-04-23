@@ -20,7 +20,7 @@ benefitmyService.factory('LtdService',
                 return deferred.promise;
             },
 
-            addPlanForCompany: function(ltdPlanToSave, companyId) {
+            addPlanForCompany: function(companyLtdPlanToSave, companyId) {
                 // This should be the combination of both
                 // - create the plan
                 // - enroll the company for this plan

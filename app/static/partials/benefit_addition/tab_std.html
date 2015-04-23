@@ -7,7 +7,7 @@
                     <div class="textbox">
                         <input type="text"
                             name="new_plan_name"
-                            ng-model="newPlan.name"
+                            ng-model="newPlan.plan_name"
                             ng-required="true" />
                         <div class="form-error" ng-show="form.new_plan_name.$dirty && form.new_plan_name.$invalid">
                           <span ng-show="form.new_plan_name.$error.required">Plan name field is required</span>
@@ -54,31 +54,17 @@
                             min="0"
                             type="number"
                             name="benefit_duration"
-                            ng-model="newPlan.duration_in_weeks" />
+                            ng-model="newPlan.duration" />
                         <span class="input-group-addon">Weeks</span>
                     </div>
                     <div class="form-error-relative" ng-show="form.benefit_duration.$invalid">Benefit Duration is invalid</div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="form-label">Elimination Period</div>
-                    <div class="textbox input-group">
-                        <input
-                            min="0"
-                            type="number"
-                            name="elimination_period"
-                            ng-model="newPlan.elimination_period_in_days" />
-                        <span class="input-group-addon">Days</span>
-                    </div>
-                    <div class="form-error-relative" ng-show="form.elimination_period.$invalid">Elimination Period is invalid</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-6">
                     <div class="submit-box" style="max-width: 200px;">
-                        <a ng-click="saveNewPlan()" class="btn green" ng-disabled="!newPlan.name">Add</a>
+                        <a ng-click="saveNewPlan()" class="btn green" ng-disabled="!newPlan.plan_name">Add</a>
                     </div>
                 </div>
             </div>

@@ -116,20 +116,18 @@
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
-                    <th><span>Elimination Period</span></th>
                     <th><span>Enrollment Date</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="stdPlan in stdPlans">
                     <td>
-                        {{stdPlan.std_insurance_plan.name}}
+                        {{stdPlan.plan_name}}
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteStdPlan(stdPlan)" href="javascript:void(0);">X</a>
                     </td>
                     <td>{{stdPlan.percentage_of_salary}}% of Base Salary</td>
                     <td>${{stdPlan.max_benefit_weekly}}/Week</td>
-                    <td>{{stdPlan.duration_in_weeks}} Weeks</td>
-                    <td>{{stdPlan.elimination_period_in_days}} Days</td>
+                    <td>{{stdPlan.duration}} Weeks</td>
                     <td>{{stdPlan.created_date_for_display}}</td>
                 </tr>
             </tbody>
@@ -144,20 +142,18 @@
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
-                    <th><span>Elimination Period</span></th>
                     <th><span>Enrollment Date</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="ltdPlan in ltdPlans">
                     <td>
-                        {{ltdPlan.ltd_insurance_plan.name}}
+                        {{ltdPlan.plan_name}}
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLtdPlan(ltdPlan)" href="javascript:void(0);">X</a>
                     </td>
                     <td>{{ltdPlan.percentage_of_salary}}% of Base Salary</td>
                     <td>${{ltdPlan.max_benefit_monthly}}/Month</td>
-                    <td>{{ltdPlan.duration_in_weeks}} Weeks</td>
-                    <td>{{ltdPlan.elimination_period_in_days}} Days</td>
+                    <td>{{ltdPlan.duration}} Weeks</td>
                     <td>{{ltdPlan.created_date_for_display}}</td>
                 </tr>
             </tbody>

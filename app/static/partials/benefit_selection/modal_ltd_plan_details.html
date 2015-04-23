@@ -11,16 +11,14 @@
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
-                    <th><span>Elimination Period</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{{companyLtdPlan.ltd_insurance_plan.name}}</td>
+                    <td>{{companyLtdPlan.plan_name}}</td>
                     <td>{{companyLtdPlan.percentage_of_salary}}% of Base Salary</td>
                     <td>${{companyLtdPlan.max_benefit_monthly}}/Month</td>
-                    <td>{{companyLtdPlan.duration_in_weeks}} Weeks</td>
-                    <td>{{companyLtdPlan.elimination_period_in_days}} Days</td>
+                    <td>{{companyLtdPlan.duration}} Weeks</td>
                 </tr>
             </tbody>
         </table>
