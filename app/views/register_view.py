@@ -1,11 +1,12 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
 from django.utils.http import urlsafe_base64_encode
-from app.forms import UserForm
-from emailusernames.utils import create_user, get_user, user_exists
-from app.models.user import User
+from django.contrib.auth import get_user_model
 from django.conf import settings
 
+from app.forms import UserForm
+
+User = get_user_model()
 
 def register(request):
     # Like before, get the request's context.
@@ -21,7 +22,7 @@ def register(request):
         user_form = UserForm(data=request.POST)
         # If the two forms are valid...
         if user_form.is_valid():
-            create_user(request.POST['email'], request.POST['password'])
+            User.objects.create_user(request.POST['email'], request.POST['password'])
 
             registered = True
             # Update our variable to tell the template registration was successful.

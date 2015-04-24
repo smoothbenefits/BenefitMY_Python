@@ -1,9 +1,9 @@
 from django import forms
-from app.models.user import User
+from app.custom_authentication import AuthUser
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
-        model = User
+        model = AuthUser
         fields = ('email', 'password')
