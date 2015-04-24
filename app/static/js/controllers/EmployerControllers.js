@@ -335,6 +335,10 @@ var employerBenefits = employersController.controller('employerBenefits',
     StdService.getStdPlansForCompany($stateParams.company_id).then(function(plans) {
         $scope.stdPlans = plans;
     });
+
+    StdService.getStdPlansForCompany($stateParams.company_id).then(function(plans) {
+        $scope.stdPlans = plans;
+    });
   }
 ]);
 
