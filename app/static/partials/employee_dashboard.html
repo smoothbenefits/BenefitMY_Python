@@ -141,6 +141,31 @@
         </table>
 
     </div>
+    <div class="table-responsive table-holder table" ng-show="userStdPlan">
+        <div class="table-sub-title">Short Term Disability Benefits</div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                    <th><span>Elimination Period</span></th>
+                    <th><span>Last Updated</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{userStdPlan.company_std_insurance.std_insurance_plan.name}}</td>
+                    <td>{{userStdPlan.company_std_insurance.percentage_of_salary}}% of Base Salary</td>
+                    <td>${{userStdPlan.company_std_insurance.max_benefit_weekly}}/Week</td>
+                    <td>{{userStdPlan.company_std_insurance.duration_in_weeks}} Weeks</td>
+                    <td>{{userStdPlan.company_std_insurance.elimination_period_in_days}} Days</td>
+                    <td>{{userStdPlan.last_update_date_time}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <div class="table-responsive table-holder table">
         <div class="table-sub-title">Flexible Spending Account</div>
         <table class="table-striped table">

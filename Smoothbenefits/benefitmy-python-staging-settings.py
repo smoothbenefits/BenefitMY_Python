@@ -58,7 +58,7 @@ INSTALLED_APPS = (
 
 
 AUTHENTICATION_BACKENDS = (
-    'emailusernames.backends.EmailAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 
@@ -281,6 +281,7 @@ PIPELINE_JS = {
             'js/services/employeePayrollService.js',
             'js/services/employeeProfileService.js',
             'js/services/FeatureConfigurationService.js',
+            'js/services/StdService.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }
