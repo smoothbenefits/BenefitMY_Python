@@ -60,7 +60,7 @@ benefitmyService.factory('StdService',
             domainModel.duration = companyPlanViewModel.duration;
             domainModel.company = companyPlanViewModel.company;
 
-            domainModel.std_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel).id;
+            domainModel.std_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
 
             return domainModel;
         };
@@ -71,7 +71,7 @@ benefitmyService.factory('StdService',
             domainModel.id = userCompanyPlanViewModel.user_company_plan_id;
             domainModel.user = userCompanyPlanViewModel.plan_owner;
 
-            domainModel.company_std_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel).id;
+            domainModel.company_std_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
             return domainModel;
         };
@@ -173,6 +173,7 @@ benefitmyService.factory('StdService',
                 userPlan.plan_owner = userId;
 
                 var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll);
+                planDomainModel.company_std_insurance = planDomainModel.company_std_insurance.id;
 
                 StdRepository.CompanyUserPlanByUser.query({userId:userId})
                 .$promise.then(function(userPlans) {

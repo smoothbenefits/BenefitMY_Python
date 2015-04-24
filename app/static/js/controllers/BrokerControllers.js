@@ -143,6 +143,8 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    'FsaService',
    'LifeInsuranceService',
    'CompanyEmployeeSummaryService',
+   'StdService',
+   'LtdService',
    function selectedBenefitsController(
     $scope, 
     $location, 
@@ -151,7 +153,9 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
     employeeBenefitElectionService,
     FsaService,
     LifeInsuranceService,
-    CompanyEmployeeSummaryService){
+    CompanyEmployeeSummaryService,
+    StdService,
+    LtdService){
 
       var clientId = $stateParams.client_id;
       $scope.employeeList = [];
@@ -192,6 +196,20 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
           LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
             employee.basicLifeInsurancePlan = response;
           });
+        });
+
+        // STD
+        _.each(employeeList, function(employee) {
+            StdService.getUserEnrolledStdPlanByUser(employee.user.id).then(function(response){
+                employee.userStdPlan = response;
+            });
+        });
+
+        // LTD
+        _.each(employeeList, function(employee) {
+            LtdService.getUserEnrolledLtdPlanByUser(employee.user.id).then(function(response){
+                employee.userLtdPlan = response;
+            });
         });
 
         $scope.clientCount = _.size(employeeList);
@@ -445,7 +463,7 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
             UserService.getCurUserInfo().then(function(userInfo){
-                $scope.newPlan.user = userInfo.user.id;
+                $scope.newPlan.plan_broker = userInfo.user.id;
 
                 LtdService.addPlanForCompany($scope.newPlan, clientId).then(
                     function(response) {
