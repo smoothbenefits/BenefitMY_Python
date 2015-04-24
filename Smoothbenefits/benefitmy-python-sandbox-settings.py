@@ -27,9 +27,9 @@ HASH_KEY = '5e14ca8a-4a48-4cf7-aa3b-e207eb1a9adb'
 DEFAULT_USER_PW = 'd4gf6u0hhfg48ds321cdsf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-TEMPLATE_DEBUG = False
+TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '.benefitmy.com', 'benefitmy.com.', '.heroku.com', '.herokuapp.com']
 
@@ -46,12 +46,13 @@ INSTALLED_APPS = (
     'rest_framework',
     'pipeline',
     'app',
-    'emailusernames',
+    'reversion',
+    'django_cron',
 )
 
 
 AUTHENTICATION_BACKENDS = (
-    'emailusernames.backends.EmailAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 
@@ -68,7 +69,6 @@ EMAIL_USE_TLS = True
 
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 MIDDLEWARE_CLASSES = (
-    # 'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,6 +77,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
+    'reversion.middleware.RevisionMiddleware',
 )
 
 ROOT_URLCONF = 'Smoothbenefits.urls'
@@ -98,6 +99,24 @@ DATABASES = {
         'HOST': 'ec2-54-163-226-9.compute-1.amazonaws.com',
         'PORT': '5432',
     }
+}
+
+# AMAZON AWS
+## https://benefitmy.signin.aws.amazon.com
+AMAZON_S3_BUCKET = 'benefitmy-staging-uploads'
+AMAZON_S3_HOST = 'https://{0}.s3.amazonaws.com/'.format(AMAZON_S3_BUCKET)
+AMAZON_AWS_ACCESS_KEY_ID = 'AKIAJSUUQXOJS5GNUTKA'
+AMAZON_AWS_SECRET = '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'
+AMAZON_S3_UPLOAD_POLICY= {
+    "conditions": [ 
+        {"bucket": AMAZON_S3_BUCKET}, 
+        ["starts-with", "$key", ""],
+        {"acl": "private"},
+        ["starts-with", "$Content-Type", ""],
+        ["starts-with", "$filename", ""],
+        ["content-length-range", 0, 52428800],
+        {"x-amz-server-side-encryption": "AES256"},
+    ]
 }
 
 # Internationalization
@@ -215,11 +234,13 @@ PIPELINE_JS = {
             'js/bootstrap.js',
             'js/demo-mock.js',
             'js/front_end.js.js',
+            'js/flashcanvas.js', 
             'js/google_analytics.js.js',
             'js/ie.js',
             'js/jquery-select2.js',
             'js/jquery-ui-extras.js',
             'js/jquery.mockjax.js',
+            'js/jSignature.min.js',
             'js/users.js.js',
             'js/controllers/UserControllers.js',
             'js/controllers/BrokerControllers.js',
@@ -227,6 +248,8 @@ PIPELINE_JS = {
             'js/controllers/EmployerControllers.js',
             'js/directives/ScrollTo.js',
             'js/directives/ConfirmUnsavedOnExit.js',
+            'js/directives/UploadManager.js',
+            'js/directives/UploadViewer.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
@@ -243,6 +266,12 @@ PIPELINE_JS = {
             'js/services/benefitDisplayService.js',
             'js/services/documentTypeService.js',
             'js/services/personInfoService.js',
+            'js/services/UserService.js',
+            'js/services/UploadService.js',
+            'js/services/employeePayrollService.js',
+            'js/services/employeeProfileService.js',
+            'js/services/FeatureConfigurationService.js',
+            'js/services/StdService.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }
