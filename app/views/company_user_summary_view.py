@@ -20,6 +20,14 @@ from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from app.models.insurance.life_insurance_plan import LifeInsurancePlan
+from app.models.insurance.std_insurance_plan import StdInsurancePlan
+from app.models.insurance.company_std_insurance_plan import CompanyStdInsurancePlan
+from app.models.insurance.user_company_std_insurance_plan import \
+    UserCompanyStdInsurancePlan
+from app.models.insurance.ltd_insurance_plan import LtdInsurancePlan
+from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
+from app.models.insurance.user_company_ltd_insurance_plan import \
+    UserCompanyLtdInsurancePlan
 from app.models.fsa import FSA
 from app.models.direct_deposit import DirectDeposit
 from app.models.user_bank_account import UserBankAccount
@@ -239,6 +247,12 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Vision Option Elected')
         col_num = self._write_field(excelSheet, 0, col_num, 'Vision Cost / Pay')
 
+        col_num = self._write_field(excelSheet, 0, col_num, 'STD Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'STD Amount')
+
+        col_num = self._write_field(excelSheet, 0, col_num, 'LTD Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'LTD Amount')
+
         col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life (AD&D) Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life (AD&D) Amount')
 
@@ -276,6 +290,8 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         start_column_num = 0
         start_column_num = self._write_employee_personal_info(employee_user_id, True, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_all_health_benefits_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_std_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_ltd_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_basic_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_supplemental_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_fsa_info(employee_user_id, excelSheet, row_num, start_column_num)
@@ -443,6 +459,32 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
         # Skip the columns if no matching benefit
         return col_num + 3
+
+    def _write_employee_std_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
+        employee_plans = UserCompanyStdInsurancePlan.objects.filter(user=employee_user_id)
+        if (len(employee_plans) > 0):
+            employee_plan = employee_plans[0]
+            company_plan = employee_plan.company_std_insurance
+            plan = company_plan.std_insurance_plan
+            col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
+            col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
+
+            return col_num
+
+        return col_num + 2
+
+    def _write_employee_ltd_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
+        employee_plans = UserCompanyLtdInsurancePlan.objects.filter(user=employee_user_id)
+        if (len(employee_plans) > 0):
+            employee_plan = employee_plans[0]
+            company_plan = employee_plan.company_ltd_insurance
+            plan = company_plan.ltd_insurance_plan
+            col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
+            col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
+
+            return col_num
+
+        return col_num + 2
 
     def _write_employee_basic_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
         employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
