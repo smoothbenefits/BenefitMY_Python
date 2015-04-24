@@ -154,6 +154,37 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='CompanyLtdInsurancePlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('elimination_period_in_days', models.IntegerField(null=True, blank=True)),
+                ('duration', models.IntegerField(null=True, blank=True)),
+                ('percentage_of_salary', models.DecimalField(null=True, max_digits=5, decimal_places=2, blank=True)),
+                ('max_benefit_monthly', models.DecimalField(null=True, max_digits=20, decimal_places=2, blank=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company', models.ForeignKey(related_name='company_ltd_insurance', blank=True, to='app.Company', null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyStdInsurancePlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('duration', models.IntegerField(null=True, blank=True)),
+                ('percentage_of_salary', models.DecimalField(null=True, max_digits=5, decimal_places=2, blank=True)),
+                ('max_benefit_monthly', models.DecimalField(null=True, max_digits=20, decimal_places=2, blank=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company', models.ForeignKey(related_name='company_std_insurance', blank=True, to='app.Company', null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='CompanyUser',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -306,6 +337,20 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='LtdInsurancePlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255)),
+                ('attachment', models.CharField(max_length=2048, null=True, blank=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('user', models.ForeignKey(related_name='ltd_insurance_plan', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Person',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -345,6 +390,20 @@ class Migration(migrations.Migration):
                 ('signature_type', models.CharField(max_length=10)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('user', models.ForeignKey(related_name='signature', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='StdInsurancePlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255)),
+                ('attachment', models.CharField(max_length=2048, null=True, blank=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('user', models.ForeignKey(related_name='std_insurance_plan', to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -430,6 +489,32 @@ class Migration(migrations.Migration):
                 ('company_life_insurance', models.ForeignKey(related_name='life_insurance', to='app.CompanyLifeInsurancePlan')),
                 ('person', models.ForeignKey(related_name='life_insurance', to='app.Person')),
                 ('user', models.ForeignKey(related_name='user_company_life_insurance_plan', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='UserCompanyLtdInsurancePlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company_ltd_insurance', models.ForeignKey(related_name='ltd_insurance', to='app.CompanyLtdInsurancePlan')),
+                ('user', models.ForeignKey(related_name='user_company_ltd_insurance_plan', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='UserCompanyStdInsurancePlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company_std_insurance', models.ForeignKey(related_name='std_insurance', to='app.CompanyStdInsurancePlan')),
+                ('user', models.ForeignKey(related_name='user_company_std_insurance_plan', to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -531,6 +616,18 @@ class Migration(migrations.Migration):
             model_name='directdeposit',
             name='user',
             field=models.ForeignKey(related_name='direct_deposit', to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='companystdinsuranceplan',
+            name='std_insurance_plan',
+            field=models.ForeignKey(related_name='company_std_insurance', blank=True, to='app.StdInsurancePlan', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='companyltdinsuranceplan',
+            name='ltd_insurance_plan',
+            field=models.ForeignKey(related_name='company_ltd_insurance', blank=True, to='app.LtdInsurancePlan', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
