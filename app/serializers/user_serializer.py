@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from app.models.user import User
+from app.custom_authentication import AuthUser as User
 from app.models.person import Person
 from app.serializers.person_serializer import PersonSerializer
 from hash_pk_serializer_base import HashPkSerializerBase

@@ -40,6 +40,8 @@ ALLOWED_HOSTS = ['localhost', '.benefitmy.com', 'benefitmy.com.', '.heroku.com',
 
 # Application definition
 
+AUTH_USER_MODEL = 'app.AuthUser'
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,7 +52,6 @@ INSTALLED_APPS = (
     'rest_framework',
     'pipeline',
     'app',
-    'emailusernames',
     'reversion',
     'django_cron',
 )

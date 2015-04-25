@@ -1,7 +1,7 @@
 import re
 import time
 import string
-from app.models.user import User
+from app.custom_authentication import AuthUser as User
 from app.models.document import Document
 from app.models.document_type import DocumentType
 from app.models.template import Template
