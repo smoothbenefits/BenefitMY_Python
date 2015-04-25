@@ -299,16 +299,21 @@ var employerUser = employersController.controller('employerUser',
 ]);
 
 var employerBenefits = employersController.controller('employerBenefits', 
-  ['$scope', 
-   '$location', 
-   '$stateParams', 
-   'benefitDisplayService', 
-   'LifeInsuranceService',
-  function ($scope, 
-            $location, 
-            $stateParams, 
-            benefitDisplayService, 
-            LifeInsuranceService){
+    ['$scope', 
+    '$location', 
+    '$stateParams', 
+    'benefitDisplayService', 
+    'LifeInsuranceService', 
+    'StdService',
+    'LtdService',
+  function employerBenefits(
+    $scope, 
+    $location, 
+    $stateParams, 
+    benefitDisplayService, 
+    LifeInsuranceService, 
+    StdService,
+    LtdService){
     var compId = $stateParams.company_id;
     $scope.role = 'Admin';
     $scope.showAddBenefitButton = false;
@@ -331,13 +336,16 @@ var employerBenefits = employersController.controller('employerBenefits',
       $location.path('/admin');
     };
 
-    /////////////////////////////////////////////////////////////////////
-    // Life Insurance
-    // TODO: split this off once we have tabs
-    /////////////////////////////////////////////////////////////////////
-
     LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
       $scope.lifeInsurancePlans = response;
+    });
+
+    StdService.getStdPlansForCompany($stateParams.company_id).then(function(plans) {
+        $scope.stdPlans = plans;
+    });
+
+    LtdService.getLtdPlansForCompany($stateParams.company_id).then(function(plans) {
+        $scope.ltdPlans = plans;
     });
   }
 ]);
@@ -682,6 +690,8 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   'FsaService',
   'LifeInsuranceService',
   'CompanyEmployeeSummaryService',
+  'StdService',
+  'LtdService',
   function($scope, 
            $location, 
            $stateParams, 
@@ -689,7 +699,9 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            employeeBenefitElectionService,
            FsaService,
            LifeInsuranceService,
-           CompanyEmployeeSummaryService){
+           CompanyEmployeeSummaryService,
+           StdService,
+           LtdService){
     var company_id = $stateParams.company_id;
     $scope.employeeList = [];
 
@@ -725,6 +737,17 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
           LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
             employee.basicLifeInsurancePlan = response;
           });
+
+          // STD
+          StdService.getUserEnrolledStdPlanByUser(employee.user.id).then(function(response){
+            employee.userStdPlan = response;
+          });
+
+          // LTD
+          LtdService.getUserEnrolledLtdPlanByUser(employee.user.id).then(function(response){
+            employee.userLtdPlan = response;
+          });
+
         });
 
         $scope.clientCount = _.size(employeeList);

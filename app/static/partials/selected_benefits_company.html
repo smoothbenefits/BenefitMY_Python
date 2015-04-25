@@ -159,6 +159,64 @@
                     </div>
                 </div>
             </div>
+            <div class="row" ng-show="employee.userStdPlan">
+                <div class="col-sm-2">    
+                    <div>Short Term Disability Benefits</div>
+                </div>
+                <div class="col-sm-10">
+                    <div class="table-responsive table-holder">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><span>Plan Name</span></th>
+                                    <th><span>Benefit Amount</span></th>
+                                    <th><span>Max Benefit</span></th>
+                                    <th><span>Duration</span></th>
+                                    <th><span>Last Updated</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{employee.userStdPlan.planName}}</td>
+                                    <td>{{employee.userStdPlan.percentageOfSalary}}% of Base Salary</td>
+                                    <td>${{employee.userStdPlan.maxBenefitWeekly}}/Week</td>
+                                    <td>{{employee.userStdPlan.duration}} Weeks</td>
+                                    <td>{{employee.userStdPlan.lastUpdateDateTime}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="employee.userLtdPlan">
+                <div class="col-sm-2">    
+                    <div>Long Term Disability Benefits</div>
+                </div>
+                <div class="col-sm-10">
+                    <div class="table-responsive table-holder">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><span>Plan Name</span></th>
+                                    <th><span>Benefit Amount</span></th>
+                                    <th><span>Max Benefit</span></th>
+                                    <th><span>Duration</span></th>
+                                    <th><span>Last Updated</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{employee.userLtdPlan.planName}}</td>
+                                    <td>{{employee.userLtdPlan.percentageOfSalary}}% of Base Salary</td>
+                                    <td>${{employee.userLtdPlan.maxBenefitMonthly}}/Month</td>
+                                    <td>{{employee.userLtdPlan.duration}} Weeks</td>
+                                    <td>{{employee.userLtdPlan.lastUpdateDateTime}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm-2">    
                     <div>Flexible Spending Accounts</div>

@@ -141,6 +141,52 @@
         </table>
 
     </div>
+    <div class="table-responsive table-holder table" ng-show="userStdPlan">
+        <div class="table-sub-title">Short Term Disability Benefits</div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                    <th><span>Last Updated</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{userStdPlan.planName}}</td>
+                    <td>{{userStdPlan.percentageOfSalary}}% of Base Salary</td>
+                    <td>${{userStdPlan.maxBenefitWeekly}}/Week</td>
+                    <td>{{userStdPlan.duration}} Weeks</td>
+                    <td>{{userStdPlan.lastUpdateDateTime}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive table-holder table" ng-show="userLtdPlan">
+        <div class="table-sub-title">Long Term Disability Benefits</div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                    <th><span>Last Updated</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{userLtdPlan.planName}}</td>
+                    <td>{{userLtdPlan.percentageOfSalary}}% of Base Salary</td>
+                    <td>${{userLtdPlan.maxBenefitMonthly}}/Month</td>
+                    <td>{{userLtdPlan.duration}} Weeks</td>
+                    <td>{{userLtdPlan.lastUpdateDateTime}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <div class="table-responsive table-holder table">
         <div class="table-sub-title">Flexible Spending Account</div>
         <table class="table-striped table">

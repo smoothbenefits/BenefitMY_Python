@@ -12,7 +12,7 @@ class CompanyStdInsurancePlan(models.Model):
     percentage_of_salary = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True)
 
-    max_benefit_monthly = models.DecimalField(
+    max_benefit_weekly = models.DecimalField(
         max_digits=20, decimal_places=2, blank=True, null=True)
 
     company = models.ForeignKey(Company,

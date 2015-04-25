@@ -1,0 +1,73 @@
+<div class="benefit-form-holder">
+    <form name="form" class="dynamic-form">
+        <div class="form-holder col-md-8">
+            <div class="row">
+                <div class="col-md-8"> 
+                    <div class="form-label">Plan Name</div>
+                    <div class="textbox">
+                        <input type="text"
+                            name="new_plan_name"
+                            ng-model="newPlan.planName"
+                            ng-required="true" />
+                        <div class="form-error" ng-show="form.new_plan_name.$dirty && form.new_plan_name.$invalid">
+                          <span ng-show="form.new_plan_name.$error.required">Plan name field is required</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8"> 
+                    <div class="form-label">Benefit Amount</div>
+                    <div class="textbox input-group">
+                        <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            name="benefit_amount"
+                            ng-model="newPlan.percentageOfSalary" />
+                        <span class="input-group-addon">% of Annual Base Salary</span>
+                    </div>
+                    <div class="form-error-relative" ng-show="form.benefit_amount.$invalid">
+                        Benefit Amount is invalid
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-label">Weekly Maximum Benefit Amount</div>
+                    <div class="textbox input-group">
+                        <span class="input-group-addon">$</span>
+                        <input
+                            min="0"
+                            type="number"
+                            name="weekly_max_amount"
+                            ng-model="newPlan.maxBenefitWeekly" />
+                    </div>
+                    <div class="form-error-relative" ng-show="form.weekly_max_amount.$invalid">Weekly maximum amount is invalid</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-label">Benefit Duration</div>
+                    <div class="textbox input-group">
+                        <input
+                            min="0"
+                            type="number"
+                            name="benefit_duration"
+                            ng-model="newPlan.duration" />
+                        <span class="input-group-addon">Weeks</span>
+                    </div>
+                    <div class="form-error-relative" ng-show="form.benefit_duration.$invalid">Benefit Duration is invalid</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="submit-box" style="max-width: 200px;">
+                        <a ng-click="saveNewPlan()" class="btn green" ng-disabled="!newPlan.planName">Add</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

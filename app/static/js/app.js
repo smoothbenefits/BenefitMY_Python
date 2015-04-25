@@ -80,6 +80,16 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_supplemental_life.html',
                 controller: 'brokerAddSupplementalLifeInsurance'
             }).
+            state('broker_add_benefit.std', {
+                url: '/std',
+                templateUrl: '/static/partials/benefit_addition/tab_std.html',
+                controller: 'brokerAddStdPlanController'
+            }).
+            state('broker_add_benefit.ltd', {
+                url: '/ltd',
+                templateUrl: '/static/partials/benefit_addition/tab_ltd.html',
+                controller: 'brokerAddLtdPlanController'
+            }).
             state('/broker/benefit/selected/:client_id', {
                 url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',
@@ -191,9 +201,19 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller:'basicLifeBenefitsSignup'
             }).
             state('employee_benefit_signup.supplemental_life', {
-                url: '/basic_life',
+                url: '/supplemental_life',
                 templateUrl: '/static/partials/benefit_selection/tab_supplemental_life.html',
                 controller:'optionalLifeBenefitsSignup'
+            }).
+            state('employee_benefit_signup.std', {
+                url: '/std',
+                templateUrl: '/static/partials/benefit_selection/tab_std.html',
+                controller:'stdBenefitsSignup'
+            }).
+            state('employee_benefit_signup.ltd', {
+                url: '/ltd',
+                templateUrl: '/static/partials/benefit_selection/tab_ltd.html',
+                controller:'ltdBenefitsSignup'
             }).
             state('employee_payroll', {
                 url: '/employee/payroll',
