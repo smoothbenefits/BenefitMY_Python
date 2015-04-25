@@ -1,28 +1,28 @@
-from app.models.user import User
 from django.test import TestCase
-from emailusernames.utils import (
-    create_user,
-    get_user,
-    user_exists)
+from django.contrib.auth import get_user_model
+
+from app.custom_authentication import AuthUserManager
+
+User = get_user_model()
 
 class TestUser(TestCase):
     fixtures = ['23_auth_user']
 
     def test_user_create_success_given_all_info(self):
-        create_user('test@testing.ave', 'password')
+        User.objects.create_user(email='test@testing.ave', password='password')
         user = User.objects.get(email='test@testing.ave')
         self.assertIsNotNone(user)
         self.assertEqual(user.email,'test@testing.ave')
         self.assertTrue(user.check_password('password'))
 
     def test_user_create_success_when_email_given(self):
-        create_user(email='test@testing.ave')
+        User.objects.create_user(email='test@testing.ave')
         user = User.objects.get(email='test@testing.ave')
         self.assertIsNotNone(user)
     
     def test_user_create_failed_when_email_missing(self):
-        with self.assertRaises(Exception):
-            user_error = create_user(None, "bad_password")
+        with self.assertRaises(ValueError):
+            user_error = User.objects.create_user(None, "bad_password")
             self.assertIsNone(user_error)
 
     def test_get_user_by_id_success_when_user_exists(self):
@@ -45,3 +45,24 @@ class TestUser(TestCase):
         with self.assertRaises(User.DoesNotExist):
             user_non_exist = User.objects.get(pk=55)
 
+    def test_manager_user_exists_returns_true_when_user_exists(self):
+        manager = AuthUserManager()
+        exists = manager.user_exists(email='user1@benefitmy.com')
+        self.assertTrue(exists)
+
+    def test_manager_user_exists_returns_false_when_user_not_exists(self):
+        manager = AuthUserManager()
+        exists = manager.user_exists(email='this_user@not.exists')
+        self.assertFalse(exists)
+
+    def test_manager_get_user_return_correct_value(self):
+        manager = AuthUserManager()
+        expectedEmail = 'user1@benefitmy.com'
+        user = manager.get_user(expectedEmail)
+        self.assertEqual(expectedEmail, user.email)
+
+    def test_manager_get_user_return_none_when_user_not_exists(self):
+        manager = AuthUserManager()
+        email = 'this_user@not.exists'
+        user = manager.get_user(email)
+        self.assertEqual(None, user)

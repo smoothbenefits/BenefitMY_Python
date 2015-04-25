@@ -1,0 +1,32 @@
+[
+  {
+    "fields": {
+      "company": 1,
+      "company_feature": 1,
+      "feature_status": true
+    },
+    "model": "app.companyfeatures",
+    "pk": 1
+  },
+
+  {
+    "fields": {
+      "company": 1,
+      "company_feature": 2,
+      "feature_status": true
+    },
+    "model": "app.companyfeatures",
+    "pk": 2
+  },
+
+  {
+    "fields": {
+      "company": 2,
+      "company_feature": 1,
+      "feature_status": true
+    },
+    "model": "app.companyfeatures",
+    "pk": 3
+  }
+
+]

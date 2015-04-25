@@ -1,7 +1,7 @@
 import reversion
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from user_bank_account import UserBankAccount
 
 @reversion.register
@@ -15,7 +15,7 @@ class DirectDeposit(models.Model):
     bank_account = models.ForeignKey(UserBankAccount,
                              related_name="direct_deposit")
 
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name="direct_deposit")
 
     remainder_of_all = models.BooleanField(default=False)

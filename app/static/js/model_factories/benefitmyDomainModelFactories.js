@@ -263,3 +263,55 @@ benefitmyDomainModelFactories.factory('UploadRepository', ['$resource',
     };
   }
 ]);
+
+benefitmyDomainModelFactories.factory('StdRepository', ['$resource',
+  function($resource){
+    return {
+      PlanByUser: $resource('/api/v1/brokers/:userId/std_insurance_plan/', {userId:'@user_id'}),
+      PlanById: $resource('/api/v1/brokers/:id/std_insurance_plan/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      }),
+      CompanyPlanByCompany: $resource('/api/v1/company/:companyId/std_insurance_plan/', {companyId:'@company_id'}),
+      CompanyPlanById: $resource('/api/v1/company/:id/std_insurance_plan/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      }),
+      CompanyUserPlanByCompany: $resource('/api/v1/company_users/:companyId/std_insurance/', {companyId:'@company_id'}),
+      CompanyUserPlanByUser: $resource('/api/v1/users/:userId/std_insurance/', {userId:'@user_id'}),
+      CompanyUserPlanById: $resource('/api/v1/users/:id/std_insurance/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      })
+    };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('LtdRepository', ['$resource',
+  function($resource){
+    return {
+      PlanByUser: $resource('/api/v1/brokers/:userId/ltd_insurance_plan/', {userId:'@user_id'}),
+      PlanById: $resource('/api/v1/brokers/:id/ltd_insurance_plan/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      }),
+      CompanyPlanByCompany: $resource('/api/v1/company/:companyId/ltd_insurance_plan/', {companyId:'@company_id'}),
+      CompanyPlanById: $resource('/api/v1/company/:id/ltd_insurance_plan/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      }),
+      CompanyUserPlanByCompany: $resource('/api/v1/company_users/:companyId/ltd_insurance/', {companyId:'@company_id'}),
+      CompanyUserPlanByUser: $resource('/api/v1/users/:userId/ltd_insurance/', {userId:'@user_id'}),
+      CompanyUserPlanById: $resource('/api/v1/users/:id/ltd_insurance/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      })
+    };
+  }
+]);
