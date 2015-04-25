@@ -7,6 +7,7 @@ general:
       - staging
       - demo
       - beta
+      - betaplus
       - prod
 
 test:
@@ -28,4 +29,8 @@ deployment:
     branch: beta
     commands:
       - sh ./deployment.sh benefitmy-python-beta HEROKU_POSTGRESQL_PINK
+  betaplus:
+    branch: betaplus
+    commands:
+      - sh ./deployment.sh benefitmy-python-betaplus HEROKU_POSTGRESQL_BLUE
 
