@@ -7,9 +7,9 @@ benefitmyService.factory('StdService',
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
             
-            viewModel.plan_id = planDomainModel.id;
-            viewModel.plan_name = planDomainModel.name;
-            viewModel.plan_broker = planDomainModel.user;
+            viewModel.planId = planDomainModel.id;
+            viewModel.planName = planDomainModel.name;
+            viewModel.planBroker = planDomainModel.user;
 
             return viewModel;
         };
@@ -19,11 +19,11 @@ benefitmyService.factory('StdService',
                 mapPlanDomainToViewModel(companyPlanDomainModel.std_insurance_plan) :
                 {};
 
-            viewModel.company_plan_id = companyPlanDomainModel.id;
-            viewModel.percentage_of_salary = companyPlanDomainModel.percentage_of_salary;
-            viewModel.max_benefit_weekly = companyPlanDomainModel.max_benefit_weekly;
+            viewModel.companyPlanId = companyPlanDomainModel.id;
+            viewModel.percentageOfSalary = companyPlanDomainModel.percentage_of_salary;
+            viewModel.maxBenefitWeekly = companyPlanDomainModel.max_benefit_weekly;
             viewModel.duration = companyPlanDomainModel.duration;
-            viewModel.created_date_for_display = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
+            viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
             
             return viewModel;
@@ -34,9 +34,9 @@ benefitmyService.factory('StdService',
                 mapCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_std_insurance) :
                 {};
 
-            viewModel.user_company_plan_id = userCompanyPlanDomainModel.id;
-            viewModel.plan_owner = userCompanyPlanDomainModel.user;
-            viewModel.last_update_date_time = moment(userCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
+            viewModel.userCompanyPlanId = userCompanyPlanDomainModel.id;
+            viewModel.planOwner = userCompanyPlanDomainModel.user;
+            viewModel.lastUpdateDateTime = moment(userCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
         
             return viewModel;
         };
@@ -44,9 +44,9 @@ benefitmyService.factory('StdService',
         var mapPlanViewToDomainModel = function(planViewModel) {
             var domainModel = {};
             
-            domainModel.id = planViewModel.plan_id;
-            domainModel.name = planViewModel.plan_name;
-            domainModel.user = planViewModel.plan_broker;
+            domainModel.id = planViewModel.planId;
+            domainModel.name = planViewModel.planName;
+            domainModel.user = planViewModel.planBroker;
 
             return domainModel;
         };
@@ -54,9 +54,9 @@ benefitmyService.factory('StdService',
         var mapCompanyPlanViewToDomainModel = function(companyPlanViewModel) {
             var domainModel = {};
 
-            domainModel.id = companyPlanViewModel.company_plan_id;
-            domainModel.percentage_of_salary = companyPlanViewModel.percentage_of_salary;
-            domainModel.max_benefit_weekly = companyPlanViewModel.max_benefit_weekly;
+            domainModel.id = companyPlanViewModel.companyPlanId;
+            domainModel.percentage_of_salary = companyPlanViewModel.percentageOfSalary;
+            domainModel.max_benefit_weekly = companyPlanViewModel.maxBenefitWeekly;
             domainModel.duration = companyPlanViewModel.duration;
             domainModel.company = companyPlanViewModel.company;
 
@@ -68,8 +68,8 @@ benefitmyService.factory('StdService',
         var mapUserCompanyPlanViewToDomainModel = function(userCompanyPlanViewModel) {
             var domainModel = {};
 
-            domainModel.id = userCompanyPlanViewModel.user_company_plan_id;
-            domainModel.user = userCompanyPlanViewModel.plan_owner;
+            domainModel.id = userCompanyPlanViewModel.userCompanyPlanId;
+            domainModel.user = userCompanyPlanViewModel.planOwner;
 
             domainModel.company_std_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
@@ -170,7 +170,7 @@ benefitmyService.factory('StdService',
                 var deferred = $q.defer();
 
                 var userPlan = companyStdPlanToEnroll;
-                userPlan.plan_owner = userId;
+                userPlan.planOwner = userId;
 
                 var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll);
                 planDomainModel.company_std_insurance = planDomainModel.company_std_insurance.id;

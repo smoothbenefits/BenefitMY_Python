@@ -118,7 +118,7 @@ var benefitsController = brokersControllers.controller(
         });
 
         $scope.deleteStdPlan = function(companyStdPlanToDelete) {
-          StdService.deleteCompanyStdPlan(companyStdPlanToDelete.company_plan_id).then(function() {
+          StdService.deleteCompanyStdPlan(companyStdPlanToDelete.companyPlanId).then(function() {
             $state.reload();
           });
         };
@@ -128,7 +128,7 @@ var benefitsController = brokersControllers.controller(
         });
 
         $scope.deleteLtdPlan = function(companyLtdPlanToDelete) {
-          LtdService.deleteCompanyLtdPlan(companyLtdPlanToDelete.company_plan_id).then(function() {
+          LtdService.deleteCompanyLtdPlan(companyLtdPlanToDelete.companyPlanId).then(function() {
             $state.reload();
           });
         };
@@ -423,7 +423,7 @@ var brokerAddStdPlanController = brokersControllers.controller(
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
             UserService.getCurUserInfo().then(function(userInfo){
-                $scope.newPlan.plan_broker = userInfo.user.id;
+                $scope.newPlan.planBroker = userInfo.user.id;
 
                 StdService.addPlanForCompany($scope.newPlan, clientId).then(
                     function(response) {
@@ -463,7 +463,7 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
             UserService.getCurUserInfo().then(function(userInfo){
-                $scope.newPlan.plan_broker = userInfo.user.id;
+                $scope.newPlan.planBroker = userInfo.user.id;
 
                 LtdService.addPlanForCompany($scope.newPlan, clientId).then(
                     function(response) {

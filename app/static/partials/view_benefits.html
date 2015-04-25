@@ -122,13 +122,13 @@
             <tbody>
                 <tr ng-repeat="stdPlan in stdPlans">
                     <td>
-                        {{stdPlan.plan_name}}
+                        {{stdPlan.planName}}
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteStdPlan(stdPlan)" href="javascript:void(0);">X</a>
                     </td>
-                    <td>{{stdPlan.percentage_of_salary}}% of Base Salary</td>
-                    <td>${{stdPlan.max_benefit_weekly}}/Week</td>
+                    <td>{{stdPlan.percentageOfSalary}}% of Base Salary</td>
+                    <td>${{stdPlan.maxBenefitWeekly}}/Week</td>
                     <td>{{stdPlan.duration}} Weeks</td>
-                    <td>{{stdPlan.created_date_for_display}}</td>
+                    <td>{{stdPlan.createdDateForDisplay}}</td>
                 </tr>
             </tbody>
         </table>
@@ -148,13 +148,13 @@
             <tbody>
                 <tr ng-repeat="ltdPlan in ltdPlans">
                     <td>
-                        {{ltdPlan.plan_name}}
+                        {{ltdPlan.planName}}
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLtdPlan(ltdPlan)" href="javascript:void(0);">X</a>
                     </td>
-                    <td>{{ltdPlan.percentage_of_salary}}% of Base Salary</td>
-                    <td>${{ltdPlan.max_benefit_monthly}}/Month</td>
+                    <td>{{ltdPlan.percentageOfSalary}}% of Base Salary</td>
+                    <td>${{ltdPlan.maxBenefitMonthly}}/Month</td>
                     <td>{{ltdPlan.duration}} Weeks</td>
-                    <td>{{ltdPlan.created_date_for_display}}</td>
+                    <td>{{ltdPlan.createdDateForDisplay}}</td>
                 </tr>
             </tbody>
         </table>
