@@ -1,10 +1,10 @@
 """
-Configurations for Staging/Testing environment
+Configurations for Sandbox environment
 """
 
 from Smoothbenefits.base_settings import *
 
-SITE_URL = "http://staging.benefitmy.com/"
+SITE_URL = "http://sandbox.benefitmy.com/"
 
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications
@@ -25,10 +25,10 @@ SESSION_COOKIE_AGE = 20 * 60
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbhdqcnhj8qihh',
-        'USER': 'espzlrtdipscti',
-        'PASSWORD': '6tw_VJkq-1pvnKAS8s0pTm540e',
-        'HOST': 'ec2-54-225-101-60.compute-1.amazonaws.com',
+        'NAME': 'd68sd5k6b9j9hk',
+        'USER': 'byqrksqolpdafr',
+        'PASSWORD': 'yi9gkFL5Dco8T5dXqeO9di5UHd',
+        'HOST': 'ec2-54-163-226-9.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
