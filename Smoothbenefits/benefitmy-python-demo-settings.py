@@ -1,7 +1,8 @@
 """
 Configuations for Demo environment
 """
-from Smoothbenefits import *
+from Smoothbenefits.base_settings import *
+
 SITE_URL = "https://demo.benefitmy.com/"
 
 # Default global figure of number of minutes notification facilities should

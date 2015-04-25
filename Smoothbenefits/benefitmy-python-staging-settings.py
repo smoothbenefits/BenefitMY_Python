@@ -2,7 +2,7 @@
 Configurations for Staging/Testing environment
 """
 
-from Smoothbenefits import *
+from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://staging.benefitmy.com/"
 

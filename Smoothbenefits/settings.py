@@ -1,7 +1,7 @@
 """
-Environment based settings, extending command settings defined in __init__.py
+Configurations for local environment
 """
-from Smoothbenefits import *
+from Smoothbenefits.base_settings import *
 
 SITE_URL = "https://localhost:8000/"
 
