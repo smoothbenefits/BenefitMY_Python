@@ -1,7 +1,7 @@
 """
 Configurations for Beta environment
 """
-from Smoothbenefits import *
+from Smoothbenefits.base_settings import *
 
 SITE_URL = "https://beta.benefitmy.com/"
 

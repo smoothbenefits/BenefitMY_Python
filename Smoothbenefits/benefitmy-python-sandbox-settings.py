@@ -2,7 +2,7 @@
 Configurations for Sandbox environment
 """
 
-from Smoothbenefits import *
+from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://sandbox.benefitmy.com/"
 
