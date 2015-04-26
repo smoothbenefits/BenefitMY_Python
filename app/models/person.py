@@ -2,7 +2,7 @@ import reversion
 
 from django.db import models
 from company import Company
-from django.contrib.auth.models import User
+from django.conf import settings
 from encrypted_fields import EncryptedTextField
 
 GENDER_TYPES = ([(item, item) for item in ['F', 'M']])
@@ -22,7 +22,7 @@ class Person(models.Model):
                               null=True,
                               blank=True)
 
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name="family",
                              null=True,
                              blank=True)

@@ -1,10 +1,11 @@
 import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from view_test_base import ViewTestBase
 
-
+User = get_user_model()
 
 class UserViewTestCase(TestCase, ViewTestBase):
 

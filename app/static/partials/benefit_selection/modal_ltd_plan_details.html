@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <h4 class="modal-title">Long Term Disability Benefits Details</h4>
+</div>
+<div class="modal-body">
+    <h2>LTD benefits details from your company:</h2>
+    <div class="table-responsive table-holder" ng-if="companyLtdPlan">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{companyLtdPlan.planName}}</td>
+                    <td>{{companyLtdPlan.percentageOfSalary}}% of Base Salary</td>
+                    <td>${{companyLtdPlan.maxBenefitMonthly}}/Month</td>
+                    <td>{{companyLtdPlan.duration}} Weeks</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
+</div>
