@@ -1,7 +1,7 @@
 import reversion
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 @reversion.register
 class W4(models.Model):
@@ -13,5 +13,5 @@ class W4(models.Model):
     user_defined_points = models.IntegerField(blank=True, null=True)
     extra_amount = models.DecimalField(
         max_digits=20, decimal_places=2, default=0, blank=True, null=True)
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name="w4")

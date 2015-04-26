@@ -1,11 +1,11 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
 from django.utils.http import urlsafe_base64_encode
-from app.forms import UserForm
-from emailusernames.utils import create_user, get_user, user_exists
-from app.models.user import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import SetPasswordForm
 from django.conf import settings
 
+User = get_user_model()
 
 def register(request):
     # Like before, get the request's context.
@@ -21,7 +21,7 @@ def register(request):
         user_form = UserForm(data=request.POST)
         # If the two forms are valid...
         if user_form.is_valid():
-            create_user(request.POST['email'], request.POST['password'])
+            User.objects.create_user(request.POST['email'], request.POST['password'])
 
             registered = True
             # Update our variable to tell the template registration was successful.
@@ -61,9 +61,10 @@ def register_employee(request, user_id):
         return redirect('user_login_with_message', info_message=message)
 
     if request.method == 'POST':
-        user_form = UserForm(data=request.POST)
-        confirm_password = request.POST['confirm_password']
-        user_password = request.POST['password']
+        user_form = SetPasswordForm(employee_user, data=request.POST)
+        confirm_password = request.POST['new_password2']
+        user_password = request.POST['new_password1']
+
         if not user_form.is_valid():
             error_message = "The Email and Password you have entered is invalid. Please try again."
 
@@ -78,7 +79,7 @@ def register_employee(request, user_id):
             employee_user.save()
             return redirect('/login')
     else:
-        user_form = UserForm()
+        user_form = SetPasswordForm(employee_user)
 
     # Render the template depending on the context.
     return render_to_response('register.html',{'user_form': user_form, 'registered': registered, 'user_email':user_email, 'errorMessage':error_message},context)

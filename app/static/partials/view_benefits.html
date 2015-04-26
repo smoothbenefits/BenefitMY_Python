@@ -96,13 +96,65 @@
                 <tr ng-repeat="lifeInsurancePlan in lifeInsurancePlans">
                     <td>
                         {{lifeInsurancePlan.life_insurance_plan.name}}
-                        <span ng-show="lifeInsurancePlan.life_insurance_plan.insurance_type === 'Basic' && lifeInsurancePlan.insurance_amount">({{lifeInsurancePlan.life_insurance_plan.insurance_type}} with amount of ${{lifeInsurancePlan.insurance_amount}})</span>
-                        <span ng-show="lifeInsurancePlan.life_insurance_plan.insurance_type === 'Basic' && lifeInsurancePlan.salary_multiplier">({{lifeInsurancePlan.life_insurance_plan.insurance_type}} with {{lifeInsurancePlan.salary_multiplier}} times of base salary)</span>
+                        <span ng-show="lifeInsurancePlan.insurance_amount">({{lifeInsurancePlan.life_insurance_plan.display_insurance_type}} with amount of ${{lifeInsurancePlan.insurance_amount}})</span>
+                        <span ng-show="lifeInsurancePlan.salary_multiplier">({{lifeInsurancePlan.life_insurance_plan.display_insurance_type}} with {{lifeInsurancePlan.salary_multiplier}} times of base salary)</span>
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLifeInsurancePlan(lifeInsurancePlan)" href="javascript:void(0);">X</a>
                     </td>
                     <td >
                         {{lifeInsurancePlan.created_date_for_display}}
                     </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-responsive table-holder" ng-if="stdPlans && stdPlans.length > 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>STD Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                    <th><span>Enrollment Date</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="stdPlan in stdPlans">
+                    <td>
+                        {{stdPlan.planName}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteStdPlan(stdPlan)" href="javascript:void(0);">X</a>
+                    </td>
+                    <td>{{stdPlan.percentageOfSalary}}% of Base Salary</td>
+                    <td>${{stdPlan.maxBenefitWeekly}}/Week</td>
+                    <td>{{stdPlan.duration}} Weeks</td>
+                    <td>{{stdPlan.createdDateForDisplay}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-responsive table-holder" ng-if="ltdPlans && ltdPlans.length > 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>LTD Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                    <th><span>Enrollment Date</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="ltdPlan in ltdPlans">
+                    <td>
+                        {{ltdPlan.planName}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLtdPlan(ltdPlan)" href="javascript:void(0);">X</a>
+                    </td>
+                    <td>{{ltdPlan.percentageOfSalary}}% of Base Salary</td>
+                    <td>${{ltdPlan.maxBenefitMonthly}}/Month</td>
+                    <td>{{ltdPlan.duration}} Weeks</td>
+                    <td>{{ltdPlan.createdDateForDisplay}}</td>
                 </tr>
             </tbody>
         </table>

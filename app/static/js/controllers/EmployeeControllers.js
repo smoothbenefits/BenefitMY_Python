@@ -16,6 +16,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'employeePayrollService', 
    'employeeProfileService',
    'DirectDepositService',
+   'StdService',
+   'LtdService',
   function ($scope,
             $location,
             $state,
@@ -30,7 +32,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
             LifeInsuranceService,
             employeePayrollService,
             employeeProfileService,
-            DirectDepositService){
+            DirectDepositService,
+            StdService,
+            LtdService){
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
@@ -142,6 +146,17 @@ var employeeHome = employeeControllers.controller('employeeHome',
       DirectDepositService.getDirectDepositByUserId(userId).then(function(response){
         $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDepositInBulk(response);
       });
+
+      // STD
+      StdService.getUserEnrolledStdPlanByUser(userId).then(function(response){
+        $scope.userStdPlan = response;
+      });
+
+      // LTD
+      LtdService.getUserEnrolledLtdPlanByUser(userId).then(function(response){
+        $scope.userLtdPlan = response;
+      });
+
     });
 
     $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
@@ -988,12 +1003,16 @@ var employeeBenefitsSignup = employeeControllers.controller(
    '$stateParams',
    '$controller',
    'LifeInsuranceService',
+   'StdService',
+   'LtdService',
     function employeeBenefitsSignup(
       $scope,
       $state,
       $stateParams,
       $controller,
-      LifeInsuranceService){
+      LifeInsuranceService,
+      StdService,
+      LtdService){
 
       // Inherite scope from base 
       $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1002,6 +1021,8 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
       var basicLifePlans;
       var optionalLifePlans;
+      var stdPlans;
+      var ltdPlans;
 
       var promise = $scope.companyIdPromise.then(function(companyId){
         return LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic');
@@ -1012,7 +1033,15 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(optionalPlans) {
         optionalLifePlans = optionalPlans;
+        return StdService.getStdPlansForCompany(companyId);
       })
+      .then(function(stdPlansResponse) {
+        stdPlans = stdPlansResponse;
+        return LtdService.getLtdPlansForCompany(companyId);
+      })
+      .then(function(ltdPlansResponse) {
+        ltdPlans = ltdPlansResponse;
+      });
 
       promise.then(function(result){
         
@@ -1042,6 +1071,20 @@ var employeeBenefitsSignup = employeeControllers.controller(
               "heading": "FSA",
               "state":"employee_benefit_signup.fsa"
           });
+
+        if (stdPlans.length > 0) {
+            $scope.tabs.push({
+                "heading": "STD",
+                "state": "employee_benefit_signup.std"
+            });
+        }
+
+        if (ltdPlans.length > 0) {
+            $scope.tabs.push({
+                "heading": "LTD",
+                "state": "employee_benefit_signup.ltd"
+            });
+        }
 
         // Always default to set the first tab be active.
         if ($scope.tabs.length > 0) {
@@ -1467,9 +1510,14 @@ var fsaBenefitsSignup = employeeControllers.controller(
           { text: 'Unpaid leave of absence by employee or spouse', value: 10 },
           { text: 'Return from unpaid leave of absence by employee or spouse', value: 11 }
         ];
-        $scope.selectedFsaUpdateReason = $scope.fsaUpdateReasons[0];
+
         FsaService.getFsaElectionForUser(employeeId, function(response) {
           $scope.fsaElection = response;
+          if (response.update_reason && response.update_reason.length > 0){
+            $scope.selectedFsaUpdateReason = _.findWhere($scope.fsaUpdateReasons, {text: response.update_reason});
+          } else{
+            $scope.selectedFsaUpdateReason = $scope.fsaUpdateReasons[0];
+          }
         });
 
         // Whether the user has selected a reason for updating 
@@ -1739,6 +1787,140 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.benefit_type = 'Supplemental Life Insurance';
+
+    }]);
+
+var stdBenefitsSignup = employeeControllers.controller(
+  'stdBenefitsSignup',
+  ['$scope',
+   '$controller',
+   '$modal',
+   'StdService',
+    function stdBenefitsSignup(
+      $scope,
+      $controller,
+      $modal,
+      StdService){
+        
+        // Inherite scope from base 
+        $controller('benefitsSignupControllerBase', {$scope: $scope});
+
+        var employeeId = $scope.employeeId;
+
+        $scope.enrollBenefits = true;
+
+        $scope.companyIdPromise.then(function(companyId){
+
+            StdService.getStdPlansForCompany(companyId).then(function(stdPlans) {
+
+                // For now, similar to basic life, simplify the problem space by
+                // taking the first available plan for the company.
+                if (stdPlans.length > 0) {
+                    $scope.companyStdPlan = stdPlans[0];
+                }
+            });
+
+        })
+
+        $scope.save = function() {
+            // Save std
+            var savePromise = $scope.enrollBenefits ? 
+                StdService.enrollStdPlanForUser(employeeId, $scope.companyStdPlan) :
+                StdService.deleteStdPlansForUser(employeeId);
+
+            savePromise.then(
+                function() {
+                    $scope.showSaveSuccessModal();
+                    $scope.myForm.$setPristine();
+                }
+              , function(error) {
+                    alert('Failed to save your benefits election. Please try again later.');
+                }
+            );
+        };
+
+        $scope.openPlanDetailsModal = function() {
+            $scope.planDetailsModalInstance = $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_std_plan_details.html',
+              controller: 'stdBenefitsSignup',
+              size: 'md',
+              scope: $scope
+            });
+        };
+
+        $scope.closePlanDetailsModal = function() {
+          if ($scope.planDetailsModalInstance) {
+            $scope.planDetailsModalInstance.dismiss();
+            $scope.planDetailsModalInstance = null;
+          }
+        };
+
+    }]);
+
+var ltdBenefitsSignup = employeeControllers.controller(
+  'ltdBenefitsSignup',
+  ['$scope',
+   '$controller',
+   '$modal',
+   'LtdService',
+    function ltdBenefitsSignup(
+      $scope,
+      $controller,
+      $modal,
+      LtdService){
+        
+        // Inherite scope from base 
+        $controller('benefitsSignupControllerBase', {$scope: $scope});
+
+        var employeeId = $scope.employeeId;
+
+        $scope.enrollBenefits = true;
+
+        $scope.companyIdPromise.then(function(companyId){
+
+            LtdService.getLtdPlansForCompany(companyId).then(function(ltdPlans) {
+
+                // For now, similar to basic life, simplify the problem space by
+                // taking the first available plan for the company.
+                if (ltdPlans.length > 0) {
+                    $scope.companyLtdPlan = ltdPlans[0];
+                }
+            });
+
+        })
+
+        $scope.save = function() {
+            // Save ltd
+            var savePromise = $scope.enrollBenefits ? 
+                LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan) :
+                LtdService.deleteLtdPlansForUser(employeeId);
+
+            savePromise.then(
+                function() {
+                    $scope.showSaveSuccessModal();
+                    $scope.myForm.$setPristine();
+                }
+              , function(error) {
+                    alert('Failed to save your benefits election. Please try again later.');
+                }
+            );
+        };
+
+        $scope.openPlanDetailsModal = function() {
+            $scope.planDetailsModalInstance = $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_ltd_plan_details.html',
+              controller: 'ltdBenefitsSignup',
+              size: 'md',
+              scope: $scope
+            });
+        };
+
+        $scope.closePlanDetailsModal = function() {
+          if ($scope.planDetailsModalInstance) {
+            $scope.planDetailsModalInstance.dismiss();
+            $scope.planDetailsModalInstance = null;
+          }
+        };
 
     }]);
 

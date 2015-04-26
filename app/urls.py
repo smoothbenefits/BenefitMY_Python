@@ -63,17 +63,43 @@ from app.views.insurance.user_company_life_insurance_plan_view import (
     CompanyUsersLifeInsuranceView)
 from app.views.insurance.life_insurance_plan_view import LifeInsurancePlanView
 
+
+from app.views.insurance.company_std_insurance_plan_view import \
+    CompanyStdInsurancePlanView
+
+from app.views.insurance.user_company_std_insurance_plan_view import (
+    UserCompanyStdInsuranceView,
+    CompanyUsersStdInsuranceView)
+from app.views.insurance.std_insurance_plan_view import StdInsurancePlanView
+
+
+
+from app.views.insurance.company_ltd_insurance_plan_view import \
+    CompanyLtdInsurancePlanView
+
+from app.views.insurance.user_company_ltd_insurance_plan_view import (
+    UserCompanyLtdInsuranceView,
+    CompanyUsersLtdInsuranceView)
+from app.views.insurance.ltd_insurance_plan_view import LtdInsurancePlanView
+
+
+
+
+
+
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
 from app.views.direct_deposit_view import DirectDepositView
+from app.views.company_features_view import CompanyFeaturesView
 from app.views.fsa_view import FSAView
 
 from app.views.company_user_summary_view import (
     CompanyUsersSummaryExcelExportView,
     CompanyUsersDirectDepositExcelExportView,
-    CompanyUsersLifeInsuranceBeneficiaryExcelExportView) 
-from app.views.upload import (UserUploadView, 
+    CompanyUsersLifeInsuranceBeneficiaryExcelExportView)
+
+from app.views.upload import (UserUploadView,
                               UploadView,
                               get_company_uploads)
 
@@ -138,6 +164,8 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/fsa/(?P<pk>\w+)/?$' % PREFIX, FSAView.as_view(), name='fsa_api'),
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
+    url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
+
     url(r'^%s/benefits/?$' % PREFIX, benefits),
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
@@ -157,22 +185,53 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
 
+
+
+    url(r'^%s/brokers/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
+        StdInsurancePlanView.as_view(), name='broker_std_insurance_api'),
+
+
+    url(r'^%s/users/(?P<pk>\w+)/std_insurance/?$' % PREFIX,
+        UserCompanyStdInsuranceView.as_view(), name='user_std_insurance_api'),
+
+    url(r'^%s/company_users/(?P<pk>\w+)/std_insurance/?$' % PREFIX,
+        CompanyUsersStdInsuranceView.as_view(), name='company_users_std_insurance_api'),
+
+    url(r'^%s/company/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
+        CompanyStdInsurancePlanView.as_view(), name='company_std_insurance_plan_api'),
+
+
+
+    url(r'^%s/brokers/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
+        LtdInsurancePlanView.as_view(), name='broker_ltd_insurance_api'),
+
+
+    url(r'^%s/users/(?P<pk>\w+)/ltd_insurance/?$' % PREFIX,
+        UserCompanyLtdInsuranceView.as_view(), name='user_ltd_insurance_api'),
+
+    url(r'^%s/company_users/(?P<pk>\w+)/ltd_insurance/?$' % PREFIX,
+        CompanyUsersLtdInsuranceView.as_view(), name='company_users_ltd_insurance_api'),
+
+    url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
+        CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
+
+
     # util api
 
     url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
 
     # upload API
-    url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX, 
-        UserUploadView.as_view(), 
-        name='uploads_by_user'), 
+    url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX,
+        UserUploadView.as_view(),
+        name='uploads_by_user'),
     # GET and POST
-    
+
     # GET PUT and DELETE
-    url(r'^%s/upload/(?P<pk>\w+)/?$' % PREFIX, 
-        UploadView.as_view(), 
+    url(r'^%s/upload/(?P<pk>\w+)/?$' % PREFIX,
+        UploadView.as_view(),
         name='upload_api'),
 
-    url(r'^%s/companies/(?P<comp_id>\w+)/uploads/(?P<pk>\w+)/?$' % PREFIX, 
+    url(r'^%s/companies/(?P<comp_id>\w+)/uploads/(?P<pk>\w+)/?$' % PREFIX,
         get_company_uploads,
         name='get_comp_uploads'),
 )

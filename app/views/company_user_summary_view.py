@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.http import Http404
 from django.db import transaction
 from django.db.models import Count, Max
+from django.contrib.auth import get_user_model
 
 import xlwt
 
@@ -12,7 +13,6 @@ from app.models.company_user import CompanyUser
 from app.models.person import Person
 from app.models.phone import Phone
 from app.models.address import Address
-from app.models.user import User
 from app.models.user_company_benefit_plan_option import \
     UserCompanyBenefitPlanOption
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
@@ -20,6 +20,14 @@ from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from app.models.insurance.life_insurance_plan import LifeInsurancePlan
+from app.models.insurance.std_insurance_plan import StdInsurancePlan
+from app.models.insurance.company_std_insurance_plan import CompanyStdInsurancePlan
+from app.models.insurance.user_company_std_insurance_plan import \
+    UserCompanyStdInsurancePlan
+from app.models.insurance.ltd_insurance_plan import LtdInsurancePlan
+from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
+from app.models.insurance.user_company_ltd_insurance_plan import \
+    UserCompanyLtdInsurancePlan
 from app.models.fsa import FSA
 from app.models.direct_deposit import DirectDeposit
 from app.models.user_bank_account import UserBankAccount
@@ -28,6 +36,7 @@ from app.views.permission import (
     company_employer,
     company_employer_or_broker)
 
+User = get_user_model()
 
 class ExportViewBase(APIView):
     def _get_max_dependents_count(self, company_id):
@@ -239,8 +248,21 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Vision Option Elected')
         col_num = self._write_field(excelSheet, 0, col_num, 'Vision Cost / Pay')
 
-        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Plan Name')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'STD Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'STD Amount')
+
+        col_num = self._write_field(excelSheet, 0, col_num, 'LTD Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'LTD Amount')
+
+        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life (AD&D) Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life (AD&D) Amount')
+
+        col_num = self._write_field(excelSheet, 0, col_num, 'Employee Optional Life Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Employee Optionak Life Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Optional Life Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Optionak Life Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Child Optional Life Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Child Optionak Life Amount')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'FSA Amount')
         col_num = self._write_field(excelSheet, 0, col_num, 'Dependent FSA Amount')
@@ -269,6 +291,8 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         start_column_num = 0
         start_column_num = self._write_employee_personal_info(employee_user_id, True, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_all_health_benefits_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_std_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_ltd_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_basic_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_supplemental_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_fsa_info(employee_user_id, excelSheet, row_num, start_column_num)
@@ -437,6 +461,32 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         # Skip the columns if no matching benefit
         return col_num + 3
 
+    def _write_employee_std_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
+        employee_plans = UserCompanyStdInsurancePlan.objects.filter(user=employee_user_id)
+        if (len(employee_plans) > 0):
+            employee_plan = employee_plans[0]
+            company_plan = employee_plan.company_std_insurance
+            plan = company_plan.std_insurance_plan
+            col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
+            col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
+
+            return col_num
+
+        return col_num + 2
+
+    def _write_employee_ltd_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
+        employee_plans = UserCompanyLtdInsurancePlan.objects.filter(user=employee_user_id)
+        if (len(employee_plans) > 0):
+            employee_plan = employee_plans[0]
+            company_plan = employee_plan.company_ltd_insurance
+            plan = company_plan.ltd_insurance_plan
+            col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
+            col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
+
+            return col_num
+
+        return col_num + 2
+
     def _write_employee_basic_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
         employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
         if (len(employee_plans) > 0):
@@ -451,9 +501,25 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         return col_num + 2
 
     def _write_employee_supplemental_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
-        # TODO:
-        # Stub as placeholder
+        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(company_life_insurance__life_insurance_plan__insurance_type='Extended')
+        col_num = self._write_family_member_supplemental_life_insurance_info(employee_user_id, 'self', employee_plans, excelSheet, row_num, col_num)
+        col_num = self._write_family_member_supplemental_life_insurance_info(employee_user_id, 'spouse', employee_plans, excelSheet, row_num, col_num)
+        col_num = self._write_family_member_supplemental_life_insurance_info(employee_user_id, 'dependent', employee_plans, excelSheet, row_num, col_num)
+
         return col_num
+
+    def _write_family_member_supplemental_life_insurance_info(self, employee_user_id, member_relationship, family_member_plans, excelSheet, row_num, col_num):
+        members = Person.objects.filter(user=employee_user_id).filter(relationship=member_relationship)
+        if (len(members) > 0):
+            member = members[0]
+            plans = family_member_plans.filter(person=member.id)
+            if (len(plans) > 0):
+                plan = plans[0]
+                col_num = self._write_field(excelSheet, row_num, col_num, plan.company_life_insurance.life_insurance_plan.name)
+                col_num = self._write_field(excelSheet, row_num, col_num, plan.insurance_amount)
+                return col_num
+
+        return col_num + 2 
 
     def _write_employee_fsa_info(self, employee_user_id, excelSheet, row_num, col_num):
         fsas = FSA.objects.filter(user=employee_user_id)
@@ -503,44 +569,66 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersSummaryExc
         col_num = self._write_field(excelSheet, 0, col_num, 'Zip')
 
         for i in range(0, 4):
-            col_num = self._write_field(excelSheet, 0, col_num, 'Beneficiary First Name ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Beneficiary Middle Name ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Beneficiary Last Name ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Beneficiary Relationship ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Beneficiary Email ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Beneficiary Phone ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Beneficiary Percentage ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Beneficiary First Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Beneficiary Middle Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Beneficiary Last Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Beneficiary Relationship ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Beneficiary Email ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Beneficiary Phone ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Beneficiary Percentage ' + `i+1`)
 
         for i in range(0, 4):
-            col_num = self._write_field(excelSheet, 0, col_num, 'Contingent Beneficiary First Name ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Contingent Beneficiary Middle Name ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Contingent Beneficiary Last Name ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Contingent Beneficiary Relationship ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Contingent Beneficiary Email ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Contingent Beneficiary Phone ' + `i+1`)
-            col_num = self._write_field(excelSheet, 0, col_num, 'Contingent Beneficiary Percentage ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Contingent Beneficiary First Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Contingent Beneficiary Middle Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Contingent Beneficiary Last Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Contingent Beneficiary Relationship ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Contingent Beneficiary Email ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Contingent Beneficiary Phone ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Contingent Beneficiary Percentage ' + `i+1`)
+
+        for i in range(0, 4):
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Beneficiary First Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Beneficiary Middle Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Beneficiary Last Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Beneficiary Relationship ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Beneficiary Email ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Beneficiary Phone ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Beneficiary Percentage ' + `i+1`)
+
+        for i in range(0, 4):
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Contingent Beneficiary First Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Contingent Beneficiary Middle Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Contingent Beneficiary Last Name ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Contingent Beneficiary Relationship ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Contingent Beneficiary Email ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Contingent Beneficiary Phone ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Supplemental Life Contingent Beneficiary Percentage ' + `i+1`)
 
         return
 
     def _write_employee(self, employee_user_id, excelSheet, row_num):
         start_column_num = 0
         start_column_num = self._write_employee_personal_info(employee_user_id, False, excelSheet, row_num, start_column_num)
-        start_column_num = self._write_employee_life_insurance_beneficiary_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_life_insurance_beneficiary_info(employee_user_id, 'Basic', excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_life_insurance_beneficiary_info(employee_user_id, 'Extended', excelSheet, row_num, start_column_num)
         return
 
-    def _write_employee_life_insurance_beneficiary_info(self, employee_user_id, excelSheet, row_num, col_num):
-        col_num = self._write_employee_life_insurance_beneficiary_info_by_tier(employee_user_id, 1, excelSheet, row_num, col_num)
-        col_num = self._write_employee_life_insurance_beneficiary_info_by_tier(employee_user_id, 2, excelSheet, row_num, col_num)
+    def _write_employee_life_insurance_beneficiary_info(self, employee_user_id, life_insurance_plan_type, excelSheet, row_num, col_num):
+        col_num = self._write_employee_life_insurance_beneficiary_info_by_tier(employee_user_id, life_insurance_plan_type, 1, excelSheet, row_num, col_num)
+        col_num = self._write_employee_life_insurance_beneficiary_info_by_tier(employee_user_id, life_insurance_plan_type, 2, excelSheet, row_num, col_num)
         return col_num
 
-    def _write_employee_life_insurance_beneficiary_info_by_tier(self, employee_user_id, beneficiary_tier, excelSheet, row_num, col_num):
+    def _write_employee_life_insurance_beneficiary_info_by_tier(self, employee_user_id, life_insurance_plan_type, beneficiary_tier, excelSheet, row_num, col_num):
         beneficiary_set = [None] * 4
-        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
-        if (len(employee_plans) > 0):
-            employee_plan = employee_plans[0]
-            beneficiaries = employee_plan.life_insurance_beneficiary.filter(tier=beneficiary_tier)
-            for i in range(0, min(len(beneficiaries), 4)):
-                beneficiary_set[i] = beneficiaries[i]
+        employee_persons = Person.objects.filter(user=employee_user_id, relationship='self')
+        if (len(employee_persons) > 0):
+            employee_person = employee_persons[0]
+            employee_plans = UserCompanyLifeInsurancePlan.objects.filter(person=employee_person.id).filter(company_life_insurance__life_insurance_plan__insurance_type=life_insurance_plan_type)
+            if (len(employee_plans) > 0):
+                employee_plan = employee_plans[0]
+                beneficiaries = employee_plan.life_insurance_beneficiary.filter(tier=beneficiary_tier)
+                for i in range(0, min(len(beneficiaries), 4)):
+                    beneficiary_set[i] = beneficiaries[i]
 
         for i in range(0, len(beneficiary_set)):
             col_num = self._write_beneficiary_info(beneficiary_set[i], excelSheet, row_num, col_num)

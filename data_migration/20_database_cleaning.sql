@@ -2,7 +2,7 @@ BEGIN;
 
 -- create temporary table to store user ids and person ids
 SELECT u.id INTO TEMPORARY TABLE user_ids
-FROM auth_user u
+FROM app_authuser u
 WHERE replace(lower(u.email), '.', '') = 'frankqiu@gmailcom';
 
 SELECT p.id INTO TEMPORARY TABLE person_ids
@@ -53,7 +53,7 @@ WHERE ucw.user_id IN (SELECT id FROM user_ids);
 DELETE FROM app_w4 w
 WHERE w.user_id IN (SELECT id FROM user_ids);
 
-DELETE FROM auth_user u
+DELETE FROM app_authuser u
 WHERE u.id IN (SELECT id FROM user_ids);
 
 -- drop both temporary tables when all deletion was done
