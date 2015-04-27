@@ -41,7 +41,7 @@ class UploadAudienceView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         user_id = self.hash_service.decode_key(request.GET.get('user_id', None))
-        serialized = UploadApplicationFeaturePostSerializer(data={'upload': upload_id, 
+        serialized = UploadAudiencePostSerializer(data={'upload': upload_id, 
                                                                   'company': pk, 
                                                                   'user_for':user_id})
         if serialized.is_valid():
