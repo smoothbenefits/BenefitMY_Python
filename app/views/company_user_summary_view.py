@@ -196,7 +196,7 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
         return current_col_num
 
     ''' Direct Deposit summary is expected to be visible to employer only
-        Broker should not need such inforation
+        Broker should not need such information
     '''
     @user_passes_test(company_employer)
     def get(self, request, pk, format=None):
