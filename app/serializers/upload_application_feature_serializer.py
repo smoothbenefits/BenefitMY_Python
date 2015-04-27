@@ -6,13 +6,14 @@ from app.serializers.upload_serializer import UploadPostSerializer, UploadSerial
 from app.serializers.sys_application_feature_serializer import SysApplicationFeatureSerializer
 
 
-class UploadAppliactionFeatureSerializer(HashPkSerializerBase):
+class UploadApplicationFeatureSerializer(HashPkSerializerBase):
     upload = UploadSerializer()
     application_feature = SysApplicationFeatureSerializer()
+    feature_id = HashField()
     class Meta:
         model = UploadApplicationFeature
 
 
-class UploadAppliactionFeaturePostSerializer(HashPkSerializerBase):
+class UploadApplicationFeaturePostSerializer(HashPkSerializerBase):
     class Meta:
         model = UploadApplicationFeature

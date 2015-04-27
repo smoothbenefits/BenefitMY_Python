@@ -35,7 +35,8 @@ class HashPkValidationMiddleware(object):
 		self._decode_key(view_kwargs, 'py')
 		self._decode_key(view_kwargs, 'user_id')
 		self._decode_key(view_kwargs, 'comp_id')
-
+		self._decode_key(view_kwargs, 'feature')
+		
 		return None
 
 	def _decode_key(self, view_kwargs, key_name):

@@ -6,7 +6,10 @@ from app.models.company import Company
 
 upload_types = ["I9",
                 "Deposit",
-                "Manager"]
+                "Manager",
+                "MedicalBenefit",
+                "DentalBenefit",
+                "VisionBenefit"]
 
 TYPES = ([(item, item) for item in upload_types])
 

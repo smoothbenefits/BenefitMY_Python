@@ -7,7 +7,7 @@ from app.serializers.company_serializer import ShallowCompanySerializer
 
 
 class UploadAudienceSerializer(HashPkSerializerBase):
-    user_for = HashField(source="user.id")
+    user_for = HashField(source="user_for.id")
     company = ShallowCompanySerializer()
     upload = UploadSerializer()
     class Meta:
