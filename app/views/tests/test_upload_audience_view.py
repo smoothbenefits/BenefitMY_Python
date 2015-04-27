@@ -14,7 +14,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
 
     def test_get_upload_audience_company_success(self):
         response = self.client.get(reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1)}))
+                                           kwargs={'comp_id': self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
@@ -40,7 +40,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
     def test_get_upload_audience_user_success(self):
         response = self.client.get("{0}?user_id={1}".format(
                                        reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1)}), 
+                                           kwargs={'comp_id': self.normalize_key(1)}), 
                                        self.normalize_key(3)))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
@@ -67,7 +67,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
 
     def test_get_upload_audience_non_exist_company(self):
         response = self.client.get(reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1435)}))
+                                           kwargs={'comp_id': self.normalize_key(1435)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         upload_features = json.loads(response.content)
@@ -76,7 +76,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
     def test_get_upload_audience_non_exist_user(self):
         response = self.client.get("{0}?user_id={1}".format(
                                        reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1)}), 
+                                           kwargs={'comp_id': self.normalize_key(1)}), 
                                        self.normalize_key(4656)))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
@@ -88,7 +88,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
             'upload': self.normalize_key(3),
         }
         response = self.client.post(reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1)}),
+                                           kwargs={'comp_id': self.normalize_key(1)}),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
         self.assertIsNotNone(response)
@@ -106,7 +106,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
         }
         response = self.client.post("{0}?user_id={1}".format(
                                        reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1)}), 
+                                           kwargs={'comp_id': self.normalize_key(1)}), 
                                        self.normalize_key(4)),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
@@ -124,7 +124,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
             'upload': self.normalize_key(3),
         }
         response = self.client.post(reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(656)}),
+                                           kwargs={'comp_id': self.normalize_key(656)}),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
         self.assertIsNotNone(response)
@@ -136,7 +136,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
         }
         response = self.client.post("{0}?user_id={1}".format(
                                        reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1)}), 
+                                           kwargs={'comp_id': self.normalize_key(1)}), 
                                        self.normalize_key(4435)),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
@@ -149,7 +149,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
         }
         response = self.client.post("{0}?user_id={1}".format(
                                        reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(4354)}), 
+                                           kwargs={'comp_id': self.normalize_key(4354)}), 
                                        self.normalize_key(4435)),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
@@ -162,7 +162,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
         }
         response = self.client.post("{0}?user_id={1}".format(
                                        reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1)}), 
+                                           kwargs={'comp_id': self.normalize_key(1)}), 
                                        self.normalize_key(3)),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
@@ -171,28 +171,28 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
 
     def test_delete_upload_audience_company_success(self):
         response = self.client.delete(reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1)}))
+                                           kwargs={'comp_id': self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 204)
 
     def test_delete_upload_audience_user_success(self):
         response = self.client.delete("{0}?user_id={1}".format(
                                        reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1)}), 
+                                           kwargs={'comp_id': self.normalize_key(1)}), 
                                        self.normalize_key(3)))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 204)
 
     def test_delete_upload_audience_non_exist_company(self):
         response = self.client.delete(reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(14354)}))
+                                           kwargs={'comp_id': self.normalize_key(14354)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 204)
 
     def test_delete_upload_audience_non_exist_user(self):
         response = self.client.delete("{0}?user_id={1}".format(
                                        reverse('upload_audience_api',
-                                           kwargs={'pk': self.normalize_key(1)}), 
+                                           kwargs={'comp_id': self.normalize_key(1)}), 
                                        self.normalize_key(33234)))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 204)

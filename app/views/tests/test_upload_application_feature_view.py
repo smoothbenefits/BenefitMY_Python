@@ -15,8 +15,8 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
 
     def test_get_upload_application_feature_success(self):
         response = self.client.get(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(1),
-                                                   'feature': self.normalize_key(3)}))
+                                           kwargs={'pk': self.normalize_key(3),
+                                                   'feature_id': self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
@@ -42,8 +42,8 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
 
     def test_get_upload_application_feature_non_exists(self):
         response = self.client.get(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(3),
-                                                   'feature': self.normalize_key(3)}))
+                                           kwargs={'pk': self.normalize_key(887),
+                                                   'feature_id': self.normalize_key(3)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         upload_features = json.loads(response.content)
@@ -51,8 +51,8 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
 
     def test_get_upload_application_feature_no_such_feature(self):
         response = self.client.get(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(1),
-                                                   'feature': self.normalize_key(120)}))
+                                           kwargs={'pk': self.normalize_key(3),
+                                                   'feature_id': self.normalize_key(120)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         upload_features = json.loads(response.content)
@@ -63,8 +63,8 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
             'upload': self.normalize_key(3),
         }
         response = self.client.post(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(2),
-                                                   'feature': self.normalize_key(3)}),
+                                           kwargs={'pk': self.normalize_key(3),
+                                                   'feature_id': self.normalize_key(2)}),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
         self.assertIsNotNone(response)
@@ -81,8 +81,8 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
             'upload': self.normalize_key(123),
         }
         response = self.client.post(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(2),
-                                                   'feature': self.normalize_key(3)}),
+                                           kwargs={'pk': self.normalize_key(3),
+                                                   'feature_id': self.normalize_key(2)}),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
         self.assertIsNotNone(response)
@@ -93,8 +93,8 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
             'upload': self.normalize_key(2),
         }
         response = self.client.post(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(2),
-                                                   'feature': self.normalize_key(356)}),
+                                           kwargs={'pk': self.normalize_key(356),
+                                                   'feature_id': self.normalize_key(2)}),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
         self.assertIsNotNone(response)
@@ -105,8 +105,8 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
             'upload': self.normalize_key(3),
         }
         response = self.client.post(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(4554),
-                                                   'feature': self.normalize_key(3)}),
+                                           kwargs={'pk': self.normalize_key(3),
+                                                   'feature_id': self.normalize_key(4554)}),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
         self.assertIsNotNone(response)
@@ -123,16 +123,16 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
             'upload': self.normalize_key(4),
         }
         response = self.client.post(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(4554),
-                                                   'feature': self.normalize_key(3)}),
+                                           kwargs={'pk': self.normalize_key(3),
+                                                   'feature_id': self.normalize_key(4554)}),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
 
         response = self.client.get(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(4554),
-                                                   'feature': self.normalize_key(3)}))
+                                           kwargs={'pk': self.normalize_key(3),
+                                                   'feature_id': self.normalize_key(4554)}))
         result = json.loads(response.content)
         self.assertEqual(type(result), list)
         self.assertEqual(len(result), 1)
@@ -153,14 +153,14 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
         self.assertEqual(feature_type['feature'], 'MedicalBenefitPlan')
 
         response = self.client.delete(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(4554),
-                                                   'feature': self.normalize_key(3)}))
+                                           kwargs={'pk': self.normalize_key(3),
+                                                   'feature_id': self.normalize_key(4554)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 204)
 
         response = self.client.get(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(4554),
-                                                   'feature': self.normalize_key(3)}))
+                                           kwargs={'pk': self.normalize_key(3),
+                                                   'feature_id': self.normalize_key(4554)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         upload_features = json.loads(response.content)
@@ -168,7 +168,7 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
 
     def test_delete_upload_application_feature_non_exist(self):
         response = self.client.delete(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(233),
-                                                   'feature': self.normalize_key(32)}))
+                                           kwargs={'pk': self.normalize_key(32),
+                                                   'feature_id': self.normalize_key(233)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 204)
