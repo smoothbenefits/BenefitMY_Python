@@ -3,13 +3,13 @@ import reversion
 from django.db import models
 from company_life_insurance_plan import CompanyLifeInsurancePlan
 
-from django.conf import settings
+from app.custom_authentication import AuthUser
 from ..person import Person
 
 @reversion.register
 class UserCompanyLifeInsurancePlan(models.Model):
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(AuthUser,
                              related_name="user_company_life_insurance_plan")
     company_life_insurance = models.ForeignKey(
         CompanyLifeInsurancePlan,

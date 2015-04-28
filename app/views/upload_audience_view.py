@@ -6,7 +6,7 @@ from app.serializers.upload_audience_serializer import UploadAudienceSerializer,
 from app.models.upload_audience import UploadAudience
 from app.service.hash_key_service import HashKeyService
 
-class UploadAudienceView(APIView):
+class UploadAudienceByCompanyView(APIView):
     def __init__(self):
         self.hash_service = HashKeyService()
 

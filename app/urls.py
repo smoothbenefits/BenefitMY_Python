@@ -100,7 +100,7 @@ from app.views.upload import (UserUploadView,
                               UploadView,
                               get_company_uploads)
 from app.views.upload_application_feature_view import UploadApplicationFeatureView
-from app.views.upload_audience_view import UploadAudienceView
+from app.views.upload_audience_view import UploadAudienceByCompanyView
 
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
 
@@ -237,7 +237,7 @@ urlpatterns = patterns('app.views',
         UploadApplicationFeatureView.as_view(),
         name='uploads_application_feature_api'),
     url(r'^%s/upload/audience/(?P<comp_id>\w+)/?$' % PREFIX,
-        UploadAudienceView.as_view(),
+        UploadAudienceByCompanyView.as_view(),
         name='upload_audience_api'),
 )
 

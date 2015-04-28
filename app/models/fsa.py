@@ -1,7 +1,7 @@
 import reversion
 
 from django.db import models
-from django.conf import settings
+from app.custom_authentication import AuthUser
 
 @reversion.register
 class FSA(models.Model):
@@ -10,7 +10,7 @@ class FSA(models.Model):
     dependent_amount_per_year = models.DecimalField(
         max_digits=8, decimal_places=2, null=True)
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(AuthUser,
                              related_name="fsa")
 
     update_reason = models.CharField(max_length=1024, blank=True, null=True)
