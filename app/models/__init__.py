@@ -1,6 +1,7 @@
 from address import Address
 from phone import Phone
 from person import Person
+from employee_profile import EmployeeProfile
 from company import Company
 from company_user import CompanyUser
 from benefit_type import BenefitType

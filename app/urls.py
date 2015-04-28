@@ -3,6 +3,9 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 
 from app.views.person_view import PersonView
+from app.views.employee_profile_view import (
+    EmployeeProfileView,
+    EmployeeProfileByPersonView)
 from app.views.user_view import (
     UserView,
     UsersView,
@@ -239,6 +242,13 @@ urlpatterns = patterns('app.views',
     url(r'^%s/upload/audience/(?P<comp_id>\w+)/?$' % PREFIX,
         UploadAudienceByCompanyView.as_view(),
         name='upload_audience_api'),
+
+    url(r'^%s/employee_profile/(?P<pk>\w+)/?$' % PREFIX,
+        EmployeeProfileView.as_view(),
+        name='employee_profile_api'),
+    url(r'^%s/person/(?P<person_id>\w+)/employee_profile/?$' % PREFIX,
+        EmployeeProfileByPersonView.as_view(),
+        name='employee_profile_by_person_api'),
 )
 
 
