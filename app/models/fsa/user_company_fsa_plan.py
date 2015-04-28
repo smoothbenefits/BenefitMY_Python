@@ -2,19 +2,15 @@ import reversion
 
 from django.db import models
 from app.custom_authentication import AuthUser
+from company_fsa_plan import CompanyFsaPlan
 
 @reversion.register
-class FSA(models.Model):
-    primary_amount_per_year = models.DecimalField(
-        max_digits=8, decimal_places=2, null=True)
-    dependent_amount_per_year = models.DecimalField(
-        max_digits=8, decimal_places=2, null=True)
+class UserCompanyFsaPlan(models.Model):
 
     user = models.ForeignKey(AuthUser,
-                             related_name="fsa")
-
-    update_reason = models.CharField(max_length=1024, blank=True, null=True)
-
+                             related_name="user_company_fsa_plan")
+    company_life_insurance = models.ForeignKey(CompanyFsaPlan,
+                                               related_name="user_company_fsa_plan")
     created_at = models.DateTimeField(auto_now_add=True,
                                       blank=True,
                                       null=True)

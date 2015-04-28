@@ -22,7 +22,6 @@ from benefit_policy_key import BenefitPolicyKey
 from benefit_policy_type import BenefitPolicyType
 from emergency_contact import EmergencyContact
 from direct_deposit import DirectDeposit
-from fsa import FSA
 from user_bank_account import UserBankAccount
 from insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from insurance.life_insurance_beneficiary import LifeInsuranceBeneficiary
@@ -36,6 +35,10 @@ from insurance.std_insurance_plan import StdInsurancePlan
 from insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
 from insurance.user_company_ltd_insurance_plan import UserCompanyLtdInsurancePlan
 from insurance.ltd_insurance_plan import LtdInsurancePlan
+
+from fsa.company_fsa_plan import CompanyFsaPlan
+from fsa.fsa import FSA
+from fsa.user_company_fsa_plan import UserCompanyFsaPlan
 
 
 from sys_application_feature import SysApplicationFeature
