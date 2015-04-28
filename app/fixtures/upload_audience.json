@@ -1,0 +1,20 @@
+[ 
+  {
+    "fields": {
+      "company": 1,
+      "user_for": 3,
+      "upload": 5
+    },
+    "model": "app.uploadaudience",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "company": 1,
+      "user_for": null,
+      "upload": 6
+    },
+    "model": "app.uploadaudience",
+    "pk": 2
+  }
+]

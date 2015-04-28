@@ -12,6 +12,27 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 2
+  },
+  {
+    "fields": {
+      "feature": "MedicalBenefitPlan"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "feature": "DentalBenefitPlan"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "feature": "VisionBenefitPlan"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 5
   }
 
   ]

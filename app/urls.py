@@ -83,15 +83,12 @@ from app.views.insurance.user_company_ltd_insurance_plan_view import (
 from app.views.insurance.ltd_insurance_plan_view import LtdInsurancePlanView
 
 
-
-
-
-
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
 from app.views.direct_deposit_view import DirectDepositView
 from app.views.company_features_view import CompanyFeaturesView
+from app.views.sys_application_feature_view import SysApplicationFeatureView
 from app.views.fsa_view import FSAView
 
 from app.views.company_user_summary_view import (
@@ -102,6 +99,8 @@ from app.views.company_user_summary_view import (
 from app.views.upload import (UserUploadView,
                               UploadView,
                               get_company_uploads)
+from app.views.upload_application_feature_view import UploadApplicationFeatureView
+from app.views.upload_audience_view import UploadAudienceByCompanyView
 
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
 
@@ -165,7 +164,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/fsa/(?P<pk>\w+)/?$' % PREFIX, FSAView.as_view(), name='fsa_api'),
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
     url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
-
+    url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
     url(r'^%s/benefits/?$' % PREFIX, benefits),
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
@@ -234,6 +233,12 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<comp_id>\w+)/uploads/(?P<pk>\w+)/?$' % PREFIX,
         get_company_uploads,
         name='get_comp_uploads'),
+    url(r'^%s/upload/application_features/(?P<pk>\w+)/(?P<feature_id>\w+)/?$' % PREFIX,
+        UploadApplicationFeatureView.as_view(),
+        name='uploads_application_feature_api'),
+    url(r'^%s/upload/audience/(?P<comp_id>\w+)/?$' % PREFIX,
+        UploadAudienceByCompanyView.as_view(),
+        name='upload_audience_api'),
 )
 
 

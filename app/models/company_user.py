@@ -2,7 +2,7 @@ import reversion
 
 from django.db import models
 from company import Company
-from django.conf import settings
+from app.custom_authentication import AuthUser
 
 USER_TYPE = (("employee", "employee"),
              ("admin", "admin"),
@@ -11,7 +11,7 @@ USER_TYPE = (("employee", "employee"),
 
 @reversion.register
 class CompanyUser(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(AuthUser)
     company = models.ForeignKey(Company)
     company_user_type = models.TextField(choices=USER_TYPE)
     new_employee = models.BooleanField(default=True)
