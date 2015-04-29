@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from app.models.fsa import FSA
+from app.models.fsa.fsa import FSA
 from hash_pk_serializer_base import HashPkSerializerBase
 from custom_fields.hash_field import HashField
 
 
-class FSASerializer(HashPkSerializerBase):
+class FsaSerializer(HashPkSerializerBase):
 
 	user = HashField(source="user.id")
 
@@ -12,7 +12,7 @@ class FSASerializer(HashPkSerializerBase):
 		model = FSA
 
 
-class FSAPostSerializer(HashPkSerializerBase):
+class FsaPostSerializer(HashPkSerializerBase):
 	
 	class Meta:
 		model = FSA

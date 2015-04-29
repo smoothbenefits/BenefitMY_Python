@@ -9,7 +9,7 @@ class UserCompanyFsaPlan(models.Model):
 
     user = models.ForeignKey(AuthUser,
                              related_name="user_company_fsa_plan")
-    company_life_insurance = models.ForeignKey(CompanyFsaPlan,
+    company_fsa_plan = models.ForeignKey(CompanyFsaPlan,
                                                related_name="user_company_fsa_plan")
     created_at = models.DateTimeField(auto_now_add=True,
                                       blank=True,
