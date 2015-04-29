@@ -9,7 +9,7 @@ class FsaTestCase(TestCase, ViewTestBase):
     fixtures = ['fsa', '23_auth_user', '24_person', '10_company']
 
     def test_get_fsa(self):
-        response = self.client.get(reverse('fsa_api',
+        response = self.client.get(reverse('user_fsa_api',
                                            kwargs={'pk': self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
@@ -19,7 +19,7 @@ class FsaTestCase(TestCase, ViewTestBase):
 
         self.assertEqual(result['primary_amount_per_year'], '2500.00')
         self.assertEqual(result['dependent_amount_per_year'], '2500.00')
-        self.assertEqual(result['user'], self.normalize_key(1))
+        self.assertEqual(result['broker_user'], self.normalize_key(1))
         self.assertEqual(result['update_reason'], 'new enroll')
 
     def test_delete_fsa(self):
@@ -32,7 +32,7 @@ class FsaTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result), dict)
         self.assertEqual(result['primary_amount_per_year'], '2500.00')
         self.assertEqual(result['dependent_amount_per_year'], '2500.00')
-        self.assertEqual(result['user'], self.normalize_key(1))
+        self.assertEqual(result['broker_user'], self.normalize_key(1))
         self.assertEqual(result['update_reason'], 'new enroll')
 
         response = self.client.delete(reverse('fsa_api',

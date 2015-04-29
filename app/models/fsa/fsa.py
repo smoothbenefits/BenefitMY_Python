@@ -13,7 +13,7 @@ class FSA(models.Model):
                                                     decimal_places=2, 
                                                     null=True)
 
-    broker = models.ForeignKey(AuthUser, 
+    broker_user = models.ForeignKey(AuthUser, 
                                     related_name="fsa")
 
     update_reason = models.CharField(max_length=1024, blank=True, null=True)

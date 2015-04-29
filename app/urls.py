@@ -92,7 +92,12 @@ from app.views.user_settings_view import SettingView
 from app.views.direct_deposit_view import DirectDepositView
 from app.views.company_features_view import CompanyFeaturesView
 from app.views.sys_application_feature_view import SysApplicationFeatureView
-from app.views.fsa_view import FSAView
+
+from app.views.fsa.fsa_view import FsaView
+from app.views.fsa.company_fsa_plan_view import CompanyFsaPlanView
+from app.views.fsa.user_company_fsa_plan_view import (
+    UserCompanyFsaPlanView,
+    CompanyUsersFsaPlanView)
 
 from app.views.company_user_summary_view import (
     CompanyUsersSummaryExcelExportView,
@@ -164,7 +169,6 @@ urlpatterns = patterns('app.views',
     url(r'^%s/documents/(?P<pk>\w+)/?$' % PREFIX, DocumentView.as_view()),
     url(r'^%s/documents/(?P<pk>\w+)/signature/?$' % PREFIX, DocumentSignatureView.as_view()),
 
-    url(r'^%s/fsa/(?P<pk>\w+)/?$' % PREFIX, FSAView.as_view(), name='fsa_api'),
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
     url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
     url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
@@ -173,10 +177,22 @@ urlpatterns = patterns('app.views',
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
 
+    # FSA api
+    url(r'^%s/brokers/(?P<pk>\w+)/fsa/?$' % PREFIX, 
+        FsaView.as_view(), name='broker_fsa_api'),
 
+    url(r'^%s/users/(?P<pk>\w+)/fsa/?$' % PREFIX,
+        UserCompanyFsaPlanView.as_view(), name='user_fsa_api'),
+
+    url(r'^%s/company_users/(?P<pk>\w+)/fsa/?$' % PREFIX,
+        CompanyUsersFsaPlanView.as_view(), name='company_users_fsa_api'),
+
+    url(r'^%s/company/(?P<pk>\w+)/fsa/?$' % PREFIX,
+        CompanyFsaPlanView.as_view(), name='company_fsa_api'),
+
+    # Life insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         LifeInsurancePlanView.as_view(), name='broker_life_insurance_api'),
-
 
     url(r'^%s/users/(?P<pk>\w+)/life_insurance/?$' % PREFIX,
         UserCompanyLifeInsuranceView.as_view(), name='user_life_insurance_api'),
@@ -187,11 +203,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
 
-
-
+    # STD insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
         StdInsurancePlanView.as_view(), name='broker_std_insurance_api'),
-
 
     url(r'^%s/users/(?P<pk>\w+)/std_insurance/?$' % PREFIX,
         UserCompanyStdInsuranceView.as_view(), name='user_std_insurance_api'),
@@ -202,11 +216,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
         CompanyStdInsurancePlanView.as_view(), name='company_std_insurance_plan_api'),
 
-
-
+    # LTD insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         LtdInsurancePlanView.as_view(), name='broker_ltd_insurance_api'),
-
 
     url(r'^%s/users/(?P<pk>\w+)/ltd_insurance/?$' % PREFIX,
         UserCompanyLtdInsuranceView.as_view(), name='user_ltd_insurance_api'),
@@ -216,7 +228,6 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
-
 
     # util api
 

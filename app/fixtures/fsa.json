@@ -1,7 +1,7 @@
 [
   {
     "fields": {
-      "user": 1,
+      "broker_user": 1,
       "primary_amount_per_year": "2500.00",
       "dependent_amount_per_year": "2500.00",
       "update_reason": "new enroll"
@@ -13,7 +13,7 @@
 
   {
     "fields": {
-      "user": 2,
+      "broker_user": 2,
       "primary_amount_per_year": "500.00",
       "dependent_amount_per_year": "500.00", 
       "update_reason": "new enroll"
@@ -25,7 +25,7 @@
 
   {
     "fields": {
-      "user": 3,
+      "broker_user": 3,
       "primary_amount_per_year": "500.00",
       "dependent_amount_per_year": "500.00", 
       "update_reason": "new enroll"

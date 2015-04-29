@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from app.models.fsa.fsa import CompanyFsaPlan
+from app.models.fsa.company_fsa_plan import CompanyFsaPlan
 from fsa_serializer import (
     FsaSerializer,
     FsaPostSerializer)
@@ -8,14 +8,15 @@ from ..hash_pk_serializer_base import HashPkSerializerBase
 
 
 class CompanyFsaPlanSerializer(HashPkSerializerBase):
-    fsa_plan = LtdInsurancePlanSerializer()
+    fsa_plan = FsaSerializer()
     company = HashField(source="company.id")
 
     class Meta:
         model = CompanyFsaPlan
 
 
-class CompanyFsaPostSerializer(serializers.ModelSerializer):
+class CompanyFsaPlanPostSerializer(serializers.ModelSerializer):
+    fsa_plan = FsaPostSerializer()
 
     class Meta:
         model = CompanyFsaPlan
