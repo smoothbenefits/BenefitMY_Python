@@ -66,9 +66,3 @@ class FsaTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['dependent_amount_per_year'], '500.00')
         self.assertEqual(result['broker_user'], self.normalize_key(4))
         self.assertEqual(result['update_reason'], 'new enroll')
-
-        #Test post duplicate data
-        response = self.client.post(reverse('broker_fsa_api', kwargs={'pk': self.normalize_key(4)}),
-                                    dd_data)
-        self.assertIsNotNone(response)
-        self.assertEqual(response.status_code, 409)
