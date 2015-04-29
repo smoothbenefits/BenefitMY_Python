@@ -53,7 +53,7 @@ ENCRYPTED_FIELDS_KEYDIR = 'fieldkeys'
 # Email
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'frank.qiu@gmail.com'
-EMAIL_HOST_PASSWORD = 'BenefitMy2014'
+EMAIL_HOST_PASSWORD = 'BenefitMy2015'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -195,13 +195,13 @@ PIPELINE_JS = {
             'js/bootstrap.js',
             'js/demo-mock.js',
             'js/front_end.js.js',
-            'js/flashcanvas.js', 
+            'js/flashcanvas.js',
             'js/google_analytics.js.js',
             'js/ie.js',
             'js/jquery-select2.js',
             'js/jquery-ui-extras.js',
             'js/jquery.mockjax.js',
-            'js/jSignature.min.js', 
+            'js/jSignature.min.js',
             'js/users.js.js',
             'js/controllers/UserControllers.js',
             'js/controllers/BrokerControllers.js',
