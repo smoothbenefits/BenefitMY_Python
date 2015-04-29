@@ -53,7 +53,7 @@ ENCRYPTED_FIELDS_KEYDIR = 'fieldkeys'
 # Email
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'frank.qiu@gmail.com'
-EMAIL_HOST_PASSWORD = 'BenefitMy2014'
+EMAIL_HOST_PASSWORD = 'BenefitMy2015'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
