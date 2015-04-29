@@ -14,7 +14,6 @@ class CompanyFsaPlanSerializer(HashPkSerializerBase):
     class Meta:
         model = CompanyFsaPlan
 
-
 class CompanyFsaPlanPostSerializer(serializers.ModelSerializer):
     fsa_plan = FsaPostSerializer()
 
