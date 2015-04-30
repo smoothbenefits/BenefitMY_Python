@@ -259,7 +259,9 @@ benefitmyDomainModelFactories.factory('UploadRepository', ['$resource',
       upload: $resource('/api/v1/upload/:pk/', {pk:'@pk'}),
       uploadsByUser: $resource('/api/v1/users/:pk/uploads/', {pk: '@pk'}),
       uploadsByCompany: $resource('/api/v1/companies/:compId/uploads/:pk', 
-                                 {compId:'@compId', pk: '@pk'})
+                                 {compId:'@compId', pk: '@pk'}),
+      uploadApplicationFeature: $resource('/api/v1/upload/application_features/:app_feature/:feature_id',
+                                          {app_feature:'@app_feature', feature_id:'@feature_id'})
     };
   }
 ]);
