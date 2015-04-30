@@ -17,7 +17,7 @@ class CompanyFsaPlanView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        plans = CompanyFsaPlan.objects.filter(company=pk)
+        plans = _get_object(pk)
         serializer = CompanyFsaPlanSerializer(plans, many=True)
         return Response(serializer.data)
 
