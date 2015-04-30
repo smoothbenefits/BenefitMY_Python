@@ -3,25 +3,29 @@ benefitmyService.factory('ApplicationFeatureService',
   ['$http',
    '$q',
    function($http, $q){
-      var _cached = false;
-      var _applicationFeatures = {};
+      var _applicationFeatures = undefined;
+
       var getAppFeature = function(){
          var deferred = $q.defer();
-         $http.get('/api/v1/application_features/').success(function(data){
-            _.each(data, function(item){
-               _applicationFeatures[item.feature] = item.id;
+
+         if(!_applicationFeatures){
+            $http.get('/api/v1/application_features/').success(function(data){
+               _applicationFeatures = {};
+               _.each(data, function(item){
+                  _applicationFeatures[item.feature] = item.id;
+               });
+               deferred.resolve(_applicationFeatures);
+            }).error(function(data){
+               deferred.reject(data);
             });
-            _cached = true;
+         }
+         else{
             deferred.resolve(_applicationFeatures);
-         }).error(function(data){
-            deferred.reject(data);
-         });
+         }
          return deferred.promise;
       }
       return{
-         isApplicationFeatureCached: _cached,
-         getFromServer: getAppFeature,
-         cachedApplicationFeatures: _applicationFeatures
+         getApplicationFeatures: getAppFeature
       }
    }
 ]);
