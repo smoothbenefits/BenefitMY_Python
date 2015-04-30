@@ -38,7 +38,7 @@ from insurance.ltd_insurance_plan import LtdInsurancePlan
 
 from fsa.company_fsa_plan import CompanyFsaPlan
 from fsa.fsa import FSA
-from fsa.user_company_fsa_plan import UserCompanyFsaPlan
+from fsa.fsa_plan import FsaPlan
 
 
 from sys_application_feature import SysApplicationFeature

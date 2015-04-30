@@ -6,7 +6,7 @@ from ..custom_fields.hash_field import HashField
 
 class FsaSerializer(HashPkSerializerBase):
 
-	broker_user = HashField(source="broker_user.id")
+	user = HashField(source="user.id")
 
 	class Meta:
 		model = FSA

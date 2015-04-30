@@ -97,9 +97,7 @@ from app.views.fsa.fsa_view import FsaView
 from app.views.fsa.company_fsa_plan_view import (
     CompanyFsaPlanView,
     CompanyFsaPlanByCompanyView)
-from app.views.fsa.user_company_fsa_plan_view import (
-    UserCompanyFsaPlanView,
-    CompanyUsersFsaPlanView)
+from app.views.fsa.fsa_plan_view import FsaPlanView
 
 from app.views.company_user_summary_view import (
     CompanyUsersSummaryExcelExportView,
@@ -181,13 +179,10 @@ urlpatterns = patterns('app.views',
 
     # FSA api
     url(r'^%s/brokers/(?P<pk>\w+)/fsa/?$' % PREFIX, 
-        FsaView.as_view(), name='broker_fsa_api'),
-
-    url(r'^%s/users/(?P<pk>\w+)/fsa/?$' % PREFIX,
-        UserCompanyFsaPlanView.as_view(), name='user_fsa_api'),
+        FsaPlanView.as_view(), name='broker_fsa_api'),
 
     url(r'^%s/company_users/(?P<pk>\w+)/fsa/?$' % PREFIX,
-        CompanyUsersFsaPlanView.as_view(), name='company_users_fsa_api'),
+        FsaView.as_view(), name='company_users_fsa_api'),
 
     url(r'^%s/company/(?P<pk>\w+)/fsa/?$' % PREFIX,
         CompanyFsaPlanByCompanyView.as_view(), name='company_fsa_api'),

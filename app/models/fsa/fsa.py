@@ -13,15 +13,8 @@ class FSA(models.Model):
                                                     decimal_places=2, 
                                                     null=True)
 
-    broker_user = models.ForeignKey(AuthUser, 
-                                    related_name="fsa")
-
+    user = models.ForeignKey(AuthUser, related_name="fsa")
+    company_fsa_plan = models.ForeignKey(CompanyFsaPlan, related_name="fsa_plan")
     update_reason = models.CharField(max_length=1024, blank=True, null=True)
-
-    created_at = models.DateTimeField(auto_now_add=True,
-                                      blank=True,
-                                      null=True)
-
-    updated_at = models.DateTimeField(auto_now=True,
-                                      blank=True,
-                                      null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

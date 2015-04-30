@@ -40,7 +40,7 @@ class FsaView(APIView):
 class FSAByUserView(APIView):
     def _get_object(self, user_id):
         try:
-            return FSA.objects.get(broker_user=user_id)
+            return FSA.objects.get(user=user_id)
         except FSA.DoesNotExist:
             raise Http404
 
