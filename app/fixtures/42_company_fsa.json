@@ -1,0 +1,20 @@
+[
+  {
+    "fields": {
+      "company": 1,
+      "fsa_plan": 2
+    },
+    "model": "app.companyfsaplan",
+    "pk": 1
+  },
+
+
+  {
+    "fields": {
+      "company": 2,
+      "fsa_plan": 3
+    },
+    "model": "app.companyfsaplan",
+    "pk": 2
+  }
+]

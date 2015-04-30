@@ -94,7 +94,9 @@ from app.views.company_features_view import CompanyFeaturesView
 from app.views.sys_application_feature_view import SysApplicationFeatureView
 
 from app.views.fsa.fsa_view import FsaView
-from app.views.fsa.company_fsa_plan_view import CompanyFsaPlanView
+from app.views.fsa.company_fsa_plan_view import (
+    CompanyFsaPlanView,
+    CompanyFsaPlanByCompanyView)
 from app.views.fsa.user_company_fsa_plan_view import (
     UserCompanyFsaPlanView,
     CompanyUsersFsaPlanView)
@@ -188,7 +190,7 @@ urlpatterns = patterns('app.views',
         CompanyUsersFsaPlanView.as_view(), name='company_users_fsa_api'),
 
     url(r'^%s/company/(?P<pk>\w+)/fsa/?$' % PREFIX,
-        CompanyFsaPlanView.as_view(), name='company_fsa_api'),
+        CompanyFsaPlanByCompanyView.as_view(), name='company_fsa_api'),
 
     # Life insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,

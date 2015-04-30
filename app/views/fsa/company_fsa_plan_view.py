@@ -40,3 +40,9 @@ class CompanyFsaPlanView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CompanyFsaPlanByCompanyView(APIView):
+    def get(self, request, pk, format=None):
+        plans = CompanyFsaPlan.objects.filter(company=pk)
+        serializer = CompanyFsaPlanSerializer(plans, many=True)
+        return Response(serializer.data)
