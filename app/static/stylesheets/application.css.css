@@ -41,6 +41,10 @@
   top: 7px;
   cursor: pointer; }
 
+.upload-button-container {
+  margin-bottom: 10px;
+  text-align: center; }
+
 .file-icon {
   width: 60px;
   vertical-align: middle; }
@@ -59,11 +63,15 @@
   display: inline-block; }
 
 .text-plain,
-.application-vnd.openxmlformats-officedocument.wordprocessingml.document,
 .application-msword {
   background-image: url("http://upload.wikimedia.org/wikipedia/en/0/05/File_icon.png");
   background-repeat: no-repeat;
   width: 20px;
   display: inline-block; }
+
+#dashboard-wrapper #content-wrapper .upload-td div#no_upload_display_table,
+#dashboard-wrapper #content-wrapper .upload-td div#upload_display_table {
+  margin-left: 0px;
+  margin-right: 0px; }
 
 /*# sourceMappingURL=application.css.css.map */
