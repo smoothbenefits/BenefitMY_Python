@@ -1,10 +1,11 @@
 [
   {
     "fields": {
-      "broker_user": 1,
+      "user": 1,
       "primary_amount_per_year": "2500.00",
       "dependent_amount_per_year": "2500.00",
-      "update_reason": "new enroll"
+      "update_reason": "new enroll",
+      "company_fsa_plan": 1
     },
     "model": "app.fsa",
     "pk": 1
@@ -13,10 +14,11 @@
 
   {
     "fields": {
-      "broker_user": 2,
+      "user": 2,
       "primary_amount_per_year": "500.00",
       "dependent_amount_per_year": "500.00", 
-      "update_reason": "new enroll"
+      "update_reason": "new enroll", 
+      "company_fsa_plan": 1
     },
     "model": "app.fsa",
     "pk": 2
@@ -25,10 +27,11 @@
 
   {
     "fields": {
-      "broker_user": 3,
+      "user": 3,
       "primary_amount_per_year": "500.00",
       "dependent_amount_per_year": "500.00", 
-      "update_reason": "new enroll"
+      "update_reason": "new enroll", 
+      "company_fsa_plan": 1
     },
     "model": "app.fsa",
     "pk": 3

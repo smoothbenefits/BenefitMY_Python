@@ -19,8 +19,8 @@ class FsaPlanView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        plans = FsaPlan.objects.filter(user=pk)
-        serializer = FsaPlanSerializer(plans, many=True)
+        plans = self._get_object(pk)
+        serializer = FsaPlanSerializer(plans)
         return Response(serializer.data)
 
     def delete(self, request, pk, format=None):

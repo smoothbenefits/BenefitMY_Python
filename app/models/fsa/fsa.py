@@ -1,7 +1,9 @@
 import reversion
 
+from datetime import datetime
 from django.db import models
 from app.custom_authentication import AuthUser
+from company_fsa_plan import CompanyFsaPlan
 
 @reversion.register
 class FSA(models.Model):
@@ -14,7 +16,7 @@ class FSA(models.Model):
                                                     null=True)
 
     user = models.ForeignKey(AuthUser, related_name="fsa")
-    company_fsa_plan = models.ForeignKey(CompanyFsaPlan, related_name="fsa_plan")
+    company_fsa_plan = models.ForeignKey(CompanyFsaPlan, related_name="company_fsa_plan", null=True)
     update_reason = models.CharField(max_length=1024, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, default=datetime.now())
+    updated_at = models.DateTimeField(auto_now=True, default=datetime.now())

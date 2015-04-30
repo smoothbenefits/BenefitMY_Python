@@ -6,7 +6,7 @@ import json
 
 class FsaTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['37_fsa', '23_auth_user', '24_person', '10_company']
+    fixtures = ['37_fsa_plan', '23_auth_user', '24_person', '10_company']
 
     def test_get_fsa(self):
         response = self.client.get(reverse('broker_fsa_api',
@@ -17,10 +17,8 @@ class FsaTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertEqual(type(result), dict)
 
-        self.assertEqual(result['primary_amount_per_year'], '2500.00')
-        self.assertEqual(result['dependent_amount_per_year'], '2500.00')
         self.assertEqual(result['broker_user'], self.normalize_key(1))
-        self.assertEqual(result['update_reason'], 'new enroll')
+        self.assertEqual(result['name'], 'WageWork FSA')
 
     def test_delete_fsa(self):
         response = self.client.get(reverse('broker_fsa_api',
@@ -30,10 +28,8 @@ class FsaTestCase(TestCase, ViewTestBase):
 
         result = json.loads(response.content)
         self.assertEqual(type(result), dict)
-        self.assertEqual(result['primary_amount_per_year'], '2500.00')
-        self.assertEqual(result['dependent_amount_per_year'], '2500.00')
         self.assertEqual(result['broker_user'], self.normalize_key(1))
-        self.assertEqual(result['update_reason'], 'new enroll')
+        self.assertEqual(result['name'], 'WageWork FSA')
 
         response = self.client.delete(reverse('broker_fsa_api',
                                               kwargs={'pk': self.normalize_key(1)}))
@@ -47,10 +43,8 @@ class FsaTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['detail'], 'Not found')
 
     def test_post_fsa(self):
-        dd_data = {"primary_amount_per_year": "500.00",
-                   "dependent_amount_per_year": "500.00",
-                   "broker_user": 4,
-                   "update_reason": "new enroll"}
+        dd_data = {"name": "New FSA", 
+                   "broker_user": 4}
 
         response = self.client.post(reverse('broker_fsa_api', kwargs={'pk': self.normalize_key(4)}),
                                     dd_data)
@@ -62,7 +56,5 @@ class FsaTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
         self.assertEqual(type(result), dict)
-        self.assertEqual(result['primary_amount_per_year'], '500.00')
-        self.assertEqual(result['dependent_amount_per_year'], '500.00')
         self.assertEqual(result['broker_user'], self.normalize_key(4))
-        self.assertEqual(result['update_reason'], 'new enroll')
+        self.assertEqual(result['name'], 'New FSA')

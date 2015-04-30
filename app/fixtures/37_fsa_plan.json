@@ -1,0 +1,36 @@
+[
+  {
+    "fields": {
+      "broker_user": 1,
+      "name": "WageWork FSA",
+      "created_at": "2015-04-27T00:00:00-04:00",
+      "updated_at": "2015-04-27T00:00:00-04:00"
+    },
+    "model": "app.fsaplan",
+    "pk": 1
+  },
+
+
+  {
+    "fields": {
+      "broker_user": 1,
+      "name": "BCBS FSA",
+      "created_at": "2015-04-27T00:00:00-04:00",
+      "updated_at": "2015-04-27T00:00:00-04:00"
+    },
+    "model": "app.fsaplan",
+    "pk": 2
+  },
+
+
+  {
+    "fields": {
+      "broker_user": 1,
+      "name": "HealthMe FSA",
+      "created_at": "2015-04-27T00:00:00-04:00",
+      "updated_at": "2015-04-27T00:00:00-04:00"
+    },
+    "model": "app.fsaplan",
+    "pk": 3
+  }
+]
