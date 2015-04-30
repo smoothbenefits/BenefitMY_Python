@@ -83,27 +83,21 @@ benefitmyService.factory('UploadService',
 
     var SetUploadApplicationFeature = function(uploadFileId, uploadType, featureId){
       var deferred = $q.defer();
-      var updateUploadAppFeature = function(deferred, uploadFileId, appFeatures, featureItem, featureId){
-        if(!appFeatures[featureItem]){
+
+      ApplicationFeatureService.getApplicationFeatures().then(function(appFeatures){
+        if(!appFeatures[uploadType]){
           deferred.reject('The ApplicationFeature provided did not match what server returned!');
         }
         UploadRepository.uploadApplicationFeature.save(
-          {app_feature:appFeatures[featureItem], feature_id:featureId},
+          {app_feature:appFeatures[uploadType], feature_id:featureId},
           {upload: uploadFileId},
           function(resp){
             deferred.resolve(resp);
           }, function(error){
             deferred.reject(error);
-          });
-      };
-      if(!ApplicationFeatureService.isApplicationFeatureCached){
-        ApplicationFeatureService.getFromServer().then(function(appFeatures){
-          updateUploadAppFeature(deferred, uploadFileId, appFeatures, uploadType, featureId); 
-        });
-      }
-      else{
-        updateUploadAppFeature(deferred, uploadFileId, ApplicationFeatureService.cachedApplicationFeatures, uploadType, featureId); 
-      }
+          });      
+      });
+      
       return deferred.promise;
     };
 
@@ -155,12 +149,13 @@ benefitmyService.factory('UploadService',
 
     var getUploadsByFeature = function(featureId, uploadType){
       var deferred = $q.defer();
-      var getUploadsByFeatureFromServer = function(deferred, featureId, appFeatures, featureItem){
-        if(!appFeatures[featureItem]){
+
+      ApplicationFeatureService.getApplicationFeatures().then(function(appFeatures){
+        if(!appFeatures[uploadType]){
           deferred.reject('The ApplicationFeature provided did not match what server returned!');
         }
         UploadRepository.uploadApplicationFeature
-        .query({app_feature: appFeatures[featureItem], feature_id: featureId},
+        .query({app_feature: appFeatures[uploadType], feature_id: featureId},
           function(resp){
             var files = [];
             if(resp.length > 0){
@@ -172,16 +167,8 @@ benefitmyService.factory('UploadService',
           }, function(error){
             deferred.reject(error);
           });
-      };
-
-      if(!ApplicationFeatureService.isApplicationFeatureCached){
-        ApplicationFeatureService.getFromServer().then(function(appFeatures){
-          getUploadsByFeatureFromServer(deferred, featureId, appFeatures, uploadType); 
-        });
-      }
-      else{
-        getUploadsByFeatureFromServer(deferred, featureId, ApplicationFeatureService.cachedApplicationFeatures, uploadType); 
-      }
+      });
+  
       return deferred.promise;
     };
 
