@@ -6,7 +6,7 @@ from ..hash_pk_serializer_base import HashPkSerializerBase
 
 
 class CompanyFsaPlanSerializer(HashPkSerializerBase):
-    fsa_plan = FsaPlanSerializer()
+    fsa_plan = HashField(source="fsa_plan.id")
     company = HashField(source="company.id")
 
     class Meta:

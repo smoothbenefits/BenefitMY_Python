@@ -18,5 +18,5 @@ class FSA(models.Model):
     user = models.ForeignKey(AuthUser, related_name="fsa")
     company_fsa_plan = models.ForeignKey(CompanyFsaPlan, related_name="company_fsa_plan", null=True)
     update_reason = models.CharField(max_length=1024, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True, default=datetime.now())
-    updated_at = models.DateTimeField(auto_now=True, default=datetime.now())
+    created_at = models.DateTimeField(auto_now_add=True, default=datetime.now)
+    updated_at = models.DateTimeField(auto_now=True, default=datetime.now)
