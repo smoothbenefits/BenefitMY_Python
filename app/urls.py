@@ -93,7 +93,9 @@ from app.views.direct_deposit_view import DirectDepositView
 from app.views.company_features_view import CompanyFeaturesView
 from app.views.sys_application_feature_view import SysApplicationFeatureView
 
-from app.views.fsa.fsa_view import FsaView
+from app.views.fsa.fsa_view import (
+    FsaView,
+    FSAByUserView)
 from app.views.fsa.company_fsa_plan_view import (
     CompanyFsaPlanView,
     CompanyFsaPlanByCompanyView)
@@ -183,6 +185,12 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company_users/(?P<pk>\w+)/fsa/?$' % PREFIX,
         FsaView.as_view(), name='company_users_fsa_api'),
+
+    url(r'^%s/user_company/(?P<pk>\w+)/fsa/?$' % PREFIX,
+        FSAByUserView.as_view(), name='user_company_fsa_api'),
+
+    url(r'^%s/broker_company/(?P<pk>\w+)/fsa/?$' % PREFIX,
+        CompanyFsaPlanView.as_view(), name='broker_company_fsa_api'),
 
     url(r'^%s/company/(?P<pk>\w+)/fsa/?$' % PREFIX,
         CompanyFsaPlanByCompanyView.as_view(), name='company_fsa_api'),
