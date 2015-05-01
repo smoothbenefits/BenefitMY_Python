@@ -478,6 +478,24 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         };
     }
   ]);
+  
+var brokerAddFsaPlan = brokersControllers.controller(
+  'brokerAddFsaPlanController',
+  ['$scope',
+   '$state',
+   '$stateParams', 
+   '$controller',
+   function ($scope, 
+             $state,
+             $stateParams, 
+             $controller){
+     // Inherite scope from base
+     $controller('modalMessageControllerBase', {$scope: $scope});
+     
+     var clientId = $stateParams.clientId;
+     $scope.newPlan = {};
+   }]
+);
 
 var brokerAddHealthBenefits = brokersControllers.controller(
   'brokerAddHealthBenefits',

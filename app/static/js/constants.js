@@ -106,14 +106,14 @@ settings.constant('tabLayoutGlobalConfig', [
             },
             {
                 id: 2,
-                verbose_name: "Basic Life Insurance (AD&D)",
+                verbose_name: "Basic Life Ins. (AD&D)",
                 name: "basic_life",
                 active: false,
                 state: "broker_add_benefit.basic_life_insurance"
             },
             {
                 id: 3,
-                verbose_name: "Supplemental Life Insurance",
+                verbose_name: "Supplemental Life Ins.",
                 name: "supplemental_life",
                 active: false,
                 state: "broker_add_benefit.supplemental_life_insurance"
@@ -131,6 +131,13 @@ settings.constant('tabLayoutGlobalConfig', [
                 name: "ltd",
                 active: false,
                 state: "broker_add_benefit.ltd"
+            },
+            {
+                id: 6,
+                verbose_name: "FSA",
+                name: "fsa",
+                active: false,
+                state: "broker_add_benefit.fsa"
             }
         ]
     },

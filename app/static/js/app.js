@@ -90,6 +90,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_ltd.html',
                 controller: 'brokerAddLtdPlanController'
             }).
+            state('broker_add_benefit.fsa', {
+                url: '/fsa',
+                templateUrl: '/static/partials/benefit_addition/tab_fsa.html',
+                controller: 'brokerAddFsaPlanController'
+            }).
             state('/broker/benefit/selected/:client_id', {
                 url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',
