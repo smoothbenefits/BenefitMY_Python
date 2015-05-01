@@ -189,11 +189,28 @@ benefitmyDomainModelFactories.factory('peopleRepository', ['$resource',
 ]);
 
 // FSA domain repo
+benefitmyDomainModelFactories.factory('FsaPlanRepository', ['$resource', 
+  function ($resource) {
+    return $resource('/api/v1/broker/:id/fsa', {id: '@id'});
+  }
+]);
+
+// FSA plan link to company
+benefitmyDomainModelFactories.factory('CompanyFsaPlanRepository', ['$resource', 
+  function ($resource) {
+    return {
+      ById: $resource('/api/v1/broker_company/:id/fsa', {id: '@id'}),
+      ByCompany: $resource('/api/v1/company/:companyId/fsa', {companyId: '@companyId'})
+    };
+  }
+]);
+
+// Company FSA plan link to user
 benefitmyDomainModelFactories.factory('FsaRepository', ['$resource',
   function ($resource){
     return {
-      ByUser: $resource('/api/v1/fsa/:userId', {userId:'@user_id'}),
-      ById: $resource('/api/v1/fsa/:id', {id:'@id'}, { 
+      ByUser: $resource('/api/v1/user_company/:userId/fsa', {userId:'@user_id'}),
+      ById: $resource('/api/v1/company_users/:id/fsa', {id:'@id'}, { 
         update: {
             method: 'PUT'
         }
