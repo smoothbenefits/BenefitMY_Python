@@ -2,10 +2,12 @@ from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 
-from app.views.person_view import PersonView
+from app.views.person_view import (
+    PersonView, PersonByUserView)
 from app.views.employee_profile_view import (
     EmployeeProfileView,
-    EmployeeProfileByPersonView)
+    EmployeeProfileByPersonCompanyView,
+    EmployeeProfileByCompanyUserView)
 from app.views.user_view import (
     UserView,
     UsersView,
@@ -119,6 +121,7 @@ PREFIX = "api/v1"
 urlpatterns = patterns('app.views',
     url(r'^dashboard/?$', dashboard_view.index, name='dashboard'),
     url(r'^%s/people/(?P<pk>\w+)/?$' % PREFIX, PersonView.as_view(), name='people_by_id'),
+    url(r'^%s/user/(?P<user_id>\w+)/person/?$' % PREFIX, PersonByUserView.as_view(), name='person_by_user'),
 
     url(r'^%s/benefit_types/?$' % PREFIX, BenefitTypeView.as_view()),
 
@@ -262,9 +265,12 @@ urlpatterns = patterns('app.views',
     url(r'^%s/employee_profile/(?P<pk>\w+)/?$' % PREFIX,
         EmployeeProfileView.as_view(),
         name='employee_profile_api'),
-    url(r'^%s/person/(?P<person_id>\w+)/employee_profile/?$' % PREFIX,
-        EmployeeProfileByPersonView.as_view(),
-        name='employee_profile_by_person_api'),
+    url(r'^%s/person/(?P<person_id>\w+)/company/(?P<company_id>\w+)/employee_profile/?$' % PREFIX,
+        EmployeeProfileByPersonCompanyView.as_view(),
+        name='employee_profile_by_person_company_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/user/(?P<user_id>\w+)/employee_profile/?$' % PREFIX,
+        EmployeeProfileByCompanyUserView.as_view(),
+        name='employee_profile_by_company_user_api'),
 )
 
 

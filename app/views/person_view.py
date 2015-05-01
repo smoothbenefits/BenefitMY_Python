@@ -23,3 +23,15 @@ class PersonView(APIView):
         serializer = PersonSerializer(person)
         person.delete()
         return Response({'deleted_person': serializer.data})
+
+class PersonByUserView(APIView):
+    def _get_object(self, user_id):
+        try:
+            return Person.objects.get(user=user_id, relationship='self')
+        except Person.DoesNotExist:
+            raise Http404
+
+    def get(self, request, user_id, format=None):
+        person = self._get_object(user_id)
+        serializer = PersonSerializer(person)
+        return Response({'person': serializer.data})

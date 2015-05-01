@@ -6,6 +6,7 @@ from custom_fields.hash_field import HashField
 
 class EmployeeProfileSerializer(HashPkSerializerBase):
     person = HashField(source="person.id")
+    company = HashField(source="company.id")
     class Meta:
         model = EmployeeProfile
 
