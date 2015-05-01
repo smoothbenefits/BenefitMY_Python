@@ -13,12 +13,24 @@ BenefitMyApp.directive('bmuploadviewer',
             $scope.uploadManager = {
               hideUploadArea: true,
               canManageUpload: false,
+              viewMode: $attrs.viewMode || 'table',
               uploadedFiles: [],
               files: []
             };
-            UploadService.getAllUploadsByCurrentUser().then(function(resp){
-              $scope.uploadManager.uploadedFiles = resp;
-            });
+            
+            if($attrs.featureId && $attrs.uploadType){
+              $attrs.$observe('featureId', function(){
+                UploadService.getUploadsByFeature($attrs.featureId, $attrs.uploadType)
+                .then(function(resp){
+                  $scope.uploadManager.uploadedFiles = resp;
+                });  
+              });  
+            }
+            else{
+              UploadService.getAllUploadsByCurrentUser().then(function(resp){
+                $scope.uploadManager.uploadedFiles = resp;
+              });
+            }
           }]
     };
   });
