@@ -28,7 +28,7 @@ from app.models.insurance.ltd_insurance_plan import LtdInsurancePlan
 from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
 from app.models.insurance.user_company_ltd_insurance_plan import \
     UserCompanyLtdInsurancePlan
-from app.models.fsa import FSA
+from app.models.fsa.fsa import FSA
 from app.models.direct_deposit import DirectDeposit
 from app.models.user_bank_account import UserBankAccount
 from app.views.permission import (
