@@ -485,15 +485,26 @@ var brokerAddFsaPlan = brokersControllers.controller(
    '$state',
    '$stateParams', 
    '$controller',
+   'UserService',
    function ($scope, 
              $state,
              $stateParams, 
-             $controller){
+             $controller, 
+             UserService){
      // Inherite scope from base
      $controller('modalMessageControllerBase', {$scope: $scope});
      
      var clientId = $stateParams.clientId;
      $scope.newPlan = {};
+     
+     $scope.saveNewPlan = function() {
+       UserService.getCurUserInfo().then(function(userInfo) {
+         $scope.newPlan.broker = userInfo.user.id;
+         
+         
+       })
+     }
+     
    }]
 );
 
