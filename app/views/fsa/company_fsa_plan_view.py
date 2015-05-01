@@ -28,7 +28,7 @@ class CompanyFsaPlanView(APIView):
 
     def put(self, request, pk, format=None):
         plan = self._get_object(pk)
-        serializer = CompanyFsaPlanSerializer(plan, data=request.DATA)
+        serializer = CompanyFsaPlanPostSerializer(plan, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
