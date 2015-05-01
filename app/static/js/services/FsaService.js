@@ -1,9 +1,69 @@
+/* global moment */
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory(
   'FsaService', 
   ['FsaRepository',
-  function (FsaRepository){
+   'FsaPlanRepository', 
+   'CompanyFsaPlanRepository', 
+   '$q',
+   function (FsaRepository,
+             FsaPlanRepository,
+             CompanyFsaPlanRepository, 
+             $q){
+               
+    var mapFsaPlanViewModelToDomainModel = function(broker, fsaPlanView) {
+      return {
+        broker_user: broker,
+        name: fsaPlanView.name
+      };
+    };
+    
+    var createFsaPlan = function(broker, fsaPlan) {
+      var deferred = $q.defer();
+      
+      // To save a new FSA plan, use broker user id in the URL since 
+      // there is no plan id assigned to the new plan yet.
+      var fsaDomainModel = mapFsaPlanViewModelToDomainModel(broker, fsaPlan);
+      FsaPlanRepository.save({id: broker}, fsaDomainModel).$promise.then(function(response){
+        var planId = response.id;
+        deferred.resolve(planId);
+      }, function(error){
+        deferred.reject(error);
+      });
+      
+      return deferred.promise;
+    };
+    
+    var assignFsaPlanToCompany = function(company, fsaPlan){
+      var deferred = $q.defer();
+      
+      // To assign a company to a new FSA plan, use company id in the URL 
+      // since there is no company plan id assigned to the new plan yet.
+      var postData = {"company": company, "fsa_plan": fsaPlan};
+      CompanyFsaPlanRepository.ById.save({id: company}, postData).$promise.then(function(response){
+        deferred.resolve(response);
+      }, function(error){
+        deferred.reject(error);
+      });
+      
+      return deferred.promise;
+    };
+    
+    var signUpCompanyForFsaPlan = function(broker, company, fsaPlan){
+      var deferred = $q.defer();
+      
+      createFsaPlan(broker, fsaPlan).then(function(fsaPlanId){
+        assignFsaPlanToCompany(company, fsaPlanId).then(function(response){
+          deferred.resolve(response);
+        });
+      }).catch(function(error){
+        deferred.reject(error);
+      });
+      
+      return deferred.promise;
+    };
+    
     return {
       getFsaElectionForUser: function(user_id, callBack) {
 
