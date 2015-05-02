@@ -5,11 +5,13 @@ benefitmyService.factory('UploadService',
    '$q',
    'UserService',
    'UploadRepository',
+   'ApplicationFeatureService',
    function($http,
             $upload,
             $q,
             UserService,
-            UploadRepository){
+            UploadRepository,
+            ApplicationFeatureService){
 
     var _getCurrentUserInfo = function(){
         var deferred = $q.defer();
@@ -79,6 +81,26 @@ benefitmyService.factory('UploadService',
         return deferred.promise;
     };
 
+    var SetUploadApplicationFeature = function(uploadFileId, uploadType, featureId){
+      var deferred = $q.defer();
+
+      ApplicationFeatureService.getApplicationFeatures().then(function(appFeatures){
+        if(!appFeatures[uploadType]){
+          deferred.reject('The ApplicationFeature provided did not match what server returned!');
+        }
+        UploadRepository.uploadApplicationFeature.save(
+          {app_feature:appFeatures[uploadType], feature_id:featureId},
+          {upload: uploadFileId},
+          function(resp){
+            deferred.resolve(resp);
+          }, function(error){
+            deferred.reject(error);
+          });      
+      });
+      
+      return deferred.promise;
+    };
+
     var uploadFile = function(file, uploadType){
         var deferred = $q.defer();
 
@@ -125,6 +147,31 @@ benefitmyService.factory('UploadService',
         return deferred.promise;
     };
 
+    var getUploadsByFeature = function(featureId, uploadType){
+      var deferred = $q.defer();
+
+      ApplicationFeatureService.getApplicationFeatures().then(function(appFeatures){
+        if(!appFeatures[uploadType]){
+          deferred.reject('The ApplicationFeature provided did not match what server returned!');
+        }
+        UploadRepository.uploadApplicationFeature
+        .query({app_feature: appFeatures[uploadType], feature_id: featureId},
+          function(resp){
+            var files = [];
+            if(resp.length > 0){
+              _.each(resp, function(item){
+                files.push(item.upload);
+              });
+            }
+            deferred.resolve(files);
+          }, function(error){
+            deferred.reject(error);
+          });
+      });
+  
+      return deferred.promise;
+    };
+
     var deleteFile = function(id){
         var deferred = $q.defer();
         UploadRepository.upload.delete({pk:id})
@@ -160,7 +207,9 @@ benefitmyService.factory('UploadService',
         getFileType: get_file_type,
         getAllUploadsByCurrentUser: getAllUploadsByCurrentUser,
         deleteFile: deleteFile,
-        getEmployeeUploads: getEmployeeUploads
+        getEmployeeUploads: getEmployeeUploads,
+        SetUploadApplicationFeature: SetUploadApplicationFeature,
+        getUploadsByFeature: getUploadsByFeature
     };
    }
 ]);

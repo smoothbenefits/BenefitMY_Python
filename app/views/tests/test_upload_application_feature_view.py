@@ -38,7 +38,7 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
         self.assertIn('application_feature', upload_feature)
         feature_type = upload_feature['application_feature']
         self.assertEqual(feature_type['id'], self.normalize_key(3))
-        self.assertEqual(feature_type['feature'], 'MedicalBenefitPlan')
+        self.assertEqual(feature_type['feature'], 'MedicalBenefit')
 
     def test_get_upload_application_feature_non_exists(self):
         response = self.client.get(reverse('uploads_application_feature_api',
@@ -150,7 +150,7 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
         self.assertIn('application_feature', upload_feature)
         feature_type = upload_feature['application_feature']
         self.assertEqual(feature_type['id'], self.normalize_key(3))
-        self.assertEqual(feature_type['feature'], 'MedicalBenefitPlan')
+        self.assertEqual(feature_type['feature'], 'MedicalBenefit')
 
         response = self.client.delete(reverse('uploads_application_feature_api',
                                            kwargs={'pk': self.normalize_key(3),
