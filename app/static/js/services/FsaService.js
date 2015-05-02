@@ -73,7 +73,6 @@ benefitmyService.factory(
       
       return deferred.promise;
     };
-<<<<<<< HEAD
 
     var getFsaPlanForCompany = function(company){
       var deferred = $q.defer();
@@ -104,8 +103,6 @@ benefitmyService.factory(
 
       return deferred.promise;
     };
-=======
->>>>>>> Add functions to FSA services
     
     return {
       signUpCompanyForFsaPlan: signUpCompanyForFsaPlan,
