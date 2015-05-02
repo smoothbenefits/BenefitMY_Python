@@ -7,7 +7,7 @@ from app.custom_authentication import AuthUser
 class FsaPlan(models.Model):
 
     broker_user = models.ForeignKey(AuthUser,
-                                    related_name="fsa_plan")
+                                    related_name="fsa_plan_broker")
     name = models.CharField(max_length=1024)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

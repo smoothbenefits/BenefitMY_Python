@@ -191,7 +191,7 @@ benefitmyDomainModelFactories.factory('peopleRepository', ['$resource',
 // FSA domain repo
 benefitmyDomainModelFactories.factory('FsaPlanRepository', ['$resource', 
   function ($resource) {
-    return $resource('/api/v1/broker/:id/fsa', {id: '@id'});
+    return $resource('/api/v1/brokers/:id/fsa', {id: '@id'});
   }
 ]);
 
