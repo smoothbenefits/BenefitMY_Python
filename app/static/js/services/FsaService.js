@@ -18,6 +18,16 @@ benefitmyService.factory(
         name: fsaPlanView.name
       };
     };
+
+    var mapFsaDomainModelToViewModel = function(fsaPlan) {
+      return {
+        companyPlanId: fsaPlan.id,
+        company: fsaPlan.company,
+        fsaPlanName: fsaPlan.fsa_plan.name,
+        created: moment(fsaPlan.created_at).format(DATE_FORMAT_STRING),
+        updated: moment(fsaPlan.updated_at).format(DATE_FORMAT_STRING)
+      };
+    };
     
     var createFsaPlan = function(broker, fsaPlan) {
       var deferred = $q.defer();
@@ -63,8 +73,44 @@ benefitmyService.factory(
       
       return deferred.promise;
     };
+
+    var getFsaPlanForCompany = function(company){
+      var deferred = $q.defer();
+
+      CompanyFsaPlanRepository.ByCompany.query({companyId: company}).$promise.then(function(fsaPlanDomainModels){
+        var fsaPlans = [];
+        _.each(fsaPlanDomainModels, function(fsaPlanDomainModel) {
+          var fsaPlanViewModel = mapFsaDomainModelToViewModel(fsaPlanDomainModel);
+          fsaPlans.push(fsaPlanViewModel);
+        });
+
+        deferred.resolve(fsaPlans);
+      }, function(error) {
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    };
+
+    var deleteCompanyFsaPlan = function(companyPlan) {
+      var deferred = $q.defer();
+
+      CompanyFsaPlanRepository.ById.delete({id: companyPlan}).$promise.then(function(response){
+        deferred.resolve(response);
+      }, function(error){
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    };
     
     return {
+      signUpCompanyForFsaPlan: signUpCompanyForFsaPlan,
+
+      getFsaPlanForCompany: getFsaPlanForCompany,
+
+      deleteCompanyFsaPlan: deleteCompanyFsaPlan,
+
       getFsaElectionForUser: function(user_id, callBack) {
 
         FsaRepository.ByUser.get({userId:user_id})

@@ -18,7 +18,7 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result), list)
         self.assertTrue(len(result) > 0)
         self.assertEqual(type(result[0]), dict)
-        self.assertEqual(result[0]['fsa_plan'], self.normalize_key(2))
+        self.assertEqual(result[0]['fsa_plan']['id'], self.normalize_key(2))
 
     def test_get_company_fsa(self):
         response = self.client.get(reverse('broker_company_fsa_api',
@@ -29,7 +29,7 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertEqual(type(result), dict)
         self.assertEqual(result['company'], self.normalize_key(2))
-        self.assertEqual(result['fsa_plan'], self.normalize_key(3))
+        self.assertEqual(result['fsa_plan']['id'], self.normalize_key(3))
 
     def test_delete_company_fsa(self):
         response = self.client.get(reverse('broker_company_fsa_api',
@@ -76,3 +76,5 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertIsNotNone(response)
         self.assertEqual(result['company'], self.normalize_key(3))
+
+
