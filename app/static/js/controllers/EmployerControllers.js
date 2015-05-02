@@ -2,28 +2,28 @@ var employersController = angular.module('benefitmyApp.employers.controllers',[]
 
 
 var employerHome = employersController.controller('employerHome',
-                                                  ['$scope',
-                                                  '$location',
-                                                  'employerRepository',
-                                                  'currentUser',
-                                                  'clientListRepository',
-                                                  'documentRepository',
-                                                  'templateRepository',
-                                                  'benefitListRepository',
-                                                  'countRepository',
-                                                  'documentTypeService',
-                                                  'BenefitElectionService',
-  function employerHome($scope,
-                        $location,
-                        employerRepository,
-                        currentUser,
-                        clientListRepository,
-                        documentRepository,
-                        templateRepository,
-                        benefitListRepository,
-                        countRepository,
-                        documentTypeService,
-                        BenefitElectionService){
+  ['$scope',
+  '$location',
+  'employerRepository',
+  'currentUser',
+  'clientListRepository',
+  'documentRepository',
+  'templateRepository',
+  'benefitListRepository',
+  'countRepository',
+  'documentTypeService',
+  'BenefitElectionService',
+  function ($scope,
+            $location,
+            employerRepository,
+            currentUser,
+            clientListRepository,
+            documentRepository,
+            templateRepository,
+            benefitListRepository,
+            countRepository,
+            documentTypeService,
+            BenefitElectionService){
 
     $scope.employeeCount = 0;
     $scope.brokerCount = 0;
@@ -299,24 +299,27 @@ var employerUser = employersController.controller('employerUser',
 ]);
 
 var employerBenefits = employersController.controller('employerBenefits', 
-    ['$scope', 
-    '$location', 
-    '$stateParams', 
-    'benefitDisplayService', 
-    'LifeInsuranceService', 
-    'StdService',
-    'LtdService',
-  function employerBenefits(
-    $scope, 
-    $location, 
-    $stateParams, 
-    benefitDisplayService, 
-    LifeInsuranceService, 
-    StdService,
-    LtdService){
+  ['$scope', 
+  '$location', 
+  '$stateParams', 
+  'benefitDisplayService', 
+  'LifeInsuranceService', 
+  'StdService',
+  'LtdService',
+  'FsaService', 
+  function ($scope, 
+            $location, 
+            $stateParams, 
+            benefitDisplayService, 
+            LifeInsuranceService, 
+            StdService,
+            LtdService, 
+            FsaService){
+
     var compId = $stateParams.company_id;
     $scope.role = 'Admin';
     $scope.showAddBenefitButton = false;
+
     benefitDisplayService($stateParams.company_id, false, function(groupObj, nonMedicalArray, benefitCount){
       $scope.medicalBenefitGroup = groupObj;
       $scope.nonMedicalBenefitArray = nonMedicalArray;
@@ -346,6 +349,10 @@ var employerBenefits = employersController.controller('employerBenefits',
 
     LtdService.getLtdPlansForCompany($stateParams.company_id).then(function(plans) {
         $scope.ltdPlans = plans;
+    });
+
+    FsaService.getFsaPlanForCompany($stateParams.company_id).then(function(plans) {
+      $scope.fsaPlans = plans;
     });
   }
 ]);
