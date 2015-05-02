@@ -25,6 +25,7 @@ String.prototype.capitalize = function() {
 };
 
 var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
+var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 
 BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs

@@ -181,7 +181,10 @@ benefitmyDomainModelFactories.factory('employeeTaxRepository', ['$resource',
 ]);
 benefitmyDomainModelFactories.factory('peopleRepository', ['$resource',
   function($resource){
-    return $resource('/api/v1/people/:personId', {personId:'@personId'});
+    return {
+        ById: $resource('/api/v1/people/:personId', {personId:'@personId'}),
+        ByUser: $resource('/api/v1/user/:userId/person', {userId:'@userId'})
+    };
   }
 ]);
 
@@ -310,6 +313,20 @@ benefitmyDomainModelFactories.factory('LtdRepository', ['$resource',
       CompanyUserPlanByCompany: $resource('/api/v1/company_users/:companyId/ltd_insurance/', {companyId:'@company_id'}),
       CompanyUserPlanByUser: $resource('/api/v1/users/:userId/ltd_insurance/', {userId:'@user_id'}),
       CompanyUserPlanById: $resource('/api/v1/users/:id/ltd_insurance/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      })
+    };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('EmployeeProfileRepository', ['$resource',
+  function($resource){
+    return {
+      ByPersonCompany: $resource('/api/v1/person/:personId/company/:companyId/employee_profile', {personId:'@personId', companyId:'@companyId'}),
+      ByCompanyUser: $resource('/api/v1/company/:companyId/user/:userId/employee_profile', {userId:'@userId', companyId:'@companyId'}),
+      ById: $resource('/api/v1/employee_profile/:id', {id:'@id'}, { 
         update: {
             method: 'PUT'
         }

@@ -12,7 +12,8 @@ from app.custom_authentication import AuthUserManager
 from app.models.person import Person
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.user_serializer import UserFamilySerializer
-from app.serializers.person_serializer import PersonFullPostSerializer
+from app.serializers.person_serializer import (
+    PersonFullPostSerializer, PersonSerializer)
 from app.serializers.company_user_serializer import CompanyRoleSerializer
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
@@ -117,16 +118,27 @@ class CurrentUserView(APIView):
             curUser = User.objects.get(pk=request.user.id)
         except User.DoesNotExist:
             raise Http404
+
+        result = {}
+
+        serializer = UserSerializer(curUser)
+        result['user'] = serializer.data
+
         company_users = CompanyUser.objects.filter(user=request.user.id)
         roles = []
         for q in company_users:
             if q.company_user_type not in roles:
                 comp_role = CompanyRoleSerializer(q)
                 roles.append(comp_role.data)
+        result['roles'] = roles
 
-        serializer = UserSerializer(curUser)
-        return Response({'user': serializer.data,
-                         'roles': roles})
+        # Get Person Data
+        persons = Person.objects.filter(user=request.user.id, relationship='self')
+        if (len(persons) > 0):
+            personSerializer = PersonSerializer(persons[0])
+            result['person'] = personSerializer.data
+
+        return Response(result)
 
 
 class UserFamilyView(APIView):

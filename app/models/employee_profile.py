@@ -1,14 +1,16 @@
+import datetime
 import reversion
 
 from django.db import models
 from person import Person
+from company import Company
 
 EMPLOYMENT_TYPES = ([(item, item) for item in ['FullTime', 'PartTime', 'Contractor', 'Intern']])
 EMPLOYMENT_STATUS = ([(item, item) for item in ['Active', 'Prospective', 'Terminated', 'OnLeave']])
 
 @reversion.register
 class EmployeeProfile(models.Model):
-    job_title = models.CharField(max_length=50, null=True)
+    job_title = models.CharField(max_length=50, blank=True, null=True)
     annual_base_salary = models.DecimalField(
         max_digits=12, decimal_places=2, blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
@@ -19,9 +21,15 @@ class EmployeeProfile(models.Model):
         max_length=20, choices=EMPLOYMENT_STATUS, null=True, blank=True)
 
     person = models.ForeignKey(Person,
-                                related_name="employee_profile_person",
-                                null=True,
-                                blank=True)
+                                default=0,
+                                related_name="employee_profile_person")
 
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True)
+    company = models.ForeignKey(Company,
+                                default=0,
+                                related_name="employee_profile_company")
+
+    created_at = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now)
+    updated_at = models.DateTimeField(auto_now=True, default=datetime.datetime.now)
+
+    class Meta:
+        unique_together = ('person', 'company')

@@ -1,0 +1,91 @@
+<div class="modal-header">
+    <h4 class="modal-title">Edit Employee Profile</h4>
+</div>
+<div class="modal-body col-md-12">
+    <div class="panel panel-danger" ng-show="errorMessage">
+        <div class="panel-heading">Error</div>
+        <div class="panel-body">{{errorMessage}}</div>
+    </div>
+    <div class="form-holder col-md-10 col-md-offset-1">
+        <form name="form">
+            <div class="row">
+                <div class="form-label">Job Title</div>
+                <div class="textbox">
+                    <input type="text"
+                        name="job-title"
+                        ng-model="employeeProfileModel.jobTitle"
+                        ng-required="true" />
+                    <div class="form-error" ng-show="form.job-title.$dirty && form.job-title.$invalid">
+                      <span ng-show="form.job_title.$error.required">Job Title is required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-label">Annual Base Salary</div>
+                <div class="textbox input-group">
+                    <span class="input-group-addon">$</span>
+                    <input type="number"
+                        name="annual-base-salary"
+                        ng-model="employeeProfileModel.annualBaseSalary"
+                        ng-required="true"
+                        min="0" />
+                </div>
+                <div class="form-error-relative" ng-show="form.amount.$invalid">Annual base salary is invalid</div>
+            </div>
+            <div class="row">
+                <div class="form-label">Employment Type</div>
+                <div class="textbox">
+                    <select ng-model="employeeProfileModel.employmentType"
+                        ng-required="true"
+                        name="employeeProfileModel.employmentType"
+                        ng-options="type for type in employmentTypes"
+                        class="form-control"></select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-label">Employment Status</div>
+                <div class="textbox">
+                    <select ng-model="employeeProfileModel.employmentStatus"
+                        ng-required="true"
+                        name="employeeProfileModel.employmentStatus"
+                        ng-options="type for type in employmentStatusList"
+                        class="form-control"></select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-label">Employment Start Date</div>
+                <div class="datebox">
+                    <input type="date"
+                        name="start-date"
+                        ng-model="employeeProfileModel.startDate"
+                        ng-required="false"
+                        min="1900-01-01"
+                        placeholder="yyyy-MM-dd" />
+                    <div class="form-error" ng-show="form.start-date.$dirty && form.start-date.$invalid">
+                        <span ng-show="form.start-date.$invalid">Please enter a valid Date</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-label">Employment End Date</div>
+                <div class="datebox">
+                    <input type="date"
+                        name="end-date"
+                        ng-model="employeeProfileModel.endDate"
+                        ng-required="false"
+                        min="1900-01-01"
+                        placeholder="yyyy-MM-dd" />
+                    <div class="form-error" ng-show="form.end-date.$dirty && form.end-date.$invalid">
+                        <span ng-show="form.end-date.$invalid">Please enter a valid Date</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <div class="button-group">
+        <button class="btn btn-info" ng-click="save(employeeProfileModel)" ng-disabled="form.$invalid" style="width:20%;">Save</button>
+        <button class="btn btn-primary" ng-click="cancel()" style="width:20%;">Cancel</button>
+    </div>
+</div>
