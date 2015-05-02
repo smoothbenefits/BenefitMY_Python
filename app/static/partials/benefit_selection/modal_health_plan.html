@@ -17,7 +17,7 @@
             <tbody>
                 <tr class="title-row">
                     <td colspan="2" class="plan-row-head"><span>Summary Document(s)</span></td>
-                    <td colspan="6" ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray">
+                    <td colspan="6" ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" class="upload-td">
                         <bmuploadviewer view-mode="list" feature-id="{{benefitName.id}}" upload-type="MedicalBenefit"></bmuploadviewer>
                     </td>
                 </tr>
@@ -53,6 +53,7 @@
             <thead>
                 <tr>
                     <th><span>{{benefitArray.type}}</span></th>
+                    <th><span>Summary Documents</span></th>
                     <th width="250"><span>Types</span></th>
                     <th width="180"><span>Total Premiums</span></th>
                     <th width="180"><span>Employee Premiums</span></th>
@@ -62,6 +63,20 @@
 
                 <tr ng-repeat="benefit in benefitArray.benefitList">
                     <td style="vertical-align: top;">{{benefit.name}}</td>
+                    <td class="upload-td">
+                        <bmuploadviewer 
+                            ng-if="benefitArray.type ==='Dental'"
+                            view-mode="list" 
+                            feature-id="{{benefit.id}}" 
+                            upload-type="DentalBenefit">
+                        </bmuploadviewer>
+                        <bmuploadviewer 
+                            ng-if="benefitArray.type ==='Vision'"
+                            view-mode="list" 
+                            feature-id="{{benefit.id}}" 
+                            upload-type="VisionBenefit">
+                        </bmuploadviewer>
+                    </td>
                     <td colspan="3" style="padding: 0;">
                         <table class="table">
                             <tr ng-repeat="option in benefit.options">

@@ -52,9 +52,8 @@ class UploadView(APIView):
     
     def _delete_from_upload_dependent(self, upload_dependent, upload_id):
         upload_dependents = upload_dependent.objects.filter(upload=upload_id)
-        if len(upload_dependents) > 0:
-            for upload_dependent in upload_dependents:
-                upload_dependents.delete()
+        for upload_dependent in upload_dependents:
+            upload_dependents.delete()
 
     def get(self, request,  pk, format=None):
         upload = self._get_object(pk)

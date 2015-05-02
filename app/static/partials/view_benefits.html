@@ -63,6 +63,7 @@
             <thead>
                 <tr>
                     <th><span>{{benefitArray.type}}</span></th>
+                    <th><span>Summary Documents</span></th>
                     <th width="250"><span>Types</span></th>
                     <th width="180"><span>Total Premiums<br />(per month)</span></th>
                     <th width="180"><span>Employee Premiums<br />(per pay period)</span></th>
@@ -74,6 +75,22 @@
                     <td style="vertical-align: top;">
                         {{benefit.name}}
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteBenefit(benefit.id)" href="javascript:void(0);">X</a>
+                    </td>
+                    <td class="upload-td">
+                        <bmuploadmanager 
+                            ng-if="benefitArray.type==='Dental'" 
+                            upload-type="DentalBenefit" 
+                            upload-mode="button" 
+                            feature-id="{{benefit.id}}" 
+                            hide-type="true">
+                        </bmuploadmanager>
+                        <bmuploadmanager 
+                            ng-if="benefitArray.type==='Vision'" 
+                            upload-type="VisionBenefit" 
+                            upload-mode="button" 
+                            feature-id="{{benefit.id}}" 
+                            hide-type="true">
+                        </bmuploadmanager>
                     </td>
                     <td colspan="3" style="padding: 0;">
                         <table class="table">
