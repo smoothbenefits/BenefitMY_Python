@@ -1,3 +1,4 @@
+import datetime
 import reversion
 
 from django.db import models
@@ -20,13 +21,15 @@ class EmployeeProfile(models.Model):
         max_length=20, choices=EMPLOYMENT_STATUS, null=True, blank=True)
 
     person = models.ForeignKey(Person,
+                                default=0,
                                 related_name="employee_profile_person")
 
     company = models.ForeignKey(Company,
+                                default=0,
                                 related_name="employee_profile_company")
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now)
+    updated_at = models.DateTimeField(auto_now=True, default=datetime.datetime.now)
 
     class Meta:
         unique_together = ('person', 'company')

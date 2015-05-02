@@ -14,7 +14,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'FsaService',
    'LifeInsuranceService',
    'employeePayrollService', 
-   'employmentProfileService',
+   'EmploymentProfileService',
    'DirectDepositService',
    'StdService',
    'LtdService',
@@ -31,7 +31,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             FsaService,
             LifeInsuranceService,
             employeePayrollService,
-            employmentProfileService,
+            EmploymentProfileService,
             DirectDepositService,
             StdService,
             LtdService){
@@ -138,7 +138,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
       });
 
       // I9 Form
-      employmentProfileService.getEmploymentAuthSummaryByUserId(userId).then(function(response){
+      EmploymentProfileService.getEmploymentAuthSummaryByUserId(userId).then(function(response){
         $scope.i9Info = response;
       });
 
@@ -395,11 +395,11 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
   ['$scope',
    '$state',
    'currentUser', 
-   'employmentProfileService', 
+   'EmploymentProfileService', 
    function($scope,
             $state,
             currentUser,
-            employmentProfileService){
+            EmploymentProfileService){
     $scope.employee = {auth_type: ''};
 
     var userPromise = currentUser.get().$promise.then(function(response){
@@ -410,7 +410,7 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
       // assign user id to current employee
       $scope.employee.userId = userId;
 
-      employmentProfileService.getEmploymentAuthByUserId(userId).then(function(response){
+      EmploymentProfileService.getEmploymentAuthByUserId(userId).then(function(response){
         $scope.fields = response;
       });
     });
@@ -446,7 +446,7 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
       {
         var signatureData = $sigdiv.jSignature('getData', 'svg');
         $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
-        employmentProfileService.saveEmploymentAuthByUserId($scope.employee, $scope.signatureImage).then(function(response){
+        EmploymentProfileService.saveEmploymentAuthByUserId($scope.employee, $scope.signatureImage).then(function(response){
           $state.go('employee_profile.i9');
         }, function(error){
           alert('Employment authorization has NOT been saved. Please try again later.');

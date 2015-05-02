@@ -13,7 +13,7 @@
         <div class="col-md-6 col-md-offset-3">
             <div class='panel'>
                 <div class='panel-heading' ng-click="basicInfoExpanded = !basicInfoExpanded">
-                    <b class="clickable"><span class="glyphicon glyphicon-collapse-down"></span>  Basic Information</b>
+                    <b class="clickable"><span class="fa fa-toggle-down"></span>  Basic Information</b>
 
                 </div>
                 <div class="panel-body" collapse="!basicInfoExpanded">
@@ -87,8 +87,8 @@
             </div>
             <div class='panel' ng-show="employee.employeeProfile">
                 <div class='panel-heading' ng-click="employeeProfileExpanded = !employeeProfileExpanded">
-                    <b class="clickable"><span class="glyphicon glyphicon-collapse-down"></span>  Employee Profile</b>
-                    <a ng-click="editEmployeeProfile();$event.stopPropagation();"><span class="glyphicon glyphicon-edit pull-right"></span></a>
+                    <b class="clickable"><span class="fa fa-toggle-down"></span>  Employee Profile</b>
+                    <a ng-click="editEmployeeProfile();$event.stopPropagation();"><span class="fa fa-edit pull-right"></span></a>
                 </div>
                 <div class="panel-body" collapse="!employeeProfileExpanded">
                     <ul class="list-group">
@@ -160,7 +160,7 @@
             </div>
             <div class='panel' ng-show="employee.emergency_contact.length > 0">
                 <div class='panel-heading' ng-click="emergencyContactExpanded = !emergencyContactExpanded">
-                    <b class="clickable"><span class="glyphicon glyphicon-collapse-down"></span>  Emergency Contact</b>
+                    <b class="clickable"><span class="fa fa-toggle-down"></span>  Emergency Contact</b>
                 </div>
                 <div class="panel-body" collapse="!emergencyContactExpanded">
                     <ul class="list-group" ng-repeat="emergency in employee.emergency_contact">
@@ -196,7 +196,7 @@
             </div>
             <div class='panel' ng-show="employee.i9.length > 0">
                 <div class='panel-heading' ng-click="I9Expanded = !I9Expanded">
-                    <b class="clickable"><span class="glyphicon glyphicon-collapse-down"></span>  I-9 Information</b>
+                    <b class="clickable"><span class="fa fa-toggle-down"></span>  I-9 Information</b>
                 </div>
                 <div class="panel-body" collapse="!I9Expanded">
                     <ul class="list-group">
@@ -210,7 +210,7 @@
             </div>
             <div class='panel' ng-show="employee.w4.length > 0">
                 <div class='panel-heading' ng-click="W4Expanded = !W4Expanded">
-                    <b class="clickable"><span class="glyphicon glyphicon-collapse-down"></span>  W4 Information</b>
+                    <b class="clickable"><span class="fa fa-toggle-down"></span>  W4 Information</b>
                 </div>
                 <div class="panel-body" collapse="!W4Expanded">
                     <ul class="list-group">
