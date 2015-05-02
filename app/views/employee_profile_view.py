@@ -6,6 +6,7 @@ from rest_framework import status
 from app.models.employee_profile import EmployeeProfile
 from app.serializers.employee_profile_serializer import (
     EmployeeProfileSerializer, EmployeeProfilePostSerializer)
+from app.models.person import Person
 
 class EmployeeProfileView(APIView):
     def _get_object(self, pk):
@@ -39,13 +40,26 @@ class EmployeeProfileView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class EmployeeProfileByPersonView(APIView):
-    def _get_object(self, person_id):
+class EmployeeProfileByPersonCompanyView(APIView):
+    def _get_object(self, person_id, company_id):
         try:
-            return EmployeeProfile.objects.get(person=person_id)
+            return EmployeeProfile.objects.get(person=person_id, company=company_id)
         except EmployeeProfile.DoesNotExist:
             raise Http404
-    def get(self, request, person_id, format=None):
-        employee_profile = self._get_object(person_id)
+    def get(self, request, person_id, company_id, format=None):
+        employee_profile = self._get_object(person_id, company_id)
+        serializer = EmployeeProfileSerializer(employee_profile)
+        return Response(serializer.data)
+
+class EmployeeProfileByCompanyUserView(APIView):
+    def _get_object(self, company_id, user_id):
+        try:
+            person = Person.objects.get(user=user_id, relationship='self')
+            return EmployeeProfile.objects.get(person=person.id, company=company_id)
+        except (Person.DoesNotExist, EmployeeProfile.DoesNotExist):
+            raise Http404
+            
+    def get(self, request, company_id, user_id, format=None):
+        employee_profile = self._get_object(company_id, user_id)
         serializer = EmployeeProfileSerializer(employee_profile)
         return Response(serializer.data)

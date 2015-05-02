@@ -65,7 +65,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
             if(!validatePersonInfo(self)){
             //we should remove the family person.
             //Do we have this API?
-              peopleRepository.delete({personId:self.id});
+              peopleRepository.ById.delete({personId:self.id});
               failed();
             }
             else{

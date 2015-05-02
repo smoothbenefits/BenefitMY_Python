@@ -9,12 +9,14 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-
-    <!-- Here is the info table for the employee details -->
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <div class='panel'>
-                <div class="panel-body">
+                <div class='panel-heading' ng-click="basicInfoExpanded = !basicInfoExpanded">
+                    <b class="clickable"><span class="fa fa-toggle-down"></span>  Basic Information</b>
+
+                </div>
+                <div class="panel-body" collapse="!basicInfoExpanded">
                     <ul class="list-group">
                         <li class="list-group-item">
                             <h4 class="col-md-5">
@@ -81,7 +83,86 @@
                             <div style="clear:both"></div>
                         </li>
                     </ul>
-                    <h4 style="margin-top:40px;" ng-show="employee.emergency_contact"> Emergency Contact</h4>
+                </div>
+            </div>
+            <div class='panel' ng-show="employee.employeeProfile">
+                <div class='panel-heading' ng-click="employeeProfileExpanded = !employeeProfileExpanded">
+                    <b class="clickable"><span class="fa fa-toggle-down"></span>  Employee Profile</b>
+                    <a ng-click="editEmployeeProfile();$event.stopPropagation();"><span class="fa fa-edit pull-right"></span></a>
+                </div>
+                <div class="panel-body" collapse="!employeeProfileExpanded">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">
+                                Job Title
+                            </h4>
+                            <div class="col-md-7">
+                                {{employee.employeeProfile.jobTitle}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">
+                                Employment Type
+                            </h4>
+                            <div class="col-md-7">
+                                {{employee.employeeProfile.employmentType}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">
+                                Employment Status
+                            </h4>
+                            <div class="col-md-7">
+                                {{employee.employeeProfile.employmentStatus}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">
+                                Current Annual Base Salary
+                            </h4>
+                            <div class="col-md-7">
+                                {{employee.employeeProfile.annualBaseSalary}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">
+                                Employment Start Date
+                            </h4>
+                            <div class="col-md-7">
+                                {{employee.employeeProfile.startDateForDisplay()}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">
+                                Employment Termination Date
+                            </h4>
+                            <div class="col-md-7">
+                                {{employee.employeeProfile.endDateForDisplay()}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="col-md-5">
+                                Profile Last Updated Time
+                            </h4>
+                            <div class="col-md-7">
+                                {{employee.employeeProfile.lastUpdateDateTime}}
+                            </div>
+                            <div style="clear:both"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class='panel' ng-show="employee.emergency_contact.length > 0">
+                <div class='panel-heading' ng-click="emergencyContactExpanded = !emergencyContactExpanded">
+                    <b class="clickable"><span class="fa fa-toggle-down"></span>  Emergency Contact</b>
+                </div>
+                <div class="panel-body" collapse="!emergencyContactExpanded">
                     <ul class="list-group" ng-repeat="emergency in employee.emergency_contact">
                         <li class="list-group-item">
                             <h4 class="col-md-5">
@@ -111,7 +192,13 @@
                             <div style="clear:both"></div>
                         </li>
                     </ul>
-                    <h4 style="margin-top:40px;" ng-show="employee.i9"> I-9 Information</h4>
+                </div>
+            </div>
+            <div class='panel' ng-show="employee.i9.length > 0">
+                <div class='panel-heading' ng-click="I9Expanded = !I9Expanded">
+                    <b class="clickable"><span class="fa fa-toggle-down"></span>  I-9 Information</b>
+                </div>
+                <div class="panel-body" collapse="!I9Expanded">
                     <ul class="list-group">
                         <li class="list-group-item" ng-repeat="entry in employee.i9">
                             <h4 class="col-md-5">{{entry.display_name}}</h4>
@@ -119,7 +206,13 @@
                             <div style="clear:both"></div>
                         </li>
                     </ul>
-                    <h4 style="margin-top:40px;" ng-show="employee.w4"> W4 Information</h4>
+                </div>
+            </div>
+            <div class='panel' ng-show="employee.w4.length > 0">
+                <div class='panel-heading' ng-click="W4Expanded = !W4Expanded">
+                    <b class="clickable"><span class="fa fa-toggle-down"></span>  W4 Information</b>
+                </div>
+                <div class="panel-body" collapse="!W4Expanded">
                     <ul class="list-group">
                         <li class="list-group-item" ng-repeat="entry in employee.w4">
                             <h4 class="col-md-5">{{entry.display_name}}</h4>
@@ -131,5 +224,6 @@
             </div>
         </div>
     </div>
+
     <div class="back"><a href="javascript:void(0);" ng-click="backToList()">&laquo; Back</a></div>
 </div> <!-- content-header -->
