@@ -45,6 +45,6 @@ class FSAByUserView(APIView):
             raise Http404
 
     def get(self, request, user_id, format=None):
-        fsa = _get_object(user_id)
+        fsa = self._get_object(user_id)
         serializer = FsaSerializer(fsa)
         return Response(serializer.data)
