@@ -106,14 +106,14 @@ settings.constant('tabLayoutGlobalConfig', [
             },
             {
                 id: 2,
-                verbose_name: "Basic Life Ins. (AD&D)",
+                verbose_name: "Basic Life Insurance (AD&D)",
                 name: "basic_life",
                 active: false,
                 state: "broker_add_benefit.basic_life_insurance"
             },
             {
                 id: 3,
-                verbose_name: "Supplemental Life Ins.",
+                verbose_name: "Suppl. Life Insurance",
                 name: "supplemental_life",
                 active: false,
                 state: "broker_add_benefit.supplemental_life_insurance"
