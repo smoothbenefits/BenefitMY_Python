@@ -181,16 +181,36 @@ benefitmyDomainModelFactories.factory('employeeTaxRepository', ['$resource',
 ]);
 benefitmyDomainModelFactories.factory('peopleRepository', ['$resource',
   function($resource){
-    return $resource('/api/v1/people/:personId', {personId:'@personId'});
+    return {
+        ById: $resource('/api/v1/people/:personId', {personId:'@personId'}),
+        ByUser: $resource('/api/v1/user/:userId/person', {userId:'@userId'})
+    };
   }
 ]);
 
 // FSA domain repo
+benefitmyDomainModelFactories.factory('FsaPlanRepository', ['$resource', 
+  function ($resource) {
+    return $resource('/api/v1/brokers/:id/fsa', {id: '@id'});
+  }
+]);
+
+// FSA plan link to company
+benefitmyDomainModelFactories.factory('CompanyFsaPlanRepository', ['$resource', 
+  function ($resource) {
+    return {
+      ById: $resource('/api/v1/broker_company/:id/fsa', {id: '@id'}),
+      ByCompany: $resource('/api/v1/company/:companyId/fsa', {companyId: '@companyId'})
+    };
+  }
+]);
+
+// Company FSA plan link to user
 benefitmyDomainModelFactories.factory('FsaRepository', ['$resource',
   function ($resource){
     return {
-      ByUser: $resource('/api/v1/fsa/:userId', {userId:'@user_id'}),
-      ById: $resource('/api/v1/fsa/:id', {id:'@id'}, { 
+      ByUser: $resource('/api/v1/user_company/:userId/fsa', {userId:'@user_id'}),
+      ById: $resource('/api/v1/company_users/:id/fsa', {id:'@id'}, { 
         update: {
             method: 'PUT'
         }
@@ -259,7 +279,9 @@ benefitmyDomainModelFactories.factory('UploadRepository', ['$resource',
       upload: $resource('/api/v1/upload/:pk/', {pk:'@pk'}),
       uploadsByUser: $resource('/api/v1/users/:pk/uploads/', {pk: '@pk'}),
       uploadsByCompany: $resource('/api/v1/companies/:compId/uploads/:pk', 
-                                 {compId:'@compId', pk: '@pk'})
+                                 {compId:'@compId', pk: '@pk'}),
+      uploadApplicationFeature: $resource('/api/v1/upload/application_features/:app_feature/:feature_id',
+                                          {app_feature:'@app_feature', feature_id:'@feature_id'})
     };
   }
 ]);
@@ -308,6 +330,20 @@ benefitmyDomainModelFactories.factory('LtdRepository', ['$resource',
       CompanyUserPlanByCompany: $resource('/api/v1/company_users/:companyId/ltd_insurance/', {companyId:'@company_id'}),
       CompanyUserPlanByUser: $resource('/api/v1/users/:userId/ltd_insurance/', {userId:'@user_id'}),
       CompanyUserPlanById: $resource('/api/v1/users/:id/ltd_insurance/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      })
+    };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('EmployeeProfileRepository', ['$resource',
+  function($resource){
+    return {
+      ByPersonCompany: $resource('/api/v1/person/:personId/company/:companyId/employee_profile', {personId:'@personId', companyId:'@companyId'}),
+      ByCompanyUser: $resource('/api/v1/company/:companyId/user/:userId/employee_profile', {userId:'@userId', companyId:'@companyId'}),
+      ById: $resource('/api/v1/employee_profile/:id', {id:'@id'}, { 
         update: {
             method: 'PUT'
         }

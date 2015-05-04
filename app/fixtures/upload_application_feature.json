@@ -1,0 +1,11 @@
+[ 
+  {
+    "fields": {
+      "application_feature": 3,
+      "feature_id": 1,
+      "upload": 4
+    },
+    "model": "app.uploadapplicationfeature",
+    "pk": 1
+  }
+]

@@ -28,7 +28,7 @@ from app.models.insurance.ltd_insurance_plan import LtdInsurancePlan
 from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
 from app.models.insurance.user_company_ltd_insurance_plan import \
     UserCompanyLtdInsurancePlan
-from app.models.fsa import FSA
+from app.models.fsa.fsa import FSA
 from app.models.direct_deposit import DirectDeposit
 from app.models.user_bank_account import UserBankAccount
 from app.views.permission import (
@@ -195,6 +195,10 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
 
         return current_col_num
 
+    ''' Direct Deposit summary is expected to be visible to employer only
+        Broker should not need such information
+    '''
+    @user_passes_test(company_employer)
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('Direct Deposit')
@@ -531,7 +535,10 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
         return col_num + 2
 
-    @user_passes_test(company_employer)
+    ''' Both broker and employer should be able to get summary of all 
+        benefit situations of all employees of the company
+    '''
+    @user_passes_test(company_employer_or_broker)
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('All Employee Summary')
@@ -648,6 +655,9 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersSummaryExc
 
         return col_num + 7
 
+    ''' Both broker and employer should be able to get summary of beneficiary 
+        information about employees
+    '''  
     @user_passes_test(company_employer_or_broker)
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')

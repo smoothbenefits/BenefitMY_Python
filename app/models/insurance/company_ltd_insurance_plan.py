@@ -9,7 +9,10 @@ from ltd_insurance_plan import LtdInsurancePlan
 class CompanyLtdInsurancePlan(models.Model):
 
     elimination_period_in_days= models.IntegerField(blank=True, null=True)
+
+    # This is in Years for LTD
     duration= models.IntegerField(blank=True, null=True)
+
     percentage_of_salary = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True)
 

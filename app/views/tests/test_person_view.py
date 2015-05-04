@@ -1,8 +1,8 @@
 import json
+import sys
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from view_test_base import ViewTestBase
-import json
 
 
 class PersonTestCase(TestCase, ViewTestBase):
@@ -61,3 +61,36 @@ class PersonTestCase(TestCase, ViewTestBase):
         self.assertIn('emergency_contact', person)
         person_emergency_contact = person['emergency_contact']
         self.assertEqual(len(person_emergency_contact), 0)
+
+    def test_get_person_by_user_success(self):
+        response = self.client.get(reverse('person_by_user', kwargs={'user_id': self.normalize_key(1)}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.content, '')
+        person_response = json.loads(response.content)
+        self.assertIn('person', person_response)
+        person = person_response['person']
+        self.assertTrue('id' in person and person['id']==self.normalize_key(1))
+        self.assertTrue('person_type' in person and person['person_type']=='primary_contact')
+        self.assertTrue('relationship' in person and person['relationship']=='self')
+        self.assertTrue('first_name' in person and person['first_name']=='John')
+        self.assertTrue('last_name' in person and person['last_name']=='Hancock')
+        self.assertTrue('email' in person and not person['email'])
+        self.assertTrue('gender' in person and person['gender']=='F')
+        self.assertNotIn('ssn', person)
+        self.assertTrue('birth_date' in person and person['birth_date']=='1978-09-05')
+        self.assertTrue('user' in person and person['user']==self.normalize_key(1))
+        self.assertTrue('company' in person and person['company']==self.normalize_key(1))
+        self.assertIn('emergency_contact', person)
+        person_emergency_contact = person['emergency_contact']
+        self.assertEqual(len(person_emergency_contact), 0)
+
+    def test_get_person_by_non_exist_user(self):
+        response=self.client.get(reverse('person_by_user', kwargs={'user_id':self.normalize_key(sys.maxint)}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_person_by_exist_user_non_exist_person(self):
+        response=self.client.get(reverse('person_by_user', kwargs={'user_id':self.normalize_key(4)}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 404)
