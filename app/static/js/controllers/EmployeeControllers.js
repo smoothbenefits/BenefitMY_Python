@@ -1025,6 +1025,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var optionalLifePlans;
       var stdPlans;
       var ltdPlans;
+      var fsaPlans;
 
       var promise = $scope.companyIdPromise.then(function(companyId){
         return LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic');

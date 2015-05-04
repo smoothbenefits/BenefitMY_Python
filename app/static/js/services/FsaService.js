@@ -95,9 +95,15 @@ benefitmyService.factory(
     var deleteCompanyFsaPlan = function(companyPlan) {
       var deferred = $q.defer();
 
-      CompanyFsaPlanRepository.ById.delete({id: companyPlan}).$promise.then(function(response){
-        deferred.resolve(response);
-      }, function(error){
+      CompanyFsaPlanRepository.ById.get({id: companyPlan}).$promise.then(function(response){
+        var fsaPlanId =  response.fsa_plan.id;
+        CompanyFsaPlanRepository.ById.delete({id: companyPlan}).$promise.then(function(response) {
+          FsaPlanRepository.delete({id: fsaPlanId}).$promise.then(function(response) {
+            deferred.resolve(companyPlan);
+          });
+        });
+      })
+      .catch(function(error) {
         deferred.reject(error);
       });
 
