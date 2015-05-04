@@ -1005,6 +1005,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
    'LifeInsuranceService',
    'StdService',
    'LtdService',
+   'FsaService', 
     function employeeBenefitsSignup(
       $scope,
       $state,
@@ -1012,7 +1013,8 @@ var employeeBenefitsSignup = employeeControllers.controller(
       $controller,
       LifeInsuranceService,
       StdService,
-      LtdService){
+      LtdService, 
+      FsaService){
 
       // Inherite scope from base 
       $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1023,6 +1025,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var optionalLifePlans;
       var stdPlans;
       var ltdPlans;
+      var fsaPlans;
 
       var promise = $scope.companyIdPromise.then(function(companyId){
         return LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic');
@@ -1041,6 +1044,10 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(ltdPlansResponse) {
         ltdPlans = ltdPlansResponse;
+        return FsaService.getFsaPlanForCompany(companyId);
+      })
+      .then(function(fsaPlansResponse) {
+        fsaPlans = fsaPlansResponse;
       });
 
       promise.then(function(result){
@@ -1067,23 +1074,25 @@ var employeeBenefitsSignup = employeeControllers.controller(
           }
         }
 
-        $scope.tabs.push({
-              "heading": "FSA",
-              "state":"employee_benefit_signup.fsa"
+        if (fsaPlans.length > 0) {
+          $scope.tabs.push({
+            "heading": "FSA",
+            "state": "employee_benefit_signup.fsa"
           });
+        }
 
         if (stdPlans.length > 0) {
-            $scope.tabs.push({
-                "heading": "STD",
-                "state": "employee_benefit_signup.std"
-            });
+          $scope.tabs.push({
+              "heading": "STD",
+              "state": "employee_benefit_signup.std"
+          });
         }
 
         if (ltdPlans.length > 0) {
-            $scope.tabs.push({
-                "heading": "LTD",
-                "state": "employee_benefit_signup.ltd"
-            });
+          $scope.tabs.push({
+              "heading": "LTD",
+              "state": "employee_benefit_signup.ltd"
+          });
         }
 
         // Always default to set the first tab be active.
@@ -1511,6 +1520,14 @@ var fsaBenefitsSignup = employeeControllers.controller(
           { text: 'Return from unpaid leave of absence by employee or spouse', value: 11 }
         ];
 
+        $scope.companyIdPromise.then(function(companyId) {
+          FsaService.getFsaPlanForCompany(companyId).then(function(fsaPlanForCompany) {
+            // Current implementation implies one company will only have one FSA plan.
+            // If use case changes in the future, we need to update the employee signup flow.
+            $scope.fsaPlan = fsaPlanForCompany[0];
+          });
+        });
+
         FsaService.getFsaElectionForUser(employeeId, function(response) {
           $scope.fsaElection = response;
           if (response.update_reason && response.update_reason.length > 0){
@@ -1523,7 +1540,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
         // Whether the user has selected a reason for updating 
         // his/her FSA configuration.
         $scope.isFsaUpdateReasonSelected = function() {
-          return $scope.selectedFsaUpdateReason.value > 0;
+          return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value > 0;
         };
 
         $scope.save = function(){

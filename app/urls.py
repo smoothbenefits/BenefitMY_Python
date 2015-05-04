@@ -189,7 +189,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company_users/(?P<pk>\w+)/fsa/?$' % PREFIX,
         FsaView.as_view(), name='company_users_fsa_api'),
 
-    url(r'^%s/user_company/(?P<pk>\w+)/fsa/?$' % PREFIX,
+    url(r'^%s/user_company/(?P<user_id>\w+)/fsa/?$' % PREFIX,
         FSAByUserView.as_view(), name='user_company_fsa_api'),
 
     url(r'^%s/broker_company/(?P<pk>\w+)/fsa/?$' % PREFIX,
