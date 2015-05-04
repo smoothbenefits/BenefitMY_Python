@@ -8,7 +8,9 @@ from std_insurance_plan import StdInsurancePlan
 @reversion.register
 class CompanyStdInsurancePlan(models.Model):
 
+    # This is in Weeks for STD
     duration= models.IntegerField(blank=True, null=True)
+    
     percentage_of_salary = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True)
 
