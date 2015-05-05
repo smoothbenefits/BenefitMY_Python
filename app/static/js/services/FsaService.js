@@ -1,10 +1,122 @@
+/* global moment */
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory(
   'FsaService', 
   ['FsaRepository',
-  function (FsaRepository){
+   'FsaPlanRepository', 
+   'CompanyFsaPlanRepository', 
+   '$q',
+   function (FsaRepository,
+             FsaPlanRepository,
+             CompanyFsaPlanRepository, 
+             $q){
+               
+    var mapFsaPlanViewModelToDomainModel = function(broker, fsaPlanView) {
+      return {
+        broker_user: broker,
+        name: fsaPlanView.name
+      };
+    };
+
+    var mapFsaDomainModelToViewModel = function(fsaPlan) {
+      return {
+        companyPlanId: fsaPlan.id,
+        company: fsaPlan.company,
+        fsaPlanName: fsaPlan.fsa_plan.name,
+        created: moment(fsaPlan.created_at).format(DATE_FORMAT_STRING),
+        updated: moment(fsaPlan.updated_at).format(DATE_FORMAT_STRING)
+      };
+    };
+    
+    var createFsaPlan = function(broker, fsaPlan) {
+      var deferred = $q.defer();
+      
+      // To save a new FSA plan, use broker user id in the URL since 
+      // there is no plan id assigned to the new plan yet.
+      var fsaDomainModel = mapFsaPlanViewModelToDomainModel(broker, fsaPlan);
+      FsaPlanRepository.save({id: broker}, fsaDomainModel).$promise.then(function(response){
+        var planId = response.id;
+        deferred.resolve(planId);
+      }, function(error){
+        deferred.reject(error);
+      });
+      
+      return deferred.promise;
+    };
+    
+    var assignFsaPlanToCompany = function(company, fsaPlan){
+      var deferred = $q.defer();
+      
+      // To assign a company to a new FSA plan, use company id in the URL 
+      // since there is no company plan id assigned to the new plan yet.
+      var postData = {"company": company, "fsa_plan": fsaPlan};
+      CompanyFsaPlanRepository.ById.save({id: company}, postData).$promise.then(function(response){
+        deferred.resolve(response);
+      }, function(error){
+        deferred.reject(error);
+      });
+      
+      return deferred.promise;
+    };
+    
+    var signUpCompanyForFsaPlan = function(broker, company, fsaPlan){
+      var deferred = $q.defer();
+      
+      createFsaPlan(broker, fsaPlan).then(function(fsaPlanId){
+        assignFsaPlanToCompany(company, fsaPlanId).then(function(response){
+          deferred.resolve(response);
+        });
+      }).catch(function(error){
+        deferred.reject(error);
+      });
+      
+      return deferred.promise;
+    };
+
+    var getFsaPlanForCompany = function(company){
+      var deferred = $q.defer();
+
+      CompanyFsaPlanRepository.ByCompany.query({companyId: company}).$promise.then(function(fsaPlanDomainModels){
+        var fsaPlans = [];
+        _.each(fsaPlanDomainModels, function(fsaPlanDomainModel) {
+          var fsaPlanViewModel = mapFsaDomainModelToViewModel(fsaPlanDomainModel);
+          fsaPlans.push(fsaPlanViewModel);
+        });
+
+        deferred.resolve(fsaPlans);
+      }, function(error) {
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    };
+
+    var deleteCompanyFsaPlan = function(companyPlan) {
+      var deferred = $q.defer();
+
+      CompanyFsaPlanRepository.ById.get({id: companyPlan}).$promise.then(function(response){
+        var fsaPlanId =  response.fsa_plan.id;
+        CompanyFsaPlanRepository.ById.delete({id: companyPlan}).$promise.then(function(response) {
+          FsaPlanRepository.delete({id: fsaPlanId}).$promise.then(function(response) {
+            deferred.resolve(companyPlan);
+          });
+        });
+      })
+      .catch(function(error) {
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    };
+    
     return {
+      signUpCompanyForFsaPlan: signUpCompanyForFsaPlan,
+
+      getFsaPlanForCompany: getFsaPlanForCompany,
+
+      deleteCompanyFsaPlan: deleteCompanyFsaPlan,
+
       getFsaElectionForUser: function(user_id, callBack) {
 
         FsaRepository.ByUser.get({userId:user_id})

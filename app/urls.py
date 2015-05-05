@@ -2,7 +2,12 @@ from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 
-from app.views.person_view import PersonView
+from app.views.person_view import (
+    PersonView, PersonByUserView)
+from app.views.employee_profile_view import (
+    EmployeeProfileView,
+    EmployeeProfileByPersonCompanyView,
+    EmployeeProfileByCompanyUserView)
 from app.views.user_view import (
     UserView,
     UsersView,
@@ -83,16 +88,20 @@ from app.views.insurance.user_company_ltd_insurance_plan_view import (
 from app.views.insurance.ltd_insurance_plan_view import LtdInsurancePlanView
 
 
-
-
-
-
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
 from app.views.direct_deposit_view import DirectDepositView
 from app.views.company_features_view import CompanyFeaturesView
-from app.views.fsa_view import FSAView
+from app.views.sys_application_feature_view import SysApplicationFeatureView
+
+from app.views.fsa.fsa_view import (
+    FsaView,
+    FSAByUserView)
+from app.views.fsa.company_fsa_plan_view import (
+    CompanyFsaPlanView,
+    CompanyFsaPlanByCompanyView)
+from app.views.fsa.fsa_plan_view import FsaPlanView
 
 from app.views.company_user_summary_view import (
     CompanyUsersSummaryExcelExportView,
@@ -102,6 +111,8 @@ from app.views.company_user_summary_view import (
 from app.views.upload import (UserUploadView,
                               UploadView,
                               get_company_uploads)
+from app.views.upload_application_feature_view import UploadApplicationFeatureView
+from app.views.upload_audience_view import UploadAudienceByCompanyView
 
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
 
@@ -110,6 +121,7 @@ PREFIX = "api/v1"
 urlpatterns = patterns('app.views',
     url(r'^dashboard/?$', dashboard_view.index, name='dashboard'),
     url(r'^%s/people/(?P<pk>\w+)/?$' % PREFIX, PersonView.as_view(), name='people_by_id'),
+    url(r'^%s/user/(?P<user_id>\w+)/person/?$' % PREFIX, PersonByUserView.as_view(), name='person_by_user'),
 
     url(r'^%s/benefit_types/?$' % PREFIX, BenefitTypeView.as_view()),
 
@@ -162,19 +174,33 @@ urlpatterns = patterns('app.views',
     url(r'^%s/documents/(?P<pk>\w+)/?$' % PREFIX, DocumentView.as_view()),
     url(r'^%s/documents/(?P<pk>\w+)/signature/?$' % PREFIX, DocumentSignatureView.as_view()),
 
-    url(r'^%s/fsa/(?P<pk>\w+)/?$' % PREFIX, FSAView.as_view(), name='fsa_api'),
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
     url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
-
+    url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
     url(r'^%s/benefits/?$' % PREFIX, benefits),
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
 
+    # FSA api
+    url(r'^%s/brokers/(?P<pk>\w+)/fsa/?$' % PREFIX, 
+        FsaPlanView.as_view(), name='broker_fsa_api'),
 
+    url(r'^%s/company_users/(?P<pk>\w+)/fsa/?$' % PREFIX,
+        FsaView.as_view(), name='company_users_fsa_api'),
+
+    url(r'^%s/user_company/(?P<user_id>\w+)/fsa/?$' % PREFIX,
+        FSAByUserView.as_view(), name='user_company_fsa_api'),
+
+    url(r'^%s/broker_company/(?P<pk>\w+)/fsa/?$' % PREFIX,
+        CompanyFsaPlanView.as_view(), name='broker_company_fsa_api'),
+
+    url(r'^%s/company/(?P<pk>\w+)/fsa/?$' % PREFIX,
+        CompanyFsaPlanByCompanyView.as_view(), name='company_fsa_api'),
+
+    # Life insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         LifeInsurancePlanView.as_view(), name='broker_life_insurance_api'),
-
 
     url(r'^%s/users/(?P<pk>\w+)/life_insurance/?$' % PREFIX,
         UserCompanyLifeInsuranceView.as_view(), name='user_life_insurance_api'),
@@ -185,11 +211,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
 
-
-
+    # STD insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
         StdInsurancePlanView.as_view(), name='broker_std_insurance_api'),
-
 
     url(r'^%s/users/(?P<pk>\w+)/std_insurance/?$' % PREFIX,
         UserCompanyStdInsuranceView.as_view(), name='user_std_insurance_api'),
@@ -200,11 +224,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
         CompanyStdInsurancePlanView.as_view(), name='company_std_insurance_plan_api'),
 
-
-
+    # LTD insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         LtdInsurancePlanView.as_view(), name='broker_ltd_insurance_api'),
-
 
     url(r'^%s/users/(?P<pk>\w+)/ltd_insurance/?$' % PREFIX,
         UserCompanyLtdInsuranceView.as_view(), name='user_ltd_insurance_api'),
@@ -214,7 +236,6 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
-
 
     # util api
 
@@ -234,6 +255,22 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<comp_id>\w+)/uploads/(?P<pk>\w+)/?$' % PREFIX,
         get_company_uploads,
         name='get_comp_uploads'),
+    url(r'^%s/upload/application_features/(?P<pk>\w+)/(?P<feature_id>\w+)/?$' % PREFIX,
+        UploadApplicationFeatureView.as_view(),
+        name='uploads_application_feature_api'),
+    url(r'^%s/upload/audience/(?P<comp_id>\w+)/?$' % PREFIX,
+        UploadAudienceByCompanyView.as_view(),
+        name='upload_audience_api'),
+
+    url(r'^%s/employee_profile/(?P<pk>\w+)/?$' % PREFIX,
+        EmployeeProfileView.as_view(),
+        name='employee_profile_api'),
+    url(r'^%s/person/(?P<person_id>\w+)/company/(?P<company_id>\w+)/employee_profile/?$' % PREFIX,
+        EmployeeProfileByPersonCompanyView.as_view(),
+        name='employee_profile_by_person_company_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/user/(?P<user_id>\w+)/employee_profile/?$' % PREFIX,
+        EmployeeProfileByCompanyUserView.as_view(),
+        name='employee_profile_by_company_user_api'),
 )
 
 

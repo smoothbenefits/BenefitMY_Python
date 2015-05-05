@@ -1,14 +1,14 @@
 import reversion
 
 from django.db import models
-from django.conf import settings
+from app.custom_authentication import AuthUser
 
 INSURANCE_TYPES = ([(item, item) for item in ['Basic', 'Extended']])
 
 @reversion.register
 class LifeInsurancePlan(models.Model):
     name = models.CharField(max_length=255)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(AuthUser,
                              related_name="life_insurance_plan")
     attachment = models.CharField(max_length=2048,
                                   blank=True,

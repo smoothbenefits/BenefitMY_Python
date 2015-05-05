@@ -12,6 +12,47 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 2
+  },
+  {
+    "fields": {
+      "feature": "MedicalBenefit"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "feature": "DentalBenefit"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "feature": "VisionBenefit"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "feature": "I9"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "feature": "Manager"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "feature": "Deposit"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 8
   }
-
-  ]
+]

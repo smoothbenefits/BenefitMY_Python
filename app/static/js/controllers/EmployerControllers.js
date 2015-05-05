@@ -2,28 +2,28 @@ var employersController = angular.module('benefitmyApp.employers.controllers',[]
 
 
 var employerHome = employersController.controller('employerHome',
-                                                  ['$scope',
-                                                  '$location',
-                                                  'employerRepository',
-                                                  'currentUser',
-                                                  'clientListRepository',
-                                                  'documentRepository',
-                                                  'templateRepository',
-                                                  'benefitListRepository',
-                                                  'countRepository',
-                                                  'documentTypeService',
-                                                  'BenefitElectionService',
-  function employerHome($scope,
-                        $location,
-                        employerRepository,
-                        currentUser,
-                        clientListRepository,
-                        documentRepository,
-                        templateRepository,
-                        benefitListRepository,
-                        countRepository,
-                        documentTypeService,
-                        BenefitElectionService){
+  ['$scope',
+  '$location',
+  'employerRepository',
+  'currentUser',
+  'clientListRepository',
+  'documentRepository',
+  'templateRepository',
+  'benefitListRepository',
+  'countRepository',
+  'documentTypeService',
+  'BenefitElectionService',
+  function ($scope,
+            $location,
+            employerRepository,
+            currentUser,
+            clientListRepository,
+            documentRepository,
+            templateRepository,
+            benefitListRepository,
+            countRepository,
+            documentTypeService,
+            BenefitElectionService){
 
     $scope.employeeCount = 0;
     $scope.brokerCount = 0;
@@ -299,24 +299,27 @@ var employerUser = employersController.controller('employerUser',
 ]);
 
 var employerBenefits = employersController.controller('employerBenefits', 
-    ['$scope', 
-    '$location', 
-    '$stateParams', 
-    'benefitDisplayService', 
-    'LifeInsuranceService', 
-    'StdService',
-    'LtdService',
-  function employerBenefits(
-    $scope, 
-    $location, 
-    $stateParams, 
-    benefitDisplayService, 
-    LifeInsuranceService, 
-    StdService,
-    LtdService){
+  ['$scope', 
+  '$location', 
+  '$stateParams', 
+  'benefitDisplayService', 
+  'LifeInsuranceService', 
+  'StdService',
+  'LtdService',
+  'FsaService', 
+  function ($scope, 
+            $location, 
+            $stateParams, 
+            benefitDisplayService, 
+            LifeInsuranceService, 
+            StdService,
+            LtdService, 
+            FsaService){
+
     var compId = $stateParams.company_id;
     $scope.role = 'Admin';
     $scope.showAddBenefitButton = false;
+
     benefitDisplayService($stateParams.company_id, false, function(groupObj, nonMedicalArray, benefitCount){
       $scope.medicalBenefitGroup = groupObj;
       $scope.nonMedicalBenefitArray = nonMedicalArray;
@@ -346,6 +349,10 @@ var employerBenefits = employersController.controller('employerBenefits',
 
     LtdService.getLtdPlansForCompany($stateParams.company_id).then(function(plans) {
         $scope.ltdPlans = plans;
+    });
+
+    FsaService.getFsaPlanForCompany($stateParams.company_id).then(function(plans) {
+      $scope.fsaPlans = plans;
     });
   }
 ]);
@@ -601,17 +608,26 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   '$scope', 
   '$location', 
   '$stateParams', 
+  '$modal',
+  '$controller',
   'profileSettings', 
   'employeeFamily',
   'employmentAuthRepository',
   'employeeTaxRepository',
+  'EmployeeProfileService',
   function($scope, 
            $location, 
-           $stateParams, 
+           $stateParams,
+           $modal, 
+           $controller,
            profileSettings,
            employeeFamily,
            employmentAuthRepository,
-           employeeTaxRepository){
+           employeeTaxRepository,
+           EmployeeProfileService){
+
+    // Inherit base modal controller for dialog window
+    $controller('modalMessageControllerBase', {$scope: $scope});
 
     var compId = $stateParams.company_id;
     var employeeId = $stateParams.eid;
@@ -630,6 +646,11 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           $scope.employee.addresses = selfInfo.addresses;
           $scope.employee.emergency_contact = selfInfo.emergency_contact;
           $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
+
+          // Get the employee profile info that bound to this person
+          EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId).then(function(profile) {
+            $scope.employee.employeeProfile = profile;
+          });
         }
       });
 
@@ -672,6 +693,32 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
 
     };
 
+    $scope.editEmployeeProfile = function(){
+        if (!$scope.employee.employeeProfile){
+            return;
+        }
+        var modelCopy = angular.copy($scope.employee.employeeProfile);
+
+        var modalInstance = $modal.open({
+            templateUrl: '/static/partials/employee_record/modal_edit_employee_profile.html',
+            controller: 'editEmployeeProfileModalController',
+            size: 'lg',
+            backdrop: 'static',
+            resolve: {
+                employeeProfileModel: function () {
+                    return modelCopy;
+                }
+            }
+        });
+
+        modalInstance.result.then(function(updatedEmployeeProfile){
+            var successMessage = "The employee profile has been saved successfully."
+            $scope.showMessageWithOkayOnly('Success', successMessage);
+
+            angular.copy(updatedEmployeeProfile, $scope.employee.employeeProfile)
+        });
+    };
+
     $scope.backToDashboard = function(){
       $location.path('/admin');
     };
@@ -680,6 +727,36 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       $location.path('/admin/employee/' + compId);
     }
 }]);
+
+var editEmployeeProfileModalController = employersController.controller('editEmployeeProfileModalController',
+  ['$scope',
+   '$modalInstance',
+   'EmployeeProfileService',
+   'employeeProfileModel',
+    function($scope,
+             $modalInstance,
+             EmployeeProfileService,
+             employeeProfileModel){
+      
+      $scope.errorMessage = null;
+      $scope.employeeProfileModel = employeeProfileModel;
+      $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern'];
+      $scope.employmentStatusList = ['Active', 'Prospective', 'Terminated', 'OnLeave'];
+
+      $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+      };
+
+      $scope.save = function(employeeProfileToSave) {
+        EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave).then(function(response){
+          $modalInstance.close(response);
+        }, function(error){
+          $scope.errorMessage = "Error occurred during saving operation. Please verify " +
+            "all the information enterred are valid. Message: " + error;
+        });
+      };
+    }
+  ]);
 
 var employerBenefitsSelected = employersController.controller('employerBenefitsSelected', [
   '$scope', 

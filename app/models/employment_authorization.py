@@ -2,7 +2,7 @@ import reversion
 
 from django.db import models
 from signature import Signature
-from django.conf import settings
+from app.custom_authentication import AuthUser
 
 WORKER_TYPE = (("Citizen", "Citizen"),
                ("Noncitizen", "Noncitizen"),
@@ -23,5 +23,5 @@ class EmploymentAuthorization(models.Model):
                                   null=True,
                                   blank=True)
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(AuthUser,
                              related_name="employment_authorization")
