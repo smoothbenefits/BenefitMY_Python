@@ -256,10 +256,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_profile/tab_i9_edit.html',
                 controller: 'employeeI9Controller'
             }).
-            state('/employee/family/:employee_id', {
-                url: '/employee/family/:employee_id',
-                templateUrl: '/static/partials/employee_family.html',
-                controller: 'employeeFamily'
+            state('employee_family', {
+                url: '/employee/family/:employeeId',
+                templateUrl: '/static/partials/family_management/main.html',
+                controller: 'employeeFamilyController'
             }).
             state('/employee/signup/:signup_number', {
                 url: '/employee/signup/:signup_number',

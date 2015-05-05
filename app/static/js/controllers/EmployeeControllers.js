@@ -1107,7 +1107,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       };
 
       $scope.addMember = function(){
-        $state.go('/employee/add_family/:employee_id', { employee_id:employeeId });
+        $state.go('employee_family', { employeeId:employeeId });
       };
 
       // TODO:
@@ -2000,6 +2000,105 @@ var benefitsSaveSuccessModalController = employeeControllers.controller(
         $scope.benefit_type = benefit_type;
 
         $scope.ok = function () {
+          $modalInstance.close();
+        };
+
+    }]);
+
+var employeeFamilyController = employeeControllers.controller(
+  'employeeFamilyController', 
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$modal',
+   'employeeFamily',
+  function employeeFamilyController(
+    $scope,
+    $state,
+    $stateParams,
+    $modal,
+    employeeFamily){
+
+    employeeFamily.get({userId:$stateParams.employeeId}).$promise.then(function(response){
+      $scope.family = _.filter(response.family, function(member){return member.relationship !=='self';});
+    });
+
+    var openEditModal = function(member){
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/family_management/edit_form.html',
+        controller: 'employeeFamilyMemberEditModalController',
+        size: 'lg',
+        backdrop: 'static',
+        resolve: {
+          person: function () {
+            return member;
+          }
+        }
+      });
+    };
+
+    $scope.viewDetails = function(member){
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/family_management/view_member.html',
+        controller: 'employeeFamilyMemberViewModalController',
+        size: 'lg',
+        backdrop: 'true',
+        resolve: {
+          member: function () {
+            return member;
+          }
+        }
+      });
+      modalInstance.result.then(function(){
+        openEditModal({});
+      });
+    };
+
+    $scope.editMember = function(member){
+      openEditModal(member);
+    };
+
+    $scope.addMember = function(){
+      openEditModal({});
+    };
+  }        
+]);
+
+var employeeFamilyMemberEditModalController = employeeControllers.controller(
+  'employeeFamilyMemberEditModalController',
+  ['$scope', 
+   '$modalInstance',
+   'employeeFamily',
+   'person',
+  function employeeFamilyMemberEditModalController(
+    $scope,
+    $modalInstance,
+    employeeFamily,
+    person){
+    $scope.person = person;
+    $scope.cancel = function(){
+      $modalInstance.dismiss();
+    };
+  }
+]);
+
+var employeeFamilyMemberViewModalController = employeeControllers.controller(
+  'employeeFamilyMemberViewModalController',
+  ['$scope',
+   '$modalInstance',
+   'member',
+    function employeeFamilyMemberViewModalController(
+      $scope,
+      $modalInstance,
+      member){
+        
+        $scope.member = member;
+
+        $scope.ok = function () {
+          $modalInstance.dismiss();
+        };
+
+        $scope.addNew = function(){
           $modalInstance.close();
         };
 
