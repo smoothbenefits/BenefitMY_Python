@@ -233,3 +233,6 @@ span.doc-buttons{
 .drop-box .upload-area-message{
     margin: auto;
 }
+.clickable {
+    cursor: pointer;
+}

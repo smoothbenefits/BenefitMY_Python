@@ -1,7 +1,7 @@
 import reversion
 
 from django.db import models
-from django.conf import settings
+from app.custom_authentication import AuthUser
 from company_std_insurance_plan import CompanyStdInsurancePlan
 
 
@@ -9,7 +9,7 @@ from company_std_insurance_plan import CompanyStdInsurancePlan
 @reversion.register
 class UserCompanyStdInsurancePlan(models.Model):
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(AuthUser,
                              related_name="user_company_std_insurance_plan")
     company_std_insurance = models.ForeignKey(
         CompanyStdInsurancePlan,

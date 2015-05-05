@@ -113,7 +113,7 @@ settings.constant('tabLayoutGlobalConfig', [
             },
             {
                 id: 3,
-                verbose_name: "Supplemental Life Insurance",
+                verbose_name: "Suppl. Life Insurance",
                 name: "supplemental_life",
                 active: false,
                 state: "broker_add_benefit.supplemental_life_insurance"
@@ -131,6 +131,13 @@ settings.constant('tabLayoutGlobalConfig', [
                 name: "ltd",
                 active: false,
                 state: "broker_add_benefit.ltd"
+            },
+            {
+                id: 6,
+                verbose_name: "FSA",
+                name: "fsa",
+                active: false,
+                state: "broker_add_benefit.fsa"
             }
         ]
     },

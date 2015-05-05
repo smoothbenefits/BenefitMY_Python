@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from app.models.upload import Upload
 from app.models.company_user import CompanyUser, USER_TYPE
+from app.models.upload_application_feature import UploadApplicationFeature
+from app.models.upload_audience import UploadAudience
 from app.serializers.upload_serializer import UploadSerializer, UploadPostSerializer
 from app.service.amazon_s3_auth import AmazonS3AuthService
 
@@ -48,6 +50,10 @@ class UploadView(APIView):
         except Upload.DoesNotExist:
             raise Http404
     
+    def _delete_from_upload_dependent(self, upload_dependent, upload_id):
+        upload_dependents = upload_dependent.objects.filter(upload=upload_id)
+        for upload_dependent in upload_dependents:
+            upload_dependents.delete()
 
     def get(self, request,  pk, format=None):
         upload = self._get_object(pk)
@@ -63,6 +69,8 @@ class UploadView(APIView):
         cur_time = _amazon_auth_service.get_s3_request_datetime()
         auth = _amazon_auth_service.get_s3_request_auth("DELETE", "", file_path, cur_time)
         if upload:
+            self._delete_from_upload_dependent(UploadApplicationFeature, upload.id)
+            self._delete_from_upload_dependent(UploadAudience, upload.id)
             upload.delete()
             return Response({'auth':auth, 'S3':s3, 'time': cur_time})
         return Response(status=status.HTTP_404_NOT_FOUND)

@@ -4,7 +4,10 @@
       "user": 1,
       "primary_amount_per_year": "2500.00",
       "dependent_amount_per_year": "2500.00",
-      "update_reason": "new enroll"
+      "update_reason": "new enroll",
+      "company_fsa_plan": 1,
+      "created_at": "2015-04-27T00:00:00-04:00",
+      "updated_at": "2015-04-27T00:00:00-04:00"
     },
     "model": "app.fsa",
     "pk": 1
@@ -16,7 +19,10 @@
       "user": 2,
       "primary_amount_per_year": "500.00",
       "dependent_amount_per_year": "500.00", 
-      "update_reason": "new enroll"
+      "update_reason": "new enroll", 
+      "company_fsa_plan": 1,
+      "created_at": "2015-04-27T00:00:00-04:00",
+      "updated_at": "2015-04-27T00:00:00-04:00"
     },
     "model": "app.fsa",
     "pk": 2
@@ -28,7 +34,10 @@
       "user": 3,
       "primary_amount_per_year": "500.00",
       "dependent_amount_per_year": "500.00", 
-      "update_reason": "new enroll"
+      "update_reason": "new enroll", 
+      "company_fsa_plan": 1,
+      "created_at": "2015-04-27T00:00:00-04:00",
+      "updated_at": "2015-04-27T00:00:00-04:00"
     },
     "model": "app.fsa",
     "pk": 3

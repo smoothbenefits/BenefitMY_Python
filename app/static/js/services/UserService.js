@@ -26,6 +26,7 @@ benefitmyService.factory('UserService',
         currentUser.get().$promise.then(function(response){
             userInfo.user=response.user;
             userInfo.roles = response.roles;
+            userInfo.person = response.person;
           clientListRepository.get({userId: response.user.id})
             .$promise.then(function(response){
             var curRole = _.find(response.company_roles, {company_user_type: getCurRoleFromPath()});

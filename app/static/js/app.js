@@ -25,6 +25,7 @@ String.prototype.capitalize = function() {
 };
 
 var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
+var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 
 BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs
@@ -89,6 +90,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/ltd',
                 templateUrl: '/static/partials/benefit_addition/tab_ltd.html',
                 controller: 'brokerAddLtdPlanController'
+            }).
+            state('broker_add_benefit.fsa', {
+                url: '/fsa',
+                templateUrl: '/static/partials/benefit_addition/tab_fsa.html',
+                controller: 'brokerAddFsaPlanController'
             }).
             state('/broker/benefit/selected/:client_id', {
                 url: '/broker/benefit/selected/:client_id',
