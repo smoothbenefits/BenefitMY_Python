@@ -1858,7 +1858,7 @@ var stdBenefitsSignup = employeeControllers.controller(
             $scope.planDetailsModalInstance = $modal.open({
               templateUrl: '/static/partials/benefit_selection/modal_std_plan_details.html',
               controller: 'stdBenefitsSignup',
-              size: 'md',
+              size: 'lg',
               scope: $scope
             });
         };
@@ -1925,7 +1925,7 @@ var ltdBenefitsSignup = employeeControllers.controller(
             $scope.planDetailsModalInstance = $modal.open({
               templateUrl: '/static/partials/benefit_selection/modal_ltd_plan_details.html',
               controller: 'ltdBenefitsSignup',
-              size: 'md',
+              size: 'lg',
               scope: $scope
             });
         };

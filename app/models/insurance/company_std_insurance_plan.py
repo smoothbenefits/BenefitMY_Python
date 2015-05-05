@@ -4,9 +4,12 @@ from django.db import models
 from ..company import Company
 from std_insurance_plan import StdInsurancePlan
 
+PAID_BY_PARTIES = ([(item, item) for item in ['Employee', 'Employer']])
 
 @reversion.register
 class CompanyStdInsurancePlan(models.Model):
+
+    elimination_period_in_days = models.IntegerField(blank=True, null=True)
 
     # This is in Weeks for STD
     duration= models.IntegerField(blank=True, null=True)
@@ -16,6 +19,14 @@ class CompanyStdInsurancePlan(models.Model):
 
     max_benefit_weekly = models.DecimalField(
         max_digits=20, decimal_places=2, blank=True, null=True)
+
+    rate = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True)
+
+    paid_by = models.CharField(max_length=20,
+                              choices=PAID_BY_PARTIES,
+                              null=True,
+                              blank=True)
 
     company = models.ForeignKey(Company,
                                 related_name="company_std_insurance",

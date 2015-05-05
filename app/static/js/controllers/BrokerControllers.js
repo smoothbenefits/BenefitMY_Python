@@ -429,6 +429,8 @@ var brokerAddStdPlanController = brokersControllers.controller(
         // Inherite scope from base 
         $controller('modalMessageControllerBase', {$scope: $scope});
         
+        $scope.paidByParties = StdService.paidByParties;
+
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
 
@@ -469,6 +471,8 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         // Inherite scope from base 
         $controller('modalMessageControllerBase', {$scope: $scope});
         
+        $scope.paidByParties = LtdService.paidByParties;
+
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
 
