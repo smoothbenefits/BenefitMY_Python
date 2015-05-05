@@ -353,8 +353,7 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
         return;
       }
       if(typeof($scope.employee.extra_amount) === 'undefined'){
-        alert('Please enter the extra amount of your paycheck to withhold (Line 6 on your W-4)');
-        return;
+        $scope.employee.extra_amount = 0;
       }
 
       // Add marriage number to $scope object
@@ -858,8 +857,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
         return;
       }
       if(typeof($scope.employee.extra_amount) === 'undefined'){
-        alert('Please enter the extra amount of your paycheck to withhold (Line 6 on your W-4)');
-        return;
+        $scope.employee.extra_amount = 0;
       }
       var empAuth = {
         marriage: getMarriageNumber(),
