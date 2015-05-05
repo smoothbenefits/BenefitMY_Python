@@ -352,10 +352,6 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
         alert('Please enter the final withholding number (line 5 on your W-4)');
         return;
       }
-      if(typeof($scope.employee.extra_amount) === 'undefined'){
-        alert('Please enter the extra amount of your paycheck to withhold (Line 6 on your W-4)');
-        return;
-      }
 
       // Add marriage number to $scope object
       $scope.employee.marriage = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
@@ -857,10 +853,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
         alert('Please enter the final withholding number (line 5 on your W-4)');
         return;
       }
-      if(typeof($scope.employee.extra_amount) === 'undefined'){
-        alert('Please enter the extra amount of your paycheck to withhold (Line 6 on your W-4)');
-        return;
-      }
+      
       var empAuth = {
         marriage: getMarriageNumber(),
         dependencies: $scope.employee.dependent_count,
