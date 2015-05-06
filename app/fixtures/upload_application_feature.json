@@ -1,11 +1,20 @@
 [ 
   {
     "fields": {
-      "application_feature": 3,
       "feature_id": 1,
-      "upload": 4
+      "upload": 7,
+      "application_feature": 3
     },
     "model": "app.uploadapplicationfeature",
-    "pk": 1
+    "pk": 2
+  },
+  {
+    "fields": {
+      "feature_id": 2,
+      "upload": 8,
+      "application_feature": 3
+    },
+    "model": "app.uploadapplicationfeature",
+    "pk": 3
   }
 ]

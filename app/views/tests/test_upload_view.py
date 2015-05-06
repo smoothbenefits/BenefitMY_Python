@@ -12,7 +12,7 @@ class UploadTestCase(TestCase, ViewTestBase):
     def setUp(self):
         self.upload_data = {
             'company': self.normalize_key(1),
-            'user': self.normalize_key(4),
+            'user': self.normalize_key(3),
             'upload_type': 'I9',
             'file_name': 'tester.pdf',
             'file_type': 'application/pdf',
@@ -21,7 +21,7 @@ class UploadTestCase(TestCase, ViewTestBase):
 
     def test_get_uploads_by_user_success(self):
         response = self.client.get(reverse('uploads_by_user',
-                                           kwargs={'pk': self.normalize_key(3)}))
+                                           kwargs={'pk': self.normalize_key(1)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
@@ -30,28 +30,28 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(len(result), 2)
         upload1 = None
         for x in result:
-            if x['id'] == self.normalize_key(1):
+            if x['id'] == self.normalize_key(7):
                 upload1 = x
                 break
-        self.assertEqual(upload1['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_3_company_id_1_passport.jpg')
-        self.assertEqual(upload1['file_type'], 'image/jpeg')
-        self.assertEqual(upload1['file_name'], 'passport.jpg')
+        self.assertEqual(upload1['S3'], 'https://benefitmy-demo-uploads.s3.amazonaws.com/BenefitMy_Inc.:MV9fMV9fMjAxNS0wNS0wNiAwMDowODoyNC43MjQxNDM=:55-0925_2015_HMO_NE_SG_Product_Chart.pdf')
+        self.assertEqual(upload1['file_type'], 'application/pdf')
+        self.assertEqual(upload1['file_name'], '55-0925_2015_HMO_NE_SG_Product_Chart.pdf')
         self.assertEqual(upload1['company'], self.normalize_key(1))
-        self.assertEqual(upload1['user'], self.normalize_key(3))
-        self.assertEqual(upload1['id'], self.normalize_key(1))
-        self.assertEqual(upload1['upload_type'], 'I9')
+        self.assertEqual(upload1['user'], self.normalize_key(1))
+        self.assertEqual(upload1['id'], self.normalize_key(7))
+        self.assertEqual(upload1['upload_type'], 'MedicalBenefit')
         upload2 = None
         for x in result:
-            if x['id'] == self.normalize_key(2):
+            if x['id'] == self.normalize_key(8):
                 upload2 = x
                 break
-        self.assertEqual(upload2['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_3_company_id_1_driverlicense.png')
-        self.assertEqual(upload2['file_type'], 'image/png')
-        self.assertEqual(upload2['file_name'], 'driverlicense.png')
+        self.assertEqual(upload2['S3'], 'https://benefitmy-demo-uploads.s3.amazonaws.com/BenefitMy_Inc.:MV9fMV9fMjAxNS0wNS0wNiAwMDowODo1NC42ODQ5NDA=:55-0924_2015_PPO_SG_Product_Chart.pdf')
+        self.assertEqual(upload2['file_type'], 'application/pdf')
+        self.assertEqual(upload2['file_name'], '55-0924_2015_PPO_SG_Product_Chart.pdf')
         self.assertEqual(upload2['company'], self.normalize_key(1))
-        self.assertEqual(upload2['user'], self.normalize_key(3))
-        self.assertEqual(upload2['id'], self.normalize_key(2))
-        self.assertEqual(upload2['upload_type'], 'I9')
+        self.assertEqual(upload2['user'], self.normalize_key(1))
+        self.assertEqual(upload2['id'], self.normalize_key(8))
+        self.assertEqual(upload2['upload_type'], 'MedicalBenefit')
 
     def test_get_uploads_by_user_empty(self):
         response = self.client.get(reverse('uploads_by_user',
@@ -77,7 +77,7 @@ class UploadTestCase(TestCase, ViewTestBase):
 
     def test_post_upload_success(self):
         response = self.client.post(reverse('uploads_by_user',
-                                           kwargs={'pk': self.normalize_key(4)}),
+                                           kwargs={'pk': self.normalize_key(3)}),
                                     data=json.dumps(self.upload_data),
                                     content_type='application/json')
         self.assertIsNotNone(response)
@@ -88,8 +88,8 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['file_type'], self.upload_data['file_type'])
         self.assertEqual(result['file_name'], self.upload_data['file_name'])
         self.assertEqual(result['company'], 1)
-        self.assertEqual(result['user'], 4)
-        self.assertEqual(result['id'], self.normalize_key(7))
+        self.assertEqual(result['user'], 3)
+        self.assertEqual(result['id'], self.normalize_key(10))
         self.assertEqual(result['upload_type'], self.upload_data['upload_type'])
         self.assertTrue('s3Host' in result)
         self.assertEqual(result['s3Host'], settings.AMAZON_S3_HOST)
@@ -102,7 +102,7 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['accessKey'], settings.AMAZON_AWS_ACCESS_KEY_ID)
 
         response = self.client.get(reverse('uploads_by_user',
-                                           kwargs={'pk': self.normalize_key(4)}))
+                                           kwargs={'pk': self.normalize_key(3)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
@@ -111,27 +111,26 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(len(result), 2)
         upload1 = None
         for x in result:
-            if x['id'] == self.normalize_key(3):
+            if x['id'] == self.normalize_key(9):
                 upload1 = x
                 break
-        self.assertEqual(upload1['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_4_company_id_1_I94.jpg')
-        self.assertEqual(upload1['file_type'], 'application/pdf')
-        self.assertEqual(upload1['file_name'], 'I94.pdf')
+        self.assertEqual(upload1['file_type'], 'image/jpeg')
+        self.assertEqual(upload1['file_name'], 'MA Dirver License.jpg')
         self.assertEqual(upload1['company'], self.normalize_key(1))
-        self.assertEqual(upload1['user'], self.normalize_key(4))
-        self.assertEqual(upload1['id'], self.normalize_key(3))
-        self.assertEqual(upload1['upload_type'], 'I9')
+        self.assertEqual(upload1['user'], self.normalize_key(3))
+        self.assertEqual(upload1['id'], self.normalize_key(9))
+        self.assertEqual(upload1['upload_type'], 'Manager')
         upload2 = None
         for x in result:
-            if x['id'] == self.normalize_key(7):
+            if x['id'] == self.normalize_key(10):
                 upload2 = x
                 break
-        self.assertIsNotNone(upload2['S3'])
+        self.assertIsNotNone(upload2['S3'], 'https://benefitmy-demo-uploads.s3.amazonaws.com/BenefitMy_Inc.:MV9fM19fMjAxNS0wNS0wNiAwMDoyMzozMi45MzAyODk=:MA_Dirver_License.jpg')
         self.assertEqual(upload2['file_type'], self.upload_data['file_type'])
         self.assertEqual(upload2['file_name'], self.upload_data['file_name'])
         self.assertEqual(upload2['company'], self.normalize_key(1))
-        self.assertEqual(upload2['user'], self.normalize_key(4))
-        self.assertEqual(upload2['id'], self.normalize_key(7))
+        self.assertEqual(upload2['user'], self.normalize_key(3))
+        self.assertEqual(upload2['id'], self.normalize_key(10))
         self.assertEqual(upload2['upload_type'], self.upload_data['upload_type'])
 
     def test_upload_post_with_non_exist_user(self):
@@ -159,7 +158,7 @@ class UploadTestCase(TestCase, ViewTestBase):
 
     def test_delete_upload_success(self):
         response = self.client.delete(reverse('upload_api',
-                                           kwargs={'pk': self.normalize_key(2)}))
+                                           kwargs={'pk': self.normalize_key(3)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
@@ -177,13 +176,13 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result), list)
         self.assertEqual(len(result), 1)
         upload1 = result[0]
-        self.assertEqual(upload1['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_3_company_id_1_passport.jpg')
+        self.assertEqual(upload1['S3'], 'https://benefitmy-demo-uploads.s3.amazonaws.com/BenefitMy_Inc.:MV9fM19fMjAxNS0wNS0wNiAwMDoyMzozMi45MzAyODk=:MA_Dirver_License.jpg')
         self.assertEqual(upload1['file_type'], 'image/jpeg')
-        self.assertEqual(upload1['file_name'], 'passport.jpg')
+        self.assertEqual(upload1['file_name'], 'MA Dirver License.jpg')
         self.assertEqual(upload1['company'], self.normalize_key(1))
         self.assertEqual(upload1['user'], self.normalize_key(3))
-        self.assertEqual(upload1['id'], self.normalize_key(1))
-        self.assertEqual(upload1['upload_type'], 'I9')
+        self.assertEqual(upload1['id'], self.normalize_key(9))
+        self.assertEqual(upload1['upload_type'], 'Manager')
 
     def test_delete_upload_non_exist(self):
         response = self.client.delete(reverse('upload_api',
@@ -195,16 +194,16 @@ class UploadTestCase(TestCase, ViewTestBase):
 
     def test_get_by_id_success(self):
         response = self.client.get(reverse('upload_api',
-                                           kwargs={'pk': self.normalize_key(1)}))
+                                           kwargs={'pk': self.normalize_key(5)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         upload1 = json.loads(response.content)
-        self.assertEqual(upload1['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_3_company_id_1_passport.jpg')
+        self.assertEqual(upload1['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/Greencard.jpeg')
         self.assertEqual(upload1['file_type'], 'image/jpeg')
-        self.assertEqual(upload1['file_name'], 'passport.jpg')
+        self.assertEqual(upload1['file_name'], 'Greencard.jpeg')
         self.assertEqual(upload1['company'], self.normalize_key(1))
-        self.assertEqual(upload1['user'], self.normalize_key(3))
-        self.assertEqual(upload1['id'], self.normalize_key(1))
+        self.assertEqual(upload1['user'], self.normalize_key(2))
+        self.assertEqual(upload1['id'], self.normalize_key(5))
         self.assertEqual(upload1['upload_type'], 'I9')
 
     def test_get_by_id_non_exist(self):
@@ -228,31 +227,19 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         uploads = json.loads(response.content)
-        self.assertEqual(len(uploads), 2)
+        self.assertEqual(len(uploads), 1)
         upload1 = None
         for x in uploads:
-            if x['id'] == self.normalize_key(1):
+            if x['id'] == self.normalize_key(9):
                 upload1 = x
                 break
-        self.assertEqual(upload1['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_3_company_id_1_passport.jpg')
+        self.assertEqual(upload1['S3'], 'https://benefitmy-demo-uploads.s3.amazonaws.com/BenefitMy_Inc.:MV9fM19fMjAxNS0wNS0wNiAwMDoyMzozMi45MzAyODk=:MA_Dirver_License.jpg')
         self.assertEqual(upload1['file_type'], 'image/jpeg')
-        self.assertEqual(upload1['file_name'], 'passport.jpg')
+        self.assertEqual(upload1['file_name'], 'MA Dirver License.jpg')
         self.assertEqual(upload1['company'], self.normalize_key(1))
         self.assertEqual(upload1['user'], self.normalize_key(3))
-        self.assertEqual(upload1['id'], self.normalize_key(1))
-        self.assertEqual(upload1['upload_type'], 'I9')
-        upload2 = None
-        for x in uploads:
-            if x['id'] == self.normalize_key(2):
-                upload2 = x
-                break
-        self.assertEqual(upload2['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_3_company_id_1_driverlicense.png')
-        self.assertEqual(upload2['file_type'], 'image/png')
-        self.assertEqual(upload2['file_name'], 'driverlicense.png')
-        self.assertEqual(upload2['company'], self.normalize_key(1))
-        self.assertEqual(upload2['user'], self.normalize_key(3))
-        self.assertEqual(upload2['id'], self.normalize_key(2))
-        self.assertEqual(upload2['upload_type'], 'I9')
+        self.assertEqual(upload1['id'], self.normalize_key(9))
+        self.assertEqual(upload1['upload_type'], 'Manager')
 
     def test_get_uploads_by_employer_bad_current_user(self):
         user_id = self.normalize_key(3)

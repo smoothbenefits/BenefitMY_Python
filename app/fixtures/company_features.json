@@ -1,32 +1,29 @@
 [
   {
     "fields": {
+      "feature_status": true,
       "company": 1,
-      "company_feature": 1,
-      "feature_status": true
+      "company_feature": 1
     },
     "model": "app.companyfeatures",
     "pk": 1
   },
-
   {
     "fields": {
+      "feature_status": true,
       "company": 1,
-      "company_feature": 2,
-      "feature_status": true
+      "company_feature": 2
     },
     "model": "app.companyfeatures",
     "pk": 2
   },
-
   {
     "fields": {
+      "feature_status": true,
       "company": 2,
-      "company_feature": 1,
-      "feature_status": true
+      "company_feature": 1
     },
     "model": "app.companyfeatures",
     "pk": 3
   }
-
 ]
