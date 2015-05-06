@@ -669,8 +669,8 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$state
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$stateParams', '$location', 'personInfoService', 'currentUser', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, personInfoService, currentUser, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', 'PersonInfoService', 'currentUser', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, PersonInfoService, currentUser, EmployeePreDashboardValidationService){
 
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
@@ -694,7 +694,7 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     $scope.addBasicInfo = function(){
       var birthDate = $scope.employee.birth_date;
       $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');
-      personInfoService.savePersonInfo($scope.employeeId, $scope.employee, function(successResponse){
+      PersonInfoService.savePersonInfo($scope.employeeId, $scope.employee, function(successResponse){
         $location.path('/employee/onboard/employment/' + $scope.employeeId);
       }, function(errorResponse){
           alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
