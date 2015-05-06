@@ -1,80 +1,80 @@
 [
   {
     "fields": {
-      "user": 3,
-      "company": 1,
-      "upload_type": "I9",
-      "file_name": "passport.jpg",
-      "file_type": "image/jpeg",
-      "uploaded_at": "2015-04-08 21:56:23.178501-04",
-      "S3": "https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_3_company_id_1_passport.jpg"
-    },
-    "model": "app.upload",
-    "pk": 1
-  },
-  {
-    "fields": {
-      "user": 3,
-      "company": 1,
-      "upload_type": "I9",
-      "file_name": "driverlicense.png",
-      "file_type": "image/png",
-      "uploaded_at": "2015-04-09 11:56:23.178501-04",
-      "S3": "https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_3_company_id_1_driverlicense.png"
-    },
-    "model": "app.upload",
-    "pk": 2
-  },
-  {
-    "fields": {
-      "user": 4,
-      "company": 1,
-      "upload_type": "I9",
+      "uploaded_at": "2015-04-10T01:11:23.178Z",
+      "S3": "https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_4_company_id_1_I94.jpg",
       "file_name": "I94.pdf",
+      "company": 1,
       "file_type": "application/pdf",
-      "uploaded_at": "2015-04-09 21:11:23.178501-04",
-      "S3": "https://benefitmy-dev-uploads.s3.amazonaws.com/user_id_4_company_id_1_I94.jpg"
+      "upload_type": "I9",
+      "user": 4
     },
     "model": "app.upload",
     "pk": 3
   },
   {
     "fields": {
-      "user": 1,
-      "company": 1,
-      "upload_type": "MedicalBenefit",
-      "file_name": "BSBCHMOSummary.pdf",
-      "file_type": "application/pdf",
-      "uploaded_at": "2015-04-12 11:11:23.178501-04",
-      "S3": "https://benefitmy-dev-uploads.s3.amazonaws.com/BSBCHMOSummary.pdf"
-    },
-    "model": "app.upload",
-    "pk": 4
-  },
-  {
-    "fields": {
-      "user": 2,
-      "company": 1,
-      "upload_type": "I9",
+      "uploaded_at": "2015-04-13T15:25:23.178Z",
+      "S3": "https://benefitmy-dev-uploads.s3.amazonaws.com/Greencard.jpeg",
       "file_name": "Greencard.jpeg",
+      "company": 1,
       "file_type": "image/jpeg",
-      "uploaded_at": "2015-04-13 11:25:23.178501-04",
-      "S3": "https://benefitmy-dev-uploads.s3.amazonaws.com/Greencard.jpeg"
+      "upload_type": "I9",
+      "user": 2
     },
     "model": "app.upload",
     "pk": 5
   },
   {
     "fields": {
-      "user": 2,
-      "company": 1,
-      "upload_type": "Manager",
+      "uploaded_at": "2015-04-16T15:25:23.178Z",
+      "S3": "https://benefitmy-dev-uploads.s3.amazonaws.com/401KPolicy.pdf",
       "file_name": "401KPolicy.pdf",
+      "company": 1,
       "file_type": "application/pdf",
-      "uploaded_at": "2015-04-16 11:25:23.178501-04",
-      "S3": "https://benefitmy-dev-uploads.s3.amazonaws.com/401KPolicy.pdf"
+      "upload_type": "Manager",
+      "user": 2
     },
     "model": "app.upload",
     "pk": 6
+  },
+  {
+    "fields": {
+      "uploaded_at": "2015-05-06T00:08:24.742Z",
+      "S3": "https://benefitmy-demo-uploads.s3.amazonaws.com/BenefitMy_Inc.:MV9fMV9fMjAxNS0wNS0wNiAwMDowODoyNC43MjQxNDM=:55-0925_2015_HMO_NE_SG_Product_Chart.pdf",
+      "file_name": "55-0925_2015_HMO_NE_SG_Product_Chart.pdf",
+      "company": 1,
+      "file_type": "application/pdf",
+      "upload_type": "MedicalBenefit",
+      "user": 1
+    },
+    "model": "app.upload",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "uploaded_at": "2015-05-06T00:08:54.697Z",
+      "S3": "https://benefitmy-demo-uploads.s3.amazonaws.com/BenefitMy_Inc.:MV9fMV9fMjAxNS0wNS0wNiAwMDowODo1NC42ODQ5NDA=:55-0924_2015_PPO_SG_Product_Chart.pdf",
+      "file_name": "55-0924_2015_PPO_SG_Product_Chart.pdf",
+      "company": 1,
+      "file_type": "application/pdf",
+      "upload_type": "MedicalBenefit",
+      "user": 1
+    },
+    "model": "app.upload",
+    "pk": 8
+  },
+  {
+    "fields": {
+      "uploaded_at": "2015-05-06T00:23:32.942Z",
+      "S3": "https://benefitmy-demo-uploads.s3.amazonaws.com/BenefitMy_Inc.:MV9fM19fMjAxNS0wNS0wNiAwMDoyMzozMi45MzAyODk=:MA_Dirver_License.jpg",
+      "file_name": "MA Dirver License.jpg",
+      "company": 1,
+      "file_type": "image/jpeg",
+      "upload_type": "Manager",
+      "user": 3
+    },
+    "model": "app.upload",
+    "pk": 9
   }
 ]

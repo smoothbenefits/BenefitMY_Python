@@ -3,20 +3,18 @@
     "fields": {
       "company": 1,
       "fsa_plan": 2,
-      "created_at": "2015-04-27T00:00:00-04:00",
-      "updated_at": "2015-04-27T00:00:00-04:00"
+      "created_at": "2015-04-27T04:00:00Z",
+      "updated_at": "2015-04-27T04:00:00Z"
     },
     "model": "app.companyfsaplan",
     "pk": 1
   },
-
-
   {
     "fields": {
       "company": 2,
       "fsa_plan": 3,
-      "created_at": "2015-04-27T00:00:00-04:00",
-      "updated_at": "2015-04-27T00:00:00-04:00"
+      "created_at": "2015-04-27T04:00:00Z",
+      "updated_at": "2015-04-27T04:00:00Z"
     },
     "model": "app.companyfsaplan",
     "pk": 2

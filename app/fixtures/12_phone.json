@@ -1,38 +1,38 @@
 [
   {
     "fields": {
-      "number": "6078980780",
-      "person": 1,
-      "phone_type": "home"
-    },
-    "model": "app.phone",
-    "pk": 1
-  },
-  {
-    "fields": {
+      "phone_type": "home",
       "number": "6178493848",
-      "person": 2,
-      "phone_type": "home"
+      "person": 2
     },
     "model": "app.phone",
     "pk": 2
   },
   {
     "fields": {
+      "phone_type": "home",
       "number": "6178928374",
-      "person": 3,
-      "phone_type": "home"
+      "person": 3
     },
     "model": "app.phone",
     "pk": 3
   },
   {
     "fields": {
+      "phone_type": "home",
       "number": "6789567890",
-      "person": 4,
-      "phone_type": "home"
+      "person": 4
     },
     "model": "app.phone",
     "pk": 4
+  },
+  {
+    "fields": {
+      "phone_type": "home",
+      "number": "6078980780",
+      "person": 1
+    },
+    "model": "app.phone",
+    "pk": 5
   }
 ]

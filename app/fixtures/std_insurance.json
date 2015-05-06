@@ -1,18 +1,21 @@
 [
   {
     "fields": {
-      "name": "metstd",
+      "updated_at": null,
       "attachment": "s3://abcd",
+      "created_at": null,
+      "name": "metstd",
       "user": 1
     },
     "model": "app.stdinsuranceplan",
     "pk": 1
   },
-
   {
     "fields": {
-      "name": "liberty mutual",
+      "updated_at": null,
       "attachment": "s3://abcde",
+      "created_at": null,
+      "name": "liberty mutual",
       "user": 2
     },
     "model": "app.stdinsuranceplan",
@@ -20,88 +23,82 @@
   },
   {
     "fields": {
-      "name": "geico",
+      "updated_at": null,
       "attachment": "s3://abcdef",
+      "created_at": null,
+      "name": "geico",
       "user": 4
     },
     "model": "app.stdinsuranceplan",
     "pk": 3
   },
-
-
-
   {
     "fields": {
+      "created_at": "2015-04-24T04:00:00Z",
       "percentage_of_salary": "70.00",
-      "max_benefit_weekly": "10000", 
+      "updated_at": null,
+      "max_benefit_weekly": "10000.00",
+      "duration": 10,
       "company": 1,
-      "std_insurance_plan": 1,
-      "duration" : 10,
-      "created_at": "2015-04-24T00:00:00-04:00"
+      "std_insurance_plan": 1
     },
     "model": "app.companystdinsuranceplan",
     "pk": 1
   },
-
-
   {
     "fields": {
+      "created_at": "2015-04-25T04:00:00Z",
       "percentage_of_salary": "80.00",
-      "max_benefit_weekly": "20000", 
+      "updated_at": null,
+      "max_benefit_weekly": "20000.00",
+      "duration": 30,
       "company": 1,
-      "std_insurance_plan": 2,
-      "duration" : 30,
-      "created_at": "2015-04-25T00:00:00-04:00"
+      "std_insurance_plan": 2
     },
     "model": "app.companystdinsuranceplan",
     "pk": 2
   },
-
   {
     "fields": {
+      "created_at": "2015-04-26T04:00:00Z",
       "percentage_of_salary": "70.00",
-      "max_benefit_weekly": "130000", 
+      "updated_at": null,
+      "max_benefit_weekly": "130000.00",
+      "duration": 6,
       "company": 2,
-      "std_insurance_plan": 3,
-      "duration" : 6,
-      "created_at": "2015-04-26T00:00:00-04:00"
+      "std_insurance_plan": 3
     },
     "model": "app.companystdinsuranceplan",
     "pk": 3
   },
-
-
-
-
   {
     "fields": {
+      "updated_at": null,
+      "created_at": null,
       "user": 1,
       "company_std_insurance": 1
     },
     "model": "app.usercompanystdinsuranceplan",
     "pk": 1
-   },
-
+  },
   {
     "fields": {
+      "updated_at": "2015-05-06T00:20:44.158Z",
+      "created_at": null,
       "user": 3,
-      "company_std_insurance": 3
+      "company_std_insurance": 1
     },
     "model": "app.usercompanystdinsuranceplan",
     "pk": 2
-   },
-
- {
+  },
+  {
     "fields": {
+      "updated_at": null,
+      "created_at": null,
       "user": 3,
       "company_std_insurance": 3
     },
     "model": "app.usercompanystdinsuranceplan",
     "pk": 3
-   }
-
-
+  }
 ]
-
-
-

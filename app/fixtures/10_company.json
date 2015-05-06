@@ -15,7 +15,7 @@
   },
   {
     "fields": {
-      "name": "telamon"
+      "name": "Telamon"
     },
     "model": "app.company",
     "pk": 3
