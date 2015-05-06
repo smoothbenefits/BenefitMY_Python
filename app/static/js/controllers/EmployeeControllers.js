@@ -175,29 +175,29 @@ var addFamily = employeeControllers.controller('addFamily',
  ['$scope', 
   '$location', 
   '$stateParams', 
-  'personInfoService',
+  'PersonInfoService',
   function addFamily(
     $scope, 
     $location, 
     $stateParams, 
-    personInfoService){
+    PersonInfoService){
 
   var employeeId = $stateParams.employee_id;
   $scope.employeeId = employeeId;
   $scope.person = {person_type:'family'};
-  personInfoService.getPersonInfo(employeeId, function(retrievedInfo){
-    if(retrievedInfo){
-      $scope.person.address = retrievedInfo.address;
-      $scope.person.phone = retrievedInfo.phone;
-    }
+  PersonInfoService.getSelfPersonInfo(employeeId)
+  .then(function(retrievedInfo){
+    $scope.person.address = retrievedInfo.address;
+    $scope.person.phone = retrievedInfo.phone;
   });
 
 
   $scope.addMember = function(){
-    personInfoService.savePersonInfo(employeeId, $scope.person, function(successResponse){
+    PersonInfoService.savePersonInfo(employeeId, $scope.person)
+    .then(function(successResponse){
       $location.path('/employee/benefits/' + employeeId);
     }, function(errorResponse){
-          alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
+      alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
     });
   }
 }]);
@@ -2011,16 +2011,26 @@ var employeeFamilyController = employeeControllers.controller(
    '$state',
    '$stateParams',
    '$modal',
-   'employeeFamily',
+   'PersonInfoService',
   function employeeFamilyController(
     $scope,
     $state,
     $stateParams,
     $modal,
-    employeeFamily){
+    PersonInfoService){
 
-    employeeFamily.get({userId:$stateParams.employeeId}).$promise.then(function(response){
-      $scope.family = _.filter(response.family, function(member){return member.relationship !=='self';});
+    var selfPerson = null;
+    $scope.family=[];
+    PersonInfoService.getFamilyInfo($stateParams.employeeId)
+    .then(function(family){
+      _.each(family, function(member){
+        if(member.relationship === 'self'){
+          selfPerson = member;
+        }
+        else{
+          $scope.family.push(member);
+        }
+      });
     });
 
     var openEditModal = function(member){
@@ -2032,9 +2042,13 @@ var employeeFamilyController = employeeControllers.controller(
         resolve: {
           person: function () {
             return member;
+          },
+          employeeId: function(){
+            return $stateParams.employeeId;
           }
         }
       });
+      return modalInstance;
     };
 
     $scope.viewDetails = function(member){
@@ -2050,7 +2064,7 @@ var employeeFamilyController = employeeControllers.controller(
         }
       });
       modalInstance.result.then(function(){
-        openEditModal({});
+        openEditModal(member);
       });
     };
 
@@ -2059,7 +2073,16 @@ var employeeFamilyController = employeeControllers.controller(
     };
 
     $scope.addMember = function(){
-      openEditModal({});
+      var newPerson = {person_type:'family'};
+      newPerson.address = selfPerson.address;
+      newPerson.phone = selfPerson.phone;
+      var modalInstance = openEditModal(newPerson);
+      modalInstance.result
+      .then(function(successResponse){
+        if(successResponse){
+          $state.reload();
+        }
+      });
     };
   }        
 ]);
@@ -2068,16 +2091,27 @@ var employeeFamilyMemberEditModalController = employeeControllers.controller(
   'employeeFamilyMemberEditModalController',
   ['$scope', 
    '$modalInstance',
-   'employeeFamily',
+   'PersonInfoService',
    'person',
+   'employeeId',
   function employeeFamilyMemberEditModalController(
     $scope,
     $modalInstance,
-    employeeFamily,
-    person){
+    PersonInfoService,
+    person, 
+    employeeId){
     $scope.person = person;
     $scope.cancel = function(){
       $modalInstance.dismiss();
+    };
+    $scope.save = function(){
+      PersonInfoService.savePersonInfo(employeeId, $scope.person)
+      .then(function(successResponse){
+        alert('Save success!');
+        $modalInstance.close(successResponse);
+      }, function(errorResponse){
+          alert('Failed to save the user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
+      });
     };
   }
 ]);
@@ -2098,7 +2132,7 @@ var employeeFamilyMemberViewModalController = employeeControllers.controller(
           $modalInstance.dismiss();
         };
 
-        $scope.addNew = function(){
+        $scope.edit = function(){
           $modalInstance.close();
         };
 
