@@ -24,14 +24,14 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result), list)
         self.assertEqual(len(result), 1)
         upload_feature = result[0]
-        self.assertEqual(upload_feature['id'], self.normalize_key(1))
+        self.assertEqual(upload_feature['id'], self.normalize_key(2))
         self.assertEqual(upload_feature['feature_id'], self.normalize_key(1))
         self.assertIn('upload', upload_feature)
         upload = upload_feature['upload']
-        self.assertEqual(upload['id'], self.normalize_key(4))
-        self.assertEqual(upload['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/BSBCHMOSummary.pdf')
+        self.assertEqual(upload['id'], self.normalize_key(7))
+        self.assertEqual(upload['S3'], 'https://benefitmy-demo-uploads.s3.amazonaws.com/BenefitMy_Inc.:MV9fMV9fMjAxNS0wNS0wNiAwMDowODoyNC43MjQxNDM=:55-0925_2015_HMO_NE_SG_Product_Chart.pdf')
         self.assertEqual(upload['file_type'], 'application/pdf')
-        self.assertEqual(upload['file_name'], 'BSBCHMOSummary.pdf')
+        self.assertEqual(upload['file_name'], '55-0925_2015_HMO_NE_SG_Product_Chart.pdf')
         self.assertEqual(upload['company'], self.normalize_key(1))
         self.assertEqual(upload['user'], self.normalize_key(1))
         self.assertEqual(upload['upload_type'], 'MedicalBenefit')
@@ -71,7 +71,7 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.content)
         self.assertIn('id', result)
-        self.assertEqual(result['id'], self.normalize_key(2))
+        self.assertEqual(result['id'], self.normalize_key(4))
         self.assertEqual(result['application_feature'], 3)
         self.assertEqual(result['feature_id'], 2)
         self.assertEqual(result['upload'], 3)
@@ -113,17 +113,17 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.content)
         self.assertIn('id', result)
-        self.assertEqual(result['id'], self.normalize_key(2))
+        self.assertEqual(result['id'], self.normalize_key(4))
         self.assertEqual(result['application_feature'], 3)
         self.assertEqual(result['feature_id'], 4554)
         self.assertEqual(result['upload'], 3)
 
     def test_delete_upload_application_feature_success(self):
         upload_feature_data = {
-            'upload': self.normalize_key(4),
+            'upload': self.normalize_key(5),
         }
         response = self.client.post(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(3),
+                                           kwargs={'pk': self.normalize_key(4),
                                                    'feature_id': self.normalize_key(4554)}),
                                     data=json.dumps(upload_feature_data),
                                     content_type='application/json')
@@ -131,7 +131,7 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 201)
 
         response = self.client.get(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(3),
+                                           kwargs={'pk': self.normalize_key(4),
                                                    'feature_id': self.normalize_key(4554)}))
         result = json.loads(response.content)
         self.assertEqual(type(result), list)
@@ -140,26 +140,26 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload_feature['feature_id'], self.normalize_key(4554))
         self.assertIn('upload', upload_feature)
         upload = upload_feature['upload']
-        self.assertEqual(upload['id'], self.normalize_key(4))
-        self.assertEqual(upload['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/BSBCHMOSummary.pdf')
-        self.assertEqual(upload['file_type'], 'application/pdf')
-        self.assertEqual(upload['file_name'], 'BSBCHMOSummary.pdf')
+        self.assertEqual(upload['id'], self.normalize_key(5))
+        self.assertEqual(upload['S3'], 'https://benefitmy-dev-uploads.s3.amazonaws.com/Greencard.jpeg')
+        self.assertEqual(upload['file_type'], 'image/jpeg')
+        self.assertEqual(upload['file_name'], 'Greencard.jpeg')
         self.assertEqual(upload['company'], self.normalize_key(1))
-        self.assertEqual(upload['user'], self.normalize_key(1))
-        self.assertEqual(upload['upload_type'], 'MedicalBenefit')
+        self.assertEqual(upload['user'], self.normalize_key(2))
+        self.assertEqual(upload['upload_type'], 'I9')
         self.assertIn('application_feature', upload_feature)
         feature_type = upload_feature['application_feature']
-        self.assertEqual(feature_type['id'], self.normalize_key(3))
-        self.assertEqual(feature_type['feature'], 'MedicalBenefit')
+        self.assertEqual(feature_type['id'], self.normalize_key(4))
+        self.assertEqual(feature_type['feature'], 'DentalBenefit')
 
         response = self.client.delete(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(3),
+                                           kwargs={'pk': self.normalize_key(4),
                                                    'feature_id': self.normalize_key(4554)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 204)
 
         response = self.client.get(reverse('uploads_application_feature_api',
-                                           kwargs={'pk': self.normalize_key(3),
+                                           kwargs={'pk': self.normalize_key(4),
                                                    'feature_id': self.normalize_key(4554)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)

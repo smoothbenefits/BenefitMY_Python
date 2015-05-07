@@ -1,8 +1,8 @@
 [ 
   {
     "fields": {
-      "company": 1,
       "user_for": 3,
+      "company": 1,
       "upload": 5
     },
     "model": "app.uploadaudience",
@@ -10,8 +10,8 @@
   },
   {
     "fields": {
-      "company": 1,
       "user_for": null,
+      "company": 1,
       "upload": 6
     },
     "model": "app.uploadaudience",

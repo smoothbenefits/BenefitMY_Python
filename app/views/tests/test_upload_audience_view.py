@@ -102,7 +102,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
 
     def test_post_upload_audience_user_success(self):
         upload_feature_data = {
-            'upload': self.normalize_key(2),
+            'upload': self.normalize_key(3),
         }
         response = self.client.post("{0}?user_id={1}".format(
                                        reverse('upload_audience_api',
@@ -117,7 +117,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['id'], self.normalize_key(3))
         self.assertEqual(result['user_for'], 4)
         self.assertEqual(result['company'], 1)
-        self.assertEqual(result['upload'], 2)
+        self.assertEqual(result['upload'], 3)
 
     def test_post_upload_audience_bad_company_fail(self):
         upload_feature_data = {
