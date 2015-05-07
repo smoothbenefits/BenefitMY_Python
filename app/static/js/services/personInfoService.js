@@ -1,14 +1,14 @@
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('PersonInfoService',
-  ['employeeFamily',
+  ['peopleRepository',
    '$q',
-    function(employeeFamily, 
+    function(peopleRepository, 
       $q){
 
       var getSelfPersonInfo = function(uId){
         var deferred = $q.defer();
-        employeeFamily.get({userId:uId})
+        peopleRepository.ByUser.get({userId:uId})
           .$promise.then(function(userPerson){
             var selfPerson = _.findWhere(userPerson.family, {relationship:'self'});
             if(selfPerson){
@@ -24,7 +24,7 @@ benefitmyService.factory('PersonInfoService',
 
       var getFamilyInfo = function(uid){
         var deferred = $q.defer();
-        employeeFamily.get({userId:uid}).$promise
+        peopleRepository.ByUser.get({userId:uid}).$promise
         .then(function(response){
           var viewFamily = [];
           _.each(response.family, function(familyMember){
@@ -80,19 +80,34 @@ benefitmyService.factory('PersonInfoService',
         var deferred = $q.defer();
 
         var newUserInfo = mapViewPersonToDto(viewInfo);
-        employeeFamily.save({userId:uId}, newUserInfo,
-        function(response){
-          deferred.resolve(response);
-        }, function(errorResponse){
-          deferred.reject(errorResponse);
-        });
+        if(viewInfo.id){
+          peopleRepository.ById.update({personId:viewInfo.id}, newUserInfo)
+          .$promise.then(function(response){
+            deferred.resolve(response);
+          }, function(errorResponse){
+            deferred.reject(errorResponse);
+          });
+        }
+        else{
+          peopleRepository.ByUser.save({userId:uId}, newUserInfo,
+          function(response){
+            deferred.resolve(response);
+          }, function(errorResponse){
+            deferred.reject(errorResponse);
+          });
+        }
         return deferred.promise;
+      };
+
+      var deletePerson = function(personId){
+        peopleRepository.ById.delete({personId:personId});
       };
 
       return{
         getSelfPersonInfo: getSelfPersonInfo,
         savePersonInfo: savePersonInfo,
-        getFamilyInfo: getFamilyInfo
+        getFamilyInfo: getFamilyInfo,
+        deletePerson: deletePerson
       };
 
 }]);

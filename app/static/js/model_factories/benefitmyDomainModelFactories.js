@@ -182,8 +182,8 @@ benefitmyDomainModelFactories.factory('employeeTaxRepository', ['$resource',
 benefitmyDomainModelFactories.factory('peopleRepository', ['$resource',
   function($resource){
     return {
-        ById: $resource('/api/v1/people/:personId', {personId:'@personId'}),
-        ByUser: $resource('/api/v1/user/:userId/person', {userId:'@userId'})
+        ById: $resource('/api/v1/people/:personId', {personId:'@personId'}, {update: {method: 'PUT'}}),
+        ByUser: $resource('/api/v1/users/:userId/family', {userId:'@userId'})
     };
   }
 ]);

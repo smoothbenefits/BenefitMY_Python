@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 
 from app.views.person_view import (
-    PersonView, PersonByUserView)
+    PersonView, FamilyByUserView)
 from app.views.employee_profile_view import (
     EmployeeProfileView,
     EmployeeProfileByPersonCompanyView,
@@ -11,7 +11,6 @@ from app.views.employee_profile_view import (
 from app.views.user_view import (
     UserView,
     UsersView,
-    UserFamilyView,
     CurrentUserView)
 from app.views.company_user_view import (
     CompanyUserView,
@@ -121,7 +120,6 @@ PREFIX = "api/v1"
 urlpatterns = patterns('app.views',
     url(r'^dashboard/?$', dashboard_view.index, name='dashboard'),
     url(r'^%s/people/(?P<pk>\w+)/?$' % PREFIX, PersonView.as_view(), name='people_by_id'),
-    url(r'^%s/user/(?P<user_id>\w+)/person/?$' % PREFIX, PersonByUserView.as_view(), name='person_by_user'),
 
     url(r'^%s/benefit_types/?$' % PREFIX, BenefitTypeView.as_view()),
 
@@ -131,7 +129,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/?$' % PREFIX, UsersView.as_view(), name='all_users'),
     url(r'^%s/users/current/?$' % PREFIX, CurrentUserView.as_view(), name='current_user'),
     url(r'^%s/users/(?P<pk>\w+)/?$' % PREFIX, UserView.as_view(), name='user_by_id'),
-    url(r'^%s/users/(?P<pk>\w+)/family/?$' % PREFIX, UserFamilyView.as_view(), name='user_family_api'),
+    url(r'^%s/users/(?P<pk>\w+)/family/?$' % PREFIX, FamilyByUserView.as_view(), name='user_family_api'),
     url(r'^%s/users/(?P<pk>\w+)/documents/?$' % PREFIX, UserDocumentView.as_view()),
     url(r'^%s/users/(?P<pk>\w+)/benefits/?$' % PREFIX,
         UserCompanyBenefitPlanOptionView.as_view()),
