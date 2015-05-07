@@ -28,7 +28,7 @@
                         <a href="javascript:void(0);" ng-click="viewDetails(member)">{{member.first_name}} {{member.last_name}}</a>
                     </td>
                     <td>
-                        {{member.relationship}}
+                        {{member.relationship.capitalize()}}
                     </td>
                     <td>
                         <a href="javascript:void(0);" ng-click="editMember(member)">Edit</a>
