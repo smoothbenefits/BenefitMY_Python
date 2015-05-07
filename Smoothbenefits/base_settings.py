@@ -226,7 +226,7 @@ PIPELINE_JS = {
             'js/services/LifeInsuranceService.js',
             'js/services/benefitDisplayService.js',
             'js/services/documentTypeService.js',
-            'js/services/personInfoService.js',
+            'js/services/PersonService.js',
             'js/services/UserService.js',
             'js/services/UploadService.js',
             'js/services/employeePayrollService.js',

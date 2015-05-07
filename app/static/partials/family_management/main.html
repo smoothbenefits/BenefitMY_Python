@@ -1,0 +1,42 @@
+<div class="breadcrumb">
+    <a ng-href="#/clients">Broker Dashboard</a>
+    <a ng-href="#/employee/benefits/{{employeeId}}">View Benefits</a>
+    <span>Family Member(s)</span>
+</div>
+
+<div class="content-header">
+    <h1>Family Member(s)</h1>
+    <span class="general-info" ng-show="!family|| !family.length">You have no family member</span>
+    <span class="general-info" ng-show="family.length">You have {{family.length}} family member(s)</span>
+    <div class="cta"><span class="btn green" ng-click="addMember()">Add a new family member</span></div>
+</div><!-- / .content-header -->
+
+
+<div class="content-body">
+    <div class="table-responsive table-holder">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Name</span></th>
+                    <th><span>Relationship</span></th>
+                    <th><span>Actions</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="member in family">
+                    <td>
+                        <a href="javascript:void(0);" ng-click="viewDetails(member)">{{member.first_name}} {{member.last_name}}</a>
+                    </td>
+                    <td>
+                        {{member.relationship.capitalize()}}
+                    </td>
+                    <td>
+                        <a href="javascript:void(0);" ng-click="editMember(member)">Edit</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
+</div><!-- / .content-body -->

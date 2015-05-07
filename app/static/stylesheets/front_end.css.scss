@@ -272,3 +272,13 @@ h3 {
     color: #58585B;
     font-weight: 300;
 }
+.modal-footer{
+    .left{
+        float:left;
+        width:30%;
+    }
+    .right{
+        float:right;
+        width:30%;
+    }
+}
