@@ -3,8 +3,8 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('EmployeeProfileService', 
     ['$q',
     'EmployeeProfileRepository',
-    'PersonInfoService',
-    function ($q, EmployeeProfileRepository, PersonInfoService){
+    'PersonService',
+    function ($q, EmployeeProfileRepository, PersonService){
         var mapDomainToViewModel = function(employeeProfileDomainModel) {
             var viewModel = {};
             
@@ -87,7 +87,7 @@ benefitmyService.factory('EmployeeProfileService',
                 function(error){
                     // In case no record found, return an "empty" profile
                     if (error.status === 404) {
-                        PersonInfoService.getSelfPersonInfo(userId)
+                        PersonService.getSelfPersonInfo(userId)
                         .then(function(person) {
                             deferred.resolve({ "personId":person.id, "companyId":companyId })
                         },

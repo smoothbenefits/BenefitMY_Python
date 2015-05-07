@@ -1,6 +1,6 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('PersonInfoService',
+benefitmyService.factory('PersonService',
   ['peopleRepository',
    '$q',
     function(peopleRepository, 

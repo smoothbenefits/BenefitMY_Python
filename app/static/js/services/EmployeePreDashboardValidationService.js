@@ -7,13 +7,13 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                           'employmentAuthRepository',
                           'employeeTaxRepository',
                           'employeeSignature',
-                          'PersonInfoService',
+                          'PersonService',
   function(employeeFamily,
            currentUser,
            employmentAuthRepository,
            employeeTaxRepository,
            employeeSignature,
-           PersonInfoService){
+           PersonService){
 
     var getBasicInfoUrl = function(employeeId){
       return '/employee/onboard/index/' + employeeId;
@@ -65,7 +65,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
             if(!validatePersonInfo(self)){
             //we should remove the family person.
             //Do we have this API?
-              PersonInfoService.deletePerson(self.id);
+              PersonService.deletePerson(self.id);
               failed();
             }
             else{

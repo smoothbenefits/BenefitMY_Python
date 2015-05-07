@@ -175,17 +175,17 @@ var addFamily = employeeControllers.controller('addFamily',
  ['$scope', 
   '$location', 
   '$stateParams', 
-  'PersonInfoService',
+  'PersonService',
   function addFamily(
     $scope, 
     $location, 
     $stateParams, 
-    PersonInfoService){
+    PersonService){
 
   var employeeId = $stateParams.employee_id;
   $scope.employeeId = employeeId;
   $scope.person = {person_type:'family'};
-  PersonInfoService.getSelfPersonInfo(employeeId)
+  PersonService.getSelfPersonInfo(employeeId)
   .then(function(retrievedInfo){
     $scope.person.address = retrievedInfo.address;
     $scope.person.phone = retrievedInfo.phone;
@@ -193,7 +193,7 @@ var addFamily = employeeControllers.controller('addFamily',
 
 
   $scope.addMember = function(){
-    PersonInfoService.savePersonInfo(employeeId, $scope.person)
+    PersonService.savePersonInfo(employeeId, $scope.person)
     .then(function(successResponse){
       $location.path('/employee/benefits/' + employeeId);
     }, function(errorResponse){
@@ -669,8 +669,8 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$state
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$stateParams', '$location', 'PersonInfoService', 'currentUser', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, PersonInfoService, currentUser, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', 'PersonService', 'currentUser', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, PersonService, currentUser, EmployeePreDashboardValidationService){
 
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
@@ -694,7 +694,7 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     $scope.addBasicInfo = function(){
       var birthDate = $scope.employee.birth_date;
       $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');
-      PersonInfoService.savePersonInfo($scope.employeeId, $scope.employee, function(successResponse){
+      PersonService.savePersonInfo($scope.employeeId, $scope.employee, function(successResponse){
         $location.path('/employee/onboard/employment/' + $scope.employeeId);
       }, function(errorResponse){
           alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
@@ -2011,17 +2011,17 @@ var employeeFamilyController = employeeControllers.controller(
    '$state',
    '$stateParams',
    '$modal',
-   'PersonInfoService',
+   'PersonService',
   function employeeFamilyController(
     $scope,
     $state,
     $stateParams,
     $modal,
-    PersonInfoService){
+    PersonService){
 
     var selfPerson = null;
     $scope.family=[];
-    PersonInfoService.getFamilyInfo($stateParams.employeeId)
+    PersonService.getFamilyInfo($stateParams.employeeId)
     .then(function(family){
       _.each(family, function(member){
         if(member.relationship === 'self'){
@@ -2091,13 +2091,13 @@ var employeeFamilyMemberEditModalController = employeeControllers.controller(
   'employeeFamilyMemberEditModalController',
   ['$scope', 
    '$modalInstance',
-   'PersonInfoService',
+   'PersonService',
    'person',
    'employeeId',
   function employeeFamilyMemberEditModalController(
     $scope,
     $modalInstance,
-    PersonInfoService,
+    PersonService,
     person, 
     employeeId){
     $scope.person = person;
@@ -2105,7 +2105,7 @@ var employeeFamilyMemberEditModalController = employeeControllers.controller(
       $modalInstance.dismiss();
     };
     $scope.save = function(){
-      PersonInfoService.savePersonInfo(employeeId, $scope.person)
+      PersonService.savePersonInfo(employeeId, $scope.person)
       .then(function(successResponse){
         alert('Save success!');
         $modalInstance.close(successResponse);
