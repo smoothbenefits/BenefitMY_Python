@@ -34,39 +34,48 @@
   },
   {
     "fields": {
-      "created_at": "2015-04-24T04:00:00Z",
-      "percentage_of_salary": "70.00",
-      "updated_at": null,
-      "max_benefit_weekly": "10000.00",
-      "duration": 10,
+      "percentage_of_salary": "80.00",
+      "max_benefit_weekly": "20000", 
       "company": 1,
-      "std_insurance_plan": 1
+      "std_insurance_plan": 2,
+      "duration" : 30,
+      "rate": 0.05,
+      "paid_by": "Employee",
+      "elimination_period_in_days": 5,
+      "created_at": "2015-04-25T04:00:00Z",
+      "updated_at": null
     },
     "model": "app.companystdinsuranceplan",
     "pk": 1
   },
   {
     "fields": {
-      "created_at": "2015-04-25T04:00:00Z",
       "percentage_of_salary": "80.00",
-      "updated_at": null,
-      "max_benefit_weekly": "20000.00",
-      "duration": 30,
+      "max_benefit_weekly": "20000", 
       "company": 1,
-      "std_insurance_plan": 2
+      "std_insurance_plan": 2,
+      "duration" : 30,
+      "rate": 0.05,
+      "paid_by": "Employee",
+      "elimination_period_in_days": 5,
+      "created_at": "2015-04-25T04:00:00Z",
+      "updated_at": null
     },
     "model": "app.companystdinsuranceplan",
     "pk": 2
   },
   {
     "fields": {
-      "created_at": "2015-04-26T04:00:00Z",
       "percentage_of_salary": "70.00",
-      "updated_at": null,
-      "max_benefit_weekly": "130000.00",
-      "duration": 6,
+      "max_benefit_weekly": "130000", 
       "company": 2,
-      "std_insurance_plan": 3
+      "std_insurance_plan": 3,
+      "duration" : 6,
+      "rate": 0.13,
+      "paid_by": "Employer",
+      "elimination_period_in_days": 15,
+      "created_at": "2015-04-26T04:00:00Z",
+      "updated_at": null
     },
     "model": "app.companystdinsuranceplan",
     "pk": 3

@@ -102,7 +102,8 @@
     },
     "model": "app.document",
     "pk": 8
-  }{
+  },
+  {
     "fields": {
       "edited": false,
       "name": "Employment Agreement for employee",
