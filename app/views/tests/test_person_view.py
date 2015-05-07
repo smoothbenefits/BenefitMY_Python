@@ -1,5 +1,6 @@
 import json
 import sys
+import copy
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from view_test_base import ViewTestBase
@@ -12,6 +13,28 @@ class PersonTestCase(TestCase, ViewTestBase):
                 '23_auth_user', 
                 '11_address',
                 '12_phone']
+
+    def setUp(self):
+        self.new_person = {
+            'person_type':'family',
+            'first_name': 'test_create',
+            'last_name': 'tested',
+            'email': 'tester@mail.com',
+            'relationship':'dependent',
+            'ssn': '233-432-5444',
+            'birth_date':'1982-09-02',
+            'gender':'M',
+            'user': self.normalize_key(3),
+            'addresses':[{'address_type':'primary',
+                          'street_1': '3243 Mass ave',
+                          'street_2':'',
+                          'city': 'Waltham',
+                          'state': 'MA',
+                          'zipcode': '03233'}],
+            'phones':[{'phone_type':'home',
+                       'number': '972-343-9938'}],
+            'emergency_contact':[]
+        }
 
     def test_get_person_existing(self):
         response = self.client.get(reverse('people_by_id', kwargs={'pk': self.normalize_key(1)}))
@@ -113,3 +136,24 @@ class PersonTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertIn('family', result)
         self.assertEqual(len(result['family']), 0)
+
+    def test_create_new_family_member_success(self):
+        response = self.client.post(reverse('user_family_api', kwargs={'pk':self.normalize_key(3)}), 
+                                    data=json.dumps(self.new_person),
+                                    content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 201)
+        result = json.loads(response.content)
+        self.assertIn('id', result)
+
+    def test_create_new_family_member_repeat_spouse(self):
+        another=copy.deepcopy(self.new_person)
+        another['relationship'] = 'spouse'
+        response = self.client.post(reverse('user_family_api', kwargs={'pk':self.normalize_key(3)}), 
+                                    data=json.dumps(another),
+                                    content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 400)
+        result = json.loads(response.content)
+        self.assertIn('message', result)
+        self.assertEqual(result['message'], 'Cannot add a new spouse when you already have a spouse in DB')

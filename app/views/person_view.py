@@ -45,15 +45,9 @@ class FamilyByUserView(APIView):
         except User.DoesNotExist:
             raise Http404
 
-    def get_person_by_user(self, user, relation_to_user):
-        try:
-            person_set=Person.objects.filter(user=user, relationship=relation_to_user)
-            if person_set:
-                return person_set[0]
-            else:
-                return None
-        except Person.DoesNotExist:
-            return None
+    def is_person_associated_with_user(self, user, relation_to_user):
+        person_set=Person.objects.filter(user=user, relationship=relation_to_user)
+        return person_set.exists()
 
 
     def get(self, request, pk, format=None):
@@ -65,8 +59,7 @@ class FamilyByUserView(APIView):
         request.DATA['user'] = pk
         relationship = request.DATA['relationship']
         if relationship == 'spouse' or relationship == 'self':
-            person = self.get_person_by_user(pk, relationship)
-            if person:
+            if self.is_person_associated_with_user(pk, relationship):
                 return Response({'message':'Cannot add a new {0} when you already have a {0} in DB'.format(relationship)}, 
                                 status=status.HTTP_400_BAD_REQUEST)
         serializer = PersonFullPostSerializer(data=request.DATA)
