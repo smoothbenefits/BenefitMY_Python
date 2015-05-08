@@ -50,12 +50,12 @@
                 </select>
             </div>
 
-            <div class="form-label">Social Security Number*</div>
+            <div class="form-label">Social Security Number</div>
             <div class="textbox">
                 <input type="tel"
                     name="person_ssn"
                     ng-model="person.ssn"
-                    ng-required="true"
+                    ng-required="!person.id"
                     ui-mask="999-99-9999">
                 <div class="form-error-relative" ng-show="form.person_ssn.$dirty && form.person_ssn.$invalid">
                     <span ng-show="form.person_ssn.$error.required">SSN field is required</span>
