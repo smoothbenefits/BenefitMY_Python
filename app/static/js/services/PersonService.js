@@ -81,6 +81,9 @@ benefitmyService.factory('PersonService',
 
         var newUserInfo = mapViewPersonToDto(viewInfo);
         if(viewInfo.id){
+          if(!newUserInfo.ssn){
+            newUserInfo.ssn = undefined;
+          }
           peopleRepository.ById.update({personId:viewInfo.id}, newUserInfo)
           .$promise.then(function(response){
             deferred.resolve(response);
