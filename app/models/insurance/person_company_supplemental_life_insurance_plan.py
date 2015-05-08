@@ -13,22 +13,37 @@ class PersonCompanySupplementalLifeInsurancePlan(models.Model):
     person = models.ForeignKey(Person,
                                related_name="person_company_supplemental_life_insurance_plan")
 
-    self_elected_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    self_elected_amount = models.DecimalField(max_digits=10, 
+                                              decimal_places=2,
+                                              blank=True,
+                                              null=True)
 
-    spouse_elected_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    spouse_elected_amount = models.DecimalField(max_digits=10, 
+                                                decimal_places=2,
+                                                blank=True,
+                                                null=True)
 
-    child_elected_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    child_elected_amount = models.DecimalField(max_digits=10, 
+                                               decimal_places=2,
+                                               blank=True,
+                                               null=True)
 
     self_premium_per_month = models.DecimalField(max_digits=10, 
                                                  decimal_places=2, 
+                                                 blank=True,
+                                                 null=True,
                                                  verbose_name="calculated premium for self")
 
     spouse_premium_per_month = models.DecimalField(max_digits=10, 
                                                    decimal_places=2, 
+                                                   blank=True,
+                                                   null=True,
                                                    verbose_name="calculated premium for spouse")
 
     child_premium_per_month = models.DecimalField(max_digits=10, 
                                                   decimal_places=2, 
+                                                  blank=True,
+                                                  null=True,
                                                   verbose_name="calculated premium for child")
 
     created_at = models.DateTimeField(auto_now_add=True)
