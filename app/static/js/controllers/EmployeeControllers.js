@@ -171,36 +171,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
   }
 ]);
 
-var addFamily = employeeControllers.controller('addFamily', 
- ['$scope', 
-  '$location', 
-  '$stateParams', 
-  'PersonService',
-  function addFamily(
-    $scope, 
-    $location, 
-    $stateParams, 
-    PersonService){
-
-  var employeeId = $stateParams.employee_id;
-  $scope.employeeId = employeeId;
-  $scope.person = {person_type:'family'};
-  PersonService.getSelfPersonInfo(employeeId)
-  .then(function(retrievedInfo){
-    $scope.person.address = retrievedInfo.address;
-    $scope.person.phone = retrievedInfo.phone;
-  });
-
-
-  $scope.addMember = function(){
-    PersonService.savePersonInfo(employeeId, $scope.person)
-    .then(function(successResponse){
-      $location.path('/employee/benefits/' + employeeId);
-    }, function(errorResponse){
-      alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
-    });
-  }
-}]);
 
 var viewDocument = employeeControllers.controller('viewDocument',
   ['$scope', '$location', '$stateParams', 'userDocument', 'currentUser', 'documentRepository',
@@ -1132,7 +1102,7 @@ var healthBenefitsSignup = employeeControllers.controller(
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
-   'employeeFamily',
+   'PersonService',
    'benefitDisplayService',
    'FsaService',
    'LifeInsuranceService',
@@ -1146,7 +1116,7 @@ var healthBenefitsSignup = employeeControllers.controller(
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
-      employeeFamily,
+      PersonService,
       benefitDisplayService,
       FsaService,
       LifeInsuranceService){
@@ -1164,8 +1134,9 @@ var healthBenefitsSignup = employeeControllers.controller(
         $scope.selectedBenefits =[];
         $scope.selectedBenefitHashmap = {};
 
-        employeeFamily.get({userId:employeeId}).$promise.then(function(response){
-          _.each(response.family, function(member){
+        PersonService.getFamilyInfo(employeeId)
+        .then(function(family){
+          _.each(family, function(member){
             member.ticked = false;
             $scope.family.push(member);
           });
@@ -1479,7 +1450,6 @@ var fsaBenefitsSignup = employeeControllers.controller(
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
-   'employeeFamily',
    'benefitDisplayService',
    'FsaService',
    'LifeInsuranceService',
@@ -1492,7 +1462,6 @@ var fsaBenefitsSignup = employeeControllers.controller(
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
-      employeeFamily,
       benefitDisplayService,
       FsaService,
       LifeInsuranceService){
@@ -1570,7 +1539,6 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
-   'employeeFamily',
    'benefitDisplayService',
    'FsaService',
    'LifeInsuranceService',
@@ -1583,7 +1551,6 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
-      employeeFamily,
       benefitDisplayService,
       FsaService,
       LifeInsuranceService){
@@ -1691,7 +1658,6 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
-   'employeeFamily',
    'benefitDisplayService',
    'FsaService',
    'LifeInsuranceService',
@@ -1704,7 +1670,6 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
-      employeeFamily,
       benefitDisplayService,
       FsaService,
       LifeInsuranceService){

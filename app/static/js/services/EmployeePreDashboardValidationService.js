@@ -2,13 +2,13 @@ var benefitmyService = angular.module('benefitmyService');
 
 
 benefitmyService.factory('EmployeePreDashboardValidationService',
-                         ['employeeFamily',
+                         ['PersonService',
                           'currentUser',
                           'employmentAuthRepository',
                           'employeeTaxRepository',
                           'employeeSignature',
                           'PersonService',
-  function(employeeFamily,
+  function(PersonService,
            currentUser,
            employmentAuthRepository,
            employeeTaxRepository,
@@ -57,14 +57,12 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
 
     var validateBasicInfo = function(employeeId, succeeded, failed){
       //step one (basic info) validation
-      employeeFamily.get({userId:employeeId})
-        .$promise.then(function(familyResponse){
-          var self = _.findWhere(familyResponse.family, {'relationship':'self'});
+      PersonService.getSelfPersonInfo(employeeId)
+        .then(function(self){
           if(self){
             //We need to validate this self
             if(!validatePersonInfo(self)){
-            //we should remove the family person.
-            //Do we have this API?
+              //we should remove this invalid self
               PersonService.deletePerson(self.id);
               failed();
             }

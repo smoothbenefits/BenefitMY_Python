@@ -266,11 +266,6 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_signup.html',
                 controller: 'employeeSignup'
             }).
-            state('/employee/add_family/:employee_id', {
-                url: '/employee/add_family/:employee_id',
-                templateUrl: '/static/partials/add_family.html',
-                controller: 'addFamily'
-            }).
             state('/employee/document/:doc_id', {
                 url: '/employee/document/:doc_id',
                 templateUrl: '/static/partials/employee_view_document.html',

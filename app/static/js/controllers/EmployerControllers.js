@@ -611,7 +611,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   '$modal',
   '$controller',
   'profileSettings', 
-  'employeeFamily',
+  'peopleRepository',
   'employmentAuthRepository',
   'employeeTaxRepository',
   'EmployeeProfileService',
@@ -621,7 +621,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            $modal, 
            $controller,
            profileSettings,
-           employeeFamily,
+           peopleRepository,
            employmentAuthRepository,
            employeeTaxRepository,
            EmployeeProfileService){
@@ -634,7 +634,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
     $scope.employee = {};
     $scope.showEditButton = false;
 
-    employeeFamily.get({userId:employeeId})
+    peopleRepository.ByUser.get({userId:employeeId})
       .$promise.then(function(employeeDetail){
         $scope.employee.first_name = employeeDetail.first_name;
         $scope.employee.last_name = employeeDetail.last_name;
