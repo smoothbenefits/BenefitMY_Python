@@ -7,8 +7,8 @@ BIND_TYPES = (('self', 'Self'),
              ('spouse', 'Spouse'),
              ('dependent', 'Dependent'))
 
-CONDITIONS = (('tabacco', 'Tabacco'),
-              ('non-tabacco', 'Non-Tabacco'))
+CONDITIONS = (('tobacco', 'Tobacco'),
+              ('non-tobacco', 'Non-Tobacco'))
 
 @reversion.register
 class SupplementalLifeInsurancePlanRate(models.Model):

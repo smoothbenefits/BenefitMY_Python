@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                 ('age_max', models.SmallIntegerField(null=True, verbose_name=b'Max value of age. Null for children', blank=True)),
                 ('bind_type', models.CharField(max_length=32, choices=[(b'self', b'Self'), (b'spouse', b'Spouse'), (b'dependent', b'Dependent')])),
                 ('rate', models.DecimalField(max_digits=10, decimal_places=2)),
-                ('condition', models.CharField(max_length=64, choices=[(b'tabacco', b'Tabacco'), (b'non-tabacco', b'Non-Tabacco')])),
+                ('condition', models.CharField(max_length=64, choices=[(b'tobacco', b'Tobacco'), (b'non-tobacco', b'Non-Tobacco')])),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('supplemental_life_insurance_plan', models.ForeignKey(related_name='supplemental_life_insurance_plan_rate', to='app.SupplementalLifeInsurancePlan')),
