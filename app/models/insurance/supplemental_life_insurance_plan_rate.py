@@ -16,17 +16,17 @@ class SupplementalLifeInsurancePlanRate(models.Model):
                                                          related_name="supplemental_life_insurance_plan_rate")
     age_min = models.SmallIntegerField(blank=True, 
                                        null=True,
-                                       verbos_name="Min value of age. Null for children")
+                                       verbose_name="Min value of age. Null for children")
 
     age_max = models.SmallIntegerField(blank=True, 
                                        null=True, 
-                                       verbos_name="Max value of age. Null for children")
+                                       verbose_name="Max value of age. Null for children")
 
     bind_type = models.CharField(max_length=32,
                                  choices=BIND_TYPES)
 
     rate = models.DecimalField(max_digits=10,
-                               decimal_places=2
+                               decimal_places=2,
                                blank=False,
                                null=False)
 
