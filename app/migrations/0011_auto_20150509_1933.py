@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0009_auto_20150505_0259'),
+        ('app', '0010_auto_20150508_0208'),
     ]
 
     operations = [
@@ -33,6 +33,7 @@ class Migration(migrations.Migration):
                 ('self_premium_per_month', models.DecimalField(null=True, verbose_name=b'calculated premium for self', max_digits=10, decimal_places=2, blank=True)),
                 ('spouse_premium_per_month', models.DecimalField(null=True, verbose_name=b'calculated premium for spouse', max_digits=10, decimal_places=2, blank=True)),
                 ('child_premium_per_month', models.DecimalField(null=True, verbose_name=b'calculated premium for child', max_digits=10, decimal_places=2, blank=True)),
+                ('condition', models.CharField(max_length=64, null=True, blank=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('company_supplemental_life_insurance_plan', models.ForeignKey(related_name='person_company_supplemental_life_insurance_plan', to='app.CompanySupplementalLifeInsurancePlan')),

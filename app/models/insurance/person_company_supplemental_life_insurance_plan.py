@@ -46,6 +46,8 @@ class PersonCompanySupplementalLifeInsurancePlan(models.Model):
                                                   null=True,
                                                   verbose_name="calculated premium for child")
 
+    condition = models.CharField(max_length=64, blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     updated_at = models.DateTimeField(auto_now=True)
