@@ -10,10 +10,8 @@ from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.custom_authentication import AuthUserManager
 from app.models.person import Person
+from app.serializers.person_serializer import PersonSerializer
 from app.serializers.user_serializer import UserSerializer
-from app.serializers.user_serializer import UserFamilySerializer
-from app.serializers.person_serializer import (
-    PersonFullPostSerializer, PersonSerializer)
 from app.serializers.company_user_serializer import CompanyRoleSerializer
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
@@ -140,45 +138,3 @@ class CurrentUserView(APIView):
 
         return Response(result)
 
-
-class UserFamilyView(APIView):
-    def get_object(self, pk):
-        try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise Http404
-
-    def get_person_by_user(self, user, relation_to_user):
-        try:
-            person_set=Person.objects.filter(user=user, relationship=relation_to_user)
-            if person_set:
-                return person_set[0]
-            else:
-                return None
-        except Person.DoesNotExist:
-            return None
-
-
-    def get(self, request, pk, format=None):
-        user = self.get_object(pk)
-        serializer = UserFamilySerializer(user)
-        return Response(serializer.data)
-
-    def post(self, request, pk, format=None):
-        user = self.get_object(pk)
-        request.DATA['user'] = pk
-        relationship = request.DATA['relationship']
-        if relationship != 'dependent':
-            person = self.get_person_by_user(user, relationship)
-            if person:
-                serializer = PersonFullPostSerializer(person, data=request.DATA)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(serializer.data)
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        serializer = PersonFullPostSerializer(data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

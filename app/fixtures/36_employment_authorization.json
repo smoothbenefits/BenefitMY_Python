@@ -1,14 +1,14 @@
 [
   {
     "fields": {
-      "user": 3,
-      "signature": 2,
       "worker_type": "Citizen",
-      "expiration_date": null,
       "uscis_number": null,
-      "country": null,
+      "expiration_date": null,
+      "signature": 2,
       "i_94": null,
-      "passport": null
+      "user": 3,
+      "passport": null,
+      "country": null
     },
     "model": "app.employmentauthorization",
     "pk": 1

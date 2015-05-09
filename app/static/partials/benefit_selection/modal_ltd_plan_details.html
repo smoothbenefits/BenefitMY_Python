@@ -11,6 +11,9 @@
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
+                    <th><span>Rate</span></th>
+                    <th><span>Elimination Period</span></th>
+                    <th><span>Paid By</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -19,6 +22,9 @@
                     <td>{{companyLtdPlan.percentageOfSalary}}% of Base Salary</td>
                     <td>${{companyLtdPlan.maxBenefitMonthly}}/Month</td>
                     <td>{{companyLtdPlan.duration}} Years or Until Retirement Age</td>
+                    <td>${{companyLtdPlan.rate}} of $10 benefit</td>
+                    <td>{{companyLtdPlan.eliminationPeriodInMonths}} Months</td>
+                    <td>{{companyLtdPlan.paidBy}}</td>
                 </tr>
             </tbody>
         </table>
