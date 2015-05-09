@@ -1514,6 +1514,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
           // Save FSA selection if user specifies a reason
           if ($scope.isFsaUpdateReasonSelected()){
             $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
+            $scope.fsaElection.company_fsa_plan = $scope.fsaPlan.companyPlanId;
             FsaService.saveFsaElection($scope.fsaElection
               , function() {
                 $scope.showSaveSuccessModal();
