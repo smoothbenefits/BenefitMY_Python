@@ -73,6 +73,8 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
           else{
             failed();
           }
+        }, function(){
+          failed();
         });
     };
 
