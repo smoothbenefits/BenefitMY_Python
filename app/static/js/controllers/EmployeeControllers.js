@@ -663,7 +663,8 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     $scope.addBasicInfo = function(){
       var birthDate = $scope.employee.birth_date;
       $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');
-      PersonService.savePersonInfo($scope.employeeId, $scope.employee, function(successResponse){
+      PersonService.savePersonInfo($scope.employeeId, $scope.employee)
+      .then(function(successResponse){
         $location.path('/employee/onboard/employment/' + $scope.employeeId);
       }, function(errorResponse){
           alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
