@@ -12,19 +12,19 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='CompanySupplementalLifeInsurancePlan',
+            name='CompSupplLifeInsurancePlan',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('company', models.ForeignKey(related_name='company_supplemental_life_insurance_plan', to='app.Company')),
+                ('company', models.ForeignKey(related_name='comp_suppl_life_insurance_plan', to='app.Company')),
             ],
             options={
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='PersonCompanySupplementalLifeInsurancePlan',
+            name='PersonCompSupplLifeInsurancePlan',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('self_elected_amount', models.DecimalField(null=True, max_digits=10, decimal_places=2, blank=True)),
@@ -36,8 +36,8 @@ class Migration(migrations.Migration):
                 ('condition', models.CharField(max_length=64, null=True, blank=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('company_supplemental_life_insurance_plan', models.ForeignKey(related_name='person_company_supplemental_life_insurance_plan', to='app.CompanySupplementalLifeInsurancePlan')),
-                ('person', models.ForeignKey(related_name='person_company_supplemental_life_insurance_plan', to='app.Person')),
+                ('company_supplemental_life_insurance_plan', models.ForeignKey(related_name='person_comp_suppl_life_insurance_plan', to='app.CompSupplLifeInsurancePlan')),
+                ('person', models.ForeignKey(related_name='person_comp_suppl_life_insurance_plan', to='app.Person')),
             ],
             options={
             },
@@ -73,9 +73,9 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.AddField(
-            model_name='companysupplementallifeinsuranceplan',
+            model_name='CompSupplLifeInsurancePlan',
             name='supplemental_life_insurance_plan',
-            field=models.ForeignKey(related_name='company_supplemental_life_insurance_plan', to='app.SupplementalLifeInsurancePlan'),
+            field=models.ForeignKey(related_name='comp_suppl_life_insurance_plan', to='app.SupplementalLifeInsurancePlan'),
             preserve_default=True,
         ),
     ]
