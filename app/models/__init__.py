@@ -36,6 +36,11 @@ from insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
 from insurance.user_company_ltd_insurance_plan import UserCompanyLtdInsurancePlan
 from insurance.ltd_insurance_plan import LtdInsurancePlan
 
+from insurance.comp_suppl_life_insurance_plan import CompSupplLifeInsurancePlan
+from insurance.person_comp_suppl_life_insurance_plan import PersonCompSupplLifeInsurancePlan
+from insurance.supplemental_life_insurance_plan import SupplementalLifeInsurancePlan
+from insurance.supplemental_life_insurance_plan_rate import SupplementalLifeInsurancePlanRate
+
 from fsa.company_fsa_plan import CompanyFsaPlan
 from fsa.fsa import FSA
 from fsa.fsa_plan import FsaPlan
