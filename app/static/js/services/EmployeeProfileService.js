@@ -117,7 +117,9 @@ benefitmyService.factory('EmployeeProfileService',
                     });
                 } else {
                     // This is to create a new profile
-                    EmployeeProfileRepository.ById.save({id:domainModel.id}, domainModel)
+                    // Use the person Id here purely as a dummy ID to get the 
+                    // routing match
+                    EmployeeProfileRepository.ById.save({id:domainModel.person}, domainModel)
                     .$promise.then(function(response) {
                         deferred.resolve(mapDomainToViewModel(response));
                     },
