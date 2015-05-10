@@ -23,6 +23,9 @@ benefitmyService.factory('StdService',
             viewModel.percentageOfSalary = companyPlanDomainModel.percentage_of_salary;
             viewModel.maxBenefitWeekly = companyPlanDomainModel.max_benefit_weekly;
             viewModel.duration = companyPlanDomainModel.duration;
+            viewModel.rate = companyPlanDomainModel.rate;
+            viewModel.paidBy = companyPlanDomainModel.paid_by;
+            viewModel.eliminationPeriodInDays = companyPlanDomainModel.elimination_period_in_days;
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
             
@@ -59,6 +62,9 @@ benefitmyService.factory('StdService',
             domainModel.max_benefit_weekly = companyPlanViewModel.maxBenefitWeekly;
             domainModel.duration = companyPlanViewModel.duration;
             domainModel.company = companyPlanViewModel.company;
+            domainModel.rate = companyPlanViewModel.rate;
+            domainModel.elimination_period_in_days = companyPlanViewModel.eliminationPeriodInDays;
+            domainModel.paid_by = companyPlanViewModel.paidBy;
 
             domainModel.std_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
 
@@ -77,6 +83,9 @@ benefitmyService.factory('StdService',
         };
 
         return {
+            
+            paidByParties: ['Employee', 'Employer'],
+
             getStdPlansForCompany: function(companyId) {
                 var deferred = $q.defer();
 

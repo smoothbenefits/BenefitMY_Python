@@ -106,6 +106,15 @@
                 <!-- EMPLOYEE NAV STARTS -->
                 <li class="expandable" ng-show="isCurRoleEmployee()">
                     <div class="primary-nav">
+                        <button data-toggle="collapse" data-target="#employee-profile-nav" aria-expanded="false" aria-controls="employee-profile-nav"><span class="flaticon flaticon-user135"></span>Profile</button>
+                    </div>
+                    <div class="sub-nav collapse" id="employee-profile-nav">
+                        <a href="#/settings">My Profile</a>
+                        <a ng-click="goToFunctionalView('/employee/family/')">Family Member</a>
+                    </div>
+                </li>
+                <li class="expandable" ng-show="isCurRoleEmployee()">
+                    <div class="primary-nav">
                         <button data-toggle="collapse" data-target="#employee-benefit-nav" aria-expanded="false" aria-controls="employee-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
                     </div>
                     <div class="sub-nav collapse" id="employee-benefit-nav">
@@ -115,7 +124,7 @@
                 </li>
                 <li class="expandable" ng-show="isCurRoleEmployee()">
                     <div class="primary-nav">
-                        <button data-toggle="collapse" data-target="#employee-payroll-nav" aria-expanded="false" aria-controls="employee-payroll-nav"><span class="flaticon flaticon-user135"></span>Payroll</button>
+                        <button data-toggle="collapse" data-target="#employee-payroll-nav" aria-expanded="false" aria-controls="employee-payroll-nav"><span class="flaticon flaticon-star145"></span>Payroll</button>
                     </div>
                     <div class="sub-nav collapse" id="employee-payroll-nav">
                         <a href="#/employee/payroll/w4">W4 Form</a>

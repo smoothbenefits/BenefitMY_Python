@@ -141,15 +141,25 @@
         </table>
 
     </div>
-    <div class="table-responsive table-holder table" ng-show="userStdPlan">
+    <div class="table-responsive table-holder table">
         <div class="table-sub-title">Short Term Disability Benefits</div>
-        <table class="table table-striped">
+        <table class="table table-striped" ng-show="!userStdPlan">
+            <tbody>
+                <tr>
+                    <td width="180">No active Short Term Disability insurance plan</td>
+                </tr>
+            </tbody>    
+        </table>
+        <table class="table table-striped" ng-show="userStdPlan">
             <thead>
                 <tr>
                     <th><span>Plan Name</span></th>
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
+                    <th><span>Rate</span></th>
+                    <th><span>Paid By</span></th>
+                    <th><span>Elimination Period</span></th>
                     <th><span>Last Updated</span></th>
                 </tr>
             </thead>
@@ -159,20 +169,33 @@
                     <td>{{userStdPlan.percentageOfSalary}}% of Base Salary</td>
                     <td>${{userStdPlan.maxBenefitWeekly}}/Week</td>
                     <td>{{userStdPlan.duration}} Weeks</td>
+                    <td>${{userStdPlan.rate}} of $10 benefit</td>
+                    <td>{{userStdPlan.paidBy}}</td>
+                    <td>{{userStdPlan.eliminationPeriodInDays}} Days</td>
                     <td>{{userStdPlan.lastUpdateDateTime}}</td>
                 </tr>
             </tbody>
         </table>
     </div>
-    <div class="table-responsive table-holder table" ng-show="userLtdPlan">
+    <div class="table-responsive table-holder table">
         <div class="table-sub-title">Long Term Disability Benefits</div>
-        <table class="table table-striped">
+        <table class="table table-striped" ng-show="!userLtdPlan">
+            <tbody>
+                <tr>
+                    <td width="180">No active Long Term Disability insurance plan</td>
+                </tr>
+            </tbody>    
+        </table>
+        <table class="table table-striped" ng-show="userLtdPlan">
             <thead>
                 <tr>
                     <th><span>Plan Name</span></th>
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
+                    <th><span>Rate</span></th>
+                    <th><span>Paid By</span></th>
+                    <th><span>Elimination Period</span></th>
                     <th><span>Last Updated</span></th>
                 </tr>
             </thead>
@@ -182,6 +205,9 @@
                     <td>{{userLtdPlan.percentageOfSalary}}% of Base Salary</td>
                     <td>${{userLtdPlan.maxBenefitMonthly}}/Month</td>
                     <td>{{userLtdPlan.duration}} Years or Until Retirement Age</td>
+                    <td>${{userLtdPlan.rate}} of $10 benefit</td>
+                    <td>{{userLtdPlan.paidBy}}</td>
+                    <td>{{userLtdPlan.eliminationPeriodInMonths}} Months</td>
                     <td>{{userLtdPlan.lastUpdateDateTime}}</td>
                 </tr>
             </tbody>

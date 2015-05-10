@@ -11,6 +11,9 @@
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
+                    <th><span>Rate</span></th>
+                    <th><span>Elimination Period</span></th>
+                    <th><span>Paid By</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -19,6 +22,9 @@
                     <td>{{companyStdPlan.percentageOfSalary}}% of Base Salary</td>
                     <td>${{companyStdPlan.maxBenefitWeekly}}/Week</td>
                     <td>{{companyStdPlan.duration}} Weeks</td>
+                    <td>${{companyStdPlan.rate}} of $10 benefit</td>
+                    <td>{{companyStdPlan.eliminationPeriodInDays}} Days</td>
+                    <td>{{companyStdPlan.paidBy}}</td>
                 </tr>
             </tbody>
         </table>

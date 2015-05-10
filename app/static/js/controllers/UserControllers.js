@@ -230,8 +230,8 @@ var settingsController = userControllers.controller('settingsController', ['$sco
    '$stateParams',
    'currentUser',
    'userSettingService',
-   'personInfoService',
-   function settingsController ($scope, $location, $stateParams, currentUser, userSettingService, personInfoService){
+   'PersonService',
+   function settingsController ($scope, $location, $stateParams, currentUser, userSettingService, PersonService){
       $('body').removeClass('onboarding-page');
       $scope.profile = {};
       $scope.forced = $stateParams.forced;
@@ -239,12 +239,11 @@ var settingsController = userControllers.controller('settingsController', ['$sco
         .$promise.then(function(response){
           $scope.curUser = response.user;
           $scope.showEmergencyContact = _.findWhere(response.roles, {company_user_type:'employee'});
-          personInfoService.getPersonInfo($scope.curUser.id, function(basicInfo){
-            if(basicInfo){
-              $scope.person = basicInfo;
-              $scope.person.hasInfo = true;
-            }
-          })
+          PersonService.getSelfPersonInfo($scope.curUser.id)
+          .then(function(basicInfo){
+            $scope.person = basicInfo;
+            $scope.person.hasInfo = true;
+          });
         });
       $scope.editPersonal = function(event){
         $scope.isUpdatePersonalInfo = true;
@@ -254,7 +253,8 @@ var settingsController = userControllers.controller('settingsController', ['$sco
       $scope.editPersonal();
 
       $scope.updateBasicInfo = function(){
-        personInfoService.savePersonInfo($scope.curUser.id, $scope.person, function(response){
+        PersonService.savePersonInfo($scope.curUser.id, $scope.person)
+        .then(function(response){
           alert('Changes saved successfully');
           $location.path('/');
         }, function(errorResponse){

@@ -17,7 +17,7 @@ benefitmyService.factory('employeePayrollService',
         employeeTaxRepository.get({userId: userId}).$promise.then(function(response){
           deferred.resolve(response);
         }, function(error){
-          deferred.reject(response);
+          deferred.reject(error);
         });
 
         return deferred.promise;
