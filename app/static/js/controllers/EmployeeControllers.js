@@ -268,37 +268,26 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
    '$state',
    'currentUser', 
    'employeePayrollService', 
+   'utilityServcie',
    function($scope, 
             $state, 
             currentUser, 
-            employeePayrollService){
+            employeePayrollService,
+            utilityServcie){
     var userPromise = currentUser.get().$promise.then(function(response){
       return response.user.id;
     });
 
     userPromise.then(function(userId){
-      employeePayrollService.getEmployeeTaxByUserId(userId).then(function(taxFields){
-        $scope.fields = taxFields;
+      employeePayrollService.getEmployeeTaxSummaryByUserId(userId)
+      .then(function(response){
+        $scope.employee = employeePayrollService.mapW4DtoToView(response);
+        $scope.fields = utilityServcie.mapObjectToKeyPairArray('w4', response);
       });
     });
 
     $scope.calculateTotal = function(){
-      var total = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
-      total += $scope.employee.dependent_count;
-      if($scope.employee.childExpense && total){
-        total += parseInt($scope.employee.childExpense);
-      }
-      if($scope.employee.headOfHousehold && total){
-        total += parseInt($scope.employee.headOfHousehold);
-      }
-      if(!total)
-      {
-        total = undefined;
-      }
-      $scope.employee.calculated_points = total;
-      if(!$scope.employee.user_defined_set){
-        $scope.employee.user_defined_points = $scope.employee.calculated_points;
-      }
+      employeePayrollService.calculateTotalBasedOnViewW4($scope.employee);
     };
 
     $scope.userDefinedPointsSet = function(){
@@ -327,9 +316,10 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
       }
 
       // Add marriage number to $scope object
-      $scope.employee.marriage = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
+      var dtoW4 = employeePayrollService.mapW4ViewToDto($scope.employee);
       userPromise.then(function(userId){
-        employeePayrollService.saveEmployeeTaxByUserId(userId, $scope.employee).then(function(response){
+        employeePayrollService.saveEmployeeTaxByUserId(userId, dtoW4)
+        .then(function(response){
           $state.go('employee_payroll.w4');
         });
       });
@@ -756,8 +746,8 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', '$stateParams', '$location','employeeTaxRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employeeTaxRepository, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location','employeePayrollService', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, employeePayrollService, EmployeePreDashboardValidationService){
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
 
@@ -778,32 +768,9 @@ var onboardTax = employeeControllers.controller('onboardTax',
     $scope.employee.headOfHousehold = 0;
     $scope.employee.childExpense = 0;
 
-    var getMarriageNumber = function(){
-      if($scope.employee.withholdingType ==='married'){
-        return 2;
-      }
-      else{
-        return 1;
-      }
-    };
 
     $scope.calculateTotal = function(){
-      var total = getMarriageNumber();
-      total += $scope.employee.dependent_count;
-      if($scope.employee.childExpense && total){
-        total += parseInt($scope.employee.childExpense);
-      }
-      if($scope.employee.headOfHousehold && total){
-        total += parseInt($scope.employee.headOfHousehold);
-      }
-      if(!total)
-      {
-        total = undefined;
-      }
-      $scope.employee.calculated_points = total;
-      if(!$scope.employee.user_defined_set){
-        $scope.employee.user_defined_points = $scope.employee.calculated_points;
-      }
+      employeePayrollService.calculateTotalBasedOnViewW4($scope.employee);
     };
 
     $scope.userDefinedPointsSet = function(){
@@ -830,19 +797,11 @@ var onboardTax = employeeControllers.controller('onboardTax',
       if(typeof($scope.employee.extra_amount) === 'undefined'){
         $scope.employee.extra_amount = 0;
       }
-      var empAuth = {
-        marriage: getMarriageNumber(),
-        dependencies: $scope.employee.dependent_count,
-        head: $scope.employee.headOfHousehold,
-        tax_credit: $scope.employee.childExpense,
-        calculated_points: $scope.employee.calculated_points,
-        user_defined_points: $scope.employee.user_defined_points,
-        extra_amount: $scope.employee.extra_amount
-      };
-      employeeTaxRepository.save({userId:$scope.employeeId}, empAuth,
-        function(response){
-          $location.path('/employee/onboard/complete/'+$scope.employeeId);
-        });
+      var empAuth = employeePayrollService.mapW4ViewToDto($scope.employee);
+      employeePayrollService.saveEmployeeTaxByUserId($scope.employeeId, empAuth)
+      .then(function(response){
+        $location.path('/employee/onboard/complete/'+$scope.employeeId);
+      });
     };
 }]);
 
