@@ -23,6 +23,9 @@ benefitmyService.factory('LtdService',
             viewModel.percentageOfSalary = companyPlanDomainModel.percentage_of_salary;
             viewModel.maxBenefitMonthly = companyPlanDomainModel.max_benefit_monthly;
             viewModel.duration = companyPlanDomainModel.duration;
+            viewModel.rate = companyPlanDomainModel.rate;
+            viewModel.paidBy = companyPlanDomainModel.paid_by;
+            viewModel.eliminationPeriodInMonths = companyPlanDomainModel.elimination_period_in_months;
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
             
@@ -58,6 +61,9 @@ benefitmyService.factory('LtdService',
             domainModel.percentage_of_salary = companyPlanViewModel.percentageOfSalary;
             domainModel.max_benefit_monthly = companyPlanViewModel.maxBenefitMonthly;
             domainModel.duration = companyPlanViewModel.duration;
+            domainModel.rate = companyPlanViewModel.rate;
+            domainModel.paid_by = companyPlanViewModel.paidBy;
+            domainModel.elimination_period_in_months = companyPlanViewModel.eliminationPeriodInMonths;
             domainModel.company = companyPlanViewModel.company;
 
             domainModel.ltd_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
@@ -77,6 +83,8 @@ benefitmyService.factory('LtdService',
         };
 
         return {
+            paidByParties: ['Employee', 'Employer'],
+            
             getLtdPlansForCompany: function(companyId) {
                 var deferred = $q.defer();
 

@@ -60,7 +60,47 @@
                     <div class="form-error-relative" ng-show="form.benefit_duration.$invalid">Benefit Duration is invalid</div>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-label">Rate</div>
+                    <div class="textbox input-group">
+                        <span class="input-group-addon">$</span>
+                        <input
+                            min="0"
+                            type="number"
+                            name="rate"
+                            ng-model="newPlan.rate" />
+                        <span class="input-group-addon"> of $10 Benefit</span>
+                    </div>
+                    <div class="form-error-relative" ng-show="form.benefit_duration.$invalid">Rate is invalid</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-label">Paid By</div>
+                    <div class="textbox">
+                        <select ng-model="newPlan.paidBy"
+                            ng-required="true"
+                            name="paid-by"
+                            ng-options="type for type in paidByParties"
+                            class="form-control"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-label">Elimination Period</div>
+                    <div class="textbox input-group">
+                        <input
+                            min="0"
+                            type="number"
+                            name="elimination-period"
+                            ng-model="newPlan.eliminationPeriodInDays" />
+                        <span class="input-group-addon">Days</span>
+                    </div>
+                    <div class="form-error-relative" ng-show="form.elimination-period.$invalid">Elimination period is invalid</div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="submit-box" style="max-width: 200px;">

@@ -1,55 +1,86 @@
 [
   {
     "fields": {
-      "user": 1,
-      "routing": "123456",
+      "bank_name": "Bank of America",
       "account": "54321",
       "account_type": "Checking",
-      "bank_name": "Bank of America",
-      "attachment": "s3://abcdef"
+      "attachment": "s3://abcdef",
+      "created_at": null,
+      "updated_at": null,
+      "user": 1,
+      "routing": "123456"
     },
     "model": "app.userbankaccount",
     "pk": 1
   },
-
   {
     "fields": {
-      "user": 1,
-      "routing": "2121123456",
+      "bank_name": "Bank of America",
       "account": "5432221211",
       "account_type": "Saving",
-      "bank_name": "Bank of America",
-      "attachment": "s3://abcdfdsfddef"
+      "attachment": "s3://abcdfdsfddef",
+      "created_at": null,
+      "updated_at": null,
+      "user": 1,
+      "routing": "2121123456"
     },
     "model": "app.userbankaccount",
     "pk": 2
   },
-
   {
     "fields": {
-      "user": 2,
-      "routing": "11112121123456",
+      "bank_name": "Citi bank",
       "account": "543211221211",
       "account_type": "Saving",
-      "bank_name": "Citi bank",
-      "attachment": "s3://abcfdsfdfdsfddef"
+      "attachment": "s3://abcfdsfdfdsfddef",
+      "created_at": null,
+      "updated_at": null,
+      "user": 2,
+      "routing": "11112121123456"
     },
     "model": "app.userbankaccount",
     "pk": 3
   },
-
   {
     "fields": {
-      "user": 2,
-      "routing": "4324234",
+      "bank_name": "Santander bank",
       "account": "5653547665653",
       "account_type": "Saving",
-      "bank_name": "Santander bank",
-      "attachment": "s3://54654654fdsafdsaf"
+      "attachment": "s3://54654654fdsafdsaf",
+      "created_at": null,
+      "updated_at": null,
+      "user": 2,
+      "routing": "4324234"
     },
     "model": "app.userbankaccount",
     "pk": 4
+  },
+  {
+    "fields": {
+      "bank_name": "Bank of America",
+      "account": "7894534217",
+      "account_type": "Checking",
+      "attachment": null,
+      "created_at": "2015-05-06T00:21:42.816Z",
+      "updated_at": "2015-05-06T00:22:10.912Z",
+      "user": 3,
+      "routing": "6778956457"
+    },
+    "model": "app.userbankaccount",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "bank_name": "DCU",
+      "account": "1092028931",
+      "account_type": "Checking",
+      "attachment": null,
+      "created_at": "2015-05-06T00:22:33.135Z",
+      "updated_at": "2015-05-06T00:22:33.135Z",
+      "user": 3,
+      "routing": "7894567654"
+    },
+    "model": "app.userbankaccount",
+    "pk": 6
   }
-
-
 ]

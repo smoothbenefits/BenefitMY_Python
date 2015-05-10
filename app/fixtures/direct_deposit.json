@@ -1,48 +1,80 @@
 [
   {
     "fields": {
+      "created_at": null,
+      "remainder_of_all": false,
+      "updated_at": null,
+      "amount": "0.00",
       "user": 1,
-      "amount": "0",
-      "percentage": "40",
-      "bank_account": 1,
-      "remainder_of_all": false
+      "percentage": "40.00",
+      "bank_account": 1
     },
     "model": "app.directdeposit",
     "pk": 1
   },
-
   {
     "fields": {
+      "created_at": null,
+      "remainder_of_all": false,
+      "updated_at": null,
+      "amount": "0.00",
       "user": 1,
-      "amount": "0",
-      "percentage": "60",
-      "bank_account": 2,
-      "remainder_of_all": false
+      "percentage": "60.00",
+      "bank_account": 2
     },
     "model": "app.directdeposit",
     "pk": 2
   },
-
   {
     "fields": {
-      "user": 2,
+      "created_at": null,
+      "remainder_of_all": false,
+      "updated_at": null,
       "amount": "8210.00",
-      "percentage": "0",
-      "bank_account": 3,
-      "remainder_of_all": false
+      "user": 2,
+      "percentage": "0.00",
+      "bank_account": 3
     },
     "model": "app.directdeposit",
     "pk": 3
   },
   {
     "fields": {
+      "created_at": null,
+      "remainder_of_all": true,
+      "updated_at": null,
+      "amount": "0.00",
       "user": 2,
-      "amount": "0",
-      "percentage": "0",
-      "bank_account": 4,
-      "remainder_of_all": true
+      "percentage": "0.00",
+      "bank_account": 4
     },
     "model": "app.directdeposit",
     "pk": 4
+  },
+  {
+    "fields": {
+      "created_at": "2015-05-06T00:21:42.827Z",
+      "remainder_of_all": false,
+      "updated_at": "2015-05-06T00:22:10.922Z",
+      "amount": "800.00",
+      "user": 3,
+      "percentage": null,
+      "bank_account": 5
+    },
+    "model": "app.directdeposit",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "created_at": "2015-05-06T00:22:33.146Z",
+      "remainder_of_all": true,
+      "updated_at": "2015-05-06T00:22:33.146Z",
+      "amount": "0.00",
+      "user": 3,
+      "percentage": "0.00",
+      "bank_account": 6
+    },
+    "model": "app.directdeposit",
+    "pk": 6
   }
 ]

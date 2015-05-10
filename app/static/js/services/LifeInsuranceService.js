@@ -4,13 +4,13 @@ benefitmyService.factory('LifeInsuranceService',
   ['LifeInsurancePlanRepository',
    'CompanyLifeInsurancePlanRepository',
    'CompanyUserLifeInsurancePlanRepository',
-   'employeeFamily',
+   'PersonService',
    '$q',
   function (
       LifeInsurancePlanRepository,
       CompanyLifeInsurancePlanRepository,
       CompanyUserLifeInsurancePlanRepository,
-      employeeFamily,
+      PersonService,
       $q){
 
     var getFilteredPercentageNumber = function(rawPercent){
@@ -242,9 +242,8 @@ benefitmyService.factory('LifeInsuranceService',
                 function(plan){ return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Extended'; }
                 );
 
-              employeeFamily.get({userId:userId})
-              .$promise.then(function(familyResponse){
-                familyMembers = familyResponse.family;
+              PersonService.getFamilyInfo(userId)
+              .then(function(familyMembers){
 
                 var mainPlanPerson = _.findWhere(familyMembers, { relationship: 'self' });
 
@@ -323,8 +322,8 @@ benefitmyService.factory('LifeInsuranceService',
 
       saveBasicLifeInsurancePlanForUser: function(basicLifeToSave, successCallBack, errorCallBack) {
         var userId = basicLifeToSave.currentUserId;
-        employeeFamily.get({userId:userId}).$promise.then(function(familyResponse){
-          var mainPlanPerson = _.findWhere(familyResponse.family, { relationship: 'self' });
+        PersonService.getSelfPersonInfo(userId)
+        .then(function(mainPlanPerson){
 
           var planToSave = {
             "id": basicLifeToSave.id,

@@ -249,12 +249,13 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 }]);
 
 var brokerEmployeeController = brokersControllers.controller('brokerEmployeeController',
-  ['$scope', '$location', '$stateParams', 'employeeFamily',
-    function brokerEmployeeController($scope, $location, $stateParams, employeeFamily){
+  ['$scope', '$location', '$stateParams', 'peopleRepository',
+    function brokerEmployeeController($scope, $location, $stateParams, peopleRepository){
       var employeeId = $stateParams.employee_id;
       var companyId = $stateParams.cid;
       $scope.employee = {};
-      employeeFamily.get({userId:employeeId}).$promise.then(function(employeeDetail){
+      peopleRepository.ByUser.get({userId:employeeId})
+      .$promise.then(function(employeeDetail){
         $scope.employee.first_name = employeeDetail.first_name;
         $scope.employee.last_name = employeeDetail.last_name;
         $scope.employee.email = employeeDetail.email;
@@ -429,6 +430,8 @@ var brokerAddStdPlanController = brokersControllers.controller(
         // Inherite scope from base 
         $controller('modalMessageControllerBase', {$scope: $scope});
         
+        $scope.paidByParties = StdService.paidByParties;
+
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
 
@@ -469,6 +472,8 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         // Inherite scope from base 
         $controller('modalMessageControllerBase', {$scope: $scope});
         
+        $scope.paidByParties = LtdService.paidByParties;
+
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
 

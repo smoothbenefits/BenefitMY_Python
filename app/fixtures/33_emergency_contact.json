@@ -1,12 +1,12 @@
 [
   {
     "fields": {
-      "person": 3,
-      "relationship": "Spouse",
       "first_name": "Christina",
-      "phone": "7469390394",
-      "middle_name": null,
       "last_name": "Cowell",
+      "middle_name": null,
+      "relationship": "Spouse",
+      "person": 3,
+      "phone": "7469390394",
       "email": null
     },
     "model": "app.emergencycontact",

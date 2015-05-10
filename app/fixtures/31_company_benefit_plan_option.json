@@ -1,208 +1,208 @@
 [
   {
     "fields": {
-      "benefit_plan": 1,
-      "benefit_option_type": "individual",
-      "total_cost_per_period": "678.87",
-      "updated_at": "2015-01-24T15:58:25.398Z",
       "created_at": "2015-01-24T15:58:25.398Z",
+      "company": 1,
+      "updated_at": "2015-01-24T15:58:25.398Z",
+      "total_cost_per_period": "678.87",
+      "benefit_option_type": "individual",
       "employee_cost_per_period": "230.60",
-      "company": 1
+      "benefit_plan": 1
     },
     "model": "app.companybenefitplanoption",
     "pk": 1
   },
   {
     "fields": {
-      "benefit_plan": 1,
-      "benefit_option_type": "individual_plus_spouse",
-      "total_cost_per_period": "887.00",
-      "updated_at": "2015-01-24T15:58:25.493Z",
       "created_at": "2015-01-24T15:58:25.493Z",
+      "company": 1,
+      "updated_at": "2015-01-24T15:58:25.493Z",
+      "total_cost_per_period": "887.00",
+      "benefit_option_type": "individual_plus_spouse",
       "employee_cost_per_period": "287.90",
-      "company": 1
+      "benefit_plan": 1
     },
     "model": "app.companybenefitplanoption",
     "pk": 2
   },
   {
     "fields": {
-      "benefit_plan": 1,
-      "benefit_option_type": "individual_plus_children",
-      "total_cost_per_period": "1024.45",
-      "updated_at": "2015-01-24T15:58:25.596Z",
       "created_at": "2015-01-24T15:58:25.596Z",
+      "company": 1,
+      "updated_at": "2015-01-24T15:58:25.596Z",
+      "total_cost_per_period": "1024.45",
+      "benefit_option_type": "individual_plus_children",
       "employee_cost_per_period": "399.67",
-      "company": 1
+      "benefit_plan": 1
     },
     "model": "app.companybenefitplanoption",
     "pk": 3
   },
   {
     "fields": {
-      "benefit_plan": 1,
-      "benefit_option_type": "individual_plus_family",
-      "total_cost_per_period": "1223.46",
-      "updated_at": "2015-01-24T15:58:25.689Z",
       "created_at": "2015-01-24T15:58:25.689Z",
+      "company": 1,
+      "updated_at": "2015-01-24T15:58:25.689Z",
+      "total_cost_per_period": "1223.46",
+      "benefit_option_type": "individual_plus_family",
       "employee_cost_per_period": "501.23",
-      "company": 1
+      "benefit_plan": 1
     },
     "model": "app.companybenefitplanoption",
     "pk": 4
   },
   {
     "fields": {
-      "benefit_plan": 2,
-      "benefit_option_type": "individual",
-      "total_cost_per_period": "800.00",
-      "updated_at": "2015-01-24T16:00:53.308Z",
       "created_at": "2015-01-24T16:00:53.307Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:00:53.308Z",
+      "total_cost_per_period": "800.00",
+      "benefit_option_type": "individual",
       "employee_cost_per_period": "40.00",
-      "company": 1
+      "benefit_plan": 2
     },
     "model": "app.companybenefitplanoption",
     "pk": 5
   },
   {
     "fields": {
-      "benefit_plan": 2,
-      "benefit_option_type": "individual_plus_spouse",
-      "total_cost_per_period": "1000.00",
-      "updated_at": "2015-01-24T16:00:53.397Z",
       "created_at": "2015-01-24T16:00:53.397Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:00:53.397Z",
+      "total_cost_per_period": "1000.00",
+      "benefit_option_type": "individual_plus_spouse",
       "employee_cost_per_period": "50.00",
-      "company": 1
+      "benefit_plan": 2
     },
     "model": "app.companybenefitplanoption",
     "pk": 6
   },
   {
     "fields": {
-      "benefit_plan": 2,
-      "benefit_option_type": "individual_plus_children",
-      "total_cost_per_period": "1200.00",
-      "updated_at": "2015-01-24T16:00:53.493Z",
       "created_at": "2015-01-24T16:00:53.493Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:00:53.493Z",
+      "total_cost_per_period": "1200.00",
+      "benefit_option_type": "individual_plus_children",
       "employee_cost_per_period": "60.00",
-      "company": 1
+      "benefit_plan": 2
     },
     "model": "app.companybenefitplanoption",
     "pk": 7
   },
   {
     "fields": {
-      "benefit_plan": 2,
-      "benefit_option_type": "individual_plus_family",
-      "total_cost_per_period": "1400.00",
-      "updated_at": "2015-01-24T16:00:53.597Z",
       "created_at": "2015-01-24T16:00:53.597Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:00:53.597Z",
+      "total_cost_per_period": "1400.00",
+      "benefit_option_type": "individual_plus_family",
       "employee_cost_per_period": "70.00",
-      "company": 1
+      "benefit_plan": 2
     },
     "model": "app.companybenefitplanoption",
     "pk": 8
   },
   {
     "fields": {
-      "benefit_plan": 3,
-      "benefit_option_type": "individual",
-      "total_cost_per_period": "1000.00",
-      "updated_at": "2015-01-24T16:01:59.893Z",
       "created_at": "2015-01-24T16:01:59.893Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:01:59.893Z",
+      "total_cost_per_period": "1000.00",
+      "benefit_option_type": "individual",
       "employee_cost_per_period": "200.00",
-      "company": 1
+      "benefit_plan": 3
     },
     "model": "app.companybenefitplanoption",
     "pk": 9
   },
   {
     "fields": {
-      "benefit_plan": 3,
-      "benefit_option_type": "individual_plus_spouse",
-      "total_cost_per_period": "1400.00",
-      "updated_at": "2015-01-24T16:02:00.013Z",
       "created_at": "2015-01-24T16:02:00.013Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:02:00.013Z",
+      "total_cost_per_period": "1400.00",
+      "benefit_option_type": "individual_plus_spouse",
       "employee_cost_per_period": "300.00",
-      "company": 1
+      "benefit_plan": 3
     },
     "model": "app.companybenefitplanoption",
     "pk": 10
   },
   {
     "fields": {
-      "benefit_plan": 3,
-      "benefit_option_type": "individual_plus_children",
-      "total_cost_per_period": "1800.00",
-      "updated_at": "2015-01-24T16:02:00.114Z",
       "created_at": "2015-01-24T16:02:00.114Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:02:00.114Z",
+      "total_cost_per_period": "1800.00",
+      "benefit_option_type": "individual_plus_children",
       "employee_cost_per_period": "400.00",
-      "company": 1
+      "benefit_plan": 3
     },
     "model": "app.companybenefitplanoption",
     "pk": 11
   },
   {
     "fields": {
-      "benefit_plan": 3,
-      "benefit_option_type": "individual_plus_family",
-      "total_cost_per_period": "2200.00",
-      "updated_at": "2015-01-24T16:02:00.230Z",
       "created_at": "2015-01-24T16:02:00.230Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:02:00.230Z",
+      "total_cost_per_period": "2200.00",
+      "benefit_option_type": "individual_plus_family",
       "employee_cost_per_period": "500.00",
-      "company": 1
+      "benefit_plan": 3
     },
     "model": "app.companybenefitplanoption",
     "pk": 12
   },
   {
     "fields": {
-      "benefit_plan": 4,
-      "benefit_option_type": "individual",
-      "total_cost_per_period": "300.00",
-      "updated_at": "2015-01-24T16:02:36.013Z",
       "created_at": "2015-01-24T16:02:36.013Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:02:36.013Z",
+      "total_cost_per_period": "300.00",
+      "benefit_option_type": "individual",
       "employee_cost_per_period": "50.00",
-      "company": 1
+      "benefit_plan": 4
     },
     "model": "app.companybenefitplanoption",
     "pk": 13
   },
   {
     "fields": {
-      "benefit_plan": 4,
-      "benefit_option_type": "individual_plus_spouse",
-      "total_cost_per_period": "400.00",
-      "updated_at": "2015-01-24T16:02:36.123Z",
       "created_at": "2015-01-24T16:02:36.123Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:02:36.123Z",
+      "total_cost_per_period": "400.00",
+      "benefit_option_type": "individual_plus_spouse",
       "employee_cost_per_period": "60.00",
-      "company": 1
+      "benefit_plan": 4
     },
     "model": "app.companybenefitplanoption",
     "pk": 14
   },
   {
     "fields": {
-      "benefit_plan": 4,
-      "benefit_option_type": "individual_plus_children",
-      "total_cost_per_period": "500.00",
-      "updated_at": "2015-01-24T16:02:36.219Z",
       "created_at": "2015-01-24T16:02:36.218Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:02:36.219Z",
+      "total_cost_per_period": "500.00",
+      "benefit_option_type": "individual_plus_children",
       "employee_cost_per_period": "70.00",
-      "company": 1
+      "benefit_plan": 4
     },
     "model": "app.companybenefitplanoption",
     "pk": 15
   },
   {
     "fields": {
-      "benefit_plan": 4,
-      "benefit_option_type": "individual_plus_family",
-      "total_cost_per_period": "600.00",
-      "updated_at": "2015-01-24T16:02:36.313Z",
       "created_at": "2015-01-24T16:02:36.313Z",
+      "company": 1,
+      "updated_at": "2015-01-24T16:02:36.313Z",
+      "total_cost_per_period": "600.00",
+      "benefit_option_type": "individual_plus_family",
       "employee_cost_per_period": "80.00",
-      "company": 1
+      "benefit_plan": 4
     },
     "model": "app.companybenefitplanoption",
     "pk": 16

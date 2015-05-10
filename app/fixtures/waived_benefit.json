@@ -1,36 +1,38 @@
 [
-{
-  "model": "app.UserCompanyWaivedBenefit",
-  "pk": 1,
-  "fields":{
-  	"user": 1,
-  	"company": 1,
-  	"benefit_type": 3,
-	"reason": "Do not need"
+  {
+    "fields": {
+      "created_at": null,
+      "updated_at": null,
+      "reason": "Do not need",
+      "benefit_type": 3,
+      "user": 1,
+      "company": 1
+    },
+    "model": "app.usercompanywaivedbenefit",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": null,
+      "updated_at": null,
+      "reason": "Buy it by myself",
+      "benefit_type": 2,
+      "user": 1,
+      "company": 1
+    },
+    "model": "app.usercompanywaivedbenefit",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "created_at": null,
+      "updated_at": null,
+      "reason": "Do not need",
+      "benefit_type": 2,
+      "user": 2,
+      "company": 1
+    },
+    "model": "app.usercompanywaivedbenefit",
+    "pk": 3
   }
-},
-
-{
-  "model": "app.UserCompanyWaivedBenefit",
-  "pk": 2,
-  "fields":{
-  	"user": 1,
-  	"company": 1,
-  	"benefit_type": 2,
-	"reason": "Buy it by myself"
-  }
-},
-
-{
-  "model": "app.UserCompanyWaivedBenefit",
-  "pk": 3,
-  "fields":{
-  	"user": 2,
-  	"company": 1,
-  	"benefit_type": 2,
-	"reason": "Do not need"
-  }
-}
-
 ]
-

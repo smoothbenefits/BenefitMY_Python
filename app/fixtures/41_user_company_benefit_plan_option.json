@@ -1,35 +1,35 @@
 [
   {
     "fields": {
+      "created_at": "2015-05-06T00:19:35.245Z",
+      "benefit": 2,
+      "pcp": "",
       "user": 3,
-      "created_at": "2015-01-24T16:19:54.581Z",
-      "pcp": "89-767896",
-      "updated_at": "2015-01-24T16:19:54.581Z",
-      "benefit": 2
+      "updated_at": "2015-05-06T00:19:35.245Z"
     },
     "model": "app.usercompanybenefitplanoption",
-    "pk": 1
+    "pk": 4
   },
   {
     "fields": {
-      "user": 3,
-      "created_at": "2015-01-24T16:19:54.586Z",
+      "created_at": "2015-05-06T00:19:35.253Z",
+      "benefit": 10,
       "pcp": "",
-      "updated_at": "2015-01-24T16:19:54.586Z",
-      "benefit": 10
+      "user": 3,
+      "updated_at": "2015-05-06T00:19:35.253Z"
     },
     "model": "app.usercompanybenefitplanoption",
-    "pk": 2
+    "pk": 5
   },
   {
     "fields": {
-      "user": 3,
-      "created_at": "2015-01-24T16:19:54.589Z",
+      "created_at": "2015-05-06T00:19:35.259Z",
+      "benefit": 13,
       "pcp": "",
-      "updated_at": "2015-01-24T16:19:54.589Z",
-      "benefit": 13
+      "user": 3,
+      "updated_at": "2015-05-06T00:19:35.259Z"
     },
     "model": "app.usercompanybenefitplanoption",
-    "pk": 3
+    "pk": 6
   }
 ]
