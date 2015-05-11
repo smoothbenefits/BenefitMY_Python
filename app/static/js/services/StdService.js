@@ -23,7 +23,7 @@ benefitmyService.factory('StdService',
             viewModel.percentageOfSalary = companyPlanDomainModel.percentage_of_salary;
             viewModel.maxBenefitWeekly = companyPlanDomainModel.max_benefit_weekly;
             viewModel.duration = companyPlanDomainModel.duration;
-            viewModel.rate = companyPlanDomainModel.rate;
+            viewModel.rate = Number(companyPlanDomainModel.rate);
             viewModel.paidBy = companyPlanDomainModel.paid_by;
             viewModel.eliminationPeriodInDays = companyPlanDomainModel.elimination_period_in_days;
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
