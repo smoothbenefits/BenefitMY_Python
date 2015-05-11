@@ -34,8 +34,10 @@ BenefitMyApp.directive('bmuploadmanager',
               if (files && files.length) {
                 for (var i = 0; i < files.length; i++) {
                   var file = files[i];
+                  $scope.uploadManager.inProgress = {file:file};
                   UploadService.uploadFile(file, uploadType).then(
                     function(fileUploaded){
+                      $scope.uploadManager.inProgress = undefined;
                       $scope.uploadManager.uploadedFiles.unshift(fileUploaded);
                       if($attrs.featureId){
                         UploadService.SetUploadApplicationFeature(fileUploaded.id, uploadType, $attrs.featureId)
@@ -49,7 +51,7 @@ BenefitMyApp.directive('bmuploadmanager',
                       alert('upload error happened!');
                     },
                     function(evt){
-                      //Here is the function for showing upload progress
+                      $scope.uploadManager.inProgress.progress = (evt.loaded/evt.total)*100;
                     });
                 }
               }
