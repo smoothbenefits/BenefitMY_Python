@@ -39,7 +39,7 @@
                 </td>
                 <td width="250" style="text-align:center">{{uploadManager.inProgress.file.name}}</td>
                 <td width="180" style="text-align:center">
-                    <progressbar type="success" value="uploadManager.inProgress.progress"></progressbar>
+                    <progressbar type="success" value="uploadManager.inProgress.progress"><b style="color:black">{{uploadManager.inProgress.progress.toFixed(0)}}%</b></progressbar>
                 </td>
             </tr>
             <tr ng-repeat="file in uploadManager.uploadedFiles |orderBy:'-uploaded_at'">
