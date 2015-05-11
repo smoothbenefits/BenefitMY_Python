@@ -49,6 +49,7 @@ BenefitMyApp.directive('bmuploadmanager',
                     },
                     function(error){
                       alert('upload error happened!');
+                      $scope.uploadManager.inProgress = undefined;
                     },
                     function(evt){
                       $scope.uploadManager.inProgress.progress = (evt.loaded/evt.total)*100;
