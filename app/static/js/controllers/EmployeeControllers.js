@@ -266,11 +266,13 @@ var employeePayroll = employeeControllers.controller('employeePayrollController'
 var employeeW4Controller = employeeControllers.controller('employeeW4Controller', 
   ['$scope',
    '$state',
+   '$window',
    'currentUser', 
    'employeePayrollService', 
    'utilityServcie',
    function($scope, 
-            $state, 
+            $state,
+            $window,
             currentUser, 
             employeePayrollService,
             utilityServcie){
@@ -294,8 +296,11 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
       $scope.employee.user_defined_set = true;
     };
 
-    $scope.acknowledgeW4 = function(){
-      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    $scope.openW4File = function(){
+      if($scope.employee.downloadW4){
+        var link = angular.element('#w4doclink')[0];
+        $window.open(link.href);
+      }
     };
 
     $scope.submit=function(){
@@ -353,10 +358,12 @@ var employeeProfile = employeeControllers.controller('employeeProfileController'
 var employeeI9Controller = employeeControllers.controller('employeeI9Controller', 
   ['$scope',
    '$state',
+   '$window',
    'currentUser', 
    'EmploymentProfileService', 
    function($scope,
             $state,
+            $window,
             currentUser,
             EmploymentProfileService){
     $scope.employee = {auth_type: ''};
@@ -390,8 +397,11 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
       signatureUpdated = false;
     };
 
-    $scope.acknowledgedI9 = function(){
-      $scope.employee.downloadI9 = !$scope.employee.downloadI9;
+    $scope.openI9File = function(){
+      if($scope.employee.downloadI9){
+        var link = angular.element('#i9doclink')[0];
+        $window.open(link.href);
+      }
     };
 
     $scope.signDocument = function(){
@@ -663,8 +673,8 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', '$window', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, $window, employmentAuthRepository, EmployeePreDashboardValidationService){
     $scope.employee = {
       auth_type: ''
     };
@@ -723,6 +733,13 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       $scope.employee.downloadI9 = !$scope.employee.downloadI9;
     };
 
+    $scope.openI9File = function(){
+      if($scope.employee.downloadI9){
+        var link = angular.element('#i9doclink')[0];
+        $window.open(link.href);
+      }
+    };
+
     $scope.signDocument = function(redirectUrl){
       if(!signatureUpdated){
         alert('Please sign your name on the signature pad');
@@ -746,8 +763,8 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', '$stateParams', '$location','employeePayrollService', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employeePayrollService, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', '$window', 'employeePayrollService', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, $window, employeePayrollService, EmployeePreDashboardValidationService){
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
 
@@ -777,8 +794,11 @@ var onboardTax = employeeControllers.controller('onboardTax',
       $scope.employee.user_defined_set = true;
     };
 
-    $scope.acknowledgeW4 = function(){
-      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    $scope.openW4File = function(){
+      if($scope.employee.downloadW4){
+        var link = angular.element('#w4doclink')[0];
+        $window.open(link.href);
+      }
     };
 
     $scope.submit=function(){

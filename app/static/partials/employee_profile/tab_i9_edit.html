@@ -86,14 +86,18 @@
                     <div id="auth_signature" class="signature-pad"></div>
                 </div>
             </div>
-            <div ng-click="acknowledgedI9()" class="inner-td-div">
-                <a target="_blank" href="/static/documents/i-9.pdf">
-                    <input type="checkbox" 
-                        name="downloadI_9"
-                        id="downloadI_9"
-                        ng-model="employee.downloadI9"/>
-                <span>Click to download I-9 and acknowledge you have read the entire I-9 form
-                </span></a>
+            <div class="inner-td-div">
+                <input type="checkbox" 
+                    name="downloadI_9"
+                    id="downloadI_9"
+                    ng-model="employee.downloadI9"
+                    ng-click="openI9File()"/>
+                <a id="i9doclink"
+                    target="_blank" 
+                    href="/static/documents/i-9.pdf" 
+                    ng-click="employee.downloadI9 = true">
+                    Click to download I-9 and acknowledge you have read the entire I-9 form
+                </a>
             </div>
             <div class="submit-box">
                 <div class="row">
