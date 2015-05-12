@@ -8,15 +8,15 @@
                 </div>
                 <div class="radio-container">
                     <div class="col-md-6 col">
-                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="single" />
+                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="single" ng-change="calculateTotal()"/>
                         Single
                     </div>
                     <div class="col-md-6 col">
-                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="married" />
+                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="married" ng-change="calculateTotal()"/>
                         Married
                     </div>
                     <div class="col-md-12 col">
-                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="higher">
+                        <input type="radio" name="withholdingType" ng-model="employee.withholdingType" value="higher" ng-change="calculateTotal()">
                         Married, but withold at higher Single rate
                     </div>
                     <div class="notes" style="clear:both;">Note, if married, but legally separated, or spouse is a nonresident alien, check the "Single" box</div>
@@ -28,11 +28,11 @@
                 </div>
                 <div class="radio-container">
                     <div class="col-md-2">
-                        <input type="radio" name="household" ng-model="employee.headOfHousehold" value="0" checked />
+                        <input type="radio" name="household" ng-model="employee.headOfHousehold" value="0" checked ng-change="calculateTotal()"/>
                         No
                     </div>
                     <div class="col-md-2">
-                        <input type="radio" name="household" ng-model="employee.headOfHousehold" value="1" />
+                        <input type="radio" name="household" ng-model="employee.headOfHousehold" value="1" ng-change="calculateTotal()" />
                         Yes
                     </div>
                     <div style="clear:both"></div>
@@ -44,11 +44,11 @@
                 </div>
                 <div class="radio-container">
                     <div class="col-md-2">
-                        <input type="radio" name="childExpense" ng-model="employee.childExpense" value="0" checked />
+                        <input type="radio" name="childExpense" ng-model="employee.childExpense" value="0" checked ng-change="calculateTotal()"/>
                         No
                     </div>
                     <div class="col-md-2">
-                        <input type="radio" name="childExpense" ng-model="employee.childExpense" value="1" />
+                        <input type="radio" name="childExpense" ng-model="employee.childExpense" value="1" ng-change="calculateTotal()"/>
                         Yes
                     </div>
                     <div style="clear:both"></div>
@@ -93,14 +93,15 @@
                 <div style="clear:both"></div>
             </li>
         </ul>
-        <div ng-click="acknowledgeW4()" class="inner-td-div">
-            <a target="_blank" href="/static/documents/w4.pdf">
-                <input type="checkbox" 
-                    name="downloadW4"
-                    id="downloadW4"
-                    ng-model="employee.downloadW4"/>
-            <span>Click to download W-4 and acknowledge you have read the entire W-4 form
-            </span></a>
+        <div class="inner-td-div">
+            <input type="checkbox" 
+                name="downloadW4"
+                id="downloadW4"
+                ng-model="employee.downloadW4"
+                ng-click="openW4File()"/>
+            <a id="w4doclink" target="_blank" href="/static/documents/w4.pdf" ng-click="employee.downloadW4 = true">
+                Click to download W-4 and acknowledge you have read the entire W-4 form
+            </a>
         </div>
         <div class="submit-box">
             <div class="row">

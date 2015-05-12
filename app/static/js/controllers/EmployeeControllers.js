@@ -266,47 +266,41 @@ var employeePayroll = employeeControllers.controller('employeePayrollController'
 var employeeW4Controller = employeeControllers.controller('employeeW4Controller', 
   ['$scope',
    '$state',
+   '$window',
    'currentUser', 
    'employeePayrollService', 
+   'utilityServcie',
    function($scope, 
-            $state, 
+            $state,
+            $window,
             currentUser, 
-            employeePayrollService){
+            employeePayrollService,
+            utilityServcie){
     var userPromise = currentUser.get().$promise.then(function(response){
       return response.user.id;
     });
 
     userPromise.then(function(userId){
-      employeePayrollService.getEmployeeTaxByUserId(userId).then(function(taxFields){
-        $scope.fields = taxFields;
+      employeePayrollService.getEmployeeTaxSummaryByUserId(userId)
+      .then(function(response){
+        $scope.employee = employeePayrollService.mapW4DtoToView(response);
+        $scope.fields = utilityServcie.mapObjectToKeyPairArray('w4', response);
       });
     });
 
     $scope.calculateTotal = function(){
-      var total = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
-      total += $scope.employee.dependent_count;
-      if($scope.employee.childExpense && total){
-        total += parseInt($scope.employee.childExpense);
-      }
-      if($scope.employee.headOfHousehold && total){
-        total += parseInt($scope.employee.headOfHousehold);
-      }
-      if(!total)
-      {
-        total = undefined;
-      }
-      $scope.employee.calculated_points = total;
-      if(!$scope.employee.user_defined_set){
-        $scope.employee.user_defined_points = $scope.employee.calculated_points;
-      }
+      employeePayrollService.calculateTotalBasedOnViewW4($scope.employee);
     };
 
     $scope.userDefinedPointsSet = function(){
       $scope.employee.user_defined_set = true;
     };
 
-    $scope.acknowledgeW4 = function(){
-      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    $scope.openW4File = function(){
+      if($scope.employee.downloadW4){
+        var link = angular.element('#w4doclink')[0];
+        $window.open(link.href);
+      }
     };
 
     $scope.submit=function(){
@@ -327,9 +321,10 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
       }
 
       // Add marriage number to $scope object
-      $scope.employee.marriage = employeePayrollService.getMarriageNumberForUser($scope.employee.withholdingType);
+      var dtoW4 = employeePayrollService.mapW4ViewToDto($scope.employee);
       userPromise.then(function(userId){
-        employeePayrollService.saveEmployeeTaxByUserId(userId, $scope.employee).then(function(response){
+        employeePayrollService.saveEmployeeTaxByUserId(userId, dtoW4)
+        .then(function(response){
           $state.go('employee_payroll.w4');
         });
       });
@@ -363,10 +358,12 @@ var employeeProfile = employeeControllers.controller('employeeProfileController'
 var employeeI9Controller = employeeControllers.controller('employeeI9Controller', 
   ['$scope',
    '$state',
+   '$window',
    'currentUser', 
    'EmploymentProfileService', 
    function($scope,
             $state,
+            $window,
             currentUser,
             EmploymentProfileService){
     $scope.employee = {auth_type: ''};
@@ -400,8 +397,11 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
       signatureUpdated = false;
     };
 
-    $scope.acknowledgedI9 = function(){
-      $scope.employee.downloadI9 = !$scope.employee.downloadI9;
+    $scope.openI9File = function(){
+      if($scope.employee.downloadI9){
+        var link = angular.element('#i9doclink')[0];
+        $window.open(link.href);
+      }
     };
 
     $scope.signDocument = function(){
@@ -673,8 +673,8 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employmentAuthRepository, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', '$window', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, $window, employmentAuthRepository, EmployeePreDashboardValidationService){
     $scope.employee = {
       auth_type: ''
     };
@@ -733,6 +733,13 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       $scope.employee.downloadI9 = !$scope.employee.downloadI9;
     };
 
+    $scope.openI9File = function(){
+      if($scope.employee.downloadI9){
+        var link = angular.element('#i9doclink')[0];
+        $window.open(link.href);
+      }
+    };
+
     $scope.signDocument = function(redirectUrl){
       if(!signatureUpdated){
         alert('Please sign your name on the signature pad');
@@ -756,8 +763,8 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', '$stateParams', '$location','employeeTaxRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employeeTaxRepository, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', '$window', 'employeePayrollService', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, $window, employeePayrollService, EmployeePreDashboardValidationService){
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
 
@@ -778,40 +785,20 @@ var onboardTax = employeeControllers.controller('onboardTax',
     $scope.employee.headOfHousehold = 0;
     $scope.employee.childExpense = 0;
 
-    var getMarriageNumber = function(){
-      if($scope.employee.withholdingType ==='married'){
-        return 2;
-      }
-      else{
-        return 1;
-      }
-    };
 
     $scope.calculateTotal = function(){
-      var total = getMarriageNumber();
-      total += $scope.employee.dependent_count;
-      if($scope.employee.childExpense && total){
-        total += parseInt($scope.employee.childExpense);
-      }
-      if($scope.employee.headOfHousehold && total){
-        total += parseInt($scope.employee.headOfHousehold);
-      }
-      if(!total)
-      {
-        total = undefined;
-      }
-      $scope.employee.calculated_points = total;
-      if(!$scope.employee.user_defined_set){
-        $scope.employee.user_defined_points = $scope.employee.calculated_points;
-      }
+      employeePayrollService.calculateTotalBasedOnViewW4($scope.employee);
     };
 
     $scope.userDefinedPointsSet = function(){
       $scope.employee.user_defined_set = true;
     };
 
-    $scope.acknowledgeW4 = function(){
-      $scope.employee.downloadW4 = !$scope.employee.downloadW4;
+    $scope.openW4File = function(){
+      if($scope.employee.downloadW4){
+        var link = angular.element('#w4doclink')[0];
+        $window.open(link.href);
+      }
     };
 
     $scope.submit=function(){
@@ -830,19 +817,11 @@ var onboardTax = employeeControllers.controller('onboardTax',
       if(typeof($scope.employee.extra_amount) === 'undefined'){
         $scope.employee.extra_amount = 0;
       }
-      var empAuth = {
-        marriage: getMarriageNumber(),
-        dependencies: $scope.employee.dependent_count,
-        head: $scope.employee.headOfHousehold,
-        tax_credit: $scope.employee.childExpense,
-        calculated_points: $scope.employee.calculated_points,
-        user_defined_points: $scope.employee.user_defined_points,
-        extra_amount: $scope.employee.extra_amount
-      };
-      employeeTaxRepository.save({userId:$scope.employeeId}, empAuth,
-        function(response){
-          $location.path('/employee/onboard/complete/'+$scope.employeeId);
-        });
+      var empAuth = employeePayrollService.mapW4ViewToDto($scope.employee);
+      employeePayrollService.saveEmployeeTaxByUserId($scope.employeeId, empAuth)
+      .then(function(response){
+        $location.path('/employee/onboard/complete/'+$scope.employeeId);
+      });
     };
 }]);
 
