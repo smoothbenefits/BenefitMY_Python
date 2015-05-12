@@ -1964,8 +1964,9 @@ var employeeFamilyController = employeeControllers.controller(
     PersonService){
 
     var selfPerson = null;
+    $scope.employeeId = $stateParams.employeeId;
     $scope.family=[];
-    PersonService.getFamilyInfo($stateParams.employeeId)
+    PersonService.getFamilyInfo($scope.employeeId)
     .then(function(family){
       _.each(family, function(member){
         if(member.relationship === 'self'){
@@ -1988,7 +1989,7 @@ var employeeFamilyController = employeeControllers.controller(
             return member;
           },
           employeeId: function(){
-            return $stateParams.employeeId;
+            return $scope.employeeId;
           }
         }
       });
