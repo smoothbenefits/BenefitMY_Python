@@ -76,16 +76,23 @@ from app.views.insurance.user_company_std_insurance_plan_view import (
     CompanyUsersStdInsuranceView)
 from app.views.insurance.std_insurance_plan_view import StdInsurancePlanView
 
-
-
 from app.views.insurance.company_ltd_insurance_plan_view import \
     CompanyLtdInsurancePlanView
-
 from app.views.insurance.user_company_ltd_insurance_plan_view import (
     UserCompanyLtdInsuranceView,
     CompanyUsersLtdInsuranceView)
 from app.views.insurance.ltd_insurance_plan_view import LtdInsurancePlanView
 
+from app.views.insurance.company_supplemental_life_insurance_plan_view import \
+    CompanySupplementalLifeInsurancePlanView
+from app.views.insurance.person_company_supplemental_life_insurance_plan_view import (
+    PersonCompanySupplementalLifeInsurancePlanView,
+    CompanyPersonsSupplementalLifeInsuranceView)
+from app.views.insurance.supplemental_life_insurance_plan_view import \
+    SupplementalLifeInsurancePlanView
+from app.views.insurance.supplemental_life_insurance_plan_rate_view import (
+    SupplementalLifeInsurancePlanRateView,
+    SupplementalLifeInsurancePlanRateByPlanView)
 
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
@@ -208,6 +215,20 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
+
+    # Supplemental life insurance api
+    url(r'^%s/supplemental_life/(?P<pk>\w+)/by_index/?$' % PREFIX,
+        SupplementalLifeInsurancePlanView.as_view(), name='suppl_life_api'),
+    url(r'^%s/supplemental_life_rate/(?P<pk>\w+)/by_index/?$' % PREFIX,
+        SupplementalLifeInsurancePlanRateView.as_view(), name='suppl_life_rate_api'),
+    url(r'^%s/supplemental_life_rate/(?P<plan_id>\w+)/by_plan/?$' % PREFIX,
+        SupplementalLifeInsurancePlanRateByPlanView.as_view(), name='suppl_life_rate_by_plan_api'),
+    url(r'^%s/company_suppl_life/(?P<pk>\w+)/by_index/?$' % PREFIX,
+        CompanySupplementalLifeInsurancePlanView.as_view(), name='comp_suppl_life_api'),
+    url(r'^%s/person_comp_suppl_life/(?P<pk>\w+)/by_index/?$' % PREFIX,
+        PersonCompanySupplementalLifeInsurancePlanView.as_view(), name='person_suppl_life_api'),
+    url(r'^%s/person_comp_suppl_life/(?P<pk>\w+)/by_plan/?$' % PREFIX,
+        CompanyPersonsSupplementalLifeInsuranceView.as_view(), name='person_supple_life_by_plan_api'),
 
     # STD insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,

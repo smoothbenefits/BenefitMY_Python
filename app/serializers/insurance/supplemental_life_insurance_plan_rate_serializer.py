@@ -6,13 +6,13 @@ from ..custom_fields.hash_field import HashField
 
 class SupplementalLifeInsurancePlanRateSerializer(HashPkSerializerBase):
 
-	supplemental_life_insurance_plan = SupplementalLifeInsurancePlanSerializer()
+    supplemental_life_insurance_plan = SupplementalLifeInsurancePlanSerializer()
 
     class Meta:
         model = SupplementalLifeInsurancePlanRate
 
 
-class StdInsurancePlanPostSerializer(serializers.ModelSerializer):
+class SupplementalLifeInsurancePlanRatePostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SupplementalLifeInsurancePlanRate
