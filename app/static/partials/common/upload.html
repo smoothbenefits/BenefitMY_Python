@@ -33,6 +33,15 @@
             </tr>
         </thead>
         <tbody>
+            <tr ng-show="uploadManager.inProgress">
+                <td class="file-icon" ng-hide="uploadManager.hideTypeColumn" style="text-align:center">
+                    <div ng-class="uploadManager.inProgress.file.type.replace('/', '-')">&nbsp;</div>
+                </td>
+                <td width="250" style="text-align:center">{{uploadManager.inProgress.file.name}}</td>
+                <td width="180" style="text-align:center">
+                    <progressbar type="success" value="uploadManager.inProgress.progress"><b style="color:black">{{uploadManager.inProgress.progress.toFixed(0)}}%</b></progressbar>
+                </td>
+            </tr>
             <tr ng-repeat="file in uploadManager.uploadedFiles |orderBy:'-uploaded_at'">
                 <td ng-hide="uploadManager.hideTypeColumn" class="file-icon" style="text-align:center">
                     <div ng-class="file.file_type.replace('/', '-')">&nbsp;</div>

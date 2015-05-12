@@ -21,7 +21,7 @@ class CompanyLtdInsurancePlan(models.Model):
         max_digits=20, decimal_places=2, blank=True, null=True)
 
     rate = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True)
+        max_digits=10, decimal_places=6, blank=True, null=True)
 
     paid_by = models.CharField(max_length=20,
                               choices=PAID_BY_PARTIES,
