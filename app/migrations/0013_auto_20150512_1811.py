@@ -12,6 +12,26 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='SupplementalLifeInsuranceBeneficiary',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('first_name', models.CharField(max_length=255, null=True)),
+                ('middle_name', models.CharField(max_length=255, null=True, blank=True)),
+                ('last_name', models.CharField(max_length=255, null=True)),
+                ('relationship', models.CharField(max_length=30, null=True)),
+                ('email', models.EmailField(max_length=255, null=True, blank=True)),
+                ('phone', models.CharField(max_length=32, null=True, blank=True)),
+                ('percentage', models.DecimalField(null=True, max_digits=5, decimal_places=2, blank=True)),
+                ('tier', models.CharField(blank=True, max_length=1, null=True, choices=[(b'1', b'1'), (b'2', b'2')])),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('person_comp_suppl_life_insurance_plan', models.ForeignKey(related_name='suppl_life_insurance_beneficiary', blank=True, to='app.PersonCompSupplLifeInsurancePlan', null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='SysSupplLifeInsuranceCondition',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
