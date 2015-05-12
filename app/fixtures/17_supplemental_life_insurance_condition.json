@@ -1,0 +1,34 @@
+[
+  {
+    "fields": {
+      "name": "Unknown",
+      "description": "Default value"
+    },
+    "model": "app.syssuppllifeinsurancecondition",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "Tobacco", 
+      "description": "If the applicant is a smoker within the last 6 months"
+    },
+    "model": "app.syssuppllifeinsurancecondition",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "Non-Tobacco",
+      "description": "If the applicant has not consume tobacco product within the last 6 months"
+    },
+    "model": "app.syssuppllifeinsurancecondition",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "name": "Other", 
+      "description": "Any other conditions"
+    },
+    "model": "app.syssuppllifeinsurancecondition",
+    "pk": 3
+  }
+]

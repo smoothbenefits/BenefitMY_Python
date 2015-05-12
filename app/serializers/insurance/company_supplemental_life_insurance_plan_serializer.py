@@ -1,15 +1,18 @@
 from rest_framework import serializers
+from ..custom_fields.hash_field import HashField
+from ..hash_pk_serializer_base import HashPkSerializerBase
+from ..sys_suppl_life_insurance_condition_serializer import \
+    SysApplicationFeatureSerializer
 from app.models.insurance.comp_suppl_life_insurance_plan import \
     CompSupplLifeInsurancePlan
-from ..hash_pk_serializer_base import HashPkSerializerBase
 from supplemental_life_insurance_plan_serializer import (
     SupplementalLifeInsurancePlanSerializer,
     SupplementalLifeInsurancePlanPostSerializer)
-from ..custom_fields.hash_field import HashField
 
 
 class CompanySupplementalLifeInsurancePlanSerializer(HashPkSerializerBase):
     supplemental_life_insurance_plan = SupplementalLifeInsurancePlanSerializer()
+    condition = SysApplicationFeatureSerializer()
     company = HashField(source="company.id")
 
     class Meta:

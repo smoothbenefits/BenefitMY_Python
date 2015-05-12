@@ -2,6 +2,7 @@ import reversion
 
 from django.db import models
 from ..person import Person
+from ..sys_suppl_life_insurance_condition import SysSupplLifeInsuranceCondition
 from comp_suppl_life_insurance_plan import CompSupplLifeInsurancePlan
 
 @reversion.register
@@ -46,7 +47,15 @@ class PersonCompSupplLifeInsurancePlan(models.Model):
                                                   null=True,
                                                   verbose_name="calculated premium for child")
 
-    condition = models.CharField(max_length=64, blank=True, null=True)
+    self_condition = models.ForeignKey(SysSupplLifeInsuranceCondition, 
+                                       related_name="person_comp_suppl_life_insurance_plan_self", 
+                                       blank=True, 
+                                       null=True)
+    
+    spouse_condition = models.ForeignKey(SysSupplLifeInsuranceCondition, 
+                                         related_name="person_comp_suppl_life_insurance_plan_spouse", 
+                                         blank=True, 
+                                         null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
