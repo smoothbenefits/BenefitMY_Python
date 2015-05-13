@@ -22,8 +22,8 @@ class PersonCompanySupplementalLifeInsurancePlanView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        plans = PersonCompSupplLifeInsurancePlan.objects.filter(person=pk)
-        serializer = PersonCompanySupplementalLifeInsurancePlanSerializer(plans, many=True)
+        plans = self._get_object(pk)
+        serializer = PersonCompanySupplementalLifeInsurancePlanSerializer(plans)
         return Response(serializer.data)
 
     def delete(self, request, pk, format=None):

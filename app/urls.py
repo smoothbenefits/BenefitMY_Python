@@ -83,8 +83,9 @@ from app.views.insurance.user_company_ltd_insurance_plan_view import (
     CompanyUsersLtdInsuranceView)
 from app.views.insurance.ltd_insurance_plan_view import LtdInsurancePlanView
 
-from app.views.insurance.company_supplemental_life_insurance_plan_view import \
-    CompanySupplementalLifeInsurancePlanView
+from app.views.insurance.company_supplemental_life_insurance_plan_view import (
+    CompanySupplementalLifeInsurancePlanView, 
+    CompanySupplementalLifeInsurancePlanByCompanyView)
 from app.views.insurance.person_company_supplemental_life_insurance_plan_view import (
     PersonCompanySupplementalLifeInsurancePlanView,
     CompanyPersonsSupplementalLifeInsuranceView)
@@ -225,9 +226,11 @@ urlpatterns = patterns('app.views',
         SupplementalLifeInsurancePlanRateByPlanView.as_view(), name='suppl_life_rate_by_plan_api'),
     url(r'^%s/company_suppl_life/(?P<pk>\w+)/by_index/?$' % PREFIX,
         CompanySupplementalLifeInsurancePlanView.as_view(), name='comp_suppl_life_api'),
+    url(r'^%s/company_suppl_life/(?P<pk>\w+)/by_company/?$' % PREFIX,
+        CompanySupplementalLifeInsurancePlanByCompanyView.as_view(), name='comp_suppl_life_by_comp_api'),
     url(r'^%s/person_comp_suppl_life/(?P<pk>\w+)/by_index/?$' % PREFIX,
         PersonCompanySupplementalLifeInsurancePlanView.as_view(), name='person_suppl_life_api'),
-    url(r'^%s/person_comp_suppl_life/(?P<pk>\w+)/by_plan/?$' % PREFIX,
+    url(r'^%s/person_comp_suppl_life/(?P<pk>\w+)/by_company/?$' % PREFIX,
         CompanyPersonsSupplementalLifeInsuranceView.as_view(), name='person_supple_life_by_plan_api'),
 
     # STD insurance api

@@ -18,8 +18,8 @@ class CompanySupplementalLifeInsurancePlanView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        plans = CompSupplLifeInsurancePlan.objects.filter(company=pk)
-        serializer = CompanySupplementalLifeInsurancePlanSerializer(plans, many=True)
+        plans = self._get_object(pk)
+        serializer = CompanySupplementalLifeInsurancePlanSerializer(plan)
         return Response(serializer.data)
 
     def delete(self, request, pk, format=None):
@@ -41,3 +41,15 @@ class CompanySupplementalLifeInsurancePlanView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CompanySupplementalLifeInsurancePlanByCompanyView(APIView):
+    def _get_object(self, company_id):
+        try:
+            return CompSupplLifeInsurancePlan.objects.filter(company=company_id)
+        except CompSupplLifeInsurancePlan.DoesNotExist:
+            raise Http404
+
+    def get(self, request, company_id, format=None):
+        plans = self._get_object(company_id)
+        serializer = CompanySupplementalLifeInsurancePlanSerializer(plans, many=True)
+        return Response(serializer.data)

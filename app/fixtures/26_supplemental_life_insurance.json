@@ -1,0 +1,29 @@
+[
+  {
+    "fields": {
+      "name": "Health First",
+      "created_at": "2015-05-13T14:09:38Z",
+      "updated_at": "2015-05-13T15:23:33Z"
+    },
+    "model": "app.SupplementalLifeInsurancePlan",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "BCBS Life",
+      "created_at": "2015-05-13T14:09:38Z",
+      "updated_at": "2015-05-13T15:23:33Z"
+    },
+    "model": "app.SupplementalLifeInsurancePlan",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "MetLife Supplemental",
+      "created_at": "2015-05-13T14:09:38Z",
+      "updated_at": "2015-05-13T15:23:33Z"
+    },
+    "model": "app.SupplementalLifeInsurancePlan",
+    "pk": 3
+  }
+]

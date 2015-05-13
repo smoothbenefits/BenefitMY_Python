@@ -18,8 +18,8 @@ class SupplementalLifeInsurancePlanRateView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        plans = SupplementalLifeInsurancePlanRate.objects.filter(pk=pk)
-        serializer = SupplementalLifeInsurancePlanRateSerializer(plans, many=True)
+        plan = self._get_object(pk)
+        serializer = SupplementalLifeInsurancePlanRateSerializer(plan)
         return Response(serializer.data)
 
     def delete(self, request, pk, format=None):
@@ -50,6 +50,6 @@ class SupplementalLifeInsurancePlanRateByPlanView(APIView):
             raise Http404
 
     def get(self, request, plan_id, format=None):
-        plans = _get_object(plan_id)
+        plans = self._get_object(plan_id)
         serializer = SupplementalLifeInsurancePlanRateSerializer(plans, many=True)
         return Response(serializer.data)
