@@ -1,5 +1,6 @@
-from rest_framework.views import APIView
+from django.db import transaction
 from django.http import Http404
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -18,15 +19,17 @@ class SupplementalLifeInsurancePlanView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        plans = _get_object(pk)
+        plans = self._get_object(pk)
         serializer = SupplementalLifeInsurancePlanSerializer(plans)
         return Response(serializer.data)
 
+    @transaction.atomic
     def delete(self, request, pk, format=None):
         plan = self._get_object(pk)
         plan.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @transaction.atomic
     def put(self, request, pk, format=None):
         plan = self._get_object(pk)
         serializer = SupplementalLifeInsurancePlanSerializer(plan, data=request.DATA)
@@ -35,6 +38,7 @@ class SupplementalLifeInsurancePlanView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @transaction.atomic
     def post(self, request, pk, format=None):
         serializer = SupplementalLifeInsurancePlanPostSerializer(data=request.DATA)
         if serializer.is_valid():

@@ -18,7 +18,7 @@ class CompanySupplementalLifeInsurancePlanView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        plans = self._get_object(pk)
+        plan = self._get_object(pk)
         serializer = CompanySupplementalLifeInsurancePlanSerializer(plan)
         return Response(serializer.data)
 

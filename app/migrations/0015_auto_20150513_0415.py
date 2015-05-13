@@ -16,4 +16,10 @@ class Migration(migrations.Migration):
             old_name='condition_key',
             new_name='condition',
         ),
+        migrations.AddField(
+            model_name='supplementallifeinsuranceplan',
+            name='use_employee_age_for_spouse',
+            field=models.BooleanField(default=False),
+            preserve_default=True,
+        ),
     ]

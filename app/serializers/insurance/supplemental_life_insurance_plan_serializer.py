@@ -7,14 +7,15 @@ from supplemental_life_insurance_plan_rate_serializer import (
     SupplementalLifeInsurancePlanRatePostSerializer)
 
 class SupplementalLifeInsurancePlanSerializer(HashPkSerializerBase):
-    supplemental_life_insurance_plan_rate = SupplementalLifeInsurancePlanRateSerializer()
+    supplemental_life_insurance_plan_rate = SupplementalLifeInsurancePlanRateSerializer(many=True)
 
     class Meta:
         model = SupplementalLifeInsurancePlan
 
 
 class SupplementalLifeInsurancePlanPostSerializer(serializers.ModelSerializer):
-    supplemental_life_insurance_plan_rate = SupplementalLifeInsurancePlanRatePostSerializer()
+    supplemental_life_insurance_plan_rate = SupplementalLifeInsurancePlanRatePostSerializer(many=True,
+    	allow_add_remove=True)
     
     class Meta:
         model = SupplementalLifeInsurancePlan

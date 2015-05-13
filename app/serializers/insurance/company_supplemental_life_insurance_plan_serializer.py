@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from ..custom_fields.hash_field import HashField
 from ..hash_pk_serializer_base import HashPkSerializerBase
-from ..sys_suppl_life_insurance_condition_serializer import \
-    SysApplicationFeatureSerializer
 from app.models.insurance.comp_suppl_life_insurance_plan import \
     CompSupplLifeInsurancePlan
 from supplemental_life_insurance_plan_serializer import (

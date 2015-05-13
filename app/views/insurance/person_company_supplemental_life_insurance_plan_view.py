@@ -22,8 +22,8 @@ class PersonCompanySupplementalLifeInsurancePlanView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        plans = self._get_object(pk)
-        serializer = PersonCompanySupplementalLifeInsurancePlanSerializer(plans)
+        plan = self._get_object(pk)
+        serializer = PersonCompanySupplementalLifeInsurancePlanSerializer(plan)
         return Response(serializer.data)
 
     def delete(self, request, pk, format=None):
@@ -33,7 +33,7 @@ class PersonCompanySupplementalLifeInsurancePlanView(APIView):
 
     def put(self, request, pk, format=None):
         plan = self._get_object(pk)
-        serializer = PersonCompanySupplementalLifeInsurancePlanSerializer(plan, data=request.DATA)
+        serializer = PersonCompanySupplementalLifeInsurancePlanPostSerializer(plan, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -46,26 +46,41 @@ class PersonCompanySupplementalLifeInsurancePlanView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class PersonSupplementalLifeInsuranceByPersonView(APIView):
+    """ supplemental life insurance for a single employee """
+    def _get_object(self, person_id):
+        try:
+            return PersonCompSupplLifeInsurancePlan.objects.filter(person=person_id)
+        except PersonCompSupplLifeInsurancePlan.DoesNotExist:
+            raise Http404
+
+    def get(self, request, person_id, format=None):
+        plans = self._get_object(person_id)
+        serializer = PersonCompanySupplementalLifeInsurancePlanSerializer(plans, many=True)
+        return Response(serializer.data)
 
 class CompanyPersonsSupplementalLifeInsuranceView(APIView):
     """ benefit for all employees in a company """
-    def _get_persons_id(self, pk):
+    def _get_persons_id(self, company_id):
         persons_id = []
-        users = CompanyUser.objects.filter(company=pk,
+        users = CompanyUser.objects.filter(company=company_id,
                                            company_user_type='employee')
         for user in users:
-            person = Person.objects.get(user=user.user_id)
-            person_ids.append(person.id)
+            try:
+                person = Person.objects.get(user=user.user_id, relationship='self')
+                persons_id.append(person.id)
+            except Person.DoesNotExist:
+                continue
         return persons_id
 
     def _get_objects(self, persons_id):
         try:
-            return PersonCompanySupplementalLifeInsurancePlanSerializer.objects.filter(person__in=persons_id)
+            return PersonCompSupplLifeInsurancePlan.objects.filter(person__in=persons_id)
         except PersonCompanySupplementalLifeInsurancePlanSerializer.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        persons_id = self._get_users_id(pk)
+    def get(self, request, company_id, format=None):
+        persons_id = self._get_persons_id(company_id)
         plans = self._get_objects(persons_id)
         serializer = PersonCompanySupplementalLifeInsurancePlanSerializer(plans, many=True)
         return Response(serializer.data)
