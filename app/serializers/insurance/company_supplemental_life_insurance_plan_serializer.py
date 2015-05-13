@@ -12,7 +12,6 @@ from supplemental_life_insurance_plan_serializer import (
 
 class CompanySupplementalLifeInsurancePlanSerializer(HashPkSerializerBase):
     supplemental_life_insurance_plan = SupplementalLifeInsurancePlanSerializer()
-    condition = SysApplicationFeatureSerializer()
     company = HashField(source="company.id")
 
     class Meta:

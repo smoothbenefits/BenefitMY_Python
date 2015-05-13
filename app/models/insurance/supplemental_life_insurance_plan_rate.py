@@ -28,10 +28,8 @@ class SupplementalLifeInsurancePlanRate(models.Model):
                                blank=False,
                                null=False)
 
-    condition_key = models.ForeignKey(SysSupplLifeInsuranceCondition,
+    condition = models.ForeignKey(SysSupplLifeInsuranceCondition,
                                       related_name="supplemental_life_insurance_plan_rate")
-
-    condition = models.CharField(max_length=64, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
