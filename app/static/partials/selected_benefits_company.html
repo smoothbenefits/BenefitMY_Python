@@ -18,6 +18,7 @@
             <a ng-click="viewDetails(employee.user.id)">{{employee.user.first_name}} {{employee.user.last_name}}</a>
         </div>
         <div class="panel-body">
+            <!-- Health benefits summary table -->
             <div class="row">
                 <div class="col-sm-2">                
                     <div>Benefit Plan Selections</div>
@@ -62,6 +63,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Basic life insurance summary table -->
             <div class="row">
                 <div class="col-sm-2">
                     <div>Basic Life Insurance</br>(AD&D)</div>
@@ -106,6 +109,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Supplemental life insurance summary table -->
             <div class="row" ng-show="supplementalLifeInsuranceEnabled">
                 <div class="col-sm-2">    
                     <div>Supplemental Life Insurance</div>
@@ -159,6 +164,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- STD summary table -->
             <div class="row">
                 <div class="col-sm-2">    
                     <div>Short Term Disability Benefits</div>
@@ -210,6 +217,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- LTD summary table -->
             <div class="row">
                 <div class="col-sm-2">    
                     <div>Long Term Disability Benefits</div>
@@ -261,6 +270,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- FSA summary table -->
             <div class="row">
                 <div class="col-sm-2">    
                     <div>Flexible Spending Accounts</div>
@@ -278,7 +289,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td width="200">Primary Account</td>
+                                    <td width="200">Health Account</td>
                                     <td width="200">${{employee.fsaElection.primary_amount_per_year}}</td>
                                     <td width="200" rowspan="2" style="vertical-align:middle;">{{employee.fsaElection.last_update_date_time}}</td>
                                     <td width="200" rowspan="2" style="vertical-align:middle;">{{employee.fsaElection.update_reason}}</td>
