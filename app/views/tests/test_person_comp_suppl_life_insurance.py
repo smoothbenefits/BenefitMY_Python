@@ -3,11 +3,12 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from view_test_base import ViewTestBase
 
-class CompanyFsaTestCase(TestCase, ViewTestBase):
+class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate', 
     '39_company_supplement_life_insurance', '17_supplemental_life_insurance_condition',
-    '10_company', '44_person_company_suppl_life', '24_person', '23_auth_user']
+    '10_company', '44_person_company_suppl_life', '24_person', '23_auth_user', 
+    '45_suppl_life_beneficiary']
 
     def test_get_person_company_suppl_life_by_person(self):
         response = self.client.get(reverse('person_person_supple_life',
@@ -20,6 +21,12 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]['person'], self.normalize_key(3))
         self.assertEqual(result[0]['company_supplemental_life_insurance_plan']['id'], self.normalize_key(1))
+        self.assertEqual(result[0]['self_condition']['id'], self.normalize_key(2))
+        self.assertEqual(result[0]['spouse_condition']['id'], self.normalize_key(3))
+        self.assertEqual(type(result[0]['suppl_life_insurance_beneficiary']), list)
+
+        beneficiaries = result[0]['suppl_life_insurance_beneficiary']
+        self.assertEqual(len(beneficiaries), 3)
 
     def test_get_person_company_suppl_life(self):
         response = self.client.get(reverse('person_suppl_life_api',
@@ -31,6 +38,12 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result), dict)
         self.assertEqual(result['person'], self.normalize_key(3))
         self.assertEqual(result['company_supplemental_life_insurance_plan']['id'], self.normalize_key(1))
+        self.assertEqual(result['self_condition']['id'], self.normalize_key(2))
+        self.assertEqual(result['spouse_condition']['id'], self.normalize_key(3))
+        self.assertEqual(type(result['suppl_life_insurance_beneficiary']), list)
+
+        beneficiaries = result['suppl_life_insurance_beneficiary']
+        self.assertEqual(len(beneficiaries), 3)
 
     def test_delete_person_company_suppl_life(self):
         response = self.client.get(reverse('person_suppl_life_api',
@@ -62,7 +75,20 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
           "spouse_premium_per_month": 1.00,
           "child_premium_per_month": 1.00,
           "self_condition": self.normalize_key(2),
-          "spouse_condition": self.normalize_key(3)
+          "spouse_condition": self.normalize_key(3),
+          "suppl_life_insurance_beneficiary": [
+            {
+              "first_name": "Ted",
+              "middle_name": "",
+              "last_name": "Cowell",
+              "relationship": "self",
+              "email": "beneficiary1@email.com",
+              "phone": "617-259-4758",
+              "person_comp_suppl_life_insurance_plan": 1,
+              "percentage": 20,
+              "tier": "1"
+            }
+          ]
         }
         response = self.client.put(reverse('person_suppl_life_api',
                                             kwargs={'pk': self.normalize_key(1)}),
@@ -97,11 +123,26 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
           "spouse_premium_per_month": 1.00,
           "child_premium_per_month": 1.00,
           "self_condition": 3,
-          "spouse_condition": 3
+          "spouse_condition": 3,
+          "suppl_life_insurance_beneficiary": [
+            {
+              "first_name": "Ted",
+              "middle_name": "",
+              "last_name": "Cowell",
+              "relationship": "self",
+              "email": "beneficiary1@email.com",
+              "phone": "617-259-4758",
+              "person_comp_suppl_life_insurance_plan": 1,
+              "percentage": 20,
+              "tier": "1"
+            }
+          ]
         }
+
         response = self.client.post(reverse('person_suppl_life_api',
                                             kwargs={'pk': self.normalize_key(3)}),
-                                            suppl_life_data)
+                                            data=json.dumps(suppl_life_data),
+                                            content_type='application/json')
         
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
@@ -123,3 +164,15 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(result['person'], self.normalize_key(3))
         self.assertEqual(result['company_supplemental_life_insurance_plan']['id'], self.normalize_key(1))
+        self.assertEqual(result['self_condition']['id'], self.normalize_key(3))
+        self.assertEqual(result['spouse_condition']['id'], self.normalize_key(3))
+        self.assertEqual(type(result['suppl_life_insurance_beneficiary']), list)
+
+        beneficiaries = result['suppl_life_insurance_beneficiary']
+        self.assertEqual(len(beneficiaries), 1)
+        self.assertEqual(beneficiaries[0]['first_name'], "Ted")
+        self.assertEqual(beneficiaries[0]['middle_name'], "")
+        self.assertEqual(beneficiaries[0]['last_name'], "Cowell")
+        self.assertEqual(beneficiaries[0]['relationship'], "self")
+        self.assertEqual(beneficiaries[0]['percentage'], "20.00")
+        self.assertEqual(beneficiaries[0]['tier'], "1")
