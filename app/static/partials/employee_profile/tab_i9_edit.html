@@ -18,11 +18,12 @@
         <div ng-show="employee.auth_type == 'Aaw'">
             <div class="form-label">Expiration Date</div>
             <div class="datebox">
-                <input name="expirationDate"
-                    ng-model="employee.auth_expiration"
-                    type="text"
-                    placeholder="YYYY-MM-dd"
-                    ng-required="false"/>
+                <datepicker ng-model="employee.auth_expiration"
+                            class="form-control"
+                            min-date="today"
+                            type="text"
+                            ng-required="false"
+                            close-text="Close" />
             </div>
             <div class="checkbox">
                 <label>
