@@ -55,7 +55,7 @@ class CompanySupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
 
     def test_post_company_suppl_life(self):
         suppl_life_data = {"company": 2,
-                    "supplemental_life_insurance_plan": 1}
+                           "supplemental_life_insurance_plan": 1}
         response = self.client.post(reverse('comp_suppl_life_api',
                                             kwargs={'pk': self.normalize_key(4)}),
                                             suppl_life_data)

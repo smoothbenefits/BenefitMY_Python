@@ -51,7 +51,7 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertEqual(result['detail'], 'Not found')
 
-    def test_post_company_suppl_life(self):
+    def test_post_suppl_life_insurance(self):
         suppl_life_data = {"name": "Test SLI",
                            "use_employee_age_for_spouse": False,
                            "supplemental_life_insurance_plan_rate": [
@@ -89,4 +89,47 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(result['name'], "Test SLI")
 
+    def test_put_suppl_life_insurance(self):
+        suppl_life_data = {
+          "name": "Test SLI",
+          "use_employee_age_for_spouse": False,
+          "supplemental_life_insurance_plan_rate": [
+            {
+              "supplemental_life_insurance_plan": 1,
+              "age_min": 25,
+              "age_max": 30,
+              "bind_type": "self",
+              "rate": 3.33,
+              "condition": 3,
+            }
+          ]
+        }
+        response = self.client.put(reverse('suppl_life_api',
+                                            kwargs={'pk': self.normalize_key(1)}),
+                                            data=json.dumps(suppl_life_data),
+                                            content_type='application/json')
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse('suppl_life_api',
+                                           kwargs={'pk': self.normalize_key(1)}))
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+
+        result = json.loads(response.content)
+        self.assertEqual(type(result), dict)
+        self.assertEqual(result['name'], "Test SLI")
+        self.assertEqual(result['use_employee_age_for_spouse'], False)
+
+        rates = result['supplemental_life_insurance_plan_rate']
+        self.assertEqual(type(rates), list)
+        self.assertEqual(len(rates), 1)
+        self.assertEqual(rates[0]['supplemental_life_insurance_plan'], self.normalize_key(1))
+        self.assertEqual(rates[0]['age_min'], 25)
+        self.assertEqual(rates[0]['age_max'], 30)
+        self.assertEqual(rates[0]['bind_type'], "self")
+        self.assertEqual(rates[0]['rate'], "3.33")
+        self.assertEqual(rates[0]['condition']['id'], self.normalize_key(3))
 

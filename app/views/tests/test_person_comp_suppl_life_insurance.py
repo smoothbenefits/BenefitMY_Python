@@ -81,11 +81,11 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
               "first_name": "Ted",
               "middle_name": "",
               "last_name": "Cowell",
-              "relationship": "self",
+              "relationship": "spouse",
               "email": "beneficiary1@email.com",
               "phone": "617-259-4758",
               "person_comp_suppl_life_insurance_plan": 1,
-              "percentage": 20,
+              "percentage": 100,
               "tier": "1"
             }
           ]
@@ -111,6 +111,15 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
         self.assertEqual(result["self_premium_per_month"], "1.00")
         self.assertEqual(result["spouse_premium_per_month"], "1.00")
         self.assertEqual(result["child_premium_per_month"], "1.00")
+
+        beneficiaries = result['suppl_life_insurance_beneficiary']
+        self.assertEqual(type(beneficiaries), list)
+        self.assertEqual(len(beneficiaries), 1)
+        self.assertEqual(beneficiaries[0]['percentage'], "100.00")
+        self.assertEqual(beneficiaries[0]['tier'], "1")
+        self.assertEqual(beneficiaries[0]['relationship'], "spouse")
+        self.assertEqual(beneficiaries[0]['first_name'], "Ted")
+        self.assertEqual(beneficiaries[0]['last_name'], "Cowell")
 
     def test_post_person_company_suppl_life(self):
         suppl_life_data = {
