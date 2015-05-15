@@ -1,14 +1,12 @@
 import reversion
 
 from django.db import models
+from ..sys_suppl_life_insurance_condition import SysSupplLifeInsuranceCondition
 from supplemental_life_insurance_plan import SupplementalLifeInsurancePlan
 
 BIND_TYPES = (('self', 'Self'),
              ('spouse', 'Spouse'),
              ('dependent', 'Dependent'))
-
-CONDITIONS = (('tobacco', 'Tobacco'),
-              ('non-tobacco', 'Non-Tobacco'))
 
 @reversion.register
 class SupplementalLifeInsurancePlanRate(models.Model):
@@ -30,8 +28,8 @@ class SupplementalLifeInsurancePlanRate(models.Model):
                                blank=False,
                                null=False)
 
-    condition = models.CharField(max_length=64,
-                                 choices=CONDITIONS)
+    condition = models.ForeignKey(SysSupplLifeInsuranceCondition,
+                                      related_name="supplemental_life_insurance_plan_rate")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
