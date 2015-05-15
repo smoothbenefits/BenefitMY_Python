@@ -9,6 +9,7 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
+    <!-- Selected health benefit summary table -->
     <div class="table-responsive table-holder table" ng-if="benefits.length>0">
         <div class="table-sub-title">
             Selected Benefits
@@ -45,6 +46,8 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Waived health benefit summary table -->
     <div class="table-responsive table-holder table" ng-if="waivedBenefits.length>0">
         <div class="table-sub-title">Waived Benefits</div>
         <table class="table table-striped">
@@ -62,6 +65,8 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Supplemental life insurance summary table -->
     <div class="table-responsive table-holder" ng-show="supplementalLifeInsuranceEnabled">
         <div class="table-sub-title">Supplemental Life Insurance</div>
         <table class="table table-striped" ng-if="isLifeInsuranceWaived(familyInsurancePlan)">
@@ -105,6 +110,8 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Basic life insurance summary table -->
     <div class="table-responsive table-holder table">
         <div class="table-sub-title">Basic Life Insurance</div>
         <table class="table table-striped" ng-show="!basicLifeInsurancePlan.enrolled">
@@ -139,8 +146,9 @@
                 </tr>
             </tbody>
         </table>
-
     </div>
+
+    <!-- STD summary table -->
     <div class="table-responsive table-holder table">
         <div class="table-sub-title">Short Term Disability Benefits</div>
         <table class="table table-striped" ng-show="!userStdPlan">
@@ -177,6 +185,8 @@
             </tbody>
         </table>
     </div>
+
+    <!-- LTD summary table -->
     <div class="table-responsive table-holder table">
         <div class="table-sub-title">Long Term Disability Benefits</div>
         <table class="table table-striped" ng-show="!userLtdPlan">
@@ -213,6 +223,8 @@
             </tbody>
         </table>
     </div>
+
+    <!-- FSA summary table -->
     <div class="table-responsive table-holder table">
         <div class="table-sub-title">Flexible Spending Account</div>
         <table class="table-striped table">
@@ -226,7 +238,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Primary Account</td>
+                    <td>Health Account</td>
                     <td>${{fsaElection.primary_amount_per_year}}</td>
                     <td rowspan="2" style="vertical-align:middle;">{{fsaElection.last_update_date_time}}</td>
                     <td rowspan="2" style="vertical-align:middle;">{{fsaElection.update_reason}}</td>
