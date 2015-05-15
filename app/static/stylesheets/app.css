@@ -236,3 +236,6 @@ span.doc-buttons{
 .clickable {
     cursor: pointer;
 }
+.datebox > .input-group > .form-control {
+    height: 38px;
+}
