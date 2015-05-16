@@ -12,7 +12,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'EmployeePreDashboardValidationService',
    'EmployeeLetterSignatureValidationService',
    'FsaService',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
    'employeePayrollService', 
    'EmploymentProfileService',
    'DirectDepositService',
@@ -29,7 +29,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             EmployeePreDashboardValidationService,
             EmployeeLetterSignatureValidationService,
             FsaService,
-            LifeInsuranceService,
+            BasicLifeInsuranceService,
             employeePayrollService,
             EmploymentProfileService,
             DirectDepositService,
@@ -124,11 +124,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
       });
 
       // Life Insurance
-      LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(userId, function(response) {
+      BasicLifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(userId, function(response) {
         $scope.familyInsurancePlan = response;
       });
 
-      LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
+      BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
         $scope.basicLifeInsurancePlan = response;
       });
 
@@ -950,7 +950,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
    '$state',
    '$stateParams',
    '$controller',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
    'StdService',
    'LtdService',
    'FsaService', 
@@ -959,7 +959,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       $state,
       $stateParams,
       $controller,
-      LifeInsuranceService,
+      BasicLifeInsuranceService,
       StdService,
       LtdService, 
       FsaService){
@@ -976,11 +976,11 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var fsaPlans;
 
       var promise = $scope.companyIdPromise.then(function(companyId){
-        return LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic');
+        return BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic');
       })
       .then(function(basicPlans) {
         basicLifePlans = basicPlans;
-        return LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Extended');
+        return BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Extended');
       })
       .then(function(optionalPlans) {
         optionalLifePlans = optionalPlans;
@@ -1085,7 +1085,7 @@ var healthBenefitsSignup = employeeControllers.controller(
    'PersonService',
    'benefitDisplayService',
    'FsaService',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
     function healthBenefitsSignup(
       $scope,
       $state,
@@ -1099,7 +1099,7 @@ var healthBenefitsSignup = employeeControllers.controller(
       PersonService,
       benefitDisplayService,
       FsaService,
-      LifeInsuranceService){
+      BasicLifeInsuranceService){
 
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1432,7 +1432,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
    'benefitListRepository',
    'benefitDisplayService',
    'FsaService',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
     function fsaBenefitsSignup(
       $scope,
       $state,
@@ -1444,7 +1444,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
       benefitListRepository,
       benefitDisplayService,
       FsaService,
-      LifeInsuranceService){
+      BasicLifeInsuranceService){
 
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1522,7 +1522,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
    'benefitListRepository',
    'benefitDisplayService',
    'FsaService',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
     function basicLifeBenefitsSignup(
       $scope,
       $state,
@@ -1534,7 +1534,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
       benefitListRepository,
       benefitDisplayService,
       FsaService,
-      LifeInsuranceService){
+      BasicLifeInsuranceService){
         
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1542,7 +1542,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
         var employeeId = $scope.employeeId;
 
         $scope.companyIdPromise.then(function(companyId){
-          LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic').then(function(plans) {
+          BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic').then(function(plans) {
 
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = plans[0];
@@ -1550,7 +1550,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             }
 
             // Get current user's basic life insurance plan situation
-            LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
+            BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
               $scope.basicLifeInsurancePlan.life_insurance_beneficiary = plan.life_insurance_beneficiary;
               $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = plan.life_insurance_contingent_beneficiary;
             }, function(error){
@@ -1586,7 +1586,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           // TO-DO: Need to better organize the logic to save basic life insurance
           ///////////////////////////////////////////////////////////////////////////
           if (!$scope.basicLifeInsurancePlan.selected){
-            LifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
+            BasicLifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
               , function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
@@ -1596,7 +1596,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               });
           }
           else{
-            LifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
+            BasicLifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
               var enrolledBasic = _.find(enrolledPlans, function(plan){ 
                 return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';
               });
@@ -1610,7 +1610,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               
               $scope.basicLifeInsurancePlan.currentUserId = employeeId;
 
-              LifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan
+              BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan
               , function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
@@ -1641,7 +1641,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
    'benefitListRepository',
    'benefitDisplayService',
    'FsaService',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
     function optionalLifeBenefitsSignup(
       $scope,
       $state,
@@ -1653,7 +1653,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
       benefitListRepository,
       benefitDisplayService,
       FsaService,
-      LifeInsuranceService){
+      BasicLifeInsuranceService){
         
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1664,7 +1664,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
         $scope.selectedLifeInsurancePlan = $scope.lifeInsurancePlans[0];
 
         $scope.companyIdPromise.then(function(companyId){
-          LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Extended').then(function(plans) {
+          BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Extended').then(function(plans) {
 
             // Populate available company plans
             _.each(plans, function(plan) {
@@ -1672,7 +1672,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
             });
 
             // Get current user's family life insurance plan situation
-            LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employeeId, function(familyPlan) {
+            BasicLifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employeeId, function(familyPlan) {
               $scope.familyLifeInsurancePlan = familyPlan;
 
               // Determine the right plan option to select
@@ -1725,7 +1725,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
           // Save life insurance
           if ($scope.isWaiveLifeInsuranceSelected()) {
             // Waive selected. Delete all user plans for this user
-            LifeInsuranceService.deleteFamilyLifeInsurancePlanForUser(employeeId
+            BasicLifeInsuranceService.deleteFamilyLifeInsurancePlanForUser(employeeId
               , function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
@@ -1735,7 +1735,7 @@ var optionalLifeBenefitsSignup = employeeControllers.controller(
             });
           } else {
             $scope.familyLifeInsurancePlan.selectedCompanyPlan = $scope.selectedLifeInsurancePlan.value;
-            LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan
+            BasicLifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan
               , function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();

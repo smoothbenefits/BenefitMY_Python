@@ -303,7 +303,8 @@ var employerBenefits = employersController.controller('employerBenefits',
   '$location', 
   '$stateParams', 
   'benefitDisplayService', 
-  'LifeInsuranceService', 
+  'BasicLifeInsuranceService', 
+  'SupplementalLifeInsuranceService',
   'StdService',
   'LtdService',
   'FsaService', 
@@ -311,7 +312,8 @@ var employerBenefits = employersController.controller('employerBenefits',
             $location, 
             $stateParams, 
             benefitDisplayService, 
-            LifeInsuranceService, 
+            BasicLifeInsuranceService,
+            SupplementalLifeInsuranceService, 
             StdService,
             LtdService, 
             FsaService){
@@ -339,8 +341,12 @@ var employerBenefits = employersController.controller('employerBenefits',
       $location.path('/admin');
     };
 
-    LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
+    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
       $scope.lifeInsurancePlans = response;
+    });
+
+    SupplementalLifeInsuranceService.getPlansForCompany($stateParams.company_id).then(function(response) {
+      $scope.supplementalLifeInsurancePlans = response;
     });
 
     StdService.getStdPlansForCompany($stateParams.company_id).then(function(plans) {
@@ -765,7 +771,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   'companyRepository',
   'employeeBenefitElectionService',
   'FsaService',
-  'LifeInsuranceService',
+  'BasicLifeInsuranceService',
   'CompanyEmployeeSummaryService',
   'StdService',
   'LtdService',
@@ -775,7 +781,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            companyRepository,
            employeeBenefitElectionService,
            FsaService,
-           LifeInsuranceService,
+           BasicLifeInsuranceService,
            CompanyEmployeeSummaryService,
            StdService,
            LtdService){
@@ -807,11 +813,11 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         //       entity and maybe avoid trying to artificially bundle them together. 
         //       Also, once we have tabs working, we should split them into proper flows.
         _.each(employeeList, function(employee) {
-          LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employee.user.id, function(response) {
+          BasicLifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employee.user.id, function(response) {
             employee.familyInsurancePlan = response;
           });
           
-          LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
             employee.basicLifeInsurancePlan = response;
           });
 

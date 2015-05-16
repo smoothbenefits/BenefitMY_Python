@@ -8,7 +8,7 @@ from app.views.employee_profile_view import (
     EmployeeProfileView,
     EmployeeProfileByPersonCompanyView,
     EmployeeProfileByCompanyUserView)
-from app.views.user_view import (
+from app.views.user_view import ( 
     UserView,
     UsersView,
     CurrentUserView)

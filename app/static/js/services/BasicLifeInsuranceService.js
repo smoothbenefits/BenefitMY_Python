@@ -1,15 +1,15 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('LifeInsuranceService', 
-  ['LifeInsurancePlanRepository',
-   'CompanyLifeInsurancePlanRepository',
-   'CompanyUserLifeInsurancePlanRepository',
+benefitmyService.factory('BasicLifeInsuranceService', 
+  ['BasicLifeInsurancePlanRepository',
+   'CompanyBasicLifeInsurancePlanRepository',
+   'CompanyUserBasicLifeInsurancePlanRepository',
    'PersonService',
    '$q',
   function (
-      LifeInsurancePlanRepository,
-      CompanyLifeInsurancePlanRepository,
-      CompanyUserLifeInsurancePlanRepository,
+      BasicLifeInsurancePlanRepository,
+      CompanyBasicLifeInsurancePlanRepository,
+      CompanyUserBasicLifeInsurancePlanRepository,
       PersonService,
       $q){
 
@@ -37,7 +37,7 @@ benefitmyService.factory('LifeInsuranceService',
 
         if(!planToSave.id) {
           // Not existing yet, POST it
-          LifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave
+          BasicLifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave
             , function (successResponse) {
                 if (successCallBack) {
                   successCallBack(successResponse);
@@ -51,7 +51,7 @@ benefitmyService.factory('LifeInsuranceService',
         }
         else {
           // Existing, PUT it 
-          LifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave
+          BasicLifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave
             , function (successResponse) {
                 if (successCallBack) {
                   successCallBack(successResponse);
@@ -66,7 +66,7 @@ benefitmyService.factory('LifeInsuranceService',
       },
 
       deleteLifeInsurancePlan: function(planIdToDelete, successCallBack, errorCallBack) {
-        LifeInsurancePlanRepository.ById.delete({id:planIdToDelete}
+        BasicLifeInsurancePlanRepository.ById.delete({id:planIdToDelete}
           , function (successResponse) {
                 if (successCallBack) {
                   successCallBack(successResponse);
@@ -80,7 +80,7 @@ benefitmyService.factory('LifeInsuranceService',
       },
 
       getLifeInsurancePlansForCompany: function(companyId, successCallBack, errorCallBack) {
-        CompanyLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
+        CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
           .$promise.then(function(plans) {
             _.each(plans, function(companyPlan) {
               companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
@@ -102,7 +102,7 @@ benefitmyService.factory('LifeInsuranceService',
       getLifeInsurancePlansForCompanyByType: function(companyId, plan_type) {
         var deferred = $q.defer();
 
-        CompanyLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
+        CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
           .$promise.then(function(plans) {
             var resultPlans = [];
             _.each(plans, function(companyPlan) {
@@ -129,7 +129,7 @@ benefitmyService.factory('LifeInsuranceService',
           "insurance_amount": amount,
           "salary_multiplier": multiplier
         };
-        CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
+        CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
               deferred.resolve(successResponse); 
             }
@@ -148,7 +148,7 @@ benefitmyService.factory('LifeInsuranceService',
           "company": companyId, 
           "life_insurance_plan": planId
         };
-        CompanyLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
+        CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
               deferred.resolve(successResponse);  
             }
@@ -161,7 +161,7 @@ benefitmyService.factory('LifeInsuranceService',
       },
 
       deleteLifeInsurancePlanForCompany: function(companyPlanId, successCallBack, errorCallBack) {
-        CompanyLifeInsurancePlanRepository.ById.delete({id:companyPlanId}
+        CompanyBasicLifeInsurancePlanRepository.ById.delete({id:companyPlanId}
           , function (successResponse) {
               if (successCallBack) {
                 successCallBack(successResponse);
@@ -176,7 +176,7 @@ benefitmyService.factory('LifeInsuranceService',
       },
 
       getInsurancePlanEnrollmentsByUser: function(userId, successCallBack, errorCallBack) {
-        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
+        CompanyUserBasicLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(
             function (successResponse) {
               if (successCallBack) {
@@ -192,7 +192,7 @@ benefitmyService.factory('LifeInsuranceService',
       },
 
       getBasicLifeInsuranceEnrollmentByUser: function(userId, successCallBack, errorCallBack) {
-        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId: userId})
+        CompanyUserBasicLifeInsurancePlanRepository.ByUser.query({userId: userId})
           .$promise.then(
             function(response){
               planEnrollments = _.find(response, 
@@ -234,7 +234,7 @@ benefitmyService.factory('LifeInsuranceService',
         var planEnrollments = [];
         var familyPlan = {};
 
-        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
+        CompanyUserBasicLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(
             function (successResponse) {
               // Filter out basic life insurance enrolled by user
@@ -353,7 +353,7 @@ benefitmyService.factory('LifeInsuranceService',
 
           // Save basic life insurance
           if (!basicLifeToSave.enrolled) {
-            CompanyUserLifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave)
+            CompanyUserBasicLifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave)
               .$promise.then(
                 function(response){
                   if (successCallBack) {
@@ -364,7 +364,7 @@ benefitmyService.factory('LifeInsuranceService',
                   errorCallBack(response);
                 });
           } else {
-            CompanyUserLifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave)
+            CompanyUserBasicLifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave)
               .$promise.then(
                 function(response){
                   if (successCallBack) {
@@ -421,7 +421,7 @@ benefitmyService.factory('LifeInsuranceService',
           requests.push(deferred);
 
           if (!memberPlanToSave.id) {
-            CompanyUserLifeInsurancePlanRepository.ById.save({id:memberPlanToSave.user}, memberPlanToSave)
+            CompanyUserBasicLifeInsurancePlanRepository.ById.save({id:memberPlanToSave.user}, memberPlanToSave)
               .$promise.then(
                 function(response) {
                   deferred.resolve(response);
@@ -430,7 +430,7 @@ benefitmyService.factory('LifeInsuranceService',
                   deferred.reject(response);
                 });
           } else {
-            CompanyUserLifeInsurancePlanRepository.ById.update({id:memberPlanToSave.id}, memberPlanToSave)
+            CompanyUserBasicLifeInsurancePlanRepository.ById.update({id:memberPlanToSave.id}, memberPlanToSave)
               .$promise.then(
               function(response) {
                   deferred.resolve(response);
@@ -459,12 +459,12 @@ benefitmyService.factory('LifeInsuranceService',
       },
 
       deleteFamilyLifeInsurancePlanForUser: function(userId, successCallBack, errorCallBack) {
-        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
+        CompanyUserBasicLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(function(plans) {
             _.each(plans, function(plan) {
               if (plan.company_life_insurance.life_insurance_plan 
                 && plan.company_life_insurance.life_insurance_plan.insurance_type === 'Extended'){
-                CompanyUserLifeInsurancePlanRepository.ById.delete({id:plan.id});
+                CompanyUserBasicLifeInsurancePlanRepository.ById.delete({id:plan.id});
               }
             });
 
@@ -480,12 +480,12 @@ benefitmyService.factory('LifeInsuranceService',
       },
 
       deleteBasicLifeInsurancePlanForUser: function(userId, successCallBack, errorCallBack) {
-        CompanyUserLifeInsurancePlanRepository.ByUser.query({userId:userId})
+        CompanyUserBasicLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(function(plans){
             _.each(plans, function(plan){
               if (plan.company_life_insurance.life_insurance_plan 
                   && plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic'){
-                CompanyUserLifeInsurancePlanRepository.ById.delete({id: plan.id});
+                CompanyUserBasicLifeInsurancePlanRepository.ById.delete({id: plan.id});
               }
             });
 

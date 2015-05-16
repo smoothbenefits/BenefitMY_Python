@@ -132,6 +132,29 @@
         </table>
     </div>
 
+    <!-- Supplemental Life insurance plans summary -->
+    <div class="table-responsive table-holder" ng-if="supplementalLifeInsurancePlans && supplementalLifeInsurancePlans.length > 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Supplemental Life Insurance</span></th>
+                    <th><span>Enrollment Date</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="supplementalLifeInsurancePlan in supplementalLifeInsurancePlans">
+                    <td>
+                        {{supplementalLifeInsurancePlan.planName}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteSupplementalLifePlan(supplementalLifeInsurancePlan)" href="javascript:void(0);">X</a>
+                    </td>
+                    <td >
+                        {{supplementalLifeInsurancePlan.createdDateForDisplay}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <!-- STD benefits summary -->
     <div class="table-responsive table-holder" ng-if="stdPlans && stdPlans.length > 0">
         <table class="table table-striped">
