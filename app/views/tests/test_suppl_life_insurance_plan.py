@@ -55,14 +55,13 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         suppl_life_data = {"name": "Test SLI",
                            "use_employee_age_for_spouse": False,
                            "supplemental_life_insurance_plan_rate": [
-                               {
-                                   "supplemental_life_insurance_plan": 1,
-                                   "age_min": 25,
-                                   "age_max": 30,
-                                   "bind_type": "self",
-                                   "rate": 0.03,
-                                   "condition": 2
-                               }
+                             {
+                                 "age_min": 25,
+                                 "age_max": 30,
+                                 "bind_type": "self",
+                                 "rate": 0.03,
+                                 "condition": 2
+                             }
                            ]}
         response = self.client.post(reverse('suppl_life_api',
                                             kwargs={'pk': self.normalize_key(4)}),
@@ -88,6 +87,8 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertIsNotNone(response)
         self.assertEqual(result['name'], "Test SLI")
+        self.assertEqual(result['supplemental_life_insurance_plan_rate'][0]['supplemental_life_insurance_plan'], 
+          self.normalize_key(4))
 
     def test_put_suppl_life_insurance(self):
         suppl_life_data = {
