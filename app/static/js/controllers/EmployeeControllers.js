@@ -377,7 +377,7 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
       $event.preventDefault();
       $event.stopPropagation();
 
-      $scope.opened = true;
+      $scope.opened = !$scope.opened;
     }
 
     var userPromise = currentUser.get().$promise.then(function(response){
@@ -664,6 +664,17 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     $scope.employeeId = $stateParams.employee_id;
     $scope.displayAll = false;
 
+    // Support date picker
+    $scope.minDate = moment('1900-01-01');
+    $scope.opened = false;
+    $scope.format = 'MM/dd/yyyy';
+
+    $scope.pickADate = function($event){
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.opened = !$scope.opened;
+    }
 
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
@@ -698,6 +709,18 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
+
+    // Support date picker
+    $scope.today = new Date();
+    $scope.opened = false;
+    $scope.format = 'MM/dd/yyyy';
+
+    $scope.pickADate = function($event){
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.opened = !$scope.opened;
+    }
             
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
