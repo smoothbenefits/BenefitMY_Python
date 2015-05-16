@@ -26,7 +26,8 @@
                             </button>
                         </span>
                         <input type="text"
-                               class="form-control" 
+                               class="form-control"
+                               placeholder="MM/dd/yyyy"
                                datepicker-popup="{{format}}"
                                ng-model="employee.auth_expiration"
                                min-date="today"
@@ -41,7 +42,7 @@
                         <input type="checkbox"
                             ng-model="employee.expiration_na"
                             name="expirationNA" />
-                        NA
+                        N/A
                      </label>
                 </div>
             </div>
