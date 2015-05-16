@@ -11,7 +11,9 @@ BIND_TYPES = (('self', 'Self'),
 @reversion.register
 class SupplementalLifeInsurancePlanRate(models.Model):
     supplemental_life_insurance_plan = models.ForeignKey(SupplementalLifeInsurancePlan,
-                                                         related_name="supplemental_life_insurance_plan_rate")
+                                                         related_name="supplemental_life_insurance_plan_rate",
+                                                         blank=True,
+                                                         null=True)
     age_min = models.SmallIntegerField(blank=True, 
                                        null=True,
                                        verbose_name="Min value of age. Null for children")

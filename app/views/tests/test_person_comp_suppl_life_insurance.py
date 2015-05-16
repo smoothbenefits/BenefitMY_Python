@@ -141,7 +141,6 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
               "relationship": "self",
               "email": "beneficiary1@email.com",
               "phone": "617-259-4758",
-              "person_comp_suppl_life_insurance_plan": 1,
               "percentage": 20,
               "tier": "1"
             }
@@ -185,3 +184,5 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
         self.assertEqual(beneficiaries[0]['relationship'], "self")
         self.assertEqual(beneficiaries[0]['percentage'], "20.00")
         self.assertEqual(beneficiaries[0]['tier'], "1")
+        self.assertEqual(beneficiaries[0]['person_comp_suppl_life_insurance_plan'], 
+          self.normalize_key(3))
