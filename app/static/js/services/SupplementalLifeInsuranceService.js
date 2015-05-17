@@ -207,11 +207,11 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             domainModel.child_elected_amount = personCompanyPlanViewModel.childElectedAmount;
             domainModel.self_premium_per_month = personCompanyPlanViewModel.selfPremiumPerMonth;
             domainModel.spouse_premium_per_month = personCompanyPlanViewModel.spousePremiumPerMonth;
-            domainModel.childPremiumPerMonth = personCompanyPlanDomainModel.childPremiumPerMonth;
+            domainModel.child_premium_per_month = personCompanyPlanViewModel.childPremiumPerMonth;
 
-            domainModel.company_ltd_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
+            domainModel.company_supplemental_life_insurance_plan = mapCompanyPlanViewToDomainModel(personCompanyPlanViewModel);
 
-            domainModel.suppl_life_insurance_beneficiary = mapBeneficiaryListViewToDomainModel(personCompanyPlanDomainModel.beneficiaryList);
+            domainModel.suppl_life_insurance_beneficiary = mapBeneficiaryListViewToDomainModel(personCompanyPlanViewModel.beneficiaryList);
 
             return domainModel;
         };
@@ -262,8 +262,8 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
             domainModel.id = planRateViewModel.planRateId;
             domainModel.supplemental_life_insurance_plan = planRateViewModel.supplementalLifeInsurancePlanId;
-            domainModel.age_min = planRateViewModel.ageMin;
-            domainModel.age_max = planRateViewModel.ageMax;
+            domainModel.age_min = planRateViewModel.ageMin < 0 ? null : planRateViewModel.ageMin;
+            domainModel.age_max = planRateViewModel.ageMax < 0 ? null : planRateViewModel.ageMax;
             domainModel.bind_type = planRateViewModel.bindType;
             domainModel.rate = planRateViewModel.ratePer10000;
             domainModel.condition = planRateViewModel.planCondition.conditionId;
@@ -276,13 +276,21 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
             _.each(planRateTableViewModel.employeeRateTable, function(combinedRateViewModel)
                 {
-                    domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.tobaccoRate));
-                    domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.nonTobaccoRate));
+                    if (combinedRateViewModel.tobaccoRate) {
+                        domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.tobaccoRate));
+                    }
+                    if (combinedRateViewModel.nonTobaccoRate) {
+                        domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.nonTobaccoRate));
+                    }
                 });
             _.each(planRateTableViewModel.spouseRateTable, function(combinedRateViewModel)
                 {
-                    domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.tobaccoRate));
-                    domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.nonTobaccoRate));
+                    if (combinedRateViewModel.tobaccoRate) {
+                        domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.tobaccoRate));
+                    }
+                    if (combinedRateViewModel.nonTobaccoRate) {
+                        domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.nonTobaccoRate));
+                    }
                 });
             domainModel.push(mapPlanRateViewToDomainModel(planRateTableViewModel.childRate));
 
@@ -365,7 +373,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                     'ageMin' : ageRange.min,
                     'ageMax' : ageRange.max,
                     'bindType' : bindType,
-                    'planCondition' : mapConditionDomainToViewModel(planCondition)
+                    'planCondition' : planCondition
                 });
             });
 
@@ -416,144 +424,6 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         //////////////////////////////////////////////////////////////////
         // End : Plan rate table helpers
         //////////////////////////////////////////////////////////////////
-
-        // Testing Fake Data
-        var plan = {
-            "id": 1,
-            "name": "Alibaba_Sup_Life",
-            "supplemental_life_insurance_plan_rate": rateTable
-        };
-
-        var conditions = [
-            {
-                "id" : 1,
-                "name" : "Default",
-                "description": "default"
-            },
-            {
-                "id" : 1,
-                "name" : "Tobacco",
-                "description": "tobacco"
-            },
-            {
-                "id" : 2,
-                "name" : "Non-Tobacco",
-                "description": "non-tobacco"
-            }
-        ];
-
-        var rateTable = [
-            {
-                "id": 1,
-                "supplemental_life_insurance_plan" : 1,
-                "age_min":null,
-                "age_max":24,
-                "bind_type":"self",
-                "rate": 0.22,
-                "condition": conditions[1]
-            },
-            {
-                "id": 2,
-                "supplemental_life_insurance_plan" : 1,
-                "age_min":25,
-                "age_max":29,
-                "bind_type":"self",
-                "rate": 0.33,
-                "condition": conditions[1]
-            },
-            {
-                "id": 3,
-                "supplemental_life_insurance_plan" : 1,
-                "age_min":30,
-                "age_max":34,
-                "bind_type":"self",
-                "rate": 0.66,
-                "condition": conditions[1]
-            },
-            {
-                "id": 4,
-                "supplemental_life_insurance_plan" : 1,
-                "age_min":null,
-                "age_max":24,
-                "bind_type":"spouse",
-                "rate": 1.22,
-                "condition": conditions[2]
-            },
-            {
-                "id": 5,
-                "supplemental_life_insurance_plan" : 1,
-                "age_min":25,
-                "age_max":29,
-                "bind_type":"spouse",
-                "rate": 1.33,
-                "condition": conditions[2]
-            },
-            {
-                "id": 6,
-                "supplemental_life_insurance_plan" : 1,
-                "age_min":30,
-                "age_max":34,
-                "bind_type":"spouse",
-                "rate": 1.66,
-                "condition": conditions[2]
-            },
-            {
-                "id": 7,
-                "supplemental_life_insurance_plan" : 1,
-                "age_min":null,
-                "age_max":null,
-                "bind_type":"dependent",
-                "rate": 8.22,
-                "condition": conditions[0]
-            }
-        ];
-
-        var companyPlan = {
-            "id" : 1,
-            "supplemental_life_insurance_plan" : plan,
-            "company" : 1,
-            "created_at": "2015-05-05 20:09:42.496-04"
-        };
-
-        var beneficiaryList = [
-            {
-                "id" : 1,
-                "first_name" : "aaa",
-                "last_name" : "bbb",
-                "relationship" : "friend",
-                "email" : "abc@sdhadslj.com",
-                "phone" : "1111111111",
-                "percentage" : "22",
-                "tier" : 1,
-                "person_company_supplemental_life_insurance_plan" : "1"
-            },
-            {
-                "id" : 2,
-                "first_name" : "111",
-                "last_name" : "222",
-                "relationship" : "wahaha",
-                "email" : "def@sdhadslj.com",
-                "phone" : "2222222222",
-                "percentage" : "77",
-                "tier" : 2,
-                "person_company_supplemental_life_insurance_plan" : "1"
-            }
-        ];
-
-        var personCompanyPlan = {
-            "id" : 1,
-            "company_supplemental_life_insurance_plan" : companyPlan,
-            "person" : 3,
-            "self_elected_amount": 200000,
-            "spouse_elected_amount": null,
-            "child_elected_amount": 10000,
-            "self_premium_per_month": 222,
-            "spouse_premium_per_month" : 0,
-            "child_premium_per_month" : 11,
-            "self_condition": "tobacco",
-            "spouse_condition": "non-tobacco",
-            "life_insurance_beneficiary" : beneficiaryList
-        };
 
         return {
             planBindTypes: ['self', 'spouse', 'dependent'],
@@ -609,7 +479,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                     companyPlanDomainModel.supplemental_life_insurance_plan = newPlan.id;
                     companyPlanDomainModel.company = companyId;
 
-                    SupplementalLifeInsuranceRepository.CompanyPlanByCompany.save({companyId:companyId}, companyPlanDomainModel)
+                    SupplementalLifeInsuranceRepository.CompanyPlanById.save({id:companyId}, companyPlanDomainModel)
                     .$promise.then(function(response) {
                         deferred.resolve(response);
                     },
@@ -639,16 +509,34 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 return deferred.promise; 
             },
 
-            getPlanByUser: function(userId) {
+            getPlanByUser: function(userId, getBlankPlanIfNoneFound) {
                 var deferred = $q.defer();
 
                 PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
                     SupplementalLifeInsuranceRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
                     .$promise.then(function(personPlans) {
-                        var plan = personPlans.length > 0 ?
-                            mapPersonCompanyPlanDomainToViewModel(personPlans[0]) :
-                            null;
-                        deferred.resolve(plan);
+                        if (personPlans.length > 0) {
+                            // Found existing person enrolled plans, for now, take the first 
+                            // one.
+                            deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0]));
+                        } else {
+                            // The person does not have enrolled plans yet.
+                            // If indicated so, construct and return an structured 
+                            // blank person plan.
+                            // Or else, return null;
+                            if (getBlankPlanIfNoneFound) {
+                                var blankPersonPlan = {};
+                                // Setup person plan owner
+                                blankPersonPlan.planOwner = personInfo.id;
+                                // Setup a blank but structured beneficiary list
+                                blankPersonPlan.beneficiaryList = mapBeneficiaryListDomainToViewModel([]);
+
+                                deferred.resolve(blankPersonPlan);
+                            }
+                            else {
+                                deferred.resolve(null);
+                            }
+                        }
                     },
                     function(error) {
                         deferred.reject(error);
@@ -659,7 +547,63 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 });
                 
                 return deferred.promise; 
-            }
+            },
+
+            deletePlansForUser: function(userId) {
+                var requests = [];
+
+                PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
+                    SupplementalLifeInsuranceRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
+                    .$promise.then(function(plans) {
+                        _.each(plans, function(plan) {
+                            var deferred = $q.defer();
+                            requests.push(deferred);
+
+                            SupplementalLifeInsuranceRepository.CompanyPersonPlanById.delete({id:plan.id})
+                            .$promise.then(function(response){
+                                deferred.resolve(response);
+                            },
+                            function(error) {
+                                deferred.reject(error);
+                            })
+                        });
+                    });
+                });
+
+                return $q.all(requests);
+            },
+
+            savePersonPlan: function(personPlanToSave) {
+                // This should be take care of 2 cases
+                // - user does not have a plan. Create one for him/her
+                // - user already has a plan. Update
+                var deferred = $q.defer();
+
+                var planDomainModel = mapPersonCompanyPlanViewToDomainModel(personPlanToSave);
+                
+                // "Flatten out" any nested structure for the POST to work
+                planDomainModel.company_supplemental_life_insurance_plan = planDomainModel.company_supplemental_life_insurance_plan.id;
+
+                if (planDomainModel.id){
+                    SupplementalLifeInsuranceRepository.CompanyPersonPlanById.update({id:planDomainModel.id}, planDomainModel)
+                    .$promise.then(function(response) {
+                        deferred.resolve(response);
+                    },
+                    function(error){
+                        deferred.reject(error);
+                    });
+                } else {
+                    SupplementalLifeInsuranceRepository.CompanyPersonPlanById.save({id:personPlanToSave.planOwner}, planDomainModel)
+                    .$promise.then(function(response) {
+                        deferred.resolve(response);
+                    },
+                    function(error){
+                        deferred.reject(error);
+                    });
+                } 
+
+                return deferred.promise; 
+            },
         }; 
     }
 ]);

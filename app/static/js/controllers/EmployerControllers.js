@@ -772,6 +772,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   'employeeBenefitElectionService',
   'FsaService',
   'BasicLifeInsuranceService',
+  'SupplementalLifeInsuranceService',
   'CompanyEmployeeSummaryService',
   'StdService',
   'LtdService',
@@ -782,6 +783,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            employeeBenefitElectionService,
            FsaService,
            BasicLifeInsuranceService,
+           SupplementalLifeInsuranceService,
            CompanyEmployeeSummaryService,
            StdService,
            LtdService){
@@ -813,12 +815,13 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         //       entity and maybe avoid trying to artificially bundle them together. 
         //       Also, once we have tabs working, we should split them into proper flows.
         _.each(employeeList, function(employee) {
-          BasicLifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employee.user.id, function(response) {
-            employee.familyInsurancePlan = response;
-          });
           
           BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
             employee.basicLifeInsurancePlan = response;
+          });
+
+          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id).then(function(plan) {
+            employee.supplementalLifeInsurancePlan = plan;
           });
 
           // STD
