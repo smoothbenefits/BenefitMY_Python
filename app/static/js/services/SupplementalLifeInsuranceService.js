@@ -250,11 +250,9 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         };
 
         var mapConditionViewToDomainModel = function(conditionViewModel) {
-            var domainModel = {};
-
-            domainModel.id = conditionViewModel.conditionId;
-            domainModel.name = conditionViewModel.name;
-            domainModel.description = conditionViewModel.description;
+            
+            // We only need plain ID for this 
+            return conditionViewModel.conditionId;
         };
 
         var mapPlanRateViewToDomainModel = function(planRateViewModel) {
@@ -272,6 +270,10 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         };
 
         var mapPlanRateTableViewToDomainModel = function(planRateTableViewModel) {
+            if (!planRateTableViewModel) {
+                return null;
+            }
+
             var domainModel = [];
 
             _.each(planRateTableViewModel.employeeRateTable, function(combinedRateViewModel)
@@ -400,7 +402,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                         'ageMin' : -1,
                         'ageMax' : -1,
                         'bindType' : 'dependent',
-                        'planCondition' : mapConditionDomainToViewModel(conditions['Unknown'])
+                        'planCondition' : conditions['Unknown']
                     };
 
                 deferred.resolve(viewModel);
