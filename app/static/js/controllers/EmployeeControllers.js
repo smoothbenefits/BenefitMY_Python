@@ -1779,7 +1779,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             // For spouse rate calculation, respect the flag set on the plan
             // about whether to use employee birth date for spouse. 
             var age = $scope.computeAgeFromBirthDate(
-                $scope.supplementalLifeInsurancePlan.useEmployeeAgeForSpouse 
+                $scope.selectedCompanyPlan.value.useEmployeeAgeForSpouse 
                     ? $scope.familyInfo.selfPerson.birth_date
                     : $scope.familyInfo.spousePerson.birth_date);
 
@@ -1808,7 +1808,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             }
             var premium = 
                 $scope.supplementalLifeInsurancePlan.selfElectedAmount / 10000 * rate;
-            return premium;
+            return premium.toFixed(2);
         }
 
         $scope.computeSpousePremium = function() {
@@ -1818,7 +1818,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             }
             var premium = 
                 $scope.supplementalLifeInsurancePlan.spouseElectedAmount / 10000 * rate;
-            return premium;
+            return premium.toFixed(2);
         }
 
         $scope.computeChildPremium = function() {
@@ -1828,7 +1828,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             }
             var premium = 
                 $scope.supplementalLifeInsurancePlan.childElectedAmount / 10000 * rate;
-            return premium;
+            return premium.toFixed(2);
         }
 
         $scope.save = function(){
