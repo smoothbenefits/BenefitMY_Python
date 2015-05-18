@@ -15,7 +15,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         // Assumption: rateTableMinAgeLimit + N * rateTableAgeInterval = rateTableMaxAgeLimit
         //             i.e. no "fractions" at the end. 
         var rateTableMinAgeLimit = 25;
-        var rateTableMaxAgeLimit = 25;
+        var rateTableMaxAgeLimit = 75;
         var rateTableAgeInterval = 5;
 
         var mapPlanDomainToViewModel = function(planDomainModel) {
@@ -532,6 +532,10 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                                 blankPersonPlan.planOwner = personInfo.id;
                                 // Setup a blank but structured beneficiary list
                                 blankPersonPlan.beneficiaryList = mapBeneficiaryListDomainToViewModel([]);
+                                // Setup default values for elected amounts
+                                blankPersonPlan.selfElectedAmount = 0;
+                                blankPersonPlan.spouseElectedAmount = 0;
+                                blankPersonPlan.childElectedAmount = 0;
 
                                 deferred.resolve(blankPersonPlan);
                             }

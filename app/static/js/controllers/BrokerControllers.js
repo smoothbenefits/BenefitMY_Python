@@ -52,6 +52,7 @@ var benefitsController = brokersControllers.controller(
     '$location',
     '$stateParams',
     '$state',
+    '$modal',
     'benefitDisplayService',
     'benefitPlanRepository',
     'BasicLifeInsuranceService',
@@ -63,6 +64,7 @@ var benefitsController = brokersControllers.controller(
               $location,
               $stateParams,
               $state,
+              $modal,
               benefitDisplayService,
               benefitPlanRepository,
               BasicLifeInsuranceService,
@@ -121,6 +123,16 @@ var benefitsController = brokersControllers.controller(
         $scope.supplementalLifeInsurancePlans = response;
       });
 
+      $scope.openSupplementalLifePlanDetailsModal = function(supplementalLifePlan) {
+        $scope.detailsModalCompanyPlanToDisplay = supplementalLifePlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_selection/modal_supplemental_life_plan_details.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+      };
+
       $scope.deleteSupplementalLifePlan = function(companyPlanToDelete) {
         SupplementalLifeInsuranceService.deleteCompanyPlan(companyPlanToDelete.companyPlanId).then(function() {
           $state.reload();
@@ -156,6 +168,19 @@ var benefitsController = brokersControllers.controller(
           $state.reload();
         });
       };
+}]);
+
+var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
+  ['$scope', 
+   '$modal',
+   '$modalInstance',
+   function selectedBenefitsController(
+    $scope, 
+    $modal,
+    $modalInstance){
+        $scope.closePlanDetailsModal = function() {
+          $modalInstance.dismiss();
+        };
 }]);
 
 var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',

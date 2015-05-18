@@ -1,6 +1,6 @@
 <!-- Supplemental life insurance -->
 <div class="panel" ng-show="companyPlans && companyPlans.length > 0">
-    <div class="panel-head">Supplemental Life Insurance</div>
+    <div class="panel-head">Supplemental Life Insurance<br/><a ng-click="openPlanDetailsModal()" ng-if="isValidCompanyPlanSelected()"><b>View Details</b></a></div>
     <div class="panel-body">
         <form name="myForm" confirm-unsaved-on-exit>
             <div class="row">
@@ -17,86 +17,92 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="showEditSection()">
+            <div ng-if="isValidCompanyPlanSelected()">
                 <div class="row" style="margin-top:10px;">
                     <div class="col-md-4">
                         <div class="form-label">Coverage Situation Election</div>
                     </div>
                 </div>
-                <div class="row" style="margin-top:3px;">
-                    <div class="col-md-offset-1 col-md-4">
-                        <div class="form-label">Employee</div>
+                <div>
+                    <div class="row" style="margin-top:3px;">
+                        <div class="col-md-offset-1 col-md-4">
+                            <div class="form-label">Employee</div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:3px;">
+                        <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
+                            <div>Use Tobacco?</div>
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="radio"
+                                ng-model="supplementalLifeInsurancePlan.selfUseTobacco"
+                                name="employee_use_tobacco_yes"
+                                ng-value="true"><span> Yes</span>
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="radio"
+                                ng-model="supplementalLifeInsurancePlan.selfUseTobacco"
+                                name="employee_use_tobacco_no"
+                                ng-value="false"><span> No</span>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:3px;">
+                        <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
+                            <div>Elected Amount</div>
+                        </div>
+                        <div class="col-md-2 input-group">
+                            <span class="input-group-addon">$</span>
+                            <input class="form-control" type="text" min="0" ui-number-mask="0" ng-model="supplementalLifeInsurancePlan.selfElectedAmount" />
+                        </div>
                     </div>
                 </div>
-                <div class="row" style="margin-top:3px;">
-                    <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
-                        <div>Use Tobacco?</div>
+                <div ng-if="familyInfo.spousePerson">
+                    <div class="row" style="margin-top:3px;">
+                        <div class="col-md-offset-1 col-md-4">
+                            <div class="form-label">Spouse</div>
+                        </div>
                     </div>
-                    <div class="col-sm-1">
-                        <input type="radio"
-                            ng-model="supplementalLifeInsurancePlan.selfUseTobacco"
-                            name="employee_use_tobacco_yes"
-                            ng-value="true"><span> Yes</span>
+                    <div class="row" style="margin-top:3px;">
+                        <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
+                            <div>Use Tobacco?</div>
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="radio"
+                                ng-model="supplementalLifeInsurancePlan.spouseUseTobacco"
+                                name="spouse_use_tobacco_yes"
+                                ng-value="true"><span> Yes</span>
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="radio"
+                                ng-model="supplementalLifeInsurancePlan.spouseUseTobacco"
+                                name="spouse_use_tobacco_no"
+                                ng-value="false"><span> No</span>
+                        </div>
                     </div>
-                    <div class="col-sm-1">
-                        <input type="radio"
-                            ng-model="supplementalLifeInsurancePlan.selfUseTobacco"
-                            name="employee_use_tobacco_no"
-                            ng-value="false"><span> No</span>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:3px;">
-                    <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
-                        <div>Elected Amount</div>
-                    </div>
-                    <div class="col-md-2 input-group">
-                        <span class="input-group-addon">$</span>
-                        <input class="form-control" type="text" min="0" ui-number-mask="0" ng-model="supplementalLifeInsurancePlan.selfElectedAmount" />
-                    </div>
-                </div>
-                <div class="row" style="margin-top:3px;">
-                    <div class="col-md-offset-1 col-md-4">
-                        <div class="form-label">Spouse</div>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:3px;">
-                    <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
-                        <div>Use Tobacco?</div>
-                    </div>
-                    <div class="col-sm-1">
-                        <input type="radio"
-                            ng-model="supplementalLifeInsurancePlan.spouseUseTobacco"
-                            name="spouse_use_tobacco_yes"
-                            ng-value="true"><span> Yes</span>
-                    </div>
-                    <div class="col-sm-1">
-                        <input type="radio"
-                            ng-model="supplementalLifeInsurancePlan.spouseUseTobacco"
-                            name="spouse_use_tobacco_no"
-                            ng-value="false"><span> No</span>
+                    <div class="row" style="margin-top:3px;">
+                        <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
+                            <div>Elected Amount</div>
+                        </div>
+                        <div class="col-md-2 input-group">
+                            <span class="input-group-addon">$</span>
+                            <input class="form-control" type="text" min="0" ui-number-mask="0" ng-model="supplementalLifeInsurancePlan.spouseElectedAmount" />
+                        </div>
                     </div>
                 </div>
-                <div class="row" style="margin-top:3px;">
-                    <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
-                        <div>Elected Amount</div>
+                <div ng-if="familyInfo.hasChild">
+                    <div class="row" style="margin-top:3px;">
+                        <div class="col-md-offset-1 col-md-4">
+                            <div class="form-label">Child(ren)</div>
+                        </div>
                     </div>
-                    <div class="col-md-2 input-group">
-                        <span class="input-group-addon">$</span>
-                        <input class="form-control" type="text" min="0" ui-number-mask="0" ng-model="supplementalLifeInsurancePlan.spouseElectedAmount" />
-                    </div>
-                </div>
-                <div class="row" style="margin-top:3px;">
-                    <div class="col-md-offset-1 col-md-4">
-                        <div class="form-label">Child(ren)</div>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:3px;">
-                    <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
-                        <div>Elected Amount</div>
-                    </div>
-                    <div class="col-md-2 input-group">
-                        <span class="input-group-addon">$</span>
-                        <input class="form-control" type="text" min="0" ui-number-mask="0" ng-model="supplementalLifeInsurancePlan.childElectedAmount" />
+                    <div class="row" style="margin-top:3px;">
+                        <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
+                            <div>Elected Amount</div>
+                        </div>
+                        <div class="col-md-2 input-group">
+                            <span class="input-group-addon">$</span>
+                            <input class="form-control" type="text" min="0" ui-number-mask="0" ng-model="supplementalLifeInsurancePlan.childElectedAmount" />
+                        </div>
                     </div>
                 </div>
                 <div class="row" style="margin-top:10px;">
@@ -109,24 +115,27 @@
                         <div>Employee</div>
                     </div>
                     <div class="col-md-8" style="margin-top:7px;">
-                        <div>$100,000 / $10,000 = 10 x $0.25/Month = <b>${{computeSelfPremium()}}/Month</b></div>
+                        <div>${{supplementalLifeInsurancePlan.selfElectedAmount}} / $10,000 x ${{getSelfRate()}}/Month = <b>${{computeSelfPremium()}}/Month</b></div>
                     </div>
                 </div>
-                <div class="row" style="margin-top:3px;">
+                <div class="row" style="margin-top:3px;" ng-if="familyInfo.spousePerson">
                     <div class="col-md-offset-2 col-md-2" style="margin-top:7px;">
                         <div>Spouse</div>
                     </div>
                     <div class="col-md-8" style="margin-top:7px;">
-                        <div>$100,000 / $10,000 = 10 x $0.25/Month = <b>${{computeSpousePremium()}}/Month</b></div>
+                        <div>${{supplementalLifeInsurancePlan.spouseElectedAmount}} / $10,000 x ${{getSpouseRate()}}/Month = <b>${{computeSpousePremium()}}/Month</b></div>
                     </div>
                 </div>
-                <div class="row" style="margin-top:3px;">
+                <div class="row" style="margin-top:3px;" ng-if="familyInfo.hasChild">
                     <div class="col-md-offset-2 col-md-2" style="margin-top:7px;">
                         <div>Child(ren)</div>
                     </div>
                     <div class="col-md-8" style="margin-top:7px;">
-                        <div>$100,000 / $10,000 = 10 x $0.25/Month = <b>${{computeChildPremium()}}/Month</b></div>
+                        <div>${{supplementalLifeInsurancePlan.childElectedAmount}} / $10,000 x ${{getChildRate()}}/Month = <b>${{computeChildPremium()}}/Month</b></div>
                     </div>
+                </div>
+                <div ng-show="supplementalLifeInsurancePlan.useEmployeeAgeForSpouse" style="padding-bottom: 10px;">
+                    <span class="label label-info">The plan selected indicates that employee's age will be used for rate calculation for spouse.</span>
                 </div>
                 <div class="row" style="margin-top:15px;">
                     <div class="col-md-4">

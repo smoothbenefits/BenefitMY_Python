@@ -1409,19 +1409,12 @@ var healthBenefitsSignup = employeeControllers.controller(
         $scope.benefit_type = 'Health Benefits';
 
         $scope.openPlanDetailsModal = function() {
-            $scope.planDetailsModalInstance = $modal.open({
+            $modal.open({
               templateUrl: '/static/partials/benefit_selection/modal_health_plan.html',
-              controller: 'healthBenefitsSignup',
+              controller: 'planDetailsModalController',
               size: 'lg',
               scope: $scope
             });
-        };
-
-        $scope.closePlanDetailsModal = function() {
-          if ($scope.planDetailsModalInstance) {
-            $scope.planDetailsModalInstance.dismiss();
-            $scope.planDetailsModalInstance = null;
-          }
         };
     }]);
 
@@ -1641,16 +1634,20 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
    '$location',
    '$stateParams',
    '$controller',
+   '$modal',
    'SupplementalLifeInsuranceService',
    'SupplementalLifeInsuranceConditionService',
+   'PersonService',
     function supplementalLifeBenefitsSignup(
       $scope,
       $state,
       $location,
       $stateParams,
       $controller,
+      $modal,
       SupplementalLifeInsuranceService,
-      SupplementalLifeInsuranceConditionService){
+      SupplementalLifeInsuranceConditionService,
+      PersonService){
         
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1659,6 +1656,23 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
 
         SupplementalLifeInsuranceConditionService.getConditions().then(function(conditions){
             $scope.conditions = conditions;
+        });
+
+        $scope.familyInfo={};
+        PersonService.getFamilyInfo($scope.employeeId)
+        .then(function(family){
+          _.each(family, function(member){
+            if(member.relationship === 'self'){
+                $scope.familyInfo.selfPerson = member;
+            }
+            else if (member.relationship === 'spouse')
+            {
+                $scope.familyInfo.spousePerson = member;
+            }
+            else{
+              $scope.familyInfo.hasChild = true;
+            }
+          });
         });
 
         $scope.companyPlans = [ { text: '<Waive Supplemental Life Insurance>', value: null } ];
@@ -1731,22 +1745,89 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
           return !$scope.selectedCompanyPlan.value;
         };
 
-        $scope.showEditSection = function() {
+        $scope.isValidCompanyPlanSelected = function() {
             return $scope.selectedCompanyPlan && !$scope.isWaiveBenefitSelected();
         };
 
+        $scope.computeAgeFromBirthDate = function(birthDate) {
+            return moment().diff(birthDate, 'year');
+        };
+
+        $scope.getSelfRate = function() {
+            if (!$scope.familyInfo.selfPerson) {
+                return null;
+            }
+
+            var age = $scope.computeAgeFromBirthDate($scope.familyInfo.selfPerson.birth_date);
+
+            var combinedRate = _.find(
+                $scope.selectedCompanyPlan.value.planRates.employeeRateTable,
+                function(rateRow) {
+                    return rateRow.ageMin <= age && rateRow.ageMax >= age;
+                });
+
+            return $scope.supplementalLifeInsurancePlan.selfUseTobacco 
+                ? combinedRate.tobaccoRate.ratePer10000
+                : combinedRate.nonTobaccoRate.ratePer10000;
+        }
+
+        $scope.getSpouseRate = function() {
+            if (!$scope.familyInfo.spousePerson) {
+                return null;
+            }
+
+            // For spouse rate calculation, respect the flag set on the plan
+            // about whether to use employee birth date for spouse. 
+            var age = $scope.computeAgeFromBirthDate(
+                $scope.supplementalLifeInsurancePlan.useEmployeeAgeForSpouse 
+                    ? $scope.familyInfo.selfPerson.birth_date
+                    : $scope.familyInfo.spousePerson.birth_date);
+
+            var combinedRate = _.find(
+                $scope.selectedCompanyPlan.value.planRates.spouseRateTable,
+                function(rateRow) {
+                    return rateRow.ageMin <= age && rateRow.ageMax >= age;
+                });
+
+            return $scope.supplementalLifeInsurancePlan.spouseUseTobacco 
+                ? combinedRate.tobaccoRate.ratePer10000
+                : combinedRate.nonTobaccoRate.ratePer10000;
+        }
+
+        $scope.getChildRate = function() {
+            if (!$scope.familyInfo.hasChild) {
+                return null;
+            }
+            return $scope.selectedCompanyPlan.value.planRates.childRate.ratePer10000;
+        }
+
         $scope.computeSelfPremium = function() {
-            var premium = 300.22;
+            var rate = $scope.getSelfRate();
+            if (!rate) {
+                return 0;
+            }
+            var premium = 
+                $scope.supplementalLifeInsurancePlan.selfElectedAmount / 10000 * rate;
             return premium;
         }
 
         $scope.computeSpousePremium = function() {
-            var premium = 123.45;
+            var rate = $scope.getSpouseRate();
+            if (!rate) {
+                return 0;
+            }
+            var premium = 
+                $scope.supplementalLifeInsurancePlan.spouseElectedAmount / 10000 * rate;
             return premium;
         }
 
         $scope.computeChildPremium = function() {
-            var premium = 100.11;
+            var rate = $scope.getChildRate();
+            if (!rate) {
+                return 0;
+            }
+            var premium = 
+                $scope.supplementalLifeInsurancePlan.childElectedAmount / 10000 * rate;
             return premium;
         }
 
@@ -1790,6 +1871,16 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
                 alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
               });
           }
+        };
+
+        $scope.openPlanDetailsModal = function() {
+            $scope.detailsModalCompanyPlanToDisplay = $scope.selectedCompanyPlan.value;
+            $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_supplemental_life_plan_details.html',
+              controller: 'planDetailsModalController',
+              size: 'lg',
+              scope: $scope
+            });
         };
 
         $scope.benefit_type = 'Supplemental Life Insurance';
@@ -1846,19 +1937,12 @@ var stdBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.openPlanDetailsModal = function() {
-            $scope.planDetailsModalInstance = $modal.open({
+            $modal.open({
               templateUrl: '/static/partials/benefit_selection/modal_std_plan_details.html',
-              controller: 'stdBenefitsSignup',
+              controller: 'planDetailsModalController',
               size: 'lg',
               scope: $scope
             });
-        };
-
-        $scope.closePlanDetailsModal = function() {
-          if ($scope.planDetailsModalInstance) {
-            $scope.planDetailsModalInstance.dismiss();
-            $scope.planDetailsModalInstance = null;
-          }
         };
 
     }]);
@@ -1913,19 +1997,12 @@ var ltdBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.openPlanDetailsModal = function() {
-            $scope.planDetailsModalInstance = $modal.open({
+            $modal.open({
               templateUrl: '/static/partials/benefit_selection/modal_ltd_plan_details.html',
-              controller: 'ltdBenefitsSignup',
+              controller: 'planDetailsModalController',
               size: 'lg',
               scope: $scope
             });
-        };
-
-        $scope.closePlanDetailsModal = function() {
-          if ($scope.planDetailsModalInstance) {
-            $scope.planDetailsModalInstance.dismiss();
-            $scope.planDetailsModalInstance = null;
-          }
         };
 
     }]);
@@ -2127,3 +2204,16 @@ var employeeFamilyMemberViewModalController = employeeControllers.controller(
         };
 
     }]);
+
+var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
+  ['$scope', 
+   '$modal',
+   '$modalInstance',
+   function selectedBenefitsController(
+    $scope, 
+    $modal,
+    $modalInstance){
+        $scope.closePlanDetailsModal = function() {
+          $modalInstance.dismiss();
+        };
+}]);

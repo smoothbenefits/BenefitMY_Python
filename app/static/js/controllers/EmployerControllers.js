@@ -301,7 +301,8 @@ var employerUser = employersController.controller('employerUser',
 var employerBenefits = employersController.controller('employerBenefits', 
   ['$scope', 
   '$location', 
-  '$stateParams', 
+  '$stateParams',
+  '$modal', 
   'benefitDisplayService', 
   'BasicLifeInsuranceService', 
   'SupplementalLifeInsuranceService',
@@ -311,6 +312,7 @@ var employerBenefits = employersController.controller('employerBenefits',
   function ($scope, 
             $location, 
             $stateParams, 
+            $modal,
             benefitDisplayService, 
             BasicLifeInsuranceService,
             SupplementalLifeInsuranceService, 
@@ -360,8 +362,31 @@ var employerBenefits = employersController.controller('employerBenefits',
     FsaService.getFsaPlanForCompany($stateParams.company_id).then(function(plans) {
       $scope.fsaPlans = plans;
     });
+
+    $scope.openSupplementalLifePlanDetailsModal = function(supplementalLifePlan) {
+        $scope.detailsModalCompanyPlanToDisplay = supplementalLifePlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_selection/modal_supplemental_life_plan_details.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+    };
   }
 ]);
+
+var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
+  ['$scope', 
+   '$modal',
+   '$modalInstance',
+   function selectedBenefitsController(
+    $scope, 
+    $modal,
+    $modalInstance){
+        $scope.closePlanDetailsModal = function() {
+          $modalInstance.dismiss();
+        };
+}]);
 
 var employerLetterTemplate = employersController.controller('employerLetterTemplate',
   ['$scope', '$location', '$state', '$stateParams', 'templateRepository', 'documentTypeService',
