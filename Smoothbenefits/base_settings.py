@@ -211,6 +211,7 @@ PIPELINE_JS = {
             'js/directives/ConfirmUnsavedOnExit.js',
             'js/directives/UploadManager.js',
             'js/directives/UploadViewer.js',
+            'js/directives/CustomDatePicker.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
