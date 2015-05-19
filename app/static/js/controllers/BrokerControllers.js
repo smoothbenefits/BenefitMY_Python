@@ -425,7 +425,7 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
               $scope.showMessageWithOkayOnly('Success', successMessage);
             },
             function() {
-              var failureMessage = "There was a problem saving the data. Please try again." 
+              var failureMessage = "There was a problem saving the data. Please make sure all required fields have been filled out and try again." 
 
               $scope.showMessageWithOkayOnly('Failed', failureMessage);
             });
