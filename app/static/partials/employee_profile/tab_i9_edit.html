@@ -17,21 +17,20 @@
 
         <div ng-show="employee.auth_type == 'Aaw'">
             <div class="form-label">Expiration Date</div>
-            <div class="datebox">
-                <datepicker ng-model="employee.auth_expiration"
-                            class="form-control"
-                            min-date="today"
-                            type="text"
-                            ng-required="false"
-                            close-text="Close" />
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"
-                        ng-model="employee.expiration_na"
-                        name="expirationNA" />
-                    NA
-                 </label>
+            <div class="row">
+                <div class="datebox col-md-10">
+                    <bm-date-picker model="employee.auth_expiration"
+                                    required="false"
+                                    disabled="employee.expiration_na" />
+                </div>
+                <div class="checkbox col-md-2">
+                    <label>
+                        <input type="checkbox"
+                            ng-model="employee.expiration_na"
+                            name="expirationNA" />
+                        N/A
+                     </label>
+                </div>
             </div>
         </div>
 

@@ -56,23 +56,9 @@
                         <div class="form-label">Expiration Date</div>
                         <div class="row">
                             <div class="datebox col-md-10">
-                                <div class="input-group">
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-default" ng-click="pickADate($event)">
-                                            <i class="fa fa-calendar"></i>
-                                        </button>
-                                    </span>
-                                    <input type="text"
-                                           class="form-control" 
-                                           placeholder="MM/dd/yyyy"
-                                           datepicker-popup="{{format}}"
-                                           ng-model="employee.auth_expiration"
-                                           min-date="today"
-                                           is-open="opened"
-                                           ng-required="false"
-                                           ng-disabled="employee.expiration_na"
-                                           close-text="Close" />
-                                </div>
+                                <bm-date-picker model="employee.birth_date"
+                                                required="true"
+                                                disabled="employee.expiration_na" />
                             </div>
                             <div class="checkbox col-md-2">
                                 <label>
