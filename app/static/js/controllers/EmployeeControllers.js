@@ -368,6 +368,18 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
             EmploymentProfileService){
     $scope.employee = {auth_type: ''};
 
+    // Support date picker
+    $scope.today = new Date();
+    $scope.opened = false;
+    $scope.format = 'dd-MMMM-yyyy';
+
+    $scope.pickADate = function($event){
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.opened = !$scope.opened;
+    }
+
     var userPromise = currentUser.get().$promise.then(function(response){
       return response.user.id;
     });
@@ -407,9 +419,16 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
     $scope.signDocument = function(){
       if(!signatureUpdated){
         alert('Please sign your name on the signature pad');
+        return;
       }
       if(!$scope.employee.downloadI9){
         alert('Please download the I-9 document and acknowledge you have read the entire form above.');
+        return;
+      }
+      if($scope.employee.auth_type === 'Aaw' && !$scope.employee.expiration_na 
+         && !$scope.employee.auth_expiration) {
+        alert('Please provide the expiration date for your work authorization document.');
+        return;
       }
       else
       {
@@ -645,6 +664,17 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     $scope.employeeId = $stateParams.employee_id;
     $scope.displayAll = false;
 
+    // Support date picker
+    $scope.minDate = moment('1900-01-01');
+    $scope.opened = false;
+    $scope.format = 'MM/dd/yyyy';
+
+    $scope.pickADate = function($event){
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.opened = !$scope.opened;
+    }
 
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
@@ -679,6 +709,18 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
+
+    // Support date picker
+    $scope.today = new Date();
+    $scope.opened = false;
+    $scope.format = 'MM/dd/yyyy';
+
+    $scope.pickADate = function($event){
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.opened = !$scope.opened;
+    }
             
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
