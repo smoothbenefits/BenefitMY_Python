@@ -22,7 +22,7 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
 
         rates = result['supplemental_life_insurance_plan_rate']
         self.assertEqual(type(rates), list)
-        self.assertEqual(len(rates), 27)
+        self.assertEqual(len(rates), 36)
 
         rate = next(r for r in rates if r['id'] == self.normalize_key(6))
         self.assertEqual(rate['supplemental_life_insurance_plan'], self.normalize_key(1))
