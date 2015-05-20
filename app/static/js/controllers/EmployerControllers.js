@@ -633,6 +633,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
     var employeeId = $stateParams.eid;
     $scope.employee = {};
     $scope.showEditButton = false;
+    $scope.terminateEmployeeButton = false;
 
     peopleRepository.ByUser.get({userId:employeeId})
       .$promise.then(function(employeeDetail){
@@ -650,6 +651,9 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           // Get the employee profile info that bound to this person
           EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId).then(function(profile) {
             $scope.employee.employeeProfile = profile;
+            if(profile.employmentStatus && profile.employmentStatus !=='Terminated'){
+              $scope.terminateEmployeeButton = true;
+            }
           });
         }
       });
