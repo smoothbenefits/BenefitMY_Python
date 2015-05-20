@@ -301,17 +301,21 @@ var employerUser = employersController.controller('employerUser',
 var employerBenefits = employersController.controller('employerBenefits', 
   ['$scope', 
   '$location', 
-  '$stateParams', 
+  '$stateParams',
+  '$modal', 
   'benefitDisplayService', 
-  'LifeInsuranceService', 
+  'BasicLifeInsuranceService', 
+  'SupplementalLifeInsuranceService',
   'StdService',
   'LtdService',
   'FsaService', 
   function ($scope, 
             $location, 
             $stateParams, 
+            $modal,
             benefitDisplayService, 
-            LifeInsuranceService, 
+            BasicLifeInsuranceService,
+            SupplementalLifeInsuranceService, 
             StdService,
             LtdService, 
             FsaService){
@@ -339,8 +343,12 @@ var employerBenefits = employersController.controller('employerBenefits',
       $location.path('/admin');
     };
 
-    LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
+    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
       $scope.lifeInsurancePlans = response;
+    });
+
+    SupplementalLifeInsuranceService.getPlansForCompany($stateParams.company_id).then(function(response) {
+      $scope.supplementalLifeInsurancePlans = response;
     });
 
     StdService.getStdPlansForCompany($stateParams.company_id).then(function(plans) {
@@ -354,8 +362,31 @@ var employerBenefits = employersController.controller('employerBenefits',
     FsaService.getFsaPlanForCompany($stateParams.company_id).then(function(plans) {
       $scope.fsaPlans = plans;
     });
+
+    $scope.openSupplementalLifePlanDetailsModal = function(supplementalLifePlan) {
+        $scope.detailsModalCompanyPlanToDisplay = supplementalLifePlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_selection/modal_supplemental_life_plan_details.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+    };
   }
 ]);
+
+var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
+  ['$scope', 
+   '$modal',
+   '$modalInstance',
+   function selectedBenefitsController(
+    $scope, 
+    $modal,
+    $modalInstance){
+        $scope.closePlanDetailsModal = function() {
+          $modalInstance.dismiss();
+        };
+}]);
 
 var employerLetterTemplate = employersController.controller('employerLetterTemplate',
   ['$scope', '$location', '$state', '$stateParams', 'templateRepository', 'documentTypeService',
@@ -765,7 +796,8 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   'companyRepository',
   'employeeBenefitElectionService',
   'FsaService',
-  'LifeInsuranceService',
+  'BasicLifeInsuranceService',
+  'SupplementalLifeInsuranceService',
   'CompanyEmployeeSummaryService',
   'StdService',
   'LtdService',
@@ -775,7 +807,8 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            companyRepository,
            employeeBenefitElectionService,
            FsaService,
-           LifeInsuranceService,
+           BasicLifeInsuranceService,
+           SupplementalLifeInsuranceService,
            CompanyEmployeeSummaryService,
            StdService,
            LtdService){
@@ -807,12 +840,13 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         //       entity and maybe avoid trying to artificially bundle them together. 
         //       Also, once we have tabs working, we should split them into proper flows.
         _.each(employeeList, function(employee) {
-          LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employee.user.id, function(response) {
-            employee.familyInsurancePlan = response;
-          });
           
-          LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
             employee.basicLifeInsurancePlan = response;
+          });
+
+          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id).then(function(plan) {
+            employee.supplementalLifeInsurancePlan = plan;
           });
 
           // STD

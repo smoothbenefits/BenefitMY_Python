@@ -254,7 +254,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             state('employee_benefit_signup.supplemental_life', {
                 url: '/supplemental_life',
                 templateUrl: '/static/partials/benefit_selection/tab_supplemental_life.html',
-                controller:'optionalLifeBenefitsSignup'
+                controller:'supplementalLifeBenefitsSignup'
             }).
             state('employee_benefit_signup.std', {
                 url: '/std',
