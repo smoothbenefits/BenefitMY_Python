@@ -761,10 +761,12 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
 
 var editEmployeeProfileModalController = employersController.controller('editEmployeeProfileModalController',
   ['$scope',
+   '$modal',
    '$modalInstance',
    'EmployeeProfileService',
    'employeeProfileModel',
     function($scope,
+             $modal,
              $modalInstance,
              EmployeeProfileService,
              employeeProfileModel){
@@ -773,21 +775,74 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
       $scope.employeeProfileModel = employeeProfileModel;
       $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern'];
       $scope.employmentStatusList = ['Active', 'Prospective', 'Terminated', 'OnLeave'];
+      $scope.endDateRequired = false;
+      var isEmployeeTerminate = function(){
+        return $scope.employeeProfileModel.employmentStatus === $scope.employmentStatusList[2];
+      }
 
-      $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
-      };
-
-      $scope.save = function(employeeProfileToSave) {
-        EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave).then(function(response){
+      var saveEmployeeProfile = function(employeeProfileToSave){
+        EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave)
+        .then(function(response){
           $modalInstance.close(response);
         }, function(error){
           $scope.errorMessage = "Error occurred during saving operation. Please verify " +
             "all the information enterred are valid. Message: " + error;
         });
       };
+
+      $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+      };
+
+      $scope.save = function(employeeProfileToSave) {
+        if(isEmployeeTerminate()){
+          var modalInstance = $modal.open({
+              templateUrl: '/static/partials/employee_record/terminate_confirmation.html',
+              controller: 'confirmTerminateEmployeeModalController',
+              size: 'sm',
+              backdrop: 'static',
+              resolve: {
+                  employeeProfile: function () {
+                      return angular.copy(employeeProfileToSave);
+                  }
+              }
+          });
+          modalInstance.result.then(function(employeeProfileConfirmed){
+            saveEmployeeProfile(employeeProfileConfirmed);
+          });
+        }
+        else{
+          saveEmployeeProfile(employeeProfileToSave);
+        }
+      };
+
+      $scope.updateEndDateRequired = function(){
+        $scope.endDateRequired = isEmployeeTerminate();
+        if(!isEmployeeTerminate()){
+          employeeProfileModel.endDate = undefined;
+        }
+      };
+
     }
   ]);
+
+var confirmTerminateEmployeeModalController = employersController.controller('confirmTerminateEmployeeModalController',[
+  '$scope',
+  '$modalInstance',
+  'employeeProfile',
+  function($scope,
+           $modalInstance,
+           employeeProfile){
+    $scope.confirm = function(){
+      $modalInstance.close(employeeProfile);
+    };
+
+    $scope.cancel = function(){
+      $modalInstance.dismiss();
+    };
+  }                                                                           
+
+])
 
 var employerBenefitsSelected = employersController.controller('employerBenefitsSelected', [
   '$scope', 
