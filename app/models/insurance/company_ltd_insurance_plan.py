@@ -23,6 +23,11 @@ class CompanyLtdInsurancePlan(models.Model):
     rate = models.DecimalField(
         max_digits=10, decimal_places=6, blank=True, null=True)
 
+    employee_contribution_percentage = models.DecimalField(max_digits=9,
+                                                           decimal_places=6,
+                                                           blank=True,
+                                                           null=True)
+
     paid_by = models.CharField(max_length=20,
                               choices=PAID_BY_PARTIES,
                               null=True,
@@ -32,9 +37,12 @@ class CompanyLtdInsurancePlan(models.Model):
                                 related_name="company_ltd_insurance",
                                 blank=True,
                                 null=True)
+
     ltd_insurance_plan = models.ForeignKey(LtdInsurancePlan,
                                            related_name="company_ltd_insurance",
                                            blank=True,
                                            null=True)
+
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+
     updated_at = models.DateTimeField(auto_now=True, null=True)
