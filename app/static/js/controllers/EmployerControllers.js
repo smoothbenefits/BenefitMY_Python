@@ -647,6 +647,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'employmentAuthRepository',
   'employeeTaxRepository',
   'EmployeeProfileService',
+  'EmploymentStatuses',
   function($scope, 
            $location, 
            $stateParams,
@@ -657,7 +658,8 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            peopleRepository,
            employmentAuthRepository,
            employeeTaxRepository,
-           EmployeeProfileService){
+           EmployeeProfileService,
+           EmploymentStatuses){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
@@ -667,6 +669,9 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
     $scope.employee = {};
     $scope.showEditButton = false;
     $scope.terminateEmployeeButton = false;
+
+    var updateTerminateButtonDisplay = function(employeeProfile){
+    };
 
     peopleRepository.ByUser.get({userId:employeeId})
       .$promise.then(function(employeeDetail){
@@ -682,11 +687,13 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
 
           // Get the employee profile info that bound to this person
-          EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId).then(function(profile) {
+          EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId)
+          .then(function(profile) {
             $scope.employee.employeeProfile = profile;
-            if(profile.employmentStatus && profile.employmentStatus !=='Terminated'){
-              $scope.terminateEmployeeButton = true;
-            }
+            $scope.$watch('employee.employeeProfile', 
+              function(profile){
+                $scope.terminateEmployeeButton = profile.employmentStatus && profile.employmentStatus !== EmploymentStatuses.terminated;
+            });
           });
         }
       });
@@ -730,6 +737,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave)
       .then(function(response){
         $scope.terminateMessage = "Employment terminated";
+        $scope.employee.employeeProfile = employeeProfileToSave;
       }, function(error){
         $scope.terminateMessage = "Error occurred during saving operation. Please verify " +
           "all the information enterred are valid. Message: " + error;
@@ -801,19 +809,21 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
    '$modalInstance',
    'EmployeeProfileService',
    'employeeProfileModel',
+   'EmploymentStatuses',
     function($scope,
              $modal,
              $modalInstance,
              EmployeeProfileService,
-             employeeProfileModel){
+             employeeProfileModel,
+             EmploymentStatuses){
       
       $scope.errorMessage = null;
       $scope.employeeProfileModel = employeeProfileModel;
       $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern'];
-      $scope.employmentStatusList = ['Active', 'Prospective', 'Terminated', 'OnLeave'];
+      $scope.employmentStatusList = _.values(EmploymentStatuses);
       $scope.endDateRequired = false;
       var isEmployeeTerminate = function(){
-        return $scope.employeeProfileModel.employmentStatus === $scope.employmentStatusList[2];
+        return $scope.employeeProfileModel.employmentStatus === EmploymentStatuses.terminated;
       }
 
       var saveEmployeeProfile = function(employeeProfileToSave){
@@ -866,16 +876,21 @@ var confirmTerminateEmployeeModalController = employersController.controller('co
   '$scope',
   '$modalInstance',
   'employeeProfile',
+  'EmploymentStatuses',
   function($scope,
            $modalInstance,
-           employeeProfile){
+           employeeProfile,
+           EmploymentStatuses){
+
+    $scope.employeeProfile = angular.copy(employeeProfile);
     
     $scope.endDateRequired = function(){
-      _.isNull(employeeProfile.endDate) || _.isUndefined(employeeProfile.endDate);
+      return _.isNull(employeeProfile.endDate) || _.isUndefined(employeeProfile.endDate);
     };
 
     $scope.confirm = function(){
-      $modalInstance.close(employeeProfile);
+      $scope.employeeProfile.employmentStatus = EmploymentStatuses.terminated;
+      $modalInstance.close($scope.employeeProfile);
     };
 
     $scope.cancel = function(){
