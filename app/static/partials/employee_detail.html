@@ -7,6 +7,7 @@
     <h1>Employee {{employee.first_name}} {{employee.last_name}}</h1>
     <div class="cta" ng-if="showEditButton"><a ng-click="editEmployeeDetail()" class="btn green">Edit</a></div>
     <div class="cta" ng-if="terminateEmployeeButton"><a ng-click="terminateEmployment()" class="btn red">Terminate Employment</a></div>
+    <div class="cta employee-terminate" ng-show="terminateMessage">{{terminateMessage}}</div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
