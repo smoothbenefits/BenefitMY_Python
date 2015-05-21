@@ -690,9 +690,9 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId)
           .then(function(profile) {
             $scope.employee.employeeProfile = profile;
-            $scope.$watch('employee.employeeProfile', 
-              function(profile){
-                $scope.terminateEmployeeButton = profile.employmentStatus && profile.employmentStatus !== EmploymentStatuses.terminated;
+            $scope.$watch('employee.employeeProfile.employmentStatus', 
+              function(employmentStatus){
+                $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmploymentStatuses.terminated;
             });
           });
         }
