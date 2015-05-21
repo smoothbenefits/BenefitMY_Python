@@ -1893,13 +1893,11 @@ var stdBenefitsSignup = employeeControllers.controller(
    '$controller',
    '$modal',
    'StdService',
-   'EmployeeProfileService', 
     function stdBenefitsSignup(
       $scope,
       $controller,
       $modal,
-      StdService,
-      EmployeeProfileService){
+      StdService){
         
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
