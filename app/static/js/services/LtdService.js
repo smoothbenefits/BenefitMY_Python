@@ -28,6 +28,7 @@ benefitmyService.factory('LtdService',
             viewModel.eliminationPeriodInMonths = companyPlanDomainModel.elimination_period_in_months;
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
+            viewModel.employerContributionPercentage = companyPlanDomainModel.employer_contribution_percentage;
             
             return viewModel;
         };
@@ -65,6 +66,7 @@ benefitmyService.factory('LtdService',
             domainModel.paid_by = companyPlanViewModel.paidBy;
             domainModel.elimination_period_in_months = companyPlanViewModel.eliminationPeriodInMonths;
             domainModel.company = companyPlanViewModel.company;
+            domainModel.employer_contribution_percentage = companyPlanViewModel.employerContributionPercentage;
 
             domainModel.ltd_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
 

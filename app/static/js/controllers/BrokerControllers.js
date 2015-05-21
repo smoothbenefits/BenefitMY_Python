@@ -355,6 +355,10 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
     var clientId = $stateParams.clientId;
     $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
 
+    $scope.buttonEnabled = function() {
+      return $scope.newLifeInsurancePlan.name && $scope.newLifeInsurancePlan.totalCost 
+             && $scope.newLifeInsurancePlan.employeeContribution;
+    };
 
     // Need the user information for the current user (broker)
     $scope.addLifeInsurancePlan = function() {
@@ -489,6 +493,10 @@ var brokerAddLtdPlanController = brokersControllers.controller(
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
+
+        $scope.buttonEnabled = function() {
+            return $scope.newPlan.planName && $scope.newPlan.employerContributionPercentage;
+        };
 
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
