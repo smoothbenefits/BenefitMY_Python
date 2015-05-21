@@ -820,13 +820,13 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
       $scope.errorMessage = null;
       $scope.employeeProfileModel = employeeProfileModel;
       $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern'];
-      $scope.employmentStatusList = _.values(EmploymentStatuses);
-      $scope.endDateRequired = false;
-      var isEmployeeTerminate = function(){
-        return $scope.employeeProfileModel.employmentStatus === EmploymentStatuses.terminated;
-      }
+      $scope.employmentStatusList = [EmploymentStatuses.active, EmploymentStatuses.prospective, EmploymentStatuses.onLeave];
 
-      var saveEmployeeProfile = function(employeeProfileToSave){
+      $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+      };
+
+      $scope.save = function(employeeProfileToSave) {
         EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave)
         .then(function(response){
           $modalInstance.close(response);
@@ -835,40 +835,9 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
             "all the information enterred are valid. Message: " + error;
         });
       };
-
-      $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
+      $scope.updateEndDate = function(){
+        $scope.employeeProfileModel.endDate = null;
       };
-
-      $scope.save = function(employeeProfileToSave) {
-        if(isEmployeeTerminate()){
-          var modalInstance = $modal.open({
-              templateUrl: '/static/partials/employee_record/terminate_confirmation.html',
-              controller: 'confirmTerminateEmployeeModalController',
-              size: 'sm',
-              backdrop: 'static',
-              resolve: {
-                  employeeProfile: function () {
-                      return angular.copy(employeeProfileToSave);
-                  }
-              }
-          });
-          modalInstance.result.then(function(employeeProfileConfirmed){
-            saveEmployeeProfile(employeeProfileConfirmed);
-          });
-        }
-        else{
-          saveEmployeeProfile(employeeProfileToSave);
-        }
-      };
-
-      $scope.updateEndDateRequired = function(){
-        $scope.endDateRequired = isEmployeeTerminate();
-        if(!isEmployeeTerminate()){
-          employeeProfileModel.endDate = undefined;
-        }
-      };
-
     }
   ]);
 
@@ -885,7 +854,7 @@ var confirmTerminateEmployeeModalController = employersController.controller('co
     $scope.employeeProfile = angular.copy(employeeProfile);
     
     $scope.endDateRequired = function(){
-      return _.isNull(employeeProfile.endDate) || _.isUndefined(employeeProfile.endDate);
+      return _.isNull($scope.employeeProfile.endDate) || _.isUndefined($scope.employeeProfile.endDate);
     };
 
     $scope.confirm = function(){
