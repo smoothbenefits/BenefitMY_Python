@@ -451,6 +451,10 @@ var brokerAddStdPlanController = brokersControllers.controller(
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
+        
+        $scope.buttonEnabled = function() {
+            return $scope.newPlan.planName && $scope.newPlan.employerContributionPercentage;
+        };
 
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
