@@ -1893,11 +1893,13 @@ var stdBenefitsSignup = employeeControllers.controller(
    '$controller',
    '$modal',
    'StdService',
+   'EmployeeProfileService', 
     function stdBenefitsSignup(
       $scope,
       $controller,
       $modal,
-      StdService){
+      StdService,
+      EmployeeProfileService){
         
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1914,10 +1916,17 @@ var stdBenefitsSignup = employeeControllers.controller(
                 // taking the first available plan for the company.
                 if (stdPlans.length > 0) {
                     $scope.companyStdPlan = stdPlans[0];
+                    return $scope.companyStdPlan;
                 }
-            });
+                return {};
+            }).then(function(stdPlan) {
 
-        })
+                StdService.getEmployeePremiumForUserCompanyStdPlan($scope.employeeId, stdPlan)
+                .then(function(premium) {
+                    $scope.companyStdPlan.employeePremium = premium;
+                });
+            });
+        });
 
         $scope.save = function() {
             // Save std
@@ -1974,7 +1983,15 @@ var ltdBenefitsSignup = employeeControllers.controller(
                 // taking the first available plan for the company.
                 if (ltdPlans.length > 0) {
                     $scope.companyLtdPlan = ltdPlans[0];
+                    return $scope.companyLtdPlan;
                 }
+                return {};
+            }).then(function(ltdPlan) {
+
+                LtdService.getEmployeePremiumForUserCompanyLtdPlan($scope.employeeId, ltdPlan)
+                .then(function(premium) {
+                    $scope.companyLtdPlan.employeePremium = premium;
+                });
             });
 
         })

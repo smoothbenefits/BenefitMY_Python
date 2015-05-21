@@ -3,7 +3,8 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('LtdService', 
     ['$q',
     'LtdRepository',
-    function ($q, LtdRepository){
+    'EmployeeProfileService', 
+    function ($q, LtdRepository, EmployeeProfileService){
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
             
@@ -78,6 +79,7 @@ benefitmyService.factory('LtdService',
 
             domainModel.id = userCompanyPlanViewModel.userCompanyPlanId;
             domainModel.user = userCompanyPlanViewModel.planOwner;
+            domainModel.total_premium_per_period = userCompanyPlanViewModel.employeePremium;
 
             domainModel.company_ltd_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
@@ -101,6 +103,31 @@ benefitmyService.factory('LtdService',
                 function(error){
                     deferred.reject(error);
                 });
+
+                return deferred.promise;
+            },
+
+            getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan) {
+                var deferred = $q.defer();
+
+                if (!ltdPlan) {
+                    deferred.resolve(0);
+                } else {
+                    var companyId = ltdPlan.company;
+                    EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId).then(function(profile) {
+                        var salary = profile.annualBaseSalary;
+                        var benefitPercentage = (ltdPlan.percentageOfSalary / 100);
+                        var rate = ltdPlan.rate;
+                        var employeeContribution = 1 - (ltdPlan.employerContributionPercentage / 100);
+                        var numOfPeriods = 26; // biweekly
+
+                        var premium = (salary * benefitPercentage * rate * employeeContribution / numOfPeriods).toFixed(2);
+
+                        deferred.resolve(premium);
+                    }, function(error) {
+                        deferred.reject(error);
+                    });
+                }
 
                 return deferred.promise;
             },
