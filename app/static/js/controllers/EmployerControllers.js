@@ -670,9 +670,6 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
     $scope.showEditButton = false;
     $scope.terminateEmployeeButton = false;
 
-    var updateTerminateButtonDisplay = function(employeeProfile){
-    };
-
     peopleRepository.ByUser.get({userId:employeeId})
       .$promise.then(function(employeeDetail){
         $scope.employee.first_name = employeeDetail.first_name;
@@ -733,7 +730,8 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       return _.filter(output, function(item){return item.value != null;});
     }
 
-    var saveEmployeeProfile = function(employeeProfileToSave){
+    var saveToTerminateEmployment = function(employeeProfileToSave){
+
       EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave)
       .then(function(response){
         $scope.terminateMessage = "Employment terminated";
@@ -764,7 +762,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           }
       });
       modalInstance.result.then(function(employeeProfileConfirmed){
-        saveEmployeeProfile(employeeProfileConfirmed);
+        saveToTerminateEmployment(employeeProfileConfirmed);
       });
     };
 
@@ -850,9 +848,8 @@ var confirmTerminateEmployeeModalController = employersController.controller('co
            $modalInstance,
            employeeProfile,
            EmploymentStatuses){
-
-    $scope.employeeProfile = angular.copy(employeeProfile);
     
+    $scope.employeeProfile = employeeProfile;
     $scope.endDateRequired = function(){
       return _.isNull($scope.employeeProfile.endDate) || _.isUndefined($scope.employeeProfile.endDate);
     };
