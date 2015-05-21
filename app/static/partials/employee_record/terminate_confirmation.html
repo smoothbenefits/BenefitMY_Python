@@ -2,8 +2,8 @@
     <h4 class="modal-title">Confirm Terminating Employee</h4>
 </div>
 <div class="modal-body">
-    <div class="row">
-        <div class="form-label">Please enter the employment end date</div>
+    <div class="row" ng-show="endDateRequired()">
+        <div class="form-label">Please enter the employment end date, and confirm the termination</div>
         <form name="endDateForm">
             <div class="datebox">
                 <input type="date"
@@ -19,7 +19,7 @@
         </form>
     </div>
     <div ng-show="!endDateRequired()" style="text-align:center;margin-bottom:10px;">
-        Please confirm you are terminating the employment.
+        Please confirm the employment termination
     </div>
 <div class="modal-footer">
     <div class="button-group">
