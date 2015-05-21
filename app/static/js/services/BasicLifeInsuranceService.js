@@ -120,15 +120,23 @@ benefitmyService.factory('BasicLifeInsuranceService',
         return deferred.promise;
       },
 
-      enrollCompanyForBasicLifeInsurancePlan: function(companyId, planId, amount, multiplier) {
+      enrollCompanyForBasicLifeInsurancePlan: function(basicLife, companyBasicLife) {
         var deferred = $q.defer();
 
         var linkToSave = { 
-          "company": companyId, 
-          "life_insurance_plan": planId, 
-          "insurance_amount": amount,
-          "salary_multiplier": multiplier
+          "company": companyBasicLife.companyId, 
+          "life_insurance_plan": basicLife.id, 
+          "total_cost_per_period": companyBasicLife.totalCost,
+          "employee_cost_per_period": companyBasicLife.employeeContribution
         };
+
+        if (companyBasicLife.amount){
+          linkToSave.insurance_amount = companyBasicLife.amount;
+        }
+        if (companyBasicLife.multiplier){
+          linkToSave.salary_multiplier = companyBasicLife.multiplier;
+        }
+
         CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
               deferred.resolve(successResponse); 
