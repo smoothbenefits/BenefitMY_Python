@@ -23,8 +23,8 @@ class CompanyStdInsurancePlan(models.Model):
     rate = models.DecimalField(
         max_digits=10, decimal_places=6, blank=True, null=True)
 
-    employee_contribution_percentage = models.DecimalField(max_digits=9, 
-                                                           decimal_places=6,
+    employer_contribution_percentage = models.DecimalField(max_digits=5, 
+                                                           decimal_places=2,
                                                            blank=True,
                                                            null=True)
 
