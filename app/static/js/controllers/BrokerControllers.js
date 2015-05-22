@@ -231,13 +231,14 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
           });
         });
 
+        // Supplemental life insurance
         _.each(employeeList, function(employee) {
           SupplementalLifeInsuranceService.getPlanByUser(employee.user.id).then(function(plan) {
             employee.supplementalLifeInsurancePlan = plan;
           });
         });
 
-        // TODO: the same as FSA and life insurance
+        // Basic life insurance
         _.each(employeeList, function(employee) {
           BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
             employee.basicLifeInsurancePlan = response;
@@ -352,8 +353,12 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
     $controller('modalMessageControllerBase', {$scope: $scope});
     
     var clientId = $stateParams.clientId;
-    $scope.newLifeInsurancePlan = {insurance_type: 'Basic'};
+    $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
 
+    $scope.buttonEnabled = function() {
+      return $scope.newLifeInsurancePlan.name && $scope.newLifeInsurancePlan.totalCost 
+             && $scope.newLifeInsurancePlan.employeeContribution;
+    };
 
     // Need the user information for the current user (broker)
     $scope.addLifeInsurancePlan = function() {
@@ -364,17 +369,8 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
         //  1. Broker creates the plan
         //  2. Broker enrolls the company for the plan
         BasicLifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
-          var planId = newPlan.id;
-          var insurance_amount;
-          var multiplier;
-          if ($scope.newLifeInsurancePlan.amount){
-            insurance_amount = $scope.newLifeInsurancePlan.amount;
-          }
-          if ($scope.newLifeInsurancePlan.multiplier){
-            multiplier = $scope.newLifeInsurancePlan.multiplier;
-          }
 
-          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(clientId, planId, insurance_amount, multiplier).then(
+          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan).then(
             function() {
               var successMessage = "The new basic life insurance plan has been saved successfully." 
 
@@ -455,6 +451,10 @@ var brokerAddStdPlanController = brokersControllers.controller(
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
+        
+        $scope.buttonEnabled = function() {
+            return $scope.newPlan.planName && $scope.newPlan.employerContributionPercentage;
+        };
 
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
@@ -497,6 +497,10 @@ var brokerAddLtdPlanController = brokersControllers.controller(
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
+
+        $scope.buttonEnabled = function() {
+            return $scope.newPlan.planName && $scope.newPlan.employerContributionPercentage;
+        };
 
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
