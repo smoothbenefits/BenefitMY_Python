@@ -14,6 +14,38 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-6">
+                    <div class="form-label">Total Cost (Monthly) *</div>
+                    <div class="textbox input-group">
+                        <span class="input-group-addon">$</span>
+                        <input
+                            min="0"
+                            type="number"
+                            name="total_cost"
+                            ng-required="true"
+                            ng-model="newLifeInsurancePlan.totalCost" />
+                    </div>
+                    <div class="form-error-relative" ng-show="form.total_cost.$dirty && form.total_cost.$invalid">
+                        <span>Total cost field is invalid</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-label">Employee Contribution (Biweekly) *</div>
+                    <div class="textbox input-group">
+                        <span class="input-group-addon">$</span>
+                        <input
+                            min="0"
+                            type="number"
+                            name="employee_contribution"
+                            ng-required="true"
+                            ng-model="newLifeInsurancePlan.employeeContribution" />
+                        <div class="form-error-relative" ng-show="form.employee_contribution.$dirty && form.employee_contribution.$invalid">
+                            <span>Employee contribution field is invalid</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-4">
                     <div class="form-label">Amount</div>
                     <div class="textbox input-group">
@@ -46,38 +78,6 @@
                     </div>
                     <div class="form-error-relative" ng-show="form.multiplier.$invalid">
                         Multiplier is invalid
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-label">Total Cost (Monthly) *</div>
-                    <div class="textbox input-group">
-                        <span class="input-group-addon">$</span>
-                        <input
-                            min="0"
-                            type="number"
-                            name="total_cost"
-                            ng-required="true"
-                            ng-model="newLifeInsurancePlan.totalCost" />
-                    </div>
-                    <div class="form-error-relative" ng-show="form.total_cost.$dirty && form.total_cost.$invalid">
-                        <span>Total cost field is invalid</span>
-                    </div>
-                </div>
-                <div class="col-md-6 col-md-offset-2">
-                    <div class="form-label">Employee Contribution (Biweekly) *</div>
-                    <div class="textbox input-group">
-                        <span class="input-group-addon">$</span>
-                        <input
-                            min="0"
-                            type="number"
-                            name="employee_contribution"
-                            ng-required="true"
-                            ng-model="newLifeInsurancePlan.employeeContribution" />
-                        <div class="form-error-relative" ng-show="form.employee_contribution.$dirty && form.employee_contribution.$invalid">
-                            <span>Employee contribution field is invalid</span>
-                        </div>
                     </div>
                 </div>
             </div>

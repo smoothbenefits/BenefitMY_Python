@@ -126,16 +126,11 @@ benefitmyService.factory('BasicLifeInsuranceService',
         var linkToSave = { 
           "company": companyBasicLife.companyId, 
           "life_insurance_plan": basicLife.id, 
+          "insurance_amount": companyBasicLife.amount,
+          "salary_multiplier": companyBasicLife.multiplier,
           "total_cost_per_period": companyBasicLife.totalCost,
           "employee_cost_per_period": companyBasicLife.employeeContribution
         };
-
-        if (companyBasicLife.amount){
-          linkToSave.insurance_amount = companyBasicLife.amount;
-        }
-        if (companyBasicLife.multiplier){
-          linkToSave.salary_multiplier = companyBasicLife.multiplier;
-        }
 
         CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
