@@ -240,6 +240,7 @@ span.doc-buttons{
     color:red; 
     font-size:15px; 
     font-weight:bold;
-}.datebox > .input-group > .form-control {
+}
+.datebox > .input-group > .form-control {
     height: 38px;
 }
