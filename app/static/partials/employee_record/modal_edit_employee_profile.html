@@ -15,7 +15,7 @@
                         name="job-title"
                         ng-model="employeeProfileModel.jobTitle"
                         ng-required="true" />
-                    <div class="form-error" ng-show="form.job-title.$dirty && form.job-title.$invalid">
+                    <div class="form-inline-error" ng-show="form.job-title.$dirty && form.job-title.$invalid">
                       <span ng-show="form.job_title.$error.required">Job Title is required</span>
                     </div>
                 </div>
@@ -48,6 +48,7 @@
                     <select ng-model="employeeProfileModel.employmentStatus"
                         ng-required="true"
                         name="employeeProfileModel.employmentStatus"
+                        ng-change="updateEndDate()"
                         ng-options="type for type in employmentStatusList"
                         class="form-control"></select>
                 </div>
@@ -61,7 +62,7 @@
                         ng-required="false"
                         min="1900-01-01"
                         placeholder="yyyy-MM-dd" />
-                    <div class="form-error" ng-show="form.start-date.$dirty && form.start-date.$invalid">
+                    <div class="form-inline-error" ng-show="form.start-date.$dirty && form.start-date.$invalid">
                         <span ng-show="form.start-date.$invalid">Please enter a valid Date</span>
                     </div>
                 </div>
@@ -72,10 +73,9 @@
                     <input type="date"
                         name="end-date"
                         ng-model="employeeProfileModel.endDate"
-                        ng-required="false"
                         min="1900-01-01"
                         placeholder="yyyy-MM-dd" />
-                    <div class="form-error" ng-show="form.end-date.$dirty && form.end-date.$invalid">
+                    <div class="form-inline-error" ng-show="form.end-date.$dirty && form.end-date.$invalid">
                         <span ng-show="form.end-date.$invalid">Please enter a valid Date</span>
                     </div>
                 </div>

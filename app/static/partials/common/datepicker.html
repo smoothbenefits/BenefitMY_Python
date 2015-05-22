@@ -1,0 +1,19 @@
+<div class="input-group">
+    <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="pickADate($event)">
+            <i class="fa fa-calendar"></i>
+        </button>
+    </span>
+    <input type="text"
+           class="form-control"
+           placeholder="MM/dd/yyyy"
+           datepicker-popup="{{format}}"
+           ng-model="model"
+           is-open="opened"
+           ng-required="required"
+           ng-disabled="disabled"
+           close-text="Close" />
+    <div class="form-error" ng-show="!model && required">
+        <span>Date of Birth field is required</span>
+    </div>
+</div>

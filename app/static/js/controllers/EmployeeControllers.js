@@ -174,7 +174,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
   }
 ]);
 
-
 var viewDocument = employeeControllers.controller('viewDocument',
   ['$scope', '$location', '$stateParams', 'userDocument', 'currentUser', 'documentRepository',
   function viewDocument($scope, $location, $stateParams, userDocument, currentUser, documentRepository){
@@ -410,9 +409,16 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
     $scope.signDocument = function(){
       if(!signatureUpdated){
         alert('Please sign your name on the signature pad');
+        return;
       }
       if(!$scope.employee.downloadI9){
         alert('Please download the I-9 document and acknowledge you have read the entire form above.');
+        return;
+      }
+      if($scope.employee.auth_type === 'Aaw' && !$scope.employee.expiration_na 
+         && !$scope.employee.auth_expiration) {
+        alert('Please provide the expiration date for your work authorization document.');
+        return;
       }
       else
       {
@@ -647,7 +653,6 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
     $scope.displayAll = false;
-
 
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');

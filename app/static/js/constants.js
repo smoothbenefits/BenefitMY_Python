@@ -175,3 +175,10 @@ settings.constant('tabLayoutGlobalConfig', [
         ]
     }
 ]);
+
+settings.constant('EmploymentStatuses',{
+    active: 'Active', 
+    prospective: 'Prospective', 
+    terminated: 'Terminated', 
+    onLeave:'OnLeave'
+});
