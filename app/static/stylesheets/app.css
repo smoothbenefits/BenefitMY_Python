@@ -236,6 +236,11 @@ span.doc-buttons{
 .clickable {
     cursor: pointer;
 }
+.employee-terminate{
+    color:red; 
+    font-size:15px; 
+    font-weight:bold;
+}
 .datebox > .input-group > .form-control {
     height: 38px;
 }
