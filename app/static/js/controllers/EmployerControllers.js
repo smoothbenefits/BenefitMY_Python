@@ -641,7 +641,6 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   '$stateParams', 
   '$modal',
   '$controller',
-  '$timeout',
   'profileSettings', 
   'peopleRepository',
   'employmentAuthRepository',
@@ -653,7 +652,6 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            $stateParams,
            $modal, 
            $controller,
-           $timeout,
            profileSettings,
            peopleRepository,
            employmentAuthRepository,
@@ -690,6 +688,10 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
             $scope.$watch('employee.employeeProfile.employmentStatus', 
               function(employmentStatus){
                 $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmploymentStatuses.terminated;
+                $scope.terminateMessage = undefined;
+                if(!$scope.terminateEmployeeButton){
+                  $scope.terminateMessage = "Employment terminated";
+                };
             });
           });
         }
@@ -734,15 +736,11 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
 
       EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave)
       .then(function(response){
-        $scope.terminateMessage = "Employment terminated";
         $scope.employee.employeeProfile = employeeProfileToSave;
       }, function(error){
         $scope.terminateMessage = "Error occurred during saving operation. Please verify " +
           "all the information enterred are valid. Message: " + error;
       });
-      $timeout(function(){
-        $scope.terminateMessage = undefined;
-      }, 5000)
     };
 
     $scope.editEmployeeDetail = function(){
@@ -818,7 +816,12 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
       $scope.errorMessage = null;
       $scope.employeeProfileModel = employeeProfileModel;
       $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern'];
-      $scope.employmentStatusList = [EmploymentStatuses.active, EmploymentStatuses.prospective, EmploymentStatuses.onLeave];
+      $scope.employmentStatusList = _.reject(
+        _.values(EmploymentStatuses), 
+          function(status){
+            return status === EmploymentStatuses.terminated;
+          }
+        );
 
       $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
