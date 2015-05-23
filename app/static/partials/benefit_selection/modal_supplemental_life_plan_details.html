@@ -46,6 +46,7 @@
                         <th><div>Age</div></th>
                         <th><div>Tobacco</div></th>
                         <th><div>Non-Tobacco</div></th>
+                        <th><div>Benefit Reduction*</div></th>
                     </thead>
                     <tbody>
                         <tr ng-repeat="rate in detailsModalCompanyPlanToDisplay.planRates.employeeRateTable">
@@ -56,10 +57,18 @@
                             <td>
                                 <div>${{rate.nonTobaccoRate.ratePer10000}}</div>
                             </td>
+                            <td>
+                                <div>{{rate.benefitReductionPercentage}}%</div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 12px;">
+        <div class="col-md-8 col-md-offset-1">
+            <span class="label label-info">* <b>Benefit Reduction</b> indicates the percentage of reduction in elected coverage amount and corresponding premium.</span>
         </div>
     </div>
     <div class="row">
@@ -75,6 +84,7 @@
                         <th><div>Age</div></th>
                         <th><div>Tobacco</div></th>
                         <th><div>Non-Tobacco</div></th>
+                        <th><div>Benefit Reduction*</div></th>
                     </thead>
                     <tbody>
                         <tr ng-repeat="rate in detailsModalCompanyPlanToDisplay.planRates.spouseRateTable">
@@ -85,10 +95,18 @@
                             <td>
                                 <div>${{rate.nonTobaccoRate.ratePer10000}}</div>
                             </td>
+                            <td>
+                                <div>{{rate.benefitReductionPercentage}}%</div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 12px;">
+        <div class="col-md-8 col-md-offset-1">
+            <span class="label label-info">* <b>Benefit Reduction</b> indicates the percentage of reduction in elected coverage amount and corresponding premium.</span>
         </div>
     </div>
     <div class="row">
