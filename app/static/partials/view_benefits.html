@@ -107,25 +107,51 @@
         </table>
     </div>
 
-    <!-- Life insurance plans summary -->
+    <!-- Basic life insurance plans summary -->
     <div class="table-responsive table-holder" ng-if="lifeInsurancePlans && lifeInsurancePlans.length > 0">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th><span>Life Insurance</span></th>
+                    <th><span>Basic Life Insurance (AD&D)</span></th>
+                    <th><span>Total Cost (Monthly)</span></th>
+                    <th><span>Employee Contribution (Biweekly)</span></th>
                     <th><span>Enrollment Date</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="lifeInsurancePlan in lifeInsurancePlans">
                     <td>
-                        {{lifeInsurancePlan.life_insurance_plan.name}}
-                        <span ng-show="lifeInsurancePlan.insurance_amount">({{lifeInsurancePlan.life_insurance_plan.display_insurance_type}} with amount of ${{lifeInsurancePlan.insurance_amount}})</span>
-                        <span ng-show="lifeInsurancePlan.salary_multiplier">({{lifeInsurancePlan.life_insurance_plan.display_insurance_type}} with {{lifeInsurancePlan.salary_multiplier}} times of base salary)</span>
+                        <b>{{lifeInsurancePlan.life_insurance_plan.name}}</b>
+                        <span ng-show="lifeInsurancePlan.insurance_amount">, benefit amount of ${{lifeInsurancePlan.insurance_amount}}</span>
+                        <span ng-show="lifeInsurancePlan.salary_multiplier">, benefit amount equals to {{lifeInsurancePlan.salary_multiplier}} times of base salary</span>
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLifeInsurancePlan(lifeInsurancePlan)" href="javascript:void(0);">X</a>
                     </td>
+                    <td>$ {{lifeInsurancePlan.total_cost_per_period}}</td>
+                    <td>$ {{lifeInsurancePlan.employee_cost_per_period}}</td>
+                    <td >{{lifeInsurancePlan.created_date_for_display}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Supplemental Life insurance plans summary -->
+    <div class="table-responsive table-holder" ng-if="supplementalLifeInsurancePlans && supplementalLifeInsurancePlans.length > 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Supplemental Life Insurance</span></th>
+                    <th><span>Enrollment Date</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="supplementalLifeInsurancePlan in supplementalLifeInsurancePlans">
+                    <td>
+                        {{supplementalLifeInsurancePlan.planName}}
+                        <a ng-click="openSupplementalLifePlanDetailsModal(supplementalLifeInsurancePlan)"><b>View Details</b></a>
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteSupplementalLifePlan(supplementalLifeInsurancePlan)" href="javascript:void(0);">X</a>
+                    </td>
                     <td >
-                        {{lifeInsurancePlan.created_date_for_display}}
+                        {{supplementalLifeInsurancePlan.createdDateForDisplay}}
                     </td>
                 </tr>
             </tbody>
@@ -142,7 +168,7 @@
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
                     <th><span>Rate</span></th>
-                    <th><span>Paid By</span></th>
+                    <th><span>Employer Pays</span></th>
                     <th><span>Elimination Period</span></th>
                     <th><span>Enrollment Date</span></th>
                 </tr>
@@ -157,7 +183,7 @@
                     <td>${{stdPlan.maxBenefitWeekly}}/Week</td>
                     <td>{{stdPlan.duration}} Weeks</td>
                     <td>${{stdPlan.rate}} of $10 benefit</td>
-                    <td>{{stdPlan.paidBy}}</td>
+                    <td>{{stdPlan.employerContributionPercentage}}%</td>
                     <td>{{stdPlan.eliminationPeriodInDays}} Days</td>
                     <td>{{stdPlan.createdDateForDisplay}}</td>
                 </tr>
@@ -175,7 +201,7 @@
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
                     <th><span>Rate</span></th>
-                    <th><span>Paid By</span></th>
+                    <th><span>Employer Pays</span></th>
                     <th><span>Elimination Period</span></th>
                     <th><span>Enrollment Date</span></th>
                 </tr>
@@ -190,7 +216,7 @@
                     <td>${{ltdPlan.maxBenefitMonthly}}/Month</td>
                     <td>{{ltdPlan.duration}} Years or Until Retirement Age</td>
                     <td>${{ltdPlan.rate}} of $10 benefit</td>
-                    <td>{{ltdPlan.paidBy}}</td>
+                    <td>{{ltdPlan.employerContributionPercentage}}%</td>
                     <td>{{ltdPlan.eliminationPeriodInMonths}} Months</td>
                     <td>{{ltdPlan.createdDateForDisplay}}</td>
                 </tr>

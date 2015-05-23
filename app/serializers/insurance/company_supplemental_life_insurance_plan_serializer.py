@@ -1,11 +1,11 @@
 from rest_framework import serializers
+from ..custom_fields.hash_field import HashField
+from ..hash_pk_serializer_base import HashPkSerializerBase
 from app.models.insurance.comp_suppl_life_insurance_plan import \
     CompSupplLifeInsurancePlan
-from ..hash_pk_serializer_base import HashPkSerializerBase
 from supplemental_life_insurance_plan_serializer import (
     SupplementalLifeInsurancePlanSerializer,
     SupplementalLifeInsurancePlanPostSerializer)
-from ..custom_fields.hash_field import HashField
 
 
 class CompanySupplementalLifeInsurancePlanSerializer(HashPkSerializerBase):

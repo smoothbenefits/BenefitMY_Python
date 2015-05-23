@@ -301,17 +301,21 @@ var employerUser = employersController.controller('employerUser',
 var employerBenefits = employersController.controller('employerBenefits', 
   ['$scope', 
   '$location', 
-  '$stateParams', 
+  '$stateParams',
+  '$modal', 
   'benefitDisplayService', 
-  'LifeInsuranceService', 
+  'BasicLifeInsuranceService', 
+  'SupplementalLifeInsuranceService',
   'StdService',
   'LtdService',
   'FsaService', 
   function ($scope, 
             $location, 
             $stateParams, 
+            $modal,
             benefitDisplayService, 
-            LifeInsuranceService, 
+            BasicLifeInsuranceService,
+            SupplementalLifeInsuranceService, 
             StdService,
             LtdService, 
             FsaService){
@@ -339,8 +343,12 @@ var employerBenefits = employersController.controller('employerBenefits',
       $location.path('/admin');
     };
 
-    LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
+    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
       $scope.lifeInsurancePlans = response;
+    });
+
+    SupplementalLifeInsuranceService.getPlansForCompany($stateParams.company_id).then(function(response) {
+      $scope.supplementalLifeInsurancePlans = response;
     });
 
     StdService.getStdPlansForCompany($stateParams.company_id).then(function(plans) {
@@ -354,8 +362,31 @@ var employerBenefits = employersController.controller('employerBenefits',
     FsaService.getFsaPlanForCompany($stateParams.company_id).then(function(plans) {
       $scope.fsaPlans = plans;
     });
+
+    $scope.openSupplementalLifePlanDetailsModal = function(supplementalLifePlan) {
+        $scope.detailsModalCompanyPlanToDisplay = supplementalLifePlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_selection/modal_supplemental_life_plan_details.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+    };
   }
 ]);
+
+var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
+  ['$scope', 
+   '$modal',
+   '$modalInstance',
+   function selectedBenefitsController(
+    $scope, 
+    $modal,
+    $modalInstance){
+        $scope.closePlanDetailsModal = function() {
+          $modalInstance.dismiss();
+        };
+}]);
 
 var employerLetterTemplate = employersController.controller('employerLetterTemplate',
   ['$scope', '$location', '$state', '$stateParams', 'templateRepository', 'documentTypeService',
@@ -615,6 +646,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'employmentAuthRepository',
   'employeeTaxRepository',
   'EmployeeProfileService',
+  'EmploymentStatuses',
   function($scope, 
            $location, 
            $stateParams,
@@ -624,7 +656,8 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            peopleRepository,
            employmentAuthRepository,
            employeeTaxRepository,
-           EmployeeProfileService){
+           EmployeeProfileService,
+           EmploymentStatuses){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
@@ -633,6 +666,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
     var employeeId = $stateParams.eid;
     $scope.employee = {};
     $scope.showEditButton = false;
+    $scope.terminateEmployeeButton = false;
 
     peopleRepository.ByUser.get({userId:employeeId})
       .$promise.then(function(employeeDetail){
@@ -648,8 +682,17 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
 
           // Get the employee profile info that bound to this person
-          EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId).then(function(profile) {
+          EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId)
+          .then(function(profile) {
             $scope.employee.employeeProfile = profile;
+            $scope.$watch('employee.employeeProfile.employmentStatus', 
+              function(employmentStatus){
+                $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmploymentStatuses.terminated;
+                $scope.terminateMessage = undefined;
+                if(!$scope.terminateEmployeeButton){
+                  $scope.terminateMessage = "Employment terminated";
+                };
+            });
           });
         }
       });
@@ -689,8 +732,36 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       return _.filter(output, function(item){return item.value != null;});
     }
 
+    var saveToTerminateEmployment = function(employeeProfileToSave){
+
+      EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave)
+      .then(function(response){
+        $scope.employee.employeeProfile = employeeProfileToSave;
+      }, function(error){
+        $scope.terminateMessage = "Error occurred during saving operation. Please verify " +
+          "all the information enterred are valid. Message: " + error;
+      });
+    };
+
     $scope.editEmployeeDetail = function(){
 
+    };
+
+    $scope.terminateEmployment = function(){
+      var modalInstance = $modal.open({
+          templateUrl: '/static/partials/employee_record/terminate_confirmation.html',
+          controller: 'confirmTerminateEmployeeModalController',
+          size: 'md',
+          backdrop: 'static',
+          resolve: {
+              employeeProfile: function () {
+                  return angular.copy($scope.employee.employeeProfile);
+              }
+          }
+      });
+      modalInstance.result.then(function(employeeProfileConfirmed){
+        saveToTerminateEmployment(employeeProfileConfirmed);
+      });
     };
 
     $scope.editEmployeeProfile = function(){
@@ -730,33 +801,73 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
 
 var editEmployeeProfileModalController = employersController.controller('editEmployeeProfileModalController',
   ['$scope',
+   '$modal',
    '$modalInstance',
    'EmployeeProfileService',
    'employeeProfileModel',
+   'EmploymentStatuses',
     function($scope,
+             $modal,
              $modalInstance,
              EmployeeProfileService,
-             employeeProfileModel){
+             employeeProfileModel,
+             EmploymentStatuses){
       
       $scope.errorMessage = null;
       $scope.employeeProfileModel = employeeProfileModel;
       $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern'];
-      $scope.employmentStatusList = ['Active', 'Prospective', 'Terminated', 'OnLeave'];
+      $scope.employmentStatusList = _.reject(
+        _.values(EmploymentStatuses), 
+          function(status){
+            return status === EmploymentStatuses.terminated;
+          }
+        );
 
       $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
       };
 
       $scope.save = function(employeeProfileToSave) {
-        EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave).then(function(response){
+        EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave)
+        .then(function(response){
           $modalInstance.close(response);
         }, function(error){
           $scope.errorMessage = "Error occurred during saving operation. Please verify " +
             "all the information enterred are valid. Message: " + error;
         });
       };
+      $scope.updateEndDate = function(){
+        $scope.employeeProfileModel.endDate = null;
+      };
     }
   ]);
+
+var confirmTerminateEmployeeModalController = employersController.controller('confirmTerminateEmployeeModalController',[
+  '$scope',
+  '$modalInstance',
+  'employeeProfile',
+  'EmploymentStatuses',
+  function($scope,
+           $modalInstance,
+           employeeProfile,
+           EmploymentStatuses){
+    
+    $scope.employeeProfile = employeeProfile;
+    $scope.endDateRequired = function(){
+      return _.isNull($scope.employeeProfile.endDate) || _.isUndefined($scope.employeeProfile.endDate);
+    };
+
+    $scope.confirm = function(){
+      $scope.employeeProfile.employmentStatus = EmploymentStatuses.terminated;
+      $modalInstance.close($scope.employeeProfile);
+    };
+
+    $scope.cancel = function(){
+      $modalInstance.dismiss();
+    };
+  }                                                                           
+
+])
 
 var employerBenefitsSelected = employersController.controller('employerBenefitsSelected', [
   '$scope', 
@@ -765,7 +876,8 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   'companyRepository',
   'employeeBenefitElectionService',
   'FsaService',
-  'LifeInsuranceService',
+  'BasicLifeInsuranceService',
+  'SupplementalLifeInsuranceService',
   'CompanyEmployeeSummaryService',
   'StdService',
   'LtdService',
@@ -775,7 +887,8 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            companyRepository,
            employeeBenefitElectionService,
            FsaService,
-           LifeInsuranceService,
+           BasicLifeInsuranceService,
+           SupplementalLifeInsuranceService,
            CompanyEmployeeSummaryService,
            StdService,
            LtdService){
@@ -807,12 +920,13 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         //       entity and maybe avoid trying to artificially bundle them together. 
         //       Also, once we have tabs working, we should split them into proper flows.
         _.each(employeeList, function(employee) {
-          LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employee.user.id, function(response) {
-            employee.familyInsurancePlan = response;
-          });
           
-          LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
             employee.basicLifeInsurancePlan = response;
+          });
+
+          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id).then(function(plan) {
+            employee.supplementalLifeInsurancePlan = plan;
           });
 
           // STD

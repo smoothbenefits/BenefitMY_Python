@@ -52,9 +52,11 @@ var benefitsController = brokersControllers.controller(
     '$location',
     '$stateParams',
     '$state',
+    '$modal',
     'benefitDisplayService',
     'benefitPlanRepository',
-    'LifeInsuranceService',
+    'BasicLifeInsuranceService',
+    'SupplementalLifeInsuranceService',
     'StdService',
     'LtdService',
     'FsaService',
@@ -62,9 +64,11 @@ var benefitsController = brokersControllers.controller(
               $location,
               $stateParams,
               $state,
+              $modal,
               benefitDisplayService,
               benefitPlanRepository,
-              LifeInsuranceService,
+              BasicLifeInsuranceService,
+              SupplementalLifeInsuranceService,
               StdService,
               LtdService,
               FsaService){
@@ -105,12 +109,32 @@ var benefitsController = brokersControllers.controller(
         }
       };
 
-      LifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId, function(response) {
+      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId, function(response) {
         $scope.lifeInsurancePlans = response;
       });
 
       $scope.deleteLifeInsurancePlan = function(companyLifeInsurancePlan) {
-        LifeInsuranceService.deleteLifeInsurancePlanForCompany(companyLifeInsurancePlan.id, function() {
+        BasicLifeInsuranceService.deleteLifeInsurancePlanForCompany(companyLifeInsurancePlan.id, function() {
+          $state.reload();
+        });
+      };
+
+      SupplementalLifeInsuranceService.getPlansForCompany($stateParams.clientId).then(function(response) {
+        $scope.supplementalLifeInsurancePlans = response;
+      });
+
+      $scope.openSupplementalLifePlanDetailsModal = function(supplementalLifePlan) {
+        $scope.detailsModalCompanyPlanToDisplay = supplementalLifePlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_selection/modal_supplemental_life_plan_details.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+      };
+
+      $scope.deleteSupplementalLifePlan = function(companyPlanToDelete) {
+        SupplementalLifeInsuranceService.deleteCompanyPlan(companyPlanToDelete.companyPlanId).then(function() {
           $state.reload();
         });
       };
@@ -146,6 +170,19 @@ var benefitsController = brokersControllers.controller(
       };
 }]);
 
+var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
+  ['$scope', 
+   '$modal',
+   '$modalInstance',
+   function selectedBenefitsController(
+    $scope, 
+    $modal,
+    $modalInstance){
+        $scope.closePlanDetailsModal = function() {
+          $modalInstance.dismiss();
+        };
+}]);
+
 var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
   ['$scope', 
    '$location', 
@@ -153,7 +190,8 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    'companyRepository', 
    'employeeBenefitElectionService',
    'FsaService',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
+   'SupplementalLifeInsuranceService',
    'CompanyEmployeeSummaryService',
    'StdService',
    'LtdService',
@@ -164,7 +202,8 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
     companyRepository, 
     employeeBenefitElectionService,
     FsaService,
-    LifeInsuranceService,
+    BasicLifeInsuranceService,
+    SupplementalLifeInsuranceService,
     CompanyEmployeeSummaryService,
     StdService,
     LtdService){
@@ -192,20 +231,16 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
           });
         });
 
-        // TODO: like the above comment for FSA, Life Insurance, or more generally speaking,
-        //       all new benefits going forward, we should consider creating as separate 
-        //       entity and maybe avoid trying to artificially bundle them together. 
-        //       Also, once we have tabs working, we should split them into proper flows.
+        // Supplemental life insurance
         _.each(employeeList, function(employee) {
-          LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employee.user.id, function(response) {
-            employee.familyInsurancePlan = response;
+          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id).then(function(plan) {
+            employee.supplementalLifeInsurancePlan = plan;
           });
         });
 
-
-        // TODO: the same as FSA and life insurance
+        // Basic life insurance
         _.each(employeeList, function(employee) {
-          LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
             employee.basicLifeInsurancePlan = response;
           });
         });
@@ -306,20 +341,25 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
    '$stateParams',
    '$controller',
    'currentUser',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
    function($scope, 
             $state, 
             $stateParams,
             $controller, 
             currentUser,
-            LifeInsuranceService){
+            BasicLifeInsuranceService){
 
     // Inherite scope from base 
     $controller('modalMessageControllerBase', {$scope: $scope});
     
     var clientId = $stateParams.clientId;
-    $scope.newLifeInsurancePlan = {insurance_type: 'Basic'};
+    $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
 
+    $scope.buttonEnabled = function() {
+      return $scope.newLifeInsurancePlan.name && $scope.newLifeInsurancePlan.totalCost 
+             && $scope.newLifeInsurancePlan.employeeContribution 
+             && ($scope.newLifeInsurancePlan.amount || $scope.newLifeInsurancePlan.multiplier);
+    };
 
     // Need the user information for the current user (broker)
     $scope.addLifeInsurancePlan = function() {
@@ -329,18 +369,9 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
         // For now, we combine the gestures of
         //  1. Broker creates the plan
         //  2. Broker enrolls the company for the plan
-        LifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
-          var planId = newPlan.id;
-          var insurance_amount;
-          var multiplier;
-          if ($scope.newLifeInsurancePlan.amount){
-            insurance_amount = $scope.newLifeInsurancePlan.amount;
-          }
-          if ($scope.newLifeInsurancePlan.multiplier){
-            multiplier = $scope.newLifeInsurancePlan.multiplier;
-          }
+        BasicLifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
 
-          LifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(clientId, planId, insurance_amount, multiplier).then(
+          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan).then(
             function() {
               var successMessage = "The new basic life insurance plan has been saved successfully." 
 
@@ -358,56 +389,43 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
    }
   ]);
 
-// Note:
-// This is much alike the controller for the basic life one, but I'd avoid
-// folding the 2 together too much for now, as I could imagine that the 
-// controller could grow into different directions once we have more complete
-// requirements for supplemental life plan setup. 
 var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
   'brokerAddSupplementalLifeInsurance',
   ['$scope',
    '$state',
    '$stateParams',
    '$controller',
-   'LifeInsuranceService',
+   'SupplementalLifeInsuranceService',
    'UserService',
    function($scope, 
             $state, 
             $stateParams,
             $controller, 
-            LifeInsuranceService,
+            SupplementalLifeInsuranceService,
             UserService){
 
     // Inherite scope from base 
     $controller('modalMessageControllerBase', {$scope: $scope});
     
     var clientId = $stateParams.clientId;
-    $scope.newLifeInsurancePlan = {insurance_type: 'Extended'};
+
+    SupplementalLifeInsuranceService.getBlankPlanForCompany(clientId).then(function(blankCompanyPlan) {
+        $scope.newPlan = blankCompanyPlan;
+    });
 
     // Need the user information for the current user (broker)
-    $scope.addLifeInsurancePlan = function() {
-      UserService.getCurUserInfo().then(function(userInfo){
-        $scope.newLifeInsurancePlan.user = userInfo.user.id;
-        // For now, we combine the gestures of
-        //  1. Broker creates the plan
-        //  2. Broker enrolls the company for the plan
-        LifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
-          var planId = newPlan.id;
-
-          LifeInsuranceService.enrollCompanyForSupplementalLifeInsurancePlan(clientId, planId).then(
+    $scope.addPlan = function() {
+        SupplementalLifeInsuranceService.addPlanForCompany($scope.newPlan, clientId).then(
             function() {
               var successMessage = "The new supplemental life insurance plan has been saved successfully." 
 
               $scope.showMessageWithOkayOnly('Success', successMessage);
             },
             function() {
-              var failureMessage = "There was a problem saving the data. Please try again." 
+              var failureMessage = "There was a problem saving the data. Please make sure all required fields have been filled out and try again." 
 
               $scope.showMessageWithOkayOnly('Failed', failureMessage);
-            }
-          );
-        });
-      });
+            });
     };
    }
   ]);
@@ -434,6 +452,10 @@ var brokerAddStdPlanController = brokersControllers.controller(
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
+        
+        $scope.buttonEnabled = function() {
+            return $scope.newPlan.planName && $scope.newPlan.employerContributionPercentage;
+        };
 
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
@@ -476,6 +498,10 @@ var brokerAddLtdPlanController = brokersControllers.controller(
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
+
+        $scope.buttonEnabled = function() {
+            return $scope.newPlan.planName && $scope.newPlan.employerContributionPercentage;
+        };
 
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
@@ -540,7 +566,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
    '$controller', 
    'benefitPlanRepository',
    'benefitDetailsRepository',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
    'currentUser',
     function brokerAddHealthBenefits(
       $scope,
@@ -549,7 +575,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       $controller, 
       benefitPlanRepository,
       benefitDetailsRepository,
-      LifeInsuranceService,
+      BasicLifeInsuranceService,
       currentUser){
 
       // Inherite scope from base 

@@ -215,7 +215,7 @@ benefitmyDomainModelFactories.factory('FsaRepository', ['$resource',
 ]);
 
 // Life insurance plan domain repo
-benefitmyDomainModelFactories.factory('LifeInsurancePlanRepository', ['$resource',
+benefitmyDomainModelFactories.factory('BasicLifeInsurancePlanRepository', ['$resource',
   function ($resource){
     return {
       ByUser: $resource('/api/v1/brokers/:userId/life_insurance_plan/', {userId:'@user_id'}),
@@ -229,7 +229,7 @@ benefitmyDomainModelFactories.factory('LifeInsurancePlanRepository', ['$resource
 ]);
 
 // Life insurance plan to company link domain repo
-benefitmyDomainModelFactories.factory('CompanyLifeInsurancePlanRepository', ['$resource',
+benefitmyDomainModelFactories.factory('CompanyBasicLifeInsurancePlanRepository', ['$resource',
   function ($resource){
     return {
       ByCompany: $resource('/api/v1/company/:companyId/life_insurance_plan/', {companyId:'@company_id'}),
@@ -243,7 +243,7 @@ benefitmyDomainModelFactories.factory('CompanyLifeInsurancePlanRepository', ['$r
 ]);
 
 // Company life insurance plan to users link domain repo
-benefitmyDomainModelFactories.factory('CompanyUserLifeInsurancePlanRepository', ['$resource',
+benefitmyDomainModelFactories.factory('CompanyUserBasicLifeInsurancePlanRepository', ['$resource',
   function ($resource){
     return {
       ByCompany: $resource('/api/v1/company_users/:companyId/life_insurance/', {companyId:'@company_id'}),
@@ -339,6 +339,31 @@ benefitmyDomainModelFactories.factory('EmployeeProfileRepository', ['$resource',
       ByPersonCompany: $resource('/api/v1/person/:personId/company/:companyId/employee_profile', {personId:'@personId', companyId:'@companyId'}),
       ByCompanyUser: $resource('/api/v1/company/:companyId/user/:userId/employee_profile', {userId:'@userId', companyId:'@companyId'}),
       ById: $resource('/api/v1/employee_profile/:id', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      })
+    };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('SupplementalLifeInsuranceRepository', ['$resource',
+  function($resource){
+    return {
+      PlanById: $resource('/api/v1/supplemental_life/:id/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      }),
+      CompanyPlanByCompany: $resource('/api/v1/company/:companyId/company_suppl_life/', {companyId:'@company_id'}),
+      CompanyPlanById: $resource('/api/v1/company_suppl_life/:id/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      }),
+      CompanyPersonPlanByCompany: $resource('/api/v1/company/:companyId/person_comp_suppl_life/', {companyId:'@company_id'}),
+      CompanyPersonPlanByPerson: $resource('/api/v1/person/:personId/person_comp_suppl_life/', {personId:'@person_id'}),
+      CompanyPersonPlanById: $resource('/api/v1/person_comp_suppl_life/:id/', {id:'@id'}, { 
         update: {
             method: 'PUT'
         }
