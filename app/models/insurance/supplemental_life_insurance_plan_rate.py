@@ -33,5 +33,10 @@ class SupplementalLifeInsurancePlanRate(models.Model):
     condition = models.ForeignKey(SysSupplLifeInsuranceCondition,
                                       related_name="supplemental_life_insurance_plan_rate")
 
+    benefit_reduction_percentage = models.DecimalField(max_digits=10,
+                               decimal_places=2,
+                               blank=True,
+                               null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -22,14 +22,15 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
 
         rates = result['supplemental_life_insurance_plan_rate']
         self.assertEqual(type(rates), list)
-        self.assertEqual(len(rates), 36)
+        self.assertEqual(len(rates), 45)
 
-        rate = next(r for r in rates if r['id'] == self.normalize_key(6))
+        rate = next(r for r in rates if r['id'] == self.normalize_key(9))
         self.assertEqual(rate['supplemental_life_insurance_plan'], self.normalize_key(1))
-        self.assertEqual(rate['age_min'], 50)
-        self.assertEqual(rate['age_max'], 55)
+        self.assertEqual(rate['age_min'], 65)
+        self.assertEqual(rate['age_max'], 69)
         self.assertEqual(rate['bind_type'], "self")
-        self.assertEqual(rate['rate'], "0.08")
+        self.assertEqual(rate['rate'], "0.11")
+        self.assertEqual(rate['benefit_reduction_percentage'], "35.00")
         self.assertEqual(rate['condition']['id'], self.normalize_key(2))
 
     def test_delete_suppl_life_insurance(self):
@@ -60,6 +61,7 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
                                  "age_max": 30,
                                  "bind_type": "self",
                                  "rate": 0.03,
+                                 "benefit_reduction_percentage": 20.22,
                                  "condition": 2
                              }
                            ]}
@@ -101,6 +103,7 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
               "age_max": 30,
               "bind_type": "self",
               "rate": 3.33,
+              "benefit_reduction_percentage": 20.22,
               "condition": 3,
             }
           ]
@@ -132,5 +135,6 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         self.assertEqual(rates[0]['age_max'], 30)
         self.assertEqual(rates[0]['bind_type'], "self")
         self.assertEqual(rates[0]['rate'], "3.33")
+        self.assertEqual(rates[0]['benefit_reduction_percentage'], "20.22")
         self.assertEqual(rates[0]['condition']['id'], self.normalize_key(3))
 

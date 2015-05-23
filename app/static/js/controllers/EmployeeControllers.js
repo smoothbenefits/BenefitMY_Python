@@ -1758,7 +1758,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             return moment().diff(birthDate, 'year');
         };
 
-        $scope.getSelfRate = function() {
+        $scope.getSelfRateInfo = function() {
             if (!$scope.familyInfo.selfPerson) {
                 return null;
             }
@@ -1771,12 +1771,19 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
                     return rateRow.ageMin <= age && rateRow.ageMax >= age;
                 });
 
-            return $scope.supplementalLifeInsurancePlan.selfUseTobacco 
-                ? combinedRate.tobaccoRate.ratePer10000
-                : combinedRate.nonTobaccoRate.ratePer10000;
+            if (!combinedRate) {
+                return null;
+            }
+
+            return {
+                'benefitReductionPercentage' : combinedRate.benefitReductionPercentage,
+                'rate' : $scope.supplementalLifeInsurancePlan.selfUseTobacco 
+                            ? combinedRate.tobaccoRate.ratePer10000
+                            : combinedRate.nonTobaccoRate.ratePer10000
+            };
         }
 
-        $scope.getSpouseRate = function() {
+        $scope.getSpouseRateInfo = function() {
             if (!$scope.familyInfo.spousePerson) {
                 return null;
             }
@@ -1794,9 +1801,16 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
                     return rateRow.ageMin <= age && rateRow.ageMax >= age;
                 });
 
-            return $scope.supplementalLifeInsurancePlan.spouseUseTobacco 
-                ? combinedRate.tobaccoRate.ratePer10000
-                : combinedRate.nonTobaccoRate.ratePer10000;
+            if (!combinedRate) {
+                return null;
+            }
+
+            return {
+                'benefitReductionPercentage' : combinedRate.benefitReductionPercentage,
+                'rate' : $scope.supplementalLifeInsurancePlan.spouseUseTobacco 
+                    ? combinedRate.tobaccoRate.ratePer10000
+                    : combinedRate.nonTobaccoRate.ratePer10000
+            };
         }
 
         $scope.getChildRate = function() {
@@ -1807,22 +1821,26 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
         }
 
         $scope.computeSelfPremium = function() {
-            var rate = $scope.getSelfRate();
-            if (!rate) {
+            // Refresh the local cached copy of self rate info
+            $scope.selfRateInfo = $scope.getSelfRateInfo();
+            if (!$scope.selfRateInfo) {
                 return 0;
             }
             var premium = 
-                $scope.supplementalLifeInsurancePlan.selfElectedAmount / 10000 * rate;
+                $scope.supplementalLifeInsurancePlan.selfElectedAmount 
+                    * (1.0 - $scope.selfRateInfo.benefitReductionPercentage / 100.0) / 10000 * $scope.selfRateInfo.rate;
             return premium.toFixed(2);
         }
 
         $scope.computeSpousePremium = function() {
-            var rate = $scope.getSpouseRate();
-            if (!rate) {
+            // Refresh the local cached copy of self rate info
+            $scope.spouseRateInfo = $scope.getSpouseRateInfo();
+            if (!$scope.spouseRateInfo) {
                 return 0;
             }
             var premium = 
-                $scope.supplementalLifeInsurancePlan.spouseElectedAmount / 10000 * rate;
+                $scope.supplementalLifeInsurancePlan.spouseElectedAmount 
+                   * (1.0 - $scope.spouseRateInfo.benefitReductionPercentage / 100.0) / 10000 * $scope.spouseRateInfo.rate;
             return premium.toFixed(2);
         }
 

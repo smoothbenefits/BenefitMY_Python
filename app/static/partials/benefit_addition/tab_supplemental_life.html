@@ -33,6 +33,7 @@
                             <th><div>Age</div></th>
                             <th><div>Tobacco</div></th>
                             <th><div>Non-Tobacco</div></th>
+                            <th><div>Benefit Reduction</div></th>
                         </thead>
                         <tbody>
                             <tr ng-repeat="rate in newPlan.planRates.employeeRateTable">
@@ -61,6 +62,18 @@
                                             ng-model="rate.nonTobaccoRate.ratePer10000"/>
                                     </div>
                                 </td>
+                                <td>
+                                    <div class="input-group">
+                                        <input
+                                            style="max-width: 80px;"
+                                            ng-required="true"
+                                            min="0"
+                                            type="number"
+                                            placeholder="Rate"
+                                            ng-model="rate.benefitReductionPercentage"/>
+                                        <span>%</span>
+                                    </div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -74,6 +87,7 @@
                             <th><div>Age</div></th>
                             <th><div>Tobacco</div></th>
                             <th><div>Non-Tobacco</div></th>
+                            <th><div>Benefit Reduction</div></th>
                         </thead>
                         <tbody>
                             <tr ng-repeat="rate in newPlan.planRates.spouseRateTable">
@@ -100,6 +114,18 @@
                                             type="number"
                                             placeholder="Rate"
                                             ng-model="rate.nonTobaccoRate.ratePer10000"/>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <input
+                                            style="max-width: 80px;"
+                                            ng-required="true"
+                                            min="0"
+                                            type="number"
+                                            placeholder="Rate"
+                                            ng-model="rate.benefitReductionPercentage"/>
+                                        <span>%</span>
                                     </div>
                                 </td>
                             </tr>

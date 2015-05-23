@@ -18,6 +18,10 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         var rateTableMaxAgeLimit = 75;
         var rateTableAgeInterval = 5;
 
+        // An artificial age max limit to support the notion of
+        // 'X age and above'.
+        var ageRangeMax = 200;
+
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
             
@@ -115,9 +119,10 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             viewModel.planRateId = planRateDomainModel.id;
             viewModel.supplementalLifeInsurancePlanId = planRateDomainModel.supplemental_life_insurance_plan;
             viewModel.ageMin = planRateDomainModel.age_min ? Number(planRateDomainModel.age_min) : -1;
-            viewModel.ageMax = planRateDomainModel.age_max ? Number(planRateDomainModel.age_max) : -1;
+            viewModel.ageMax = planRateDomainModel.age_max ? Number(planRateDomainModel.age_max) : ageRangeMax;
             viewModel.bindType = planRateDomainModel.bind_type;
             viewModel.ratePer10000 = planRateDomainModel.rate;
+            viewModel.benefitReductionPercentage = planRateDomainModel.benefit_reduction_percentage || 0;
             viewModel.planCondition = mapConditionDomainToViewModel(planRateDomainModel.condition);
 
             return viewModel;
@@ -261,9 +266,12 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             domainModel.id = planRateViewModel.planRateId;
             domainModel.supplemental_life_insurance_plan = planRateViewModel.supplementalLifeInsurancePlanId;
             domainModel.age_min = planRateViewModel.ageMin < 0 ? null : planRateViewModel.ageMin;
-            domainModel.age_max = planRateViewModel.ageMax < 0 ? null : planRateViewModel.ageMax;
+            domainModel.age_max = planRateViewModel.ageMax >= ageRangeMax ? null : planRateViewModel.ageMax;
             domainModel.bind_type = planRateViewModel.bindType;
             domainModel.rate = planRateViewModel.ratePer10000;
+            domainModel.benefit_reduction_percentage = planRateViewModel.benefitReductionPercentage <= 0 
+                                                        ? null 
+                                                        : planRateViewModel.benefitReductionPercentage;
             domainModel.condition = planRateViewModel.planCondition.conditionId;
 
             return domainModel;
@@ -279,18 +287,22 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             _.each(planRateTableViewModel.employeeRateTable, function(combinedRateViewModel)
                 {
                     if (combinedRateViewModel.tobaccoRate) {
+                        combinedRateViewModel.tobaccoRate.benefitReductionPercentage = combinedRateViewModel.benefitReductionPercentage;
                         domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.tobaccoRate));
                     }
                     if (combinedRateViewModel.nonTobaccoRate) {
+                        combinedRateViewModel.nonTobaccoRate.benefitReductionPercentage = combinedRateViewModel.benefitReductionPercentage;
                         domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.nonTobaccoRate));
                     }
                 });
             _.each(planRateTableViewModel.spouseRateTable, function(combinedRateViewModel)
                 {
                     if (combinedRateViewModel.tobaccoRate) {
+                        combinedRateViewModel.tobaccoRate.benefitReductionPercentage = combinedRateViewModel.benefitReductionPercentage;
                         domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.tobaccoRate));
                     }
                     if (combinedRateViewModel.nonTobaccoRate) {
+                        combinedRateViewModel.nonTobaccoRate.benefitReductionPercentage = combinedRateViewModel.benefitReductionPercentage;
                         domainModel.push(mapPlanRateViewToDomainModel(combinedRateViewModel.nonTobaccoRate));
                     }
                 });
@@ -346,6 +358,12 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 // For display age range text
                 item.getAgeRangeForDisplay = function() { return getAgeRangeForDisplay(this); };
                 
+                // Solicit the benefit reduction percentage
+                // Note: This is under the assumption that the benefit reduction
+                //       percentage is consistent/shared between tobacco and 
+                //       non-tobacco rate entries.  
+                item.benefitReductionPercentage = item.nonTobaccoRate.benefitReductionPercentage; 
+
                 resultRateList.push(item);
             }
 
@@ -365,7 +383,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             for (i = rateTableMinAgeLimit; i+rateTableAgeInterval <= rateTableMaxAgeLimit; i=i+rateTableAgeInterval) {
                 ageRanges.push({"min": i, "max":i+rateTableAgeInterval-1});
             }
-            ageRanges.push({"min": rateTableMaxAgeLimit, "max": -1});
+            ageRanges.push({"min": rateTableMaxAgeLimit, "max": ageRangeMax});
 
             // Construct the rate table based on the inputs and the 
             // age ranges
@@ -375,7 +393,8 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                     'ageMin' : ageRange.min,
                     'ageMax' : ageRange.max,
                     'bindType' : bindType,
-                    'planCondition' : planCondition
+                    'planCondition' : planCondition,
+                    'benefitReductionPercentage': 0
                 });
             });
 
@@ -400,7 +419,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                     spouseTobaccoRateTable, spouseNonTobaccoRateTable);
                 viewModel.childRate = {
                         'ageMin' : -1,
-                        'ageMax' : -1,
+                        'ageMax' : ageRangeMax,
                         'bindType' : 'dependent',
                         'planCondition' : conditions['Unknown']
                     };
@@ -412,11 +431,11 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         };
 
         var getAgeRangeForDisplay = function(rateViewModel) {
-            if (rateViewModel.ageMin >= 0 && rateViewModel.ageMax >= 0){
+            if (rateViewModel.ageMin >= 0 && rateViewModel.ageMax < ageRangeMax){
                 return rateViewModel.ageMin + ' through ' + rateViewModel.ageMax;
             } else if (rateViewModel.ageMin >= 0) {
                 return rateViewModel.ageMin + ' and above';
-            } else if (rateViewModel.ageMax >= 0) {
+            } else if (rateViewModel.ageMax < ageRangeMax) {
                 return rateViewModel.ageMax + ' and under';
             } else {
                 return 'All';
