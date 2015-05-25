@@ -1,0 +1,22 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company_hra_plan": 1,
+      "person": 3
+    },
+    "model": "app.PersonCompanyHraPlan",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company_hra_plan": 1,
+      "person": 4
+    },
+    "model": "app.PersonCompanyHraPlan",
+    "pk": 2
+  }
+]
