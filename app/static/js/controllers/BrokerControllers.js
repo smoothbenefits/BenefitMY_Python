@@ -356,9 +356,11 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
     $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
 
     $scope.buttonEnabled = function() {
-      return $scope.newLifeInsurancePlan.name && $scope.newLifeInsurancePlan.totalCost 
-             && $scope.newLifeInsurancePlan.employeeContribution 
-             && ($scope.newLifeInsurancePlan.amount || $scope.newLifeInsurancePlan.multiplier);
+      return $scope.newLifeInsurancePlan.name 
+             && ($scope.newLifeInsurancePlan.totalCost || $scope.newLifeInsurancePlan.totalCost === 0)
+             && ($scope.newLifeInsurancePlan.employeeContribution || $scope.newLifeInsurancePlan.employeeContribution === 0)
+             && (($scope.newLifeInsurancePlan.amount || $scope.newLifeInsurancePlan.amount === 0) 
+                  || ($scope.newLifeInsurancePlan.multiplier || $scope.newLifeInsurancePlan.multiplier === 0));
     };
 
     // Need the user information for the current user (broker)
