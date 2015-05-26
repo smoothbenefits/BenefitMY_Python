@@ -141,6 +141,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_fsa.html',
                 controller: 'brokerAddFsaPlanController'
             }).
+            state('broker_add_benefit.hra', {
+                url: '/hra',
+                templateUrl: '/static/partials/benefit_addition/tab_hra.html',
+                controller: 'brokerAddHraPlanController'
+            }).
             state('/broker/benefit/selected/:client_id', {
                 url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',

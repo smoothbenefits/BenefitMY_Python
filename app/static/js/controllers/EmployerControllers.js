@@ -309,6 +309,7 @@ var employerBenefits = employersController.controller('employerBenefits',
   'StdService',
   'LtdService',
   'FsaService', 
+  'HraService',
   function ($scope, 
             $location, 
             $stateParams, 
@@ -318,7 +319,8 @@ var employerBenefits = employersController.controller('employerBenefits',
             SupplementalLifeInsuranceService, 
             StdService,
             LtdService, 
-            FsaService){
+            FsaService,
+            HraService){
 
     var compId = $stateParams.company_id;
     $scope.role = 'Admin';
@@ -361,6 +363,10 @@ var employerBenefits = employersController.controller('employerBenefits',
 
     FsaService.getFsaPlanForCompany($stateParams.company_id).then(function(plans) {
       $scope.fsaPlans = plans;
+    });
+
+    HraService.getPlansForCompany($stateParams.company_id).then(function(response) {
+      $scope.hraPlans = response;
     });
 
     $scope.openSupplementalLifePlanDetailsModal = function(supplementalLifePlan) {
@@ -881,6 +887,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   'CompanyEmployeeSummaryService',
   'StdService',
   'LtdService',
+  'HraService',
   function($scope, 
            $location, 
            $stateParams, 
@@ -891,7 +898,8 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            SupplementalLifeInsuranceService,
            CompanyEmployeeSummaryService,
            StdService,
-           LtdService){
+           LtdService,
+           HraService){
     var company_id = $stateParams.company_id;
     $scope.employeeList = [];
 
@@ -937,6 +945,11 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
           // LTD
           LtdService.getUserEnrolledLtdPlanByUser(employee.user.id).then(function(response){
             employee.userLtdPlan = response;
+          });
+
+          // HRA
+          HraService.getPersonPlanByUser(employee.user.id).then(function(plan) {
+            employee.hraPlan = plan;
           });
 
         });

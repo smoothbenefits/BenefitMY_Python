@@ -14,8 +14,5 @@ class CompanyHraPlan(models.Model):
         Company,
         related_name="company_hra_plan")
 
-    cost_per_month = models.DecimalField(
-        max_digits=20, decimal_places=2, blank=True, null=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -18,7 +18,6 @@ class CompanyHraPlanTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result), dict)
         self.assertEqual(result['company'], self.normalize_key(1))
         self.assertEqual(result['hra_plan']['id'], self.normalize_key(1))
-        self.assertEqual(result['cost_per_month'], '300.45')
 
     def test_get_company_hra_plan_by_company(self):
         response = self.client.get(reverse('company_hra_plan_by_company_api',
@@ -32,7 +31,6 @@ class CompanyHraPlanTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result[0]), dict)
         self.assertEqual(result[0]['company'], self.normalize_key(1))
         self.assertEqual(result[0]['hra_plan']['id'], self.normalize_key(1))
-        self.assertEqual(result[0]['cost_per_month'], '300.45')
 
     def test_delete_company_hra_plan(self):
         response = self.client.get(reverse('company_hra_plan_api',

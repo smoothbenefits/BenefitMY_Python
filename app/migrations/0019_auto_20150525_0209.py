@@ -15,7 +15,6 @@ class Migration(migrations.Migration):
             name='CompanyHraPlan',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('cost_per_month', models.DecimalField(null=True, max_digits=20, decimal_places=2, blank=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('company', models.ForeignKey(related_name='company_hra_plan', to='app.Company')),

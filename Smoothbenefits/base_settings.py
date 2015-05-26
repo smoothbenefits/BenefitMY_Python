@@ -240,7 +240,8 @@ PIPELINE_JS = {
             'js/services/LoggingService.js',
             'js/services/BrowserDetectionService.js',
             'js/services/SupplementalLifeInsuranceService.js',
-            'js/services/SupplementalLifeInsuranceConditionService.js'
+            'js/services/SupplementalLifeInsuranceConditionService.js',
+            'js/services/HraService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }
