@@ -6,12 +6,14 @@ benefitmyService.factory('BasicLifeInsuranceService',
    'CompanyUserBasicLifeInsurancePlanRepository',
    'PersonService',
    '$q',
+   'EmployeeProfileService',
   function (
       BasicLifeInsurancePlanRepository,
       CompanyBasicLifeInsurancePlanRepository,
       CompanyUserBasicLifeInsurancePlanRepository,
       PersonService,
-      $q){
+      $q,
+      EmployeeProfileService){
 
     var getFilteredPercentageNumber = function(rawPercent){
         var reg = new RegExp(/^[0-9]+([\.][0-9]+)*/g);
@@ -206,7 +208,23 @@ benefitmyService.factory('BasicLifeInsuranceService',
                 planEnrollments = { enrolled: false, life_insurance_beneficiary: [] };
               }
 
-              successCallBack(planEnrollments);
+              //If we have the salary multiplier, we need to figure that out.
+              if(!planEnrollments.company_life_insurance.insurance_amount && 
+                 _.isNumber(planEnrollments.company_life_insurance.salary_multiplier)){
+                EmployeeProfileService.getEmployeeProfileForCompanyUser(planEnrollments.company_life_insurance.company, userId)
+                .then(function(profile){
+                  if(_.isNumber(profile.annualBaseSalary)){
+                    planEnrollments.company_life_insurance.insurance_amount = profile.annualBaseSalary * planEnrollments.company_life_insurance.salary_multiplier;
+                  }
+                  else{
+                    planEnrollments.company_life_insurance.insurance_amount = 'No Salary Information Found'
+                  }
+                  successCallBack(planEnrollments);
+                });
+              }
+              else{
+                successCallBack(planEnrollments);
+              }
 
             }, function(error){
               errorCallBack(error);
