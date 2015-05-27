@@ -32,6 +32,9 @@ from app.models.insurance.ltd_insurance_plan import LtdInsurancePlan
 from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
 from app.models.insurance.user_company_ltd_insurance_plan import \
     UserCompanyLtdInsurancePlan
+from app.models.hra.hra_plan import HraPlan
+from app.models.hra.company_hra_plan import CompanyHraPlan
+from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.fsa.fsa import FSA
 from app.models.direct_deposit import DirectDeposit
 from app.models.user_bank_account import UserBankAccount
@@ -278,6 +281,8 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'FSA Amount')
         col_num = self._write_field(excelSheet, 0, col_num, 'Dependent FSA Amount')
 
+        col_num = self._write_field(excelSheet, 0, col_num, 'HRA Plan Name')
+
         for i in range(0, max_dependents):
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep First Name ' + `i+1`)
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep Middle Initial ' + `i+1`)
@@ -307,6 +312,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         start_column_num = self._write_employee_basic_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_supplemental_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_fsa_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_hra_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_all_dependents_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
         return
 
@@ -554,6 +560,17 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             return col_num
 
         return col_num + 2
+
+    def _write_employee_hra_info(self, employee_user_id, excelSheet, row_num, col_num):
+        employee_persons = Person.objects.filter(user=employee_user_id, relationship='self')
+        if (len(employee_persons) > 0):
+            employee_person = employee_persons[0]
+            employee_plans = PersonCompanyHraPlan.objects.filter(person=employee_person.id)
+            if (len(employee_plans) > 0):
+                plan = employee_plans[0]
+                col_num = self._write_field(excelSheet, row_num, col_num, plan.company_hra_plan.hra_plan.name)
+
+        return col_num + 1
 
     ''' Both broker and employer should be able to get summary of all 
         benefit situations of all employees of the company

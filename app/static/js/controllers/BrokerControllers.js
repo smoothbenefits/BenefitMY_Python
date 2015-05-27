@@ -60,6 +60,7 @@ var benefitsController = brokersControllers.controller(
     'StdService',
     'LtdService',
     'FsaService',
+    'HraService',
     function ($scope,
               $location,
               $stateParams,
@@ -71,7 +72,8 @@ var benefitsController = brokersControllers.controller(
               SupplementalLifeInsuranceService,
               StdService,
               LtdService,
-              FsaService){
+              FsaService,
+              HraService){
       $scope.role = 'Broker';
       $scope.showAddBenefitButton = true;
       $scope.benefitDeletable = true;
@@ -168,6 +170,16 @@ var benefitsController = brokersControllers.controller(
           $state.reload();
         });
       };
+
+      HraService.getPlansForCompany($stateParams.clientId).then(function(response) {
+        $scope.hraPlans = response;
+      });
+
+      $scope.deleteHraPlan = function(companyPlanToDelete) {
+        HraService.deleteCompanyPlan(companyPlanToDelete.companyPlanId).then(function() {
+          $state.reload();
+        });
+      };
 }]);
 
 var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
@@ -195,6 +207,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    'CompanyEmployeeSummaryService',
    'StdService',
    'LtdService',
+   'HraService',
    function selectedBenefitsController(
     $scope, 
     $location, 
@@ -206,7 +219,8 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
     SupplementalLifeInsuranceService,
     CompanyEmployeeSummaryService,
     StdService,
-    LtdService){
+    LtdService,
+    HraService){
 
       var clientId = $stateParams.client_id;
       $scope.employeeList = [];
@@ -257,6 +271,13 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
             LtdService.getUserEnrolledLtdPlanByUser(employee.user.id).then(function(response){
                 employee.userLtdPlan = response;
             });
+        });
+
+        // HRA
+        _.each(employeeList, function(employee) {
+          HraService.getPersonPlanByUser(employee.user.id).then(function(plan) {
+            employee.hraPlan = plan;
+          });
         });
 
         $scope.clientCount = _.size(employeeList);
@@ -559,6 +580,47 @@ var brokerAddFsaPlan = brokersControllers.controller(
     };
   }]
 );
+
+var brokerAddHraPlanController = brokersControllers.controller(
+  'brokerAddHraPlanController',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$controller',
+   'HraService',
+   'UserService',
+   function($scope, 
+            $state, 
+            $stateParams,
+            $controller, 
+            HraService,
+            UserService){
+
+    // Inherite scope from base 
+    $controller('modalMessageControllerBase', {$scope: $scope});
+    
+    var clientId = $stateParams.clientId;
+
+    HraService.getBlankPlanForCompany(clientId).then(function(blankCompanyPlan) {
+        $scope.newPlan = blankCompanyPlan;
+    });
+
+    // Need the user information for the current user (broker)
+    $scope.addPlan = function() {
+        HraService.addPlanForCompany($scope.newPlan, clientId).then(
+            function() {
+              var successMessage = "The new HRA plan has been saved successfully." 
+
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            },
+            function() {
+              var failureMessage = "There was a problem saving the data. Please make sure all required fields have been filled out and try again." 
+
+              $scope.showMessageWithOkayOnly('Failed', failureMessage);
+        });
+    };
+   }
+]);
 
 var brokerAddHealthBenefits = brokersControllers.controller(
   'brokerAddHealthBenefits',

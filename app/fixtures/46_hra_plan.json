@@ -1,0 +1,21 @@
+[
+  {
+    "fields": {
+      "name": "HRA Basic",
+      "description" : "Will reimburse 100% of the deductible.",
+      "created_at": "2015-05-23T14:09:38Z",
+      "updated_at": "2015-05-23T15:23:33Z"
+    },
+    "model": "app.HraPlan",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "BCBS HRA",
+      "created_at": "2015-05-23T14:09:38Z",
+      "updated_at": "2015-05-23T15:23:33Z"
+    },
+    "model": "app.HraPlan",
+    "pk": 2
+  }
+]

@@ -42,6 +42,10 @@ from insurance.supplemental_life_insurance_beneficiary import SupplementalLifeIn
 from insurance.supplemental_life_insurance_plan import SupplementalLifeInsurancePlan
 from insurance.supplemental_life_insurance_plan_rate import SupplementalLifeInsurancePlanRate
 
+from hra.hra_plan import HraPlan
+from hra.company_hra_plan import CompanyHraPlan
+from hra.person_company_hra_plan import PersonCompanyHraPlan
+
 from fsa.company_fsa_plan import CompanyFsaPlan
 from fsa.fsa import FSA
 from fsa.fsa_plan import FsaPlan

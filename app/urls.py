@@ -94,6 +94,14 @@ from app.views.insurance.supplemental_life_insurance_plan_view import \
     SupplementalLifeInsurancePlanView
 from app.views.sys_suppl_life_insurance_condition_view import SysSupplementalLifeInsuranceConditionView
 
+from app.views.hra.hra_plan_view import HraPlanView
+from app.views.hra.company_hra_plan_view import (
+    CompanyHraPlanView,
+    CompanyHraPlanByCompanyView)
+from app.views.hra.person_company_hra_plan_view import (
+    PersonCompanyHraPlanView,
+    PersonCompanyHraPlanByPersonView)
+
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
@@ -263,6 +271,22 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
+
+    # HRA api
+    url(r'^%s/hra_plan/(?P<pk>\w+)/?$' % PREFIX,
+        HraPlanView.as_view(), name='hra_plan_api'),
+
+    url(r'^%s/company_hra_plan/(?P<pk>\w+)/?$' % PREFIX,
+        CompanyHraPlanView.as_view(), name='company_hra_plan_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/company_hra_plan/?$' % PREFIX,
+        CompanyHraPlanByCompanyView.as_view(), name='company_hra_plan_by_company_api'),
+
+    url(r'^%s/person_company_hra_plan/(?P<pk>\w+)/?$' % PREFIX,
+        PersonCompanyHraPlanView.as_view(), name='person_company_hra_plan_api'),
+
+    url(r'^%s/person/(?P<person_id>\w+)/person_company_hra_plan/?$' % PREFIX,
+        PersonCompanyHraPlanByPersonView.as_view(), name='person_company_hra_plan_by_person_api'),
 
     # util api
 

@@ -19,6 +19,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'DirectDepositService',
    'StdService',
    'LtdService',
+   'HraService',
   function ($scope,
             $location,
             $state,
@@ -36,7 +37,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
             EmploymentProfileService,
             DirectDepositService,
             StdService,
-            LtdService){
+            LtdService,
+            HraService){
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
@@ -158,6 +160,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
       // LTD
       LtdService.getUserEnrolledLtdPlanByUser(userId).then(function(response){
         $scope.userLtdPlan = response;
+      });
+
+      // HRA
+      HraService.getPersonPlanByUser(userId).then(function(response){
+        $scope.hraPlan = response;
       });
 
     });
@@ -963,6 +970,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
    'StdService',
    'LtdService',
    'FsaService', 
+   'HraService',
     function employeeBenefitsSignup(
       $scope,
       $state,
@@ -972,7 +980,8 @@ var employeeBenefitsSignup = employeeControllers.controller(
       SupplementalLifeInsuranceService,
       StdService,
       LtdService, 
-      FsaService){
+      FsaService,
+      HraService){
 
       // Inherite scope from base 
       $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -984,6 +993,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var stdPlans;
       var ltdPlans;
       var fsaPlans;
+      var hraPlans;
 
       var promise = $scope.companyIdPromise.then(function(companyId){
         return BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic');
@@ -1006,6 +1016,10 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(fsaPlansResponse) {
         fsaPlans = fsaPlansResponse;
+        return HraService.getPlansForCompany(companyId);
+      })
+      .then(function(hraPlansResponse) {
+        hraPlans = hraPlansResponse;
       });
 
       promise.then(function(result){
@@ -1050,6 +1064,13 @@ var employeeBenefitsSignup = employeeControllers.controller(
           $scope.tabs.push({
               "heading": "LTD",
               "state": "employee_benefit_signup.ltd"
+          });
+        }
+
+        if (hraPlans.length > 0) {
+          $scope.tabs.push({
+              "heading": "HRA",
+              "state": "employee_benefit_signup.hra"
           });
         }
 
@@ -2037,6 +2058,71 @@ var ltdBenefitsSignup = employeeControllers.controller(
         $scope.openPlanDetailsModal = function() {
             $modal.open({
               templateUrl: '/static/partials/benefit_selection/modal_ltd_plan_details.html',
+              controller: 'planDetailsModalController',
+              size: 'lg',
+              scope: $scope
+            });
+        };
+
+    }]);
+
+var hraBenefitsSignup = employeeControllers.controller(
+  'hraBenefitsSignup',
+  ['$scope',
+   '$controller',
+   '$modal',
+   'HraService',
+    function hraBenefitsSignup(
+      $scope,
+      $controller,
+      $modal,
+      HraService){
+        
+        // Inherite scope from base 
+        $controller('benefitsSignupControllerBase', {$scope: $scope});
+
+        var employeeId = $scope.employeeId;
+
+        $scope.enrollBenefits = true;
+
+        $scope.companyIdPromise.then(function(companyId){
+            HraService.getPlansForCompany(companyId).then(function(companyPlans) {
+                if (companyPlans.length > 0) {
+                    $scope.companyPlan = companyPlans[0];
+                }
+                else 
+                {
+                    throw new Error('Did not locate active company HRA plans!');
+                }
+            });
+        });
+
+        HraService.getPersonPlanByUser(employeeId, true).then(function(personPlan) {
+            $scope.personPlan = personPlan;
+        });
+
+        $scope.save = function() {
+            // Save plan selection
+            $scope.personPlan.companyPlanId = $scope.companyPlan.companyPlanId;
+            var savePromise = $scope.enrollBenefits ? 
+                HraService.savePersonPlan($scope.personPlan) :
+                HraService.deletePlansForUser(employeeId);
+
+            savePromise.then(
+                function() {
+                    $scope.showSaveSuccessModal();
+                    $scope.myForm.$setPristine();
+                }
+              , function(error) {
+                    alert('Failed to save your benefits election. Please try again later.');
+                }
+            );
+        };
+
+        $scope.openPlanDetailsModal = function() {
+            $scope.detailsModalCompanyPlanToDisplay = $scope.companyPlan;
+            $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_hra_plan_details.html',
               controller: 'planDetailsModalController',
               size: 'lg',
               scope: $scope
