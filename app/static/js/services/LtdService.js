@@ -118,10 +118,11 @@ benefitmyService.factory('LtdService',
                         var salary = profile.annualBaseSalary;
                         var benefitPercentage = (ltdPlan.percentageOfSalary / 100);
                         var rate = ltdPlan.rate;
+                        var rateBase = 10;
                         var employeeContribution = 1 - (ltdPlan.employerContributionPercentage / 100);
                         var numOfPeriods = 26; // biweekly
 
-                        var premium = (salary * benefitPercentage * rate * employeeContribution / numOfPeriods).toFixed(2);
+                        var premium = (salary * benefitPercentage * (rate / rateBase) * employeeContribution / numOfPeriods).toFixed(2);
 
                         deferred.resolve(premium);
                     }, function(error) {
