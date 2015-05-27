@@ -1018,8 +1018,8 @@ var employeeBenefitsSignup = employeeControllers.controller(
         fsaPlans = fsaPlansResponse;
         return HraService.getPlansForCompany(companyId);
       })
-      .then(function(fsaPlansResponse) {
-        hraPlans = fsaPlansResponse;
+      .then(function(hraPlansResponse) {
+        hraPlans = hraPlansResponse;
       });
 
       promise.then(function(result){
