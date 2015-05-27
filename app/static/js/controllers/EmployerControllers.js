@@ -689,7 +689,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
               function(employmentStatus){
                 $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmploymentStatuses.terminated;
                 $scope.terminateMessage = undefined;
-                if(!$scope.terminateEmployeeButton){
+                if(employmentStatus && employmentStatus === EmploymentStatuses.terminated){
                   $scope.terminateMessage = "Employment terminated";
                 };
             });
