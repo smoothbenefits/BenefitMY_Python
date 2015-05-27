@@ -371,3 +371,27 @@ benefitmyDomainModelFactories.factory('SupplementalLifeInsuranceRepository', ['$
     };
   }
 ]);
+
+benefitmyDomainModelFactories.factory('HraRepository', ['$resource',
+  function($resource){
+    return {
+      PlanById: $resource('/api/v1/hra_plan/:id/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      }),
+      CompanyPlanByCompany: $resource('/api/v1/company/:companyId/company_hra_plan/', {companyId:'@company_id'}),
+      CompanyPlanById: $resource('/api/v1/company_hra_plan/:id/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      }),
+      CompanyPersonPlanByPerson: $resource('/api/v1/person/:personId/person_company_hra_plan/', {personId:'@person_id'}),
+      CompanyPersonPlanById: $resource('/api/v1/person_company_hra_plan/:id/', {id:'@id'}, { 
+        update: {
+            method: 'PUT'
+        }
+      })
+    };
+  }
+]);

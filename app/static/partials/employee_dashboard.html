@@ -268,6 +268,34 @@
             </tbody>
         </table>
     </div>
+
+    <!-- HRA summary table -->
+    <div class="table-responsive table-holder table">
+        <div class="table-sub-title">Health Reimbursement Accounts (HRA)</div>
+        <table class="table table-striped" ng-show="!hraPlan">
+            <tbody>
+                <tr>
+                    <td width="180">No active HRA plan</td>
+                </tr>
+            </tbody>    
+        </table>
+        <table class="table table-striped" ng-show="hraPlan">
+            <thead>
+                <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Description</span></th>
+                    <th><span>Last Updated</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{hraPlan.planName}}</td>
+                    <td>{{hraPlan.planDescription}}</td>
+                    <td>{{hraPlan.lastUpdateDateTime}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div><!-- / .content-body -->
 
 <div class="content-header">

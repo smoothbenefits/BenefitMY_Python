@@ -247,5 +247,32 @@
         </table>
     </div>
 
+    <!-- HRA benefits summary -->
+    <div class="table-responsive table-holder" ng-if="hraPlans && hraPlans.length > 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Health Reimbursement Accounts (HRA)</span></th>
+                    <th><span>Description</span></th>
+                    <th><span>Enrollment Date</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="hraPlan in hraPlans">
+                    <td>
+                        {{hraPlan.planName}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteHraPlan(hraPlan)" href="javascript:void(0);">X</a>
+                    </td>
+                    <td >
+                        {{hraPlan.planDescription}}
+                    </td>
+                    <td >
+                        {{hraPlan.createdDateForDisplay}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <div class="back"><a href="javascript:void(0);" ng-click="backtoDashboard()">&laquo; Back</a></div>
 </div>
