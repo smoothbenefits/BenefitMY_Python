@@ -209,17 +209,20 @@ benefitmyService.factory('BasicLifeInsuranceService',
               }
 
               //If we have the salary multiplier, we need to figure that out.
-              if(!planEnrollments.company_life_insurance.insurance_amount && 
+              if(planEnrollments.enrolled &&
+                 !planEnrollments.company_life_insurance.insurance_amount && 
                  _.isNumber(planEnrollments.company_life_insurance.salary_multiplier)){
-                EmployeeProfileService.getEmployeeProfileForCompanyUser(planEnrollments.company_life_insurance.company, userId)
+                var basicPlanNeedsSalary = planEnrollments;
+
+                EmployeeProfileService.getEmployeeProfileForCompanyUser(basicPlanNeedsSalary.company_life_insurance.company, userId)
                 .then(function(profile){
                   if(_.isNumber(profile.annualBaseSalary)){
-                    planEnrollments.company_life_insurance.insurance_amount = profile.annualBaseSalary * planEnrollments.company_life_insurance.salary_multiplier;
+                    basicPlanNeedsSalary.company_life_insurance.insurance_amount = profile.annualBaseSalary * basicPlanNeedsSalary.company_life_insurance.salary_multiplier;
                   }
                   else{
-                    planEnrollments.company_life_insurance.insurance_amount = 'No Salary Information Found'
+                    basicPlanNeedsSalary.company_life_insurance.insurance_amount = 'No Salary Information Found'
                   }
-                  successCallBack(planEnrollments);
+                  successCallBack(basicPlanNeedsSalary);
                 });
               }
               else{
