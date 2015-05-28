@@ -9,7 +9,11 @@ BenefitMyApp.directive('bmDatePicker', function() {
     templateUrl: '/static/partials/common/datepicker.html',
     controller: ['$scope',
                 function($scope) {
-                  $scope.model = moment().format('MM/DD/YYYY');
+                  if ($scope.model) {
+                    $scope.model = moment($scope.model).format('MM/DD/YYYY');
+                  } else {
+                    $scope.model = moment().format('MM/DD/YYYY');
+                  }
                   $scope.opened = false;
                   $scope.format = 'MM/dd/yyyy';
 
