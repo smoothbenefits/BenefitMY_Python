@@ -1,19 +1,19 @@
 import reversion
 
 from django.db import models
+from ..sys_suppl_life_insurance_condition import SysSupplLifeInsuranceCondition
 from supplemental_life_insurance_plan import SupplementalLifeInsurancePlan
 
 BIND_TYPES = (('self', 'Self'),
              ('spouse', 'Spouse'),
              ('dependent', 'Dependent'))
 
-CONDITIONS = (('tobacco', 'Tobacco'),
-              ('non-tobacco', 'Non-Tobacco'))
-
 @reversion.register
 class SupplementalLifeInsurancePlanRate(models.Model):
     supplemental_life_insurance_plan = models.ForeignKey(SupplementalLifeInsurancePlan,
-                                                         related_name="supplemental_life_insurance_plan_rate")
+                                                         related_name="supplemental_life_insurance_plan_rate",
+                                                         blank=True,
+                                                         null=True)
     age_min = models.SmallIntegerField(blank=True, 
                                        null=True,
                                        verbose_name="Min value of age. Null for children")
@@ -30,8 +30,13 @@ class SupplementalLifeInsurancePlanRate(models.Model):
                                blank=False,
                                null=False)
 
-    condition = models.CharField(max_length=64,
-                                 choices=CONDITIONS)
+    condition = models.ForeignKey(SysSupplLifeInsuranceCondition,
+                                      related_name="supplemental_life_insurance_plan_rate")
+
+    benefit_reduction_percentage = models.DecimalField(max_digits=10,
+                               decimal_places=2,
+                               blank=True,
+                               null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

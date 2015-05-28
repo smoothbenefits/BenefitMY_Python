@@ -138,6 +138,13 @@ settings.constant('tabLayoutGlobalConfig', [
                 name: "fsa",
                 active: false,
                 state: "broker_add_benefit.fsa"
+            },
+            {
+                id: 7,
+                verbose_name: "HRA",
+                name: "hra",
+                active: false,
+                state: "broker_add_benefit.hra"
             }
         ]
     },
@@ -175,3 +182,10 @@ settings.constant('tabLayoutGlobalConfig', [
         ]
     }
 ]);
+
+settings.constant('EmploymentStatuses',{
+    active: 'Active', 
+    prospective: 'Prospective', 
+    terminated: 'Terminated', 
+    onLeave:'OnLeave'
+});

@@ -38,6 +38,7 @@ class HashPkValidationMiddleware(object):
         self._decode_key(view_kwargs, 'feature_id')
         self._decode_key(view_kwargs, 'person_id')
         self._decode_key(view_kwargs, 'company_id')
+        self._decode_key(view_kwargs, 'plan_id')
 
         return None
 

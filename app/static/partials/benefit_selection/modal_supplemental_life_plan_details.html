@@ -1,0 +1,139 @@
+<div class="modal-header">
+    <h4 class="modal-title">Supplemental Life Insurance Plan Details</h4>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-label">Basic Information</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            <div class="table-responsive table-holder">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th><span>Plan Name</span></th>
+                            <th><span>Use Employee Age for Spouse Rate Calculation?</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{detailsModalCompanyPlanToDisplay.planName}}</td>
+                            <td>{{detailsModalCompanyPlanToDisplay.useEmployeeAgeForSpouse ? 'Yes' : 'No'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-label">Rate Information</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            Employee Rate (per $10,000 Coverage per Month)       
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            <div class="table-responsive table-holder">
+                <table class="table table-striped">
+                    <thead>
+                        <th><div>Age</div></th>
+                        <th><div>Tobacco</div></th>
+                        <th><div>Non-Tobacco</div></th>
+                        <th><div>Benefit Reduction*</div></th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="rate in detailsModalCompanyPlanToDisplay.planRates.employeeRateTable">
+                            <td>{{rate.getAgeRangeForDisplay()}}</td>
+                            <td>
+                                <div>${{rate.tobaccoRate.ratePer10000}}</div>
+                            </td>
+                            <td>
+                                <div>${{rate.nonTobaccoRate.ratePer10000}}</div>
+                            </td>
+                            <td>
+                                <div>{{rate.benefitReductionPercentage}}%</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 12px;">
+        <div class="col-md-8 col-md-offset-1">
+            <span class="label label-info">* <b>Benefit Reduction</b> indicates the percentage of reduction in elected coverage amount and corresponding premium.</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            Spouse Rate (per $10,000 Coverage per Month)       
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            <div class="table-responsive table-holder">
+                <table class="table table-striped">
+                    <thead>
+                        <th><div>Age</div></th>
+                        <th><div>Tobacco</div></th>
+                        <th><div>Non-Tobacco</div></th>
+                        <th><div>Benefit Reduction*</div></th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="rate in detailsModalCompanyPlanToDisplay.planRates.spouseRateTable">
+                            <td>{{rate.getAgeRangeForDisplay()}}</td>
+                            <td>
+                                <div>${{rate.tobaccoRate.ratePer10000}}</div>
+                            </td>
+                            <td>
+                                <div>${{rate.nonTobaccoRate.ratePer10000}}</div>
+                            </td>
+                            <td>
+                                <div>{{rate.benefitReductionPercentage}}%</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 12px;">
+        <div class="col-md-8 col-md-offset-1">
+            <span class="label label-info">* <b>Benefit Reduction</b> indicates the percentage of reduction in elected coverage amount and corresponding premium.</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            Child(ren) Rate (per $10,000 Coverage per Month)       
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            <div class="table-responsive table-holder">
+                <table class="table table-striped">
+                    <thead>
+                        <th><div>Age</div></th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ALL</td>
+                            <td>
+                                <div>${{detailsModalCompanyPlanToDisplay.planRates.childRate.ratePer10000}}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
+</div>

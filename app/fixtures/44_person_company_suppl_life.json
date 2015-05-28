@@ -1,0 +1,38 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company_supplemental_life_insurance_plan": 1,
+      "person": 3,
+      "self_elected_amount": 150000,
+      "spouse_elected_amount": 150000,
+      "child_elected_amount": 150000,
+      "self_premium_per_month": 0.15,
+      "spouse_premium_per_month": 0.15,
+      "child_premium_per_month": 0.20,
+      "self_condition": 2,
+      "spouse_condition": 3
+    },
+    "model": "app.PersonCompSupplLifeInsurancePlan",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company_supplemental_life_insurance_plan": 1,
+      "person": 4,
+      "self_elected_amount": 2500000,
+      "spouse_elected_amount": 780000,
+      "child_elected_amount": 1900000,
+      "self_premium_per_month": 2.59,
+      "spouse_premium_per_month": 0.37,
+      "child_premium_per_month": 7.78,
+      "self_condition": 3,
+      "spouse_condition": 2
+    },
+    "model": "app.PersonCompSupplLifeInsurancePlan",
+    "pk": 2
+  }
+]

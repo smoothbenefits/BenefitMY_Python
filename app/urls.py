@@ -76,16 +76,31 @@ from app.views.insurance.user_company_std_insurance_plan_view import (
     CompanyUsersStdInsuranceView)
 from app.views.insurance.std_insurance_plan_view import StdInsurancePlanView
 
-
-
 from app.views.insurance.company_ltd_insurance_plan_view import \
     CompanyLtdInsurancePlanView
-
 from app.views.insurance.user_company_ltd_insurance_plan_view import (
     UserCompanyLtdInsuranceView,
     CompanyUsersLtdInsuranceView)
 from app.views.insurance.ltd_insurance_plan_view import LtdInsurancePlanView
 
+from app.views.insurance.company_supplemental_life_insurance_plan_view import (
+    CompanySupplementalLifeInsurancePlanView, 
+    CompanySupplementalLifeInsurancePlanByCompanyView)
+from app.views.insurance.person_company_supplemental_life_insurance_plan_view import (
+    PersonCompanySupplementalLifeInsurancePlanView,
+    CompanyPersonsSupplementalLifeInsuranceView,
+    PersonSupplementalLifeInsuranceByPersonView)
+from app.views.insurance.supplemental_life_insurance_plan_view import \
+    SupplementalLifeInsurancePlanView
+from app.views.sys_suppl_life_insurance_condition_view import SysSupplementalLifeInsuranceConditionView
+
+from app.views.hra.hra_plan_view import HraPlanView
+from app.views.hra.company_hra_plan_view import (
+    CompanyHraPlanView,
+    CompanyHraPlanByCompanyView)
+from app.views.hra.person_company_hra_plan_view import (
+    PersonCompanyHraPlanView,
+    PersonCompanyHraPlanByPersonView)
 
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
@@ -209,6 +224,28 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
 
+    # Supplemental life insurance api
+    url(r'^%s/supplemental_life_condition/?$' % PREFIX,
+        SysSupplementalLifeInsuranceConditionView.as_view(), name='suppl_life_condition'),
+
+    url(r'^%s/supplemental_life/(?P<pk>\w+)/?$' % PREFIX,
+        SupplementalLifeInsurancePlanView.as_view(), name='suppl_life_api'),
+
+    url(r'^%s/company_suppl_life/(?P<pk>\w+)/?$' % PREFIX,
+        CompanySupplementalLifeInsurancePlanView.as_view(), name='comp_suppl_life_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/company_suppl_life/?$' % PREFIX,
+        CompanySupplementalLifeInsurancePlanByCompanyView.as_view(), name='company_comp_suppl_life'),
+
+    url(r'^%s/person_comp_suppl_life/(?P<pk>\w+)/?$' % PREFIX,
+        PersonCompanySupplementalLifeInsurancePlanView.as_view(), name='person_suppl_life_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/person_comp_suppl_life/?$' % PREFIX,
+        CompanyPersonsSupplementalLifeInsuranceView.as_view(), name='company_person_supple_life'),
+
+    url(r'^%s/person/(?P<person_id>\w+)/person_comp_suppl_life/?$' % PREFIX,
+        PersonSupplementalLifeInsuranceByPersonView.as_view(), name='person_person_supple_life'),
+
     # STD insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
         StdInsurancePlanView.as_view(), name='broker_std_insurance_api'),
@@ -234,6 +271,22 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
+
+    # HRA api
+    url(r'^%s/hra_plan/(?P<pk>\w+)/?$' % PREFIX,
+        HraPlanView.as_view(), name='hra_plan_api'),
+
+    url(r'^%s/company_hra_plan/(?P<pk>\w+)/?$' % PREFIX,
+        CompanyHraPlanView.as_view(), name='company_hra_plan_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/company_hra_plan/?$' % PREFIX,
+        CompanyHraPlanByCompanyView.as_view(), name='company_hra_plan_by_company_api'),
+
+    url(r'^%s/person_company_hra_plan/(?P<pk>\w+)/?$' % PREFIX,
+        PersonCompanyHraPlanView.as_view(), name='person_company_hra_plan_api'),
+
+    url(r'^%s/person/(?P<person_id>\w+)/person_company_hra_plan/?$' % PREFIX,
+        PersonCompanyHraPlanByPersonView.as_view(), name='person_company_hra_plan_by_person_api'),
 
     # util api
 

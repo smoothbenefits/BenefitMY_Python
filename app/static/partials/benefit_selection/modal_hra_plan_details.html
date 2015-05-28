@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h4 class="modal-title">Health Reimbursement Accounts (HRA) Details</h4>
+</div>
+<div class="modal-body">
+    <h2>HRA benefits details from your company:</h2>
+    <div class="table-responsive table-holder" ng-if="detailsModalCompanyPlanToDisplay">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Description</span></th>
+                    <th><span>Paid By</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{detailsModalCompanyPlanToDisplay.planName}}</td>
+                    <td>{{detailsModalCompanyPlanToDisplay.planDescription}}</td>
+                    <td>100% by Employer</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
+</div>

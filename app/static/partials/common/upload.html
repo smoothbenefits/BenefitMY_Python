@@ -22,7 +22,7 @@
 <div class="alert alert-success" ng-show="uploadManager.deleteSuccess">
     The file has been deleted successfully
 </div>
-<div id="upload_display_table" class="table-responsive table-holder table" ng-if="uploadManager.viewMode == 'table'" ng-show="uploadManager.uploadedFiles.length>0">
+<div id="upload_display_table" class="table-responsive table-holder table" ng-if="uploadManager.viewMode == 'table'" ng-show="uploadManager.uploadedFiles.length>0 || uploadManager.inProgress">
     <div class="table-sub-title">My Current Uploads</div>
     <table class="table table-striped">
         <thead>
@@ -54,7 +54,7 @@
         </tbody>
     </table>
 </div>
-<div id="no_upload_display_table" class="table-responsive table-holder table" ng-if="uploadManager.viewMode == 'table'" ng-show="uploadManager.uploadedFiles.length==0">
+<div id="no_upload_display_table" class="table-responsive table-holder table" ng-if="uploadManager.viewMode == 'table'" ng-show="uploadManager.uploadedFiles.length==0 && !uploadManager.inProgress">
     <table class="table table-striped">
         <thead>
             <tr>
