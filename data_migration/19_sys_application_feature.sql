@@ -1,4 +1,5 @@
 DO $$
+BEGIN
 
 IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'FSA') THEN
     insert into app_sysapplicationfeature (feature) 

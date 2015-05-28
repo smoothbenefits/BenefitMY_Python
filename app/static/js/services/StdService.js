@@ -116,14 +116,15 @@ benefitmyService.factory('StdService',
                     EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId).then(function(profile) {
                         var salary = profile.annualBaseSalary;
                         var maxBenefitAnnually = stdPlan.maxBenefitWeekly * 52;
-                        var maxBenefit = Math.min(salary, maxBenefitAnnually); // Max benefit cannot exceed preset cap
                         var benefitPercentage = (stdPlan.percentageOfSalary / 100);
+
+                        var maxBenefit = Math.min(salary * benefitPercentage, maxBenefitAnnually); // Max benefit cannot exceed preset cap
                         var rate = stdPlan.rate;
                         var rateBase = 10;
                         var employeeContribution = 1 - (stdPlan.employerContributionPercentage / 100);
                         var numOfPeriods = 26; // biweekly
 
-                        var premium = (maxBenefit * benefitPercentage * (rate / rateBase) * employeeContribution / numOfPeriods).toFixed(2);
+                        var premium = (maxBenefit * (rate / rateBase) * employeeContribution / numOfPeriods).toFixed(2);
 
                         deferred.resolve(premium);
                     }, function(error) {
