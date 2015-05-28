@@ -27,6 +27,24 @@ benefitmyService.factory('BasicLifeInsuranceService',
         }
         return rawPercent;
       };
+
+    var getInsuranceAmountBasedOnSalary = function(companyId, userId, policyItem){
+      var deferred = $q.defer();
+      EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId)
+      .then(function(profile){
+        if(_.isNumber(profile.annualBaseSalary)){
+          policyItem.company_life_insurance.insurance_amount = profile.annualBaseSalary * policyItem.company_life_insurance.salary_multiplier;
+        }
+        else{
+          policyItem.company_life_insurance.insurance_amount = 'No Salary Information Found'
+        }
+        deferred.resolve(policyItem);
+      }, function(error){
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    };
+
     return {
       saveLifeInsurancePlan: function(planToSave, successCallBack, errorCallBack) {
         // map to API fields
@@ -212,17 +230,10 @@ benefitmyService.factory('BasicLifeInsuranceService',
               if(planEnrollments.enrolled &&
                  !planEnrollments.company_life_insurance.insurance_amount && 
                  _.isNumber(planEnrollments.company_life_insurance.salary_multiplier)){
-                var basicPlanNeedsSalary = planEnrollments;
-
-                EmployeeProfileService.getEmployeeProfileForCompanyUser(basicPlanNeedsSalary.company_life_insurance.company, userId)
-                .then(function(profile){
-                  if(_.isNumber(profile.annualBaseSalary)){
-                    basicPlanNeedsSalary.company_life_insurance.insurance_amount = profile.annualBaseSalary * basicPlanNeedsSalary.company_life_insurance.salary_multiplier;
-                  }
-                  else{
-                    basicPlanNeedsSalary.company_life_insurance.insurance_amount = 'No Salary Information Found'
-                  }
-                  successCallBack(basicPlanNeedsSalary);
+                
+                getInsuranceAmountBasedOnSalary(planEnrollments.company_life_insurance.company, userId, planEnrollments)
+                .then(function(enrolledPlan){
+                  successCallBack(enrolledPlan);
                 });
               }
               else{
