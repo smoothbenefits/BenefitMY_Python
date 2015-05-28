@@ -132,7 +132,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
         all_user_data = json.loads(response.content)
         self.assertTrue('users' in all_user_data)
         all_users = all_user_data['users']
-        self.assertEqual(len(all_users), 6)
+        self.assertEqual(len(all_users), 7)
         for user in all_users:
             self.assertIn('id', user)
             self.assertIn('first_name', user)

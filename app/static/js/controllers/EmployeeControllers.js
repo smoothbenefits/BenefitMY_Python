@@ -12,12 +12,14 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'EmployeePreDashboardValidationService',
    'EmployeeLetterSignatureValidationService',
    'FsaService',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
+   'SupplementalLifeInsuranceService',
    'employeePayrollService', 
    'EmploymentProfileService',
    'DirectDepositService',
    'StdService',
    'LtdService',
+   'HraService',
   function ($scope,
             $location,
             $state,
@@ -29,12 +31,14 @@ var employeeHome = employeeControllers.controller('employeeHome',
             EmployeePreDashboardValidationService,
             EmployeeLetterSignatureValidationService,
             FsaService,
-            LifeInsuranceService,
+            BasicLifeInsuranceService,
+            SupplementalLifeInsuranceService,
             employeePayrollService,
             EmploymentProfileService,
             DirectDepositService,
             StdService,
-            LtdService){
+            LtdService,
+            HraService){
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
@@ -123,12 +127,13 @@ var employeeHome = employeeControllers.controller('employeeHome',
         $scope.fsaElection = response;
       });
 
-      // Life Insurance
-      LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(userId, function(response) {
-        $scope.familyInsurancePlan = response;
+      // Supplemental Life Insurance
+      SupplementalLifeInsuranceService.getPlanByUser(userId).then(function(plan) {
+        $scope.supplementalLifeInsurancePlan = plan;
       });
 
-      LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
+      // Basic Life Insurance
+      BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
         $scope.basicLifeInsurancePlan = response;
       });
 
@@ -157,6 +162,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
         $scope.userLtdPlan = response;
       });
 
+      // HRA
+      HraService.getPersonPlanByUser(userId).then(function(response){
+        $scope.hraPlan = response;
+      });
+
     });
 
     $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
@@ -170,7 +180,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
      };
   }
 ]);
-
 
 var viewDocument = employeeControllers.controller('viewDocument',
   ['$scope', '$location', '$stateParams', 'userDocument', 'currentUser', 'documentRepository',
@@ -407,9 +416,16 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
     $scope.signDocument = function(){
       if(!signatureUpdated){
         alert('Please sign your name on the signature pad');
+        return;
       }
       if(!$scope.employee.downloadI9){
         alert('Please download the I-9 document and acknowledge you have read the entire form above.');
+        return;
+      }
+      if($scope.employee.auth_type === 'Aaw' && !$scope.employee.expiration_na 
+         && !$scope.employee.auth_expiration) {
+        alert('Please provide the expiration date for your work authorization document.');
+        return;
       }
       else
       {
@@ -644,7 +660,6 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
     $scope.displayAll = false;
-
 
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
@@ -950,19 +965,23 @@ var employeeBenefitsSignup = employeeControllers.controller(
    '$state',
    '$stateParams',
    '$controller',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
+   'SupplementalLifeInsuranceService',
    'StdService',
    'LtdService',
    'FsaService', 
+   'HraService',
     function employeeBenefitsSignup(
       $scope,
       $state,
       $stateParams,
       $controller,
-      LifeInsuranceService,
+      BasicLifeInsuranceService,
+      SupplementalLifeInsuranceService,
       StdService,
       LtdService, 
-      FsaService){
+      FsaService,
+      HraService){
 
       // Inherite scope from base 
       $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -974,16 +993,17 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var stdPlans;
       var ltdPlans;
       var fsaPlans;
+      var hraPlans;
 
       var promise = $scope.companyIdPromise.then(function(companyId){
-        return LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic');
+        return BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic');
       })
       .then(function(basicPlans) {
         basicLifePlans = basicPlans;
-        return LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Extended');
+        return SupplementalLifeInsuranceService.getPlansForCompany(companyId);
       })
-      .then(function(optionalPlans) {
-        optionalLifePlans = optionalPlans;
+      .then(function(supplementalPlans) {
+        supplementalLifePlans = supplementalPlans;
         return StdService.getStdPlansForCompany(companyId);
       })
       .then(function(stdPlansResponse) {
@@ -996,6 +1016,10 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(fsaPlansResponse) {
         fsaPlans = fsaPlansResponse;
+        return HraService.getPlansForCompany(companyId);
+      })
+      .then(function(hraPlansResponse) {
+        hraPlans = hraPlansResponse;
       });
 
       promise.then(function(result){
@@ -1014,9 +1038,9 @@ var employeeBenefitsSignup = employeeControllers.controller(
         }
 
         if ($scope.supplementalLifeInsuranceEnabled) {
-          if (optionalLifePlans.length > 0) {
+          if (supplementalLifePlans.length > 0) {
             $scope.tabs.push({
-                  "heading": "Optional Life",
+                  "heading": "Suppl. Life",
                   "state":"employee_benefit_signup.supplemental_life"
               });
           }
@@ -1040,6 +1064,13 @@ var employeeBenefitsSignup = employeeControllers.controller(
           $scope.tabs.push({
               "heading": "LTD",
               "state": "employee_benefit_signup.ltd"
+          });
+        }
+
+        if (hraPlans.length > 0) {
+          $scope.tabs.push({
+              "heading": "HRA",
+              "state": "employee_benefit_signup.hra"
           });
         }
 
@@ -1085,7 +1116,7 @@ var healthBenefitsSignup = employeeControllers.controller(
    'PersonService',
    'benefitDisplayService',
    'FsaService',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
     function healthBenefitsSignup(
       $scope,
       $state,
@@ -1099,7 +1130,7 @@ var healthBenefitsSignup = employeeControllers.controller(
       PersonService,
       benefitDisplayService,
       FsaService,
-      LifeInsuranceService){
+      BasicLifeInsuranceService){
 
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1404,19 +1435,12 @@ var healthBenefitsSignup = employeeControllers.controller(
         $scope.benefit_type = 'Health Benefits';
 
         $scope.openPlanDetailsModal = function() {
-            $scope.planDetailsModalInstance = $modal.open({
+            $modal.open({
               templateUrl: '/static/partials/benefit_selection/modal_health_plan.html',
-              controller: 'healthBenefitsSignup',
+              controller: 'planDetailsModalController',
               size: 'lg',
               scope: $scope
             });
-        };
-
-        $scope.closePlanDetailsModal = function() {
-          if ($scope.planDetailsModalInstance) {
-            $scope.planDetailsModalInstance.dismiss();
-            $scope.planDetailsModalInstance = null;
-          }
         };
     }]);
 
@@ -1432,7 +1456,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
    'benefitListRepository',
    'benefitDisplayService',
    'FsaService',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
     function fsaBenefitsSignup(
       $scope,
       $state,
@@ -1444,7 +1468,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
       benefitListRepository,
       benefitDisplayService,
       FsaService,
-      LifeInsuranceService){
+      BasicLifeInsuranceService){
 
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1522,7 +1546,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
    'benefitListRepository',
    'benefitDisplayService',
    'FsaService',
-   'LifeInsuranceService',
+   'BasicLifeInsuranceService',
     function basicLifeBenefitsSignup(
       $scope,
       $state,
@@ -1534,7 +1558,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
       benefitListRepository,
       benefitDisplayService,
       FsaService,
-      LifeInsuranceService){
+      BasicLifeInsuranceService){
         
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1542,7 +1566,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
         var employeeId = $scope.employeeId;
 
         $scope.companyIdPromise.then(function(companyId){
-          LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic').then(function(plans) {
+          BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Basic').then(function(plans) {
 
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = plans[0];
@@ -1550,7 +1574,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             }
 
             // Get current user's basic life insurance plan situation
-            LifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
+            BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
               $scope.basicLifeInsurancePlan.life_insurance_beneficiary = plan.life_insurance_beneficiary;
               $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = plan.life_insurance_contingent_beneficiary;
             }, function(error){
@@ -1586,7 +1610,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           // TO-DO: Need to better organize the logic to save basic life insurance
           ///////////////////////////////////////////////////////////////////////////
           if (!$scope.basicLifeInsurancePlan.selected){
-            LifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
+            BasicLifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
               , function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
@@ -1596,7 +1620,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               });
           }
           else{
-            LifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
+            BasicLifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
               var enrolledBasic = _.find(enrolledPlans, function(plan){ 
                 return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';
               });
@@ -1610,7 +1634,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               
               $scope.basicLifeInsurancePlan.currentUserId = employeeId;
 
-              LifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan
+              BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan
               , function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
@@ -1629,122 +1653,278 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
 
     }]);
 
-var optionalLifeBenefitsSignup = employeeControllers.controller(
-  'optionalLifeBenefitsSignup',
+var supplementalLifeBenefitsSignup = employeeControllers.controller(
+  'supplementalLifeBenefitsSignup',
   ['$scope',
    '$state',
    '$location',
    '$stateParams',
    '$controller',
-   'clientListRepository',
-   'employeeBenefits',
-   'benefitListRepository',
-   'benefitDisplayService',
-   'FsaService',
-   'LifeInsuranceService',
-    function optionalLifeBenefitsSignup(
+   '$modal',
+   'SupplementalLifeInsuranceService',
+   'SupplementalLifeInsuranceConditionService',
+   'PersonService',
+    function supplementalLifeBenefitsSignup(
       $scope,
       $state,
       $location,
       $stateParams,
       $controller,
-      clientListRepository,
-      employeeBenefits,
-      benefitListRepository,
-      benefitDisplayService,
-      FsaService,
-      LifeInsuranceService){
+      $modal,
+      SupplementalLifeInsuranceService,
+      SupplementalLifeInsuranceConditionService,
+      PersonService){
         
         // Inherite scope from base 
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
         var employeeId = $scope.employeeId;
 
-        $scope.lifeInsurancePlans = [ { text: '<Waive Supplemental Life Insurance>', value: '0' } ];
-        $scope.selectedLifeInsurancePlan = $scope.lifeInsurancePlans[0];
+        SupplementalLifeInsuranceConditionService.getConditions().then(function(conditions){
+            $scope.conditions = conditions;
+        });
+
+        $scope.familyInfo={};
+        PersonService.getFamilyInfo($scope.employeeId)
+        .then(function(family){
+          _.each(family, function(member){
+            if(member.relationship === 'self'){
+                $scope.familyInfo.selfPerson = member;
+            }
+            else if (member.relationship === 'spouse')
+            {
+                $scope.familyInfo.spousePerson = member;
+            }
+            else{
+              $scope.familyInfo.hasChild = true;
+            }
+          });
+        });
+
+        $scope.companyPlans = [ { text: '<Waive Supplemental Life Insurance>', value: null } ];
 
         $scope.companyIdPromise.then(function(companyId){
-          LifeInsuranceService.getLifeInsurancePlansForCompanyByType(companyId, 'Extended').then(function(plans) {
+          SupplementalLifeInsuranceService.getPlansForCompany(companyId).then(function(plans) {
 
             // Populate available company plans
             _.each(plans, function(plan) {
-              $scope.lifeInsurancePlans.push({ text: plan.life_insurance_plan.name, value: plan.id });  
+              $scope.companyPlans.push({ text: plan.planName, value: plan });  
             });
 
-            // Get current user's family life insurance plan situation
-            LifeInsuranceService.getInsurancePlanEnrollmentsForAllFamilyMembersByUser(employeeId, function(familyPlan) {
-              $scope.familyLifeInsurancePlan = familyPlan;
+            // Get current user's plan situation
+            SupplementalLifeInsuranceService.getPlanByUser(employeeId, true).then(function(plan) {
+                // It is guaranteed there is a plan returned, as the call above
+                // asks the service to return a blank plan if non-existing plan
+                // enrollments found.
+                $scope.supplementalLifeInsurancePlan = plan;
 
-              // Determine the right plan option to select
-              if (!$scope.isLifeInsuranceWaived($scope.familyLifeInsurancePlan)) {
-                var optionToSelect = _.where($scope.lifeInsurancePlans, {value:$scope.familyLifeInsurancePlan.mainPlan.company_life_insurance.id});
-                if (optionToSelect.length > 0) {
-                  $scope.selectedLifeInsurancePlan = optionToSelect[0];
+                // Figure out the right option to select, based on the 
+                // current company plan bound to the person plan in scope
+                var optionToSelect = _.find($scope.companyPlans, function(option) {
+                    return option.value && option.value.companyPlanId === $scope.supplementalLifeInsurancePlan.companyPlanId;
+                });
+
+                if (optionToSelect) {
+                  $scope.selectedCompanyPlan = optionToSelect;
                 }
-              }
+                else {
+                  // Default to "waived" selection, as the person does not have a plan
+                  // enrollment yet.
+                  $scope.selectedCompanyPlan = $scope.companyPlans[0];
+                }
+
+                // "Translate" condition to a more easily presentable/manipulatable property
+                $scope.supplementalLifeInsurancePlan.selfUseTobacco = $scope.supplementalLifeInsurancePlan.selfPlanCondition != null
+                    && $scope.supplementalLifeInsurancePlan.selfPlanCondition.name === 'Tobacco';
+            
+                $scope.supplementalLifeInsurancePlan.spouseUseTobacco = $scope.supplementalLifeInsurancePlan.spousePlanCondition != null
+                    && $scope.supplementalLifeInsurancePlan.spousePlanCondition.name === 'Tobacco';
             });
           });
         });
 
         // User should be able to add up to 4 beneficiaries of life insurance
-        $scope.addBeneficiary = function(){
-          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.push({});
+        $scope.addMainBeneficiary = function(){
+          $scope.supplementalLifeInsurancePlan.beneficiaryList.mainBeneficiaries.push({
+            'beneficiaryTier': '1'
+          });
         };
 
         $scope.addContingentBeneficiary = function(){
-          if (!$scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary){
-            $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary = [];
-          }
-          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.push({});
+          $scope.supplementalLifeInsurancePlan.beneficiaryList.contingentBeneficiaries.push({
+            'beneficiaryTier': '2'
+          });
         };
 
-        $scope.removeBeneficiary = function(beneficiary){
-          var index = $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.indexOf(beneficiary);
-          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_beneficiary.splice(index, 1);
+        $scope.removeMainBeneficiary = function(beneficiary){
+          var index = $scope.supplementalLifeInsurancePlan.beneficiaryList.mainBeneficiaries.indexOf(beneficiary);
+          $scope.supplementalLifeInsurancePlan.beneficiaryList.mainBeneficiaries.splice(index, 1);
         };
 
         $scope.removeContingentBeneficiary = function(beneficiary){
-          var index = $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.indexOf(beneficiary);
-          $scope.familyLifeInsurancePlan.mainPlan.life_insurance_contingent_beneficiary.splice(index, 1);
+          var index = $scope.supplementalLifeInsurancePlan.beneficiaryList.contingentBeneficiaries.indexOf(beneficiary);
+          $scope.supplementalLifeInsurancePlan.beneficiaryList.contingentBeneficiaries.splice(index, 1);
         };
 
         // Whether the user selected to waive life insurance
-        $scope.isWaiveLifeInsuranceSelected = function() {
-          return $scope.selectedLifeInsurancePlan.value === "0";
+        $scope.isWaiveBenefitSelected = function() {
+          return !$scope.selectedCompanyPlan.value;
         };
 
-        // Whether the current status of the given employee's family life insurance
-        // plan indicates a waived/not-yet-enrolled state
-        $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
-          return (!employeeFamilyLifeInsurancePlan) 
-            || (!employeeFamilyLifeInsurancePlan.mainPlan)
-            || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
+        $scope.isValidCompanyPlanSelected = function() {
+            return $scope.selectedCompanyPlan && !$scope.isWaiveBenefitSelected();
         };
+
+        $scope.computeAgeFromBirthDate = function(birthDate) {
+            return moment().diff(birthDate, 'year');
+        };
+
+        $scope.getSelfRateInfo = function() {
+            if (!$scope.familyInfo.selfPerson) {
+                return null;
+            }
+
+            var age = $scope.computeAgeFromBirthDate($scope.familyInfo.selfPerson.birth_date);
+
+            var combinedRate = _.find(
+                $scope.selectedCompanyPlan.value.planRates.employeeRateTable,
+                function(rateRow) {
+                    return rateRow.ageMin <= age && rateRow.ageMax >= age;
+                });
+
+            if (!combinedRate) {
+                return null;
+            }
+
+            return {
+                'benefitReductionPercentage' : combinedRate.benefitReductionPercentage,
+                'rate' : $scope.supplementalLifeInsurancePlan.selfUseTobacco 
+                            ? combinedRate.tobaccoRate.ratePer10000
+                            : combinedRate.nonTobaccoRate.ratePer10000
+            };
+        }
+
+        $scope.getSpouseRateInfo = function() {
+            if (!$scope.familyInfo.spousePerson) {
+                return null;
+            }
+
+            // For spouse rate calculation, respect the flag set on the plan
+            // about whether to use employee birth date for spouse. 
+            var age = $scope.computeAgeFromBirthDate(
+                $scope.selectedCompanyPlan.value.useEmployeeAgeForSpouse 
+                    ? $scope.familyInfo.selfPerson.birth_date
+                    : $scope.familyInfo.spousePerson.birth_date);
+
+            var combinedRate = _.find(
+                $scope.selectedCompanyPlan.value.planRates.spouseRateTable,
+                function(rateRow) {
+                    return rateRow.ageMin <= age && rateRow.ageMax >= age;
+                });
+
+            if (!combinedRate) {
+                return null;
+            }
+
+            return {
+                'benefitReductionPercentage' : combinedRate.benefitReductionPercentage,
+                'rate' : $scope.supplementalLifeInsurancePlan.spouseUseTobacco 
+                    ? combinedRate.tobaccoRate.ratePer10000
+                    : combinedRate.nonTobaccoRate.ratePer10000
+            };
+        }
+
+        $scope.getChildRate = function() {
+            if (!$scope.familyInfo.hasChild) {
+                return null;
+            }
+            return $scope.selectedCompanyPlan.value.planRates.childRate.ratePer10000;
+        }
+
+        $scope.computeSelfPremium = function() {
+            // Refresh the local cached copy of self rate info
+            $scope.selfRateInfo = $scope.getSelfRateInfo();
+            if (!$scope.selfRateInfo) {
+                return 0;
+            }
+            var premium = 
+                $scope.supplementalLifeInsurancePlan.selfElectedAmount 
+                    * (1.0 - $scope.selfRateInfo.benefitReductionPercentage / 100.0) / 10000 * $scope.selfRateInfo.rate;
+            return premium.toFixed(2);
+        }
+
+        $scope.computeSpousePremium = function() {
+            // Refresh the local cached copy of self rate info
+            $scope.spouseRateInfo = $scope.getSpouseRateInfo();
+            if (!$scope.spouseRateInfo) {
+                return 0;
+            }
+            var premium = 
+                $scope.supplementalLifeInsurancePlan.spouseElectedAmount 
+                   * (1.0 - $scope.spouseRateInfo.benefitReductionPercentage / 100.0) / 10000 * $scope.spouseRateInfo.rate;
+            return premium.toFixed(2);
+        }
+
+        $scope.computeChildPremium = function() {
+            var rate = $scope.getChildRate();
+            if (!rate) {
+                return 0;
+            }
+            var premium = 
+                $scope.supplementalLifeInsurancePlan.childElectedAmount / 10000 * rate;
+            return premium.toFixed(2);
+        }
 
         $scope.save = function(){
           // Save life insurance
-          if ($scope.isWaiveLifeInsuranceSelected()) {
+          if ($scope.isWaiveBenefitSelected()) {
             // Waive selected. Delete all user plans for this user
-            LifeInsuranceService.deleteFamilyLifeInsurancePlanForUser(employeeId
-              , function() {
+            SupplementalLifeInsuranceService.deletePlansForUser(employeeId).then(
+              function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
               }
               , function(error) {
-                $scope.savedSuccess = false;
-            });
+                alert('Failed to save your benefits election. Please try again later.');
+              }
+            );
           } else {
-            $scope.familyLifeInsurancePlan.selectedCompanyPlan = $scope.selectedLifeInsurancePlan.value;
-            LifeInsuranceService.saveFamilyLifeInsurancePlanForUser($scope.familyLifeInsurancePlan
-              , function() {
+            $scope.supplementalLifeInsurancePlan.companyPlanId = $scope.selectedCompanyPlan.value.companyPlanId; 
+
+            // Translate convenient view model properties back to the proper nested
+            // members
+            $scope.supplementalLifeInsurancePlan.selfPlanCondition = $scope.supplementalLifeInsurancePlan.selfUseTobacco 
+                                                                        ? $scope.conditions['Tobacco']
+                                                                        : $scope.conditions['Non-Tobacco']; 
+
+            $scope.supplementalLifeInsurancePlan.spousePlanCondition = $scope.supplementalLifeInsurancePlan.spouseUseTobacco 
+                                                                        ? $scope.conditions['Tobacco']
+                                                                        : $scope.conditions['Non-Tobacco']; 
+
+            // Persists the premium calculations
+            $scope.supplementalLifeInsurancePlan.selfPremiumPerMonth = $scope.computeSelfPremium();
+            $scope.supplementalLifeInsurancePlan.spousePremiumPerMonth = $scope.computeSpousePremium();
+            $scope.supplementalLifeInsurancePlan.childPremiumPerMonth = $scope.computeChildPremium();
+
+            SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan).then (
+              function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
               }
               , function(error) {
-                $scope.savedSuccess = false;
                 alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
               });
           }
+        };
+
+        $scope.openPlanDetailsModal = function() {
+            $scope.detailsModalCompanyPlanToDisplay = $scope.selectedCompanyPlan.value;
+            $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_supplemental_life_plan_details.html',
+              controller: 'planDetailsModalController',
+              size: 'lg',
+              scope: $scope
+            });
         };
 
         $scope.benefit_type = 'Supplemental Life Insurance';
@@ -1778,10 +1958,17 @@ var stdBenefitsSignup = employeeControllers.controller(
                 // taking the first available plan for the company.
                 if (stdPlans.length > 0) {
                     $scope.companyStdPlan = stdPlans[0];
+                    return $scope.companyStdPlan;
                 }
-            });
+                return {};
+            }).then(function(stdPlan) {
 
-        })
+                StdService.getEmployeePremiumForUserCompanyStdPlan($scope.employeeId, stdPlan)
+                .then(function(premium) {
+                    $scope.companyStdPlan.employeePremium = premium;
+                });
+            });
+        });
 
         $scope.save = function() {
             // Save std
@@ -1801,19 +1988,12 @@ var stdBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.openPlanDetailsModal = function() {
-            $scope.planDetailsModalInstance = $modal.open({
+            $modal.open({
               templateUrl: '/static/partials/benefit_selection/modal_std_plan_details.html',
-              controller: 'stdBenefitsSignup',
+              controller: 'planDetailsModalController',
               size: 'lg',
               scope: $scope
             });
-        };
-
-        $scope.closePlanDetailsModal = function() {
-          if ($scope.planDetailsModalInstance) {
-            $scope.planDetailsModalInstance.dismiss();
-            $scope.planDetailsModalInstance = null;
-          }
         };
 
     }]);
@@ -1845,7 +2025,15 @@ var ltdBenefitsSignup = employeeControllers.controller(
                 // taking the first available plan for the company.
                 if (ltdPlans.length > 0) {
                     $scope.companyLtdPlan = ltdPlans[0];
+                    return $scope.companyLtdPlan;
                 }
+                return {};
+            }).then(function(ltdPlan) {
+
+                LtdService.getEmployeePremiumForUserCompanyLtdPlan($scope.employeeId, ltdPlan)
+                .then(function(premium) {
+                    $scope.companyLtdPlan.employeePremium = premium;
+                });
             });
 
         })
@@ -1868,19 +2056,77 @@ var ltdBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.openPlanDetailsModal = function() {
-            $scope.planDetailsModalInstance = $modal.open({
+            $modal.open({
               templateUrl: '/static/partials/benefit_selection/modal_ltd_plan_details.html',
-              controller: 'ltdBenefitsSignup',
+              controller: 'planDetailsModalController',
               size: 'lg',
               scope: $scope
             });
         };
 
-        $scope.closePlanDetailsModal = function() {
-          if ($scope.planDetailsModalInstance) {
-            $scope.planDetailsModalInstance.dismiss();
-            $scope.planDetailsModalInstance = null;
-          }
+    }]);
+
+var hraBenefitsSignup = employeeControllers.controller(
+  'hraBenefitsSignup',
+  ['$scope',
+   '$controller',
+   '$modal',
+   'HraService',
+    function hraBenefitsSignup(
+      $scope,
+      $controller,
+      $modal,
+      HraService){
+        
+        // Inherite scope from base 
+        $controller('benefitsSignupControllerBase', {$scope: $scope});
+
+        var employeeId = $scope.employeeId;
+
+        $scope.enrollBenefits = true;
+
+        $scope.companyIdPromise.then(function(companyId){
+            HraService.getPlansForCompany(companyId).then(function(companyPlans) {
+                if (companyPlans.length > 0) {
+                    $scope.companyPlan = companyPlans[0];
+                }
+                else 
+                {
+                    throw new Error('Did not locate active company HRA plans!');
+                }
+            });
+        });
+
+        HraService.getPersonPlanByUser(employeeId, true).then(function(personPlan) {
+            $scope.personPlan = personPlan;
+        });
+
+        $scope.save = function() {
+            // Save plan selection
+            $scope.personPlan.companyPlanId = $scope.companyPlan.companyPlanId;
+            var savePromise = $scope.enrollBenefits ? 
+                HraService.savePersonPlan($scope.personPlan) :
+                HraService.deletePlansForUser(employeeId);
+
+            savePromise.then(
+                function() {
+                    $scope.showSaveSuccessModal();
+                    $scope.myForm.$setPristine();
+                }
+              , function(error) {
+                    alert('Failed to save your benefits election. Please try again later.');
+                }
+            );
+        };
+
+        $scope.openPlanDetailsModal = function() {
+            $scope.detailsModalCompanyPlanToDisplay = $scope.companyPlan;
+            $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_hra_plan_details.html',
+              controller: 'planDetailsModalController',
+              size: 'lg',
+              scope: $scope
+            });
         };
 
     }]);
@@ -1964,8 +2210,9 @@ var employeeFamilyController = employeeControllers.controller(
     PersonService){
 
     var selfPerson = null;
+    $scope.employeeId = $stateParams.employeeId;
     $scope.family=[];
-    PersonService.getFamilyInfo($stateParams.employeeId)
+    PersonService.getFamilyInfo($scope.employeeId)
     .then(function(family){
       _.each(family, function(member){
         if(member.relationship === 'self'){
@@ -1988,7 +2235,7 @@ var employeeFamilyController = employeeControllers.controller(
             return member;
           },
           employeeId: function(){
-            return $stateParams.employeeId;
+            return $scope.employeeId;
           }
         }
       });
@@ -2081,3 +2328,16 @@ var employeeFamilyMemberViewModalController = employeeControllers.controller(
         };
 
     }]);
+
+var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
+  ['$scope', 
+   '$modal',
+   '$modalInstance',
+   function selectedBenefitsController(
+    $scope, 
+    $modal,
+    $modalInstance){
+        $scope.closePlanDetailsModal = function() {
+          $modalInstance.dismiss();
+        };
+}]);

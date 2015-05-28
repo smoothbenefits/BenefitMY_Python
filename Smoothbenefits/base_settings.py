@@ -211,6 +211,7 @@ PIPELINE_JS = {
             'js/directives/ConfirmUnsavedOnExit.js',
             'js/directives/UploadManager.js',
             'js/directives/UploadViewer.js',
+            'js/directives/CustomDatePicker.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
@@ -223,7 +224,7 @@ PIPELINE_JS = {
             'js/services/DirectDepositService.js',
             'js/services/EmployeeLetterSignatureValidationService.js',
             'js/services/FsaService.js',
-            'js/services/LifeInsuranceService.js',
+            'js/services/BasicLifeInsuranceService.js',
             'js/services/benefitDisplayService.js',
             'js/services/documentTypeService.js',
             'js/services/PersonService.js',
@@ -235,7 +236,12 @@ PIPELINE_JS = {
             'js/services/StdService.js',
             'js/services/LtdService.js',
             'js/services/ApplicationFeatureService.js',
-            'js/services/EmployeeProfileService.js'
+            'js/services/EmployeeProfileService.js',
+            'js/services/LoggingService.js',
+            'js/services/BrowserDetectionService.js',
+            'js/services/SupplementalLifeInsuranceService.js',
+            'js/services/SupplementalLifeInsuranceConditionService.js',
+            'js/services/HraService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

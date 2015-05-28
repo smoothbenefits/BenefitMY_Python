@@ -3,7 +3,8 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('LtdService', 
     ['$q',
     'LtdRepository',
-    function ($q, LtdRepository){
+    'EmployeeProfileService', 
+    function ($q, LtdRepository, EmployeeProfileService){
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
             
@@ -28,6 +29,7 @@ benefitmyService.factory('LtdService',
             viewModel.eliminationPeriodInMonths = companyPlanDomainModel.elimination_period_in_months;
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
+            viewModel.employerContributionPercentage = companyPlanDomainModel.employer_contribution_percentage;
             
             return viewModel;
         };
@@ -65,6 +67,7 @@ benefitmyService.factory('LtdService',
             domainModel.paid_by = companyPlanViewModel.paidBy;
             domainModel.elimination_period_in_months = companyPlanViewModel.eliminationPeriodInMonths;
             domainModel.company = companyPlanViewModel.company;
+            domainModel.employer_contribution_percentage = companyPlanViewModel.employerContributionPercentage;
 
             domainModel.ltd_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
 
@@ -76,6 +79,7 @@ benefitmyService.factory('LtdService',
 
             domainModel.id = userCompanyPlanViewModel.userCompanyPlanId;
             domainModel.user = userCompanyPlanViewModel.planOwner;
+            domainModel.total_premium_per_period = userCompanyPlanViewModel.employeePremium;
 
             domainModel.company_ltd_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
@@ -99,6 +103,35 @@ benefitmyService.factory('LtdService',
                 function(error){
                     deferred.reject(error);
                 });
+
+                return deferred.promise;
+            },
+
+            getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan) {
+                var deferred = $q.defer();
+
+                if (!ltdPlan) {
+                    deferred.resolve(0);
+                } else {
+                    var companyId = ltdPlan.company;
+                    EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId).then(function(profile) {
+                        var salary = profile.annualBaseSalary;
+                        var maxBenefitAnnually = ltdPlan.maxBenefitMonthly * 12;
+                        var benefitPercentage = (ltdPlan.percentageOfSalary / 100);
+
+                        var benefitAmount = Math.min(salary * benefitPercentage, maxBenefitAnnually); // Benefit amount cannot exceed preset cap
+                        var rate = ltdPlan.rate;
+                        var rateBase = 10;
+                        var employeeContribution = 1 - (ltdPlan.employerContributionPercentage / 100);
+                        var numOfPeriods = 26; // biweekly
+
+                        var premium = (benefitAmount * (rate / rateBase) * employeeContribution / numOfPeriods).toFixed(2);
+
+                        deferred.resolve(premium);
+                    }, function(error) {
+                        deferred.reject(error);
+                    });
+                }
 
                 return deferred.promise;
             },

@@ -13,6 +13,11 @@ class UserCompanyLtdInsurancePlan(models.Model):
         CompanyLtdInsurancePlan,
         related_name="ltd_insurance")
 
+    total_premium_per_period = models.DecimalField(max_digits=10, 
+                                                   decimal_places=2, 
+                                                   blank=True, 
+                                                   null=True)
+
     created_at = models.DateTimeField(auto_now_add=True,
                                       blank=True,
                                       null=True)

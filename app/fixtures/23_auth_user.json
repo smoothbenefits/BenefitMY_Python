@@ -94,5 +94,21 @@
     },
     "model": "app.authuser",
     "pk": 6
+  },
+  {
+    "fields": {
+      "first_name": "Capitain",
+      "last_name": "Hulk",
+      "last_updated": "2015-01-24T16:22:53.911Z",
+      "is_active": true,
+      "is_superuser": true,
+      "is_admin": true,
+      "date_created": "2015-02-05T16:15:13.441Z",
+      "last_login": "2015-02-05T16:21:37.412Z",
+      "password": "pbkdf2_sha256$15000$vOJt1PrfigFT$j3hbMLbxkpcicNF2wLdopIKmDBmfxzR8t2q+T0/yvH0=",
+      "email": "admin@benefitmy.com"
+    },
+    "model": "app.authuser",
+    "pk": 7
   }
 ]

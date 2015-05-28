@@ -1,0 +1,53 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "first_name": "Ted",
+      "middle_name": "",
+      "last_name": "Cowell",
+      "relationship": "self",
+      "email": "beneficiary1@email.com",
+      "phone": "617-259-4758",
+      "person_comp_suppl_life_insurance_plan": 1,
+      "percentage": 20,
+      "tier": 1
+    },
+    "model": "app.SupplementalLifeInsuranceBeneficiary",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "first_name": "Mark",
+      "middle_name": "",
+      "last_name": "Cowell",
+      "relationship": "self",
+      "email": "beneficiary2@email.com",
+      "phone": "617-259-4758",
+      "person_comp_suppl_life_insurance_plan": 1,
+      "percentage": 80,
+      "tier": 1
+    },
+    "model": "app.SupplementalLifeInsuranceBeneficiary",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "first_name": "Lauren",
+      "middle_name": "",
+      "last_name": "Cowell",
+      "relationship": "self",
+      "email": "beneficiary3@email.com",
+      "phone": "617-259-4758",
+      "person_comp_suppl_life_insurance_plan": 1,
+      "percentage": 100,
+      "tier": 2
+    },
+    "model": "app.SupplementalLifeInsuranceBeneficiary",
+    "pk": 3
+  }
+]

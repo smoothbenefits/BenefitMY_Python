@@ -23,6 +23,11 @@ class CompanyStdInsurancePlan(models.Model):
     rate = models.DecimalField(
         max_digits=10, decimal_places=6, blank=True, null=True)
 
+    employer_contribution_percentage = models.DecimalField(max_digits=5, 
+                                                           decimal_places=2,
+                                                           blank=True,
+                                                           null=True)
+
     paid_by = models.CharField(max_length=20,
                               choices=PAID_BY_PARTIES,
                               null=True,
