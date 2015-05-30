@@ -1451,6 +1451,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
    '$location',
    '$stateParams',
    '$controller',
+   '$modal',
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
@@ -1463,6 +1464,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
       $location,
       $stateParams,
       $controller,
+      $modal,
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
@@ -1512,6 +1514,16 @@ var fsaBenefitsSignup = employeeControllers.controller(
         // his/her FSA configuration.
         $scope.isFsaUpdateReasonSelected = function() {
           return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value > 0;
+        };
+
+        $scope.openPlanDetailsModal = function(){
+          $scope.fsaPlanModal = $scope.fsaPlan;
+          $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_fsa_details.html',
+              controller: 'planDetailsModalController',
+              size: 'lg',
+              scope: $scope
+            });
         };
 
         $scope.save = function(){
@@ -1613,7 +1625,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               size: 'lg',
               scope: $scope
             });
-        }
+        };
 
         $scope.save = function(){
 

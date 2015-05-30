@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h4 class="modal-title">Basic Life Insurance Details</h4>
+    <h4 class="modal-title">Flexible Spending Accounts - {{fsaPlanModal.fsaPlanName}}</h4>
 </div>
 <div class="modal-body">
     <div class="row">
@@ -7,7 +7,7 @@
             <div class="form-label">Documents</div>
         </div>
     </div>
-    <bmuploadviewer feature-id="{{companyBasicLifeToDisplay.id}}" upload-type="BasicLife"></bmuploadviewer>
+    <bmuploadviewer feature-id="{{fsaPlanModal.companyPlanId}}" upload-type="FSA"></bmuploadviewer>
 </div>
 
 <div class="modal-footer">
