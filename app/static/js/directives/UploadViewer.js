@@ -14,6 +14,7 @@ BenefitMyApp.directive('bmuploadviewer',
               hideUploadArea: true,
               canManageUpload: false,
               viewMode: $attrs.viewMode || 'table',
+              viewTitle: $attrs.viewTitle,
               uploadedFiles: [],
               files: []
             };

@@ -1541,6 +1541,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
    '$location',
    '$stateParams',
    '$controller',
+   '$modal',
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
@@ -1553,6 +1554,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
       $location,
       $stateParams,
       $controller,
+      $modal,
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
@@ -1603,6 +1605,16 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           list.splice(index, 1);
         };
 
+        $scope.openPlanDetailsModal = function(){
+          $scope.companyBasicLifeToDisplay = $scope.basicLifeInsurancePlan;
+          $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_basic_life_plan_details.html',
+              controller: 'planDetailsModalController',
+              size: 'lg',
+              scope: $scope
+            });
+        }
+
         $scope.save = function(){
 
           ///////////////////////////////////////////////////////////////////////////
@@ -1650,7 +1662,6 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.benefit_type = 'Basic Life Insurance';
-
     }]);
 
 var supplementalLifeBenefitsSignup = employeeControllers.controller(
@@ -2329,7 +2340,7 @@ var employeeFamilyMemberViewModalController = employeeControllers.controller(
 
     }]);
 
-var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
+var planDetailsModalController = employeeControllers.controller('planDetailsModalController',
   ['$scope', 
    '$modal',
    '$modalInstance',

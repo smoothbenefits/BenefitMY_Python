@@ -22,8 +22,8 @@
 <div class="alert alert-success" ng-show="uploadManager.deleteSuccess">
     The file has been deleted successfully
 </div>
+<div class="table-sub-title" ng-if="uploadManager.viewTitle">{{uploadManager.viewTitle}}</div>
 <div id="upload_display_table" class="table-responsive table-holder table" ng-if="uploadManager.viewMode == 'table'" ng-show="uploadManager.uploadedFiles.length>0 || uploadManager.inProgress">
-    <div class="table-sub-title">My Current Uploads</div>
     <table class="table table-striped">
         <thead>
             <tr>
