@@ -14,8 +14,8 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         // Constants
         // Assumption: rateTableMinAgeLimit + N * rateTableAgeInterval = rateTableMaxAgeLimit
         //             i.e. no "fractions" at the end. 
-        var rateTableMinAgeLimit = 25;
-        var rateTableMaxAgeLimit = 75;
+        var rateTableMinAgeLimit = 20;
+        var rateTableMaxAgeLimit = 85;
         var rateTableAgeInterval = 5;
 
         // An artificial age max limit to support the notion of
