@@ -18,6 +18,7 @@ BenefitMyApp.directive('bmuploadmanager',
               hideTypeColumn: $attrs.hideType,
               uploadMode: $attrs.uploadMode || 'area',
               viewMode: $attrs.viewMode || 'table',
+              viewTitle: $attrs.viewTitle,
               uploadedFiles: [],
               files:[],
               deleteS3File: function(file){

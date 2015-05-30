@@ -54,5 +54,40 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 8
+  },
+  {
+    "fields": {
+      "feature": "BasicLife"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 9
+  },
+  {
+    "fields": {
+      "feature": "OptionalLife"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 10
+  },
+  {
+    "fields": {
+      "feature": "STD"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 11
+  },
+  {
+    "fields": {
+      "feature": "LTD"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 12
+  },
+  {
+    "fields": {
+      "feature": "HRA"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 13
   }
 ]

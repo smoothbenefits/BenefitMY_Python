@@ -108,7 +108,6 @@ benefitmyService.factory('UploadService',
             var fileToUpload = {
               'company': userInfo.currentRole.company.id,
               'user': userInfo.user.id,
-              'upload_type': uploadType,
               'company_name': userInfo.currentRole.company.name,
               'file_name': file.name,
               'file_type': get_file_type(file)
