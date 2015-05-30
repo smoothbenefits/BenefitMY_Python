@@ -34,7 +34,6 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload['file_name'], '55-0925_2015_HMO_NE_SG_Product_Chart.pdf')
         self.assertEqual(upload['company'], self.normalize_key(1))
         self.assertEqual(upload['user'], self.normalize_key(1))
-        self.assertEqual(upload['upload_type'], 'MedicalBenefit')
         self.assertIn('application_feature', upload_feature)
         feature_type = upload_feature['application_feature']
         self.assertEqual(feature_type['id'], self.normalize_key(3))
@@ -146,7 +145,6 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload['file_name'], 'Greencard.jpeg')
         self.assertEqual(upload['company'], self.normalize_key(1))
         self.assertEqual(upload['user'], self.normalize_key(2))
-        self.assertEqual(upload['upload_type'], 'I9')
         self.assertIn('application_feature', upload_feature)
         feature_type = upload_feature['application_feature']
         self.assertEqual(feature_type['id'], self.normalize_key(4))
