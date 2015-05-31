@@ -91,6 +91,18 @@
                         </div>
                     </div>
 
+                    <div class="form-label">Gender</div>
+                    <div class="select-box">
+                        <select
+                            class="form-control"
+                            name="gender"
+                            ng-model="person.gender"
+                            ng-required="true">
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+
                     <div class="form-label">Date Of Birth</div>
                     <div class="datebox">
                         <input type="text"
