@@ -50,6 +50,11 @@ AUTHENTICATION_BACKENDS = (
 
 ENCRYPTED_FIELDS_KEYDIR = 'fieldkeys'
 
+
+# Session expiration settings
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 8 * 60 * 60 #Set the expiry to 8 hrs for now.
+
 # Email
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'frank.qiu@gmail.com'
