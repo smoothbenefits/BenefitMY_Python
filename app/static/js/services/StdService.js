@@ -115,9 +115,6 @@ benefitmyService.factory('StdService',
                     var companyId = stdPlan.company;
                     EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId).then(function(profile) {
                         var employeeContribution = 1 - (stdPlan.employerContributionPercentage / 100);
-                        if (employeeContribution === 0) {
-                            deferred.resolve(0.0);
-                        }
 
                         var salary = profile.annualBaseSalary;
                         if (_.isNaN(salary)) {
