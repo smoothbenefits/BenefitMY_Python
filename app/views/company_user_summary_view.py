@@ -536,7 +536,8 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.child_elected_amount)
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.child_premium_per_month)
-        return col_num
+                return col_num
+        return col_num + 9
 
     def _write_family_member_supplemental_life_insurance_info(self, employee_user_id, member_relationship, family_member_plans, excelSheet, row_num, col_num):
         members = Person.objects.filter(user=employee_user_id).filter(relationship=member_relationship)
@@ -569,7 +570,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             if (len(employee_plans) > 0):
                 plan = employee_plans[0]
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.company_hra_plan.hra_plan.name)
-
+                return col_num
         return col_num + 1
 
     ''' Both broker and employer should be able to get summary of all 
