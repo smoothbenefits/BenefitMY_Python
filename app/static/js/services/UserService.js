@@ -33,6 +33,11 @@ benefitmyService.factory('UserService',
             if(curRole){
               userInfo.currentRole = curRole;
             }
+            else{
+              //we cannot find the curRole from path, what can we do?
+              //we will select the first role from the list then.
+              userInfo.currentRole = response.company_roles[0];
+            }
             deferred.resolve(userInfo);
           });
         });
