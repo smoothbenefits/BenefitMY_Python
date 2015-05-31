@@ -29,9 +29,6 @@ MIDDLEWARE_CLASSES = (
     'reversion.middleware.RevisionMiddleware',
 )
 
-# Session expiration settings
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 20 * 60
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases

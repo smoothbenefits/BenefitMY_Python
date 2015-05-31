@@ -16,10 +16,6 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-# Session expiration settings
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 120 * 60
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
