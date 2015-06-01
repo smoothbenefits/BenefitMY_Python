@@ -1986,6 +1986,11 @@ var stdBenefitsSignup = employeeControllers.controller(
                 return {};
             }).then(function(stdPlan) {
 
+                if (stdPlan.employerContributionPercentage === "100.00") {
+                    $scope.companyStdPlan.employeePremium = 0.0;
+                    return;
+                }
+
                 StdService.getEmployeePremiumForUserCompanyStdPlan($scope.employeeId, stdPlan)
                 .then(function(premium) {
                     $scope.companyStdPlan.employeePremium = premium;
@@ -2052,6 +2057,11 @@ var ltdBenefitsSignup = employeeControllers.controller(
                 }
                 return {};
             }).then(function(ltdPlan) {
+
+                if (ltdPlan.employerContributionPercentage === "100.00") {
+                    $scope.companyLtdPlan.employeePremium = 0.0;
+                    return;
+                }
 
                 LtdService.getEmployeePremiumForUserCompanyLtdPlan($scope.employeeId, ltdPlan)
                 .then(function(premium) {
