@@ -127,6 +127,7 @@ benefitmyService.factory(
             userFsa.primary_amount_per_year = parseFloat(userFsa.primary_amount_per_year);
             userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
             userFsa.last_update_date_time = moment(userFsa.updated_at).format(DATE_FORMAT_STRING);
+            userFsa.enrolled = true;
 
             if (callBack) {
               callBack(userFsa);
@@ -135,7 +136,12 @@ benefitmyService.factory(
           function(failedResponse){
             if (failedResponse.status === 404) {
               // Didn't locate FSA record for the user, return a shell one 
-              var shellFsa = { user:user_id, primary_amount_per_year:0, dependent_amount_per_year:0 };
+              var shellFsa = { 
+                user:user_id, 
+                primary_amount_per_year:0, 
+                dependent_amount_per_year:0, 
+                enrolled:false 
+              };
 
               if (callBack) {
                 callBack(shellFsa);
