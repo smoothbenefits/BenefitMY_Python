@@ -77,12 +77,12 @@ var employeeHome = employeeControllers.controller('employeeHome',
     var benefitPromise = companyPromise.then(function(response){
       if(response){
         var curCompanyId;
-          _.each(response.company_roles, function(role){
-            if (role.company_user_type === 'employee'){
-              curCompanyId = role.company.id;
-            }
-          });
-          return curCompanyId;
+        _.each(response.company_roles, function(role){
+          if (role.company_user_type === 'employee'){
+            curCompanyId = role.company.id;
+          }
+        });
+        return curCompanyId;
       }
     });
 
