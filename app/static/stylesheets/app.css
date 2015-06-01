@@ -244,3 +244,14 @@ span.doc-buttons{
 .datebox > .input-group > .form-control {
     height: 38px;
 }
+.view-instruction{
+    margin-top:20px;
+    margin-bottom:30px;
+}
+.view-instruction p{
+    font-size:14px;
+}
+.view-instruction .green-link{
+    color:#6EBE4B;
+    font-weight:bold;
+}
