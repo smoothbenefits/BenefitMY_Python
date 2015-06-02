@@ -91,14 +91,23 @@
                         </div>
                     </div>
 
+                    <div class="form-label">Gender</div>
+                    <div class="select-box">
+                        <select
+                            class="form-control"
+                            name="gender"
+                            ng-model="person.gender"
+                            ng-required="true">
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+
                     <div class="form-label">Date Of Birth</div>
                     <div class="datebox">
-                        <input type="text"
-                            name="birth_date"
-                            ng-model="person.birth_date"
-                            ng-required="true"
-                            min="1900-01-01"
-                            placeholder="yyyy-mm-dd">
+                        <bm-date-picker model="person.birth_date"
+                                        required="true"
+                                        name="birth_date" />
                         <div class="form-validation-error" ng-show="form.birth_date.$dirty && form.birth_date.$invalid">
                             <span ng-show="form.birth_date.$error.required">Date of Birth field is required</span>
                             <span ng-show="form.birth_date.$invalid">Please enter a valid Date of Birth</span>

@@ -6,7 +6,6 @@
       "file_name": "I94.pdf",
       "company": 1,
       "file_type": "application/pdf",
-      "upload_type": "I9",
       "user": 4
     },
     "model": "app.upload",
@@ -19,7 +18,6 @@
       "file_name": "Greencard.jpeg",
       "company": 1,
       "file_type": "image/jpeg",
-      "upload_type": "I9",
       "user": 2
     },
     "model": "app.upload",
@@ -32,7 +30,6 @@
       "file_name": "401KPolicy.pdf",
       "company": 1,
       "file_type": "application/pdf",
-      "upload_type": "Manager",
       "user": 2
     },
     "model": "app.upload",
@@ -45,7 +42,6 @@
       "file_name": "55-0925_2015_HMO_NE_SG_Product_Chart.pdf",
       "company": 1,
       "file_type": "application/pdf",
-      "upload_type": "MedicalBenefit",
       "user": 1
     },
     "model": "app.upload",
@@ -58,7 +54,6 @@
       "file_name": "55-0924_2015_PPO_SG_Product_Chart.pdf",
       "company": 1,
       "file_type": "application/pdf",
-      "upload_type": "MedicalBenefit",
       "user": 1
     },
     "model": "app.upload",
@@ -71,7 +66,6 @@
       "file_name": "MA Dirver License.jpg",
       "company": 1,
       "file_type": "image/jpeg",
-      "upload_type": "Manager",
       "user": 3
     },
     "model": "app.upload",

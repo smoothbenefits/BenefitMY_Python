@@ -77,12 +77,12 @@ var employeeHome = employeeControllers.controller('employeeHome',
     var benefitPromise = companyPromise.then(function(response){
       if(response){
         var curCompanyId;
-          _.each(response.company_roles, function(role){
-            if (role.company_user_type === 'employee'){
-              curCompanyId = role.company.id;
-            }
-          });
-          return curCompanyId;
+        _.each(response.company_roles, function(role){
+          if (role.company_user_type === 'employee'){
+            curCompanyId = role.company.id;
+          }
+        });
+        return curCompanyId;
       }
     });
 
@@ -1451,6 +1451,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
    '$location',
    '$stateParams',
    '$controller',
+   '$modal',
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
@@ -1463,6 +1464,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
       $location,
       $stateParams,
       $controller,
+      $modal,
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
@@ -1514,6 +1516,16 @@ var fsaBenefitsSignup = employeeControllers.controller(
           return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value > 0;
         };
 
+        $scope.openPlanDetailsModal = function(){
+          $scope.fsaPlanModal = $scope.fsaPlan;
+          $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_fsa_details.html',
+              controller: 'planDetailsModalController',
+              size: 'lg',
+              scope: $scope
+            });
+        };
+
         $scope.save = function(){
           // Save FSA selection if user specifies a reason
           if ($scope.isFsaUpdateReasonSelected()){
@@ -1541,6 +1553,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
    '$location',
    '$stateParams',
    '$controller',
+   '$modal',
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
@@ -1553,6 +1566,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
       $location,
       $stateParams,
       $controller,
+      $modal,
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
@@ -1603,6 +1617,16 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           list.splice(index, 1);
         };
 
+        $scope.openPlanDetailsModal = function(){
+          $scope.companyBasicLifeToDisplay = $scope.basicLifeInsurancePlan;
+          $modal.open({
+              templateUrl: '/static/partials/benefit_selection/modal_basic_life_plan_details.html',
+              controller: 'planDetailsModalController',
+              size: 'lg',
+              scope: $scope
+            });
+        };
+
         $scope.save = function(){
 
           ///////////////////////////////////////////////////////////////////////////
@@ -1650,7 +1674,6 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.benefit_type = 'Basic Life Insurance';
-
     }]);
 
 var supplementalLifeBenefitsSignup = employeeControllers.controller(
@@ -1963,6 +1986,11 @@ var stdBenefitsSignup = employeeControllers.controller(
                 return {};
             }).then(function(stdPlan) {
 
+                if (stdPlan.employerContributionPercentage === "100.00") {
+                    $scope.companyStdPlan.employeePremium = 0.0;
+                    return;
+                }
+
                 StdService.getEmployeePremiumForUserCompanyStdPlan($scope.employeeId, stdPlan)
                 .then(function(premium) {
                     $scope.companyStdPlan.employeePremium = premium;
@@ -2029,6 +2057,11 @@ var ltdBenefitsSignup = employeeControllers.controller(
                 }
                 return {};
             }).then(function(ltdPlan) {
+
+                if (ltdPlan.employerContributionPercentage === "100.00") {
+                    $scope.companyLtdPlan.employeePremium = 0.0;
+                    return;
+                }
 
                 LtdService.getEmployeePremiumForUserCompanyLtdPlan($scope.employeeId, ltdPlan)
                 .then(function(premium) {
@@ -2329,7 +2362,7 @@ var employeeFamilyMemberViewModalController = employeeControllers.controller(
 
     }]);
 
-var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
+var planDetailsModalController = employeeControllers.controller('planDetailsModalController',
   ['$scope', 
    '$modal',
    '$modalInstance',

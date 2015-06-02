@@ -481,3 +481,81 @@
     }
   }
 }
+
+.modal-body{
+    .table {
+        font-size: $size-sm;
+        color: $black-font;
+        thead {
+            background: $light-blue;
+            tr {
+                th {
+                    padding: $gutter-xs $gutter 0 0;
+                    border-top: $border-blue!important;
+                    border-bottom: $border-blue;
+                    font-weight: 600;
+                    span {
+                        display: inline-block;
+                        padding-left: $gutter;
+                        padding-top: $gutter-xs;
+                        padding-bottom: $gutter-sm;
+                        border-left: $border-blue;
+                    }
+                    &:first-child {
+                        span {
+                            border-left: none;
+                        }
+                    }
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+                    padding: $gutter-sm $gutter;
+                    vertical-align: middle;
+                    border-bottom: $border-blue;
+                    border-right: $border-blue;
+                }
+            }
+            tr:nth-child(odd) > td {
+                background: #FFF;
+                table tr:nth-child(even) > td {
+                    background: #F9FCFD;
+                }
+                table tr:nth-child(odd) > td {
+                    background: #FFF;
+                }
+            }
+            tr:nth-child(even) > td {
+                background: #F9FCFD;
+                table tr:nth-child(odd) > td {
+                    background: #F9FCFD;
+                }
+                table tr:nth-child(even) > td {
+                    background: #FFF;
+                }
+            }
+        }
+        table {
+            margin: 0;
+            tr:first-child td {
+                border-top: none;
+            }
+            tr td:first-child {
+                border-left: $border-blue;
+            }
+            tr td {
+                vertical-align: top;
+            }
+            table {
+                tr td {
+                    border-bottom: $border-blue !important;
+                }
+                tr:last-child td {
+                    border-bottom: none !important;
+                }
+            }
+        }
+    } //table
+}

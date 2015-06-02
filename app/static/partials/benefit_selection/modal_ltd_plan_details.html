@@ -2,7 +2,21 @@
     <h4 class="modal-title">Long Term Disability Benefits Details</h4>
 </div>
 <div class="modal-body">
-    <h2>LTD benefits details from your company:</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-label">Documents</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <bmuploadviewer feature-id="{{companyLtdPlan.companyPlanId}}" upload-type="LTD"></bmuploadviewer>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-label">LTD benefits details from your company</div>
+        </div>
+    </div>
     <div class="table-responsive table-holder" ng-if="companyLtdPlan">
         <table class="table table-striped">
             <thead>

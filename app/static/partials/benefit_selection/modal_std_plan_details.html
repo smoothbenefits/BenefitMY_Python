@@ -2,7 +2,21 @@
     <h4 class="modal-title">Short Term Disability Benefits Details</h4>
 </div>
 <div class="modal-body">
-    <h2>STD benefits details from your company:</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-label">Documents</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <bmuploadviewer feature-id="{{companyStdPlan.companyPlanId}}" upload-type="STD"></bmuploadviewer>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-label">STD benefits details from your company</div>
+        </div>
+    </div>
     <div class="table-responsive table-holder" ng-if="companyStdPlan">
         <table class="table table-striped">
             <thead>

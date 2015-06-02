@@ -41,5 +41,30 @@ IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'Deposit'
     values('Deposit');
 END IF;
 
+IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'BasicLife') THEN
+    insert into app_sysapplicationfeature (feature) 
+    values('BasicLife');
+END IF;
+
+IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'OptionalLife') THEN
+    insert into app_sysapplicationfeature (feature) 
+    values('OptionalLife');
+END IF;
+
+IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'STD') THEN
+    insert into app_sysapplicationfeature (feature) 
+    values('STD');
+END IF;
+
+IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'LTD') THEN
+    insert into app_sysapplicationfeature (feature) 
+    values('LTD');
+END IF;
+
+IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'HRA') THEN
+    insert into app_sysapplicationfeature (feature) 
+    values('HRA');
+END IF;
+
 END
 $$
