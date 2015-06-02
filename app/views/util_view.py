@@ -8,7 +8,7 @@ from app.models.company import Company
 from django.conf import settings
 from app.service.hash_key_service import HashKeyService
 
-URL = settings.EMAIL_SITE_URL
+URL = settings.SITE_URL
 SUBJECT = "Welcome to BenefitMy"
 CONTENT = """
 
