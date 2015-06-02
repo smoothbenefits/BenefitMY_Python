@@ -11,9 +11,6 @@ case $APP_NAME in
 	*"demo"*)
 		sh ./deployment_beta.sh $APP_NAME $DB_NAME
 		;;
-	*"betaplus"*)
-		sh ./deployment_test.sh $APP_NAME $DB_NAME
-		;;
 	*"beta"*)
 		sh ./deployment_beta.sh $APP_NAME $DB_NAME
 		;;
