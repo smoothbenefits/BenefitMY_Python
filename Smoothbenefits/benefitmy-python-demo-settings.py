@@ -3,7 +3,7 @@ Configuations for Demo environment
 """
 from Smoothbenefits.base_settings import *
 
-SITE_URL = "https://demo.benefitmy.com/"
+SITE_URL = "http://demo.benefitmy.com/"
 
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications
@@ -29,9 +29,6 @@ MIDDLEWARE_CLASSES = (
     'reversion.middleware.RevisionMiddleware',
 )
 
-# Session expiration settings
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 20 * 60
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases

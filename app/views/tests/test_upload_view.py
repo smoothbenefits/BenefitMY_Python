@@ -13,7 +13,6 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.upload_data = {
             'company': self.normalize_key(1),
             'user': self.normalize_key(3),
-            'upload_type': 'I9',
             'file_name': 'tester.pdf',
             'file_type': 'application/pdf',
             'company_name': 'carbonite',
@@ -39,7 +38,6 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload1['company'], self.normalize_key(1))
         self.assertEqual(upload1['user'], self.normalize_key(1))
         self.assertEqual(upload1['id'], self.normalize_key(7))
-        self.assertEqual(upload1['upload_type'], 'MedicalBenefit')
         upload2 = None
         for x in result:
             if x['id'] == self.normalize_key(8):
@@ -51,7 +49,6 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload2['company'], self.normalize_key(1))
         self.assertEqual(upload2['user'], self.normalize_key(1))
         self.assertEqual(upload2['id'], self.normalize_key(8))
-        self.assertEqual(upload2['upload_type'], 'MedicalBenefit')
 
     def test_get_uploads_by_user_empty(self):
         response = self.client.get(reverse('uploads_by_user',
@@ -90,7 +87,6 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['company'], 1)
         self.assertEqual(result['user'], 3)
         self.assertEqual(result['id'], self.normalize_key(10))
-        self.assertEqual(result['upload_type'], self.upload_data['upload_type'])
         self.assertTrue('s3Host' in result)
         self.assertEqual(result['s3Host'], settings.AMAZON_S3_HOST)
         self.assertTrue('policy' in result)
@@ -119,7 +115,6 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload1['company'], self.normalize_key(1))
         self.assertEqual(upload1['user'], self.normalize_key(3))
         self.assertEqual(upload1['id'], self.normalize_key(9))
-        self.assertEqual(upload1['upload_type'], 'Manager')
         upload2 = None
         for x in result:
             if x['id'] == self.normalize_key(10):
@@ -131,7 +126,6 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload2['company'], self.normalize_key(1))
         self.assertEqual(upload2['user'], self.normalize_key(3))
         self.assertEqual(upload2['id'], self.normalize_key(10))
-        self.assertEqual(upload2['upload_type'], self.upload_data['upload_type'])
 
     def test_upload_post_with_non_exist_user(self):
         self.upload_data.update({'user': self.normalize_key(128)})
@@ -182,7 +176,6 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload1['company'], self.normalize_key(1))
         self.assertEqual(upload1['user'], self.normalize_key(3))
         self.assertEqual(upload1['id'], self.normalize_key(9))
-        self.assertEqual(upload1['upload_type'], 'Manager')
 
     def test_delete_upload_non_exist(self):
         response = self.client.delete(reverse('upload_api',
@@ -204,7 +197,6 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload1['company'], self.normalize_key(1))
         self.assertEqual(upload1['user'], self.normalize_key(2))
         self.assertEqual(upload1['id'], self.normalize_key(5))
-        self.assertEqual(upload1['upload_type'], 'I9')
 
     def test_get_by_id_non_exist(self):
         response = self.client.get(reverse('upload_api',
@@ -239,7 +231,6 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload1['company'], self.normalize_key(1))
         self.assertEqual(upload1['user'], self.normalize_key(3))
         self.assertEqual(upload1['id'], self.normalize_key(9))
-        self.assertEqual(upload1['upload_type'], 'Manager')
 
     def test_get_uploads_by_employer_bad_current_user(self):
         user_id = self.normalize_key(3)

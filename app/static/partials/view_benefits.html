@@ -113,9 +113,9 @@
             <thead>
                 <tr>
                     <th><span>Basic Life Insurance (AD&D)</span></th>
+                    <th><span>Document</span></th>
                     <th><span>Total Cost (Monthly)</span></th>
                     <th><span>Employee Contribution (Biweekly)</span></th>
-                    <th><span>Enrollment Date</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -126,9 +126,16 @@
                         <span ng-show="lifeInsurancePlan.salary_multiplier">, benefit amount equals to {{lifeInsurancePlan.salary_multiplier}} times of base salary</span>
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLifeInsurancePlan(lifeInsurancePlan)" href="javascript:void(0);">X</a>
                     </td>
+                    <td class="upload-td">
+                        <bmuploadmanager 
+                            upload-type="BasicLife" 
+                            upload-mode="button" 
+                            feature-id="{{lifeInsurancePlan.id}}" 
+                            hide-type="true">
+                        </bmuploadmanager>
+                    </td>
                     <td>$ {{lifeInsurancePlan.total_cost_per_period}}</td>
                     <td>$ {{lifeInsurancePlan.employee_cost_per_period}}</td>
-                    <td >{{lifeInsurancePlan.created_date_for_display}}</td>
                 </tr>
             </tbody>
         </table>
@@ -140,7 +147,7 @@
             <thead>
                 <tr>
                     <th><span>Supplemental Life Insurance</span></th>
-                    <th><span>Enrollment Date</span></th>
+                    <th><span>Document</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -150,8 +157,13 @@
                         <a ng-click="openSupplementalLifePlanDetailsModal(supplementalLifeInsurancePlan)"><b>View Details</b></a>
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteSupplementalLifePlan(supplementalLifeInsurancePlan)" href="javascript:void(0);">X</a>
                     </td>
-                    <td >
-                        {{supplementalLifeInsurancePlan.createdDateForDisplay}}
+                    <td class="upload-td">
+                        <bmuploadmanager 
+                            upload-type="OptionalLife" 
+                            upload-mode="button" 
+                            feature-id="{{supplementalLifeInsurancePlan.companyPlanId}}" 
+                            hide-type="true">
+                        </bmuploadmanager>
                     </td>
                 </tr>
             </tbody>
@@ -164,13 +176,13 @@
             <thead>
                 <tr>
                     <th><span>STD Plan Name</span></th>
+                    <th><span>Document</span></th>
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
                     <th><span>Rate</span></th>
                     <th><span>Employer Pays</span></th>
                     <th><span>Elimination Period</span></th>
-                    <th><span>Enrollment Date</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -179,13 +191,20 @@
                         {{stdPlan.planName}}
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteStdPlan(stdPlan)" href="javascript:void(0);">X</a>
                     </td>
+                    <td class="upload-td">
+                        <bmuploadmanager 
+                            upload-type="STD" 
+                            upload-mode="button" 
+                            feature-id="{{stdPlan.companyPlanId}}" 
+                            hide-type="true">
+                        </bmuploadmanager>
+                    </td>
                     <td>{{stdPlan.percentageOfSalary}}% of Base Salary</td>
                     <td>${{stdPlan.maxBenefitWeekly}}/Week</td>
                     <td>{{stdPlan.duration}} Days</td>
                     <td>${{stdPlan.rate}} of $10 benefit</td>
                     <td>{{stdPlan.employerContributionPercentage}}%</td>
                     <td>{{stdPlan.eliminationPeriodInDays}} Days</td>
-                    <td>{{stdPlan.createdDateForDisplay}}</td>
                 </tr>
             </tbody>
         </table>
@@ -197,13 +216,13 @@
             <thead>
                 <tr>
                     <th><span>LTD Plan Name</span></th>
+                    <th><span>Document</span></th>
                     <th><span>Benefit Amount</span></th>
                     <th><span>Max Benefit</span></th>
                     <th><span>Duration</span></th>
                     <th><span>Rate</span></th>
                     <th><span>Employer Pays</span></th>
                     <th><span>Elimination Period</span></th>
-                    <th><span>Enrollment Date</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -212,13 +231,20 @@
                         {{ltdPlan.planName}}
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLtdPlan(ltdPlan)" href="javascript:void(0);">X</a>
                     </td>
+                    <td class="upload-td">
+                        <bmuploadmanager 
+                            upload-type="LTD" 
+                            upload-mode="button" 
+                            feature-id="{{ltdPlan.companyPlanId}}" 
+                            hide-type="true">
+                        </bmuploadmanager>
+                    </td>
                     <td>{{ltdPlan.percentageOfSalary}}% of Base Salary</td>
                     <td>${{ltdPlan.maxBenefitMonthly}}/Month</td>
                     <td>{{ltdPlan.duration}} Months or Until Retirement Age</td>
                     <td>${{ltdPlan.rate}} of $10 benefit</td>
                     <td>{{ltdPlan.employerContributionPercentage}}%</td>
                     <td>{{ltdPlan.eliminationPeriodInMonths}} Months</td>
-                    <td>{{ltdPlan.createdDateForDisplay}}</td>
                 </tr>
             </tbody>
         </table>
@@ -230,8 +256,7 @@
             <thead>
                 <tr>
                     <th><span>FSA Plan Name</span></th>
-                    <th><span>Created At</span></th>
-                    <th><span>Updated At</span></th>
+                    <th><span>Document</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -240,8 +265,14 @@
                         {{fsaPlan.fsaPlanName}}
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteFsaPlan(fsaPlan)" href="javascript:void(0);">X</a>
                     </td>
-                    <td>{{fsaPlan.created}}</td>
-                    <td>{{fsaPlan.updated}}</td>
+                    <td class="upload-td">
+                        <bmuploadmanager 
+                            upload-type="FSA" 
+                            upload-mode="button" 
+                            feature-id="{{fsaPlan.companyPlanId}}" 
+                            hide-type="true">
+                        </bmuploadmanager>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -254,7 +285,7 @@
                 <tr>
                     <th><span>Health Reimbursement Accounts (HRA)</span></th>
                     <th><span>Description</span></th>
-                    <th><span>Enrollment Date</span></th>
+                    <td><span>Document</span></td>
                 </tr>
             </thead>
             <tbody>
@@ -266,8 +297,13 @@
                     <td >
                         {{hraPlan.planDescription}}
                     </td>
-                    <td >
-                        {{hraPlan.createdDateForDisplay}}
+                    <td class="upload-td">
+                        <bmuploadmanager 
+                            upload-type="HRA" 
+                            upload-mode="button" 
+                            feature-id="{{hraPlan.companyPlanId}}" 
+                            hide-type="true">
+                        </bmuploadmanager>
                     </td>
                 </tr>
             </tbody>

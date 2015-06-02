@@ -115,14 +115,20 @@ benefitmyService.factory('LtdService',
                 } else {
                     var companyId = ltdPlan.company;
                     EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId).then(function(profile) {
+                        var employeeContribution = 1 - (ltdPlan.employerContributionPercentage / 100);
+
                         var salary = profile.annualBaseSalary;
+                        if (_.isNaN(salary)) {
+                            deferred.resolve(null);
+                        }
+
                         var maxBenefitAnnually = ltdPlan.maxBenefitMonthly * 12;
                         var benefitPercentage = (ltdPlan.percentageOfSalary / 100);
 
                         var benefitAmount = Math.min(salary * benefitPercentage, maxBenefitAnnually); // Benefit amount cannot exceed preset cap
                         var rate = ltdPlan.rate;
                         var rateBase = 10;
-                        var employeeContribution = 1 - (ltdPlan.employerContributionPercentage / 100);
+                        
                         var numOfPeriods = 26; // biweekly
 
                         var premium = (benefitAmount * (rate / rateBase) * employeeContribution / numOfPeriods).toFixed(2);

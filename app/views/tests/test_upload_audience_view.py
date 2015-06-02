@@ -35,7 +35,6 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload['file_name'], '401KPolicy.pdf')
         self.assertEqual(upload['company'], self.normalize_key(1))
         self.assertEqual(upload['user'], self.normalize_key(2))
-        self.assertEqual(upload['upload_type'], 'Manager')
 
     def test_get_upload_audience_user_success(self):
         response = self.client.get("{0}?user_id={1}".format(
@@ -62,7 +61,6 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
         self.assertEqual(upload['file_name'], 'Greencard.jpeg')
         self.assertEqual(upload['company'], self.normalize_key(1))
         self.assertEqual(upload['user'], self.normalize_key(2))
-        self.assertEqual(upload['upload_type'], 'I9')
 
 
     def test_get_upload_audience_non_exist_company(self):
