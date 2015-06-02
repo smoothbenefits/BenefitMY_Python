@@ -477,7 +477,7 @@ var brokerAddStdPlanController = brokersControllers.controller(
         $scope.newPlan = {};
         
         $scope.buttonEnabled = function() {
-            return $scope.newPlan.planName && $scope.newPlan.employerContributionPercentage;
+            return $scope.newPlan.planName && _.isNumber($scope.newPlan.employerContributionPercentage);
         };
 
         // Need the user information for the current user (broker)
@@ -523,7 +523,7 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         $scope.newPlan = {};
 
         $scope.buttonEnabled = function() {
-            return $scope.newPlan.planName && $scope.newPlan.employerContributionPercentage;
+            return $scope.newPlan.planName && _.isNumber($scope.newPlan.employerContributionPercentage);
         };
 
         // Need the user information for the current user (broker)
