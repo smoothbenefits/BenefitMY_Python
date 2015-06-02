@@ -5,7 +5,6 @@ Configurations for Staging/Testing environment
 from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://staging.benefitmy.com/"
-EMAIL_SITE_URL = "http://staging.benefitmy.com/"
 
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications

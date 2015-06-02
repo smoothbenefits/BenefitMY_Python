@@ -3,8 +3,7 @@ Configurations for Beta environment
 """
 from Smoothbenefits.base_settings import *
 
-SITE_URL = "https://beta.benefitmy.com/"
-EMAIL_SITE_URL = "https://app.benefitmy.com/"
+SITE_URL = "https://app.benefitmy.com/"
 
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications
