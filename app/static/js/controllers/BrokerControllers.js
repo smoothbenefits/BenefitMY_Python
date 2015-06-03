@@ -651,6 +651,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         benefit_option_types: [
           {name:'Individual', disabled: false},
           {name:'Individual plus Spouse', disabled: false},
+          {name:'Individual plus One', disabled: false},
           {name:'Individual plus children', disabled: false},
           {name:'Individual plus Family', disabled: false}],
       };
@@ -878,6 +879,9 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         var placeHolder = inputElement.attr('placeholder');
         var originalType = inputElement.attr('type');
         var targetContainer = inputElement.parent();
+        if(targetContainer.attr('disabled')){
+          return;
+        }
         var showDeleteIcon = false;
         //Populate the data set
         if(targetContainer.length > 0 && targetContainer[0].tagName ==='TH'){
@@ -916,6 +920,9 @@ var brokerAddHealthBenefits = brokersControllers.controller(
 
       function handleEditElement (clickEvent){
         var container = $(clickEvent.target).parent().parent();
+        if(container.attr('disabled')){
+          return;
+        }
         var fieldValue = $(clickEvent.target).html();
         var placeHolderText = $(clickEvent.target).attr('placeholder')
         var curPolicyTypeId = $(clickEvent.target).attr('policy-type-id');
