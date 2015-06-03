@@ -36,13 +36,15 @@
                             <th><div>Employee Premium<br />(per pay period)</div></th>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="option in benefit.benefit_option_types" b-option="{{option.name}}">
-                                <td>{{option.name}}</td>
+                            <tr ng-repeat="option in benefit.benefit_option_types" b-option="{{option.name}}" ng-class="{'benefit-option-disabled': option.disabled}">
+                                <td>{{option.name}}<br/>
+                                    <a href="javascript:void(0);" ng-show="!option.disabled" ng-click="toggleBenefitOptionDisabled(option)">Disable</a>
+                                    <a href="javascript:void(0);" ng-show="option.disabled" ng-click="toggleBenefitOptionDisabled(option)">Enable</a></td>
                                 <td b-option="{{option.name}}" field-name="total">
-                                    $ <input type="number" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" />
+                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" />
                                 </td>
                                 <td b-option="{{option.name}}" field-name="employee">
-                                    $ <input type="number" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" />
+                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" />
                                 </td>
                             </tr>
                         </tbody>
