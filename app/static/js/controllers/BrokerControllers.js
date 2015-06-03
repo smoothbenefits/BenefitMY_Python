@@ -652,7 +652,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
           {name:'Individual', disabled: false},
           {name:'Individual plus Spouse', disabled: false},
           {name:'Individual plus One', disabled: false},
-          {name:'Individual plus children', disabled: false},
+          {name:'Individual plus Children', disabled: false},
           {name:'Individual plus Family', disabled: false}],
       };
       $('#benefit_type_select').on('change', function(){
