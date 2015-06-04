@@ -266,6 +266,8 @@
           border-bottom: 1px solid #E2E7EA !important; }
         #dashboard-wrapper #content-wrapper .content-body .table table table tr:last-child td {
           border-bottom: none !important; }
+    #dashboard-wrapper #content-wrapper .content-body table#plan_option_table tbody tr.benefit-option-disabled td {
+      background-color: #dadbd9; }
     #dashboard-wrapper #content-wrapper .content-body .list-group .list-group-item {
       border-radius: 0;
       padding: 20px;
