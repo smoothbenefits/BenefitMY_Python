@@ -355,6 +355,15 @@
                     }
                 }
             } //table
+            table#plan_option_table{
+                tbody{
+                    tr.benefit-option-disabled{
+                        td{
+                            background-color:#dadbd9;
+                        }
+                    }
+                }
+            }
             .list-group {
                 .list-group-item {
                     border-radius: 0;
