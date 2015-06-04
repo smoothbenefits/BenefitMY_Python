@@ -62,7 +62,8 @@ var findViewController = userControllers.controller('findViewController',
       {
         var role = _.findWhere(userRoles, {company_user_type:userType});
         return role != null;
-      }
+      };
+
       var determineDashboardLocation = function(userRoles)
       {
         var urlParam = window.location.search;
@@ -84,12 +85,11 @@ var findViewController = userControllers.controller('findViewController',
         {
           window.location.replace('/error?role_match=false');
         }
-      }
+      };
 
-      currentUser.get()
-      .$promise.then(function(response){
+      currentUser.get().$promise.then(function(response){
           determineDashboardLocation(response.roles);
-       });
+      });
     }
 ]);
 
@@ -102,6 +102,7 @@ var userController = userControllers.controller('userController',
    'benefitSectionGlobalConfig',
    'CompanyEmployeeSummaryService',
    'FeatureConfigurationService',
+   'BrowserDetectionService', 
   function userController($scope, 
                           $http, 
                           $location, 
@@ -109,23 +110,37 @@ var userController = userControllers.controller('userController',
                           userLogOut, 
                           benefitSectionGlobalConfig,
                           CompanyEmployeeSummaryService,
-                          FeatureConfigurationService) {
+                          FeatureConfigurationService,
+                          BrowserDetectionService) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var roleTypeDictionary = {
         admin:'Employer', 
         broker:'Broker',
         employee: 'Employee'
-      };
+    };
+
+    $scope.detectBrowser = function() {
+      var unsupported = ['IE 6', 'IE 7', 'IE 8', 'IE 9'];
+      var currentBrowser = BrowserDetectionService.getCurrentBrowser();
+      if (unsupported.indexOf(currentBrowser) > -1) {
+        alert('The browser you are using is not fully supported by BenefitMY. ' + 
+          'Your experience may not be optimized. Please be advised to use Chrome ' + 
+          'or Firefox for better enrollment experience.')
+      }
+    };
+
     UserService.getCurUserInfo().then(function(userInfo){
       $scope.curUser = userInfo.user;
       $scope.currentRoleList = userInfo.roles;
       $scope.company_id = userInfo.currentRole.company.id;
     });
+
     $scope.isRoleActive = function(checkRole){
       var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});
       return !_.isUndefined(roleFind);
     };
+
     $scope.logout = function ()
     {
         userLogOut.delete()

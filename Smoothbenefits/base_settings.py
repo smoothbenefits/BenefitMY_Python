@@ -231,6 +231,7 @@ PIPELINE_JS = {
             'js/services/FsaService.js',
             'js/services/BasicLifeInsuranceService.js',
             'js/services/benefitDisplayService.js',
+            'js/services/BrowserDetectionService', 
             'js/services/documentTypeService.js',
             'js/services/PersonService.js',
             'js/services/UserService.js',

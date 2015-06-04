@@ -62,7 +62,7 @@ BenefitMyApp.config(function ($provide) {
                 data: angular.toJson({ 
                     url: $window.location.href, 
                     message: errorMessage,
-                    browser: BrowserDetectionService.getBrowserBrand(), 
+                    browser: BrowserDetectionService.getCurrentBrowser(), 
                     type: "exception", 
                     stackTrace: stackTrace.join('\n\n')}) })
             .fail(function(jqXHR, textStatus, errorThrown) {

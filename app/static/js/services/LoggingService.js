@@ -27,7 +27,7 @@ benefitmyService.factory('LoggingService',
                     data: angular.toJson({ 
                         url: $window.location.href, 
                         message: message,
-                        browser: BrowserDetectionService.getBrowserBrand(), 
+                        browser: BrowserDetectionService.getCurrentBrowser(), 
                         type: logType, 
                         customData: customData,
                         stackTrace: stackTrace.join('\n\n')}) })

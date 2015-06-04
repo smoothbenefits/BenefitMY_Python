@@ -1,10 +1,6 @@
 <!DOCTYPE html>
-
-<!--[if IE 8]>         <html class="ie8"> <![endif]-->
-<!--[if IE 9]>         <html class="ie9 gt-ie8"> <![endif]-->
-<!--[if gt IE 9]><!-->
 {% load compressed %}
-<html class="gt-ie8 gt-ie9 not-ie"> <!--<![endif]-->
+<html class="gt-ie8 gt-ie9 not-ie">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
@@ -35,7 +31,7 @@
 <body ng-app="BenefitMyApp">
 
     <script type="text/javascript">var init = [];</script>
-    <div id="dashboard-wrapper" ng-controller="userController">
+    <div id="dashboard-wrapper" ng-controller="userController" ng-init="detectBrowser()">
 
         <div id="header">
             <a href="/" id="logo-link"></a>
