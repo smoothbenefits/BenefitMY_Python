@@ -649,10 +649,11 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       $scope.benefit = {
         benefit_type:'',
         benefit_option_types: [
-          {name:'Individual'},
-          {name:'Individual plus Spouse'},
-          {name:'Individual plus children'},
-          {name:'Individual plus Family'}],
+          {name:'Individual', disabled: false},
+          {name:'Individual plus Spouse', disabled: false},
+          {name:'Individual plus One', disabled: false},
+          {name:'Individual plus Children', disabled: false},
+          {name:'Individual plus Family', disabled: false}],
       };
       $('#benefit_type_select').on('change', function(){
         var optionTypeInputs = $('#plan_option_table').find('input');
@@ -878,6 +879,9 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         var placeHolder = inputElement.attr('placeholder');
         var originalType = inputElement.attr('type');
         var targetContainer = inputElement.parent();
+        if(targetContainer.attr('disabled')){
+          return;
+        }
         var showDeleteIcon = false;
         //Populate the data set
         if(targetContainer.length > 0 && targetContainer[0].tagName ==='TH'){
@@ -916,6 +920,9 @@ var brokerAddHealthBenefits = brokersControllers.controller(
 
       function handleEditElement (clickEvent){
         var container = $(clickEvent.target).parent().parent();
+        if(container.attr('disabled')){
+          return;
+        }
         var fieldValue = $(clickEvent.target).html();
         var placeHolderText = $(clickEvent.target).attr('placeholder')
         var curPolicyTypeId = $(clickEvent.target).attr('policy-type-id');
@@ -943,7 +950,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         var optionTableInputList = optionTable.find('input');
         _.each(optionTableInputList, function(inputElement){
           var optionInput = $(inputElement);
-          if(!optionInput.val()){
+          if(!optionInput.prop('disabled') && !optionInput.val()){
             optionInput.addClass('unfilled-input');
             $scope.optionEmptyError = true;
             return;
@@ -990,7 +997,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             return false;
           }
           var emptyOptionType = _.find($scope.benefit.benefit_option_types, function(optionType){
-            return (!optionType.total_cost_per_period || !optionType.employee_cost_per_period);
+            return !optionType.disabled && (!optionType.total_cost_per_period || !optionType.employee_cost_per_period);
           });
           if(emptyOptionType){
             $scope.noCostError = true;
@@ -1076,16 +1083,18 @@ var brokerAddHealthBenefits = brokersControllers.controller(
           //save to data store
           var requestList = [];
           _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
-            requestList.push({
-              company: clientId,
-              benefit: {
-                benefit_type: $scope.benefit.benefit_type,
-                benefit_name: $scope.benefit.benefit_name,
-                benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
-                total_cost_per_period: optionTypeItem.total_cost_per_period,
-                employee_cost_per_period: optionTypeItem.employee_cost_per_period
-              }
-            });
+            if(!optionTypeItem.disabled){
+              requestList.push({
+                company: clientId,
+                benefit: {
+                  benefit_type: $scope.benefit.benefit_type,
+                  benefit_name: $scope.benefit.benefit_name,
+                  benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
+                  total_cost_per_period: optionTypeItem.total_cost_per_period,
+                  employee_cost_per_period: optionTypeItem.employee_cost_per_period
+                }
+              });
+            }
           });
 
         //save the request list to the backend.
@@ -1116,6 +1125,15 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             }
             alert('Error while saving Benefits! Details: ' + errorDetail);
           });
+        }
+      };
+
+      $scope.toggleBenefitOptionDisabled = function(option){
+        option.disabled = !option.disabled;
+        if( _.every($scope.benefit.benefit_option_types, function(option){
+            return option.disabled;})){
+          alert('The benefit plan must have at least one benefit plan option!');
+          option.disabled = !option.disabled;
         }
       };
   }]);
