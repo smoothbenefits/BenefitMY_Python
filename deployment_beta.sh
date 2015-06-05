@@ -31,6 +31,9 @@ heroku config:set DJANGO_SETTINGS_MODULE=Smoothbenefits.$APP_NAME-settings --app
 heroku run python manage.py migrate --app $APP_NAME
 heroku scale worker=$PREV_WORKERS --app $APP_NAME
 
+# update data with mirgration script for database
+sh ./data_migration.sh ./data_migration
+
 # force restart app to make new setting file take effects
 heroku restart --app $APP_NAME
 
