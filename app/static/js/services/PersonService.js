@@ -73,9 +73,6 @@ benefitmyService.factory('PersonService',
         if(viewPerson.emergency_contact && viewPerson.emergency_contact.length > 0){
           viewPerson.emergency = viewPerson.emergency_contact[0];
         }
-        if(!viewPerson.birth_date){
-          viewPerson.birth_date = moment(new Date(1970, 0, 1)).format('MM/DD/YYYY');
-        }
         return viewPerson;
       };
 
