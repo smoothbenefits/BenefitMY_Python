@@ -654,8 +654,18 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$state
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$stateParams', '$location', 'PersonService', 'currentUser', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, PersonService, currentUser, EmployeePreDashboardValidationService){
+  ['$scope', 
+   '$stateParams', 
+   '$location', 
+   'PersonService', 
+   'currentUser', 
+   'EmployeePreDashboardValidationService',
+  function($scope, 
+           $stateParams, 
+           $location, 
+           PersonService, 
+           currentUser, 
+           EmployeePreDashboardValidationService){
 
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
@@ -674,6 +684,10 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     });
 
     $('body').addClass('onboarding-page');
+
+    PersonService.getSelfPersonInfo($scope.employeeId).then(function(self_data){
+      $scope.employee = self_data;
+    });
 
     $scope.addBasicInfo = function(){
       var birthDate = $scope.employee.birth_date;

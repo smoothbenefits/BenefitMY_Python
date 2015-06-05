@@ -279,3 +279,44 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 409)
         self.assertEqual(response.content, '')
+
+    def test_user_create_person_created(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        new_user = {
+            'user': {
+                'first_name':'34543klj5ff', 
+                'last_name':'fdjklg4939', 
+                'email':'user116@smoothbenefits.com'
+                },
+            'company': 1,
+            'company_user_type': 'employee',
+            'send_email': 'true',
+            'create_docs': 'true',
+            'fields':[
+                {'company_name':'benefitmy'}, 
+                {'position': 'Software Engineer'}]
+        }
+        response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 201)
+        created_user = json.loads(response.content)
+        self.assertTrue('id' in created_user and created_user['id'])
+        self.assertTrue('email' in created_user and created_user['email'] == new_user['user']['email'])
+        response = self.client.get(reverse('user_family_api',
+                                           kwargs={'pk': created_user['id']}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(type(result), dict)
+        self.assertEqual(type(result['family']), list)
+        self.assertEqual(len(result['family']), 1)
+        self.assertEqual(result['first_name'], new_user['user']['first_name'])
+        self.assertEqual(result['last_name'], new_user['user']['last_name'])
+        self.assertEqual(result['id'], created_user['id'])
+        self.assertEqual(result['email'], new_user['user']['email'])
+        self.assertEqual(result['family'][0]['relationship'], 'self')
+        self.assertEqual(result['family'][0]['first_name'], new_user['user']['first_name'])
+        self.assertEqual(result['family'][0]['last_name'], new_user['user']['last_name'])
+        self.assertEqual(result['family'][0]['email'], new_user['user']['email'])
+        self.assertEqual(result['family'][0]['company'], self.normalize_key(new_user['company']))
+        self.assertEqual(result['family'][0]['user'], created_user['id'])

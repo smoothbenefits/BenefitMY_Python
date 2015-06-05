@@ -42,10 +42,6 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
       {
         return false;
       }
-      if(!person.birth_date)
-      {
-        return false;
-      }
       if(!person.phones || person.phones.length <=0){
         return false;
       }
@@ -62,8 +58,6 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
           if(self){
             //We need to validate this self
             if(!validatePersonInfo(self)){
-              //we should remove this invalid self
-              PersonService.deletePerson(self.id);
               failed();
             }
             else{
