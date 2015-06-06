@@ -225,6 +225,7 @@ var employerUser = employersController.controller('employerUser',
         apiUser.create_docs = viewUser.create_docs;
         apiUser.fields = $scope.templateFields
         apiUser.send_email = viewUser.send_email;
+        apiUser.annual_base_salary = viewUser.annual_base_salary;
         return apiUser;
       }
 

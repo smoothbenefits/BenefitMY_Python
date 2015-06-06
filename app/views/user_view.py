@@ -12,10 +12,12 @@ from app.custom_authentication import AuthUserManager
 from app.models.person import Person
 from app.serializers.person_serializer import PersonSerializer, PersonSimpleSerializer
 from app.serializers.user_serializer import UserSerializer
+from app.serializers.employee_profile_serializer import EmployeeProfilePostSerializer
 from app.serializers.company_user_serializer import CompanyRoleSerializer
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
 from django.conf import settings
+from app.service.hash_key_service import HashKeyService
 
 User = get_user_model()
 
@@ -98,7 +100,21 @@ class UsersView(APIView):
         if person_serializer.is_valid():
             person_serializer.save()
 
-        serializer = UserSerializer(user)
+        #Create the employee profile
+        key_service = HashKeyService()
+        profile_data = {
+            'person': key_service.decode_key(person_serializer.data['id']),
+            'company': request.DATA['company']
+        }
+
+        if 'annual_base_salary' in request.DATA and request.DATA['annual_base_salary'] > 0:
+            profile_data['annual_base_salary'] = request.DATA['annual_base_salary']
+
+        profile_serializer = EmployeeProfilePostSerializer(data=profile_data)
+        if profile_serializer.is_valid():
+            profile_serializer.save()
+
+        # Now check to see send email and create documents
 
         if company_user.company_user_type == 'employee':
             if 'send_email' in request.DATA and request.DATA['send_email']:
@@ -122,7 +138,17 @@ class UsersView(APIView):
                 except Exception as e:
                     print "Exception happend on User Document Generation! Exception is {}".format(e)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #construct data back to consumer
+        user_serializer = UserSerializer(user)
+        company_role_serializer = CompanyRoleSerializer(company_user)
+        response_data = {
+            'user': user_serializer.data,
+            'company_role': company_role_serializer.data,
+            'person': person_serializer.data,
+            'profile': profile_serializer.data
+        }
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 class CurrentUserView(APIView):
