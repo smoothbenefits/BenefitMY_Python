@@ -9,7 +9,7 @@ case $APP_NAME in
 		sh ./deployment_test.sh $APP_NAME $DB_NAME
 		;;
 	*"demo"*)
-		sh ./deployment_beta.sh $APP_NAME $DB_NAME
+		sh ./deployment_test.sh $APP_NAME $DB_NAME
 		;;
 	*"beta"*)
 		sh ./deployment_beta.sh $APP_NAME $DB_NAME
