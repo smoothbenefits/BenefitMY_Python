@@ -10,7 +10,7 @@ from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.custom_authentication import AuthUserManager
 from app.models.person import Person
-from app.serializers.person_serializer import PersonSerializer
+from app.serializers.person_serializer import PersonSerializer, PersonSimpleSerializer
 from app.serializers.user_serializer import UserSerializer
 from app.serializers.company_user_serializer import CompanyRoleSerializer
 from app.views.util_view import onboard_email
@@ -40,6 +40,7 @@ class UsersView(APIView):
         serializer = UserSerializer(users, many=True)
         return Response({'users': serializer.data})
 
+
     @transaction.atomic
     def post(self, request, format=None):
         if ("company" not in request.DATA or
@@ -64,6 +65,7 @@ class UsersView(APIView):
 
         userManager = AuthUserManager()
 
+        # Create the actual user data
         User.objects.create_user(request.DATA['user']['email'], settings.DEFAULT_USER_PW)
         if not userManager.user_exists(request.DATA['user']['email']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -73,6 +75,7 @@ class UsersView(APIView):
         user.last_name = request.DATA['user']['last_name']
         user.save()
 
+        # Create the company_user data
         company_user = CompanyUser(company_id=request.DATA['company'],
                                    user=user,
                                    company_user_type=request.DATA['company_user_type'])
@@ -81,6 +84,19 @@ class UsersView(APIView):
             company_user.new_employee = request.DATA['new_employee']
 
         company_user.save()
+
+        # Now create the person object
+        person_data = {'first_name': request.DATA['user']['first_name'],
+                       'last_name': request.DATA['user']['last_name'],
+                       'user': user.id,
+                       'relationship': 'self',
+                       'person_type': 'primary_contact',
+                       'company': request.DATA['company'],
+                       'email':user.email}
+
+        person_serializer = PersonSimpleSerializer(data=person_data)
+        if person_serializer.is_valid():
+            person_serializer.save()
 
         serializer = UserSerializer(user)
 
