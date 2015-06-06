@@ -115,7 +115,6 @@ class UsersView(APIView):
             profile_serializer.save()
 
         # Now check to see send email and create documents
-        serializer = UserSerializer(user)
 
         if company_user.company_user_type == 'employee':
             if 'send_email' in request.DATA and request.DATA['send_email']:
@@ -139,7 +138,17 @@ class UsersView(APIView):
                 except Exception as e:
                     print "Exception happend on User Document Generation! Exception is {}".format(e)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #construct data back to consumer
+        user_serializer = UserSerializer(user)
+        company_role_serializer = CompanyRoleSerializer(company_user)
+        response_data = {
+            'user': user_serializer.data,
+            'company_role': company_role_serializer.data,
+            'person': person_serializer.data,
+            'profile': profile_serializer.data
+        }
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 class CurrentUserView(APIView):

@@ -146,7 +146,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_user_create_new_success(self):
+    def test_user_create_new_success_user_created(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
@@ -165,11 +165,17 @@ class UserViewTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
-        created_user = json.loads(response.content)
+        created_response = json.loads(response.content)
+        self.assertTrue('user' in created_response and created_response['user'])
+        created_user = created_response['user']
         self.assertTrue('id' in created_user and created_user['id'])
         self.assertTrue('first_name' in created_user and created_user['first_name'] == new_user['user']['first_name'])
         self.assertTrue('last_name' in created_user and created_user['last_name'] == new_user['user']['last_name'])
         self.assertTrue('email' in created_user and created_user['email'] == new_user['user']['email'])
+        self.assertTrue('company_role' in created_response and created_response['company_role'])
+        comp_role = created_response['company_role']
+        self.assertTrue('company_user_type' in comp_role and comp_role['company_user_type'] == new_user['company_user_type'])
+        self.assertTrue('new_employee' in comp_role and comp_role['new_employee'])
 
     def test_user_create_no_send_email_success(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
@@ -190,7 +196,9 @@ class UserViewTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
-        created_user = json.loads(response.content)
+        created_response = json.loads(response.content)
+        self.assertTrue('user' in created_response and created_response['user'])
+        created_user = created_response['user']
         self.assertTrue('id' in created_user and created_user['id'])
         self.assertTrue('first_name' in created_user and created_user['first_name'] == new_user['user']['first_name'])
         self.assertTrue('last_name' in created_user and created_user['last_name'] == new_user['user']['last_name'])
@@ -212,7 +220,9 @@ class UserViewTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
-        created_user = json.loads(response.content)
+        created_response = json.loads(response.content)
+        self.assertTrue('user' in created_response and created_response['user'])
+        created_user = created_response['user']
         self.assertTrue('id' in created_user and created_user['id'])
         self.assertTrue('first_name' in created_user and created_user['first_name'] == new_user['user']['first_name'])
         self.assertTrue('last_name' in created_user and created_user['last_name'] == new_user['user']['last_name'])
@@ -299,9 +309,17 @@ class UserViewTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
-        created_user = json.loads(response.content)
+        created_response = json.loads(response.content)
+        self.assertTrue('user' in created_response and created_response['user'])
+        created_user = created_response['user']
         self.assertTrue('id' in created_user and created_user['id'])
         self.assertTrue('email' in created_user and created_user['email'] == new_user['user']['email'])
+        self.assertTrue('person' in created_response and created_response['person'])
+        created_person = created_response['person']
+        self.assertTrue('id' in created_person and created_person['id'])
+        self.assertTrue('first_name' in created_person and created_person['first_name'] == new_user['user']['first_name'])
+        self.assertTrue('last_name' in created_person and created_person['last_name'] == new_user['user']['last_name'])
+
         response = self.client.get(reverse('user_family_api',
                                            kwargs={'pk': created_user['id']}))
         self.assertIsNotNone(response)
@@ -342,9 +360,23 @@ class UserViewTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
-        created_user = json.loads(response.content)
+        created_response = json.loads(response.content)
+        self.assertTrue('user' in created_response and created_response['user'])
+        created_user = created_response['user']
         self.assertTrue('id' in created_user and created_user['id'])
         self.assertTrue('email' in created_user and created_user['email'] == new_user['user']['email'])
+
+        self.assertTrue('person' in created_response and created_response['person'])
+        created_person = created_response['person']
+        self.assertTrue('id' in created_person and created_person['id'])
+
+        self.assertTrue('profile' in created_response and created_response['profile'])
+        created_profile = created_response['profile']
+        self.assertTrue('person' in created_profile and self.normalize_key(created_profile['person']) == created_person['id'])
+        self.assertTrue('annual_base_salary' in created_profile)
+        self.assertEqual(int(float(created_profile['annual_base_salary'])), new_user['annual_base_salary'])
+
+        
         response = self.client.get(reverse('employee_profile_by_company_user_api',
                                            kwargs={'user_id': created_user['id'], 
                                                    'company_id': self.normalize_key(new_user['company'])}))
@@ -378,9 +410,21 @@ class UserViewTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
-        created_user = json.loads(response.content)
+        created_response = json.loads(response.content)
+        self.assertTrue('user' in created_response and created_response['user'])
+        created_user = created_response['user']
         self.assertTrue('id' in created_user and created_user['id'])
         self.assertTrue('email' in created_user and created_user['email'] == new_user['user']['email'])
+
+        self.assertTrue('person' in created_response and created_response['person'])
+        created_person = created_response['person']
+        self.assertTrue('id' in created_person and created_person['id'])
+        self.assertTrue('profile' in created_response and created_response['profile'])
+        created_profile = created_response['profile']
+        self.assertTrue('person' in created_profile and self.normalize_key(created_profile['person']) == created_person['id'])
+        self.assertTrue('annual_base_salary' in created_profile)
+        self.assertIsNone(created_profile['annual_base_salary'])
+
         response = self.client.get(reverse('employee_profile_by_company_user_api',
                                            kwargs={'user_id': created_user['id'], 
                                                    'company_id': self.normalize_key(new_user['company'])}))
