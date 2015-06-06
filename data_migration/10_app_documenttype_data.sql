@@ -16,3 +16,4 @@ PERFORM setval(pg_get_serial_sequence('app_documenttype', 'id'),
               (select max(id) from app_documenttype)); 
 END
 $$
+;
