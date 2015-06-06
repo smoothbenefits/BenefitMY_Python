@@ -320,3 +320,76 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['family'][0]['email'], new_user['user']['email'])
         self.assertEqual(result['family'][0]['company'], self.normalize_key(new_user['company']))
         self.assertEqual(result['family'][0]['user'], created_user['id'])
+
+
+    def test_user_create_with_salary_employee_profile_created(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        new_user = {
+            'user': {
+                'first_name':'hahatest', 
+                'last_name':'profiler', 
+                'email':'user166@smoothbenefits.com'
+                },
+            'company': 1,
+            'company_user_type': 'employee',
+            'send_email': 'true',
+            'create_docs': 'true',
+            'annual_base_salary': 243433,
+            'fields':[
+                {'company_name':'benefitmy'}, 
+                {'position': 'Software Engineer'}]
+        }
+        response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 201)
+        created_user = json.loads(response.content)
+        self.assertTrue('id' in created_user and created_user['id'])
+        self.assertTrue('email' in created_user and created_user['email'] == new_user['user']['email'])
+        response = self.client.get(reverse('employee_profile_by_company_user_api',
+                                           kwargs={'user_id': created_user['id'], 
+                                                   'company_id': self.normalize_key(new_user['company'])}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(type(result), dict)
+        self.assertIsNotNone(result['person'])
+        self.assertEqual(result['company'], self.normalize_key(new_user['company']))
+        self.assertEqual(int(float(result['annual_base_salary'])), new_user['annual_base_salary'])
+        self.assertIsNotNone(result['created_at'])
+        self.assertIsNotNone(result['updated_at'])
+
+
+    def test_user_create_no_salary_employee_profile_created(self):
+        login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
+        new_user = {
+            'user': {
+                'first_name':'nosalary', 
+                'last_name':'tester', 
+                'email':'user106@smoothbenefits.com'
+                },
+            'company': 1,
+            'company_user_type': 'employee',
+            'send_email': 'true',
+            'create_docs': 'true',
+            'fields':[
+                {'company_name':'benefitmy'}, 
+                {'position': 'Software Engineer'}]
+        }
+        response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 201)
+        created_user = json.loads(response.content)
+        self.assertTrue('id' in created_user and created_user['id'])
+        self.assertTrue('email' in created_user and created_user['email'] == new_user['user']['email'])
+        response = self.client.get(reverse('employee_profile_by_company_user_api',
+                                           kwargs={'user_id': created_user['id'], 
+                                                   'company_id': self.normalize_key(new_user['company'])}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(type(result), dict)
+        self.assertIsNotNone(result['person'])
+        self.assertEqual(result['company'], self.normalize_key(new_user['company']))
+        self.assertIsNone(result['annual_base_salary'])
+        self.assertIsNotNone(result['created_at'])
+        self.assertIsNotNone(result['updated_at'])
