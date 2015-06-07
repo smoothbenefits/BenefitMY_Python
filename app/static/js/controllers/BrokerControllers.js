@@ -647,6 +647,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
 
       var clientId = $stateParams.clientId;
       $scope.benefit = {
+        mandatory_pcp: false, 
         benefit_type:'',
         benefit_option_types: [
           {name:'Individual', disabled: false},
@@ -1089,6 +1090,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
                 benefit: {
                   benefit_type: $scope.benefit.benefit_type,
                   benefit_name: $scope.benefit.benefit_name,
+                  mandatory_pcp: $scope.benefit.mandatory_pcp, 
                   benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
                   total_cost_per_period: optionTypeItem.total_cost_per_period,
                   employee_cost_per_period: optionTypeItem.employee_cost_per_period

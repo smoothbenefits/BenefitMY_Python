@@ -44,13 +44,14 @@ class CompanyBenefitPlanOptionView(APIView):
 @api_view(['POST'])
 @transaction.atomic
 def benefits(request):
-    if (not "company" in request.DATA or not
-        "benefit" in request.DATA or not
-        "benefit_type" in request.DATA["benefit"] or not
-        "benefit_name" in request.DATA["benefit"] or not
-        "benefit_option_type" in request.DATA["benefit"] or not
-        "total_cost_per_period" in request.DATA["benefit"] or not
-            "employee_cost_per_period" in request.DATA["benefit"]):
+    if (not "company" in request.DATA or 
+        not "benefit" in request.DATA or 
+        not "benefit_type" in request.DATA["benefit"] or 
+        not "benefit_name" in request.DATA["benefit"] or 
+        not "benefit_option_type" in request.DATA["benefit"] or 
+        not "total_cost_per_period" in request.DATA["benefit"] or 
+        not "employee_cost_per_period" in request.DATA["benefit"] or 
+        not "mandatory_pcp" in request.DATA["benefit"]):
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -68,7 +69,8 @@ def benefits(request):
     try:
         b_plan = BenefitPlan.objects.get(
             name=request.DATA["benefit"]["benefit_name"],
-            benefit_type_id=TYPE[request.DATA['benefit']['benefit_type']])
+            benefit_type_id=TYPE[request.DATA['benefit']['benefit_type']],
+            mandatory_pcp=request.DATA["benefit"]["mandatory_pcp"])
         company_benefit = CompanyBenefitPlanOption(
             company_id=request.DATA["company"],
             benefit_option_type=request.DATA["benefit"]["benefit_option_type"],
@@ -86,10 +88,12 @@ def benefits(request):
             "benefit_option_type": request.DATA["benefit"]["benefit_option_type"],
             "total_cost_per_period": request.DATA["benefit"]["total_cost_per_period"],
             "employee_cost_per_period": request.DATA["benefit"]["employee_cost_per_period"],
+            "mandatory_pcp": request.DATA["benefit"]["mandatory_pcp"], 
             "benefit_plan":
                 {
                     "name": request.DATA["benefit"]["benefit_name"],
-                    "benefit_type": TYPE[request.DATA['benefit']['benefit_type']]
+                    "benefit_type": TYPE[request.DATA['benefit']['benefit_type']],
+                    "mandatory_pcp": request.DATA["benefit"]["mandatory_pcp"]
                 }
         }
 
