@@ -54,6 +54,18 @@
                   <span ng-show="form.employee_email.$error.email">Not a valid email address</span>
                 </div>
             </div>
+
+            <div class="form-label">Annual Base Salary</div>
+            <div class="textbox input-group">
+                <span class="input-group-addon">$</span>
+                <input type="number"
+                    name="employee_salary"
+                    ng-model="addUser.annual_base_salary"
+                    ng-required="false">
+                <div class="form-error" ng-show="form.employee_salary.$dirty && form.employee_salary.$invalid">
+                  <span ng-show="form.employee_email.$error.email">Not a valid salary figure</span>
+                </div>
+            </div>
             
            <div class="checkbox">
                 <label>

@@ -19,6 +19,7 @@ sample_request:
        "company_user_type": "employee",
        "send_email" : "true",
        "create_docs": "true",
+       "new_employee": "false",
        "fields":[
           {"company_name":"benefitmy"}, 
           {"position": "Software Engineer"}],
@@ -27,17 +28,34 @@ sample_request:
             "first_name": "fiddfrstvvv5",
             "last_name": "lastvvfdvv5",
             "email": "user5@smoothbenefits.com"
-        }
+        },
+        "annual_base_salary": 3243233
 }
 
 sample_response: |
 {
-    "company": 1,
-    "company_user_type": "employee",
     "user": {
         "id": 7,
         "first_name": "firstvvffffv5",
         "last_name": "lastvvffffvv5",
         "email": "user5@smoffffthbenefits.com"
+    },
+    "company_role":{
+      "id": <id>
+      "company_user_type": "employee",
+      "new_employee": "false"
+    },
+    "person":{
+      "id": <id>
+      "user": <user_id>,
+      "first_name": "fiddfrstvvv5",
+      "last_name": "lastvvfdvv5",
+      "email": "user5@smoothbenefits.com"
+    },
+    "profile":{
+      "id": <id>
+      "annual_base_salary": "3243233.00",
+      "company": <comp_id>,
+      "person": <person_id>
     }
 }
