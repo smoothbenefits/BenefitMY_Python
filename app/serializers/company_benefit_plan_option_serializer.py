@@ -45,7 +45,7 @@ class CompanyBenefitPlanSerializer(HashPkSerializerBase):
     class Meta:
 
         model = CompanyBenefitPlanOption
-        fields = ('id', 
+        fields = ('id',
                   'total_cost_per_period',
                   'employee_cost_per_period',
                   'benefit_option_type',

@@ -1359,7 +1359,6 @@ var healthBenefitsSignup = employeeControllers.controller(
         $scope.save = function(){
           var saveRequest = {benefits:[],waived:[]};
           var invalidEnrollNumberList = [];
-          var missingPcpList = [];
           var noPCPError = false;
           $scope.companyIdPromise.then(function(companyId){
 
