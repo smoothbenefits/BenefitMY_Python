@@ -15,7 +15,6 @@ class CompanyBenefitPlanOptionPostSerializer(HashPkSerializerBase):
 
         model = CompanyBenefitPlanOption
         fields = ('id',
-                  'mandatory_pcp', 
                   'total_cost_per_period',
                   'employee_cost_per_period',
                   'benefit_option_type',
@@ -32,7 +31,6 @@ class CompanyBenefitPlanOptionSerializer(HashPkSerializerBase):
 
         model = CompanyBenefitPlanOption
         fields = ('id',
-                  'mandatory_pcp', 
                   'total_cost_per_period',
                   'employee_cost_per_period',
                   'benefit_option_type',
@@ -48,7 +46,6 @@ class CompanyBenefitPlanSerializer(HashPkSerializerBase):
 
         model = CompanyBenefitPlanOption
         fields = ('id', 
-                  'mandatory_pcp', 
                   'total_cost_per_period',
                   'employee_cost_per_period',
                   'benefit_option_type',

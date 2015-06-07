@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='companybenefitplanoption',
+            model_name='benefitplan',
             name='mandatory_pcp',
             field=models.BooleanField(default=False),
             preserve_default=True,
