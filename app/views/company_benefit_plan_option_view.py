@@ -82,19 +82,21 @@ def benefits(request):
         return Response({'benefits': serializer.data})
 
     except BenefitPlan.DoesNotExist:
+        benefit_data = {
+            "name": request.DATA["benefit"]["benefit_name"],
+            "benefit_type": TYPE[request.DATA['benefit']['benefit_type']],
+            "mandatory_pcp": request.DATA["benefit"]["mandatory_pcp"]
+        }
+
+        if 'pcp_link' in request.DATA['benefit']:
+            benefit_data['pcp_link'] = request.DATA['benefit']['pcp_link']
 
         company_data = {
             "company": request.DATA["company"],
             "benefit_option_type": request.DATA["benefit"]["benefit_option_type"],
             "total_cost_per_period": request.DATA["benefit"]["total_cost_per_period"],
             "employee_cost_per_period": request.DATA["benefit"]["employee_cost_per_period"],
-            "mandatory_pcp": request.DATA["benefit"]["mandatory_pcp"], 
-            "benefit_plan":
-                {
-                    "name": request.DATA["benefit"]["benefit_name"],
-                    "benefit_type": TYPE[request.DATA['benefit']['benefit_type']],
-                    "mandatory_pcp": request.DATA["benefit"]["mandatory_pcp"]
-                }
+            "benefit_plan": benefit_data
         }
 
         serializer = CompanyBenefitPlanOptionPostSerializer(data=company_data)
