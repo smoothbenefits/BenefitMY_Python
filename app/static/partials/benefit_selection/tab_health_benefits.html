@@ -30,7 +30,12 @@
                 </div>
                 <div class="col-md-8 pcp-container">
                     <div ng-repeat="member in benefitTypePlan.selected.eligibleMemberCombo.familyList" ng-show="member.selected">
-                        PCP# of {{member.first_name}} {{member.last_name}}:  <input type="text" ng-model="member.pcp"/> ; 
+                        <ng-form name="pcp_form">
+                            PCP# of {{member.first_name}} {{member.last_name}}:  <input type="text" ng-model="member.pcp" ng-required="benefitTypePlan.selected.benefit.mandatory_pcp" name="pcp_number" /> ;
+                            <div class="form-error-relative" ng-show="pcp_form.pcp_number.$dirty && pcp_form.pcp_number.$invalid">
+                                <span>PCP number field is required</span>
+                            </div>
+                        </ng-form>
                     </div>
                 </div>
             </div>
