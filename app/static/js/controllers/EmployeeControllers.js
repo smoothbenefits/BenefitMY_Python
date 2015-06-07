@@ -1359,6 +1359,7 @@ var healthBenefitsSignup = employeeControllers.controller(
         $scope.save = function(){
           var saveRequest = {benefits:[],waived:[]};
           var invalidEnrollNumberList = [];
+          var missingPcpList = [];
           var noPCPError = false;
           $scope.companyIdPromise.then(function(companyId){
 
@@ -1392,6 +1393,12 @@ var healthBenefitsSignup = employeeControllers.controller(
                   invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.minimumRequired;
                   invalidEnrollNumberList.push(invalidEnrollNumber);
                 }
+
+                if (benefitTypePlan.selected.benefit.benefit_plan.mandatory_pcp && 
+                    _.some(enrolledList, function(enrolled) { return !enrolled.pcp; })) {
+                  alert("The benefit plan you selected requires PCP number. Please confirm you have proviced correct number.");
+                  return;
+                }
               }
             });
 
@@ -1400,48 +1407,49 @@ var healthBenefitsSignup = employeeControllers.controller(
                       ", you have to elect at least" + invalidEnrollNumberList[0].requiredNumber + " family members!");
               return;
             }
+
             saveRequest.waivedRequest = {company:companyId, waived:[]};
             _.each($scope.availablePlans, function(benefitPlan){
-                if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
-                  if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
-                    alert("Please select a reason to waive medical plan.");
-                    return;
-                  }
-
-                  var type = benefitPlan.benefit_type;
-                  var waiveReason = 'Not applicable';
-                  //This code below is such an hack. We need to get the type key from the server!
-                  //CHANGE THIS
-                  var typeKey = 0;
-                  if (type === 'Medical'){
-                    typeKey = 1;
-                    waiveReason = benefitPlan.selected.benefit.reason;
-                  }
-                  if (type === 'Dental'){
-                    typeKey = 2;
-                  }
-                  if (type === 'Vision'){
-                    typeKey = 3;
-                  }
-                  saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
+              if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
+                if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
+                  alert("Please select a reason to waive medical plan.");
+                  return;
                 }
-              });
+
+                var type = benefitPlan.benefit_type;
+                var waiveReason = 'Not applicable';
+                //This code below is such an hack. We need to get the type key from the server!
+                //CHANGE THIS
+                var typeKey = 0;
+                if (type === 'Medical'){
+                  typeKey = 1;
+                  waiveReason = benefitPlan.selected.benefit.reason;
+                }
+                if (type === 'Dental'){
+                  typeKey = 2;
+                }
+                if (type === 'Vision'){
+                  typeKey = 3;
+                }
+                saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
+              }
+            });
 
             console.log(saveRequest);
 
             employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
-               function(errorResponse){
-                alert('Saving waived selection failed because: ' + errorResponse.data);
-                $scope.savedSuccess = false;
-              });
+            function(errorResponse){
+              alert('Saving waived selection failed because: ' + errorResponse.data);
+              $scope.savedSuccess = false;
+            });
           
 
             employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
-                $scope.showSaveSuccessModal();
-                $scope.myForm.$setPristine();
-              }, function(){
-                $scope.savedSuccess = false;
-              });
+              $scope.showSaveSuccessModal();
+              $scope.myForm.$setPristine();
+            }, function(){
+              $scope.savedSuccess = false;
+            });
 
           });
         };

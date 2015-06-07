@@ -69,13 +69,13 @@ def benefits(request):
     try:
         b_plan = BenefitPlan.objects.get(
             name=request.DATA["benefit"]["benefit_name"],
-            benefit_type_id=TYPE[request.DATA['benefit']['benefit_type']])
+            benefit_type_id=TYPE[request.DATA['benefit']['benefit_type']],
+            mandatory_pcp=request.DATA["benefit"]["mandatory_pcp"])
         company_benefit = CompanyBenefitPlanOption(
             company_id=request.DATA["company"],
             benefit_option_type=request.DATA["benefit"]["benefit_option_type"],
             total_cost_per_period=request.DATA["benefit"]["total_cost_per_period"],
             employee_cost_per_period=request.DATA["benefit"]["employee_cost_per_period"],
-            mandatory_pcp = request.DATA["benefit"]["mandatory_pcp"], 
             benefit_plan=b_plan)
         company_benefit.save()
         serializer = CompanyBenefitPlanSerializer(company_benefit)
@@ -92,7 +92,8 @@ def benefits(request):
             "benefit_plan":
                 {
                     "name": request.DATA["benefit"]["benefit_name"],
-                    "benefit_type": TYPE[request.DATA['benefit']['benefit_type']]
+                    "benefit_type": TYPE[request.DATA['benefit']['benefit_type']],
+                    "mandatory_pcp": request.DATA["benefit"]["mandatory_pcp"]
                 }
         }
 

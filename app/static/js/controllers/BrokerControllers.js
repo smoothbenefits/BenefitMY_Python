@@ -647,7 +647,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
 
       var clientId = $stateParams.clientId;
       $scope.benefit = {
-        mandatory_pcp: false,
+        mandatory_pcp: false, 
         benefit_type:'',
         benefit_option_types: [
           {name:'Individual', disabled: false},
