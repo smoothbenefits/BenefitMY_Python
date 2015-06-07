@@ -24,8 +24,8 @@
             <div class="row benefit-pcp-row" ng-show="isMedicalBenefitType(benefitTypePlan) && !isWaived(benefitTypePlan.selected)">
                 <div class="col-md-4">
                     <div class="form-label">Primary Care Physician Number</div>
-                    <div class="form-sub-text">
-                        You can retrieve your Primary Care Physician Number at the benefit provider website
+                    <div class="form-sub-text" ng-if="benefitTypePlan.selected.benefit.benefit_plan.pcp_link">
+                        You can retrieve your Primary Care Physician Number at <a ng-href="{{benefitTypePlan.selected.benefit.benefit_plan.pcp_link}}" target="_blank">your provider's website</a>
                     </div>
                 </div>
                 <div class="col-md-8 pcp-container">

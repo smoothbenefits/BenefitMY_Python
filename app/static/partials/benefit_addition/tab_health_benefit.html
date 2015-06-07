@@ -25,6 +25,19 @@
                     </div>
                 </div>
             </div>
+            <div ng-show="benefitTypeSelected(benefit.benefit_type)">
+                <div class="form-label">PCP Search Link</div>
+                <div class="textbox">
+                    <input type="text"
+                        name="benefit_pcp_link"
+                        ng-model="benefit.pcp_link"
+                        ng-required="false"
+                        ng-maxlength="2048">
+                    <div class="form-error" ng-show="form.benefit_pcp_link.$dirty && form.benefit_pcp_link.$error">
+                      <span ng-show="form.benefit_pcp_link.$error.maxlength">PCP Search Link cannot be more this long</span>
+                    </div>
+                </div>
+            </div>
         </div><!-- / .form-holder -->
         <div ng-show="benefitTypeSelected(benefit.benefit_type)">
             <div class="row">

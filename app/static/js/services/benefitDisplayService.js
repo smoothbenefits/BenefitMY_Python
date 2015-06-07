@@ -19,6 +19,7 @@ benefitmyService.factory('benefitDisplayService',
             array.push({
               benefitName: benefitOption.benefit_plan.name,
               benefitId: benefitOption.benefit_plan.id,
+              pcpLink: benefitOption.benefit_plan.pcp_link,
               benefitOptionArray: optionArray
             });
           }
@@ -73,7 +74,7 @@ benefitmyService.factory('benefitDisplayService',
 
             if(!_.contains(group.benefitNameArray, benefit.benefitName)){
 
-              group.benefitNameArray.push({id:benefit.benefitId, name:benefit.benefitName});
+              group.benefitNameArray.push({id:benefit.benefitId, name:benefit.benefitName, pcpLink: benefit.pcpLink});
               if(!showEmployeePremium){
                 group.benefitOptionMetaArray.push({id:benefit.benefitId, name:'Total\n(per month)', colspan:optionColSpan});
               }
