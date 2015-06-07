@@ -7,7 +7,8 @@
       "total_cost_per_period": "678.87",
       "benefit_option_type": "individual",
       "employee_cost_per_period": "230.60",
-      "benefit_plan": 1
+      "benefit_plan": 1,
+      "mandatory_pcp": false
     },
     "model": "app.companybenefitplanoption",
     "pk": 1
@@ -20,7 +21,8 @@
       "total_cost_per_period": "887.00",
       "benefit_option_type": "individual_plus_spouse",
       "employee_cost_per_period": "287.90",
-      "benefit_plan": 1
+      "benefit_plan": 1, 
+      "mandatory_pcp": false
     },
     "model": "app.companybenefitplanoption",
     "pk": 2
@@ -33,7 +35,8 @@
       "total_cost_per_period": "1024.45",
       "benefit_option_type": "individual_plus_children",
       "employee_cost_per_period": "399.67",
-      "benefit_plan": 1
+      "benefit_plan": 1, 
+      "mandatory_pcp": false
     },
     "model": "app.companybenefitplanoption",
     "pk": 3
@@ -46,7 +49,8 @@
       "total_cost_per_period": "1223.46",
       "benefit_option_type": "individual_plus_family",
       "employee_cost_per_period": "501.23",
-      "benefit_plan": 1
+      "benefit_plan": 1, 
+      "mandatory_pcp": false
     },
     "model": "app.companybenefitplanoption",
     "pk": 4
@@ -59,7 +63,8 @@
       "total_cost_per_period": "800.00",
       "benefit_option_type": "individual",
       "employee_cost_per_period": "40.00",
-      "benefit_plan": 2
+      "benefit_plan": 2, 
+      "mandatory_pcp": false
     },
     "model": "app.companybenefitplanoption",
     "pk": 5
@@ -72,7 +77,8 @@
       "total_cost_per_period": "1000.00",
       "benefit_option_type": "individual_plus_spouse",
       "employee_cost_per_period": "50.00",
-      "benefit_plan": 2
+      "benefit_plan": 2, 
+      "mandatory_pcp": false
     },
     "model": "app.companybenefitplanoption",
     "pk": 6
@@ -85,7 +91,8 @@
       "total_cost_per_period": "1200.00",
       "benefit_option_type": "individual_plus_children",
       "employee_cost_per_period": "60.00",
-      "benefit_plan": 2
+      "benefit_plan": 2, 
+      "mandatory_pcp": false
     },
     "model": "app.companybenefitplanoption",
     "pk": 7
@@ -98,7 +105,8 @@
       "total_cost_per_period": "1400.00",
       "benefit_option_type": "individual_plus_family",
       "employee_cost_per_period": "70.00",
-      "benefit_plan": 2
+      "benefit_plan": 2, 
+      "mandatory_pcp": false
     },
     "model": "app.companybenefitplanoption",
     "pk": 8
@@ -111,7 +119,8 @@
       "total_cost_per_period": "1000.00",
       "benefit_option_type": "individual",
       "employee_cost_per_period": "200.00",
-      "benefit_plan": 3
+      "benefit_plan": 3, 
+      "mandatory_pcp": true
     },
     "model": "app.companybenefitplanoption",
     "pk": 9
@@ -124,7 +133,8 @@
       "total_cost_per_period": "1400.00",
       "benefit_option_type": "individual_plus_spouse",
       "employee_cost_per_period": "300.00",
-      "benefit_plan": 3
+      "benefit_plan": 3, 
+      "mandatory_pcp": true
     },
     "model": "app.companybenefitplanoption",
     "pk": 10
@@ -137,7 +147,8 @@
       "total_cost_per_period": "1800.00",
       "benefit_option_type": "individual_plus_children",
       "employee_cost_per_period": "400.00",
-      "benefit_plan": 3
+      "benefit_plan": 3, 
+      "mandatory_pcp": true
     },
     "model": "app.companybenefitplanoption",
     "pk": 11
@@ -150,7 +161,8 @@
       "total_cost_per_period": "2200.00",
       "benefit_option_type": "individual_plus_family",
       "employee_cost_per_period": "500.00",
-      "benefit_plan": 3
+      "benefit_plan": 3, 
+      "mandatory_pcp": true
     },
     "model": "app.companybenefitplanoption",
     "pk": 12
@@ -163,7 +175,8 @@
       "total_cost_per_period": "300.00",
       "benefit_option_type": "individual",
       "employee_cost_per_period": "50.00",
-      "benefit_plan": 4
+      "benefit_plan": 4, 
+      "mandatory_pcp": true
     },
     "model": "app.companybenefitplanoption",
     "pk": 13
@@ -176,7 +189,8 @@
       "total_cost_per_period": "400.00",
       "benefit_option_type": "individual_plus_spouse",
       "employee_cost_per_period": "60.00",
-      "benefit_plan": 4
+      "benefit_plan": 4, 
+      "mandatory_pcp": true
     },
     "model": "app.companybenefitplanoption",
     "pk": 14
@@ -189,7 +203,8 @@
       "total_cost_per_period": "500.00",
       "benefit_option_type": "individual_plus_children",
       "employee_cost_per_period": "70.00",
-      "benefit_plan": 4
+      "benefit_plan": 4, 
+      "mandatory_pcp": true
     },
     "model": "app.companybenefitplanoption",
     "pk": 15
@@ -202,7 +217,8 @@
       "total_cost_per_period": "600.00",
       "benefit_option_type": "individual_plus_family",
       "employee_cost_per_period": "80.00",
-      "benefit_plan": 4
+      "benefit_plan": 4, 
+      "mandatory_pcp": true
     },
     "model": "app.companybenefitplanoption",
     "pk": 16
