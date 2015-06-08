@@ -46,7 +46,8 @@
                             name="benefit_pcp_link"
                             ng-model="benefit.pcp_link"
                             ng-required="benefit.mandatory_pcp"
-                            ng-maxlength="2048">
+                            ng-maxlength="2048"
+                            ng-change="setLink(benefit.pcp_link)">
                         <div class="form-error" ng-show="form.benefit_pcp_link.$dirty && form.benefit_pcp_link.$error">
                           <span ng-show="form.benefit_pcp_link.$error.required">PCP search link is required when PCP number is required</span>
                           <span ng-show="form.benefit_pcp_link.$error.maxlength">PCP Search Link cannot be more this long</span>

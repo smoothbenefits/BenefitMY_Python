@@ -21,7 +21,7 @@
                     </span>
                 </div>
             </div>
-            <div class="row benefit-pcp-row" ng-show="isMedicalBenefitType(benefitTypePlan) && !isWaived(benefitTypePlan.selected)">
+            <div class="row benefit-pcp-row" ng-show="isMedicalBenefitType(benefitTypePlan) && !isWaived(benefitTypePlan.selected) && benefitTypePlan.selected.benefit.benefit_plan.mandatory_pcp">
                 <div class="col-md-4">
                     <div class="form-label">Primary Care Physician Number</div>
                     <div class="form-sub-text" ng-if="benefitTypePlan.selected.benefit.benefit_plan.pcp_link">
