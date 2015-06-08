@@ -1090,7 +1090,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
                 benefit: {
                   benefit_type: $scope.benefit.benefit_type,
                   benefit_name: $scope.benefit.benefit_name,
-                  mandatory_pcp: $scope.benefit.mandatory_pcp, 
+                  mandatory_pcp: $scope.benefit.mandatory_pcp,
                   pcp_link: $scope.benefit.pcp_link,
                   benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
                   total_cost_per_period: optionTypeItem.total_cost_per_period,
