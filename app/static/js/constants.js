@@ -105,6 +105,13 @@ settings.constant('tabLayoutGlobalConfig', [
                 state: "broker_add_benefit.health"
             },
             {
+                id: 7,
+                verbose_name: "HRA",
+                name: "hra",
+                active: false,
+                state: "broker_add_benefit.hra"
+            },
+            {
                 id: 2,
                 verbose_name: "Basic Life Insurance (AD&D)",
                 name: "basic_life",
@@ -138,13 +145,6 @@ settings.constant('tabLayoutGlobalConfig', [
                 name: "fsa",
                 active: false,
                 state: "broker_add_benefit.fsa"
-            },
-            {
-                id: 7,
-                verbose_name: "HRA",
-                name: "hra",
-                active: false,
-                state: "broker_add_benefit.hra"
             }
         ]
     },
