@@ -32,6 +32,13 @@
                     </td>
                 </tr>
                 <tr class="title-row">
+                    <td colspan="2" class="plan-row-head"><span>PCP Search Link</span></td>
+                    <td ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" colspan="6" style="text-align:center;">
+                        <a ng-if="benefitName.pcpLink" ng-href="{{benefitName.pcpLink}}" target="_blank">{{benefitName.pcpLink}}</a>
+                        <span ng-if="!benefitName.pcpLink">Not Available</span>
+                    </td>
+                </tr>
+                <tr class="title-row">
                     <td colspan="2" class="plan-row-head"><span>Plans Premium</span></td>
                     <td ng-repeat="benefitOption in medicalBenefitGroup.benefitOptionMetaArray" colspan="{{benefitOption.colspan}}">
                         <span>{{benefitOption.name}}</span>

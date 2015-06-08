@@ -647,6 +647,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
 
       var clientId = $stateParams.clientId;
       $scope.benefit = {
+        mandatory_pcp: false, 
         benefit_type:'',
         benefit_option_types: [
           {name:'Individual', disabled: false},
@@ -1074,6 +1075,14 @@ var brokerAddHealthBenefits = brokersControllers.controller(
           });
       };
 
+      $scope.setLink = function(theLink){
+        var linkStartRegex = 'ht?t?p?(s)?(:)?(\/)?(\/)?(\w)*';
+        var regex = new RegExp(linkStartRegex);
+        if(!theLink.match(regex)){
+          $scope.benefit.pcp_link = 'http://' + theLink;
+        }
+      }
+
       $scope.addBenefit = function(){
 
         if(!validateBenefitFields()){
@@ -1089,6 +1098,8 @@ var brokerAddHealthBenefits = brokersControllers.controller(
                 benefit: {
                   benefit_type: $scope.benefit.benefit_type,
                   benefit_name: $scope.benefit.benefit_name,
+                  mandatory_pcp: $scope.benefit.mandatory_pcp,
+                  pcp_link: $scope.benefit.pcp_link,
                   benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
                   total_cost_per_period: optionTypeItem.total_cost_per_period,
                   employee_cost_per_period: optionTypeItem.employee_cost_per_period
