@@ -1376,6 +1376,9 @@ var healthBenefitsSignup = employeeControllers.controller(
                 _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
                   if(member.selected)
                   {
+                    if(!benefitTypePlan.selected.benefit.benefit_plan.mandatory_pcp){
+                      member.pcp = undefined;
+                    }
                     enrolledList.push({id:member.id, pcp:member.pcp});
                   }
                 });
