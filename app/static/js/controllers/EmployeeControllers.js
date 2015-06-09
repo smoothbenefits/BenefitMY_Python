@@ -1040,28 +1040,40 @@ var employeeBenefitsSignup = employeeControllers.controller(
         
         $scope.tabs = [];
         $scope.tabs.push({
-              "heading": "Health Benefits",
-              "state":"employee_benefit_signup.health"
+          "id": 1, 
+          "heading": "Health Benefits",
+          "state":"employee_benefit_signup.health"
         });
+
+        if (hraPlans.length > 0) {
+          $scope.tabs.push({
+            "id": 2, 
+            "heading": "HRA",
+            "state": "employee_benefit_signup.hra"
+          });
+        }
 
         if(basicLifePlans.length > 0) {
           $scope.tabs.push({
-              "heading": "Basic Life (AD&D)",
-              "state":"employee_benefit_signup.basic_life"
+            "id": 3, 
+            "heading": "Basic Life (AD&D)",
+            "state":"employee_benefit_signup.basic_life"
           });
         }
 
         if ($scope.supplementalLifeInsuranceEnabled) {
           if (supplementalLifePlans.length > 0) {
             $scope.tabs.push({
-                  "heading": "Suppl. Life",
-                  "state":"employee_benefit_signup.supplemental_life"
-              });
+              "id": 4,
+              "heading": "Suppl. Life",
+              "state":"employee_benefit_signup.supplemental_life"
+            });
           }
         }
 
         if (fsaPlans.length > 0) {
           $scope.tabs.push({
+            "id": 5, 
             "heading": "FSA",
             "state": "employee_benefit_signup.fsa"
           });
@@ -1069,22 +1081,17 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if (stdPlans.length > 0) {
           $scope.tabs.push({
-              "heading": "STD",
-              "state": "employee_benefit_signup.std"
+            "id": 6, 
+            "heading": "STD",
+            "state": "employee_benefit_signup.std"
           });
         }
 
         if (ltdPlans.length > 0) {
           $scope.tabs.push({
-              "heading": "LTD",
-              "state": "employee_benefit_signup.ltd"
-          });
-        }
-
-        if (hraPlans.length > 0) {
-          $scope.tabs.push({
-              "heading": "HRA",
-              "state": "employee_benefit_signup.hra"
+            "id": 7, 
+            "heading": "LTD",
+            "state": "employee_benefit_signup.ltd"
           });
         }
 
@@ -1369,6 +1376,12 @@ var healthBenefitsSignup = employeeControllers.controller(
                 _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
                   if(member.selected)
                   {
+                    if(!benefitTypePlan.selected.benefit.benefit_plan.mandatory_pcp){
+                      member.pcp = undefined;
+                    }
+                    else if(!hasEmptyRequiredPCP && !member.pcp){
+                      hasEmptyRequiredPCP = true;
+                    }
                     enrolledList.push({id:member.id, pcp:member.pcp});
                   }
                 });
@@ -1392,10 +1405,6 @@ var healthBenefitsSignup = employeeControllers.controller(
                   invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_plan.name;
                   invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.minimumRequired;
                   invalidEnrollNumberList.push(invalidEnrollNumber);
-                }
-                if(!hasEmptyRequiredPCP){
-                  hasEmptyRequiredPCP = benefitTypePlan.selected.benefit.benefit_plan.mandatory_pcp && 
-                      _.some(enrolledList, function(enrolled) { return !enrolled.pcp; });
                 }
               }
             });

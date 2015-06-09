@@ -106,45 +106,45 @@ settings.constant('tabLayoutGlobalConfig', [
             },
             {
                 id: 2,
+                verbose_name: "HRA",
+                name: "hra",
+                active: false,
+                state: "broker_add_benefit.hra"
+            },
+            {
+                id: 3,
                 verbose_name: "Basic Life Insurance (AD&D)",
                 name: "basic_life",
                 active: false,
                 state: "broker_add_benefit.basic_life_insurance"
             },
             {
-                id: 3,
+                id: 4,
                 verbose_name: "Suppl. Life Insurance",
                 name: "supplemental_life",
                 active: false,
                 state: "broker_add_benefit.supplemental_life_insurance"
             },
             {
-                id: 4,
+                id: 5,
                 verbose_name: "STD",
                 name: "std",
                 active: false,
                 state: "broker_add_benefit.std"
             },
             {
-                id: 5,
+                id: 6,
                 verbose_name: "LTD",
                 name: "ltd",
                 active: false,
                 state: "broker_add_benefit.ltd"
             },
             {
-                id: 6,
+                id: 7,
                 verbose_name: "FSA",
                 name: "fsa",
                 active: false,
                 state: "broker_add_benefit.fsa"
-            },
-            {
-                id: 7,
-                verbose_name: "HRA",
-                name: "hra",
-                active: false,
-                state: "broker_add_benefit.hra"
             }
         ]
     },

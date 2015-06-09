@@ -15,4 +15,4 @@ class UserCompanyBenefitPlanOptionSerializer(HashPkSerializerBase):
     class Meta:
 
         model = UserCompanyBenefitPlanOption
-        fields = ('enrolleds', 'benefit', 'pcp', 'created_at', 'updated_at')
+        fields = ('enrolleds', 'benefit', 'created_at', 'updated_at')
