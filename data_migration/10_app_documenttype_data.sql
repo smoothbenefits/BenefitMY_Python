@@ -9,7 +9,7 @@ END IF;
 IF NOT EXISTS (select 1 from app_documenttype where name = 'NDA') THEN
     insert into app_documenttype(id, name, default_content) values(3, 'NDA', 'Hello {{Employee}}: This is a Non Disclosure Agreement between {{Company_Name}} and you. Best Regards. {{HR Person}} {{Date}}');
 END IF;
-IF NOT EXISTS (select 1 from app_documenttype where name = 'COBRA') THEN
+IF NOT EXISTS (select 1 from app_documenttype where name = 'Cobra') THEN
     insert into app_documenttype(id, name, default_content) values(4, 'Cobra', 'Hello {{Employee}}: This Letter is to inform you that after your employment with {{Company_Name}} has terminated, you are entitlement to receive benefit by COBRA for 60 days. {{HR Person}} {{Date}}');
 END IF;
 IF NOT EXISTS (select 1 from app_documenttype where name = 'Employee Handbook') THEN
