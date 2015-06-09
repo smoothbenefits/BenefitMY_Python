@@ -13,7 +13,7 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <tabset type="pills">
-                <tab ng-repeat="tab in section.tabs" heading="{{tab.verbose_name}}" active="tab.active" select="goToState(tab.state)"/>
+                <tab ng-repeat="tab in section.tabs | orderBy:'tab.id'" heading="{{tab.verbose_name}}" active="tab.active" select="goToState(tab.state)" />
             </tabset>
 
             <div ui-view></div>

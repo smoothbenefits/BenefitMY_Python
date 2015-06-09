@@ -1075,8 +1075,14 @@ var brokerAddHealthBenefits = brokersControllers.controller(
           });
       };
 
+      $scope.mandatoryPcpUpdated = function(benefit){
+        if(!benefit.mandatory_pcp){
+          benefit.pcp_link = undefined;
+        }
+      }
+
       $scope.setLink = function(theLink){
-        var linkStartRegex = 'ht?t?p?(s)?(:)?(\/)?(\/)?(\w)*';
+        var linkStartRegex = 'http(s)?:(\/)?(\/)?(\w|.)*|ht?t?p?s?:?(\/)?(\/)?';
         var regex = new RegExp(linkStartRegex);
         if(!theLink.match(regex)){
           $scope.benefit.pcp_link = 'http://' + theLink;
