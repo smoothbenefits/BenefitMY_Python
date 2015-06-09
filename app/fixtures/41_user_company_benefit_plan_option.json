@@ -3,7 +3,6 @@
     "fields": {
       "created_at": "2015-05-06T00:19:35.245Z",
       "benefit": 2,
-      "pcp": "",
       "user": 3,
       "updated_at": "2015-05-06T00:19:35.245Z"
     },
@@ -14,7 +13,6 @@
     "fields": {
       "created_at": "2015-05-06T00:19:35.253Z",
       "benefit": 10,
-      "pcp": "",
       "user": 3,
       "updated_at": "2015-05-06T00:19:35.253Z"
     },
@@ -25,7 +23,6 @@
     "fields": {
       "created_at": "2015-05-06T00:19:35.259Z",
       "benefit": 13,
-      "pcp": "",
       "user": 3,
       "updated_at": "2015-05-06T00:19:35.259Z"
     },
