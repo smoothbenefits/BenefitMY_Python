@@ -654,8 +654,18 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$state
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', '$stateParams', '$location', 'PersonService', 'currentUser', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, PersonService, currentUser, EmployeePreDashboardValidationService){
+  ['$scope', 
+   '$stateParams', 
+   '$location', 
+   'PersonService', 
+   'currentUser', 
+   'EmployeePreDashboardValidationService',
+  function($scope, 
+           $stateParams, 
+           $location, 
+           PersonService, 
+           currentUser, 
+           EmployeePreDashboardValidationService){
 
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
@@ -674,6 +684,10 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
     });
 
     $('body').addClass('onboarding-page');
+
+    PersonService.getSelfPersonInfo($scope.employeeId).then(function(self_data){
+      $scope.employee = self_data;
+    });
 
     $scope.addBasicInfo = function(){
       var birthDate = $scope.employee.birth_date;
@@ -1026,28 +1040,40 @@ var employeeBenefitsSignup = employeeControllers.controller(
         
         $scope.tabs = [];
         $scope.tabs.push({
-              "heading": "Health Benefits",
-              "state":"employee_benefit_signup.health"
+          "id": 1, 
+          "heading": "Health Benefits",
+          "state":"employee_benefit_signup.health"
         });
+
+        if (hraPlans.length > 0) {
+          $scope.tabs.push({
+            "id": 2, 
+            "heading": "HRA",
+            "state": "employee_benefit_signup.hra"
+          });
+        }
 
         if(basicLifePlans.length > 0) {
           $scope.tabs.push({
-              "heading": "Basic Life (AD&D)",
-              "state":"employee_benefit_signup.basic_life"
+            "id": 3, 
+            "heading": "Basic Life (AD&D)",
+            "state":"employee_benefit_signup.basic_life"
           });
         }
 
         if ($scope.supplementalLifeInsuranceEnabled) {
           if (supplementalLifePlans.length > 0) {
             $scope.tabs.push({
-                  "heading": "Suppl. Life",
-                  "state":"employee_benefit_signup.supplemental_life"
-              });
+              "id": 4,
+              "heading": "Suppl. Life",
+              "state":"employee_benefit_signup.supplemental_life"
+            });
           }
         }
 
         if (fsaPlans.length > 0) {
           $scope.tabs.push({
+            "id": 5, 
             "heading": "FSA",
             "state": "employee_benefit_signup.fsa"
           });
@@ -1055,22 +1081,17 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if (stdPlans.length > 0) {
           $scope.tabs.push({
-              "heading": "STD",
-              "state": "employee_benefit_signup.std"
+            "id": 6, 
+            "heading": "STD",
+            "state": "employee_benefit_signup.std"
           });
         }
 
         if (ltdPlans.length > 0) {
           $scope.tabs.push({
-              "heading": "LTD",
-              "state": "employee_benefit_signup.ltd"
-          });
-        }
-
-        if (hraPlans.length > 0) {
-          $scope.tabs.push({
-              "heading": "HRA",
-              "state": "employee_benefit_signup.hra"
+            "id": 7, 
+            "heading": "LTD",
+            "state": "employee_benefit_signup.ltd"
           });
         }
 
@@ -1145,14 +1166,6 @@ var healthBenefitsSignup = employeeControllers.controller(
         $scope.selectedBenefits =[];
         $scope.selectedBenefitHashmap = {};
 
-        PersonService.getFamilyInfo(employeeId)
-        .then(function(family){
-          _.each(family, function(member){
-            member.ticked = false;
-            $scope.family.push(member);
-          });
-        });
-
         var getEligibleFamilyMember = function(benefit, selected){
           var availFamilyList = {};
           var selectedMemberHash = {};
@@ -1204,109 +1217,117 @@ var healthBenefitsSignup = employeeControllers.controller(
           return availFamilyList;
         };
 
-        $scope.companyIdPromise.then(function(companyId){
-          benefitDisplayService(companyId, false, function(groupObj, nonMedicalArray, benefitCount){
-            $scope.medicalBenefitGroup = groupObj;
-            $scope.nonMedicalBenefitArray = nonMedicalArray;
+        PersonService.getFamilyInfo(employeeId)
+        .then(function(family){
+          _.each(family, function(member){
+            member.ticked = false;
+            $scope.family.push(member);
           });
 
-          //First get all the enrolled benefit list
-          employeeBenefits.enroll().get({userId:employeeId, companyId:companyId})
-            .$promise.then(function(response){
-              $scope.selectedBenefits = response.benefits;
-              _.each($scope.selectedBenefits, function(benefitMember){
-                benefitMember.benefit.pcp = benefitMember.pcp;
-                $scope.selectedBenefitHashmap[benefitMember.benefit.id] = benefitMember.benefit;
+          $scope.companyIdPromise.then(function(companyId){
+            benefitDisplayService(companyId, false, function(groupObj, nonMedicalArray, benefitCount){
+              $scope.medicalBenefitGroup = groupObj;
+              $scope.nonMedicalBenefitArray = nonMedicalArray;
+            });
 
-                // Need to pass PCP number from enrolled to family object
-                _.each(benefitMember.enrolleds, function(enrolled){
-                  var member = _.find($scope.family, function(familyMember){
-                    return familyMember.id === enrolled.person.id;
-                  });
-                  if (member && !member.pcp){
-                    member.pcp = enrolled.pcp;
-                  }
-                })
-              });
+            //First get all the enrolled benefit list
+            employeeBenefits.enroll().get({userId:employeeId, companyId:companyId})
+              .$promise.then(function(response){
+                $scope.selectedBenefits = response.benefits;
+                _.each($scope.selectedBenefits, function(benefitMember){
+                  benefitMember.benefit.pcp = benefitMember.pcp;
+                  $scope.selectedBenefitHashmap[benefitMember.benefit.id] = benefitMember.benefit;
 
-              //Then get all the waived list
-              employeeBenefits.waive().query({userId:employeeId})
-                .$promise.then(function(response){
-                  $scope.waivedBenefits = _.filter(response, function(waived){
-                    return waived.company.id == companyId;
-                  });
+                  // Need to pass PCP number from enrolled to family object
+                  _.each(benefitMember.enrolleds, function(enrolled){
+                    var member = _.find($scope.family, function(familyMember){
+                      return familyMember.id === enrolled.person.id;
+                    });
+                    if (member && !member.pcp){
+                      member.pcp = enrolled.pcp;
+                    }
+                  })
+                });
 
-
-                  //Then get all the benefits associated with the company
-                  benefitListRepository.get({clientId:companyId}).$promise.then(function(response){
-                    _.each(response.benefits, function(availBenefit){
-                      var benefitFamilyPlan = { 'benefit': availBenefit};
-                      var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
-                        return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
-                      }));
-
-                      benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
-                      var benefitType = availBenefit.benefit_plan.benefit_type.name;
-                      var curTypePlan = _.find($scope.availablePlans, function(plans){
-                        var hit = _.find(plans.benefitList, function(benefit){
-                          return benefit.benefit.benefit_plan.benefit_type.name == benefitType;
-                        });
-                        if (hit){
-                          return true;
-                        }
-                        return false;
-                      })
-                      if(!curTypePlan)
-                      {
-                        curTypePlan = {type:availBenefit.benefit_plan.benefit_type, benefitList:[]};
-
-                        var waiveOption = {
-                                            benefit: {
-                                              id:-1,
-                                              benefit_plan: {
-                                                name: 'Waive',
-                                                employee_cost_per_period: 0,
-                                                benefit_type: {
-                                                  name: availBenefit.benefit_type
-                                                }
-                                              },
-                                              employee_cost_per_period: 0,
-                                              benefit_option_type: 'all'
-                                            }
-                                          };
-                        curTypePlan.benefitList.push(waiveOption);
-                        $scope.availablePlans.push(curTypePlan);
-                      }
-                      curTypePlan.benefitList.push(benefitFamilyPlan);
-                      curTypePlan.benefit_type = benefitType;
+                //Then get all the waived list
+                employeeBenefits.waive().query({userId:employeeId})
+                  .$promise.then(function(response){
+                    $scope.waivedBenefits = _.filter(response, function(waived){
+                      return waived.company.id == companyId;
                     });
 
-                    //Now match the selected with the actual benefit plan(medical, dental, vision)
-                    _.each($scope.availablePlans, function(typedPlan){
-                      _.each(typedPlan.benefitList, function(curBenefit){
-                        var retrievedBenefit = $scope.selectedBenefitHashmap[curBenefit.benefit.id];
-                        if(retrievedBenefit){
-                          typedPlan.selected = curBenefit;
-                          typedPlan.selected.pcp = retrievedBenefit.pcp;
+
+                    //Then get all the benefits associated with the company
+                    benefitListRepository.get({clientId:companyId}).$promise.then(function(response){
+                      _.each(response.benefits, function(availBenefit){
+                        var benefitFamilyPlan = { 'benefit': availBenefit};
+                        var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
+                          return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
+                        }));
+
+                        benefitFamilyPlan.eligibleMemberCombo = getEligibleFamilyMember(availBenefit, selectedBenefitPlan);
+                        var benefitType = availBenefit.benefit_plan.benefit_type.name;
+                        var curTypePlan = _.find($scope.availablePlans, function(plans){
+                          var hit = _.find(plans.benefitList, function(benefit){
+                            return benefit.benefit.benefit_plan.benefit_type.name == benefitType;
+                          });
+                          if (hit){
+                            return true;
+                          }
+                          return false;
+                        })
+                        if(!curTypePlan)
+                        {
+                          curTypePlan = {type:availBenefit.benefit_plan.benefit_type, benefitList:[]};
+
+                          var waiveOption = {
+                                              benefit: {
+                                                id:-1,
+                                                benefit_plan: {
+                                                  name: 'Waive',
+                                                  employee_cost_per_period: 0,
+                                                  benefit_type: {
+                                                    name: availBenefit.benefit_type
+                                                  }
+                                                },
+                                                employee_cost_per_period: 0,
+                                                benefit_option_type: 'all'
+                                              }
+                                            };
+                          curTypePlan.benefitList.push(waiveOption);
+                          $scope.availablePlans.push(curTypePlan);
+                        }
+                        curTypePlan.benefitList.push(benefitFamilyPlan);
+                        curTypePlan.benefit_type = benefitType;
+                      });
+
+                      //Now match the selected with the actual benefit plan(medical, dental, vision)
+                      _.each($scope.availablePlans, function(typedPlan){
+                        _.each(typedPlan.benefitList, function(curBenefit){
+                          var retrievedBenefit = $scope.selectedBenefitHashmap[curBenefit.benefit.id];
+                          if(retrievedBenefit){
+                            typedPlan.selected = curBenefit;
+                            typedPlan.selected.pcp = retrievedBenefit.pcp;
+                          }
+                        });
+                        if(!typedPlan.selected){
+                          //Now, we cannot find a selected benefit plan. 
+                          //check if it is waived.
+                          var waivedBenefitOfType = _.find($scope.waivedBenefits, function(waived){
+                            return waived.benefit_type.id == typedPlan.type.id;
+                          });
+                          if(waivedBenefitOfType){
+                            typedPlan.selected = _.find(typedPlan.benefitList, function(benefitMember){
+                              return benefitMember.benefit.id == -1;
+                            });
+                            typedPlan.selected.benefit.reason = waivedBenefitOfType.reason;
+                          }
+                        
                         }
                       });
-                      if(!typedPlan.selected){
-                        //Now, we cannot find a selected benefit plan. 
-                        //check if it is waived.
-                        var waivedBenefitOfType = _.find($scope.waivedBenefits, function(waived){
-                          return waived.benefit_type.id == typedPlan.type.id;
-                        });
-                        if(waivedBenefitOfType){
-                          typedPlan.selected = _.find(typedPlan.benefitList, function(benefitMember){
-                            return benefitMember.benefit.id == -1;
-                          });
-                          typedPlan.selected.benefit.reason = waivedBenefitOfType.reason;
-                        }
-                      
-                      }
                     });
                   });
-                });
+            });
           });
         });
 
@@ -1346,6 +1367,7 @@ var healthBenefitsSignup = employeeControllers.controller(
           var saveRequest = {benefits:[],waived:[]};
           var invalidEnrollNumberList = [];
           var noPCPError = false;
+          var hasEmptyRequiredPCP = false;
           $scope.companyIdPromise.then(function(companyId){
 
             _.each($scope.availablePlans, function(benefitTypePlan){
@@ -1354,6 +1376,12 @@ var healthBenefitsSignup = employeeControllers.controller(
                 _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
                   if(member.selected)
                   {
+                    if(!benefitTypePlan.selected.benefit.benefit_plan.mandatory_pcp){
+                      member.pcp = undefined;
+                    }
+                    else if(!hasEmptyRequiredPCP && !member.pcp){
+                      hasEmptyRequiredPCP = true;
+                    }
                     enrolledList.push({id:member.id, pcp:member.pcp});
                   }
                 });
@@ -1386,48 +1414,53 @@ var healthBenefitsSignup = employeeControllers.controller(
                       ", you have to elect at least" + invalidEnrollNumberList[0].requiredNumber + " family members!");
               return;
             }
+            if(hasEmptyRequiredPCP){
+              alert("The benefit plan you selected requires PCP number. Please confirm you have proviced correct number.");
+              return;
+            }
+
             saveRequest.waivedRequest = {company:companyId, waived:[]};
             _.each($scope.availablePlans, function(benefitPlan){
-                if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
-                  if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
-                    alert("Please select a reason to waive medical plan.");
-                    return;
-                  }
-
-                  var type = benefitPlan.benefit_type;
-                  var waiveReason = 'Not applicable';
-                  //This code below is such an hack. We need to get the type key from the server!
-                  //CHANGE THIS
-                  var typeKey = 0;
-                  if (type === 'Medical'){
-                    typeKey = 1;
-                    waiveReason = benefitPlan.selected.benefit.reason;
-                  }
-                  if (type === 'Dental'){
-                    typeKey = 2;
-                  }
-                  if (type === 'Vision'){
-                    typeKey = 3;
-                  }
-                  saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
+              if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
+                if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
+                  alert("Please select a reason to waive medical plan.");
+                  return;
                 }
-              });
+
+                var type = benefitPlan.benefit_type;
+                var waiveReason = 'Not applicable';
+                //This code below is such an hack. We need to get the type key from the server!
+                //CHANGE THIS
+                var typeKey = 0;
+                if (type === 'Medical'){
+                  typeKey = 1;
+                  waiveReason = benefitPlan.selected.benefit.reason;
+                }
+                if (type === 'Dental'){
+                  typeKey = 2;
+                }
+                if (type === 'Vision'){
+                  typeKey = 3;
+                }
+                saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
+              }
+            });
 
             console.log(saveRequest);
 
             employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
-               function(errorResponse){
-                alert('Saving waived selection failed because: ' + errorResponse.data);
-                $scope.savedSuccess = false;
-              });
+            function(errorResponse){
+              alert('Saving waived selection failed because: ' + errorResponse.data);
+              $scope.savedSuccess = false;
+            });
           
 
             employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
-                $scope.showSaveSuccessModal();
-                $scope.myForm.$setPristine();
-              }, function(){
-                $scope.savedSuccess = false;
-              });
+              $scope.showSaveSuccessModal();
+              $scope.myForm.$setPristine();
+            }, function(){
+              $scope.savedSuccess = false;
+            });
 
           });
         };

@@ -225,11 +225,12 @@ var employerUser = employersController.controller('employerUser',
         apiUser.create_docs = viewUser.create_docs;
         apiUser.fields = $scope.templateFields
         apiUser.send_email = viewUser.send_email;
+        apiUser.annual_base_salary = viewUser.annual_base_salary;
         return apiUser;
       }
 
       var validateAddUser = function(addUser){
-        if(addUser.first_name && addUser.last_name && addUser.email)
+        if(addUser.first_name && addUser.last_name && addUser.email && addUser.annual_base_salary)
         {
           return true;
         }

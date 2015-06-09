@@ -32,6 +32,13 @@
                     </td>
                 </tr>
                 <tr class="title-row">
+                    <td colspan="2" class="plan-row-head"><span>PCP Search Link</span></td>
+                    <td ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" colspan="6" style="text-align:center;">
+                        <a ng-if="benefitName.pcpLink" ng-href="{{benefitName.pcpLink}}" target="_blank">{{benefitName.pcpLink}}</a>
+                        <span ng-if="!benefitName.pcpLink">Not Available</span>
+                    </td>
+                </tr>
+                <tr class="title-row">
                     <td colspan="2" class="plan-row-head"><span>Plans Premium</span></td>
                     <td ng-repeat="benefitOption in medicalBenefitGroup.benefitOptionMetaArray" colspan="{{benefitOption.colspan}}">
                         <span>{{benefitOption.name}}</span>
@@ -51,6 +58,38 @@
                     <td colspan="2" class="row-head"><span>{{policyListMember.name}}</span></td>
                     <td ng-repeat="policyValue in policyListMember.valueArray", colspan="{{policyValue.colspan}}">
                         <span>{{policyValue.value}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- HRA benefits summary -->
+    <div class="table-responsive table-holder" ng-if="hraPlans && hraPlans.length > 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Health Reimbursement Accounts (HRA)</span></th>
+                    <th><span>Description</span></th>
+                    <td><span>Document</span></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="hraPlan in hraPlans">
+                    <td>
+                        {{hraPlan.planName}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteHraPlan(hraPlan)" href="javascript:void(0);">X</a>
+                    </td>
+                    <td >
+                        {{hraPlan.planDescription}}
+                    </td>
+                    <td class="upload-td">
+                        <bmuploadmanager 
+                            upload-type="HRA" 
+                            upload-mode="button" 
+                            feature-id="{{hraPlan.companyPlanId}}" 
+                            hide-type="true">
+                        </bmuploadmanager>
                     </td>
                 </tr>
             </tbody>
@@ -270,38 +309,6 @@
                             upload-type="FSA" 
                             upload-mode="button" 
                             feature-id="{{fsaPlan.companyPlanId}}" 
-                            hide-type="true">
-                        </bmuploadmanager>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- HRA benefits summary -->
-    <div class="table-responsive table-holder" ng-if="hraPlans && hraPlans.length > 0">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Health Reimbursement Accounts (HRA)</span></th>
-                    <th><span>Description</span></th>
-                    <td><span>Document</span></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="hraPlan in hraPlans">
-                    <td>
-                        {{hraPlan.planName}}
-                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteHraPlan(hraPlan)" href="javascript:void(0);">X</a>
-                    </td>
-                    <td >
-                        {{hraPlan.planDescription}}
-                    </td>
-                    <td class="upload-td">
-                        <bmuploadmanager 
-                            upload-type="HRA" 
-                            upload-mode="button" 
-                            feature-id="{{hraPlan.companyPlanId}}" 
                             hide-type="true">
                         </bmuploadmanager>
                     </td>

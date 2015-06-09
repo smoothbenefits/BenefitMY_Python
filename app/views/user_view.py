@@ -10,12 +10,14 @@ from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.custom_authentication import AuthUserManager
 from app.models.person import Person
-from app.serializers.person_serializer import PersonSerializer
+from app.serializers.person_serializer import PersonSerializer, PersonSimpleSerializer
 from app.serializers.user_serializer import UserSerializer
+from app.serializers.employee_profile_serializer import EmployeeProfilePostSerializer
 from app.serializers.company_user_serializer import CompanyRoleSerializer
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
 from django.conf import settings
+from app.service.hash_key_service import HashKeyService
 
 User = get_user_model()
 
@@ -39,6 +41,7 @@ class UsersView(APIView):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response({'users': serializer.data})
+
 
     @transaction.atomic
     def post(self, request, format=None):
@@ -64,6 +67,7 @@ class UsersView(APIView):
 
         userManager = AuthUserManager()
 
+        # Create the actual user data
         User.objects.create_user(request.DATA['user']['email'], settings.DEFAULT_USER_PW)
         if not userManager.user_exists(request.DATA['user']['email']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -73,6 +77,7 @@ class UsersView(APIView):
         user.last_name = request.DATA['user']['last_name']
         user.save()
 
+        # Create the company_user data
         company_user = CompanyUser(company_id=request.DATA['company'],
                                    user=user,
                                    company_user_type=request.DATA['company_user_type'])
@@ -82,7 +87,34 @@ class UsersView(APIView):
 
         company_user.save()
 
-        serializer = UserSerializer(user)
+        # Now create the person object
+        person_data = {'first_name': request.DATA['user']['first_name'],
+                       'last_name': request.DATA['user']['last_name'],
+                       'user': user.id,
+                       'relationship': 'self',
+                       'person_type': 'primary_contact',
+                       'company': request.DATA['company'],
+                       'email':user.email}
+
+        person_serializer = PersonSimpleSerializer(data=person_data)
+        if person_serializer.is_valid():
+            person_serializer.save()
+
+        #Create the employee profile
+        key_service = HashKeyService()
+        profile_data = {
+            'person': key_service.decode_key(person_serializer.data['id']),
+            'company': request.DATA['company']
+        }
+
+        if 'annual_base_salary' in request.DATA and request.DATA['annual_base_salary'] > 0:
+            profile_data['annual_base_salary'] = request.DATA['annual_base_salary']
+
+        profile_serializer = EmployeeProfilePostSerializer(data=profile_data)
+        if profile_serializer.is_valid():
+            profile_serializer.save()
+
+        # Now check to see send email and create documents
 
         if company_user.company_user_type == 'employee':
             if 'send_email' in request.DATA and request.DATA['send_email']:
@@ -106,7 +138,17 @@ class UsersView(APIView):
                 except Exception as e:
                     print "Exception happend on User Document Generation! Exception is {}".format(e)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #construct data back to consumer
+        user_serializer = UserSerializer(user)
+        company_role_serializer = CompanyRoleSerializer(company_user)
+        response_data = {
+            'user': user_serializer.data,
+            'company_role': company_role_serializer.data,
+            'person': person_serializer.data,
+            'profile': profile_serializer.data
+        }
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 class CurrentUserView(APIView):
