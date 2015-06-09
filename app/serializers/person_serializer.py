@@ -8,6 +8,11 @@ from hash_pk_serializer_base import HashPkSerializerBase
 from custom_fields.hash_field import HashField
 
 
+class PersonSimpleSerializer(HashPkSerializerBase):
+  class Meta:
+    model=Person
+
+
 class PersonSerializer(HashPkSerializerBase):
 
     addresses = AddressSerializer(many=True)

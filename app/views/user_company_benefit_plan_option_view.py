@@ -26,14 +26,9 @@ class UserCompanyBenefitPlanOptionView(APIView):
 
     def _add_user_benefits(self, request, pk):
         for benefit in request.DATA['benefits']:
-            if 'pcp' in benefit['benefit'] and benefit['benefit']['pcp']:
-                pcp_id = benefit['benefit']['pcp']
-            else:
-                pcp_id = ''
             u = UserCompanyBenefitPlanOption(
                     user_id=pk,
-                    benefit_id=benefit['benefit']['id'],
-                    pcp = pcp_id)
+                    benefit_id=benefit['benefit']['id'])
             u.save()
             for enroll in benefit["enrolleds"]:
                 p_id = enroll['id']
@@ -43,8 +38,7 @@ class UserCompanyBenefitPlanOptionView(APIView):
                     pcp = ''
                 enrolled = Enrolled(user_company_benefit_plan_option=u,
                                     person_id=p_id,
-                                    pcp=pcp
-                                    )
+                                    pcp=pcp)
                 enrolled.save()
 
     @transaction.atomic

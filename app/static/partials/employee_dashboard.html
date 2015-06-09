@@ -70,6 +70,34 @@
         </table>
     </div>
 
+    <!-- HRA summary table -->
+    <div class="table-responsive table-holder table">
+        <div class="table-sub-title">Health Reimbursement Accounts (HRA)</div>
+        <table class="table table-striped" ng-show="!hraPlan">
+            <tbody>
+                <tr>
+                    <td width="180">No active HRA plan</td>
+                </tr>
+            </tbody>    
+        </table>
+        <table class="table table-striped" ng-show="hraPlan">
+            <thead>
+                <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Description</span></th>
+                    <th><span>Last Updated</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{hraPlan.planName}}</td>
+                    <td>{{hraPlan.planDescription}}</td>
+                    <td>{{hraPlan.lastUpdateDateTime}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <!-- Basic life insurance summary table -->
     <div class="table-responsive table-holder table">
         <div class="table-sub-title">Basic Life Insurance</div>
@@ -265,34 +293,6 @@
                 <tr>
                     <td>Dependent Care Account</td>
                     <td>${{fsaElection.dependent_amount_per_year}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- HRA summary table -->
-    <div class="table-responsive table-holder table">
-        <div class="table-sub-title">Health Reimbursement Accounts (HRA)</div>
-        <table class="table table-striped" ng-show="!hraPlan">
-            <tbody>
-                <tr>
-                    <td width="180">No active HRA plan</td>
-                </tr>
-            </tbody>    
-        </table>
-        <table class="table table-striped" ng-show="hraPlan">
-            <thead>
-                <tr>
-                    <th><span>Plan Name</span></th>
-                    <th><span>Description</span></th>
-                    <th><span>Last Updated</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{hraPlan.planName}}</td>
-                    <td>{{hraPlan.planDescription}}</td>
-                    <td>{{hraPlan.lastUpdateDateTime}}</td>
                 </tr>
             </tbody>
         </table>

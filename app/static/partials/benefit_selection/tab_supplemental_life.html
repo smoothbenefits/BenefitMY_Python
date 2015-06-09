@@ -118,7 +118,7 @@
                         <div>${{supplementalLifeInsurancePlan.selfElectedAmount}} x (100%-{{selfRateInfo.benefitReductionPercentage}}%) / $10,000 x ${{selfRateInfo.rate}}/Month = <b>${{computeSelfPremium()}}/Month</b></div>
                     </div>
                 </div>
-                <div class="row" style="margin-top:3px;">
+                <div class="row" style="margin-top:3px;" ng-if="selfRateInfo.benefitReductionPercentage>0">
                     <div class="col-md-offset-2 col-md-8">
                         <div class="bg-info">* The above premium calculation subjects to <b>{{selfRateInfo.benefitReductionPercentage}}%</b> Benefit Reduction, which applies to the elected coverage amount and the corresponding calculated premium.</div>
                     </div>
@@ -131,7 +131,7 @@
                         <div>${{supplementalLifeInsurancePlan.spouseElectedAmount}} x (100%-{{spouseRateInfo.benefitReductionPercentage}}%) / $10,000 x ${{spouseRateInfo.rate}}/Month = <b>${{computeSpousePremium()}}/Month</b></div>
                     </div>
                 </div>
-                <div class="row" style="margin-top:3px;" ng-if="familyInfo.spousePerson">
+                <div class="row" style="margin-top:3px;" ng-if="familyInfo.spousePerson && spouseRateInfo.benefitReductionPercentage > 0">
                     <div class="col-md-offset-2 col-md-8">
                         <div class="bg-info">* The above premium calculation subjects to <b>{{spouseRateInfo.benefitReductionPercentage}}%</b> Benefit Reduction, which applies to the elected coverage amount and the corresponding calculated premium.</div>
                     </div>
