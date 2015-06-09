@@ -1376,6 +1376,12 @@ var healthBenefitsSignup = employeeControllers.controller(
                 _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
                   if(member.selected)
                   {
+                    if(!benefitTypePlan.selected.benefit.benefit_plan.mandatory_pcp){
+                      member.pcp = undefined;
+                    }
+                    else if(!hasEmptyRequiredPCP && !member.pcp){
+                      hasEmptyRequiredPCP = true;
+                    }
                     enrolledList.push({id:member.id, pcp:member.pcp});
                   }
                 });
@@ -1399,10 +1405,6 @@ var healthBenefitsSignup = employeeControllers.controller(
                   invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_plan.name;
                   invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.minimumRequired;
                   invalidEnrollNumberList.push(invalidEnrollNumber);
-                }
-                if(!hasEmptyRequiredPCP){
-                  hasEmptyRequiredPCP = benefitTypePlan.selected.benefit.benefit_plan.mandatory_pcp && 
-                      _.some(enrolledList, function(enrolled) { return !enrolled.pcp; });
                 }
               }
             });
