@@ -64,6 +64,38 @@
         </table>
     </div>
 
+    <!-- HRA benefits summary -->
+    <div class="table-responsive table-holder" ng-if="hraPlans && hraPlans.length > 0">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><span>Health Reimbursement Accounts (HRA)</span></th>
+                    <th><span>Description</span></th>
+                    <td><span>Document</span></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="hraPlan in hraPlans">
+                    <td>
+                        {{hraPlan.planName}}
+                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteHraPlan(hraPlan)" href="javascript:void(0);">X</a>
+                    </td>
+                    <td >
+                        {{hraPlan.planDescription}}
+                    </td>
+                    <td class="upload-td">
+                        <bmuploadmanager 
+                            upload-type="HRA" 
+                            upload-mode="button" 
+                            feature-id="{{hraPlan.companyPlanId}}" 
+                            hide-type="true">
+                        </bmuploadmanager>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <!-- Here is the non medical benefit section -->
     <div class="table-responsive table-holder" ng-repeat="benefitArray in nonMedicalBenefitArray">
         <table class="table table-striped">
@@ -277,38 +309,6 @@
                             upload-type="FSA" 
                             upload-mode="button" 
                             feature-id="{{fsaPlan.companyPlanId}}" 
-                            hide-type="true">
-                        </bmuploadmanager>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- HRA benefits summary -->
-    <div class="table-responsive table-holder" ng-if="hraPlans && hraPlans.length > 0">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Health Reimbursement Accounts (HRA)</span></th>
-                    <th><span>Description</span></th>
-                    <td><span>Document</span></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="hraPlan in hraPlans">
-                    <td>
-                        {{hraPlan.planName}}
-                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteHraPlan(hraPlan)" href="javascript:void(0);">X</a>
-                    </td>
-                    <td >
-                        {{hraPlan.planDescription}}
-                    </td>
-                    <td class="upload-td">
-                        <bmuploadmanager 
-                            upload-type="HRA" 
-                            upload-mode="button" 
-                            feature-id="{{hraPlan.companyPlanId}}" 
                             hide-type="true">
                         </bmuploadmanager>
                     </td>
