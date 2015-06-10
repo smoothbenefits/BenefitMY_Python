@@ -299,80 +299,82 @@
     </div>
 </div><!-- / .content-body -->
 
-<div class="content-header">
-    <h1>My Payroll</h1>
-    <span class="general-info">View/edit your payroll information here</span>
-    <div class="cta"><a ng-click="goToState('employee_payroll')" class="btn green">View/Modify Payroll</a></div>
-</div><!-- / .content-header -->
+<div ng-if="false">
+    <div class="content-header">
+        <h1>My Payroll</h1>
+        <span class="general-info">View/edit your payroll information here</span>
+        <div class="cta"><a ng-click="goToState('employee_payroll')" class="btn green">View/Modify Payroll</a></div>
+    </div><!-- / .content-header -->
 
-<div class="content-body">
-    <div class="table-responsive table-holder table">
-        <div class="table-sub-title">W4 Form</div>
-        <table class="table table-striped" ng-show="w4Info">
-            <thead>
-                <tr>
-                    <th><span>Calculated Points</span></th>
-                    <th><span>User Defined Points</span></th>
-                    <th><span>Extra Withholding Amount</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{w4Info.calculated_points}}</td>
-                    <td>{{w4Info.user_defined_points}}</td>
-                    <td>$ {{w4Info.extra_amount}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="table table-striped" ng-hide="w4Info">
-            <thead>
-                <tr>
-                    <th width="180"><span>W4 Inforamtion</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td width="180">We do not have your W4 form information yet.</td>
-                </tr>
-            </tbody>    
-        </table>
-    </div>
-    <div class="table-responsive table-holder table">
-        <div class="table-sub-title">Direct Deposit</div>
-        <table class="table table-striped" ng-show="directDepositAccounts.length != 0">
-            <thead>
-                <tr>
-                    <th><span>Account Issuer</span></th>
-                    <th><span>Account Type</span></th>
-                    <th><span>Amount</span></th>
-                    <th><span>Percentage</span></th>
-                    <th><span>Remainder of Net Pay</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="account in directDepositAccounts">
-                    <td>{{account.bank_name}}</td>
-                    <td>{{account.account_type}}</td>
-                    <td>$ {{account.amount}}</td>
-                    <td>{{account.percentage}} %</td>
-                    <td>{{account.remainder_of_all}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="table table-striped" ng-show="directDepositAccounts.length === 0">
-            <thead>
-                <tr>
-                    <th width="180"><span>Direct Deposit Accounts</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td width="180">We do not have your direct deposit account information yet.</td>
-                </tr>
-            </tbody>    
-        </table>
-    </div>
-</div><!-- / .content-body -->
+    <div class="content-body">
+        <div class="table-responsive table-holder table" ng-if="false">
+            <div class="table-sub-title">W4 Form</div>
+            <table class="table table-striped" ng-show="w4Info">
+                <thead>
+                    <tr>
+                        <th><span>Calculated Points</span></th>
+                        <th><span>User Defined Points</span></th>
+                        <th><span>Extra Withholding Amount</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{w4Info.calculated_points}}</td>
+                        <td>{{w4Info.user_defined_points}}</td>
+                        <td>$ {{w4Info.extra_amount}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-striped" ng-hide="w4Info">
+                <thead>
+                    <tr>
+                        <th width="180"><span>W4 Inforamtion</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="180">We do not have your W4 form information yet.</td>
+                    </tr>
+                </tbody>    
+            </table>
+        </div>
+        <div class="table-responsive table-holder table" ng-if="false">
+            <div class="table-sub-title">Direct Deposit</div>
+            <table class="table table-striped" ng-show="directDepositAccounts.length != 0">
+                <thead>
+                    <tr>
+                        <th><span>Account Issuer</span></th>
+                        <th><span>Account Type</span></th>
+                        <th><span>Amount</span></th>
+                        <th><span>Percentage</span></th>
+                        <th><span>Remainder of Net Pay</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="account in directDepositAccounts">
+                        <td>{{account.bank_name}}</td>
+                        <td>{{account.account_type}}</td>
+                        <td>$ {{account.amount}}</td>
+                        <td>{{account.percentage}} %</td>
+                        <td>{{account.remainder_of_all}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-striped" ng-show="directDepositAccounts.length === 0">
+                <thead>
+                    <tr>
+                        <th width="180"><span>Direct Deposit Accounts</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="180">We do not have your direct deposit account information yet.</td>
+                    </tr>
+                </tbody>    
+            </table>
+        </div>
+    </div><!-- / .content-body -->
+</div>
 
 <div class="content-header">
     <h1>My Documents</h1>
@@ -408,38 +410,40 @@
     <bmuploadviewer view-title="My Current Uploads"></bmuploadviewer>
 </div>
 
-<div class="content-header">
-    <h1>My Profile</h1>
-    <span class="general-info">View/edit your information here</span>
-    <div class="cta"><a ng-click="goToState('employee_profile')" class="btn green" >Modify Profile</a></div>
-</div><!-- / .content-header -->
+<div ng-if="false">
+    <div class="content-header">
+        <h1>My Profile</h1>
+        <span class="general-info">View/edit your information here</span>
+        <div class="cta"><a ng-click="goToState('employee_profile')" class="btn green" >Modify Profile</a></div>
+    </div><!-- / .content-header -->
 
-<div class="content-body">
-    <div class="table-responsive table-holder table">
-        <div class="table-sub-title">Employment Authorization (I-9)</div>
-        <table class="table table-striped" ng-show="i9Info">
-            <thead>
-                <tr>
-                    <th><span>Worker Type</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{i9Info.worker_type}}</td>
-                </tr>
-            </tbody> 
-        </table>
-        <table class="table table-striped" ng-hide="i9Info">
-            <thead>
-                <tr>
-                    <th><span>Employment Authorization (I-9)</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td width="180">We do not have your employment authorization information yet.</td>
-                </tr>
-            </tbody>  
-        </table>
-    </div>
-</div><!-- / .content-body -->
+    <div class="content-body">
+        <div class="table-responsive table-holder table" ng-if="false">
+            <div class="table-sub-title">Employment Authorization (I-9)</div>
+            <table class="table table-striped" ng-show="i9Info">
+                <thead>
+                    <tr>
+                        <th><span>Worker Type</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{i9Info.worker_type}}</td>
+                    </tr>
+                </tbody> 
+            </table>
+            <table class="table table-striped" ng-hide="i9Info">
+                <thead>
+                    <tr>
+                        <th><span>Employment Authorization (I-9)</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="180">We do not have your employment authorization information yet.</td>
+                    </tr>
+                </tbody>  
+            </table>
+        </div>
+    </div><!-- / .content-body -->
+</div>
