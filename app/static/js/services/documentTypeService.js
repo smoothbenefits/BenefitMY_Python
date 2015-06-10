@@ -2,25 +2,25 @@ var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory(
   'documentTypeService',
-  ['documentRepository',
-   function(documentRepository){
+  ['$q','documentRepository',
+   function($q, documentRepository){
     return {
-      getDocumentTypeById: function(companyId, documentTypeId, serviceCallBack){
+
+      getDocumentTypes: function(companyId) {
+        var deferred = $q.defer(); 
+
         documentRepository.type.get({companyId:companyId})
-          .$promise.then(function(docTypeResponse){
-            var docType = _.findWhere(docTypeResponse.document_types, {id:documentTypeId});
-            if(serviceCallBack){
-              serviceCallBack(docType);
-            }
-          });
-      },
-      getDocumentTypes: function(companyId, serviceCallBack){
-        documentRepository.type.get({companyId:companyId})
-          .$promise.then(function(response){
-            if(serviceCallBack){
-              serviceCallBack(response.document_types);
-            }
-          });
+          .$promise.then(
+          function(response){
+            deferred.resolve(response.document_types);
+          },
+          function(error) {
+            deferred.reject(error);
+          }
+        );
+
+        return deferred.promise;
       }
+
     };
   }]);

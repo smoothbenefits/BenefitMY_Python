@@ -27,8 +27,8 @@
                 <tr ng-repeat="employee in employees">
                     <td><a ng-click="viewEmployeeDetail(employee)">{{employee.user.first_name}} {{employee.user.last_name}}</a></td>
                     <td>
-                        <span class="btn inline doc-buttons" ng-click="documentLink(employee.user.id, docType)" ng-repeat="docType in docTypeArray">
-                            {{docType.name}}
+                        <span class="btn inline doc-buttons" ng-click="documentLink(employee.user.id, docEntry)" ng-repeat="docEntry in employee.documentEntries" ng-class="{green: docEntry.isDocumentSigned()}">
+                            {{docEntry.docType.name}}
                         </span>
                         <span class="btn inline doc-buttons" ng-click="uploadLink(employee.user.id)">
                             Uploads 
