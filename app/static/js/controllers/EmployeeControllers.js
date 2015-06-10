@@ -20,6 +20,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'StdService',
    'LtdService',
    'HraService',
+   'CompanyFeatureService', 
   function ($scope,
             $location,
             $state,
@@ -38,7 +39,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
             DirectDepositService,
             StdService,
             LtdService,
-            HraService){
+            HraService,
+            CompanyFeatureService){
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
@@ -82,6 +84,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
             curCompanyId = role.company.id;
           }
         });
+
+        CompanyFeatureService.getDisabledCompanyFeatureByCompany(curCompanyId).then(function(features) {
+          $scope.enabledFeatures = features;
+        });
+
         return curCompanyId;
       }
     });
@@ -175,9 +182,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
           || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
       };
 
-     $scope.ViewDirectDeposit = function(editMode){
+    $scope.ViewDirectDeposit = function(editMode){
       $location.path('/employee/direct_deposit').search('edit', editMode);
-     };
+    };
   }
 ]);
 

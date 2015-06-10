@@ -299,7 +299,7 @@
     </div>
 </div><!-- / .content-body -->
 
-<div ng-if="false">
+<div ng-hide="enabledFeatures.W4 || enabledFeatures.DD">
     <div class="content-header">
         <h1>My Payroll</h1>
         <span class="general-info">View/edit your payroll information here</span>
@@ -307,7 +307,7 @@
     </div><!-- / .content-header -->
 
     <div class="content-body">
-        <div class="table-responsive table-holder table" ng-if="false">
+        <div class="table-responsive table-holder table" ng-if="enabledFeatures.W4">
             <div class="table-sub-title">W4 Form</div>
             <table class="table table-striped" ng-show="w4Info">
                 <thead>
@@ -338,7 +338,7 @@
                 </tbody>    
             </table>
         </div>
-        <div class="table-responsive table-holder table" ng-if="false">
+        <div class="table-responsive table-holder table" ng-if="enabledFeatures.DD">
             <div class="table-sub-title">Direct Deposit</div>
             <table class="table table-striped" ng-show="directDepositAccounts.length != 0">
                 <thead>
