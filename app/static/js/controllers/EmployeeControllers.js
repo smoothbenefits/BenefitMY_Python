@@ -112,12 +112,13 @@ var employeeHome = employeeControllers.controller('employeeHome',
       });
 
       // Supplemental Life Insurance
-      SupplementalLifeInsuranceService.getPlanByUser(userInfo.user.id).then(function(plan) {
+      SupplementalLifeInsuranceService.getPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(plan) {
         $scope.supplementalLifeInsurancePlan = plan;
       });
 
       // Basic Life Insurance
-      BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userInfo.user.id, function(response){
+      BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userInfo.user.id, userInfo.currentRole.company.id)
+      .then(function(response){
         $scope.basicLifeInsurancePlan = response;
       });
 
@@ -1609,7 +1610,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             }
 
             // Get current user's basic life insurance plan situation
-            BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, function(plan){
+            BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, companyId).then(function(plan){
               $scope.basicLifeInsurancePlan.life_insurance_beneficiary = plan.life_insurance_beneficiary;
               $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = plan.life_insurance_contingent_beneficiary;
             }, function(error){
@@ -1757,7 +1758,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             });
 
             // Get current user's plan situation
-            SupplementalLifeInsuranceService.getPlanByUser(employeeId, true).then(function(plan) {
+            SupplementalLifeInsuranceService.getPlanByUser(employeeId, companyId, true).then(function(plan) {
                 // It is guaranteed there is a plan returned, as the call above
                 // asks the service to return a blank plan if non-existing plan
                 // enrollments found.

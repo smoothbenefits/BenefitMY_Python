@@ -346,7 +346,7 @@ var employerBenefits = employersController.controller('employerBenefits',
       $location.path('/admin');
     };
 
-    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
+    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id).then(function(response) {
       $scope.lifeInsurancePlans = response;
     });
 
@@ -930,11 +930,12 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         //       Also, once we have tabs working, we should split them into proper flows.
         _.each(employeeList, function(employee) {
           
-          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, company_id)
+          .then(function(response){
             employee.basicLifeInsurancePlan = response;
           });
 
-          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id).then(function(plan) {
+          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, company_id).then(function(plan) {
             employee.supplementalLifeInsurancePlan = plan;
           });
 

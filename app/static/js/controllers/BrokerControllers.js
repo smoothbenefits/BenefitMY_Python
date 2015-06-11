@@ -111,7 +111,7 @@ var benefitsController = brokersControllers.controller(
         }
       };
 
-      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId, function(response) {
+      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId).then(function(response) {
         $scope.lifeInsurancePlans = response;
       });
 
@@ -247,14 +247,15 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
         // Supplemental life insurance
         _.each(employeeList, function(employee) {
-          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id).then(function(plan) {
+          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, clientId).then(function(plan) {
             employee.supplementalLifeInsurancePlan = plan;
           });
         });
 
         // Basic life insurance
         _.each(employeeList, function(employee) {
-          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, clientId)
+          .then(function(response){
             employee.basicLifeInsurancePlan = response;
           });
         });
