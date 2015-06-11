@@ -109,17 +109,15 @@ benefitmyService.factory(
 
       return deferred.promise;
     };
-    
-    return {
-      signUpCompanyForFsaPlan: signUpCompanyForFsaPlan,
 
-      getFsaPlanForCompany: getFsaPlanForCompany,
-
-      deleteCompanyFsaPlan: deleteCompanyFsaPlan,
-
-      getFsaElectionForUser: function(user_id, callBack) {
-
-        FsaRepository.ByUser.get({userId:user_id})
+    var getFsaElectionForUser = function(user_id, company) {
+      var deferred = $q.defer();
+      getFsaPlanForCompany(company).then(function(plans){
+        if(!plans || plans.length<=0){
+          deferred.resolve(undefined);
+        }
+        else{
+          FsaRepository.ByUser.get({userId:user_id})
           .$promise.then(function(existingFsa){
 
             var userFsa = existingFsa;
@@ -128,10 +126,7 @@ benefitmyService.factory(
             userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
             userFsa.last_update_date_time = moment(userFsa.updated_at).format(DATE_FORMAT_STRING);
             userFsa.enrolled = true;
-
-            if (callBack) {
-              callBack(userFsa);
-            }
+            deferred.resolve(userFsa);
           },
           function(failedResponse){
             if (failedResponse.status === 404) {
@@ -142,13 +137,25 @@ benefitmyService.factory(
                 dependent_amount_per_year:0, 
                 enrolled:false 
               };
-
-              if (callBack) {
-                callBack(shellFsa);
-              }
+              deferred.resolve(shellFsa);
+            }
+            else{
+              deferred.reject(failedResponse);
             }
           });
-      },
+        }
+      });
+      return deferred.promise;
+    };
+    
+    return {
+      signUpCompanyForFsaPlan: signUpCompanyForFsaPlan,
+
+      getFsaPlanForCompany: getFsaPlanForCompany,
+
+      deleteCompanyFsaPlan: deleteCompanyFsaPlan,
+
+      getFsaElectionForUser: getFsaElectionForUser,
 
       saveFsaElection: function(fsaElectionToSave, successCallBack, errorCallBack) {
         if(!fsaElectionToSave.id) {

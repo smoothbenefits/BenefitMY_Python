@@ -24,7 +24,7 @@ benefitmyService.factory('UserService',
         var deferred = $q.defer();
         var userInfo = {};
         currentUser.get().$promise.then(function(response){
-            userInfo.user=response.user;
+            userInfo.user = response.user;
             userInfo.roles = response.roles;
             userInfo.person = response.person;
           clientListRepository.get({userId: response.user.id})

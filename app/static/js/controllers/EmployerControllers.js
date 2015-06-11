@@ -919,7 +919,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         //       and this logic of getting FSA data for an employee be moved into the
         //       employeeBenefitElectionService? 
         _.each(employeeList, function(employee) {
-          FsaService.getFsaElectionForUser(employee.user.id, function(response) {
+          FsaService.getFsaElectionForUser(employee.user.id, company_id).then(function(response) {
             employee.fsaElection = response;
           });
         });
@@ -949,7 +949,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
           });
 
           // HRA
-          HraService.getPersonPlanByUser(employee.user.id).then(function(plan) {
+          HraService.getPersonPlanByUser(employee.user.id, company_id).then(function(plan) {
             employee.hraPlan = plan;
           });
 

@@ -532,7 +532,6 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
             getPlanByUser: function(userId, getBlankPlanIfNoneFound) {
                 var deferred = $q.defer();
-
                 PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
                     SupplementalLifeInsuranceRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
                     .$promise.then(function(personPlans) {
