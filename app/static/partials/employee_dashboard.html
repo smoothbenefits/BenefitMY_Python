@@ -299,7 +299,7 @@
     </div>
 </div><!-- / .content-body -->
 
-<div ng-hide="enabledFeatures.W4 || enabledFeatures.DD">
+<div ng-hide="disabledFeatures.W4 && disabledFeatures.DD">
     <div class="content-header">
         <h1>My Payroll</h1>
         <span class="general-info">View/edit your payroll information here</span>
@@ -307,7 +307,7 @@
     </div><!-- / .content-header -->
 
     <div class="content-body">
-        <div class="table-responsive table-holder table" ng-if="enabledFeatures.W4">
+        <div class="table-responsive table-holder table" ng-hide="disabledFeatures.W4">
             <div class="table-sub-title">W4 Form</div>
             <table class="table table-striped" ng-show="w4Info">
                 <thead>
@@ -338,7 +338,7 @@
                 </tbody>    
             </table>
         </div>
-        <div class="table-responsive table-holder table" ng-if="enabledFeatures.DD">
+        <div class="table-responsive table-holder table" ng-hide="disabledFeatures.DD">
             <div class="table-sub-title">Direct Deposit</div>
             <table class="table table-striped" ng-show="directDepositAccounts.length != 0">
                 <thead>
@@ -410,7 +410,7 @@
     <bmuploadviewer view-title="My Current Uploads"></bmuploadviewer>
 </div>
 
-<div ng-if="false">
+<div ng-hide="disabledFeatures.I9">
     <div class="content-header">
         <h1>My Profile</h1>
         <span class="general-info">View/edit your information here</span>
@@ -418,7 +418,7 @@
     </div><!-- / .content-header -->
 
     <div class="content-body">
-        <div class="table-responsive table-holder table" ng-if="false">
+        <div class="table-responsive table-holder table" ng-hide="disabledFeatures.I9">
             <div class="table-sub-title">Employment Authorization (I-9)</div>
             <table class="table table-striped" ng-show="i9Info">
                 <thead>

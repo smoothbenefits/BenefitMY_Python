@@ -86,7 +86,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
         });
 
         CompanyFeatureService.getDisabledCompanyFeatureByCompany(curCompanyId).then(function(features) {
-          $scope.enabledFeatures = features;
+          $scope.disabledFeatures = features;
         });
 
         return curCompanyId;

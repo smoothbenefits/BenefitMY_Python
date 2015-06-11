@@ -28,7 +28,7 @@ benefitmyService.factory(
 
             var hashTable = {};
             _.each(companyFeatures, function(feature) {
-               hashTable[feature.companyFeatureName] = feature.enabled;
+               hashTable[feature.companyFeatureName] = !feature.enabled;
             });
 
             deferred.resolve(hashTable);
