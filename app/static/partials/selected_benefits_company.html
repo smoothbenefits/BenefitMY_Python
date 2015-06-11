@@ -288,7 +288,7 @@
             </div>
 
             <!-- FSA summary table -->
-            <div class="row">
+            <div class="row" ng-if="employee.fsaElection !== undefined">
                 <div class="col-sm-2">    
                     <div>Flexible Spending Accounts</div>
                 </div>
@@ -321,7 +321,7 @@
             </div>
 
             <!-- HRA summary table -->
-            <div class="row">
+            <div class="row" ng-if="employee.hraPlan !== undefined">
                 <div class="col-sm-2">    
                     <div>Health Reimbursement Accounts (HRA)</div>
                 </div>

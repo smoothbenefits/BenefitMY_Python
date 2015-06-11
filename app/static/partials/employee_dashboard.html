@@ -71,7 +71,7 @@
     </div>
 
     <!-- HRA summary table -->
-    <div class="table-responsive table-holder table">
+    <div class="table-responsive table-holder table" ng-if="hraPlan !== undefined">
         <div class="table-sub-title">Health Reimbursement Accounts (HRA)</div>
         <table class="table table-striped" ng-show="!hraPlan">
             <tbody>
@@ -265,7 +265,7 @@
     </div>
 
     <!-- FSA summary table -->
-    <div class="table-responsive table-holder table">
+    <div class="table-responsive table-holder table" ng-if="fsaElection !== undefined">
         <div class="table-sub-title">Flexible Spending Account</div>
         <table class="table table-striped" ng-hide="fsaElection.enrolled">
             <tbody>

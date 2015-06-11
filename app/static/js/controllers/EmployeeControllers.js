@@ -7,7 +7,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    '$stateParams',
    'clientListRepository',
    'employeeBenefits',
-   'currentUser',
+   'UserService',
    'userDocument',
    'EmployeePreDashboardValidationService',
    'EmployeeLetterSignatureValidationService',
@@ -26,7 +26,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             $stateParams,
             clientListRepository,
             employeeBenefits,
-            currentUser,
+            UserService,
             userDocument,
             EmployeePreDashboardValidationService,
             EmployeeLetterSignatureValidationService,
@@ -41,77 +41,54 @@ var employeeHome = employeeControllers.controller('employeeHome',
             HraService){
     $('body').removeClass('onboarding-page');
     var curUserId;
-    var userPromise = currentUser.get().$promise
-      .then(function(response){
-        $scope.employee_id = response.user.id;
-        var employeeRole = _.findWhere(response.roles, {company_user_type:'employee'});
-        if(employeeRole && employeeRole.new_employee){
-          EmployeeLetterSignatureValidationService($scope.employee_id, 'Offer Letter', function(){
-            EmployeePreDashboardValidationService.onboarding($scope.employee_id, function(){
-              return $scope.employee_id;
-            }, function(redirectUrl){
-              $location.path(redirectUrl);
-            });
-          },function(){
-            $location.path('/employee/sign_letter/' + $scope.employee_id).search({letter_type:'Offer Letter'});
+    var userPromise = UserService.getCurUserInfo();
+    userPromise.then(function(response){
+      $scope.employee_id = response.user.id;
+      var employeeRole = _.findWhere(response.roles, {company_user_type:'employee'});
+      if(employeeRole && employeeRole.new_employee){
+        EmployeeLetterSignatureValidationService($scope.employee_id, 'Offer Letter', function(){
+          EmployeePreDashboardValidationService.onboarding($scope.employee_id, function(){
+            return response;
+          }, function(redirectUrl){
+            $location.path(redirectUrl);
           });
-        }
-        else{
-          EmployeePreDashboardValidationService.basicInfo($scope.employee_id, function(){
-            return $scope.employee_id;
-          }, function(){
-            //we need to redirect to edit profile page
-            $location.path('/settings').search({forced:1});
-          });
-        }
-        return $scope.employee_id;
-      });
-
-    var companyPromise = userPromise.then(function(userId){
-      if(userId){
-        curUserId = userId;
-        return clientListRepository.get({userId:userId}).$promise;
-      }
-    });
-
-    var benefitPromise = companyPromise.then(function(response){
-      if(response){
-        var curCompanyId;
-        _.each(response.company_roles, function(role){
-          if (role.company_user_type === 'employee'){
-            curCompanyId = role.company.id;
-          }
+        },function(){
+          $location.path('/employee/sign_letter/' + $scope.employee_id).search({letter_type:'Offer Letter'});
         });
-        return curCompanyId;
       }
+      else{
+        EmployeePreDashboardValidationService.basicInfo($scope.employee_id, function(){
+          return response;
+        }, function(){
+          //we need to redirect to edit profile page
+          $location.path('/settings').search({forced:1});
+        });
+      }
+      return response;
     });
 
-    benefitPromise.then(function(companyId){
-      if(companyId){
-        employeeBenefits.enroll().get({userId:curUserId, companyId:companyId})
+
+    userPromise.then(function(userInfo){
+      if(userInfo && userInfo.currentRole.company.id){
+        employeeBenefits.enroll().get({userId:userInfo.user.id, companyId:userInfo.currentRole.company.id})
           .$promise.then(function(response){
                        $scope.benefits = response.benefits;
                        $scope.benefitCount = response.benefits.length;
           });
-        employeeBenefits.waive().query({userId:curUserId, companyId:companyId})
+        employeeBenefits.waive().query({userId:userInfo.user.id, companyId:userInfo.currentRole.company.id})
           .$promise.then(function(waivedResponse){
             $scope.waivedBenefits = waivedResponse;
           });
       }
     });
 
-    var curUserPromise = currentUser.get().$promise.then(function(userResponse){
-      return userResponse.user.id;
+
+    userPromise.then(function(userInfo){
+      userDocument.query({userId:userInfo.user.id}).$promise.then(function(response){
+        $scope.documents = response;
+        $scope.documentCount = response.length;
+      });
     });
-
-     var documentPromise = curUserPromise.then(function(userId){
-                                               return userDocument.query({userId:userId}).$promise;
-                         });
-
-     documentPromise.then(function(response){
-                          $scope.documents = response;
-                          $scope.documentCount = response.length;
-                          });
      
      $scope.ViewDocument = function(documentId){
          $location.path('/employee/document/' + documentId);
@@ -121,49 +98,49 @@ var employeeHome = employeeControllers.controller('employeeHome',
       $state.go(state);
      };
 
-    curUserPromise.then(function(userId) {
+    userPromise.then(function(userInfo) {
       // FSA election data
-      FsaService.getFsaElectionForUser(userId, function(response) {
-        $scope.fsaElection = response;
+      FsaService.getFsaElectionForUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(fsaPlan){
+        $scope.fsaElection = fsaPlan;
       });
 
       // Supplemental Life Insurance
-      SupplementalLifeInsuranceService.getPlanByUser(userId).then(function(plan) {
+      SupplementalLifeInsuranceService.getPlanByUser(userInfo.user.id).then(function(plan) {
         $scope.supplementalLifeInsurancePlan = plan;
       });
 
       // Basic Life Insurance
-      BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userId, function(response){
+      BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userInfo.user.id, function(response){
         $scope.basicLifeInsurancePlan = response;
       });
 
       // W4 Form
-      employeePayrollService.getEmployeeTaxSummaryByUserId(userId).then(function(response){
+      employeePayrollService.getEmployeeTaxSummaryByUserId(userInfo.user.id).then(function(response){
         $scope.w4Info = response;
       });
 
       // I9 Form
-      EmploymentProfileService.getEmploymentAuthSummaryByUserId(userId).then(function(response){
+      EmploymentProfileService.getEmploymentAuthSummaryByUserId(userInfo.user.id).then(function(response){
         $scope.i9Info = response;
       });
 
       // Direct Deposit
-      DirectDepositService.getDirectDepositByUserId(userId).then(function(response){
+      DirectDepositService.getDirectDepositByUserId(userInfo.user.id).then(function(response){
         $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDepositInBulk(response);
       });
 
       // STD
-      StdService.getUserEnrolledStdPlanByUser(userId).then(function(response){
+      StdService.getUserEnrolledStdPlanByUser(userInfo.user.id).then(function(response){
         $scope.userStdPlan = response;
       });
 
       // LTD
-      LtdService.getUserEnrolledLtdPlanByUser(userId).then(function(response){
+      LtdService.getUserEnrolledLtdPlanByUser(userInfo.user.id).then(function(response){
         $scope.userLtdPlan = response;
       });
 
       // HRA
-      HraService.getPersonPlanByUser(userId).then(function(response){
+      HraService.getPersonPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(response){
         $scope.hraPlan = response;
       });
 
@@ -2163,8 +2140,10 @@ var hraBenefitsSignup = employeeControllers.controller(
             });
         });
 
-        HraService.getPersonPlanByUser(employeeId, true).then(function(personPlan) {
+        $scope.companyIdPromise.then(function(companyId){
+          HraService.getPersonPlanByUser(employeeId, companyId, true).then(function(personPlan) {
             $scope.personPlan = personPlan;
+          });
         });
 
         $scope.save = function() {
