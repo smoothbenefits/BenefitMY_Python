@@ -1038,14 +1038,12 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if ($scope.supplementalLifeInsuranceEnabled) {
-          if (supplementalLifePlans.length > 0) {
-            $scope.tabs.push({
-              "id": 4,
-              "heading": "Suppl. Life",
-              "state":"employee_benefit_signup.supplemental_life"
-            });
-          }
+        if (supplementalLifePlans.length > 0) {
+          $scope.tabs.push({
+            "id": 4,
+            "heading": "Suppl. Life",
+            "state":"employee_benefit_signup.supplemental_life"
+          });
         }
 
         if (fsaPlans.length > 0) {
