@@ -1618,6 +1618,10 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = plans[0];
               $scope.basicLifeInsurancePlan.selected = true;
+              // Ideally, basicLifeInsurancePlan should be user basic life insurance plan 
+              // plans returned here are company life insurance plan, which should be a property of 
+              // the basicLifeInsurancePlan rather than make the two parallel.
+              $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = plans[0];
             }
 
             // Get current user's basic life insurance plan situation
@@ -1684,6 +1688,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               if (enrolledBasic){
                 $scope.basicLifeInsurancePlan.enrolled = true;
                 $scope.basicLifeInsurancePlan.id = enrolledBasic.id;
+                $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = enrolledBasic.company_life_insurance;
               }
               else{
                 $scope.basicLifeInsurancePlan.enrolled = false;
