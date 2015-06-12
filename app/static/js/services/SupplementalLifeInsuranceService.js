@@ -577,8 +577,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                             deferred.reject(error);
                         });
                     }
-                })
-                
+                });
                 
                 return deferred.promise; 
             },

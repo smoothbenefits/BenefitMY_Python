@@ -89,7 +89,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
       }
     });
 
-
     userPromise.then(function(userInfo){
       userDocument.query({userId:userInfo.user.id}).$promise.then(function(response){
         $scope.documents = response;
