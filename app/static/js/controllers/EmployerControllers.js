@@ -940,12 +940,12 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
           });
 
           // STD
-          StdService.getUserEnrolledStdPlanByUser(employee.user.id).then(function(response){
+          StdService.getUserEnrolledStdPlanByUser(employee.user.id, company_id).then(function(response){
             employee.userStdPlan = response;
           });
 
           // LTD
-          LtdService.getUserEnrolledLtdPlanByUser(employee.user.id).then(function(response){
+          LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, company_id).then(function(response){
             employee.userLtdPlan = response;
           });
 

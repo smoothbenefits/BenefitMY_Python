@@ -131,7 +131,7 @@
     </div>
     
     <!-- Supplemental life insurance summary table -->
-    <div class="table-responsive table-holder table" ng-show="supplementalLifeInsuranceEnabled">
+    <div class="table-responsive table-holder table" ng-show="employee.supplementalLifeInsurancePlan !== undefined">
         <div class="table-sub-title"> 
             Supplemental Life Insurance
         </div>
@@ -189,7 +189,7 @@
     </div>
 
     <!-- STD summary table -->
-    <div class="table-responsive table-holder table">
+    <div class="table-responsive table-holder table" ng-if="userLtdPlan !== undefined">
         <div class="table-sub-title">Short Term Disability Benefits</div>
         <table class="table table-striped" ng-show="!userStdPlan">
             <tbody>
@@ -227,7 +227,7 @@
     </div>
 
     <!-- LTD summary table -->
-    <div class="table-responsive table-holder table">
+    <div class="table-responsive table-holder table" ng-if="userLtdPlan !== undefined">
         <div class="table-sub-title">Long Term Disability Benefits</div>
         <table class="table table-striped" ng-show="!userLtdPlan">
             <tbody>

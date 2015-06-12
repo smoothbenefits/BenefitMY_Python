@@ -262,14 +262,14 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
         // STD
         _.each(employeeList, function(employee) {
-            StdService.getUserEnrolledStdPlanByUser(employee.user.id).then(function(response){
+            StdService.getUserEnrolledStdPlanByUser(employee.user.id, clientId).then(function(response){
                 employee.userStdPlan = response;
             });
         });
 
         // LTD
         _.each(employeeList, function(employee) {
-            LtdService.getUserEnrolledLtdPlanByUser(employee.user.id).then(function(response){
+            LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, clientId).then(function(response){
                 employee.userLtdPlan = response;
             });
         });
