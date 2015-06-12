@@ -110,7 +110,7 @@ var employerHome = employersController.controller('employerHome',
           if(company_role.company_user_type === 'admin')
           {
             $scope.company = company_role.company;
-            documentTypeService.getDocumentTypes($scope.company, function(doc_types){
+            documentTypeService.getDocumentTypes($scope.company).then(function(doc_types){
               $scope.documentTypes = doc_types;
 
               getTemplates($scope.company);
@@ -167,20 +167,20 @@ var employerUser = employersController.controller('employerUser',
    '$location',
    'employerWorkerRepository',
    'usersRepository',
-   'userDocument',
    'emailRepository',
    'documentTypeService',
    'templateRepository',
+   'DocumentService',
   function employerUser($scope,
                         $state,
                         $stateParams,
                         $location,
                         employerWorkerRepository,
                         usersRepository,
-                        userDocument,
                         emailRepository,
                         documentTypeService,
-                        templateRepository){
+                        templateRepository,
+                        DocumentService){
       var compId = $stateParams.company_id;
       $scope.employees=[];
       $scope.addUser = {send_email:true, new_employee:true, create_docs:true};
@@ -198,14 +198,22 @@ var employerUser = employersController.controller('employerUser',
               {
                 $scope.brokers.push(role);
               }
-            })
+            });
+
+            // Populate document data for employees
+            _.each($scope.employees, function(employee) {
+                DocumentService.getDocumentToTypeMappingForCompanyUser(employee.user.id, compId)
+                .then(function(docTypeMapModel) {
+                    employee.documentCollection = docTypeMapModel;
+                });
+            }); 
         });
 
       templateRepository.getAllFields.query({id:compId})
         .$promise.then(function(fields){
           $scope.templateFields = fields;
         });
-      documentTypeService.getDocumentTypes(compId, function(response){
+      documentTypeService.getDocumentTypes(compId).then(function(response){
         $scope.docTypeArray = response;
       });
 
@@ -274,19 +282,15 @@ var employerUser = employersController.controller('employerUser',
       }
       $scope.gotoUserViewLink = gotoUserView;
 
-      $scope.documentLink = function(employeeId, docType)
+      $scope.documentLink = function(employeeId, docEntry)
       {
-        userDocument.query({userId:employeeId})
-        .$promise.then(function(response){
-          var doc = _.filter(response, function(doc){return doc.document_type.id === docType.id});
-          var pathKey = 'create_letter';
-          if(doc && doc.length > 0)
-          {
+        var pathKey = 'create_letter';
+        if(docEntry.hasDocument())
+        {
             pathKey='view_letter';
-          }
+        }
           
-          $location.path('/admin/' + pathKey + '/' +compId +'/'+employeeId).search({'type': docType.name});
-        });
+        $location.path('/admin/' + pathKey + '/' +compId +'/'+employeeId).search({'type': docEntry.docType.name});
       };
 
       $scope.viewEmployeeDetail = function(employee){
@@ -447,7 +451,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
       updateExistingTemplateList();
     }
     else{
-      documentTypeService.getDocumentTypes($scope.companyId, function(types){
+      documentTypeService.getDocumentTypes($scope.companyId).then(function(types){
         var docType = _.findWhere(types, {name:$scope.documentType});
         if(docType){
           $scope.templateContent = docType.default_content;

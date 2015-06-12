@@ -118,6 +118,9 @@ div.back {
         font-weight: 700;
         border: 1px solid #56A245;
         border-radius: 0;
+        &.inline {
+            font-weight: 400;
+        }
     }
     &.red{
         background: #FF4D4D;

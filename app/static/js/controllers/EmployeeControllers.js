@@ -8,7 +8,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'clientListRepository',
    'employeeBenefits',
    'currentUser',
-   'userDocument',
    'EmployeePreDashboardValidationService',
    'EmployeeLetterSignatureValidationService',
    'FsaService',
@@ -20,6 +19,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'StdService',
    'LtdService',
    'HraService',
+   'DocumentService',
    'CompanyFeatureService', 
   function ($scope,
             $location,
@@ -28,7 +28,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
             clientListRepository,
             employeeBenefits,
             currentUser,
-            userDocument,
             EmployeePreDashboardValidationService,
             EmployeeLetterSignatureValidationService,
             FsaService,
@@ -40,6 +39,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             StdService,
             LtdService,
             HraService,
+            DocumentService,
             CompanyFeatureService){
     $('body').removeClass('onboarding-page');
     var curUserId;
@@ -69,18 +69,19 @@ var employeeHome = employeeControllers.controller('employeeHome',
         return $scope.employee_id;
       });
 
-    var companyPromise = userPromise.then(function(userId){
-      if(userId){
-        curUserId = userId;
-        return clientListRepository.get({userId:userId}).$promise;
-      }
+    var curUserPromise = currentUser.get().$promise.then(function(userResponse){
+      return userResponse.user.id;
     });
 
-    var benefitPromise = companyPromise.then(function(response){
-      if(response){
+    var companyIdPromise = curUserPromise.then(function(userId){
+        curUserId = userId;
+        return clientListRepository.get({userId:userId}).$promise;
+    })
+    .then(function(response) {
         var curCompanyId;
+
         _.each(response.company_roles, function(role){
-          if (role.company_user_type === 'employee'){
+          if(role.company_user_type==='employee'){
             curCompanyId = role.company.id;
           }
         });
@@ -90,10 +91,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
         });
 
         return curCompanyId;
-      }
     });
 
-    benefitPromise.then(function(companyId){
+    companyIdPromise.then(function(companyId){
       if(companyId){
         employeeBenefits.enroll().get({userId:curUserId, companyId:companyId})
           .$promise.then(function(response){
@@ -107,17 +107,13 @@ var employeeHome = employeeControllers.controller('employeeHome',
       }
     });
 
-    var curUserPromise = currentUser.get().$promise.then(function(userResponse){
-      return userResponse.user.id;
+    var documentPromise = curUserPromise.then(function(userId){
+        return DocumentService.getAllDocumentsForUser(userId);
     });
 
-     var documentPromise = curUserPromise.then(function(userId){
-                                               return userDocument.query({userId:userId}).$promise;
-                         });
-
-     documentPromise.then(function(response){
-                          $scope.documents = response;
-                          $scope.documentCount = response.length;
+     documentPromise.then(function(userDocs){
+                          $scope.documents = userDocs;
+                          $scope.documentCount = $scope.documents.length;
                           });
      
      $scope.ViewDocument = function(documentId){
@@ -189,8 +185,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
 ]);
 
 var viewDocument = employeeControllers.controller('viewDocument',
-  ['$scope', '$location', '$stateParams', 'userDocument', 'currentUser', 'documentRepository',
-  function viewDocument($scope, $location, $stateParams, userDocument, currentUser, documentRepository){
+  ['$scope', '$location', '$stateParams', 'DocumentService', 'currentUser', 'documentRepository',
+  function viewDocument($scope, $location, $stateParams, DocumentService, currentUser, documentRepository){
     $scope.document = {};
     var documentId = $stateParams.doc_id;
     var signatureUpdated = false;
@@ -202,14 +198,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
       });
 
     var documentPromise = userPromise.then(function(userId){
-      var document = userDocument.query({userId:userId}).$promise
-        .then(function(response){
-          return _.find(response, function(d)
-          {
-            return d.id.toString() === documentId;
-          });
-        });
-      return document;
+      return DocumentService.getUserDocumentById(userId, documentId);
     });
 
     documentPromise.then(function(document){
