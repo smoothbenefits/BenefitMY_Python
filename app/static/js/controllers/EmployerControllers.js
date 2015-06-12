@@ -350,7 +350,7 @@ var employerBenefits = employersController.controller('employerBenefits',
       $location.path('/admin');
     };
 
-    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
+    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id).then(function(response) {
       $scope.lifeInsurancePlans = response;
     });
 
@@ -923,7 +923,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         //       and this logic of getting FSA data for an employee be moved into the
         //       employeeBenefitElectionService? 
         _.each(employeeList, function(employee) {
-          FsaService.getFsaElectionForUser(employee.user.id, function(response) {
+          FsaService.getFsaElectionForUser(employee.user.id, company_id).then(function(response) {
             employee.fsaElection = response;
           });
         });
@@ -934,26 +934,27 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         //       Also, once we have tabs working, we should split them into proper flows.
         _.each(employeeList, function(employee) {
           
-          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, company_id)
+          .then(function(response){
             employee.basicLifeInsurancePlan = response;
           });
 
-          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id).then(function(plan) {
+          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, company_id).then(function(plan) {
             employee.supplementalLifeInsurancePlan = plan;
           });
 
           // STD
-          StdService.getUserEnrolledStdPlanByUser(employee.user.id).then(function(response){
+          StdService.getUserEnrolledStdPlanByUser(employee.user.id, company_id).then(function(response){
             employee.userStdPlan = response;
           });
 
           // LTD
-          LtdService.getUserEnrolledLtdPlanByUser(employee.user.id).then(function(response){
+          LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, company_id).then(function(response){
             employee.userLtdPlan = response;
           });
 
           // HRA
-          HraService.getPersonPlanByUser(employee.user.id).then(function(plan) {
+          HraService.getPersonPlanByUser(employee.user.id, company_id).then(function(plan) {
             employee.hraPlan = plan;
           });
 
