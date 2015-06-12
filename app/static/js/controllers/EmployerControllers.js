@@ -167,7 +167,6 @@ var employerUser = employersController.controller('employerUser',
    '$location',
    'employerWorkerRepository',
    'usersRepository',
-   'userDocument',
    'emailRepository',
    'documentTypeService',
    'templateRepository',
@@ -178,7 +177,6 @@ var employerUser = employersController.controller('employerUser',
                         $location,
                         employerWorkerRepository,
                         usersRepository,
-                        userDocument,
                         emailRepository,
                         documentTypeService,
                         templateRepository,
@@ -204,9 +202,9 @@ var employerUser = employersController.controller('employerUser',
 
             // Populate document data for employees
             _.each($scope.employees, function(employee) {
-                DocumentService.getAllDocumentsForCompanyUser(employee.user.id, compId)
-                .then(function(typeDocMap) {
-                    employee.documentEntries = typeDocMap;
+                DocumentService.getDocumentToTypeMappingForCompanyUser(employee.user.id, compId)
+                .then(function(docTypeMapModel) {
+                    employee.documentCollection = docTypeMapModel;
                 });
             }); 
         });
@@ -287,7 +285,7 @@ var employerUser = employersController.controller('employerUser',
       $scope.documentLink = function(employeeId, docEntry)
       {
         var pathKey = 'create_letter';
-        if(docEntry.document)
+        if(docEntry.hasDocument())
         {
             pathKey='view_letter';
         }

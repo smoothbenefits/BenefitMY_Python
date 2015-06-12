@@ -7,39 +7,43 @@ benefitmyService.factory('DocumentService',
     function ($q, userDocument, documentTypeService) {
 
         var constructDocumentsToTypeMap = function(docTypes, documents) {
-            var typeDocMap = {};
+            var mapModel = {};
+            mapModel.entries = {};
             
             _.each(docTypes, function(type) {
-                var entry = { 'docType':type, 'document':null };
+                var entry = { 'docType':type, 'documents': [] };
 
                 // Append some utility function to the entries
-                entry.isDocumentSigned = function() {
-                    return entry.document != null 
-                        && entry.document.signature != null; 
+                entry.isSigned = function() {
+                    return entry.hasDocument()
+                        && entry.documents[0].signature != null;
                 };
 
-                typeDocMap[type.id] = entry;
+                entry.hasDocument = function() {
+                    return entry.documents != null 
+                        && entry.documents.length > 0;
+                };
+
+                mapModel.entries[type.id] = entry;
             });
 
             _.each(documents, function(doc) {
-                typeDocMap[doc.document_type.id].document = doc;
+                mapModel.entries[doc.document_type.id].documents.push(doc);
             });
 
-            return typeDocMap;
+            return mapModel;
         };
 
         return {
 
-            getAllDocumentsForCompanyUser: function(userId, companyId) {
+            getDocumentToTypeMappingForCompanyUser: function(userId, companyId) {
                 var deferred = $q.defer();
-
-                var typeDocMap = {};
 
                 documentTypeService.getDocumentTypes(companyId).then(function(docTypes){
                     userDocument.query({userId:userId})
                     .$promise.then(function(userDocs){
-                        var documentsToTypeMap = constructDocumentsToTypeMap(docTypes, userDocs);
-                        deferred.resolve(documentsToTypeMap);
+                        var mapModel = constructDocumentsToTypeMap(docTypes, userDocs);
+                        deferred.resolve(mapModel);
                     },
                     function(error) {
                         deferred.reject(error);
@@ -50,8 +54,39 @@ benefitmyService.factory('DocumentService',
                 });
 
                 return deferred.promise;
-            }
+            },
 
+            getAllDocumentsForUser: function(userId) {
+                var deferred = $q.defer();
+
+                userDocument.query({userId:userId})
+                .$promise.then(function(userDocs){
+                    deferred.resolve(userDocs);
+                },
+                function(error) {
+                    deferred.reject(error);
+                });
+
+                return deferred.promise;
+            },
+
+            getUserDocumentById: function(userId, documentId) {
+                var deferred = $q.defer();
+
+                userDocument.query({userId:userId})
+                .$promise.then(function(userDocs){
+                    var doc = _.find(userDocs, function(doc)
+                    {
+                        return doc.id === documentId;
+                    })
+                    deferred.resolve(doc);
+                },
+                function(error) {
+                    deferred.reject(error);
+                });
+
+                return deferred.promise;
+            }
         };
     }
 ]);
