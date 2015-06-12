@@ -8,7 +8,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'clientListRepository',
    'employeeBenefits',
    'UserService',
-   'userDocument',
    'EmployeePreDashboardValidationService',
    'EmployeeLetterSignatureValidationService',
    'FsaService',
@@ -20,6 +19,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'StdService',
    'LtdService',
    'HraService',
+   'DocumentService',
    'CompanyFeatureService', 
   function ($scope,
             $location,
@@ -28,7 +28,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
             clientListRepository,
             employeeBenefits,
             UserService,
-            userDocument,
             EmployeePreDashboardValidationService,
             EmployeeLetterSignatureValidationService,
             FsaService,
@@ -40,6 +39,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             StdService,
             LtdService,
             HraService,
+            DocumentService,
             CompanyFeatureService){
     $('body').removeClass('onboarding-page');
     var curUserId;
@@ -90,9 +90,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
     });
 
     userPromise.then(function(userInfo){
-      userDocument.query({userId:userInfo.user.id}).$promise.then(function(response){
-        $scope.documents = response;
-        $scope.documentCount = response.length;
+      DocumentService.getAllDocumentsForUser(userId).then(function(userDocs){
+        $scope.documents = userDocs;
+        $scope.documentCount = $scope.documents.length;
       });
     });
      
@@ -166,8 +166,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
 ]);
 
 var viewDocument = employeeControllers.controller('viewDocument',
-  ['$scope', '$location', '$stateParams', 'userDocument', 'currentUser', 'documentRepository',
-  function viewDocument($scope, $location, $stateParams, userDocument, currentUser, documentRepository){
+  ['$scope', '$location', '$stateParams', 'DocumentService', 'currentUser', 'documentRepository',
+  function viewDocument($scope, $location, $stateParams, DocumentService, currentUser, documentRepository){
     $scope.document = {};
     var documentId = $stateParams.doc_id;
     var signatureUpdated = false;
@@ -179,14 +179,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
       });
 
     var documentPromise = userPromise.then(function(userId){
-      var document = userDocument.query({userId:userId}).$promise
-        .then(function(response){
-          return _.find(response, function(d)
-          {
-            return d.id.toString() === documentId;
-          });
-        });
-      return document;
+      return DocumentService.getUserDocumentById(userId, documentId);
     });
 
     documentPromise.then(function(document){

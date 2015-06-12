@@ -13,18 +13,20 @@ import re
 
 class DocumentSerializer(HashPkSerializerBase):
 
-	company = ShallowCompanySerializer()
-	user = UserSerializer()
-	document_type = DocumentTypeSerializer()
-	signature = SignatureSerializer()
+    company = ShallowCompanySerializer()
+    user = UserSerializer()
+    document_type = DocumentTypeSerializer()
+    signature = SignatureSerializer()
 
-	class Meta:
-		model = Document
-		fields = ('id',
-        		  'company',
-        		  'user',
-        		  'document_type',
-        		  'signature',
-        		  'name',
-        		  'edited',
-        		  'content')
+    class Meta:
+        model = Document
+        fields = (  'id',
+                    'company',
+                    'user',
+                    'document_type',
+                    'signature',
+                    'name',
+                    'edited',
+                    'content',
+                    'created_at',
+                    'updated_at')
