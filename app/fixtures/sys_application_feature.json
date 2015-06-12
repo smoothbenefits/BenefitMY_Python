@@ -89,5 +89,12 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 13
+  },
+  {
+    "fields": {
+      "feature": "W4"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 13
   }
 ]
