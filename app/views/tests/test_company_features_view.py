@@ -18,11 +18,11 @@ class CompanyFeaturesTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertEqual(type(result), list)
         self.assertEqual(result[0]['feature_status'], True)
-        self.assertEqual(result[0]['company_feature'], 1)
+        self.assertEqual(result[0]['company_feature']['id'], self.normalize_key(1))
         self.assertEqual(result[0]['company'], self.normalize_key(1))
 
         self.assertEqual(result[1]['feature_status'], True)
-        self.assertEqual(result[1]['company_feature'], 2)
+        self.assertEqual(result[1]['company_feature']['id'], self.normalize_key(2))
         self.assertEqual(result[1]['company'], self.normalize_key(1))
 
     def test_delete_company_features(self):
@@ -34,11 +34,11 @@ class CompanyFeaturesTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertEqual(type(result), list)
         self.assertEqual(result[0]['feature_status'], True)
-        self.assertEqual(result[0]['company_feature'], 1)
+        self.assertEqual(result[0]['company_feature']['id'], self.normalize_key(1))
         self.assertEqual(result[0]['company'], self.normalize_key(1))
 
         self.assertEqual(result[1]['feature_status'], True)
-        self.assertEqual(result[1]['company_feature'], 2)
+        self.assertEqual(result[1]['company_feature']['id'], self.normalize_key(2))
         self.assertEqual(result[1]['company'], self.normalize_key(1))
 
 
