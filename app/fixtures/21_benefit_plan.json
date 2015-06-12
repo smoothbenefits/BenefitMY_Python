@@ -2,7 +2,7 @@
   {
     "fields": {
       "benefit_type": 1,
-      "mandatory_pcp": false,
+      "mandatory_pcp": true,
       "name": "Blue Cross Blue Shield of Mass. HMO Blue",
       "pcp_link": "https://www.bluecrossma.com/wps/portal/members/using-my-plan/doctors-hospitals/findadoctor/"
     },
@@ -12,7 +12,7 @@
   {
     "fields": {
       "benefit_type": 1,
-      "mandatory_pcp": true, 
+      "mandatory_pcp": false, 
       "name": "Blue Cross Blue Shield of Mass. PPO"
     },
     "model": "app.benefitplan",

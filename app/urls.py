@@ -188,12 +188,14 @@ urlpatterns = patterns('app.views',
     url(r'^%s/documents/(?P<pk>\w+)/signature/?$' % PREFIX, DocumentSignatureView.as_view()),
 
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
-    url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
     url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
     url(r'^%s/benefits/?$' % PREFIX, benefits, name='company_benefit_post_api'),
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
+
+    # Company features api
+    url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
 
     # FSA api
     url(r'^%s/brokers/(?P<pk>\w+)/fsa/?$' % PREFIX, 

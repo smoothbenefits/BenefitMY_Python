@@ -102,6 +102,7 @@ var userController = userControllers.controller('userController',
    'benefitSectionGlobalConfig',
    'CompanyEmployeeSummaryService',
    'FeatureConfigurationService',
+   'CompanyFeatureService', 
   function userController($scope, 
                           $http, 
                           $location, 
@@ -109,7 +110,8 @@ var userController = userControllers.controller('userController',
                           userLogOut, 
                           benefitSectionGlobalConfig,
                           CompanyEmployeeSummaryService,
-                          FeatureConfigurationService) {
+                          FeatureConfigurationService,
+                          CompanyFeatureService) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var roleTypeDictionary = {
@@ -121,6 +123,10 @@ var userController = userControllers.controller('userController',
       $scope.curUser = userInfo.user;
       $scope.currentRoleList = userInfo.roles;
       $scope.company_id = userInfo.currentRole.company.id;
+
+      CompanyFeatureService.getDisabledCompanyFeatureByCompany($scope.company_id).then(function(features) {
+        $scope.disabledFeatures = features;
+      });
     });
     $scope.isRoleActive = function(checkRole){
       var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});

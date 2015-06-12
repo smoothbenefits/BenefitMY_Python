@@ -31,6 +31,17 @@ benefitmyService.factory('DocumentService',
                 mapModel.entries[doc.document_type.id].documents.push(doc);
             });
 
+            // sort (descending) each bucket by the documents' created date
+            _.each(mapModel.entries, function(entry) {
+                entry.documents = _.sortBy(entry.documents, function(document) {
+                    if (!document.created_at) {
+                        return 1000;
+                    }
+                    var date = new Date(document.created_at);
+                    return -date;
+                });
+            });
+
             return mapModel;
         };
 

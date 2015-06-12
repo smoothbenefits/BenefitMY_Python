@@ -27,4 +27,6 @@ class DocumentSerializer(HashPkSerializerBase):
         		  'signature',
         		  'name',
         		  'edited',
-        		  'content')
+        		  'content',
+                  'created_at',
+                  'updated_at')

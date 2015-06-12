@@ -20,6 +20,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'LtdService',
    'HraService',
    'DocumentService',
+   'CompanyFeatureService', 
   function ($scope,
             $location,
             $state,
@@ -38,7 +39,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
             StdService,
             LtdService,
             HraService,
-            DocumentService){
+            DocumentService,
+            CompanyFeatureService){
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = currentUser.get().$promise
@@ -76,13 +78,19 @@ var employeeHome = employeeControllers.controller('employeeHome',
         return clientListRepository.get({userId:userId}).$promise;
     })
     .then(function(response) {
-        var company_id;
+        var curCompanyId;
+
         _.each(response.company_roles, function(role){
           if(role.company_user_type==='employee'){
-            company_id = role.company.id;
+            curCompanyId = role.company.id;
           }
-        })
-        return company_id;
+        });
+
+        CompanyFeatureService.getDisabledCompanyFeatureByCompany(curCompanyId).then(function(features) {
+          $scope.disabledFeatures = features;
+        });
+
+        return curCompanyId;
     });
 
     companyIdPromise.then(function(companyId){
@@ -170,9 +178,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
           || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
       };
 
-     $scope.ViewDirectDeposit = function(editMode){
+    $scope.ViewDirectDeposit = function(editMode){
       $location.path('/employee/direct_deposit').search('edit', editMode);
-     };
+    };
   }
 ]);
 
@@ -1364,6 +1372,12 @@ var healthBenefitsSignup = employeeControllers.controller(
                 _.each(benefitTypePlan.selected.eligibleMemberCombo.familyList, function(member){
                   if(member.selected)
                   {
+                    if(!benefitTypePlan.selected.benefit.benefit_plan.mandatory_pcp){
+                      member.pcp = undefined;
+                    }
+                    else if(!hasEmptyRequiredPCP && !member.pcp){
+                      hasEmptyRequiredPCP = true;
+                    }
                     enrolledList.push({id:member.id, pcp:member.pcp});
                   }
                 });
@@ -1387,10 +1401,6 @@ var healthBenefitsSignup = employeeControllers.controller(
                   invalidEnrollNumber.name = benefitTypePlan.selected.benefit.benefit_plan.name;
                   invalidEnrollNumber.requiredNumber = benefitTypePlan.selected.eligibleMemberCombo.minimumRequired;
                   invalidEnrollNumberList.push(invalidEnrollNumber);
-                }
-                if(!hasEmptyRequiredPCP){
-                  hasEmptyRequiredPCP = benefitTypePlan.selected.benefit.benefit_plan.mandatory_pcp && 
-                      _.some(enrolledList, function(enrolled) { return !enrolled.pcp; });
                 }
               }
             });
@@ -1604,6 +1614,10 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = plans[0];
               $scope.basicLifeInsurancePlan.selected = true;
+              // Ideally, basicLifeInsurancePlan should be user basic life insurance plan 
+              // plans returned here are company life insurance plan, which should be a property of 
+              // the basicLifeInsurancePlan rather than make the two parallel.
+              $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = plans[0];
             }
 
             // Get current user's basic life insurance plan situation
@@ -1670,6 +1684,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               if (enrolledBasic){
                 $scope.basicLifeInsurancePlan.enrolled = true;
                 $scope.basicLifeInsurancePlan.id = enrolledBasic.id;
+                $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = enrolledBasic.company_life_insurance;
               }
               else{
                 $scope.basicLifeInsurancePlan.enrolled = false;
