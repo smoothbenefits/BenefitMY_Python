@@ -14,3 +14,4 @@ django-encrypted-fields==1.1.1
 xlwt==0.7.5
 django-reversion==1.8.5
 django-cron==0.3.6
+httpagentparser==1.7.7
