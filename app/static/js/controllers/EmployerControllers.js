@@ -238,7 +238,7 @@ var employerUser = employersController.controller('employerUser',
       }
 
       var validateAddUser = function(addUser){
-        if(addUser.first_name && addUser.last_name && addUser.email && addUser.annual_base_salary)
+        if(addUser.first_name && addUser.last_name && addUser.email && addUser.annual_base_salary >= 0)
         {
           return true;
         }
