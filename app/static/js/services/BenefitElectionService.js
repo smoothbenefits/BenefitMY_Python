@@ -19,7 +19,7 @@ benefitmyService.factory('BenefitElectionService',
                   displayBenefit.name = enrolled.person.first_name + ' ' + enrolled.person.last_name;
                   displayBenefit.email = enrolled.person.email;
                 }
-                var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: enrolled.person.relationship};
+                var displayEnrolled = { name: enrolled.person.first_name + ' ' + enrolled.person.last_name, relationship: enrolled.person.relationship, pcp:enrolled.pcp};
                 displayBenefit.enrolled.push(displayEnrolled);
               });
 

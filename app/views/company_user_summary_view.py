@@ -18,6 +18,9 @@ from app.models.user_company_benefit_plan_option import \
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
+from app.models.enrolled import Enrolled
+from app.models.benefit_plan import BenefitPlan
+from app.models.benefit_type import BenefitType
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from app.models.insurance.life_insurance_plan import LifeInsurancePlan
 from app.models.insurance.supplemental_life_insurance_plan import SupplementalLifeInsurancePlan
@@ -165,11 +168,8 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, None)
                 col_num = self._write_field(excelSheet, row_num, col_num, user.last_name)
 
-                # now skip 3 more columns to align with the normal person profile output
-                return col_num + 3
-
         # Skip the columns
-        return col_num + 6
+        return col_num + 3
 
     def _write_employee_direct_deposit(self, employee_user_id, excelSheet, row_num, start_col_num):
         current_col_num = start_col_num
@@ -233,6 +233,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'SSN')
         col_num = self._write_field(excelSheet, 0, col_num, 'Gender')
         col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Med PCP NO.')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
         col_num = self._write_field(excelSheet, 0, col_num, 'Work Phone')
         col_num = self._write_field(excelSheet, 0, col_num, 'Home Phone')
@@ -247,6 +248,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse SSN')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Gender')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Birth Date')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Med PCP NO.')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Relationship')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'Med Plan Name')
@@ -290,6 +292,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep SSN ' + `i+1`)
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep Gender ' + `i+1`)
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep Birth Date ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Med PCP NO. ' + `i+1`)
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep Relationship ' + `i+1`)
 
         return
@@ -351,7 +354,6 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.ssn)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.gender)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.birth_date, ExcelExportViewBase.date_field_format)
-            return col_num
         elif (employee_user_id):
             # TODO:
             # This is not a clean solution, but is the only one we have for the short term
@@ -367,10 +369,27 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, user.last_name)
 
                 # now skip 3 more columns to align with the normal person profile output
-                return col_num + 3
+                col_num = col_num + 3
+        else:
+            # Skip the columns
+            col_num = col_num + 6
 
-        # Skip the columns
-        return col_num + 6
+        # Also output the person's medical PCP number info
+        # for now, it is decided that the number stick with the person's
+        # information section
+        col_num = self._write_person_PCP_number(person_model, excelSheet, row_num, col_num)
+        
+        return col_num
+
+    def _write_person_PCP_number(self, person_model, excelSheet, row_num, col_num):
+        if (person_model):
+            enrolleds = Enrolled.objects.filter(user_company_benefit_plan_option__benefit__benefit_plan__benefit_type__name='Medical', person=person_model.id)
+            if (len(enrolleds) > 0):
+                enrolled = enrolleds[0]
+                if (enrolled.pcp): 
+                    return self._write_field(excelSheet, row_num, col_num, enrolled.pcp)
+
+        return col_num + 1
 
     def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
         if (person_model and person_model.email):
