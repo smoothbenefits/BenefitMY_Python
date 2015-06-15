@@ -110,7 +110,7 @@ var employerHome = employersController.controller('employerHome',
           if(company_role.company_user_type === 'admin')
           {
             $scope.company = company_role.company;
-            documentTypeService.getDocumentTypes($scope.company, function(doc_types){
+            documentTypeService.getDocumentTypes($scope.company).then(function(doc_types){
               $scope.documentTypes = doc_types;
 
               getTemplates($scope.company);
@@ -167,20 +167,20 @@ var employerUser = employersController.controller('employerUser',
    '$location',
    'employerWorkerRepository',
    'usersRepository',
-   'userDocument',
    'emailRepository',
    'documentTypeService',
    'templateRepository',
+   'DocumentService',
   function employerUser($scope,
                         $state,
                         $stateParams,
                         $location,
                         employerWorkerRepository,
                         usersRepository,
-                        userDocument,
                         emailRepository,
                         documentTypeService,
-                        templateRepository){
+                        templateRepository,
+                        DocumentService){
       var compId = $stateParams.company_id;
       $scope.employees=[];
       $scope.addUser = {send_email:true, new_employee:true, create_docs:true};
@@ -198,14 +198,22 @@ var employerUser = employersController.controller('employerUser',
               {
                 $scope.brokers.push(role);
               }
-            })
+            });
+
+            // Populate document data for employees
+            _.each($scope.employees, function(employee) {
+                DocumentService.getDocumentToTypeMappingForCompanyUser(employee.user.id, compId)
+                .then(function(docTypeMapModel) {
+                    employee.documentCollection = docTypeMapModel;
+                });
+            }); 
         });
 
       templateRepository.getAllFields.query({id:compId})
         .$promise.then(function(fields){
           $scope.templateFields = fields;
         });
-      documentTypeService.getDocumentTypes(compId, function(response){
+      documentTypeService.getDocumentTypes(compId).then(function(response){
         $scope.docTypeArray = response;
       });
 
@@ -230,7 +238,7 @@ var employerUser = employersController.controller('employerUser',
       }
 
       var validateAddUser = function(addUser){
-        if(addUser.first_name && addUser.last_name && addUser.email && addUser.annual_base_salary)
+        if(addUser.first_name && addUser.last_name && addUser.email && addUser.annual_base_salary >= 0)
         {
           return true;
         }
@@ -274,19 +282,15 @@ var employerUser = employersController.controller('employerUser',
       }
       $scope.gotoUserViewLink = gotoUserView;
 
-      $scope.documentLink = function(employeeId, docType)
+      $scope.documentLink = function(employeeId, docEntry)
       {
-        userDocument.query({userId:employeeId})
-        .$promise.then(function(response){
-          var doc = _.filter(response, function(doc){return doc.document_type.id === docType.id});
-          var pathKey = 'create_letter';
-          if(doc && doc.length > 0)
-          {
+        var pathKey = 'create_letter';
+        if(docEntry.hasDocument())
+        {
             pathKey='view_letter';
-          }
+        }
           
-          $location.path('/admin/' + pathKey + '/' +compId +'/'+employeeId).search({'type': docType.name});
-        });
+        $location.path('/admin/' + pathKey + '/' +compId +'/'+employeeId).search({'type': docEntry.docType.name});
       };
 
       $scope.viewEmployeeDetail = function(employee){
@@ -346,7 +350,7 @@ var employerBenefits = employersController.controller('employerBenefits',
       $location.path('/admin');
     };
 
-    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id, function(response) {
+    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id).then(function(response) {
       $scope.lifeInsurancePlans = response;
     });
 
@@ -447,7 +451,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
       updateExistingTemplateList();
     }
     else{
-      documentTypeService.getDocumentTypes($scope.companyId, function(types){
+      documentTypeService.getDocumentTypes($scope.companyId).then(function(types){
         var docType = _.findWhere(types, {name:$scope.documentType});
         if(docType){
           $scope.templateContent = docType.default_content;
@@ -919,7 +923,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         //       and this logic of getting FSA data for an employee be moved into the
         //       employeeBenefitElectionService? 
         _.each(employeeList, function(employee) {
-          FsaService.getFsaElectionForUser(employee.user.id, function(response) {
+          FsaService.getFsaElectionForUser(employee.user.id, company_id).then(function(response) {
             employee.fsaElection = response;
           });
         });
@@ -930,26 +934,27 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         //       Also, once we have tabs working, we should split them into proper flows.
         _.each(employeeList, function(employee) {
           
-          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, company_id)
+          .then(function(response){
             employee.basicLifeInsurancePlan = response;
           });
 
-          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id).then(function(plan) {
+          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, company_id).then(function(plan) {
             employee.supplementalLifeInsurancePlan = plan;
           });
 
           // STD
-          StdService.getUserEnrolledStdPlanByUser(employee.user.id).then(function(response){
+          StdService.getUserEnrolledStdPlanByUser(employee.user.id, company_id).then(function(response){
             employee.userStdPlan = response;
           });
 
           // LTD
-          LtdService.getUserEnrolledLtdPlanByUser(employee.user.id).then(function(response){
+          LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, company_id).then(function(response){
             employee.userLtdPlan = response;
           });
 
           // HRA
-          HraService.getPersonPlanByUser(employee.user.id).then(function(plan) {
+          HraService.getPersonPlanByUser(employee.user.id, company_id).then(function(plan) {
             employee.hraPlan = plan;
           });
 

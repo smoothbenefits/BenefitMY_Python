@@ -111,7 +111,7 @@ var benefitsController = brokersControllers.controller(
         }
       };
 
-      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId, function(response) {
+      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId).then(function(response) {
         $scope.lifeInsurancePlans = response;
       });
 
@@ -240,42 +240,43 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         //       and this logic of getting FSA data for an employee be moved into the
         //       employeeBenefitElectionService? 
         _.each(employeeList, function(employee) {
-          FsaService.getFsaElectionForUser(employee.user.id, function(response) {
+          FsaService.getFsaElectionForUser(employee.user.id, clientId).then(function(response) {
             employee.fsaElection = response;
           });
         });
 
         // Supplemental life insurance
         _.each(employeeList, function(employee) {
-          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id).then(function(plan) {
+          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, clientId).then(function(plan) {
             employee.supplementalLifeInsurancePlan = plan;
           });
         });
 
         // Basic life insurance
         _.each(employeeList, function(employee) {
-          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, function(response){
+          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, clientId)
+          .then(function(response){
             employee.basicLifeInsurancePlan = response;
           });
         });
 
         // STD
         _.each(employeeList, function(employee) {
-            StdService.getUserEnrolledStdPlanByUser(employee.user.id).then(function(response){
+            StdService.getUserEnrolledStdPlanByUser(employee.user.id, clientId).then(function(response){
                 employee.userStdPlan = response;
             });
         });
 
         // LTD
         _.each(employeeList, function(employee) {
-            LtdService.getUserEnrolledLtdPlanByUser(employee.user.id).then(function(response){
+            LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, clientId).then(function(response){
                 employee.userLtdPlan = response;
             });
         });
 
         // HRA
         _.each(employeeList, function(employee) {
-          HraService.getPersonPlanByUser(employee.user.id).then(function(plan) {
+          HraService.getPersonPlanByUser(employee.user.id, clientId).then(function(plan) {
             employee.hraPlan = plan;
           });
         });

@@ -99,17 +99,15 @@ var userController = userControllers.controller('userController',
    '$location', 
    'UserService',
    'userLogOut', 
-   'benefitSectionGlobalConfig',
    'CompanyEmployeeSummaryService',
-   'FeatureConfigurationService',
+   'CompanyFeatureService', 
   function userController($scope, 
                           $http, 
                           $location, 
                           UserService,
                           userLogOut, 
-                          benefitSectionGlobalConfig,
                           CompanyEmployeeSummaryService,
-                          FeatureConfigurationService) {
+                          CompanyFeatureService) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var roleTypeDictionary = {
@@ -121,6 +119,10 @@ var userController = userControllers.controller('userController',
       $scope.curUser = userInfo.user;
       $scope.currentRoleList = userInfo.roles;
       $scope.company_id = userInfo.currentRole.company.id;
+
+      CompanyFeatureService.getDisabledCompanyFeatureByCompany($scope.company_id).then(function(features) {
+        $scope.disabledFeatures = features;
+      });
     });
     $scope.isRoleActive = function(checkRole){
       var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});
@@ -219,10 +221,6 @@ var userController = userControllers.controller('userController',
     $scope.gotoSettings = function(){
       $location.path('/settings');
     };
-
-    // turn on/off benefit section globally here
-    // need to move to a company profile which controls sections by company
-    $scope.supplementalLifeInsuranceEnabled = FeatureConfigurationService.isFeatureOnForCompany($scope.company_id, 'supplemental_life_insurance');
 }]);
 
 var settingsController = userControllers.controller('settingsController', ['$scope',

@@ -86,26 +86,28 @@ benefitmyService.factory('LtdService',
             return domainModel;
         };
 
+        var getLtdPlansForCompany = function(companyId) {
+            var deferred = $q.defer();
+
+            LtdRepository.CompanyPlanByCompany.query({companyId:companyId})
+            .$promise.then(function(plans) {
+                var planViewModels = [];
+                _.each(plans, function(companyPlan) {
+                    planViewModels.push(mapCompanyPlanDomainToViewModel(companyPlan));
+                });
+                deferred.resolve(planViewModels);
+            },
+            function(error){
+                deferred.reject(error);
+            });
+
+            return deferred.promise;
+        };
+
         return {
             paidByParties: ['Employee', 'Employer'],
             
-            getLtdPlansForCompany: function(companyId) {
-                var deferred = $q.defer();
-
-                LtdRepository.CompanyPlanByCompany.query({companyId:companyId})
-                .$promise.then(function(plans) {
-                    var planViewModels = [];
-                    _.each(plans, function(companyPlan) {
-                        planViewModels.push(mapCompanyPlanDomainToViewModel(companyPlan));
-                    });
-                    deferred.resolve(planViewModels);
-                },
-                function(error){
-                    deferred.reject(error);
-                });
-
-                return deferred.promise;
-            },
+            getLtdPlansForCompany: getLtdPlansForCompany,
 
             getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan) {
                 var deferred = $q.defer();
@@ -250,20 +252,26 @@ benefitmyService.factory('LtdService',
                 return deferred.promise; 
             },
 
-            getUserEnrolledLtdPlanByUser: function(userId) {
+            getUserEnrolledLtdPlanByUser: function(userId, company) {
                 var deferred = $q.defer();
+                getLtdPlansForCompany(company).then(function(plans){
+                    if(!plans || plans.length <= 0){
+                        deferred.resolve(undefined);
+                    }
+                    else{
+                        LtdRepository.CompanyUserPlanByUser.query({userId:userId})
+                        .$promise.then(function(plans) {
 
-                LtdRepository.CompanyUserPlanByUser.query({userId:userId})
-                .$promise.then(function(plans) {
+                            var plan = plans.length > 0 ? 
+                                mapUserCompanyPlanDomainToViewModel(plans[0]) :
+                                null;
 
-                    var plan = plans.length > 0 ? 
-                        mapUserCompanyPlanDomainToViewModel(plans[0]) :
-                        null;
-
-                    deferred.resolve(plan);
-                },
-                function(error){
-                    deferred.reject(error);
+                            deferred.resolve(plan);
+                        },
+                        function(error){
+                            deferred.reject(error);
+                        });
+                    }
                 });
                 
                 return deferred.promise; 
