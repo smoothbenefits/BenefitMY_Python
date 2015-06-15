@@ -373,7 +373,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         return col_num + 6
 
     def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
-        if (person_model):
+        if (person_model and person_model.email):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.email)
             return col_num
         elif (employee_user_id):
