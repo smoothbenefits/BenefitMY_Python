@@ -118,16 +118,6 @@ var userController = userControllers.controller('userController',
         employee: 'Employee'
     };
 
-    $scope.detectBrowser = function() {
-      var unsupported = ['IE 6', 'IE 7', 'IE 8', 'IE 9'];
-      var currentBrowser = BrowserDetectionService.getCurrentBrowser();
-      if (unsupported.indexOf(currentBrowser) > -1) {
-        alert('The browser you are using is not fully supported by BenefitMY. ' + 
-          'Your experience may not be optimized. Please be advised to use Chrome ' + 
-          'or Firefox for better enrollment experience.')
-      }
-    };
-
     UserService.getCurUserInfo().then(function(userInfo){
       $scope.curUser = userInfo.user;
       $scope.currentRoleList = userInfo.roles;
