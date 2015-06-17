@@ -983,6 +983,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     $scope.exportCompanyEmployeeSummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryExcelUrl(company_id);
     $scope.exportCompanyEmployeeDirectDepositUrl = CompanyEmployeeSummaryService.getCompanyEmployeeDirectDepositExcelUrl(company_id);
     $scope.exportCompanyEmployeeLifeBeneficiarySummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl(company_id);
+    $scope.exportCompanyBenefitsFinancialSummaryUrl = CompanyEmployeeSummaryService.getCompanyBenefitsFinancialReportExcelUrl(company_id);
 }]);
 
 var employerViewUploads = employersController.controller('employerViewUploads', [
