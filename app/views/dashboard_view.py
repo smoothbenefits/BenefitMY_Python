@@ -8,7 +8,7 @@ def index(request):
     # Like before, obtain the context for the user's request.
     context = RequestContext(request)
     agent = request.META['HTTP_USER_AGENT']
-    if (IsBrowserSupported(agent)):
+    if not IsBrowserSupported(agent):
         return render_to_response('warning.html', {}, context)
 
     if not request.user.is_authenticated():
