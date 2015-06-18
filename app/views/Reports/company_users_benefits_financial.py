@@ -4,19 +4,10 @@ from django.http import HttpResponse, Http404
 from django.db.models import Count, Max
 from django.contrib.auth import get_user_model
 from ..company_user_summary_view import ExcelExportViewBase
-from app.models.company_user import CompanyUser
 from app.models.person import Person
-from app.models.phone import Phone
-from app.models.address import Address
 from app.models.company import Company
-from app.models.user_company_benefit_plan_option import \
-    UserCompanyBenefitPlanOption
-from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
-from app.models.enrolled import Enrolled
-from app.models.benefit_plan import BenefitPlan
-from app.models.benefit_type import BenefitType
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from app.models.insurance.life_insurance_plan import LifeInsurancePlan
 from app.models.insurance.supplemental_life_insurance_plan import SupplementalLifeInsurancePlan
@@ -31,10 +22,6 @@ from app.models.insurance.ltd_insurance_plan import LtdInsurancePlan
 from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
 from app.models.insurance.user_company_ltd_insurance_plan import \
     UserCompanyLtdInsurancePlan
-from app.models.hra.hra_plan import HraPlan
-from app.models.hra.company_hra_plan import CompanyHraPlan
-from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
-from app.models.fsa.fsa import FSA
 from app.views.permission import (
     user_passes_test,
     company_employer,
