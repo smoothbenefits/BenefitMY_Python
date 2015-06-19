@@ -29,7 +29,7 @@ from app.views.permission import (
 
 User = get_user_model()
 
-class CompanyUsersBenefitsFinancialExcelExportView(ExcelExportViewBase):
+class CompanyUsersBenefitsBillingExcelExportView(ExcelExportViewBase):
 
     def _write_headers(self, excelSheet):
         col_num = 0
@@ -249,6 +249,6 @@ class CompanyUsersBenefitsFinancialExcelExportView(ExcelExportViewBase):
         response = HttpResponse(content_type='application/vnd.ms-excel')
         # Need company name:
 
-        response['Content-Disposition'] = 'attachment; filename={0}_employee_benefits_financial.xls'.format(comp)
+        response['Content-Disposition'] = 'attachment; filename={0}_employee_benefits_billing.xls'.format(comp)
         book.save(response)
         return response

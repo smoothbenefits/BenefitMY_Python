@@ -122,7 +122,7 @@ from app.views.company_user_summary_view import (
     CompanyUsersDirectDepositExcelExportView,
     CompanyUsersLifeInsuranceBeneficiaryExcelExportView)
 
-from app.views.reports.company_users_benefits_financial import CompanyUsersBenefitsFinancialExcelExportView
+from app.views.reports.company_users_benefits_billing import CompanyUsersBenefitsBillingExcelExportView
 
 from app.views.upload import (UserUploadView,
                               UploadView,
@@ -179,7 +179,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/?$' % PREFIX, CompanyUsersSummaryExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/life_beneficiary?$' % PREFIX, CompanyUsersLifeInsuranceBeneficiaryExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view()),
-    url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_financial?$' % PREFIX, CompanyUsersBenefitsFinancialExcelExportView.as_view()),
+    url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_billing?$' % PREFIX, CompanyUsersBenefitsBillingExcelExportView.as_view()),
 
     url(r'^%s/companies/(?P<pk>\w+)/users/modification_summary/?$' % PREFIX, CompanyUsersDataModificationSummaryView.as_view()),
 
