@@ -249,14 +249,18 @@
                         </div>
                     </li></ul>
 
-                    <div class="submit-box">
+                    <div class="submit-box col-md-4 col-md-offset-1">
                         <button ng-click="updateBasicInfo()" class="btn green" ng-disabled="form.$invalid">
                             Save
+                        </button>
+                    </div>
+                    <div class="col-md-4 col-md-offset-2">
+                        <button onclick="history.back()" class="btn green">
+                            Cancel
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     </div><!-- row -->
-    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
 </div><!-- / .content-body -->
