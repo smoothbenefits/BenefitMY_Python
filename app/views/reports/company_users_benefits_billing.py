@@ -237,11 +237,6 @@ class CompanyUsersBenefitsBillingExcelExportView(ExcelExportViewBase):
         comp = self._get_company_info(pk)
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('Employee view')
-
-        # Pre compute the max number of dependents across all employees of
-        # the company, so we know how many sets of headers for dependent
-        # info we need to populate
-        max_dependents = self._get_max_dependents_count(pk)
         self._write_headers(sheet)
 
         self._write_company(pk, sheet)
