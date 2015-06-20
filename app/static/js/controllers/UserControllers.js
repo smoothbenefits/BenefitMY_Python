@@ -62,7 +62,8 @@ var findViewController = userControllers.controller('findViewController',
       {
         var role = _.findWhere(userRoles, {company_user_type:userType});
         return role != null;
-      }
+      };
+
       var determineDashboardLocation = function(userRoles)
       {
         var urlParam = window.location.search;
@@ -84,12 +85,11 @@ var findViewController = userControllers.controller('findViewController',
         {
           window.location.replace('/error?role_match=false');
         }
-      }
+      };
 
-      currentUser.get()
-      .$promise.then(function(response){
+      currentUser.get().$promise.then(function(response){
           determineDashboardLocation(response.roles);
-       });
+      });
     }
 ]);
 
@@ -101,20 +101,23 @@ var userController = userControllers.controller('userController',
    'userLogOut', 
    'CompanyEmployeeSummaryService',
    'CompanyFeatureService', 
+   'BrowserDetectionService', 
   function userController($scope, 
                           $http, 
                           $location, 
                           UserService,
                           userLogOut, 
                           CompanyEmployeeSummaryService,
-                          CompanyFeatureService) {
+                          CompanyFeatureService,
+                          BrowserDetectionService) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var roleTypeDictionary = {
         admin:'Employer', 
         broker:'Broker',
         employee: 'Employee'
-      };
+    };
+
     UserService.getCurUserInfo().then(function(userInfo){
       $scope.curUser = userInfo.user;
       $scope.currentRoleList = userInfo.roles;
@@ -124,10 +127,12 @@ var userController = userControllers.controller('userController',
         $scope.disabledFeatures = features;
       });
     });
+
     $scope.isRoleActive = function(checkRole){
       var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});
       return !_.isUndefined(roleFind);
     };
+
     $scope.logout = function ()
     {
         userLogOut.delete()
