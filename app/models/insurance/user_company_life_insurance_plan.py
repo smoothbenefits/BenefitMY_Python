@@ -5,6 +5,7 @@ from company_life_insurance_plan import CompanyLifeInsurancePlan
 
 from app.custom_authentication import AuthUser
 from ..person import Person
+from ..sys_benefit_update_reason import SysBenefitUpdateReason
 
 @reversion.register
 class UserCompanyLifeInsurancePlan(models.Model):
@@ -20,6 +21,14 @@ class UserCompanyLifeInsurancePlan(models.Model):
     # for extend life insurance only
     insurance_amount = models.DecimalField(
         max_digits=20, decimal_places=2, blank=True, null=True)
+
+    record_reason = models.ForeignKey(
+        SysBenefitUpdateReason, 
+        blank=True,
+        null=True,
+        related_name="basic_life_update_reason")
+    record_reason_note = models.CharField(max_length=512, blank=True, null=True)
+            
     created_at = models.DateTimeField(auto_now_add=True,
                                       blank=True,
                                       null=True)

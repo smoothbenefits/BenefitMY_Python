@@ -1,0 +1,34 @@
+[
+  {
+    "fields": {
+      "name": "Other",
+      "description": "Reason that is not explicitly listed out by other options"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "Annual Enrollment",
+      "description": "Annual company wide enrollment"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "New Employee", 
+      "description": "Initial enrollment for new employee start"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "name": "Life Event",
+      "description": "Enrollment modification due to life events"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 4
+  }
+]

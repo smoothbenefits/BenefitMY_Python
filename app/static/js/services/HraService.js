@@ -69,6 +69,9 @@ benefitmyService.factory('HraService',
 
             domainModel.company_hra_plan = mapCompanyPlanViewToDomainModel(personCompanyPlanViewModel);
 
+            domainModel.record_reason_note = personCompanyPlanViewModel.updateReason.notes;
+            domainModel.record_reason = personCompanyPlanViewModel.updateReason.selectedReason.id;
+
             return domainModel;
         };
 
@@ -176,11 +179,13 @@ benefitmyService.factory('HraService',
                 return $q.all(requests);
             },
 
-            savePersonPlan: function(personPlanToSave) {
+            savePersonPlan: function(personPlanToSave, updateReason) {
                 // This should be take care of 2 cases
                 // - user does not have a plan. Create one for him/her
                 // - user already has a plan. Update
                 var deferred = $q.defer();
+
+                personPlanToSave.updateReason = updateReason;
 
                 var planDomainModel = mapPersonCompanyPlanViewToDomainModel(personPlanToSave);
                 

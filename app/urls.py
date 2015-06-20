@@ -132,6 +132,8 @@ from app.views.upload_audience_view import UploadAudienceByCompanyView
 
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
 
+from app.views.sys_benefit_update_reason_view import SysBenefitUpdateReasonView
+
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
@@ -327,6 +329,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/user/(?P<user_id>\w+)/employee_profile/?$' % PREFIX,
         EmployeeProfileByCompanyUserView.as_view(),
         name='employee_profile_by_company_user_api'),
+
+    url(r'^%s/benefit_update_reasons/?$' % PREFIX, SysBenefitUpdateReasonView.as_view(), name='sys_benefit_update_reason_api'),
 )
 
 
