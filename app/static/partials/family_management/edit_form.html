@@ -5,6 +5,19 @@
 <div class="modal-body col-md-12">
     <div class="form-holder col-md-10 col-md-offset-1">
         <form name="form">
+            <ul class="list-group"><li class="list-group-item">
+            <div class="form-label">Reason for Change*</div>
+            <div class="textbox">
+                <input type="text"
+                    name="reason"
+                    ng-model="person.reason_for_change"
+                    ng-required="true">
+                <div class="form-validation-error" ng-show="form.reason.$invalid">
+                  <span ng-show="form.reason.$error.required">Reason field is required</span>
+                </div>
+            </div>
+            </li></ul>
+
             <div class="form-label">First Name*</div>
             <div class="textbox">
                 <input type="text"

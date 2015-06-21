@@ -65,6 +65,7 @@ benefitmyService.factory('PersonService',
 
       var mapDtoPersonToViewPerson = function(DtoPerson){
         var viewPerson = angular.copy(DtoPerson);
+        viewPerson.reason_for_change = undefined;
         if(viewPerson.phones && viewPerson.phones.length > 0){
           viewPerson.phone = viewPerson.phones[0];
         }
