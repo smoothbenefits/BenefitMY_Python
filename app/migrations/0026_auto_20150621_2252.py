@@ -12,6 +12,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
+            model_name='emergencycontact',
+            name='reason_for_change',
+            field=models.CharField(max_length=255, null=True, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='person',
             name='reason_for_change',
             field=models.CharField(max_length=255, null=True, blank=True),
