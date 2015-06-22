@@ -157,7 +157,10 @@ benefitmyService.factory(
 
       getFsaElectionForUser: getFsaElectionForUser,
 
-      saveFsaElection: function(fsaElectionToSave, successCallBack, errorCallBack) {
+      saveFsaElection: function(fsaElectionToSave, updateReason, successCallBack, errorCallBack) {
+        fsaElectionToSave.record_reason_note = updateReason.notes;
+        fsaElectionToSave.record_reason = updateReason.selectedReason.id;
+
         if(!fsaElectionToSave.id) {
           // New one, POST it
           // TODO: have to give a dummy ID for now to match the URL rules, 

@@ -6,7 +6,7 @@ import json
 
 class CompanyFsaTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['37_fsa_plan', '23_auth_user', '24_person', '10_company', '42_company_fsa', '43_fsa']
+    fixtures = ['37_fsa_plan', '23_auth_user', '24_person', '10_company', '42_company_fsa', '43_fsa', 'sys_benefit_update_reason']
 
     def test_get_user_company_fsa_by_user(self):
         response = self.client.get(reverse('user_company_fsa_api',
@@ -56,7 +56,9 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
           "primary_amount_per_year": "500.00",
           "dependent_amount_per_year": "500.00",
           "update_reason": "new update",
-          "company_fsa_plan": self.normalize_key(1)
+          "company_fsa_plan": self.normalize_key(1),
+          "record_reason": self.normalize_key(1),
+          "record_reason_note": "Test Note"
         }
         response = self.client.put(reverse('company_users_fsa_api',
                                             kwargs={'pk': self.normalize_key(1)}),
@@ -75,5 +77,5 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result), dict)
         self.assertEqual(result['primary_amount_per_year'], "500.00")
         self.assertEqual(result['dependent_amount_per_year'], "500.00")
-
-
+        self.assertEqual(result['record_reason']['id'], self.normalize_key(1))
+        self.assertEqual(result['record_reason_note'], 'Test Note')
