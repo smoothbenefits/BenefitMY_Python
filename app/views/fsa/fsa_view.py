@@ -26,7 +26,7 @@ class FsaView(APIView):
 
     def put(self, request, pk, format=None):
         fsa = self._get_object(pk)
-        serializer = FsaSerializer(fsa, data=request.DATA)
+        serializer = FsaPostSerializer(fsa, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

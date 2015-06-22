@@ -166,49 +166,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
     $scope.ViewDirectDeposit = function(editMode){
       $location.path('/employee/direct_deposit').search('edit', editMode);
     };
-
-    $scope.startModifyBenefit = function() {
-        // Show a modal dialog to take in the reason
-        var modalInstance = $modal.open({
-            templateUrl: '/static/partials/benefit_selection/modal_pre_benefit_selection.html',
-            controller: 'preBenefitSelectionModalController',
-            size: 'md',
-            backdrop: 'static'
-          });
-
-        modalInstance.result.then(function(reason){
-            // Now proceed to the modify benefit view
-            $state.go('employee_benefit_signup', 
-                { employee_id: $scope.employee_id, 
-                  updateReason: reason });
-        });
-    };
   }
 ]);
-
-var preBenefitSelectionModalController = employeeControllers.controller('preBenefitSelectionModalController',
-  ['$scope',
-   '$modalInstance',
-   'BenefitUpdateReasonService',
-    function($scope,
-             $modalInstance,
-             BenefitUpdateReasonService) {
-
-        $scope.reason = {};
-        
-        BenefitUpdateReasonService.getAllReasons().then(function(reasons) {
-            $scope.reasons = reasons;
-        });
-
-        $scope.cancel = function() {
-            $modalInstance.dismiss('cancelByUser');
-        };
-
-        $scope.proceed = function() {
-            $modalInstance.close($scope.reason);
-        };
-    }
-  ]);
 
 var viewDocument = employeeControllers.controller('viewDocument',
   ['$scope', '$location', '$stateParams', 'DocumentService', 'currentUser', 'documentRepository',
