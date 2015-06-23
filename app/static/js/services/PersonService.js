@@ -57,6 +57,7 @@ benefitmyService.factory('PersonService',
         }
         apiUserPerson.emergency_contact=[];
         if(viewPerson.emergency){
+          viewPerson.emergency.reason_for_change = apiUserPerson.reason_for_change;
           apiUserPerson.emergency_contact.push(viewPerson.emergency);
         }
         return apiUserPerson;
@@ -64,6 +65,7 @@ benefitmyService.factory('PersonService',
 
       var mapDtoPersonToViewPerson = function(DtoPerson){
         var viewPerson = angular.copy(DtoPerson);
+        viewPerson.reason_for_change = undefined;
         if(viewPerson.phones && viewPerson.phones.length > 0){
           viewPerson.phone = viewPerson.phones[0];
         }
