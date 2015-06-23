@@ -26,6 +26,7 @@ class PersonSerializer(HashPkSerializerBase):
         model = Person
         fields = ('id',
                   'person_type',
+                  'reason_for_change',
                   'relationship',
                   'first_name',
                   'last_name',
@@ -53,6 +54,7 @@ class PersonFullPostSerializer(HashPkSerializerBase):
         model = Person
         fields = ('id',
                   'person_type',
+                  'reason_for_change',
                   'relationship',
                   'first_name',
                   'last_name',
@@ -82,5 +84,6 @@ class PersonPostSerializer(HashPkSerializerBase):
                   'email',
                   'phones',
                   'relationship',
+                  'reason_for_change',
                   'user',
                   'gender')

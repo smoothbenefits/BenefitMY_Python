@@ -23,6 +23,7 @@ class Person(models.Model):
     relationship = models.CharField(max_length=30, choices=RELATIONSHIPS, default=DEPENDENT)
     ssn = EncryptedTextField(null=True, blank=True)
     birth_date = models.DateField(blank=True, null=True)
+    reason_for_change = models.CharField(max_length=255, blank=True, null=True)
     gender = models.CharField(max_length=2,
                               choices=GENDER_TYPES,
                               null=True,

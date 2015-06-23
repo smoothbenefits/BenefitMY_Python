@@ -6,10 +6,12 @@ from app.models.hra.person_company_hra_plan import \
 from company_hra_plan_serializer import (
     CompanyHraPlanSerializer,
     CompanyHraPlanPostSerializer)
+from ..sys_benefit_update_reason_serializer import SysBenefitUpdateReasonSerializer
 
 class PersonCompanyHraPlanSerializer(HashPkSerializerBase):
     company_hra_plan = CompanyHraPlanSerializer()
     person = HashField(source="person.id")
+    record_reason = SysBenefitUpdateReasonSerializer()
 
     class Meta:
         model = PersonCompanyHraPlan

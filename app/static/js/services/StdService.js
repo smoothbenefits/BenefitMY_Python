@@ -80,6 +80,9 @@ benefitmyService.factory('StdService',
             domainModel.total_premium_per_period = userCompanyPlanViewModel.employeePremium;
 
             domainModel.company_std_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
+            
+            domainModel.record_reason_note = userCompanyPlanViewModel.updateReason.notes;
+            domainModel.record_reason = userCompanyPlanViewModel.updateReason.selectedReason.id;
 
             return domainModel;
         };
@@ -211,7 +214,7 @@ benefitmyService.factory('StdService',
                 return $q.all(requests);
             },
 
-            enrollStdPlanForUser: function(userId, companyStdPlanToEnroll) {
+            enrollStdPlanForUser: function(userId, companyStdPlanToEnroll, updateReason) {
                 // This should be take care of 2 cases
                 // - user does not have a plan. Create one for him/her
                 // - user already has a plan. Update
@@ -219,6 +222,7 @@ benefitmyService.factory('StdService',
 
                 var userPlan = companyStdPlanToEnroll;
                 userPlan.planOwner = userId;
+                userPlan.updateReason = updateReason;
 
                 var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll);
                 planDomainModel.company_std_insurance = planDomainModel.company_std_insurance.id;

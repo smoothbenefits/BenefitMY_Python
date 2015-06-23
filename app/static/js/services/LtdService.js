@@ -83,6 +83,9 @@ benefitmyService.factory('LtdService',
 
             domainModel.company_ltd_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
+            domainModel.record_reason_note = userCompanyPlanViewModel.updateReason.notes;
+            domainModel.record_reason = userCompanyPlanViewModel.updateReason.selectedReason.id;
+
             return domainModel;
         };
 
@@ -212,7 +215,7 @@ benefitmyService.factory('LtdService',
                 return $q.all(requests);
             },
 
-            enrollLtdPlanForUser: function(userId, companyLtdPlanToEnroll) {
+            enrollLtdPlanForUser: function(userId, companyLtdPlanToEnroll, updateReason) {
                 // This should be take care of 2 cases
                 // - user does not have a plan. Create one for him/her
                 // - user already has a plan. Update
@@ -220,6 +223,7 @@ benefitmyService.factory('LtdService',
 
                 var userPlan = companyLtdPlanToEnroll;
                 userPlan.planOwner = userId;
+                userPlan.updateReason = updateReason;
 
                 var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyLtdPlanToEnroll);
                 planDomainModel.company_ltd_insurance = planDomainModel.company_ltd_insurance.id;

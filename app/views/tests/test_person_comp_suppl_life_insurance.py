@@ -8,7 +8,7 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
     fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate', 
     '39_company_supplement_life_insurance', '17_supplemental_life_insurance_condition',
     '10_company', '44_person_company_suppl_life', '24_person', '23_auth_user', 
-    '45_suppl_life_beneficiary']
+    '45_suppl_life_beneficiary', 'sys_benefit_update_reason']
 
     def test_get_person_company_suppl_life_by_person(self):
         response = self.client.get(reverse('person_person_supple_life',
@@ -76,6 +76,8 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
           "child_premium_per_month": 1.00,
           "self_condition": self.normalize_key(2),
           "spouse_condition": self.normalize_key(3),
+          "record_reason": self.normalize_key(1),
+          "record_reason_note": "Test Note",
           "suppl_life_insurance_beneficiary": [
             {
               "first_name": "Ted",
@@ -111,6 +113,8 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
         self.assertEqual(result["self_premium_per_month"], "1.00")
         self.assertEqual(result["spouse_premium_per_month"], "1.00")
         self.assertEqual(result["child_premium_per_month"], "1.00")
+        self.assertEqual(result['record_reason']['id'], self.normalize_key(1))
+        self.assertEqual(result['record_reason_note'], 'Test Note')
 
         beneficiaries = result['suppl_life_insurance_beneficiary']
         self.assertEqual(type(beneficiaries), list)
@@ -133,6 +137,7 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
           "child_premium_per_month": 1.00,
           "self_condition": 3,
           "spouse_condition": 3,
+          "record_reason": self.normalize_key(1),
           "suppl_life_insurance_beneficiary": [
             {
               "first_name": "Ted",
@@ -175,6 +180,8 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
         self.assertEqual(result['self_condition']['id'], self.normalize_key(3))
         self.assertEqual(result['spouse_condition']['id'], self.normalize_key(3))
         self.assertEqual(type(result['suppl_life_insurance_beneficiary']), list)
+        self.assertEqual(result['record_reason']['id'], self.normalize_key(1))
+        self.assertIsNone(result['record_reason_note'])
 
         beneficiaries = result['suppl_life_insurance_beneficiary']
         self.assertEqual(len(beneficiaries), 1)

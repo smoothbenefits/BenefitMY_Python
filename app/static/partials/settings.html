@@ -68,6 +68,21 @@
             </div><!-- / .form-holder -->
             <div class="form-holder" ng-show="isUpdatePersonalInfo">
                 <form name="form">
+                    <h2 class="sub-title">Reason for Change</h2>
+                    <ul class="list-group"><li class="list-group-item">
+                    <div class="form-label">Reason</div>
+                    <div class="textbox">
+                        <input type="text"
+                            name="reason"
+                            ng-model="person.reason_for_change"
+                            ng-required="true">
+                        <div class="form-validation-error" ng-show="form.reason.$invalid">
+                          <span ng-show="form.reason.$error.required">Reason field is required</span>
+                        </div>
+                    </div>
+                    </li></ul>
+
+                    <h2 class="sub-title">Personal Information</h2>
                     <ul class="list-group"><li class="list-group-item">
                     <div class="form-label">First Name</div>
                     <div class="textbox">
@@ -234,14 +249,18 @@
                         </div>
                     </li></ul>
 
-                    <div class="submit-box">
+                    <div class="submit-box col-md-4 col-md-offset-1">
                         <button ng-click="updateBasicInfo()" class="btn green" ng-disabled="form.$invalid">
                             Save
+                        </button>
+                    </div>
+                    <div class="col-md-4 col-md-offset-2">
+                        <button onclick="history.back()" class="btn green">
+                            Cancel
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     </div><!-- row -->
-    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
 </div><!-- / .content-body -->

@@ -17,6 +17,14 @@
 <div class="content-body">
     <div class="panel panel-default">
         <div class="panel-body">
+            <div>
+                <div>You have indicated that the reason for this modification is: <b>{{updateReason.selectedReason.name}}</b></div>
+                <div>Additional notes from you: <b>{{updateReason.notes}}</b></div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
             <tabset type="pills">
                 <tab ng-repeat="tab in tabs | orderBy:'id'" heading="{{tab.heading}}" active="tab.active" select="go_to_state(tab.state)"/>
             </tabset>

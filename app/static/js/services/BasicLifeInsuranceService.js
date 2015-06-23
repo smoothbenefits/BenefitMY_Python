@@ -257,7 +257,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
       getBasicLifeInsuranceEnrollmentByUser: getBasicLifeInsuranceEnrollmentByUser,
 
-      saveBasicLifeInsurancePlanForUser: function(basicLifeToSave, successCallBack, errorCallBack) {
+      saveBasicLifeInsurancePlanForUser: function(basicLifeToSave, updateReason, successCallBack, errorCallBack) {
         var userId = basicLifeToSave.currentUserId;
         PersonService.getSelfPersonInfo(userId)
         .then(function(mainPlanPerson){
@@ -268,7 +268,9 @@ benefitmyService.factory('BasicLifeInsuranceService',
             "person": mainPlanPerson.id,
             "company_life_insurance": basicLifeToSave.companyLifeInsurancePlan.id,
             "life_insurance_beneficiary": [],
-            "insurance_amount": basicLifeToSave.insurance_amount
+            "insurance_amount": basicLifeToSave.insurance_amount,
+            "record_reason_note": updateReason.notes,
+            "record_reason": updateReason.selectedReason.id
           };
 
           // Map beneficiary to according tiers

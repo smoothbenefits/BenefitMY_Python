@@ -5,6 +5,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    '$location',
    '$state', 
    '$stateParams',
+   '$modal',
    'clientListRepository',
    'employeeBenefits',
    'UserService',
@@ -25,6 +26,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             $location,
             $state,
             $stateParams,
+            $modal,
             clientListRepository,
             employeeBenefits,
             UserService,
@@ -90,10 +92,12 @@ var employeeHome = employeeControllers.controller('employeeHome',
     });
 
     userPromise.then(function(userInfo){
-      DocumentService.getAllDocumentsForUser(userId).then(function(userDocs){
-        $scope.documents = userDocs;
-        $scope.documentCount = $scope.documents.length;
-      });
+      if(userInfo) {
+        DocumentService.getAllDocumentsForUser(userInfo.user.id).then(function(userDocs){
+            $scope.documents = userDocs;
+            $scope.documentCount = $scope.documents.length;
+        });
+      }
     });
      
      $scope.ViewDocument = function(documentId){
@@ -1423,13 +1427,20 @@ var healthBenefitsSignup = employeeControllers.controller(
 
             console.log(saveRequest);
 
+            // Compose the update reason and attach it to the requests
+            var updateReason = {
+                "record_reason_id": $scope.updateReason.selectedReason.id,
+                "record_reason_note": $scope.updateReason.notes  
+            };
+
+            saveRequest.waivedRequest.record_reason = updateReason;
             employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
             function(errorResponse){
               alert('Saving waived selection failed because: ' + errorResponse.data);
               $scope.savedSuccess = false;
             });
           
-
+            saveRequest.record_reason = updateReason;
             employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
               $scope.showSaveSuccessModal();
               $scope.myForm.$setPristine();
@@ -1507,15 +1518,16 @@ var fsaBenefitsSignup = employeeControllers.controller(
             // If use case changes in the future, we need to update the employee signup flow.
             $scope.fsaPlan = fsaPlanForCompany[0];
           });
-        });
 
-        FsaService.getFsaElectionForUser(employeeId, function(response) {
-          $scope.fsaElection = response;
-          if (response.update_reason && response.update_reason.length > 0){
-            $scope.selectedFsaUpdateReason = _.findWhere($scope.fsaUpdateReasons, {text: response.update_reason});
-          } else{
-            $scope.selectedFsaUpdateReason = $scope.fsaUpdateReasons[0];
-          }
+          // Get current user selection
+          FsaService.getFsaElectionForUser(employeeId, companyId).then(function(response) {
+              $scope.fsaElection = response;
+              if (response.update_reason && response.update_reason.length > 0){
+                $scope.selectedFsaUpdateReason = _.findWhere($scope.fsaUpdateReasons, {text: response.update_reason});
+              } else{
+                $scope.selectedFsaUpdateReason = $scope.fsaUpdateReasons[0];
+              }
+            });
         });
 
         // Whether the user has selected a reason for updating 
@@ -1539,7 +1551,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
           if ($scope.isFsaUpdateReasonSelected()){
             $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
             $scope.fsaElection.company_fsa_plan = $scope.fsaPlan.companyPlanId;
-            FsaService.saveFsaElection($scope.fsaElection
+            FsaService.saveFsaElection($scope.fsaElection, $scope.updateReason
               , function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
@@ -1671,7 +1683,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               
               $scope.basicLifeInsurancePlan.currentUserId = employeeId;
 
-              BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan
+              BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, $scope.updateReason
               , function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
@@ -1942,7 +1954,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             $scope.supplementalLifeInsurancePlan.spousePremiumPerMonth = $scope.computeSpousePremium();
             $scope.supplementalLifeInsurancePlan.childPremiumPerMonth = $scope.computeChildPremium();
 
-            SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan).then (
+            SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
               function() {
                 $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
@@ -2012,9 +2024,10 @@ var stdBenefitsSignup = employeeControllers.controller(
         });
 
         $scope.save = function() {
+
             // Save std
             var savePromise = $scope.enrollBenefits ? 
-                StdService.enrollStdPlanForUser(employeeId, $scope.companyStdPlan) :
+                StdService.enrollStdPlanForUser(employeeId, $scope.companyStdPlan, $scope.updateReason) :
                 StdService.deleteStdPlansForUser(employeeId);
 
             savePromise.then(
@@ -2087,7 +2100,7 @@ var ltdBenefitsSignup = employeeControllers.controller(
         $scope.save = function() {
             // Save ltd
             var savePromise = $scope.enrollBenefits ? 
-                LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan) :
+                LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan, $scope.updateReason) :
                 LtdService.deleteLtdPlansForUser(employeeId);
 
             savePromise.then(
@@ -2153,7 +2166,7 @@ var hraBenefitsSignup = employeeControllers.controller(
             // Save plan selection
             $scope.personPlan.companyPlanId = $scope.companyPlan.companyPlanId;
             var savePromise = $scope.enrollBenefits ? 
-                HraService.savePersonPlan($scope.personPlan) :
+                HraService.savePersonPlan($scope.personPlan, $scope.updateReason) :
                 HraService.deletePlansForUser(employeeId);
 
             savePromise.then(
@@ -2194,6 +2207,14 @@ var benefitsSignupControllerBase = employeeControllers.controller(
       clientListRepository){
         
         $scope.employeeId = $stateParams.employee_id;
+
+        // If no reason specified, bounce back to the summary page
+        if (!$stateParams.updateReason) {
+            alert('A reason for modifying benefit selection must be selected. Please try again from the "Modify Benefits" button.');
+            $state.go('/employee');
+        }
+
+        $scope.updateReason = $stateParams.updateReason;
 
         $scope.companyIdPromise =  clientListRepository.get({userId:$scope.employeeId})
           .$promise.then(function(response){

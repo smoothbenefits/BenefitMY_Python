@@ -97,6 +97,8 @@ var userController = userControllers.controller('userController',
   ['$scope', 
    '$http', 
    '$location', 
+   '$modal',
+   '$state',
    'UserService',
    'userLogOut', 
    'CompanyEmployeeSummaryService',
@@ -105,6 +107,8 @@ var userController = userControllers.controller('userController',
   function userController($scope, 
                           $http, 
                           $location, 
+                          $modal,
+                          $state,
                           UserService,
                           userLogOut, 
                           CompanyEmployeeSummaryService,
@@ -226,7 +230,53 @@ var userController = userControllers.controller('userController',
     $scope.gotoSettings = function(){
       $location.path('/settings');
     };
+
+    $scope.startModifyBenefit = function() {
+        // Show a modal dialog to take in the reason
+        var curRole = $scope.getCurRoleFromPath();
+        if(curRole)
+        {
+            var id = getIdByRole(curRole);
+            var modalInstance = $modal.open({
+                templateUrl: '/static/partials/benefit_selection/modal_pre_benefit_selection.html',
+                controller: 'preBenefitSelectionModalController',
+                size: 'md',
+                backdrop: 'static'
+              });
+
+            modalInstance.result.then(function(reason){
+                // Now proceed to the modify benefit view
+                $state.go('employee_benefit_signup', 
+                    { employee_id: id, 
+                      updateReason: reason });
+            });
+        }
+    };
 }]);
+
+var preBenefitSelectionModalController = userControllers.controller('preBenefitSelectionModalController',
+  ['$scope',
+   '$modalInstance',
+   'BenefitUpdateReasonService',
+    function($scope,
+             $modalInstance,
+             BenefitUpdateReasonService) {
+
+        $scope.reason = {};
+        
+        BenefitUpdateReasonService.getAllReasons().then(function(reasons) {
+            $scope.reasons = reasons;
+        });
+
+        $scope.cancel = function() {
+            $modalInstance.dismiss('cancelByUser');
+        };
+
+        $scope.proceed = function() {
+            $modalInstance.close($scope.reason);
+        };
+    }
+  ]);
 
 var settingsController = userControllers.controller('settingsController', ['$scope',
    '$location',

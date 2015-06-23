@@ -6,7 +6,7 @@ from view_test_base import ViewTestBase
 class PersonCompanyHraPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['46_hra_plan', '47_company_hra_plan', '48_person_company_hra_plan', '10_company',
-     '24_person', '23_auth_user',]
+     '24_person', '23_auth_user', 'sys_benefit_update_reason']
 
     def test_get_person_company_hra_plan_by_person(self):
         response = self.client.get(reverse('person_company_hra_plan_by_person_api',
@@ -53,7 +53,9 @@ class PersonCompanyHraPlanTestCase(TestCase, ViewTestBase):
     def test_put_person_company_hra_plan(self):
         put_data = {
           "company_hra_plan": self.normalize_key(2),
-          "person": self.normalize_key(3)}
+          "person": self.normalize_key(3),
+          "record_reason": self.normalize_key(1),
+          "record_reason_note": "Test Note"}
         response = self.client.put(reverse('person_company_hra_plan_api',
                                             kwargs={'pk': self.normalize_key(1)}),
                                             data=json.dumps(put_data),
@@ -70,11 +72,14 @@ class PersonCompanyHraPlanTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertEqual(type(result), dict)
         self.assertEqual(result['company_hra_plan']['id'], self.normalize_key(2))
+        self.assertEqual(result['record_reason']['id'], self.normalize_key(1))
+        self.assertEqual(result['record_reason_note'], 'Test Note')
 
     def test_post_person_company_hra_plan(self):
         post_data = {
           "company_hra_plan": 2,
-          "person": 3
+          "person": 3,
+          "record_reason": self.normalize_key(1)
         }
 
         response = self.client.post(reverse('person_company_hra_plan_api',
@@ -102,3 +107,5 @@ class PersonCompanyHraPlanTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(result['person'], self.normalize_key(3))
         self.assertEqual(result['company_hra_plan']['id'], self.normalize_key(2))
+        self.assertEqual(result['record_reason']['id'], self.normalize_key(1))
+        self.assertIsNone(result['record_reason_note'])

@@ -4,6 +4,7 @@ from datetime import datetime
 from django.db import models
 from app.custom_authentication import AuthUser
 from company_fsa_plan import CompanyFsaPlan
+from ..sys_benefit_update_reason import SysBenefitUpdateReason
 
 @reversion.register
 class FSA(models.Model):
@@ -18,5 +19,13 @@ class FSA(models.Model):
     user = models.ForeignKey(AuthUser, related_name="fsa_user")
     company_fsa_plan = models.ForeignKey(CompanyFsaPlan, related_name="fsa_company_fsa_plan", null=True)
     update_reason = models.CharField(max_length=1024, blank=True, null=True)
+
+    record_reason = models.ForeignKey(
+        SysBenefitUpdateReason, 
+        blank=True,
+        null=True,
+        related_name="fsa_update_reason")
+    record_reason_note = models.CharField(max_length=512, blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True, default=datetime.now)
     updated_at = models.DateTimeField(auto_now=True, default=datetime.now)
