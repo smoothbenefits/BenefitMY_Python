@@ -1433,6 +1433,10 @@ var healthBenefitsSignup = employeeControllers.controller(
                 "record_reason_note": $scope.updateReason.notes  
             };
 
+            if (!$scope.updateReason.notes) {
+              updateReason.record_reason_note = '';
+            }
+
             saveRequest.waivedRequest.record_reason = updateReason;
             employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
             function(errorResponse){
