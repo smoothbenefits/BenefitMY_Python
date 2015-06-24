@@ -33,7 +33,6 @@ class CompanyBenefitPlanOptionTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('company_benefit_post_api'), 
                                     data=json.dumps(benefit_data),
                                     content_type='application/json')
-        print response
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
 
