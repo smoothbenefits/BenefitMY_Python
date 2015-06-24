@@ -337,7 +337,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
     def _write_employee(self, employee_user_id, excelSheet, row_num):
         start_column_num = 0
-        start_column_num = self._write_employee_personal_info(employee_user_id, True, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_personal_info(employee_user_id, True, True, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_all_health_benefits_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_std_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_ltd_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
@@ -348,7 +348,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         start_column_num = self._write_all_dependents_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
         return
 
-    def _write_employee_personal_info(self, employee_user_id, include_spouse_info, excelSheet, row_num, start_column_num):
+    def _write_employee_personal_info(self, employee_user_id, include_spouse_info, write_pcp, excelSheet, row_num, start_column_num):
         cur_column_num = start_column_num
 
         person = None
@@ -359,7 +359,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         # All helpers are built with capability of skiping proper number of columns when
         # person given is None. This is to ensure other information written after these
         # would be written to the right columns
-        cur_column_num = self._write_person_basic_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
+        cur_column_num = self._write_person_basic_info(person, write_pcp, excelSheet, row_num, cur_column_num, employee_user_id)
         cur_column_num = self._write_person_email_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
 
         # Write out phone number info
@@ -375,7 +375,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
         return cur_column_num
 
-    def _write_person_basic_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
+    def _write_person_basic_info(self, person_model, write_pcp, excelSheet, row_num, col_num, employee_user_id = None):
         if (person_model):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.first_name)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.middle_name)
@@ -406,7 +406,8 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         # Also output the person's medical PCP number info
         # for now, it is decided that the number stick with the person's
         # information section
-        col_num = self._write_person_PCP_number(person_model, excelSheet, row_num, col_num)
+        if (write_pcp):
+            col_num = self._write_person_PCP_number(person_model, excelSheet, row_num, col_num)
         
         return col_num
 
@@ -491,7 +492,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         return col_num
 
     def _write_family_member_personal_info(self, family_person_model, excelSheet, row_num, col_num):
-        col_num = self._write_person_basic_info(family_person_model, excelSheet, row_num, col_num)
+        col_num = self._write_person_basic_info(family_person_model, True, excelSheet, row_num, col_num)
 
         if (family_person_model):
             col_num = self._write_field(excelSheet, row_num, col_num, family_person_model.relationship)
@@ -525,7 +526,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             return col_num
 
         # Skip the columns if no matching benefit
-        return col_num + 3
+        return col_num + 6
 
     def _write_employee_std_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
         employee_plans = UserCompanyStdInsurancePlan.objects.filter(user=employee_user_id)
@@ -711,7 +712,7 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersSummaryExc
 
     def _write_employee(self, employee_user_id, excelSheet, row_num):
         start_column_num = 0
-        start_column_num = self._write_employee_personal_info(employee_user_id, False, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_personal_info(employee_user_id, False, False, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_basic_life_insurance_beneficiary_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_supplemental_life_insurance_beneficiary_info(employee_user_id, excelSheet, row_num, start_column_num)
         return

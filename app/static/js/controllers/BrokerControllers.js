@@ -1044,8 +1044,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             return;
           }
         }
-        benefitPlanRepository.group.save(objArray[index], function(addedBenefit){
-          $scope.addedBenefit = addedBenefit;
+        benefitPlanRepository.options.save(objArray[index], function(addedBenefit){
           saveBenefitOptionPlan(objArray, index+1, completed, error);
         }, function(errorResponse){
           if(error){
@@ -1065,7 +1064,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
           return;
         }
 
-        benefitDetailsRepository.save({planId:$scope.addedBenefit.benefits.benefit_plan.id}, objArray[index],
+        benefitDetailsRepository.save({planId:$scope.addedBenefitPlan.id}, objArray[index],
           function(success){
             saveToBackendSequential(objArray, index+1);
           }, function(error){
@@ -1098,51 +1097,58 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         }
         else{
           //save to data store
-          var requestList = [];
-          _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
-            if(!optionTypeItem.disabled){
-              requestList.push({
-                company: clientId,
-                benefit: {
-                  benefit_type: $scope.benefit.benefit_type,
-                  benefit_name: $scope.benefit.benefit_name,
-                  mandatory_pcp: $scope.benefit.mandatory_pcp,
-                  pcp_link: $scope.benefit.pcp_link,
-                  benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
-                  total_cost_per_period: optionTypeItem.total_cost_per_period,
-                  employee_cost_per_period: optionTypeItem.employee_cost_per_period
-                }
-              });
-            }
-          });
-
-        //save the request list to the backend.
-          saveBenefitOptionPlan(requestList, 0, function(){
-            var apiObjectArray = [];
-            _.each($scope.benefitDetailArray, function(benefitTypeContent){
-              _.each(benefitTypeContent.policy_array, function(optionPair){
-                var apiObject = {
-                    value: optionPair.policy_value,
-                    key: optionPair.policy_key,
-                    type: benefitTypeContent.policy_type,
-                    benefit_plan_id: $scope.addedBenefit.benefits.benefit_plan.id};
-                apiObjectArray.push(apiObject);
-              });
+          //first save the new benefit plan
+          var new_benefit_plan = {
+            benefit_type: $scope.benefit.benefit_type,
+            benefit_name: $scope.benefit.benefit_name,
+            mandatory_pcp: $scope.benefit.mandatory_pcp,
+            pcp_link: $scope.benefit.pcp_link,
+          };
+          benefitPlanRepository.benefit.save(new_benefit_plan, function(addedBenefitPlan){
+            $scope.addedBenefitPlan = addedBenefitPlan.benefit;
+            var requestList = [];
+            _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
+              if(!optionTypeItem.disabled){
+                requestList.push({
+                  company: clientId,
+                  benefit: {
+                    benefit_plan_id: $scope.addedBenefitPlan.id,
+                    benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
+                    total_cost_per_period: optionTypeItem.total_cost_per_period,
+                    employee_cost_per_period: optionTypeItem.employee_cost_per_period
+                  }
+                });
+              }
             });
 
-            saveToBackendSequential(apiObjectArray, 0);
+          //save the request list to the backend.
+            saveBenefitOptionPlan(requestList, 0, function(){
+              var apiObjectArray = [];
+              _.each($scope.benefitDetailArray, function(benefitTypeContent){
+                _.each(benefitTypeContent.policy_array, function(optionPair){
+                  var apiObject = {
+                      value: optionPair.policy_value,
+                      key: optionPair.policy_key,
+                      type: benefitTypeContent.policy_type,
+                      benefit_plan_id: $scope.addedBenefitPlan.id};
+                  apiObjectArray.push(apiObject);
+                });
+              });
 
-            var successMessage = "Your health insurance has been saved. ";
+              saveToBackendSequential(apiObjectArray, 0);
 
-            $scope.showMessageWithOkayOnly('Success', successMessage);
-          },
-          function(response){
-            //Error condition,
-            var errorDetail = '';
-            if(response && response.data){
-              errorDetail = JSON.stringify(response.data);
-            }
-            alert('Error while saving Benefits! Details: ' + errorDetail);
+              var successMessage = "Your health insurance has been saved. ";
+
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            },
+            function(response){
+              //Error condition,
+              var errorDetail = '';
+              if(response && response.data){
+                errorDetail = JSON.stringify(response.data);
+              }
+              alert('Error while saving Benefits! Details: ' + errorDetail);
+            });
           });
         }
       };
