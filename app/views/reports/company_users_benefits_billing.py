@@ -75,7 +75,7 @@ class CompanyUsersBenefitsBillingExcelExportView(ExcelExportViewBase):
 
     def _write_employee(self, employee_user_id, excelSheet, row_num):
         start_column_num = 0
-        start_column_num = self._write_employee_personal_info(employee_user_id,  excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_std_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_ltd_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_basic_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
