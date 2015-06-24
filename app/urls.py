@@ -29,11 +29,13 @@ from app.views.template_view import (
     TemplateFieldView,
     templates)
 
+from app.views.benefit_plan_view import(BenefitPlanView,
+                                        BenefitPlanCreationView)
+
 from app.views.company_benefit_plan_option_view import (
     CompanyBenefitPlanOptionView,
     CompanyBenefitPlansView,
-    benefits
-    )
+    create_benefit_plan_option)
 from app.views.document_view import (
     CompanyUserTypeDocumentView,
     CompanyUserDocumentView,
@@ -162,7 +164,8 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/templates/(?P<pk>\w+)/?$' % PREFIX, TemplateView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/template_fields/?$' % PREFIX, TemplateFieldView.as_view()),
-    url(r'^%s/benefits/(?P<pk>\w+)/?$' % PREFIX, CompanyBenefitPlanOptionView.as_view(), name='benefit_plan_api'),
+    url(r'^%s/benefits/(?P<pk>\w+)/?$' % PREFIX, BenefitPlanView.as_view(), name='benefit_plan_api'),
+    url(r'^%s/benefit_options/?$' % PREFIX, create_benefit_plan_option, name='company_benefit_post_api'),
     url(r'^%s/benefit_details/plan=(?P<pk>\w+)/?$' % PREFIX, BenefitDetailsView.as_view()),
 
     url(r'^%s/benefit_details/(?P<pk>\w+)/?$' % PREFIX, delete_benefit_details),
@@ -194,7 +197,7 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
     url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
-    url(r'^%s/benefits/?$' % PREFIX, benefits, name='company_benefit_post_api'),
+    url(r'^%s/benefits/?$' % PREFIX, BenefitPlanCreationView.as_view(), name='benefit_post_api'),
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),

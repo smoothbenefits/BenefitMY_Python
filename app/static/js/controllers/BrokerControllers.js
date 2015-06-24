@@ -1044,7 +1044,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             return;
           }
         }
-        benefitPlanRepository.group.save(objArray[index], function(addedBenefit){
+        benefitPlanRepository.options.save(objArray[index], function(addedBenefit){
           $scope.addedBenefit = addedBenefit;
           saveBenefitOptionPlan(objArray, index+1, completed, error);
         }, function(errorResponse){

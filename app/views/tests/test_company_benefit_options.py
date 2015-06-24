@@ -21,39 +21,19 @@ class CompanyBenefitPlanOptionTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result['benefits']), list)
         self.assertTrue(len(result['benefits']) > 0)
 
-    def test_delete_company_benefit_plan(self):
-        response = self.client.get(reverse('benefit_plan_api',
-                                           kwargs={'pk': self.normalize_key(1)}))
-        self.assertIsNotNone(response)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.delete(reverse('benefit_plan_api', 
-                                              kwargs={'pk': self.normalize_key(1)}))
-
-        self.assertIsNotNone(response)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get(reverse('benefit_plan_api',
-                                           kwargs={'pk': self.normalize_key(1)}))
-        self.assertIsNotNone(response)
-        self.assertEqual(response.status_code, 404)
-        result = json.loads(response.content)
-        self.assertEqual(result['detail'], 'Not found')
 
     def test_post_company_benefit_plan_option(self):
         benefit_data = {"company": self.normalize_key(1),
                         "benefit": {
-                            "benefit_type": "Medical",
-                            "benefit_name": "Test",
-                            "benefit_option_type": "individual",
+                            "benefit_option_type": "individual_plus_one",
                             "total_cost_per_period": 100.00,
                             "employee_cost_per_period": 50.00,
-                            "mandatory_pcp": True
+                            "benefit_plan_id": self.normalize_key(1),
                         }}
         response = self.client.post(reverse('company_benefit_post_api'), 
                                     data=json.dumps(benefit_data),
                                     content_type='application/json')
-        
+        print response
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
 
