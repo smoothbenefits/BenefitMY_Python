@@ -75,7 +75,7 @@ benefitmyDomainModelFactories.factory('benefitPlanRepository', [
     function($resource){
         return {
           benefit:$resource('/api/v1/benefits/', {}),
-          options:$resource('/api/v1/benefit_options', {})
+          options:$resource('/api/v1/benefit_options', {}),
           individual:$resource('/api/v1/benefits/:id', {id:'@id'})
         }
     }]);
