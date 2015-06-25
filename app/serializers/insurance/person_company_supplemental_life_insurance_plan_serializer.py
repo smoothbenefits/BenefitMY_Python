@@ -11,6 +11,7 @@ from supplemental_life_insurance_beneficiary_serializer import (
 from company_supplemental_life_insurance_plan_serializer import (
     CompanySupplementalLifeInsurancePlanSerializer,
     CompanySupplementalLifeInsurancePlanPostSerializer)
+from ..sys_benefit_update_reason_serializer import SysBenefitUpdateReasonSerializer
 
 
 class PersonCompanySupplementalLifeInsurancePlanSerializer(HashPkSerializerBase):
@@ -19,6 +20,7 @@ class PersonCompanySupplementalLifeInsurancePlanSerializer(HashPkSerializerBase)
     self_condition = SysSupplLifeInsuranceConditionSerializer()
     spouse_condition = SysSupplLifeInsuranceConditionSerializer()
     person = HashField(source="person.id")
+    record_reason = SysBenefitUpdateReasonSerializer()
 
     class Meta:
         model = PersonCompSupplLifeInsurancePlan

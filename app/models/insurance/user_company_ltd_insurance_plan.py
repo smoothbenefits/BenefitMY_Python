@@ -3,6 +3,7 @@ import reversion
 from django.db import models
 from app.custom_authentication import AuthUser
 from company_ltd_insurance_plan import CompanyLtdInsurancePlan
+from ..sys_benefit_update_reason import SysBenefitUpdateReason
 
 @reversion.register
 class UserCompanyLtdInsurancePlan(models.Model):
@@ -18,6 +19,13 @@ class UserCompanyLtdInsurancePlan(models.Model):
                                                    blank=True, 
                                                    null=True)
 
+    record_reason = models.ForeignKey(
+        SysBenefitUpdateReason, 
+        blank=True,
+        null=True,
+        related_name="ltd_update_reason")
+    record_reason_note = models.CharField(max_length=512, blank=True, null=True)
+    
     created_at = models.DateTimeField(auto_now_add=True,
                                       blank=True,
                                       null=True)

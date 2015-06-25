@@ -83,29 +83,34 @@ benefitmyService.factory('LtdService',
 
             domainModel.company_ltd_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
+            domainModel.record_reason_note = userCompanyPlanViewModel.updateReason.notes;
+            domainModel.record_reason = userCompanyPlanViewModel.updateReason.selectedReason.id;
+
             return domainModel;
+        };
+
+        var getLtdPlansForCompany = function(companyId) {
+            var deferred = $q.defer();
+
+            LtdRepository.CompanyPlanByCompany.query({companyId:companyId})
+            .$promise.then(function(plans) {
+                var planViewModels = [];
+                _.each(plans, function(companyPlan) {
+                    planViewModels.push(mapCompanyPlanDomainToViewModel(companyPlan));
+                });
+                deferred.resolve(planViewModels);
+            },
+            function(error){
+                deferred.reject(error);
+            });
+
+            return deferred.promise;
         };
 
         return {
             paidByParties: ['Employee', 'Employer'],
             
-            getLtdPlansForCompany: function(companyId) {
-                var deferred = $q.defer();
-
-                LtdRepository.CompanyPlanByCompany.query({companyId:companyId})
-                .$promise.then(function(plans) {
-                    var planViewModels = [];
-                    _.each(plans, function(companyPlan) {
-                        planViewModels.push(mapCompanyPlanDomainToViewModel(companyPlan));
-                    });
-                    deferred.resolve(planViewModels);
-                },
-                function(error){
-                    deferred.reject(error);
-                });
-
-                return deferred.promise;
-            },
+            getLtdPlansForCompany: getLtdPlansForCompany,
 
             getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan) {
                 var deferred = $q.defer();
@@ -210,7 +215,7 @@ benefitmyService.factory('LtdService',
                 return $q.all(requests);
             },
 
-            enrollLtdPlanForUser: function(userId, companyLtdPlanToEnroll) {
+            enrollLtdPlanForUser: function(userId, companyLtdPlanToEnroll, updateReason) {
                 // This should be take care of 2 cases
                 // - user does not have a plan. Create one for him/her
                 // - user already has a plan. Update
@@ -218,6 +223,7 @@ benefitmyService.factory('LtdService',
 
                 var userPlan = companyLtdPlanToEnroll;
                 userPlan.planOwner = userId;
+                userPlan.updateReason = updateReason;
 
                 var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyLtdPlanToEnroll);
                 planDomainModel.company_ltd_insurance = planDomainModel.company_ltd_insurance.id;
@@ -250,20 +256,26 @@ benefitmyService.factory('LtdService',
                 return deferred.promise; 
             },
 
-            getUserEnrolledLtdPlanByUser: function(userId) {
+            getUserEnrolledLtdPlanByUser: function(userId, company) {
                 var deferred = $q.defer();
+                getLtdPlansForCompany(company).then(function(plans){
+                    if(!plans || plans.length <= 0){
+                        deferred.resolve(undefined);
+                    }
+                    else{
+                        LtdRepository.CompanyUserPlanByUser.query({userId:userId})
+                        .$promise.then(function(plans) {
 
-                LtdRepository.CompanyUserPlanByUser.query({userId:userId})
-                .$promise.then(function(plans) {
+                            var plan = plans.length > 0 ? 
+                                mapUserCompanyPlanDomainToViewModel(plans[0]) :
+                                null;
 
-                    var plan = plans.length > 0 ? 
-                        mapUserCompanyPlanDomainToViewModel(plans[0]) :
-                        null;
-
-                    deferred.resolve(plan);
-                },
-                function(error){
-                    deferred.reject(error);
+                            deferred.resolve(plan);
+                        },
+                        function(error){
+                            deferred.reject(error);
+                        });
+                    }
                 });
                 
                 return deferred.promise; 

@@ -225,12 +225,14 @@ PIPELINE_JS = {
             'js/services/employeeBenefitElectionService.js',
             'js/services/EmployeePreDashboardValidationService.js',
             'js/services/BenefitElectionService.js',
+            'js/services/CompanyFeatureService.js', 
             'js/services/CompanyEmployeeSummaryService.js',
             'js/services/DirectDepositService.js',
             'js/services/EmployeeLetterSignatureValidationService.js',
             'js/services/FsaService.js',
             'js/services/BasicLifeInsuranceService.js',
             'js/services/benefitDisplayService.js',
+            'js/services/BrowserDetectionService.js', 
             'js/services/documentTypeService.js',
             'js/services/PersonService.js',
             'js/services/UserService.js',
@@ -246,7 +248,9 @@ PIPELINE_JS = {
             'js/services/BrowserDetectionService.js',
             'js/services/SupplementalLifeInsuranceService.js',
             'js/services/SupplementalLifeInsuranceConditionService.js',
-            'js/services/HraService.js'
+            'js/services/HraService.js',
+            'js/services/DocumentService.js',
+            'js/services/BenefitUpdateReasonService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

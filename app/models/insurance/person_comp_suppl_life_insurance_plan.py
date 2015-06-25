@@ -4,6 +4,7 @@ from django.db import models
 from ..person import Person
 from ..sys_suppl_life_insurance_condition import SysSupplLifeInsuranceCondition
 from comp_suppl_life_insurance_plan import CompSupplLifeInsurancePlan
+from ..sys_benefit_update_reason import SysBenefitUpdateReason
 
 @reversion.register
 class PersonCompSupplLifeInsurancePlan(models.Model):
@@ -56,6 +57,13 @@ class PersonCompSupplLifeInsurancePlan(models.Model):
                                          related_name="person_comp_suppl_life_insurance_plan_spouse", 
                                          blank=True, 
                                          null=True)
+
+    record_reason = models.ForeignKey(
+        SysBenefitUpdateReason, 
+        blank=True,
+        null=True,
+        related_name="suppl_life_update_reason")
+    record_reason_note = models.CharField(max_length=512, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

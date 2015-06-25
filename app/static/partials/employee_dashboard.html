@@ -5,7 +5,7 @@
 <div class="content-header">
     <h1>My Benefits</h1>
     <span class="general-info">You have total <b>{{benefitCount}}</b> benefits</span>
-    <div class="cta"><a href="#/employee/benefits/{{employee_id}}" class="btn green" >Modify Benefits</a></div>
+    <div class="cta"><a ng-click="startModifyBenefit()" class="btn green" >Modify Benefits</a></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
@@ -71,7 +71,7 @@
     </div>
 
     <!-- HRA summary table -->
-    <div class="table-responsive table-holder table">
+    <div class="table-responsive table-holder table" ng-if="hraPlan !== undefined">
         <div class="table-sub-title">Health Reimbursement Accounts (HRA)</div>
         <table class="table table-striped" ng-show="!hraPlan">
             <tbody>
@@ -99,7 +99,7 @@
     </div>
 
     <!-- Basic life insurance summary table -->
-    <div class="table-responsive table-holder table">
+    <div class="table-responsive table-holder table" ng-if="basicLifeInsurancePlan !== undefined">
         <div class="table-sub-title">Basic Life Insurance</div>
         <table class="table table-striped" ng-show="!basicLifeInsurancePlan.enrolled">
             <tbody>
@@ -131,7 +131,7 @@
     </div>
     
     <!-- Supplemental life insurance summary table -->
-    <div class="table-responsive table-holder table" ng-show="supplementalLifeInsuranceEnabled">
+    <div class="table-responsive table-holder table" ng-show="supplementalLifeInsurancePlan !== undefined">
         <div class="table-sub-title"> 
             Supplemental Life Insurance
         </div>
@@ -189,7 +189,7 @@
     </div>
 
     <!-- STD summary table -->
-    <div class="table-responsive table-holder table">
+    <div class="table-responsive table-holder table" ng-if="userLtdPlan !== undefined">
         <div class="table-sub-title">Short Term Disability Benefits</div>
         <table class="table table-striped" ng-show="!userStdPlan">
             <tbody>
@@ -227,7 +227,7 @@
     </div>
 
     <!-- LTD summary table -->
-    <div class="table-responsive table-holder table">
+    <div class="table-responsive table-holder table" ng-if="userLtdPlan !== undefined">
         <div class="table-sub-title">Long Term Disability Benefits</div>
         <table class="table table-striped" ng-show="!userLtdPlan">
             <tbody>
@@ -265,7 +265,7 @@
     </div>
 
     <!-- FSA summary table -->
-    <div class="table-responsive table-holder table">
+    <div class="table-responsive table-holder table" ng-if="fsaElection !== undefined">
         <div class="table-sub-title">Flexible Spending Account</div>
         <table class="table table-striped" ng-hide="fsaElection.enrolled">
             <tbody>
@@ -299,7 +299,7 @@
     </div>
 </div><!-- / .content-body -->
 
-<div ng-if="false">
+<div ng-hide="disabledFeatures.W4 && disabledFeatures.DD">
     <div class="content-header">
         <h1>My Payroll</h1>
         <span class="general-info">View/edit your payroll information here</span>
@@ -307,7 +307,7 @@
     </div><!-- / .content-header -->
 
     <div class="content-body">
-        <div class="table-responsive table-holder table" ng-if="false">
+        <div class="table-responsive table-holder table" ng-hide="disabledFeatures.W4">
             <div class="table-sub-title">W4 Form</div>
             <table class="table table-striped" ng-show="w4Info">
                 <thead>
@@ -338,7 +338,7 @@
                 </tbody>    
             </table>
         </div>
-        <div class="table-responsive table-holder table" ng-if="false">
+        <div class="table-responsive table-holder table" ng-hide="disabledFeatures.DD">
             <div class="table-sub-title">Direct Deposit</div>
             <table class="table table-striped" ng-show="directDepositAccounts.length != 0">
                 <thead>
@@ -410,7 +410,7 @@
     <bmuploadviewer view-title="My Current Uploads"></bmuploadviewer>
 </div>
 
-<div ng-if="false">
+<div ng-hide="disabledFeatures.I9">
     <div class="content-header">
         <h1>My Profile</h1>
         <span class="general-info">View/edit your information here</span>
@@ -418,7 +418,7 @@
     </div><!-- / .content-header -->
 
     <div class="content-body">
-        <div class="table-responsive table-holder table" ng-if="false">
+        <div class="table-responsive table-holder table" ng-hide="disabledFeatures.I9">
             <div class="table-sub-title">Employment Authorization (I-9)</div>
             <table class="table table-striped" ng-show="i9Info">
                 <thead>

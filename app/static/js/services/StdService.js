@@ -80,31 +80,36 @@ benefitmyService.factory('StdService',
             domainModel.total_premium_per_period = userCompanyPlanViewModel.employeePremium;
 
             domainModel.company_std_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
+            
+            domainModel.record_reason_note = userCompanyPlanViewModel.updateReason.notes;
+            domainModel.record_reason = userCompanyPlanViewModel.updateReason.selectedReason.id;
 
             return domainModel;
+        };
+
+        var getStdPlansForCompany = function(companyId) {
+            var deferred = $q.defer();
+
+            StdRepository.CompanyPlanByCompany.query({companyId:companyId})
+            .$promise.then(function(plans) {
+                var planViewModels = [];
+                _.each(plans, function(companyPlan) {
+                    planViewModels.push(mapCompanyPlanDomainToViewModel(companyPlan));
+                });
+                deferred.resolve(planViewModels);
+            },
+            function(error){
+                deferred.reject(error);
+            });
+
+            return deferred.promise;
         };
 
         return {
             
             paidByParties: ['Employee', 'Employer'],
 
-            getStdPlansForCompany: function(companyId) {
-                var deferred = $q.defer();
-
-                StdRepository.CompanyPlanByCompany.query({companyId:companyId})
-                .$promise.then(function(plans) {
-                    var planViewModels = [];
-                    _.each(plans, function(companyPlan) {
-                        planViewModels.push(mapCompanyPlanDomainToViewModel(companyPlan));
-                    });
-                    deferred.resolve(planViewModels);
-                },
-                function(error){
-                    deferred.reject(error);
-                });
-
-                return deferred.promise;
-            },
+            getStdPlansForCompany: getStdPlansForCompany,
 
             getEmployeePremiumForUserCompanyStdPlan: function(userId, stdPlan) {
                 var deferred = $q.defer();
@@ -209,7 +214,7 @@ benefitmyService.factory('StdService',
                 return $q.all(requests);
             },
 
-            enrollStdPlanForUser: function(userId, companyStdPlanToEnroll) {
+            enrollStdPlanForUser: function(userId, companyStdPlanToEnroll, updateReason) {
                 // This should be take care of 2 cases
                 // - user does not have a plan. Create one for him/her
                 // - user already has a plan. Update
@@ -217,6 +222,7 @@ benefitmyService.factory('StdService',
 
                 var userPlan = companyStdPlanToEnroll;
                 userPlan.planOwner = userId;
+                userPlan.updateReason = updateReason;
 
                 var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll);
                 planDomainModel.company_std_insurance = planDomainModel.company_std_insurance.id;
@@ -249,20 +255,27 @@ benefitmyService.factory('StdService',
                 return deferred.promise; 
             },
 
-            getUserEnrolledStdPlanByUser: function(userId) {
+            getUserEnrolledStdPlanByUser: function(userId, company) {
                 var deferred = $q.defer();
 
-                StdRepository.CompanyUserPlanByUser.query({userId:userId})
-                .$promise.then(function(plans) {
+                getStdPlansForCompany(company).then(function(plans){
+                    if(!plans || plans.length <= 0){
+                        deferred.resolve(undefined);
+                    }
+                    else{
+                        StdRepository.CompanyUserPlanByUser.query({userId:userId})
+                        .$promise.then(function(plans) {
 
-                    var plan = plans.length > 0 ? 
-                        mapUserCompanyPlanDomainToViewModel(plans[0]) :
-                        null;
+                            var plan = plans.length > 0 ? 
+                                mapUserCompanyPlanDomainToViewModel(plans[0]) :
+                                null;
 
-                    deferred.resolve(plan);
-                },
-                function(error){
-                    deferred.reject(error);
+                            deferred.resolve(plan);
+                        },
+                        function(error){
+                            deferred.reject(error);
+                        });
+                    }
                 });
                 
                 return deferred.promise; 

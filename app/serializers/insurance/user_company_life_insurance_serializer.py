@@ -10,12 +10,14 @@ from company_life_insurance_plan_serializer import CompanyLifeInsurancePlanSeria
 
 from ..hash_pk_serializer_base import HashPkSerializerBase
 from ..custom_fields.hash_field import HashField
+from ..sys_benefit_update_reason_serializer import SysBenefitUpdateReasonSerializer
 
 class UserCompanyLifeInsuranceSerializer(HashPkSerializerBase):
     life_insurance_beneficiary = LifeInsuranceBeneficiarySerializer(many=True)
     user = HashField(source="user.id")
     company_life_insurance = CompanyLifeInsurancePlanSerializer()
     person = HashField(source="person.id")
+    record_reason = SysBenefitUpdateReasonSerializer()
 
     class Meta:
         model = UserCompanyLifeInsurancePlan

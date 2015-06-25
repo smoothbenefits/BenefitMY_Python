@@ -62,7 +62,7 @@ BenefitMyApp.config(function ($provide) {
                 data: angular.toJson({ 
                     url: $window.location.href, 
                     message: errorMessage,
-                    browser: BrowserDetectionService.getBrowserBrand(), 
+                    browser: BrowserDetectionService.getCurrentBrowser(), 
                     type: "exception", 
                     stackTrace: stackTrace.join('\n\n')}) })
             .fail(function(jqXHR, textStatus, errorThrown) {
@@ -239,7 +239,8 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             state('employee_benefit_signup', {
                 url: '/employee/benefits/:employee_id',
                 templateUrl: '/static/partials/benefit_selection/main.html',
-                controller:'employeeBenefitsSignup'
+                controller:'employeeBenefitsSignup',
+                params: { updateReason: null }
             }).
             state('employee_benefit_signup.health', {
                 url: '/health_benefits',

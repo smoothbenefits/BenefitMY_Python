@@ -1,10 +1,6 @@
 <!DOCTYPE html>
-
-<!--[if IE 8]>         <html class="ie8"> <![endif]-->
-<!--[if IE 9]>         <html class="ie9 gt-ie8"> <![endif]-->
-<!--[if gt IE 9]><!-->
 {% load compressed %}
-<html class="gt-ie8 gt-ie9 not-ie"> <!--<![endif]-->
+<html class="gt-ie8 gt-ie9 not-ie">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
@@ -120,16 +116,16 @@
                     </div>
                     <div class="sub-nav collapse" id="employee-benefit-nav">
                         <a href="#/employee">View Benefits</a>
-                        <a ng-click="goToFunctionalView('/employee/benefits/')">Modify Benefits</a>
+                        <a ng-click="startModifyBenefit()">Modify Benefits</a>
                     </div>
                 </li>
-                <li class="expandable" ng-show="isCurRoleEmployee() && false">
+                <li class="expandable" ng-show="isCurRoleEmployee() && (!disabledFeatures.W4 || !disabledFeature.DD)">
                     <div class="primary-nav">
                         <button data-toggle="collapse" data-target="#employee-payroll-nav" aria-expanded="false" aria-controls="employee-payroll-nav"><span class="flaticon flaticon-star145"></span>Payroll</button>
                     </div>
                     <div class="sub-nav collapse" id="employee-payroll-nav">
-                        <a href="#/employee/payroll/w4">W4 Form</a>
-                        <a href="#/employee/payroll/direct_deposit">Direct Deposit</a>
+                        <a href="#/employee/payroll/w4" ng-hide="disabledFeatures.W4">W4 Form</a>
+                        <a href="#/employee/payroll/direct_deposit" ng-hide="disabledFeatures.DD">Direct Deposit</a>
                     </div>
                 </li>
                 <li class="expandable" ng-show="isCurRoleEmployee()">

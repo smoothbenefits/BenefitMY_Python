@@ -29,11 +29,13 @@ from app.views.template_view import (
     TemplateFieldView,
     templates)
 
+from app.views.benefit_plan_view import(BenefitPlanView,
+                                        BenefitPlanCreationView)
+
 from app.views.company_benefit_plan_option_view import (
     CompanyBenefitPlanOptionView,
     CompanyBenefitPlansView,
-    benefits
-    )
+    create_benefit_plan_option)
 from app.views.document_view import (
     CompanyUserTypeDocumentView,
     CompanyUserDocumentView,
@@ -122,6 +124,8 @@ from app.views.company_user_summary_view import (
     CompanyUsersDirectDepositExcelExportView,
     CompanyUsersLifeInsuranceBeneficiaryExcelExportView)
 
+from app.views.reports.company_users_benefits_billing import CompanyUsersBenefitsBillingExcelExportView
+
 from app.views.upload import (UserUploadView,
                               UploadView,
                               get_company_uploads)
@@ -129,6 +133,8 @@ from app.views.upload_application_feature_view import UploadApplicationFeatureVi
 from app.views.upload_audience_view import UploadAudienceByCompanyView
 
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
+
+from app.views.sys_benefit_update_reason_view import SysBenefitUpdateReasonView
 
 PREFIX = "api/v1"
 
@@ -158,7 +164,8 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/templates/(?P<pk>\w+)/?$' % PREFIX, TemplateView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/template_fields/?$' % PREFIX, TemplateFieldView.as_view()),
-    url(r'^%s/benefits/(?P<pk>\w+)/?$' % PREFIX, CompanyBenefitPlanOptionView.as_view(), name='benefit_plan_api'),
+    url(r'^%s/benefits/(?P<pk>\w+)/?$' % PREFIX, BenefitPlanView.as_view(), name='benefit_plan_api'),
+    url(r'^%s/benefit_options/?$' % PREFIX, create_benefit_plan_option, name='company_benefit_post_api'),
     url(r'^%s/benefit_details/plan=(?P<pk>\w+)/?$' % PREFIX, BenefitDetailsView.as_view()),
 
     url(r'^%s/benefit_details/(?P<pk>\w+)/?$' % PREFIX, delete_benefit_details),
@@ -177,6 +184,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/?$' % PREFIX, CompanyUsersSummaryExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/life_beneficiary?$' % PREFIX, CompanyUsersLifeInsuranceBeneficiaryExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view()),
+    url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_billing?$' % PREFIX, CompanyUsersBenefitsBillingExcelExportView.as_view()),
 
     url(r'^%s/companies/(?P<pk>\w+)/users/modification_summary/?$' % PREFIX, CompanyUsersDataModificationSummaryView.as_view()),
 
@@ -188,12 +196,14 @@ urlpatterns = patterns('app.views',
     url(r'^%s/documents/(?P<pk>\w+)/signature/?$' % PREFIX, DocumentSignatureView.as_view()),
 
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
-    url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
     url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
-    url(r'^%s/benefits/?$' % PREFIX, benefits, name='company_benefit_post_api'),
+    url(r'^%s/benefits/?$' % PREFIX, BenefitPlanCreationView.as_view(), name='benefit_post_api'),
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
+
+    # Company features api
+    url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
 
     # FSA api
     url(r'^%s/brokers/(?P<pk>\w+)/fsa/?$' % PREFIX, 
@@ -322,6 +332,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/user/(?P<user_id>\w+)/employee_profile/?$' % PREFIX,
         EmployeeProfileByCompanyUserView.as_view(),
         name='employee_profile_by_company_user_api'),
+
+    url(r'^%s/benefit_update_reasons/?$' % PREFIX, SysBenefitUpdateReasonView.as_view(), name='sys_benefit_update_reason_api'),
 )
 
 

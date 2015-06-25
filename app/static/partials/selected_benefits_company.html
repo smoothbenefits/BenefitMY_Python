@@ -9,6 +9,7 @@
     <div><a ng-href="{{exportCompanyEmployeeSummaryUrl}}"><b>Download Complete Report</b></a></div>
     <div><a ng-href="{{exportCompanyEmployeeDirectDepositUrl}}" ng-show="isCurRoleAdmin()"><b>Download Direct Deposit Report</b></a></div>
     <div><a ng-href="{{exportCompanyEmployeeLifeBeneficiarySummaryUrl}}"><b>Download Life Insurance Beneficiary Report</b></a></div>
+    <div><a ng-if="false" ng-href="{{exportCompanyBenefitsBillingSummaryUrl}}"><b>Download Benefits Billing Report</b></a></div>
     <div class="cta"><span class="btn green" ng-click="back()">Back</span></div>
 </div><!-- / .content-header -->
 
@@ -42,11 +43,10 @@
                                                 <td width="300">{{plan.selectedPlanName}} 
                                                     <span ng-show="plan.selectedPlanType">({{plan.selectedPlanType}})</span>
                                                     <div ng-show="plan.pcp"> PCP Number: {{plan.pcp}}</div></td>
-                                                <td width="250">
-                                                    <text ng-repeat="person in plan.enrolled">{{person.name}} 
-                                                        <span ng-show="person.relationship">({{person.relationship}})</span> 
-                                                        <br />
-                                                    </text>
+                                                <td width="300">
+                                                    <div class="inner-td-div" ng-repeat="enrolled in plan.enrolled">
+                                                        {{enrolled.relationship.capitalize()}} : {{enrolled.name}} <span ng-show="enrolled.pcp">(PCP#: {{enrolled.pcp}})</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </table>
@@ -65,7 +65,7 @@
             </div>
 
             <!-- Basic life insurance summary table -->
-            <div class="row">
+            <div class="row" ng-if="employee.basicLifeInsurancePlan !== undefined">
                 <div class="col-sm-2">
                     <div>Basic Life Insurance</br>(AD&D)</div>
                 </div>
@@ -111,7 +111,7 @@
             </div>
 
             <!-- Supplemental life insurance summary table -->
-            <div class="row" ng-show="supplementalLifeInsuranceEnabled">
+            <div class="row" ng-show="employee.supplementalLifeInsurancePlan !== undefined">
                 <div class="col-sm-2">    
                     <div>Supplemental Life Insurance</div>
                 </div>
@@ -182,7 +182,7 @@
             </div>
 
             <!-- STD summary table -->
-            <div class="row">
+            <div class="row" ng-if="employee.userStdPlan !== undefined">
                 <div class="col-sm-2">    
                     <div>Short Term Disability Benefits</div>
                 </div>
@@ -235,7 +235,7 @@
             </div>
 
             <!-- LTD summary table -->
-            <div class="row">
+            <div class="row" ng-if="employee.userLtdPlan !== undefined">
                 <div class="col-sm-2">    
                     <div>Long Term Disability Benefits</div>
                 </div>
@@ -288,7 +288,7 @@
             </div>
 
             <!-- FSA summary table -->
-            <div class="row">
+            <div class="row" ng-if="employee.fsaElection !== undefined">
                 <div class="col-sm-2">    
                     <div>Flexible Spending Accounts</div>
                 </div>
@@ -321,7 +321,7 @@
             </div>
 
             <!-- HRA summary table -->
-            <div class="row">
+            <div class="row" ng-if="employee.hraPlan !== undefined">
                 <div class="col-sm-2">    
                     <div>Health Reimbursement Accounts (HRA)</div>
                 </div>

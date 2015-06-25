@@ -1,3 +1,4 @@
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -18,6 +19,9 @@ from app.models.user_company_benefit_plan_option import \
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
+from app.models.enrolled import Enrolled
+from app.models.benefit_plan import BenefitPlan
+from app.models.benefit_type import BenefitType
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from app.models.insurance.life_insurance_plan import LifeInsurancePlan
 from app.models.insurance.supplemental_life_insurance_plan import SupplementalLifeInsurancePlan
@@ -42,6 +46,7 @@ from app.views.permission import (
     user_passes_test,
     company_employer,
     company_employer_or_broker)
+from app.models.sys_benefit_update_reason import SysBenefitUpdateReason
 
 User = get_user_model()
 
@@ -165,11 +170,8 @@ class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, None)
                 col_num = self._write_field(excelSheet, row_num, col_num, user.last_name)
 
-                # now skip 3 more columns to align with the normal person profile output
-                return col_num + 3
-
         # Skip the columns
-        return col_num + 6
+        return col_num + 3
 
     def _write_employee_direct_deposit(self, employee_user_id, excelSheet, row_num, start_col_num):
         current_col_num = start_col_num
@@ -233,6 +235,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'SSN')
         col_num = self._write_field(excelSheet, 0, col_num, 'Gender')
         col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Med PCP NO.')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
         col_num = self._write_field(excelSheet, 0, col_num, 'Work Phone')
         col_num = self._write_field(excelSheet, 0, col_num, 'Home Phone')
@@ -247,26 +250,45 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse SSN')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Gender')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Birth Date')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Med PCP NO.')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Relationship')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'Med Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Med Option Elected')
         col_num = self._write_field(excelSheet, 0, col_num, 'Med Cost / Pay')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Med Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Med Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Med Last Update Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Dental Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Dental Option Elected')
         col_num = self._write_field(excelSheet, 0, col_num, 'Dental Cost / Pay')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Dental Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Dental Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Dental Last Update Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Vision Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Vision Option Elected')
         col_num = self._write_field(excelSheet, 0, col_num, 'Vision Cost / Pay')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Vision Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Vision Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Vision Last Update Date')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'STD Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'STD Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'STD Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'STD Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'STD Last Update Date')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'LTD Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'LTD Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'LTD Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'LTD Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'LTD Last Update Date')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life (AD&D) Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life (AD&D) Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Basic Life Last Update Date')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'Employee Optional Life Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Employee Optional Life Amount')
@@ -277,11 +299,20 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Child Optional Life Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Child Optional Life Amount')
         col_num = self._write_field(excelSheet, 0, col_num, 'Child Optional Life Premium per Month')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Optional Life Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Optional Life Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Optional Life Last Update Date')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'FSA Amount')
         col_num = self._write_field(excelSheet, 0, col_num, 'Dependent FSA Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'FSA Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'FSA Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'FSA Last Update Date')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'HRA Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Date')
 
         for i in range(0, max_dependents):
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep First Name ' + `i+1`)
@@ -290,6 +321,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep SSN ' + `i+1`)
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep Gender ' + `i+1`)
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep Birth Date ' + `i+1`)
+            col_num = self._write_field(excelSheet, 0, col_num, 'Dep Med PCP NO. ' + `i+1`)
             col_num = self._write_field(excelSheet, 0, col_num, 'Dep Relationship ' + `i+1`)
 
         return
@@ -305,7 +337,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
     def _write_employee(self, employee_user_id, excelSheet, row_num):
         start_column_num = 0
-        start_column_num = self._write_employee_personal_info(employee_user_id, True, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_personal_info(employee_user_id, True, True, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_all_health_benefits_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_std_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_ltd_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
@@ -316,7 +348,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         start_column_num = self._write_all_dependents_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
         return
 
-    def _write_employee_personal_info(self, employee_user_id, include_spouse_info, excelSheet, row_num, start_column_num):
+    def _write_employee_personal_info(self, employee_user_id, include_spouse_info, write_pcp, excelSheet, row_num, start_column_num):
         cur_column_num = start_column_num
 
         person = None
@@ -327,7 +359,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         # All helpers are built with capability of skiping proper number of columns when
         # person given is None. This is to ensure other information written after these
         # would be written to the right columns
-        cur_column_num = self._write_person_basic_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
+        cur_column_num = self._write_person_basic_info(person, write_pcp, excelSheet, row_num, cur_column_num, employee_user_id)
         cur_column_num = self._write_person_email_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
 
         # Write out phone number info
@@ -343,7 +375,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
 
         return cur_column_num
 
-    def _write_person_basic_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
+    def _write_person_basic_info(self, person_model, write_pcp, excelSheet, row_num, col_num, employee_user_id = None):
         if (person_model):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.first_name)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.middle_name)
@@ -351,7 +383,6 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.ssn)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.gender)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.birth_date, ExcelExportViewBase.date_field_format)
-            return col_num
         elif (employee_user_id):
             # TODO:
             # This is not a clean solution, but is the only one we have for the short term
@@ -367,13 +398,31 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, user.last_name)
 
                 # now skip 3 more columns to align with the normal person profile output
-                return col_num + 3
+                col_num = col_num + 3
+        else:
+            # Skip the columns
+            col_num = col_num + 6
 
-        # Skip the columns
-        return col_num + 6
+        # Also output the person's medical PCP number info
+        # for now, it is decided that the number stick with the person's
+        # information section
+        if (write_pcp):
+            col_num = self._write_person_PCP_number(person_model, excelSheet, row_num, col_num)
+        
+        return col_num
+
+    def _write_person_PCP_number(self, person_model, excelSheet, row_num, col_num):
+        if (person_model):
+            enrolleds = Enrolled.objects.filter(user_company_benefit_plan_option__benefit__benefit_plan__benefit_type__name='Medical', person=person_model.id)
+            if (len(enrolleds) > 0):
+                enrolled = enrolleds[0]
+                if (enrolled.pcp): 
+                    return self._write_field(excelSheet, row_num, col_num, enrolled.pcp)
+
+        return col_num + 1
 
     def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
-        if (person_model):
+        if (person_model and person_model.email):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.email)
             return col_num
         elif (employee_user_id):
@@ -443,7 +492,7 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
         return col_num
 
     def _write_family_member_personal_info(self, family_person_model, excelSheet, row_num, col_num):
-        col_num = self._write_person_basic_info(family_person_model, excelSheet, row_num, col_num)
+        col_num = self._write_person_basic_info(family_person_model, True, excelSheet, row_num, col_num)
 
         if (family_person_model):
             col_num = self._write_field(excelSheet, row_num, col_num, family_person_model.relationship)
@@ -472,11 +521,12 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, row_num, col_num, benefit_plan.name)
             col_num = self._write_field(excelSheet, row_num, col_num, company_plan_option.benefit_option_type)
             col_num = self._write_field(excelSheet, row_num, col_num, company_plan_option.employee_cost_per_period)
+            col_num = self._write_employee_benefit_record_reason(user_benefit_option, excelSheet, row_num, col_num)
 
             return col_num
 
         # Skip the columns if no matching benefit
-        return col_num + 3
+        return col_num + 6
 
     def _write_employee_std_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
         employee_plans = UserCompanyStdInsurancePlan.objects.filter(user=employee_user_id)
@@ -486,10 +536,11 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             plan = company_plan.std_insurance_plan
             col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
             col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
+            col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
 
             return col_num
 
-        return col_num + 2
+        return col_num + 5
 
     def _write_employee_ltd_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
         employee_plans = UserCompanyLtdInsurancePlan.objects.filter(user=employee_user_id)
@@ -499,10 +550,11 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             plan = company_plan.ltd_insurance_plan
             col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
             col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
+            col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
 
             return col_num
 
-        return col_num + 2
+        return col_num + 5
 
     def _write_employee_basic_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
         employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
@@ -512,10 +564,11 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             plan = company_plan.life_insurance_plan
             col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
             col_num = self._write_field(excelSheet, row_num, col_num, company_plan.insurance_amount)
+            col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
 
             return col_num
 
-        return col_num + 2
+        return col_num + 5
 
     def _write_employee_supplemental_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
         employee_persons = Person.objects.filter(user=employee_user_id, relationship='self')
@@ -536,21 +589,10 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.child_elected_amount)
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.child_premium_per_month)
+                
+                col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
                 return col_num
-        return col_num + 9
-
-    def _write_family_member_supplemental_life_insurance_info(self, employee_user_id, member_relationship, family_member_plans, excelSheet, row_num, col_num):
-        members = Person.objects.filter(user=employee_user_id).filter(relationship=member_relationship)
-        if (len(members) > 0):
-            member = members[0]
-            plans = family_member_plans.filter(person=member.id)
-            if (len(plans) > 0):
-                plan = plans[0]
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.company_life_insurance.life_insurance_plan.name)
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.insurance_amount)
-                return col_num
-
-        return col_num + 2 
+        return col_num + 12
 
     def _write_employee_fsa_info(self, employee_user_id, excelSheet, row_num, col_num):
         fsas = FSA.objects.filter(user=employee_user_id)
@@ -558,9 +600,10 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             fsa = fsas[0]
             col_num = self._write_field(excelSheet, row_num, col_num, fsa.primary_amount_per_year)
             col_num = self._write_field(excelSheet, row_num, col_num, fsa.dependent_amount_per_year)
+            col_num = self._write_employee_benefit_record_reason(fsa, excelSheet, row_num, col_num)
             return col_num
 
-        return col_num + 2
+        return col_num + 5
 
     def _write_employee_hra_info(self, employee_user_id, excelSheet, row_num, col_num):
         employee_persons = Person.objects.filter(user=employee_user_id, relationship='self')
@@ -570,8 +613,24 @@ class CompanyUsersSummaryExcelExportView(ExcelExportViewBase):
             if (len(employee_plans) > 0):
                 plan = employee_plans[0]
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.company_hra_plan.hra_plan.name)
+                col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
                 return col_num
-        return col_num + 1
+        return col_num + 4
+
+    def _write_employee_benefit_record_reason(self, employee_benefit_record, excelSheet, row_num, col_num):
+        if (employee_benefit_record.record_reason):    
+            col_num = self._write_field(excelSheet, row_num, col_num, employee_benefit_record.record_reason.name)
+        else:
+            col_num = col_num + 1
+
+        col_num = self._write_field(excelSheet, row_num, col_num, employee_benefit_record.record_reason_note)
+
+        if (employee_benefit_record.updated_at):
+            col_num = self._write_field(excelSheet, row_num, col_num, employee_benefit_record.updated_at.strftime("%Y-%m-%d"))
+        else:
+            col_num = col_num + 1
+
+        return col_num
 
     ''' Both broker and employer should be able to get summary of all 
         benefit situations of all employees of the company
@@ -653,7 +712,7 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersSummaryExc
 
     def _write_employee(self, employee_user_id, excelSheet, row_num):
         start_column_num = 0
-        start_column_num = self._write_employee_personal_info(employee_user_id, False, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_personal_info(employee_user_id, False, False, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_basic_life_insurance_beneficiary_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_supplemental_life_insurance_beneficiary_info(employee_user_id, excelSheet, row_num, start_column_num)
         return

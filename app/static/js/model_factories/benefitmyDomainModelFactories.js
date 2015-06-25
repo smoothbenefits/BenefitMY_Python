@@ -1,5 +1,7 @@
 var benefitmyDomainModelFactories = angular.module('benefitmyDomainModelFactories', ['ngResource']);
 
+var PREFIX = '/api/v1/';
+
 benefitmyDomainModelFactories.factory('currentUser', [
   '$resource',
   function ($resource){
@@ -72,7 +74,8 @@ benefitmyDomainModelFactories.factory('benefitPlanRepository', [
     '$resource',
     function($resource){
         return {
-          group:$resource('/api/v1/benefits/', {}),
+          benefit:$resource('/api/v1/benefits/', {}),
+          options:$resource('/api/v1/benefit_options', {}),
           individual:$resource('/api/v1/benefits/:id', {id:'@id'})
         }
     }]);
@@ -390,6 +393,19 @@ benefitmyDomainModelFactories.factory('HraRepository', ['$resource',
       CompanyPersonPlanById: $resource('/api/v1/person_company_hra_plan/:id/', {id:'@id'}, { 
         update: {
             method: 'PUT'
+        }
+      })
+    };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('CompanyFeatureRepository', ['$resource', 
+  function($resource) {
+    return {
+      CompanyFeatureByCompany: $resource(PREFIX + 'company_features/:companyId/', {companyId: '@company_id'}),
+      ByCompanyFeatureId: $resource(PREFIX + 'company_features/:id/', {id: '@id'}, {
+        update: {
+          method: 'PUT'
         }
       })
     };

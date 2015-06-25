@@ -84,14 +84,6 @@ settings.constant('profileSettings', [
     }
 ]);
 
-settings.constant('benefitSectionGlobalConfig', [
-    {
-        id: 1,
-        section_name: 'supplemental_life_insurance',
-        enabled: true
-    }
-]);
-
 settings.constant('tabLayoutGlobalConfig', [
     {
         id: 1,
