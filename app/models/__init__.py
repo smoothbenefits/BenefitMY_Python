@@ -57,3 +57,4 @@ from upload_application_feature import UploadApplicationFeature
 
 from sys_application_feature import SysApplicationFeature
 from sys_suppl_life_insurance_condition import SysSupplLifeInsuranceCondition
+from sys_benefit_update_reason import SysBenefitUpdateReason

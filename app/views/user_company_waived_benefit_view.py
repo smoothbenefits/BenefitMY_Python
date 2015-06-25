@@ -33,13 +33,18 @@ class UserCompanyWaivedBenefitView(APIView):
             for existing_waived in waived_benefits:
                 existing_waived.delete()
 
+            # Get the update reason
+            recordReason = request.DATA['record_reason']
+
             ### now save all the new waived records
             for input_waive in request.DATA['waived']:
                 w = UserCompanyWaivedBenefit(
                     user_id=pk,
                     company_id=comp_id,
                     benefit_type_id=input_waive['benefit_type'],
-                    reason=input_waive['reason'])
+                    reason=input_waive['reason'],
+                    record_reason_id=recordReason['record_reason_id'],
+                    record_reason_note=recordReason['record_reason_note'])
 
                 w.save()
             return Response({'Success':'true'})

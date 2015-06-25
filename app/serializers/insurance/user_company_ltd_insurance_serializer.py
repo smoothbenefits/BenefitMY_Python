@@ -7,11 +7,13 @@ from company_ltd_insurance_plan_serializer import CompanyLtdInsurancePlanSeriali
 
 from ..hash_pk_serializer_base import HashPkSerializerBase
 from ..custom_fields.hash_field import HashField
+from ..sys_benefit_update_reason_serializer import SysBenefitUpdateReasonSerializer
 
 
 class UserCompanyLtdInsuranceSerializer(HashPkSerializerBase):
     user = HashField(source="user.id")
     company_ltd_insurance = CompanyLtdInsurancePlanSerializer()
+    record_reason = SysBenefitUpdateReasonSerializer()
 
     class Meta:
         model = UserCompanyLtdInsurancePlan

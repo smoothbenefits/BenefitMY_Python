@@ -9,8 +9,6 @@ from hash_pk_serializer_base import HashPkSerializerBase
 
 class CompanyBenefitPlanOptionPostSerializer(HashPkSerializerBase):
 
-    benefit_plan = BenefitPlanPostSerializer()
-
     class Meta:
 
         model = CompanyBenefitPlanOption

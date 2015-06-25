@@ -25,10 +25,15 @@ class UserCompanyBenefitPlanOptionView(APIView):
         return Response({'benefits': serializer.data})
 
     def _add_user_benefits(self, request, pk):
+        # Get the update reason off of the request
+        recordReason = request.DATA['record_reason']
+
         for benefit in request.DATA['benefits']:
             u = UserCompanyBenefitPlanOption(
                     user_id=pk,
-                    benefit_id=benefit['benefit']['id'])
+                    benefit_id=benefit['benefit']['id'],
+                    record_reason_id=recordReason['record_reason_id'],
+                    record_reason_note=recordReason['record_reason_note'])
             u.save()
             for enroll in benefit["enrolleds"]:
                 p_id = enroll['id']

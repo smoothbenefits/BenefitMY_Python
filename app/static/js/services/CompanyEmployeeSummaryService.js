@@ -17,6 +17,10 @@ benefitmyService.factory(
 
       getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl: function(companyId) {
         return API_PREFIX + '/companies/' + companyId + '/users/excel/life_beneficiary';
+      },
+
+      getCompanyBenefitsBillingReportExcelUrl: function(companyId){
+        return API_PREFIX + '/companies/' + companyId + '/users/excel/benefits_billing';
       }
     }; 
   }

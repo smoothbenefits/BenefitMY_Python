@@ -15,10 +15,8 @@ class BenefitPlanTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
         self.assertEqual(type(result), dict)
-        self.assertEqual(result['benefit']['total_cost_per_period'], '678.87')
-        self.assertEqual(result['benefit']['benefit_option_type'], 'individual')
-        self.assertEqual(result['benefit']['benefit_plan']['name'], 'Blue Cross Blue Shield of Mass. HMO Blue')
-        self.assertEqual(result['benefit']['benefit_plan']['pcp_link'], 'https://www.bluecrossma.com/wps/portal/members/using-my-plan/doctors-hospitals/findadoctor/')
+        self.assertEqual(result['benefit']['name'], 'Blue Cross Blue Shield of Mass. HMO Blue')
+        self.assertEqual(result['benefit']['pcp_link'], 'https://www.bluecrossma.com/wps/portal/members/using-my-plan/doctors-hospitals/findadoctor/')
 
 
 
@@ -28,11 +26,37 @@ class BenefitPlanTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
         self.assertEqual(type(result), dict)
-        self.assertEqual(result['benefit']['total_cost_per_period'], '1024.45')
-        self.assertEqual(result['benefit']['benefit_option_type'], 'individual_plus_children')
-        self.assertEqual(result['benefit']['benefit_plan']['name'], 'Blue Cross Blue Shield of Mass. HMO Blue')
-        self.assertEqual(result['benefit']['benefit_plan']['pcp_link'], 'https://www.bluecrossma.com/wps/portal/members/using-my-plan/doctors-hospitals/findadoctor/')
+        self.assertEqual(result['benefit']['name'], 'Aetna Dental')
+        self.assertEqual(result['benefit']['pcp_link'], None)
 
+    def test_benefit_plan_creation_success(self):
+        benefit_data = {"benefit_type": "Medical",
+                        "benefit_name": "TestMedical",
+                        "mandatory_pcp": True,
+                        "pcp_link": "http://www.bluecrossma.com"}
+
+        response = self.client.post(reverse('benefit_post_api'), 
+                                    data=json.dumps(benefit_data),
+                                    content_type='application/json')
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 201)
+        result = json.loads(response.content)
+        self.assertIn("benefit", result)
+        created_benefit = result["benefit"]
+        self.assertIn("id", created_benefit)
+        self.assertEqual(created_benefit['name'], "TestMedical")
+        self.assertEqual(created_benefit['benefit_type'], 1)
+        self.assertEqual(created_benefit['mandatory_pcp'], True)
+        self.assertEqual(created_benefit['pcp_link'], "http://www.bluecrossma.com")
+
+    def test_benefit_plan_delete_success(self):
+        response = self.client.delete(reverse('benefit_plan_api',
+                                      kwargs={'pk': self.normalize_key(4)}))
+        self.assertEqual(response.status_code, 204)
+        response = self.client.get(reverse('benefit_plan_api',
+                                           kwargs={'pk': self.normalize_key(4)}))
+        self.assertEqual(response.status_code, 404)
 
 class CompanyBenefitPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here

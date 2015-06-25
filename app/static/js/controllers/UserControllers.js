@@ -62,7 +62,8 @@ var findViewController = userControllers.controller('findViewController',
       {
         var role = _.findWhere(userRoles, {company_user_type:userType});
         return role != null;
-      }
+      };
+
       var determineDashboardLocation = function(userRoles)
       {
         var urlParam = window.location.search;
@@ -84,12 +85,11 @@ var findViewController = userControllers.controller('findViewController',
         {
           window.location.replace('/error?role_match=false');
         }
-      }
+      };
 
-      currentUser.get()
-      .$promise.then(function(response){
+      currentUser.get().$promise.then(function(response){
           determineDashboardLocation(response.roles);
-       });
+      });
     }
 ]);
 
@@ -97,35 +97,46 @@ var userController = userControllers.controller('userController',
   ['$scope', 
    '$http', 
    '$location', 
+   '$modal',
+   '$state',
    'UserService',
    'userLogOut', 
-   'benefitSectionGlobalConfig',
    'CompanyEmployeeSummaryService',
-   'FeatureConfigurationService',
+   'CompanyFeatureService', 
+   'BrowserDetectionService', 
   function userController($scope, 
                           $http, 
                           $location, 
+                          $modal,
+                          $state,
                           UserService,
                           userLogOut, 
-                          benefitSectionGlobalConfig,
                           CompanyEmployeeSummaryService,
-                          FeatureConfigurationService) {
+                          CompanyFeatureService,
+                          BrowserDetectionService) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var roleTypeDictionary = {
         admin:'Employer', 
         broker:'Broker',
         employee: 'Employee'
-      };
+    };
+
     UserService.getCurUserInfo().then(function(userInfo){
       $scope.curUser = userInfo.user;
       $scope.currentRoleList = userInfo.roles;
       $scope.company_id = userInfo.currentRole.company.id;
+
+      CompanyFeatureService.getDisabledCompanyFeatureByCompany($scope.company_id).then(function(features) {
+        $scope.disabledFeatures = features;
+      });
     });
+
     $scope.isRoleActive = function(checkRole){
       var roleFind = _.findWhere($scope.currentRoleList, {'company_user_type':checkRole});
       return !_.isUndefined(roleFind);
     };
+
     $scope.logout = function ()
     {
         userLogOut.delete()
@@ -220,10 +231,52 @@ var userController = userControllers.controller('userController',
       $location.path('/settings');
     };
 
-    // turn on/off benefit section globally here
-    // need to move to a company profile which controls sections by company
-    $scope.supplementalLifeInsuranceEnabled = FeatureConfigurationService.isFeatureOnForCompany($scope.company_id, 'supplemental_life_insurance');
+    $scope.startModifyBenefit = function() {
+        // Show a modal dialog to take in the reason
+        var curRole = $scope.getCurRoleFromPath();
+        if(curRole)
+        {
+            var id = getIdByRole(curRole);
+            var modalInstance = $modal.open({
+                templateUrl: '/static/partials/benefit_selection/modal_pre_benefit_selection.html',
+                controller: 'preBenefitSelectionModalController',
+                size: 'md',
+                backdrop: 'static'
+              });
+
+            modalInstance.result.then(function(reason){
+                // Now proceed to the modify benefit view
+                $state.go('employee_benefit_signup', 
+                    { employee_id: id, 
+                      updateReason: reason });
+            });
+        }
+    };
 }]);
+
+var preBenefitSelectionModalController = userControllers.controller('preBenefitSelectionModalController',
+  ['$scope',
+   '$modalInstance',
+   'BenefitUpdateReasonService',
+    function($scope,
+             $modalInstance,
+             BenefitUpdateReasonService) {
+
+        $scope.reason = {};
+        
+        BenefitUpdateReasonService.getAllReasons().then(function(reasons) {
+            $scope.reasons = reasons;
+        });
+
+        $scope.cancel = function() {
+            $modalInstance.dismiss('cancelByUser');
+        };
+
+        $scope.proceed = function() {
+            $modalInstance.close($scope.reason);
+        };
+    }
+  ]);
 
 var settingsController = userControllers.controller('settingsController', ['$scope',
    '$location',

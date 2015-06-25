@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]>         <html class="ie8"> <![endif]-->
+<!--[if IE 9]>         <html class="ie9 gt-ie8"> <![endif]-->
+<!--[if gt IE 9]><!-->
+{% load compressed %}
+<html class="gt-ie8 gt-ie9 not-ie"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>BenefitMy</title>
+        <!-- Open Sans font from Google CDN -->
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
+        {% compressed_css "home" %}  
+        {% compressed_js "home" %}    
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"> </script>
+        <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.min.js"> </script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js" > </script>
+    </head>
+
+    <body>
+
+        <script type="text/javascript">var init = [];</script>
+
+        <div id="content-wrapper">
+        <div class="logo-row"><a href="/"><img src="/static/images/logo-black.png"></a></div>
+        <div class="panel panel-warning">
+            <div class="panel-body">
+                <h3>The browser you are using is not supported by BenefitMY. To use BenefitMY, please use Chrome (version 41 and above), Firefox (version 6 and above), or Internet Explorer (version 10 and above).</h3><br/>
+
+                <h3>Download the latest Chrome by clicking <a href="https://www.google.com/intl/en/chrome/browser/desktop/index.html">here</a>.</h3>
+            </div>
+        </div>
+    </body>
+</html>
