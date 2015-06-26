@@ -648,16 +648,28 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       $controller('modalMessageControllerBase', {$scope: $scope});
 
       var clientId = $stateParams.clientId;
-      $scope.benefit = {
-        mandatory_pcp: false, 
-        benefit_type:'',
-        benefit_option_types: [
-          {name:'Individual', disabled: false},
-          {name:'Individual plus Spouse', disabled: false},
-          {name:'Individual plus One', disabled: false},
-          {name:'Individual plus Children', disabled: false},
-          {name:'Individual plus Family', disabled: false}],
+      
+      // Reset/reinitialize the model in scope
+      var resetModel = function(selectedBenefitType) {
+        if (!selectedBenefitType) {
+            selectedBenefitType = '';
+        }
+
+        $scope.benefit = {
+            mandatory_pcp: false, 
+            benefit_type: selectedBenefitType,
+            benefit_option_types: [
+              {name:'Individual', disabled: false},
+              {name:'Individual plus Spouse', disabled: false},
+              {name:'Individual plus One', disabled: false},
+              {name:'Individual plus Children', disabled: false},
+              {name:'Individual plus Family', disabled: false}],
+          };
       };
+
+      // Initialize the model in scope
+      resetModel();
+
       $('#benefit_type_select').on('change', function(){
         var optionTypeInputs = $('#plan_option_table').find('input');
         _.each(optionTypeInputs, function(input){
@@ -1075,6 +1087,12 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             return;
           });
       };
+
+      // Reset the model in scope.
+      $scope.resetModel = function(selectedBenefitType) {
+        $scope.form.$setPristine()
+        resetModel(selectedBenefitType);
+      }
 
       $scope.mandatoryPcpUpdated = function(benefit){
         if(!benefit.mandatory_pcp){
