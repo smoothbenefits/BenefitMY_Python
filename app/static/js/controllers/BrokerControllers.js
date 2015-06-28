@@ -100,17 +100,6 @@ var benefitsController = brokersControllers.controller(
         }
       };
 
-      $scope.medicalPolicyPredicate = 'orderIndex';
-
-      $scope.sortBy = function(predicate){
-        if ($scope.medicalPolicyPredicate === predicate){
-          $scope.medicalPolicyReverse = !$scope.medicalPolicyReverse;
-        }
-        else{
-          $scope.medicalPolicyPredicate = predicate;
-        }
-      };
-
       BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId).then(function(response) {
         $scope.lifeInsurancePlans = response;
       });
