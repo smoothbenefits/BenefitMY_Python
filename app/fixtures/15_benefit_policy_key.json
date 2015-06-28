@@ -1,86 +1,130 @@
 [
   {
     "fields": {
-      "name": "Individual Deductible"
+      "name": "Individual Deductible",
+      "rank": "100"
     },
     "model": "app.benefitpolicykey",
     "pk": 1
   },
   {
     "fields": {
-      "name": "Family Deductible"
+      "name": "Family Deductible",
+      "rank": "200"
     },
     "model": "app.benefitpolicykey",
     "pk": 2
   },
   {
     "fields": {
-      "name": "Hospital-Inpatient"
+      "name": "Hospital-Inpatient",
+      "rank": "600"
     },
     "model": "app.benefitpolicykey",
     "pk": 3
   },
   {
     "fields": {
-      "name": "Out-patient Day Surgery"
+      "name": "Out-patient Day Surgery",
+      "rank": "700"
     },
     "model": "app.benefitpolicykey",
     "pk": 4
   },
   {
     "fields": {
-      "name": "MRI/CT/PET Scans"
+      "name": "MRI/CT/PET Scans",
+      "rank": "500"
     },
     "model": "app.benefitpolicykey",
     "pk": 5
   },
   {
     "fields": {
-      "name": "Lab work/X-Ray"
+      "name": "Lab work/X-Ray",
+      "rank": "400"
     },
     "model": "app.benefitpolicykey",
     "pk": 6
   },
   {
     "fields": {
-      "name": "Chiropractic"
+      "name": "Chiropractic",
+      "rank": "300"
     },
     "model": "app.benefitpolicykey",
     "pk": 7
   },
   {
     "fields": {
-      "name": "Prescription Drugs-30 days"
+      "name": "Prescription Drugs-30 days",
+      "rank": "1000"
     },
     "model": "app.benefitpolicykey",
     "pk": 8
   },
   {
     "fields": {
-      "name": "Mail order drugs-90 days"
+      "name": "Mail order drugs-90 days",
+      "rank": "1100"
     },
     "model": "app.benefitpolicykey",
     "pk": 9
   },
   {
     "fields": {
-      "name": "Annual Rx out of Pocket Maximum"
+      "name": "Annual Rx out of Pocket Maximum",
+      "rank": "900"
     },
     "model": "app.benefitpolicykey",
     "pk": 10
   },
   {
     "fields": {
-      "name": "Annual Medical out of Pocket Maximum"
+      "name": "Annual Medical out of Pocket Maximum",
+      "rank": "800"
     },
     "model": "app.benefitpolicykey",
     "pk": 11
   },
   {
     "fields": {
-      "name": "Primary Care Physician required"
+      "name": "Primary Care Physician required",
+      "rank": "1200"
     },
     "model": "app.benefitpolicykey",
     "pk": 12
+  },
+  {
+    "fields": {
+      "name": "Office Visit Copay (PCP/Specialist)",
+      "rank": "230"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 13
+  },
+  {
+    "fields": {
+      "name": "Preventative Office Visits, including related tests",
+      "rank": "240"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 14
+  },
+  {
+    "fields": {
+      "name": "Routine Vision Exams",
+      "rank": "250"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 15
+  },
+  {
+    "fields": {
+      "name": "Emergency Room Copay",
+      "rank": "260"
+    },
+    "model": "app.benefitpolicykey",
+    "pk": 16
   }
 ]
