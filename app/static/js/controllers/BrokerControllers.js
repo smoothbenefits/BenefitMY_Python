@@ -657,17 +657,9 @@ var brokerAddHealthBenefits = brokersControllers.controller(
               {name:'Individual plus Family', disabled: false}],
           };
       };
-
       // Initialize the model in scope
       resetModel();
 
-      $('#benefit_type_select').on('change', function(){
-        var optionTypeInputs = $('#plan_option_table').find('input');
-        _.each(optionTypeInputs, function(input){
-          $(input).on('keypress', changeInputKeyPress);
-          $(input).on('blur', lostFocusNoBlankHandler);
-        });
-      });
       $scope.isTypeMedical = function(benefitType){
         return benefitType === 'Medical';
       };
@@ -941,6 +933,8 @@ var brokerAddHealthBenefits = brokersControllers.controller(
 
 
       $scope.handleElementEvent = handleEditElement;
+      $scope.changeInputKeyPress = changeInputKeyPress;
+      $scope.lostFocusNoBlankHandler = lostFocusNoBlankHandler;
 
       var validateBenefitFields = function(){
         //validate option fields
