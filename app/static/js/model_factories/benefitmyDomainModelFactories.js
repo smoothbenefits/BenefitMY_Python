@@ -411,3 +411,9 @@ benefitmyDomainModelFactories.factory('CompanyFeatureRepository', ['$resource',
     };
   }
 ]);
+
+benefitmyDomainModelFactories.factory('BenefitPolicyKeyRepository', ['$resource',
+  function($resource){
+    return $resource('/api/v1/benefit_policy_keys'); 
+  }
+]);

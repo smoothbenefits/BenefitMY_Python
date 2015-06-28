@@ -623,6 +623,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
    'benefitDetailsRepository',
    'BasicLifeInsuranceService',
    'currentUser',
+   'BenefitPolicyKeyService',
     function brokerAddHealthBenefits(
       $scope,
       $location,
@@ -631,7 +632,8 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       benefitPlanRepository,
       benefitDetailsRepository,
       BasicLifeInsuranceService,
-      currentUser){
+      currentUser,
+      BenefitPolicyKeyService){
 
       // Inherite scope from base 
       $controller('modalMessageControllerBase', {$scope: $scope});
@@ -681,19 +683,11 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         $location.path('/broker/benefits/'+clientId);
       };
 
-      $scope.policyKeyArray = [
-        {position:0, name:'Individual Deductible'},
-        {position:1, name:'Family Deductible'},
-        {position:2, name:'Hospital-Inpatient'},
-        {position:3, name:'Out-patient Day Surgery'},
-        {position:4, name:'MRI/CT/PET Scans'},
-        {position:5, name:'Lab work/X-Ray'},
-        {position:6, name:'Chiropractic'},
-        {position:7, name:'Prescription Drugs-30 days'},
-        {position:8, name:'Mail order drugs-90 days'},
-        {position:9, name:'Annual Rx out of Pocket Maximum'},
-        {position:10, name:'Annual Medical out of Pocket Maximum'},
-        {position:11, name:'Primary Care Physician required'}];
+      $scope.policyKeyArray = [];
+
+      BenefitPolicyKeyService.getAllKeys().then(function(allKeys) {
+        $scope.policyKeyArray = allKeys;   
+      });
 
       $scope.benefitDetailArray = [];
       $scope.columnCount = 1;

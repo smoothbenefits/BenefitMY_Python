@@ -17,6 +17,7 @@ from app.views.company_user_view import (
     CompanyEmployeeCountView,
     BrokerCompanyCountView,
     CompanyBrokerCountView)
+from app.views.benefit_policy_key_view import BenefitPolicyKeyView
 from app.views.benefit_type_view import BenefitTypeView
 from app.views.document_type_view import DocumentTypeView
 from app.views.company_view import (
@@ -165,6 +166,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/templates/(?P<pk>\w+)/?$' % PREFIX, TemplateView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/template_fields/?$' % PREFIX, TemplateFieldView.as_view()),
     url(r'^%s/benefits/(?P<pk>\w+)/?$' % PREFIX, BenefitPlanView.as_view(), name='benefit_plan_api'),
+    url(r'^%s/benefit_policy_keys/?$' % PREFIX, BenefitPolicyKeyView.as_view(), name='benefit_policy_key_api'),
     url(r'^%s/benefit_options/?$' % PREFIX, create_benefit_plan_option, name='company_benefit_post_api'),
     url(r'^%s/benefit_details/plan=(?P<pk>\w+)/?$' % PREFIX, BenefitDetailsView.as_view()),
 
