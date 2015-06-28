@@ -15,7 +15,8 @@ from app.serializers.benefit_details_serializer import BenefitDetailsSerializer
 class BenefitDetailsView(APIView):
     def get_object(self, plan_id):
         try:
-            return BenefitDetails.objects.filter(benefit_plan=plan_id).order_by('benefit_policy_key__rank')
+            return BenefitDetails.objects.filter(benefit_plan=plan_id).order_by('benefit_policy_type_id', 
+                                                                                'benefit_policy_key__rank')
         except BenefitDetails.DoesNotExist:
             raise Http404
 
