@@ -112,27 +112,20 @@ benefitmyService.factory('benefitDisplayService',
             var policyTypeArray = [];
             if(benefit.detailsArray.length > 0){
               _.each(benefit.detailsArray, function(detailItem){
-                var existingPolicyType = _.find(policyTypeArray, function(policyTypeItem){
-                  return detailItem.benefit_policy_type.id == policyTypeItem.policyTypeId;
-                })
-                if(!existingPolicyType){
-                  policyTypeArray.push({
-                    policyTypeName:detailItem.benefit_policy_type.name, 
-                    policyTypeId: detailItem.benefit_policy_type.id});
+                if(!_.contains(policyTypeArray, detailItem.benefit_policy_type.name)){
+                  policyTypeArray.push(detailItem.benefit_policy_type.name);
                 }
               });
             }
             else{
-              policyTypeArray.push({
-                    policyTypeName:'', 
-                    policyTypeId: ''});
+              policyTypeArray.push('');
             }
-            sortedPolicyTypeArray = _.sortBy(policyTypeArray, 'policyTypeId');
+
             if(!group.policyNameArray){
               group.policyNameArray = [];
             }
-            _.each(sortedPolicyTypeArray, function(policyType){
-              group.policyNameArray.push({colspan:6/policyTypeArray.length, name:policyType.policyTypeName})
+            _.each(policyTypeArray, function(policyType){
+              group.policyNameArray.push({colspan:6/policyTypeArray.length, name:policyType})
             });
 
             //do policyList
@@ -146,9 +139,9 @@ benefitmyService.factory('benefitDisplayService',
                 policyListMember = {id:policyKeyItem.id, name:policyKeyItem.name, valueArray:[]};
                 group.policyList.push(policyListMember);
               }
-              _.each(sortedPolicyTypeArray, function(policyType){
+              _.each(policyTypeArray, function(policyType){
                 var foundBenefitDetail = _.find(benefit.detailsArray, function(benefitDetailItem){
-                  return benefitDetailItem.benefit_policy_type.name === policyType.policyTypeName &&
+                  return benefitDetailItem.benefit_policy_type.name === policyType &&
                     benefitDetailItem.benefit_policy_key.id === policyKeyItem.id;
                 });
                 if(foundBenefitDetail){
