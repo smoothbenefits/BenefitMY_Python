@@ -74,10 +74,10 @@
                                     <a href="javascript:void(0);" ng-show="!option.disabled" ng-click="toggleBenefitOptionDisabled(option)">Disable</a>
                                     <a href="javascript:void(0);" ng-show="option.disabled" ng-click="toggleBenefitOptionDisabled(option)">Enable</a></td>
                                 <td b-option="{{option.name}}" field-name="total" ng-disabled="option.disabled">
-                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" />
+                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" ng-keypress="changeInputKeyPress($event)" ng-blur="lostFocusNoBlankHandler($event)">
                                 </td>
                                 <td b-option="{{option.name}}" field-name="employee" ng-disabled="option.disabled">
-                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" />
+                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" ng-keypress="changeInputKeyPress($event)" ng-blur="lostFocusNoBlankHandler($event)"/>
                                 </td>
                             </tr>
                         </tbody>
