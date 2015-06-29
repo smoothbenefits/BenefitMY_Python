@@ -100,17 +100,6 @@ var benefitsController = brokersControllers.controller(
         }
       };
 
-      $scope.medicalPolicyPredicate = 'orderIndex';
-
-      $scope.sortBy = function(predicate){
-        if ($scope.medicalPolicyPredicate === predicate){
-          $scope.medicalPolicyReverse = !$scope.medicalPolicyReverse;
-        }
-        else{
-          $scope.medicalPolicyPredicate = predicate;
-        }
-      };
-
       BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId).then(function(response) {
         $scope.lifeInsurancePlans = response;
       });
@@ -634,6 +623,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
    'benefitDetailsRepository',
    'BasicLifeInsuranceService',
    'currentUser',
+   'BenefitPolicyKeyService',
     function brokerAddHealthBenefits(
       $scope,
       $location,
@@ -642,29 +632,34 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       benefitPlanRepository,
       benefitDetailsRepository,
       BasicLifeInsuranceService,
-      currentUser){
+      currentUser,
+      BenefitPolicyKeyService){
 
       // Inherite scope from base 
       $controller('modalMessageControllerBase', {$scope: $scope});
 
       var clientId = $stateParams.clientId;
-      $scope.benefit = {
-        mandatory_pcp: false, 
-        benefit_type:'',
-        benefit_option_types: [
-          {name:'Individual', disabled: false},
-          {name:'Individual plus Spouse', disabled: false},
-          {name:'Individual plus One', disabled: false},
-          {name:'Individual plus Children', disabled: false},
-          {name:'Individual plus Family', disabled: false}],
+      
+      // Reset/reinitialize the model in scope
+      var resetModel = function(selectedBenefitType) {
+        if (!selectedBenefitType) {
+            selectedBenefitType = '';
+        }
+
+        $scope.benefit = {
+            mandatory_pcp: false, 
+            benefit_type: selectedBenefitType,
+            benefit_option_types: [
+              {name:'Individual', disabled: false},
+              {name:'Individual plus Spouse', disabled: false},
+              {name:'Individual plus One', disabled: false},
+              {name:'Individual plus Children', disabled: false},
+              {name:'Individual plus Family', disabled: false}],
+          };
       };
-      $('#benefit_type_select').on('change', function(){
-        var optionTypeInputs = $('#plan_option_table').find('input');
-        _.each(optionTypeInputs, function(input){
-          $(input).on('keypress', changeInputKeyPress);
-          $(input).on('blur', lostFocusNoBlankHandler);
-        });
-      });
+      // Initialize the model in scope
+      resetModel();
+
       $scope.isTypeMedical = function(benefitType){
         return benefitType === 'Medical';
       };
@@ -680,19 +675,11 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         $location.path('/broker/benefits/'+clientId);
       };
 
-      $scope.policyKeyArray = [
-        {position:0, name:'Individual Deductible'},
-        {position:1, name:'Family Deductible'},
-        {position:2, name:'Hospital-Inpatient'},
-        {position:3, name:'Out-patient Day Surgery'},
-        {position:4, name:'MRI/CT/PET Scans'},
-        {position:5, name:'Lab work/X-Ray'},
-        {position:6, name:'Chiropractic'},
-        {position:7, name:'Prescription Drugs-30 days'},
-        {position:8, name:'Mail order drugs-90 days'},
-        {position:9, name:'Annual Rx out of Pocket Maximum'},
-        {position:10, name:'Annual Medical out of Pocket Maximum'},
-        {position:11, name:'Primary Care Physician required'}];
+      $scope.policyKeyArray = [];
+
+      BenefitPolicyKeyService.getAllKeys().then(function(allKeys) {
+        $scope.policyKeyArray = allKeys;   
+      });
 
       $scope.benefitDetailArray = [];
       $scope.columnCount = 1;
@@ -946,6 +933,8 @@ var brokerAddHealthBenefits = brokersControllers.controller(
 
 
       $scope.handleElementEvent = handleEditElement;
+      $scope.changeInputKeyPress = changeInputKeyPress;
+      $scope.lostFocusNoBlankHandler = lostFocusNoBlankHandler;
 
       var validateBenefitFields = function(){
         //validate option fields
@@ -1075,6 +1064,12 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             return;
           });
       };
+
+      // Reset the model in scope.
+      $scope.resetModel = function(selectedBenefitType) {
+        $scope.form.$setPristine()
+        resetModel(selectedBenefitType);
+      }
 
       $scope.mandatoryPcpUpdated = function(benefit){
         if(!benefit.mandatory_pcp){
