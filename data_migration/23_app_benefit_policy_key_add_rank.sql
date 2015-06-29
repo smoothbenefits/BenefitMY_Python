@@ -26,7 +26,7 @@ BEGIN
         IF NOT EXISTS (select 1 from app_benefitpolicykey where trim(name) = item[1]) 
         THEN
             insert into app_benefitpolicykey (name, rank) 
-            values(item[1], item[2]);
+            values(item[1], item[2]::integer);
         ELSE 
             update app_benefitpolicykey
             set rank = item[2] :: integer
