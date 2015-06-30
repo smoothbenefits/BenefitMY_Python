@@ -836,8 +836,8 @@ var onboardTax = employeeControllers.controller('onboardTax',
 }]);
 
 var onboardComplete = employeeControllers.controller('onboardComplete',
-  ['$scope', '$stateParams', '$location', 'employeeSignature', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, employeeSignature, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', '$state', 'employeeSignature', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, $state, employeeSignature, EmployeePreDashboardValidationService){
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
 
@@ -881,7 +881,7 @@ var onboardComplete = employeeControllers.controller('onboardComplete',
         };
         employeeSignature.save({userId: $scope.employeeId}, contract,
           function(){
-            $location.path('/employee');
+            $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
           }, function(){
             alert('Failed to submit signature');
           });
@@ -2282,6 +2282,7 @@ var employeeFamilyController = employeeControllers.controller(
     $modal,
     PersonService){
 
+    $('body').removeClass('onboarding-page');
     var selfPerson = null;
     $scope.employeeId = $stateParams.employeeId;
     $scope.family=[];
@@ -2348,6 +2349,8 @@ var employeeFamilyController = employeeControllers.controller(
         }
       });
     };
+
+    $scope.isOnboarding = $stateParams.onboard === 'true';
   }        
 ]);
 
