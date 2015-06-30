@@ -9,10 +9,10 @@ DECLARE
         ['MRI/CT/PET Scans', '500'],
         ['Lab work/X-Ray', '400'],
         ['Chiropractic', '300'],
-        ['Prescription Drugs-30 days', '1000'],
-        ['Mail order drugs-90 days', '1100'],
-        ['Annual Rx out of Pocket Maximum', '900'],
-        ['Annual Medical out of Pocket Maximum', '800'],
+        ['Prescription Drugs - 30 days', '1000'],
+        ['Mail order drugs - 90 days', '1100'],
+        ['Annual Rx out of Pocket Maximum - single/family', '900'],
+        ['Annual Medical out of Pocket Maximum - single/family', '800'],
         ['Primary Care Physician required', '1200'],
         ['Office Visit Copay (PCP/Specialist)', '230'],
         ['Preventative Office Visits, including related tests', '240'],
@@ -21,6 +21,24 @@ DECLARE
     ];
 BEGIN
 
+    -- First update names where appliable
+    update app_benefitpolicykey
+    set name = 'Prescription Drugs - 30 days'
+    where name = 'Prescription Drugs-30 days';
+
+    update app_benefitpolicykey
+    set name = 'Mail order drugs - 90 days'
+    where name = 'Mail order drugs-90 days';
+
+    update app_benefitpolicykey
+    set name = 'Annual Rx out of Pocket Maximum - single/family'
+    where name = 'Annual Rx out of Pocket Maximum';
+
+    update app_benefitpolicykey
+    set name = 'Annual Medical out of Pocket Maximum - single/family'
+    where name = 'Annual Medical out of Pocket Maximum';
+
+    -- Now, fill in the items where missing, and update items accoridngly
     FOREACH item SLICE 1 IN ARRAY item_array
     LOOP
         IF NOT EXISTS (select 1 from app_benefitpolicykey where trim(name) = item[1]) 

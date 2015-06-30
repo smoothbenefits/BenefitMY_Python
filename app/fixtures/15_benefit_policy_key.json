@@ -57,7 +57,7 @@
   },
   {
     "fields": {
-      "name": "Prescription Drugs-30 days",
+      "name": "Prescription Drugs - 30 days",
       "rank": "1000"
     },
     "model": "app.benefitpolicykey",
@@ -65,7 +65,7 @@
   },
   {
     "fields": {
-      "name": "Mail order drugs-90 days",
+      "name": "Mail order drugs - 90 days",
       "rank": "1100"
     },
     "model": "app.benefitpolicykey",
@@ -73,7 +73,7 @@
   },
   {
     "fields": {
-      "name": "Annual Rx out of Pocket Maximum",
+      "name": "Annual Rx out of Pocket Maximum - single/family",
       "rank": "900"
     },
     "model": "app.benefitpolicykey",
@@ -81,7 +81,7 @@
   },
   {
     "fields": {
-      "name": "Annual Medical out of Pocket Maximum",
+      "name": "Annual Medical out of Pocket Maximum - single/family",
       "rank": "800"
     },
     "model": "app.benefitpolicykey",
