@@ -1,11 +1,12 @@
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from app.service.hash_key_service import HashKeyService
 
 from app.models.person import Person
 from app.models.enrolled import Enrolled
 from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
-from app.models.fsa.fsa_plan import FsaPlan
+from app.models.fsa.fsa import FSA
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.insurance.person_comp_suppl_life_insurance_plan import \
     PersonCompSupplLifeInsurancePlan
@@ -16,26 +17,32 @@ from app.models.insurance.user_company_ltd_insurance_plan import \
 from app.models.insurance.user_company_std_insurance_plan import \
     UserCompanyStdInsurancePlan
 
-from app.serializers.person_serializer import PersonSimpleSerializer
+from app.serializers.person_serializer import PersonSerializer
 from app.serializers.enrolled_serializer import EnrolledSerializer
 from app.serializers.user_company_waived_benefit_serializer import \
     UserCompanyWaivedBenefitSerializer
 from app.serializers.fsa.fsa_serializer import FsaSerializer
 from app.serializers.hra.person_company_hra_plan_serializer import \
     PersonCompanyHraPlanSerializer
-from app.serializers.insurance.* import (
-    PersonCompanySupplementalLifeInsurancePlanSerializer,
-    UserCompanyLifeInsuranceSerializer,
-    UserCompanyLtdInsuranceSerializer,
-    UserCompanyStdInsuranceSerializer)
+from app.serializers.insurance.person_company_supplemental_life_insurance_plan_serializer import \
+    PersonCompanySupplementalLifeInsurancePlanSerializer
+from app.serializers.insurance.user_company_life_insurance_serializer import \
+    UserCompanyLifeInsuranceSerializer
+from app.serializers.insurance.user_company_ltd_insurance_serializer import \
+    UserCompanyLtdInsuranceSerializer
+from app.serializers.insurance.user_company_std_insurance_serializer import \
+    UserCompanyStdInsuranceSerializer
 
 class PersonEnrollmentSummaryView(APIView):
     """ Benefit enrollment status for a person """
+    def __init__(self):
+        self.hash_service = HashKeyService()
+
     def get_person_info(self, person_id):
         try:
             person = Person.objects.get(pk=person_id)
-            serializer = PersonSimpleSerializer(person)
-            return person
+            serializer = PersonSerializer(person)
+            return serializer.data
         except Person.DoesNotExist:
             raise Http404
 
@@ -45,43 +52,43 @@ class PersonEnrollmentSummaryView(APIView):
         return serializer.data
 
     def get_health_benefit_waive(self, user_id):
-        waived = UserCompanyWaivedBenefit(user=user_id)
-        serializer = UserCompanyWaivedBenefitSerializer(waived, required=False)
+        waived = UserCompanyWaivedBenefit.objects.filter(user=user_id)
+        serializer = UserCompanyWaivedBenefitSerializer(waived, required=False, many=True)
         return serializer.data
 
     def get_hra_plan(self, person_id):
         hra_plan = PersonCompanyHraPlan.objects.filter(person=person_id)
-        serializer = PersonCompanyHraPlanSerializer(hra_plan, required=False)
+        serializer = PersonCompanyHraPlanSerializer(hra_plan, required=False, many=True)
         return serializer.data
 
     def get_fsa_plan(self, user_id):
-        fsa_plan = FsaPlan.objects.filter(user=user_id)
+        fsa_plan = FSA.objects.get(user=user_id)
         serializer = FsaSerializer(fsa_plan, required=False)
         return serializer.data
 
     def get_life_insurance(self, user_id):
         life_insurance = UserCompanyLifeInsurancePlan.objects.filter(user=user_id)
-        serializer = UserCompanyLifeInsuranceSerializer(life_insurance, required=False)
+        serializer = UserCompanyLifeInsuranceSerializer(life_insurance, required=False, many=True)
         return serializer.data
 
     def get_supplimental_life_insurance(self, person_id):
         supplimental_life = PersonCompSupplLifeInsurancePlan.objects.filter(person=person_id)
-        serializer = PersonCompanySupplementalLifeInsurancePlanSerializer(supplimental_life, required=False)
+        serializer = PersonCompanySupplementalLifeInsurancePlanSerializer(supplimental_life, required=False, many=True)
         return serializer.data
 
     def get_std_insurance(self, user_id):
         std_insurance = UserCompanyStdInsurancePlan.objects.filter(user=user_id)
-        serializer = UserCompanyStdInsuranceSerializer(std_insurance, required=False)
+        serializer = UserCompanyStdInsuranceSerializer(std_insurance, required=False, many=True)
         return serializer.data
 
     def get_ltd_insurance(self, user_id):
         ltd_insurance = UserCompanyLtdInsurancePlan.objects.filter(user=user_id)
-        serializer = UserCompanyLtdInsuranceSerializer(ltd_insurance, required=False)
+        serializer = UserCompanyLtdInsuranceSerializer(ltd_insurance, required=False, many=True)
         return serializer.data
 
     def get(self, request, person_id, format=None):
         person_info = self.get_person_info(person_id)
-        user_id = person_info['user']
+        user_id = self.hash_service.decode_key(person_info['user'])
 
         health_benefit = self.get_health_benefit_enrollment(person_id)
         health_benefit_waived = self.get_health_benefit_waive(user_id)
