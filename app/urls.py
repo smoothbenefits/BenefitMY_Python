@@ -305,25 +305,20 @@ urlpatterns = patterns('app.views',
 
     # Reporting API
     url(r'^%s/person/(?P<person_id>\w+)/benefits/?$' % PREFIX,
-        PersonEnrollmentSummaryView.as_view(), name='person_benefit_summary_api')
+        PersonEnrollmentSummaryView.as_view(), name='person_benefit_summary_api'),
 
     # upload API
     url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX, UserUploadView.as_view(), name='uploads_by_user'),
 
     # GET PUT and DELETE
-    url(r'^%s/upload/(?P<pk>\w+)/?$' % PREFIX,
-        UploadView.as_view(),
-        name='upload_api'),
+    url(r'^%s/upload/(?P<pk>\w+)/?$' % PREFIX, UploadView.as_view(), name='upload_api'),
 
     url(r'^%s/companies/(?P<comp_id>\w+)/uploads/(?P<pk>\w+)/?$' % PREFIX,
-        get_company_uploads,
-        name='get_comp_uploads'),
+        get_company_uploads, name='get_comp_uploads'),
     url(r'^%s/upload/application_features/(?P<pk>\w+)/(?P<feature_id>\w+)/?$' % PREFIX,
-        UploadApplicationFeatureView.as_view(),
-        name='uploads_application_feature_api'),
+        UploadApplicationFeatureView.as_view(), name='uploads_application_feature_api'),
     url(r'^%s/upload/audience/(?P<comp_id>\w+)/?$' % PREFIX,
-        UploadAudienceByCompanyView.as_view(),
-        name='upload_audience_api'),
+        UploadAudienceByCompanyView.as_view(), name='upload_audience_api'),
 
     url(r'^%s/employee_profile/(?P<pk>\w+)/?$' % PREFIX,
         EmployeeProfileView.as_view(),
