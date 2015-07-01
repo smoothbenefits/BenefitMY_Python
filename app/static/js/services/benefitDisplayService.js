@@ -3,8 +3,10 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('benefitDisplayService',
   ['benefitListRepository',
    'benefitDetailsRepository',
+   'BenefitPolicyKeyService',
    function(benefitListRepository,
-            benefitDetailsRepository){
+            benefitDetailsRepository,
+            BenefitPolicyKeyService){
     return function(companyId, showEmployeePremium, populatedFunc){
 
         var populateMedicalArray = function(array, benefitOption){
@@ -33,7 +35,7 @@ benefitmyService.factory('benefitDisplayService',
         }
 
 
-        var convertToDisplayGroup = function(group, medicalArray){
+        var convertToDisplayGroup = function(group, medicalArray, benefitPolicyKeys){
 
 
           var optionNameList = [];
@@ -46,15 +48,7 @@ benefitmyService.factory('benefitDisplayService',
           });
 
 
-          var policyKeyArray = [];
-          _.each(medicalArray, function(benefit){
-            _.each(benefit.detailsArray, function(detail){
-              var foundKeyItem = _.findWhere(policyKeyArray, {id:detail.benefit_policy_key.id});
-              if(!foundKeyItem){
-                policyKeyArray.push({id:detail.benefit_policy_key.id, name:detail.benefit_policy_key.name});
-              }
-            });
-          });
+          var policyKeyArray = benefitPolicyKeys;
 
           _.each(medicalArray, function(benefit){
 
@@ -213,7 +207,8 @@ benefitmyService.factory('benefitDisplayService',
         var medicalArray = [];
         var benefitCount = 0;
 
-        benefitListRepository.get({clientId:companyId})
+        BenefitPolicyKeyService.getAllKeys().then(function(benefitPolicyKeys) {
+            benefitListRepository.get({clientId:companyId})
             .$promise.then(function(response){
                 _.each(response.benefits, function(benefitOption){
                     if(benefitOption.benefit_plan.benefit_type.name === 'Medical'){
@@ -234,7 +229,7 @@ benefitmyService.factory('benefitDisplayService',
                         //make sure all the details array elements are all initialized.
                         var unInitDetailsArray = _.find(sortedMedicalArray, function(bt){return !bt.detailsArray});
                         if(!unInitDetailsArray){
-                          convertToDisplayGroup(medicalBenefitGroup, sortedMedicalArray);
+                          convertToDisplayGroup(medicalBenefitGroup, sortedMedicalArray, benefitPolicyKeys);
                           if(populatedFunc){
                             benefitCount = calculateBenefitCount(medicalBenefitGroup, nonMedicalBenefitArray);
                             populatedFunc(medicalBenefitGroup, nonMedicalBenefitArray, benefitCount);
@@ -249,5 +244,6 @@ benefitmyService.factory('benefitDisplayService',
                 }
 
             });
+        });
     };
 }]);
