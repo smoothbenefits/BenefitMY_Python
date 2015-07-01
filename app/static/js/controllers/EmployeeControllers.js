@@ -2214,7 +2214,7 @@ var benefitSignupSummary = employeeControllers.controller(
 
        var employeeId = $scope.employeeId;
        $scope.companyIdPromise.then(function (companyId){
-         BenefitSummaryService.getBenefitEnrollmentForUser(employeeId, companyId)
+         BenefitSummaryService.getBenefitEnrollmentByUser(employeeId, companyId)
          .then(function(enrollments){
            $scope.enrollments = enrollments;
          }, function(error){
@@ -2222,7 +2222,7 @@ var benefitSignupSummary = employeeControllers.controller(
          });
        });
 
-       $scope.enrollNow = function (){
+       $scope.enrollNow = function(){
          $state.go('employee_benefit_signup');
        };
 

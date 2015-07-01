@@ -62,9 +62,12 @@ class PersonEnrollmentSummaryView(APIView):
         return serializer.data
 
     def get_fsa_plan(self, user_id):
-        fsa_plan = FSA.objects.get(user=user_id)
-        serializer = FsaSerializer(fsa_plan, required=False)
-        return serializer.data
+        try:
+            fsa_plan = FSA.objects.get(user=user_id)
+            serializer = FsaSerializer(fsa_plan, required=False)
+            return serializer.data
+        except FSA.DoesNotExist:
+            return None
 
     def get_life_insurance(self, user_id):
         life_insurance = UserCompanyLifeInsurancePlan.objects.filter(user=user_id)

@@ -33,6 +33,23 @@ class PersonEnrollmentSummaryTestCase(TestCase, ViewTestBase):
         self.assertIn('std', summary)
         self.assertIn('ltd', summary)
 
+    def test_get_person_enrollment_summary_not_enrolled(self):
+        response = self.client.get(reverse('person_benefit_summary_api', kwargs={'person_id': self.normalize_key(5)}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.content, '')
+        summary = json.loads(response.content)
+        print summary
+        self.assertIn('person', summary)
+        self.assertIn('health_benefit_enrolled', summary)
+        self.assertIn('health_benefit_waived', summary)
+        self.assertIn('hra', summary)
+        self.assertIn('fsa', summary)
+        self.assertIn('basic_life', summary)
+        self.assertIn('supplemental_life', summary)
+        self.assertIn('std', summary)
+        self.assertIn('ltd', summary)
+
     def test_get_person_enrollment_summary_not_exist(self):
         response = self.client.get(reverse('person_benefit_summary_api', kwargs={'person_id': self.normalize_key(100)}))
         self.assertIsNotNone(response)
