@@ -5,7 +5,7 @@ benefitmyService.factory('BenefitSummaryService',
   'PersonService',
   'PersonBenefitEnrollmentRepository',
   'CompanyBenefitAvailabilityRepository',
-  function BenefitSummaryService
+  function BenefitSummaryService(
     $q,
     PersonService,
     PersonBenefitEnrollmentRepository,
@@ -39,7 +39,7 @@ benefitmyService.factory('BenefitSummaryService',
       PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
         var personId = personInfo.id;
         PersonBenefitEnrollmentRepository.BenefitEnrollmentByPerson.get({personId: personId})
-        .then(function(enrollments) {
+        .$promise.then(function(enrollments) {
           var viewPersonBenefits = mapPersonBenefitToViewModel(enrollments);
           deferred.resolve(viewPersonBenefits);
         }, function(error) {

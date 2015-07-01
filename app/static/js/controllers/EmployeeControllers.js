@@ -836,8 +836,8 @@ var onboardTax = employeeControllers.controller('onboardTax',
 }]);
 
 var onboardComplete = employeeControllers.controller('onboardComplete',
-  ['$scope', '$stateParams', '$location', '$state', 'employeeSignature', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, $state, employeeSignature, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', 'employeeSignature', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, employeeSignature, EmployeePreDashboardValidationService){
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
 
@@ -881,7 +881,7 @@ var onboardComplete = employeeControllers.controller('onboardComplete',
         };
         employeeSignature.save({userId: $scope.employeeId}, contract,
           function(){
-            $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
+            $location.path('/employee');
           }, function(){
             alert('Failed to submit signature');
           });
@@ -1452,10 +1452,7 @@ var healthBenefitsSignup = employeeControllers.controller(
 
             saveRequest.record_reason = updateReason;
             employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
-              var modalInstance = $scope.showSaveSuccessModal();
-              modalInstance.result.then(function(){
-                $scope.transitionToNextTab($scope.tabs);
-              });
+              $scope.showSaveSuccessModal();
               $scope.myForm.$setPristine();
             }, function(){
               $scope.savedSuccess = false;
@@ -1566,10 +1563,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
             $scope.fsaElection.company_fsa_plan = $scope.fsaPlan.companyPlanId;
             FsaService.saveFsaElection($scope.fsaElection, $scope.updateReason
               , function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
+                $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
               }
               , function() {
@@ -1676,10 +1670,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           if (!$scope.basicLifeInsurancePlan.selected){
             BasicLifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
               , function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
+                $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
               }
               , function(error) {
@@ -1704,10 +1695,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
 
               BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, $scope.updateReason
               , function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
+                $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
               }
               , function(error){
@@ -1951,10 +1939,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             // Waive selected. Delete all user plans for this user
             SupplementalLifeInsuranceService.deletePlansForUser(employeeId).then(
               function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
+                $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
               }
               , function(error) {
@@ -1981,10 +1966,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
 
             SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
               function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
+                $scope.showSaveSuccessModal();
                 $scope.myForm.$setPristine();
               }
               , function(error) {
@@ -2060,10 +2042,7 @@ var stdBenefitsSignup = employeeControllers.controller(
 
             savePromise.then(
                 function() {
-                    var modalInstance = $scope.showSaveSuccessModal();
-                    modalInstance.result.then(function(){
-                      $scope.transitionToNextTab($scope.tabs);
-                    });
+                    $scope.showSaveSuccessModal();
                     $scope.myForm.$setPristine();
                 }
               , function(error) {
@@ -2136,10 +2115,7 @@ var ltdBenefitsSignup = employeeControllers.controller(
 
             savePromise.then(
                 function() {
-                    var modalInstance = $scope.showSaveSuccessModal();
-                    modalInstance.result.then(function(){
-                      $scope.transitionToNextTab($scope.tabs);
-                    });
+                    $scope.showSaveSuccessModal();
                     $scope.myForm.$setPristine();
                 }
               , function(error) {
@@ -2205,10 +2181,7 @@ var hraBenefitsSignup = employeeControllers.controller(
 
             savePromise.then(
                 function() {
-                    var modalInstance = $scope.showSaveSuccessModal();
-                    modalInstance.result.then(function(){
-                      $scope.transitionToNextTab($scope.tabs);
-                    });
+                    $scope.showSaveSuccessModal();
                     $scope.myForm.$setPristine();
                 }
               , function(error) {
@@ -2241,7 +2214,7 @@ var benefitSignupSummary = employeeControllers.controller(
 
        var employeeId = $scope.employeeId;
        $scope.companyIdPromise.then(function (companyId){
-         BenefitSummaryService.getBenefitEnrollmentForUser(employeeId, companyId)
+         BenefitSummaryService.getBenefitEnrollmentByUser(employeeId, companyId)
          .then(function(enrollments){
            $scope.enrollments = enrollments;
          }, function(error){
@@ -2249,7 +2222,7 @@ var benefitSignupSummary = employeeControllers.controller(
          });
        });
 
-       $scope.enrollNow = function (){
+       $scope.enrollNow = function(){
          $state.go('employee_benefit_signup');
        };
 
@@ -2310,33 +2283,7 @@ var benefitsSignupControllerBase = employeeControllers.controller(
               }
             }
           });
-          return modalInstance;
         };
-
-        $scope.transitionToNextTab = function(tabList){
-          var sortedTabList = _.sortBy(tabList, 'id');
-
-          var curTab = null;
-          var curTabIndex = 0;
-          var listSize = _.size(sortedTabList);
-          for(var i=0; i<listSize; i++){
-            curTab = sortedTabList[i];
-            curTabIndex = i;
-            if(curTab.active){
-              break;
-            }
-          }
-          curTab.active = false;
-          if(curTabIndex + 1 >= listSize){
-            $state.go('/employee');
-          }
-          else{
-            nextTab = sortedTabList[curTabIndex + 1];
-            nextTab.active = true;
-            $state.go(curTab.next);
-          }
-
-        }
 
     }]);
 
@@ -2374,7 +2321,6 @@ var employeeFamilyController = employeeControllers.controller(
     $modal,
     PersonService){
 
-    $('body').removeClass('onboarding-page');
     var selfPerson = null;
     $scope.employeeId = $stateParams.employeeId;
     $scope.family=[];
@@ -2441,7 +2387,6 @@ var employeeFamilyController = employeeControllers.controller(
         }
       });
     };
-    $scope.isOnboarding = $stateParams.onboard === 'true';
   }
 ]);
 
