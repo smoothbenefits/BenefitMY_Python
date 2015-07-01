@@ -28,6 +28,7 @@ var employerHome = employersController.controller('employerHome',
     $scope.employeeCount = 0;
     $scope.brokerCount = 0;
     $scope.benefitCount = 0;
+    $scope.benefitEnrollCount = 0;
     $scope.templateCountArray = [];
 
     var getTemplates = function(company){
@@ -76,21 +77,32 @@ var employerHome = employersController.controller('employerHome',
     };
 
     var getBenefitElectionCount = function(company){
-      var selectedEmployeeArray = [];
-      BenefitElectionService.getBenefitElectionsByCompany(company.id, 
-        function(benefitSelectionArray){
-          _.each(benefitSelectionArray, function(benefitItem){
-            var existingEmployee = _.find(selectedEmployeeArray, function(employee){
-              return employee.userId === selectedEmployeeArray.userId;
-            });
-            if(!existingEmployee){
-              selectedEmployeeArray.push(benefitItem);
-            }
+      BenefitElectionService.getBenefitElectionsByCompany(company.id)
+      .then(function(benefitSelectionArray){
+        var selectedEmployeeArray = [];
+        _.each(benefitSelectionArray, function(benefitItem){
+          var existingEmployee = _.find(selectedEmployeeArray, function(employee){
+            return employee.userId === benefitItem.userId;
           });
-          $scope.benefitEnrollCount = _.size(selectedEmployeeArray);
-        }, function(error){
-
+          if(!existingEmployee){
+            selectedEmployeeArray.push(benefitItem);
+          }
         });
+        $scope.benefitEnrollCount += _.size(selectedEmployeeArray);
+      });
+      BenefitElectionService.getBenefitWaivedListByCompany(company.id)
+      .then(function(waivedList){
+        waivedEmployeeArray = [];
+        _.each(waivedList, function(waivedItem){
+          var existingEmployee = _.find(waivedEmployeeArray, function(employee){
+            return employee.userId == waivedItem.userId;
+          });
+          if(!existingEmployee){
+            waivedEmployeeArray.push(waivedItem);
+          }
+        });
+        $scope.benefitEnrollCount += _.size(waivedEmployeeArray);
+      })
     };
 
     var userPromise = currentUser.get()

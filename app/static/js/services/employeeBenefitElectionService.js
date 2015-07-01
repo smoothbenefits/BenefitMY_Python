@@ -15,21 +15,27 @@ benefitmyService.factory('employeeBenefitElectionService',
               return employee.user.id === benefitSelectionItem.userId;
             });
             if (existEmployee){
-              if(!existEmployee.benefits){
-                existEmployee.benefits = [];
+              if(!existEmployee.selectedBenefits){
+                existEmployee.selectedBenefits = [];
               }
-              existEmployee.benefits.push(benefitSelectionItem);
-              existEmployee.updated = benefitSelectionItem.lastUpdatedTime;
-              if(!existEmployee.waivedList){
-                existEmployee.waivedList = [];
-              }
-              if(benefitSelectionItem.waivedList && benefitSelectionItem.updated){
-                existEmployee.waivedList = benefitSelectionItem.waivedList;
-                existEmployee.updated = benefitSelectionItem.updated;
-              }
+              existEmployee.selectedBenefits.push(benefitSelectionItem);
             }
           });
         };
+
+        var addWaivedToEmployeeList = function(waviedList){
+          _.each(waviedList, function(waivedItem){
+            var existEmployee = _.find(employeeList, function(employee){
+              return employee.user.id === waivedItem.userId;
+            });
+            if (existEmployee){
+              if(!existEmployee.waivedList){
+                existEmployee.waivedList = [];
+              }
+              existEmployee.waivedList.push(waivedItem);
+            }
+          });
+        }
 
         employerWorkerRepository.get({companyId: companyId})
         .$promise.then(function(users){
@@ -40,20 +46,22 @@ benefitmyService.factory('employeeBenefitElectionService',
             }
           });
           
-          BenefitElectionService.getBenefitElectionsByCompany(companyId, function(array){
+          BenefitElectionService.getBenefitElectionsByCompany(companyId)
+          .then(function(array){
             addBenefitPlanToSelectionList(array);
-             _.each(employeeList, function(employee){
-                if(!employee.benefits){
-                  employee.updated = 'N/A';
-                  employee.benefits = [];
-                  employee.benefits.push({selectedPlanName:'No Selection', lastUpdatedTime:'N/A', enrolled:[{name:'N/A'}]});
-                }
-                if(!employee.waivedList){
-                  employee.waivedList = [];
-                  employee.waivedList.push('N/A');
+            _.each(employeeList, function(employee){
+                if(!employee.selectedBenefits){
+                  employee.selectedBenefits = [];
+                  employee.selectedBenefits.push({selectedPlanName:'No Selection', lastUpdatedTime:'N/A', enrolled:[{name:'N/A'}]});
                 }
               });
-             deferred.resolve(employeeList);
+            BenefitElectionService.getBenefitWaivedListByCompany(companyId)
+            .then(function(waivedList){
+              addWaivedToEmployeeList(waivedList);
+              deferred.resolve(employeeList);
+            }, function(errorResponse){
+              deferred.reject(errorResponse);
+            });
           }, function(errorResponse){
             deferred.reject(errorResponse);
           });

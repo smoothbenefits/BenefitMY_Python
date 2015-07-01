@@ -3,7 +3,7 @@ var employeeControllers = angular.module('benefitmyApp.employees.controllers',[]
 var employeeHome = employeeControllers.controller('employeeHome',
   ['$scope',
    '$location',
-   '$state', 
+   '$state',
    '$stateParams',
    '$modal',
    'clientListRepository',
@@ -14,14 +14,14 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'FsaService',
    'BasicLifeInsuranceService',
    'SupplementalLifeInsuranceService',
-   'employeePayrollService', 
+   'employeePayrollService',
    'EmploymentProfileService',
    'DirectDepositService',
    'StdService',
    'LtdService',
    'HraService',
    'DocumentService',
-   'CompanyFeatureService', 
+   'CompanyFeatureService',
   function ($scope,
             $location,
             $state,
@@ -99,7 +99,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
         });
       }
     });
-     
+
      $scope.ViewDocument = function(documentId){
          $location.path('/employee/document/' + documentId);
      };
@@ -158,7 +158,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
     });
 
     $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
-        return (!employeeFamilyLifeInsurancePlan) 
+        return (!employeeFamilyLifeInsurancePlan)
           || (!employeeFamilyLifeInsurancePlan.mainPlan)
           || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
       };
@@ -238,7 +238,7 @@ var employeePayroll = employeeControllers.controller('employeePayrollController'
   ['$scope',
    '$state',
    'tabLayoutGlobalConfig',
-   function($scope, 
+   function($scope,
             $state,
             tabLayoutGlobalConfig){
     $scope.section = _.findWhere(tabLayoutGlobalConfig, {section_name: 'employee_payroll'});
@@ -253,17 +253,17 @@ var employeePayroll = employeeControllers.controller('employeePayrollController'
    }
   ]);
 
-var employeeW4Controller = employeeControllers.controller('employeeW4Controller', 
+var employeeW4Controller = employeeControllers.controller('employeeW4Controller',
   ['$scope',
    '$state',
    '$window',
-   'currentUser', 
-   'employeePayrollService', 
+   'currentUser',
+   'employeePayrollService',
    'utilityServcie',
-   function($scope, 
+   function($scope,
             $state,
             $window,
-            currentUser, 
+            currentUser,
             employeePayrollService,
             utilityServcie){
     var userPromise = currentUser.get().$promise.then(function(response){
@@ -329,9 +329,9 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
 var employeeProfile = employeeControllers.controller('employeeProfileController',
   ['$scope',
    '$state',
-   'tabLayoutGlobalConfig', 
-   function ($scope, 
-             $state, 
+   'tabLayoutGlobalConfig',
+   function ($scope,
+             $state,
              tabLayoutGlobalConfig){
     $scope.section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_profile'});
 
@@ -345,12 +345,12 @@ var employeeProfile = employeeControllers.controller('employeeProfileController'
    }
   ]);
 
-var employeeI9Controller = employeeControllers.controller('employeeI9Controller', 
+var employeeI9Controller = employeeControllers.controller('employeeI9Controller',
   ['$scope',
    '$state',
    '$window',
-   'currentUser', 
-   'EmploymentProfileService', 
+   'currentUser',
+   'EmploymentProfileService',
    function($scope,
             $state,
             $window,
@@ -403,7 +403,7 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
         alert('Please download the I-9 document and acknowledge you have read the entire form above.');
         return;
       }
-      if($scope.employee.auth_type === 'Aaw' && !$scope.employee.expiration_na 
+      if($scope.employee.auth_type === 'Aaw' && !$scope.employee.expiration_na
          && !$scope.employee.auth_expiration) {
         alert('Please provide the expiration date for your work authorization document.');
         return;
@@ -428,17 +428,17 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
 
 var directDeposit = employeeControllers.controller('employeeDirectDepositController',
   ['$scope',
-   '$state', 
+   '$state',
    '$stateParams',
-   '$controller', 
-   '$modal', 
+   '$controller',
+   '$modal',
    'UserService',
    'DirectDepositService',
    function($scope,
-            $state,  
+            $state,
             $stateParams,
-            $controller, 
-            $modal, 
+            $controller,
+            $modal,
             UserService,
             DirectDepositService){
 
@@ -488,7 +488,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
       });
 
       modalInstance.result.then(function(account){
-        var successMessage = "Your direct deposit account has been saved. " + 
+        var successMessage = "Your direct deposit account has been saved. " +
               "You can return to dashboard through left navigation panel. " +
               "Or add another account using the button below.";
 
@@ -513,7 +513,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
 
         var directDeposit = DirectDepositService.mapViewDirectDepositToDto(account);
         DirectDepositService.deleteDirectDepositById(directDeposit).then(function(response){
-          var successMessage = "Your direct deposit account has been deleted. " + 
+          var successMessage = "Your direct deposit account has been deleted. " +
               "You can return to dashboard through left navigation panel. " +
               "Or add another account using the button below.";
 
@@ -522,7 +522,7 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
           // remove deteled account from $scope object
           $scope.directDepositAccounts = _.reject($scope.directDepositAccounts, {id: response.id});
         }, function(error){
-          var errorMessage = "Error occurred when tried to delete your direct deposit account. " + 
+          var errorMessage = "Error occurred when tried to delete your direct deposit account. " +
               "Please try again later. Error message: " + error;
           $scope.showMessageWithOkayOnly('Error', errorMessage);
         });
@@ -545,7 +545,7 @@ var directDepositModalController = employeeControllers.controller('directDeposit
              DirectDepositService,
              directDepositAccount,
              userId){
-      
+
       $scope.errorMessage = null;
       $scope.account = directDepositAccount;
       $scope.bankAccountTypes = ['Checking', 'Saving'];
@@ -635,17 +635,17 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$state
 }]);
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
-  ['$scope', 
-   '$stateParams', 
-   '$location', 
-   'PersonService', 
-   'currentUser', 
+  ['$scope',
+   '$stateParams',
+   '$location',
+   'PersonService',
+   'currentUser',
    'EmployeePreDashboardValidationService',
-  function($scope, 
-           $stateParams, 
-           $location, 
-           PersonService, 
-           currentUser, 
+  function($scope,
+           $stateParams,
+           $location,
+           PersonService,
+           currentUser,
            EmployeePreDashboardValidationService){
 
     $scope.employee = {};
@@ -689,7 +689,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       auth_type: ''
     };
     $scope.employeeId = $stateParams.employee_id;
-            
+
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
@@ -964,7 +964,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
    'SupplementalLifeInsuranceService',
    'StdService',
    'LtdService',
-   'FsaService', 
+   'FsaService',
    'HraService',
     function employeeBenefitsSignup(
       $scope,
@@ -974,11 +974,11 @@ var employeeBenefitsSignup = employeeControllers.controller(
       BasicLifeInsuranceService,
       SupplementalLifeInsuranceService,
       StdService,
-      LtdService, 
+      LtdService,
       FsaService,
       HraService){
 
-      // Inherite scope from base 
+      // Inherite scope from base
       $controller('benefitsSignupControllerBase', {$scope: $scope});
 
       var employeeId = $scope.employeeId;
@@ -1018,17 +1018,17 @@ var employeeBenefitsSignup = employeeControllers.controller(
       });
 
       promise.then(function(result){
-        
+
         $scope.tabs = [];
         $scope.tabs.push({
-          "id": 1, 
+          "id": 1,
           "heading": "Health Benefits",
           "state":"employee_benefit_signup.health"
         });
 
         if (hraPlans.length > 0) {
           $scope.tabs.push({
-            "id": 2, 
+            "id": 2,
             "heading": "HRA",
             "state": "employee_benefit_signup.hra"
           });
@@ -1036,7 +1036,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if(basicLifePlans.length > 0) {
           $scope.tabs.push({
-            "id": 3, 
+            "id": 3,
             "heading": "Basic Life (AD&D)",
             "state":"employee_benefit_signup.basic_life"
           });
@@ -1052,7 +1052,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if (fsaPlans.length > 0) {
           $scope.tabs.push({
-            "id": 5, 
+            "id": 5,
             "heading": "FSA",
             "state": "employee_benefit_signup.fsa"
           });
@@ -1060,7 +1060,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if (stdPlans.length > 0) {
           $scope.tabs.push({
-            "id": 6, 
+            "id": 6,
             "heading": "STD",
             "state": "employee_benefit_signup.std"
           });
@@ -1068,11 +1068,17 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if (ltdPlans.length > 0) {
           $scope.tabs.push({
-            "id": 7, 
+            "id": 7,
             "heading": "LTD",
             "state": "employee_benefit_signup.ltd"
           });
         }
+
+        $scope.tabs.push({
+          "id": 7,
+          "heading": "Summary",
+          "state": "employee_benefit_signup.summary"
+        });
 
         // Always default to set the first tab be active.
         if ($scope.tabs.length > 0) {
@@ -1091,8 +1097,8 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
       // TODO:
       // This is the call back the confirm-unsaved-on-exit can call up on
-      // selection of "cancel". 
-      // Could there a be a less "by convention" way of doing this? Could 
+      // selection of "cancel".
+      // Could there a be a less "by convention" way of doing this? Could
       // we somehow pass a callback into the directive?
       $scope.state_exit_cancelled = function(originalState) {
         for (i = 0; i < $scope.tabs.length; i++) {
@@ -1132,7 +1138,7 @@ var healthBenefitsSignup = employeeControllers.controller(
       FsaService,
       BasicLifeInsuranceService){
 
-        // Inherite scope from base 
+        // Inherite scope from base
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
         var medicalPlans = [];
@@ -1290,7 +1296,7 @@ var healthBenefitsSignup = employeeControllers.controller(
                           }
                         });
                         if(!typedPlan.selected){
-                          //Now, we cannot find a selected benefit plan. 
+                          //Now, we cannot find a selected benefit plan.
                           //check if it is waived.
                           var waivedBenefitOfType = _.find($scope.waivedBenefits, function(waived){
                             return waived.benefit_type.id == typedPlan.type.id;
@@ -1301,7 +1307,7 @@ var healthBenefitsSignup = employeeControllers.controller(
                             });
                             typedPlan.selected.benefit.reason = waivedBenefitOfType.reason;
                           }
-                        
+
                         }
                       });
                     });
@@ -1430,7 +1436,7 @@ var healthBenefitsSignup = employeeControllers.controller(
             // Compose the update reason and attach it to the requests
             var updateReason = {
                 "record_reason_id": $scope.updateReason.selectedReason.id,
-                "record_reason_note": $scope.updateReason.notes  
+                "record_reason_note": $scope.updateReason.notes
             };
 
             if (!$scope.updateReason.notes) {
@@ -1438,12 +1444,12 @@ var healthBenefitsSignup = employeeControllers.controller(
             }
 
             saveRequest.waivedRequest.record_reason = updateReason;
-            employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){}, 
+            employeeBenefits.waive().save({userId: employeeId}, saveRequest.waivedRequest, function(){},
             function(errorResponse){
               alert('Saving waived selection failed because: ' + errorResponse.data);
               $scope.savedSuccess = false;
             });
-          
+
             saveRequest.record_reason = updateReason;
             employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
               $scope.showSaveSuccessModal();
@@ -1495,7 +1501,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
       FsaService,
       BasicLifeInsuranceService){
 
-        // Inherite scope from base 
+        // Inherite scope from base
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
         var employeeId = $scope.employeeId;
@@ -1534,7 +1540,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
             });
         });
 
-        // Whether the user has selected a reason for updating 
+        // Whether the user has selected a reason for updating
         // his/her FSA configuration.
         $scope.isFsaUpdateReasonSelected = function() {
           return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value > 0;
@@ -1597,8 +1603,8 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
       benefitDisplayService,
       FsaService,
       BasicLifeInsuranceService){
-        
-        // Inherite scope from base 
+
+        // Inherite scope from base
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
         var employeeId = $scope.employeeId;
@@ -1609,8 +1615,8 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = plans[0];
               $scope.basicLifeInsurancePlan.selected = true;
-              // Ideally, basicLifeInsurancePlan should be user basic life insurance plan 
-              // plans returned here are company life insurance plan, which should be a property of 
+              // Ideally, basicLifeInsurancePlan should be user basic life insurance plan
+              // plans returned here are company life insurance plan, which should be a property of
               // the basicLifeInsurancePlan rather than make the two parallel.
               $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = plans[0];
             }
@@ -1673,7 +1679,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           }
           else{
             BasicLifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
-              var enrolledBasic = _.find(enrolledPlans, function(plan){ 
+              var enrolledBasic = _.find(enrolledPlans, function(plan){
                 return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';
               });
               if (enrolledBasic){
@@ -1684,7 +1690,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               else{
                 $scope.basicLifeInsurancePlan.enrolled = false;
               }
-              
+
               $scope.basicLifeInsurancePlan.currentUserId = employeeId;
 
               BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, $scope.updateReason
@@ -1726,8 +1732,8 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
       SupplementalLifeInsuranceService,
       SupplementalLifeInsuranceConditionService,
       PersonService){
-        
-        // Inherite scope from base 
+
+        // Inherite scope from base
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
         var employeeId = $scope.employeeId;
@@ -1760,7 +1766,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
 
             // Populate available company plans
             _.each(plans, function(plan) {
-              $scope.companyPlans.push({ text: plan.planName, value: plan });  
+              $scope.companyPlans.push({ text: plan.planName, value: plan });
             });
 
             // Get current user's plan situation
@@ -1770,7 +1776,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
                 // enrollments found.
                 $scope.supplementalLifeInsurancePlan = plan;
 
-                // Figure out the right option to select, based on the 
+                // Figure out the right option to select, based on the
                 // current company plan bound to the person plan in scope
                 var optionToSelect = _.find($scope.companyPlans, function(option) {
                     return option.value && option.value.companyPlanId === $scope.supplementalLifeInsurancePlan.companyPlanId;
@@ -1788,7 +1794,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
                 // "Translate" condition to a more easily presentable/manipulatable property
                 $scope.supplementalLifeInsurancePlan.selfUseTobacco = $scope.supplementalLifeInsurancePlan.selfPlanCondition != null
                     && $scope.supplementalLifeInsurancePlan.selfPlanCondition.name === 'Tobacco';
-            
+
                 $scope.supplementalLifeInsurancePlan.spouseUseTobacco = $scope.supplementalLifeInsurancePlan.spousePlanCondition != null
                     && $scope.supplementalLifeInsurancePlan.spousePlanCondition.name === 'Tobacco';
             });
@@ -1850,7 +1856,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
 
             return {
                 'benefitReductionPercentage' : combinedRate.benefitReductionPercentage,
-                'rate' : $scope.supplementalLifeInsurancePlan.selfUseTobacco 
+                'rate' : $scope.supplementalLifeInsurancePlan.selfUseTobacco
                             ? combinedRate.tobaccoRate.ratePer10000
                             : combinedRate.nonTobaccoRate.ratePer10000
             };
@@ -1862,9 +1868,9 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             }
 
             // For spouse rate calculation, respect the flag set on the plan
-            // about whether to use employee birth date for spouse. 
+            // about whether to use employee birth date for spouse.
             var age = $scope.computeAgeFromBirthDate(
-                $scope.selectedCompanyPlan.value.useEmployeeAgeForSpouse 
+                $scope.selectedCompanyPlan.value.useEmployeeAgeForSpouse
                     ? $scope.familyInfo.selfPerson.birth_date
                     : $scope.familyInfo.spousePerson.birth_date);
 
@@ -1880,7 +1886,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
 
             return {
                 'benefitReductionPercentage' : combinedRate.benefitReductionPercentage,
-                'rate' : $scope.supplementalLifeInsurancePlan.spouseUseTobacco 
+                'rate' : $scope.supplementalLifeInsurancePlan.spouseUseTobacco
                     ? combinedRate.tobaccoRate.ratePer10000
                     : combinedRate.nonTobaccoRate.ratePer10000
             };
@@ -1899,8 +1905,8 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             if (!$scope.selfRateInfo) {
                 return 0;
             }
-            var premium = 
-                $scope.supplementalLifeInsurancePlan.selfElectedAmount 
+            var premium =
+                $scope.supplementalLifeInsurancePlan.selfElectedAmount
                     * (1.0 - $scope.selfRateInfo.benefitReductionPercentage / 100.0) / 10000 * $scope.selfRateInfo.rate;
             return premium.toFixed(2);
         }
@@ -1911,8 +1917,8 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             if (!$scope.spouseRateInfo) {
                 return 0;
             }
-            var premium = 
-                $scope.supplementalLifeInsurancePlan.spouseElectedAmount 
+            var premium =
+                $scope.supplementalLifeInsurancePlan.spouseElectedAmount
                    * (1.0 - $scope.spouseRateInfo.benefitReductionPercentage / 100.0) / 10000 * $scope.spouseRateInfo.rate;
             return premium.toFixed(2);
         }
@@ -1922,7 +1928,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             if (!rate) {
                 return 0;
             }
-            var premium = 
+            var premium =
                 $scope.supplementalLifeInsurancePlan.childElectedAmount / 10000 * rate;
             return premium.toFixed(2);
         }
@@ -1941,17 +1947,17 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
               }
             );
           } else {
-            $scope.supplementalLifeInsurancePlan.companyPlanId = $scope.selectedCompanyPlan.value.companyPlanId; 
+            $scope.supplementalLifeInsurancePlan.companyPlanId = $scope.selectedCompanyPlan.value.companyPlanId;
 
             // Translate convenient view model properties back to the proper nested
             // members
-            $scope.supplementalLifeInsurancePlan.selfPlanCondition = $scope.supplementalLifeInsurancePlan.selfUseTobacco 
+            $scope.supplementalLifeInsurancePlan.selfPlanCondition = $scope.supplementalLifeInsurancePlan.selfUseTobacco
                                                                         ? $scope.conditions['Tobacco']
-                                                                        : $scope.conditions['Non-Tobacco']; 
+                                                                        : $scope.conditions['Non-Tobacco'];
 
-            $scope.supplementalLifeInsurancePlan.spousePlanCondition = $scope.supplementalLifeInsurancePlan.spouseUseTobacco 
+            $scope.supplementalLifeInsurancePlan.spousePlanCondition = $scope.supplementalLifeInsurancePlan.spouseUseTobacco
                                                                         ? $scope.conditions['Tobacco']
-                                                                        : $scope.conditions['Non-Tobacco']; 
+                                                                        : $scope.conditions['Non-Tobacco'];
 
             // Persists the premium calculations
             $scope.supplementalLifeInsurancePlan.selfPremiumPerMonth = $scope.computeSelfPremium();
@@ -1994,8 +2000,8 @@ var stdBenefitsSignup = employeeControllers.controller(
       $controller,
       $modal,
       StdService){
-        
-        // Inherite scope from base 
+
+        // Inherite scope from base
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
         var employeeId = $scope.employeeId;
@@ -2030,7 +2036,7 @@ var stdBenefitsSignup = employeeControllers.controller(
         $scope.save = function() {
 
             // Save std
-            var savePromise = $scope.enrollBenefits ? 
+            var savePromise = $scope.enrollBenefits ?
                 StdService.enrollStdPlanForUser(employeeId, $scope.companyStdPlan, $scope.updateReason) :
                 StdService.deleteStdPlansForUser(employeeId);
 
@@ -2067,8 +2073,8 @@ var ltdBenefitsSignup = employeeControllers.controller(
       $controller,
       $modal,
       LtdService){
-        
-        // Inherite scope from base 
+
+        // Inherite scope from base
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
         var employeeId = $scope.employeeId;
@@ -2103,7 +2109,7 @@ var ltdBenefitsSignup = employeeControllers.controller(
 
         $scope.save = function() {
             // Save ltd
-            var savePromise = $scope.enrollBenefits ? 
+            var savePromise = $scope.enrollBenefits ?
                 LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan, $scope.updateReason) :
                 LtdService.deleteLtdPlansForUser(employeeId);
 
@@ -2140,8 +2146,8 @@ var hraBenefitsSignup = employeeControllers.controller(
       $controller,
       $modal,
       HraService){
-        
-        // Inherite scope from base 
+
+        // Inherite scope from base
         $controller('benefitsSignupControllerBase', {$scope: $scope});
 
         var employeeId = $scope.employeeId;
@@ -2153,7 +2159,7 @@ var hraBenefitsSignup = employeeControllers.controller(
                 if (companyPlans.length > 0) {
                     $scope.companyPlan = companyPlans[0];
                 }
-                else 
+                else
                 {
                     throw new Error('Did not locate active company HRA plans!');
                 }
@@ -2169,7 +2175,7 @@ var hraBenefitsSignup = employeeControllers.controller(
         $scope.save = function() {
             // Save plan selection
             $scope.personPlan.companyPlanId = $scope.companyPlan.companyPlanId;
-            var savePromise = $scope.enrollBenefits ? 
+            var savePromise = $scope.enrollBenefits ?
                 HraService.savePersonPlan($scope.personPlan, $scope.updateReason) :
                 HraService.deletePlansForUser(employeeId);
 
@@ -2196,6 +2202,39 @@ var hraBenefitsSignup = employeeControllers.controller(
 
     }]);
 
+var benefitSignupSummary = employeeControllers.controller(
+  'benefitSignupSummary',
+  ['$scope',
+  '$state',
+  'BenefitSummaryService',
+  function benefitSignupSummary(
+    $scope,
+    $state,
+    BenefitSummaryService){
+
+       var employeeId = $scope.employeeId;
+       $scope.companyIdPromise.then(function (companyId){
+         BenefitSummaryService.getBenefitEnrollmentForUser(employeeId, companyId)
+         .then(function(enrollments){
+           $scope.enrollments = enrollments;
+         }, function(error){
+           alert('Failed to retreive your summary information. Please try again later.');
+         });
+       });
+
+       $scope.enrollNow = function (){
+         $state.go('employee_benefit_signup');
+       };
+
+       // Placeholder for document review flow
+       // Set to return to employee dashboard for now
+       $scope.continue = function() {
+         $state.go('/employee');
+       };
+    }
+  ]
+);
+
 var benefitsSignupControllerBase = employeeControllers.controller(
   'benefitsSignupControllerBase',
   ['$scope',
@@ -2209,7 +2248,7 @@ var benefitsSignupControllerBase = employeeControllers.controller(
       $stateParams,
       $modal,
       clientListRepository){
-        
+
         $scope.employeeId = $stateParams.employee_id;
 
         // If no reason specified, bounce back to the summary page
@@ -2259,7 +2298,7 @@ var benefitsSaveSuccessModalController = employeeControllers.controller(
       $state,
       $modalInstance,
       benefit_type){
-        
+
         $scope.benefit_type = benefit_type;
 
         $scope.ok = function () {
@@ -2269,7 +2308,7 @@ var benefitsSaveSuccessModalController = employeeControllers.controller(
     }]);
 
 var employeeFamilyController = employeeControllers.controller(
-  'employeeFamilyController', 
+  'employeeFamilyController',
   ['$scope',
    '$state',
    '$stateParams',
@@ -2348,12 +2387,12 @@ var employeeFamilyController = employeeControllers.controller(
         }
       });
     };
-  }        
+  }
 ]);
 
 var employeeFamilyMemberEditModalController = employeeControllers.controller(
   'employeeFamilyMemberEditModalController',
-  ['$scope', 
+  ['$scope',
    '$modalInstance',
    'PersonService',
    'person',
@@ -2362,7 +2401,7 @@ var employeeFamilyMemberEditModalController = employeeControllers.controller(
     $scope,
     $modalInstance,
     PersonService,
-    person, 
+    person,
     employeeId){
     $scope.person = person;
     $scope.cancel = function(){
@@ -2389,7 +2428,7 @@ var employeeFamilyMemberViewModalController = employeeControllers.controller(
       $scope,
       $modalInstance,
       member){
-        
+
         $scope.member = member;
 
         $scope.ok = function () {
@@ -2403,11 +2442,11 @@ var employeeFamilyMemberViewModalController = employeeControllers.controller(
     }]);
 
 var planDetailsModalController = employeeControllers.controller('planDetailsModalController',
-  ['$scope', 
+  ['$scope',
    '$modal',
    '$modalInstance',
    function selectedBenefitsController(
-    $scope, 
+    $scope,
     $modal,
     $modalInstance){
         $scope.closePlanDetailsModal = function() {

@@ -8,7 +8,8 @@
                     ng-required="true"
                     name="benefit_type"
                     ng-options="benefit_type for benefit_type in benefit_types"
-                    class="form-control"></select>
+                    class="form-control"
+                    ng-change="resetModel(benefit.benefit_type)"></select>
                 <div class="form-error" ng-show="form.benefit_type.$dirty">
                   <span ng-show="form.benefit_type.$error.required">Benefit Type must be selected</span>
                 </div>
@@ -24,7 +25,7 @@
                       <span ng-show="form.benefit_name.$error.required">Benefit name field is required</span>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" ng-show="isTypeMedical(benefit.benefit_type)">
                     <div class="form-label">This benefit plan requires PCP number?</div>
                     <div class="col-sm-2" style="margin-bottom: 10px;">
                         <input type="radio"
@@ -73,10 +74,10 @@
                                     <a href="javascript:void(0);" ng-show="!option.disabled" ng-click="toggleBenefitOptionDisabled(option)">Disable</a>
                                     <a href="javascript:void(0);" ng-show="option.disabled" ng-click="toggleBenefitOptionDisabled(option)">Enable</a></td>
                                 <td b-option="{{option.name}}" field-name="total" ng-disabled="option.disabled">
-                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" />
+                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" ng-keypress="changeInputKeyPress($event)" ng-blur="lostFocusNoBlankHandler($event)">
                                 </td>
                                 <td b-option="{{option.name}}" field-name="employee" ng-disabled="option.disabled">
-                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" />
+                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" ng-keypress="changeInputKeyPress($event)" ng-blur="lostFocusNoBlankHandler($event)"/>
                                 </td>
                             </tr>
                         </tbody>
