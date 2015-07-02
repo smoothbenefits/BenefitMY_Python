@@ -1,6 +1,6 @@
 <!-- Supplemental life insurance -->
 <div class="panel" ng-show="enrollments">
-  <div class="panel-head">Benefit Enrollments</div>
+  <div class="panel-head">You have selected the following benefits</div>
   <div class="panel-body">
     <!-- Selected health benefit summary table -->
     <div class="table-responsive table-holder table col-md-10 col-md-offset-1"
@@ -37,7 +37,8 @@
     </div>
 
     <!-- Waived health benefit summary table -->
-    <div class="table-responsive table-holder table" ng-if="enrollments.health_benefit_waived">
+    <div class="table-responsive table-holder table col-md-10 col-md-offset-1"
+         ng-if="enrollments.health_benefit_waived">
       <div class="table-sub-title">Waived Health Benefits</div>
       <table class="table table-striped">
         <thead>
