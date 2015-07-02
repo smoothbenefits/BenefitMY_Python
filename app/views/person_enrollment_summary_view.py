@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from app.service.hash_key_service import HashKeyService
 
 from app.models.person import Person
-from app.models.enrolled import Enrolled
+from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
 from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.models.fsa.fsa import FSA
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
@@ -18,7 +18,8 @@ from app.models.insurance.user_company_std_insurance_plan import \
     UserCompanyStdInsurancePlan
 
 from app.serializers.person_serializer import PersonSerializer
-from app.serializers.enrolled_serializer import EnrolledSerializer
+from app.serializers.user_company_benefit_plan_option_serializer import \
+    UserCompanyBenefitPlanOptionSerializer
 from app.serializers.user_company_waived_benefit_serializer import \
     UserCompanyWaivedBenefitSerializer
 from app.serializers.fsa.fsa_serializer import FsaSerializer
@@ -46,9 +47,9 @@ class PersonEnrollmentSummaryView(APIView):
         except Person.DoesNotExist:
             raise Http404
 
-    def get_health_benefit_enrollment(self, person_id):
-        enrollment = Enrolled.objects.filter(person=person_id)
-        serializer = EnrolledSerializer(enrollment, many=True, required=False)
+    def get_health_benefit_enrollment(self, user_id):
+        enrollment = UserCompanyBenefitPlanOption.objects.filter(user=user_id)
+        serializer = UserCompanyBenefitPlanOptionSerializer(enrollment, many=True, required=False)
         return serializer.data
 
     def get_health_benefit_waive(self, user_id):
@@ -67,7 +68,7 @@ class PersonEnrollmentSummaryView(APIView):
             serializer = FsaSerializer(fsa_plan, required=False)
             return serializer.data
         except FSA.DoesNotExist:
-            return None
+            return []
 
     def get_life_insurance(self, user_id):
         life_insurance = UserCompanyLifeInsurancePlan.objects.filter(user=user_id)
@@ -93,7 +94,7 @@ class PersonEnrollmentSummaryView(APIView):
         person_info = self.get_person_info(person_id)
         user_id = self.hash_service.decode_key(person_info['user'])
 
-        health_benefit = self.get_health_benefit_enrollment(person_id)
+        health_benefit = self.get_health_benefit_enrollment(user_id)
         health_benefit_waived = self.get_health_benefit_waive(user_id)
         hra_plan = self.get_hra_plan(person_id)
         fsa_plan = self.get_fsa_plan(user_id)
