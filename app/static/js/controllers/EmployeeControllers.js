@@ -2206,11 +2206,15 @@ var benefitSignupSummary = employeeControllers.controller(
   'benefitSignupSummary',
   ['$scope',
   '$state',
+  '$controller',
   'BenefitSummaryService',
   function benefitSignupSummary(
     $scope,
     $state,
+    $controller,
     BenefitSummaryService){
+
+      $controller('employeeBenefitsSignup', {$scope: $scope});
 
        var employeeId = $scope.employeeId;
        $scope.companyIdPromise.then(function (companyId){
@@ -2224,6 +2228,9 @@ var benefitSignupSummary = employeeControllers.controller(
 
        $scope.enrollNow = function(){
          $state.go('employee_benefit_signup.health');
+         for (i = 0; i < $scope.tabs.length; i++) {
+           $scope.tabs[i].active = ($scope.tabs[i].state === originalState.name);
+         }
        };
 
        // Placeholder for document review flow
