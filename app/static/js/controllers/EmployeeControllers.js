@@ -1075,7 +1075,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
         }
 
         $scope.tabs.push({
-          "id": 7,
+          "id": 8,
           "heading": "Summary",
           "state": "employee_benefit_signup.summary"
         });
@@ -2223,7 +2223,7 @@ var benefitSignupSummary = employeeControllers.controller(
        });
 
        $scope.enrollNow = function(){
-         $state.go('employee_benefit_signup');
+         $state.go('employee_benefit_signup.health');
        };
 
        // Placeholder for document review flow
