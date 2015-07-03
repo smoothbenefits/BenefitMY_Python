@@ -18,10 +18,11 @@ class PersonEnrollmentSummaryTestCase(TestCase, ViewTestBase):
                 'life_insurance', 'ltd_insurance', 'std_insurance', 'waived_benefit']
 
     def test_get_person_enrollment_summary(self):
-        response = self.client.get(reverse('person_benefit_summary_api', kwargs={'person_id': self.normalize_key(1)}))
+        response = self.client.get(reverse('person_benefit_summary_api', kwargs={'person_id': self.normalize_key(3)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.content, '')
+
         summary = json.loads(response.content)
         self.assertIn('person', summary)
         self.assertIn('health_benefit_enrolled', summary)
@@ -33,13 +34,22 @@ class PersonEnrollmentSummaryTestCase(TestCase, ViewTestBase):
         self.assertIn('std', summary)
         self.assertIn('ltd', summary)
 
+        self.assertTrue(len(summary['health_benefit_enrolled']) > 0)
+        self.assertTrue(len(summary['health_benefit_waived']) == 0)
+        self.assertTrue(len(summary['hra']) > 0)
+        self.assertTrue(len(summary['basic_life']) > 0)
+        self.assertTrue(len(summary['supplemental_life']) > 0)
+        self.assertTrue(len(summary['std']) > 0)
+        self.assertTrue(len(summary['ltd']) > 0)
+        self.assertTrue(len(summary['fsa']) > 0)
+
     def test_get_person_enrollment_summary_not_enrolled(self):
         response = self.client.get(reverse('person_benefit_summary_api', kwargs={'person_id': self.normalize_key(5)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.content, '')
+
         summary = json.loads(response.content)
-        print summary
         self.assertIn('person', summary)
         self.assertIn('health_benefit_enrolled', summary)
         self.assertIn('health_benefit_waived', summary)
@@ -49,6 +59,15 @@ class PersonEnrollmentSummaryTestCase(TestCase, ViewTestBase):
         self.assertIn('supplemental_life', summary)
         self.assertIn('std', summary)
         self.assertIn('ltd', summary)
+
+        self.assertEqual(len(summary['health_benefit_enrolled']), 0)
+        self.assertEqual(len(summary['health_benefit_waived']), 0)
+        self.assertEqual(len(summary['hra']), 0)
+        self.assertEqual(len(summary['basic_life']), 0)
+        self.assertEqual(len(summary['supplemental_life']), 0)
+        self.assertEqual(len(summary['std']), 0)
+        self.assertEqual(len(summary['ltd']), 0)
+        self.assertEqual(len(summary['fsa']), 0)
 
     def test_get_person_enrollment_summary_not_exist(self):
         response = self.client.get(reverse('person_benefit_summary_api', kwargs={'person_id': self.normalize_key(100)}))

@@ -112,11 +112,12 @@ benefitmyService.factory('BenefitSummaryService',
       }
 
       // Map FSA selection
-      if (domainModel.fsa) {
+      if (domainModel.fsa[0] != null) {
+        var domainFsa = domainModel.fsa[0];
         viewModel.fsa = {
-          "primary_amount_per_year": domainModel.fsa.primary_amount_per_year,
-          "dependent_amount_per_year": domainModel.fsa.dependent_amount_per_year,
-          "update_reason": domainModel.fsa.update_reason
+          "primary_amount_per_year": domainFsa.primary_amount_per_year,
+          "dependent_amount_per_year": domainFsa.dependent_amount_per_year,
+          "update_reason": domainFsa.update_reason
         };
       } else {
         viewModel.fsa = undefined;
