@@ -1,4 +1,5 @@
 from django.db import models
+from sys_benefit_update_reason_category import SysBenefitUpdateReasonCategory
 
 class SysBenefitUpdateReason(models.Model):
 
@@ -6,4 +7,9 @@ class SysBenefitUpdateReason(models.Model):
 
     description = models.CharField(max_length=1024, blank=True, null=True)
 
-    parent_category = models.PositiveSmallIntegerField(blank=True, null=True)
+    category = models.ForeignKey(SysBenefitUpdateReasonCategory,
+        related_name="benefit_update_reason_category",
+        blank=True,
+        null=True)
+
+    detail_required = models.BooleanField(default=False)
