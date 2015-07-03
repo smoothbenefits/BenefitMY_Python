@@ -1446,7 +1446,10 @@ var healthBenefitsSignup = employeeControllers.controller(
           
             saveRequest.record_reason = updateReason;
             employeeBenefits.enroll().save({userId: employeeId, companyId: companyId}, saveRequest, function(){
-              $scope.showSaveSuccessModal();
+              var modalInstance = $scope.showSaveSuccessModal();
+              modalInstance.result.then(function(){
+                $scope.transitionToNextTab($scope.tabs);
+              });
               $scope.myForm.$setPristine();
             }, function(){
               $scope.savedSuccess = false;
@@ -1557,7 +1560,10 @@ var fsaBenefitsSignup = employeeControllers.controller(
             $scope.fsaElection.company_fsa_plan = $scope.fsaPlan.companyPlanId;
             FsaService.saveFsaElection($scope.fsaElection, $scope.updateReason
               , function() {
-                $scope.showSaveSuccessModal();
+                var modalInstance = $scope.showSaveSuccessModal();
+                modalInstance.result.then(function(){
+                  $scope.transitionToNextTab($scope.tabs);
+                });
                 $scope.myForm.$setPristine();
               }
               , function() {
@@ -1664,7 +1670,10 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           if (!$scope.basicLifeInsurancePlan.selected){
             BasicLifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
               , function() {
-                $scope.showSaveSuccessModal();
+                var modalInstance = $scope.showSaveSuccessModal();
+                modalInstance.result.then(function(){
+                  $scope.transitionToNextTab($scope.tabs);
+                });
                 $scope.myForm.$setPristine();
               }
               , function(error) {
@@ -1689,7 +1698,10 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
 
               BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, $scope.updateReason
               , function() {
-                $scope.showSaveSuccessModal();
+                var modalInstance = $scope.showSaveSuccessModal();
+                modalInstance.result.then(function(){
+                  $scope.transitionToNextTab($scope.tabs);
+                });
                 $scope.myForm.$setPristine();
               }
               , function(error){
@@ -1933,7 +1945,10 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             // Waive selected. Delete all user plans for this user
             SupplementalLifeInsuranceService.deletePlansForUser(employeeId).then(
               function() {
-                $scope.showSaveSuccessModal();
+                var modalInstance = $scope.showSaveSuccessModal();
+                modalInstance.result.then(function(){
+                  $scope.transitionToNextTab($scope.tabs);
+                });
                 $scope.myForm.$setPristine();
               }
               , function(error) {
@@ -1960,7 +1975,10 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
 
             SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
               function() {
-                $scope.showSaveSuccessModal();
+                var modalInstance = $scope.showSaveSuccessModal();
+                modalInstance.result.then(function(){
+                  $scope.transitionToNextTab($scope.tabs);
+                });
                 $scope.myForm.$setPristine();
               }
               , function(error) {
@@ -2036,7 +2054,10 @@ var stdBenefitsSignup = employeeControllers.controller(
 
             savePromise.then(
                 function() {
-                    $scope.showSaveSuccessModal();
+                    var modalInstance = $scope.showSaveSuccessModal();
+                    modalInstance.result.then(function(){
+                      $scope.transitionToNextTab($scope.tabs);
+                    });
                     $scope.myForm.$setPristine();
                 }
               , function(error) {
@@ -2109,7 +2130,10 @@ var ltdBenefitsSignup = employeeControllers.controller(
 
             savePromise.then(
                 function() {
-                    $scope.showSaveSuccessModal();
+                    var modalInstance = $scope.showSaveSuccessModal();
+                    modalInstance.result.then(function(){
+                      $scope.transitionToNextTab($scope.tabs);
+                    });
                     $scope.myForm.$setPristine();
                 }
               , function(error) {
@@ -2175,7 +2199,10 @@ var hraBenefitsSignup = employeeControllers.controller(
 
             savePromise.then(
                 function() {
-                    $scope.showSaveSuccessModal();
+                    var modalInstance = $scope.showSaveSuccessModal();
+                    modalInstance.result.then(function(){
+                      $scope.transitionToNextTab($scope.tabs);
+                    });
                     $scope.myForm.$setPristine();
                 }
               , function(error) {
@@ -2244,7 +2271,33 @@ var benefitsSignupControllerBase = employeeControllers.controller(
               }
             }
           });
+          return modalInstance;
         };
+
+        $scope.transitionToNextTab = function(tabList){
+          var sortedTabList = _.sortBy(tabList, 'id');
+
+          var curTab = null;
+          var curTabIndex = 0;
+          var listSize = _.size(sortedTabList);
+          for(var i=0; i<listSize; i++){
+            curTab = sortedTabList[i];
+            curTabIndex = i;
+            if(curTab.active){
+              break;
+            }
+          }
+          curTab.active = false;
+          if(curTabIndex + 1 >= listSize){
+            $state.go('/employee');
+          }
+          else{
+            nextTab = sortedTabList[curTabIndex + 1];
+            nextTab.active = true;
+            $state.go(curTab.next);
+          }
+          
+        }
 
     }]);
 
