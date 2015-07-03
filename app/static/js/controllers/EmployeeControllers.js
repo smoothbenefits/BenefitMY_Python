@@ -2288,8 +2288,7 @@ var benefitsSignupControllerBase = employeeControllers.controller(
             }
           }
           curTab.active = false;
-          if(curTabIndex + 1 >= listSize)
-          {
+          if(curTabIndex + 1 >= listSize){
             $state.go('/employee');
           }
           else{
