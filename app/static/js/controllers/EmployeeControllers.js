@@ -1023,16 +1023,14 @@ var employeeBenefitsSignup = employeeControllers.controller(
         $scope.tabs.push({
           "id": 1, 
           "heading": "Health Benefits",
-          "state":"employee_benefit_signup.health",
-          "next": "employee_benefit_signup.hra" 
+          "state":"employee_benefit_signup.health"
         });
 
         if (hraPlans.length > 0) {
           $scope.tabs.push({
             "id": 2, 
             "heading": "HRA",
-            "state": "employee_benefit_signup.hra",
-            "next": "employee_benefit_signup.basic_life"
+            "state": "employee_benefit_signup.hra"
           });
         }
 
@@ -1040,8 +1038,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           $scope.tabs.push({
             "id": 3, 
             "heading": "Basic Life (AD&D)",
-            "state":"employee_benefit_signup.basic_life",
-            "next": "employee_benefit_signup.supplemental_life"
+            "state":"employee_benefit_signup.basic_life"
           });
         }
 
@@ -1049,8 +1046,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           $scope.tabs.push({
             "id": 4,
             "heading": "Suppl. Life",
-            "state":"employee_benefit_signup.supplemental_life",
-            "next": "employee_benefit_signup.fsa"
+            "state":"employee_benefit_signup.supplemental_life"
           });
         }
 
@@ -1058,8 +1054,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           $scope.tabs.push({
             "id": 5, 
             "heading": "FSA",
-            "state": "employee_benefit_signup.fsa",
-            "next": "employee_benefit_signup.std"
+            "state": "employee_benefit_signup.fsa"
           });
         }
 
@@ -1067,8 +1062,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           $scope.tabs.push({
             "id": 6, 
             "heading": "STD",
-            "state": "employee_benefit_signup.std",
-            "next": "employee_benefit_signup.ltd"
+            "state": "employee_benefit_signup.std"
           });
         }
 
@@ -1076,8 +1070,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           $scope.tabs.push({
             "id": 7, 
             "heading": "LTD",
-            "state": "employee_benefit_signup.ltd",
-            "next": "/employee"
+            "state": "employee_benefit_signup.ltd"
           });
         }
 
@@ -2282,19 +2275,29 @@ var benefitsSignupControllerBase = employeeControllers.controller(
         };
 
         $scope.transitionToNextTab = function(tabList){
-          var curTab = _.find(tabList, function(tab){
-            return tab.active;
-          });
-          if(curTab){
-            curTab.active = false;
-            var nextTab = _.find(tabList, function(tab){
-              return tab.state === curTab.next;
-            });
-            if(nextTab){
-              nextTab.active = true;
+          var sortedTabList = _.sortBy(tabList, 'id');
+
+          var curTab = null;
+          var curTabIndex = 0;
+          var listSize = _.size(sortedTabList);
+          for(var i=0; i<listSize; i++){
+            curTab = sortedTabList[i];
+            curTabIndex = i;
+            if(curTab.active){
+              break;
             }
+          }
+          curTab.active = false;
+          if(curTabIndex + 1 >= listSize)
+          {
+            $state.go('/employee');
+          }
+          else{
+            nextTab = sortedTabList[curTabIndex + 1];
+            nextTab.active = true;
             $state.go(curTab.next);
           }
+          
         }
 
     }]);
