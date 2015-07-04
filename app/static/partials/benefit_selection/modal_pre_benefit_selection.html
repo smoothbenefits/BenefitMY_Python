@@ -5,22 +5,34 @@
     <div class="form-holder col-md-10 col-md-offset-1">
         <form name="form">
             <div class="row">
+                <div class="form-label">Reason Category</div>
+                <div class="textbox">
+                    <select ng-model="reason.selectedReasonCategory"
+                        ng-required="true"
+                        name="category"
+                        ng-options="category.name for category in categories"
+                        class="form-control"></select>
+                </div>
+            </div>
+            <div class="row" ng-show="reason.selectedReasonCategory">
                 <div class="form-label">Reason</div>
                 <div class="textbox">
                     <select ng-model="reason.selectedReason"
                         ng-required="true"
                         name="reason"
-                        ng-options="reason.name for reason in reasons"
+                        ng-options="reason.name for reason in reason.selectedReasonCategory.reasons"
                         class="form-control"></select>
                 </div>
             </div>
             <div class="row">
-                <div class="form-label">Additional Notes</div>
+                <div class="form-label">Additional Notes
+                  <span ng-show="reason.selectedReason.detail_required">(Please specify here)</span>
+                </div>
                 <div class="textbox">
                     <input type="text"
                         name="notes"
                         ng-model="reason.notes"
-                        ng-required="false" />
+                        ng-required="reason.selectedReason.detail_required" />
                 </div>
             </div>
         </form>
