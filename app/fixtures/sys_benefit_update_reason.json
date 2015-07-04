@@ -1,7 +1,7 @@
 [
   {
     "fields": {
-      "name": "Open enrollment",
+      "name": "Open Enrollment",
       "description": "Annual company wide enrollment",
       "category": 2
     },
@@ -122,7 +122,7 @@
   ,
   {
     "fields": {
-      "name": "Other (Please specify reason)",
+      "name": "Other",
       "description": "Other user specified reasons",
       "category": 1,
       "detail_required": "True"
