@@ -119,4 +119,15 @@
     "model": "app.sysbenefitupdatereason",
     "pk": 13
   }
+  ,
+  {
+    "fields": {
+      "name": "Other (Please specify reason)",
+      "description": "Other user specified reasons",
+      "category": 1,
+      "detail_required": "True"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 14
+  }
 ]
