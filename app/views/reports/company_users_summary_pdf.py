@@ -162,6 +162,8 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
             self._write_line_uniform_width([benefit_type + ' Plan', 'Waive Reason'])
             self._draw_line()
 
+            user_waived = user_waived_benefit[0]
+
             self._write_line_uniform_width([ \
                 'Waived', \
                 user_waived.reason])
