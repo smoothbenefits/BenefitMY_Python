@@ -29,6 +29,9 @@ WHERE p.person_id IN (SELECT id FROM person_ids);
 DELETE FROM app_enrolled e
 WHERE e.person_id IN (SELECT id FROM person_ids);
 
+DELETE FROM app_employeeprofile ep
+WHERE ep.person_id IN (SELECT id FROM person_ids);
+
 DELETE FROM app_person p
 WHERE p.user_id IN (SELECT id FROM user_ids);
 
@@ -52,6 +55,12 @@ WHERE ucw.user_id IN (SELECT id FROM user_ids);
 
 DELETE FROM app_w4 w
 WHERE w.user_id IN (SELECT id FROM user_ids);
+
+DELETE FROM reversion_version rv
+WHERE rv.revision_id IN (SELECT id FROM reversion_revision rr WHERE rr.user_id IN (SELECT id FROM user_ids));
+
+DELETE FROM reversion_revision rr
+WHERE rr.user_id IN (SELECT id from user_ids);
 
 DELETE FROM app_authuser u
 WHERE u.id IN (SELECT id FROM user_ids);

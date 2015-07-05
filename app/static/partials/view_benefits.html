@@ -84,10 +84,10 @@
                         {{hraPlan.planDescription}}
                     </td>
                     <td class="upload-td">
-                        <bmuploadmanager 
-                            upload-type="HRA" 
-                            upload-mode="button" 
-                            feature-id="{{hraPlan.companyPlanId}}" 
+                        <bmuploadmanager
+                            upload-type="HRA"
+                            upload-mode="button"
+                            feature-id="{{hraPlan.companyPlanId}}"
                             hide-type="true">
                         </bmuploadmanager>
                     </td>
@@ -116,18 +116,18 @@
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteBenefit(benefit.id)" href="javascript:void(0);">X</a>
                     </td>
                     <td class="upload-td">
-                        <bmuploadmanager 
-                            ng-if="benefitArray.type==='Dental'" 
-                            upload-type="DentalBenefit" 
-                            upload-mode="button" 
-                            feature-id="{{benefit.id}}" 
+                        <bmuploadmanager
+                            ng-if="benefitArray.type==='Dental'"
+                            upload-type="DentalBenefit"
+                            upload-mode="button"
+                            feature-id="{{benefit.id}}"
                             hide-type="true">
                         </bmuploadmanager>
-                        <bmuploadmanager 
-                            ng-if="benefitArray.type==='Vision'" 
-                            upload-type="VisionBenefit" 
-                            upload-mode="button" 
-                            feature-id="{{benefit.id}}" 
+                        <bmuploadmanager
+                            ng-if="benefitArray.type==='Vision'"
+                            upload-type="VisionBenefit"
+                            upload-mode="button"
+                            feature-id="{{benefit.id}}"
                             hide-type="true">
                         </bmuploadmanager>
                     </td>
@@ -154,7 +154,7 @@
                     <th><span>Basic Life Insurance (AD&D)</span></th>
                     <th><span>Document</span></th>
                     <th><span>Total Cost (Monthly)</span></th>
-                    <th><span>Employee Contribution (Biweekly)</span></th>
+                    <th><span>Employee Contribution (Per Pay Period)</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -166,10 +166,10 @@
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLifeInsurancePlan(lifeInsurancePlan)" href="javascript:void(0);">X</a>
                     </td>
                     <td class="upload-td">
-                        <bmuploadmanager 
-                            upload-type="BasicLife" 
-                            upload-mode="button" 
-                            feature-id="{{lifeInsurancePlan.id}}" 
+                        <bmuploadmanager
+                            upload-type="BasicLife"
+                            upload-mode="button"
+                            feature-id="{{lifeInsurancePlan.id}}"
                             hide-type="true">
                         </bmuploadmanager>
                     </td>
@@ -197,10 +197,10 @@
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteSupplementalLifePlan(supplementalLifeInsurancePlan)" href="javascript:void(0);">X</a>
                     </td>
                     <td class="upload-td">
-                        <bmuploadmanager 
-                            upload-type="OptionalLife" 
-                            upload-mode="button" 
-                            feature-id="{{supplementalLifeInsurancePlan.companyPlanId}}" 
+                        <bmuploadmanager
+                            upload-type="OptionalLife"
+                            upload-mode="button"
+                            feature-id="{{supplementalLifeInsurancePlan.companyPlanId}}"
                             hide-type="true">
                         </bmuploadmanager>
                     </td>
@@ -231,10 +231,10 @@
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteStdPlan(stdPlan)" href="javascript:void(0);">X</a>
                     </td>
                     <td class="upload-td">
-                        <bmuploadmanager 
-                            upload-type="STD" 
-                            upload-mode="button" 
-                            feature-id="{{stdPlan.companyPlanId}}" 
+                        <bmuploadmanager
+                            upload-type="STD"
+                            upload-mode="button"
+                            feature-id="{{stdPlan.companyPlanId}}"
                             hide-type="true">
                         </bmuploadmanager>
                     </td>
@@ -271,10 +271,10 @@
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLtdPlan(ltdPlan)" href="javascript:void(0);">X</a>
                     </td>
                     <td class="upload-td">
-                        <bmuploadmanager 
-                            upload-type="LTD" 
-                            upload-mode="button" 
-                            feature-id="{{ltdPlan.companyPlanId}}" 
+                        <bmuploadmanager
+                            upload-type="LTD"
+                            upload-mode="button"
+                            feature-id="{{ltdPlan.companyPlanId}}"
                             hide-type="true">
                         </bmuploadmanager>
                     </td>
@@ -305,10 +305,10 @@
                         <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteFsaPlan(fsaPlan)" href="javascript:void(0);">X</a>
                     </td>
                     <td class="upload-td">
-                        <bmuploadmanager 
-                            upload-type="FSA" 
-                            upload-mode="button" 
-                            feature-id="{{fsaPlan.companyPlanId}}" 
+                        <bmuploadmanager
+                            upload-type="FSA"
+                            upload-mode="button"
+                            feature-id="{{fsaPlan.companyPlanId}}"
                             hide-type="true">
                         </bmuploadmanager>
                     </td>
