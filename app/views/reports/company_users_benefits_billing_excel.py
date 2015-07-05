@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from django.http import HttpResponse, Http404
 from django.db.models import Count, Max
 from django.contrib.auth import get_user_model
-from ..company_user_summary_view import ExcelExportViewBase
 from app.models.person import Person
 from app.models.company import Company
 from app.models.insurance.user_company_life_insurance_plan import \
@@ -22,10 +21,12 @@ from app.models.insurance.ltd_insurance_plan import LtdInsurancePlan
 from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
 from app.models.insurance.user_company_ltd_insurance_plan import \
     UserCompanyLtdInsurancePlan
+
 from app.views.permission import (
     user_passes_test,
     company_employer,
     company_employer_or_broker)
+from excel_export_view_base import ExcelExportViewBase
 
 User = get_user_model()
 
