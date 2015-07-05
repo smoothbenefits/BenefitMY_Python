@@ -21,6 +21,10 @@ benefitmyService.factory(
 
       getCompanyBenefitsBillingReportExcelUrl: function(companyId){
         return API_PREFIX + '/companies/' + companyId + '/users/excel/benefits_billing';
+      },
+
+      getCompanyEmployeeSummaryPdfUrl: function(companyId) {
+        return API_PREFIX + '/companies/' + companyId + '/users/pdf';
       }
     }; 
   }

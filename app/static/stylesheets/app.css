@@ -255,3 +255,7 @@ span.doc-buttons{
     color:#6EBE4B;
     font-weight:bold;
 }
+.view-instruction .gray-link{
+    color:gray;
+    font-weight:bold;
+}
