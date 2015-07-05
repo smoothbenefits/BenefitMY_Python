@@ -5,8 +5,8 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 from report_export_view_base import ReportExportViewBase
 
 class PdfExportViewBase(ReportExportViewBase):
-    _page_margin_left_right = 20
-    _page_margin_top_bottom = 30
+    _page_margin_left_right = 25
+    _page_margin_top_bottom = 35
     _line_height = 12
     _small_line_height = 6
     _font_family = 'Helvetica'
@@ -76,19 +76,27 @@ class PdfExportViewBase(ReportExportViewBase):
             self._start_new_page()
         return
 
-    def _write_line_uniform_width(self, text_items=None):    
+    def _write_line_uniform_width(self, text_items, segment_length_fractions=None):    
         if text_items is None or len(text_items) <= 0:
             return
+
+        if (segment_length_fractions is not None \
+            and len(segment_length_fractions) != len(text_items)):
+            raise ValueError("size of segment_length_percents does not match number of text items")
 
         if self._current_X > 0:
             self._start_new_line()
 
-        # For now, use simple uniform spacing
+        # Compute segment length
         num_items = len(text_items)
-        segment_length = self._write_area_width / num_items
+        segment_lengths = [self._write_area_width / num_items for x in range(num_items)]
+        if segment_length_fractions:
+            # apply the override segment lengths
+            for i, segment_length in enumerate(segment_lengths):
+                segment_lengths[i] = self._write_area_width * segment_length_fractions[i]
 
-        for text in text_items:
-            self._write_text_fix_width(text, segment_length)
+        for idx, text in enumerate(text_items):
+            self._write_text_fix_width(text, segment_lengths[idx])
 
         # End this line and move to next
         self._start_new_line()
@@ -110,9 +118,13 @@ class PdfExportViewBase(ReportExportViewBase):
 
         return 
 
-    def _write_block_uniform_width(self, text_items_block):
+    def _write_block_uniform_width(self, text_items_block, segment_length_fractions=None):
         if text_items_block is None or len(text_items_block) <= 0:
             return
+
+        if (segment_length_fractions is not None \
+            and len(segment_length_fractions) != len(text_items_block)):
+            raise ValueError("size of segment_length_percents does not match number of text columns")
 
         if self._current_X > 0:
             self._start_new_line()
@@ -131,7 +143,7 @@ class PdfExportViewBase(ReportExportViewBase):
                 block[j][i] = text_item
 
         for line in block:
-            self._write_line_uniform_width(line)
+            self._write_line_uniform_width(line, segment_length_fractions)
 
         return
 

@@ -127,8 +127,13 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         user_waived_benefit = employee_health_waived_benefit.filter(benefit_type__name = benefit_type)
 
         if len(user_benefit_options) > 0:
+            # column width distributions
+            column_width_dists = [0.45, 0.35, 0.2]
+
             # Render header
-            self._write_line_uniform_width([benefit_type + ' Plan', 'Enrolled Members', 'Employee Premium'])
+            self._write_line_uniform_width( \
+                [benefit_type + ' Plan', 'Enrolled Members', 'Employee Premium'], \
+                column_width_dists)
             self._draw_line()
 
             user_benefit_option = user_benefit_options[0]
@@ -147,7 +152,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 relationship = enrolled_member.person.relationship
                 text_block[1].append(relationship + ': ' + member_name)
 
-            self._write_block_uniform_width(text_block)
+            self._write_block_uniform_width(text_block, column_width_dists)
 
             self._start_new_line()
             self._start_new_line()
@@ -310,7 +315,8 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                     document.name, \
                     'Signed' if document.signature is not None else 'Not Signed', \
                     document.signature.created_at.strftime("%Y-%m-%d") if document.signature is not None else ''
-                ])  
+                ], \
+                [0.6, 0.2, 0.2])  
 
         return  
 
