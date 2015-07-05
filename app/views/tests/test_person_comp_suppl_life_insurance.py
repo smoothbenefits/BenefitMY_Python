@@ -5,10 +5,11 @@ from view_test_base import ViewTestBase
 
 class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate', 
+    fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate',
     '39_company_supplement_life_insurance', '17_supplemental_life_insurance_condition',
-    '10_company', '44_person_company_suppl_life', '24_person', '23_auth_user', 
-    '45_suppl_life_beneficiary', 'sys_benefit_update_reason']
+    '10_company', '44_person_company_suppl_life', '24_person', '23_auth_user',
+    '45_suppl_life_beneficiary', 'sys_benefit_update_reason',
+    'sys_benefit_update_reason_category']
 
     def test_get_person_company_suppl_life_by_person(self):
         response = self.client.get(reverse('person_person_supple_life',
@@ -51,7 +52,7 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.delete(reverse('person_suppl_life_api', 
+        response = self.client.delete(reverse('person_suppl_life_api',
                                               kwargs={'pk': self.normalize_key(2)}))
 
         self.assertIsNotNone(response)
@@ -156,7 +157,7 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
                                             kwargs={'pk': self.normalize_key(3)}),
                                             data=json.dumps(suppl_life_data),
                                             content_type='application/json')
-        
+
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
 
@@ -191,5 +192,5 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
         self.assertEqual(beneficiaries[0]['relationship'], "self")
         self.assertEqual(beneficiaries[0]['percentage'], "20.00")
         self.assertEqual(beneficiaries[0]['tier'], "1")
-        self.assertEqual(beneficiaries[0]['person_comp_suppl_life_insurance_plan'], 
+        self.assertEqual(beneficiaries[0]['person_comp_suppl_life_insurance_plan'],
           self.normalize_key(3))
