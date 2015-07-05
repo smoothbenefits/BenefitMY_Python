@@ -120,12 +120,11 @@ from app.views.fsa.company_fsa_plan_view import (
     CompanyFsaPlanByCompanyView)
 from app.views.fsa.fsa_plan_view import FsaPlanView
 
-from app.views.company_user_summary_view import (
-    CompanyUsersSummaryExcelExportView,
-    CompanyUsersDirectDepositExcelExportView,
-    CompanyUsersLifeInsuranceBeneficiaryExcelExportView)
-
-from app.views.reports.company_users_benefits_billing import CompanyUsersBenefitsBillingExcelExportView
+from app.views.reports.company_users_full_summary_excel import CompanyUsersFullSummaryExcelExportView
+from app.views.reports.company_users_benefits_billing_excel import CompanyUsersBenefitsBillingExcelExportView
+from app.views.reports.company_users_direct_deposit_excel import CompanyUsersDirectDepositExcelExportView
+from app.views.reports.company_users_life_insurance_beneficiary_excel import CompanyUsersLifeInsuranceBeneficiaryExcelExportView
+from app.views.reports.company_users_summary_pdf import CompanyUsersSummaryPdfExportView
 
 from app.views.upload import (UserUploadView,
                               UploadView,
@@ -183,10 +182,11 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company_employees_count/(?P<pk>\w+)/?$' % PREFIX, CompanyEmployeeCountView.as_view(), name='company_employee_count'),
     url(r'^%s/company_brokers_count/(?P<pk>\w+)/?$' % PREFIX, CompanyBrokerCountView.as_view(), name='company_broker_count'),
     url(r'^%s/broker_company_count/(?P<pk>\w+)/?$' % PREFIX, BrokerCompanyCountView.as_view(), name='broker_company_count'),
-    url(r'^%s/companies/(?P<pk>\w+)/users/excel/?$' % PREFIX, CompanyUsersSummaryExcelExportView.as_view()),
+    url(r'^%s/companies/(?P<pk>\w+)/users/excel/?$' % PREFIX, CompanyUsersFullSummaryExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/life_beneficiary?$' % PREFIX, CompanyUsersLifeInsuranceBeneficiaryExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_billing?$' % PREFIX, CompanyUsersBenefitsBillingExcelExportView.as_view()),
+    url(r'^%s/companies/(?P<pk>\w+)/users/pdf/?$' % PREFIX, CompanyUsersSummaryPdfExportView.as_view()),
 
     url(r'^%s/companies/(?P<pk>\w+)/users/modification_summary/?$' % PREFIX, CompanyUsersDataModificationSummaryView.as_view()),
 
