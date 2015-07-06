@@ -10,24 +10,28 @@ benefitmyService.factory('BenefitUpdateReasonService',
         var viewCategories = [];
         _.each(domainReasons, function(domainReason) {
           var category = domainReason.category;
-          var reason = {
-            "id": domainReason.id,
-            "name": domainReason.name,
-            "description": domainReason.description,
-            "detail_required": domainReason.detail_required
-          };
 
-          var existCategory = _.find(viewCategories, function(viewCategory){
-            return viewCategory.id === category.id;
-          });
+          if (category){
+            var reason = {
+              "id": domainReason.id,
+              "name": domainReason.name,
+              "description": domainReason.description,
+              "detail_required": domainReason.detail_required
+            };
 
-          if (existCategory) {
-            existCategory.reasons.push(reason);
-          } else {
-            category.reasons = [];
-            category.reasons.push(reason);
-            viewCategories.push(category);
+            var existCategory = _.find(viewCategories, function(viewCategory){
+              return viewCategory.id === category.id;
+            });
+
+            if (existCategory) {
+              existCategory.reasons.push(reason);
+            } else {
+              category.reasons = [];
+              category.reasons.push(reason);
+              viewCategories.push(category);
+            }
           }
+
         });
 
         return viewCategories;
