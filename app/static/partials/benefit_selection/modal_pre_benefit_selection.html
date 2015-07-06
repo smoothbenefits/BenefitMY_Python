@@ -10,7 +10,7 @@
                     <select ng-model="reason.selectedReasonCategory"
                         ng-required="true"
                         name="category"
-                        ng-options="category.name for category in categories"
+                        ng-options="category.name for category in categories | orderBy: 'name'"
                         class="form-control"></select>
                 </div>
             </div>
@@ -20,7 +20,7 @@
                     <select ng-model="reason.selectedReason"
                         ng-required="true"
                         name="reason"
-                        ng-options="reason.name for reason in reason.selectedReasonCategory.reasons"
+                        ng-options="reason.name for reason in reason.selectedReasonCategory.reasons | orderBy: 'name'"
                         class="form-control"></select>
                 </div>
             </div>
