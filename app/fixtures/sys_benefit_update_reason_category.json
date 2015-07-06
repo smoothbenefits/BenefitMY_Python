@@ -1,0 +1,34 @@
+[
+  {
+    "fields": {
+      "name": "Other",
+      "description": "Reason that is not explicitly listed out by other options"
+    },
+    "model": "app.sysbenefitupdatereasoncategory",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "New",
+      "description": "New benefit enrollment"
+    },
+    "model": "app.sysbenefitupdatereasoncategory",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "Change",
+      "description": "Change on existing benefit enrollment"
+    },
+    "model": "app.sysbenefitupdatereasoncategory",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "name": "Termination",
+      "description": "Terminate an existing benefit enrollment"
+    },
+    "model": "app.sysbenefitupdatereasoncategory",
+    "pk": 4
+  }
+]

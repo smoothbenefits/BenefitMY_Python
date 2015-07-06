@@ -14,7 +14,7 @@ var modalInstanceController = userControllers.controller(
       $modalInstance,
       title,
       message){
-        
+
         $scope.title = title;
         $scope.message = message;
 
@@ -33,7 +33,7 @@ var modalMessageControllerBase = userControllers.controller(
       $scope,
       $state,
       $modal){
-        
+
         $scope.showMessageWithOkayOnly = function(title, message){
           $scope.title = title;
           $scope.message = message;
@@ -78,7 +78,7 @@ var findViewController = userControllers.controller('findViewController',
         }
         else if(userRoles.length > 0 && !paramValue)
         {
-           var firstRole = userRoles[0].company_user_type; 
+           var firstRole = userRoles[0].company_user_type;
            $location.replace().path('/'+firstRole);
         }
         else
@@ -93,31 +93,31 @@ var findViewController = userControllers.controller('findViewController',
     }
 ]);
 
-var userController = userControllers.controller('userController', 
-  ['$scope', 
-   '$http', 
-   '$location', 
+var userController = userControllers.controller('userController',
+  ['$scope',
+   '$http',
+   '$location',
    '$modal',
    '$state',
    'UserService',
-   'userLogOut', 
+   'userLogOut',
    'CompanyEmployeeSummaryService',
-   'CompanyFeatureService', 
-   'BrowserDetectionService', 
-  function userController($scope, 
-                          $http, 
-                          $location, 
+   'CompanyFeatureService',
+   'BrowserDetectionService',
+  function userController($scope,
+                          $http,
+                          $location,
                           $modal,
                           $state,
                           UserService,
-                          userLogOut, 
+                          userLogOut,
                           CompanyEmployeeSummaryService,
                           CompanyFeatureService,
                           BrowserDetectionService) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var roleTypeDictionary = {
-        admin:'Employer', 
+        admin:'Employer',
         broker:'Broker',
         employee: 'Employee'
     };
@@ -246,8 +246,8 @@ var userController = userControllers.controller('userController',
 
             modalInstance.result.then(function(reason){
                 // Now proceed to the modify benefit view
-                $state.go('employee_benefit_signup', 
-                    { employee_id: id, 
+                $state.go('employee_benefit_signup',
+                    { employee_id: id,
                       updateReason: reason });
             });
         }
@@ -263,9 +263,9 @@ var preBenefitSelectionModalController = userControllers.controller('preBenefitS
              BenefitUpdateReasonService) {
 
         $scope.reason = {};
-        
-        BenefitUpdateReasonService.getAllReasons().then(function(reasons) {
-            $scope.reasons = reasons;
+
+        BenefitUpdateReasonService.getAllReasons().then(function(categories) {
+            $scope.categories = categories;
         });
 
         $scope.cancel = function() {
@@ -311,8 +311,8 @@ var settingsController = userControllers.controller('settingsController', ['$sco
           alert('Changes saved successfully');
           $location.path('/');
         }, function(errorResponse){
-          alert('Failed to add the basic info. The error is: ' + 
-                JSON.stringify(errorResponse.data) + 
+          alert('Failed to add the basic info. The error is: ' +
+                JSON.stringify(errorResponse.data) +
                 '\n and the http status is: ' + errorResponse.status);
         });
       };
