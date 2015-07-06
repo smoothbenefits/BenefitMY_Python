@@ -1,34 +1,133 @@
 [
   {
     "fields": {
-      "name": "Other",
-      "description": "Reason that is not explicitly listed out by other options"
+      "name": "Open Enrollment",
+      "description": "Annual company wide enrollment",
+      "category": 2
     },
     "model": "app.sysbenefitupdatereason",
     "pk": 1
   },
   {
     "fields": {
-      "name": "Annual Enrollment",
-      "description": "Annual company wide enrollment"
+      "name": "New Hire",
+      "description": "Initial enrollment for new employee start",
+      "category": 2
     },
     "model": "app.sysbenefitupdatereason",
     "pk": 2
   },
   {
     "fields": {
-      "name": "New Employee", 
-      "description": "Initial enrollment for new employee start"
+      "name": "COBRA",
+      "description": "Initial enrollment into COBRA policy",
+      "category": 2
     },
     "model": "app.sysbenefitupdatereason",
     "pk": 3
   },
   {
     "fields": {
-      "name": "Life Event",
-      "description": "Enrollment modification due to life events"
+      "name": "Add Spouse",
+      "description": "Add spouse to an existing benefit plan",
+      "category": 3
     },
     "model": "app.sysbenefitupdatereason",
     "pk": 4
+  },
+  {
+    "fields": {
+      "name": "Add Dependent (Please specify dependent)",
+      "description": "Add dependent to an existing benefit plan",
+      "category": 3,
+      "detail_required": "True"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "name": "Part-Time to Full-Time (Please specify date)",
+      "description": "Update employment type from part-time to full-time",
+      "category": 3,
+      "detail_required": "True"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "name": "Loss of Coverage",
+      "description": "Lost of coverage on a certain benefit type",
+      "category": 4
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "name": "Left Employment",
+      "description": "No longer employed in the position to receive benefits",
+      "category": 4
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 8
+  },
+  {
+    "fields": {
+      "name": "Voluntary Cancellation",
+      "description": "Voluntary cancellation on benefit enrollment",
+      "category": 4
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 9
+  },
+  {
+    "fields": {
+      "name": "Move from Service Area",
+      "description": "Move out of benefit service area",
+      "category": 4
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 10
+  },
+  {
+    "fields": {
+      "name": "No Longer Eligible",
+      "description": "No longer eligible for selected benefits",
+      "category": 4
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 11
+  },
+  {
+    "fields": {
+      "name": "Deceased",
+      "description": "Person enrolled has deceased",
+      "category": 4
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 12
+  },
+  {
+    "fields": {
+      "name": "Terminate Dependent (Please specify dependent)",
+      "description": "Terminate dependent who is cover under an existing benefit plan",
+      "category": 4,
+      "detail_required": "True"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 13
+  }
+  ,
+  {
+    "fields": {
+      "name": "Other",
+      "description": "Other user specified reasons",
+      "category": 1,
+      "detail_required": "True"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 14
   }
 ]
