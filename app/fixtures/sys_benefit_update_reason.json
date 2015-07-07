@@ -1,7 +1,7 @@
 [
   {
     "fields": {
-      "name": "Open Enrollment",
+      "name": "Open enrollment",
       "description": "Annual company wide enrollment",
       "category": 2
     },
@@ -10,7 +10,7 @@
   },
   {
     "fields": {
-      "name": "New Hire",
+      "name": "New hire",
       "description": "Initial enrollment for new employee start",
       "category": 2
     },
@@ -28,7 +28,7 @@
   },
   {
     "fields": {
-      "name": "Add Spouse",
+      "name": "Add spouse",
       "description": "Add spouse to an existing benefit plan",
       "category": 3
     },
@@ -37,7 +37,7 @@
   },
   {
     "fields": {
-      "name": "Add Dependent (Please specify dependent)",
+      "name": "Add dependent (Please specify dependent)",
       "description": "Add dependent to an existing benefit plan",
       "category": 3,
       "detail_required": "True"
@@ -57,8 +57,8 @@
   },
   {
     "fields": {
-      "name": "Loss of Coverage",
-      "description": "Lost of coverage on a certain benefit type",
+      "name": "Reduction in work hours",
+      "description": "Reduction in work hours",
       "category": 4
     },
     "model": "app.sysbenefitupdatereason",
@@ -66,7 +66,7 @@
   },
   {
     "fields": {
-      "name": "Left Employment",
+      "name": "Left employment",
       "description": "No longer employed in the position to receive benefits",
       "category": 4
     },
@@ -75,8 +75,8 @@
   },
   {
     "fields": {
-      "name": "Voluntary Cancellation",
-      "description": "Voluntary cancellation on benefit enrollment",
+      "name": "Subscriber/Member age over 65",
+      "description": "Subscriber/Member age over 65",
       "category": 4
     },
     "model": "app.sysbenefitupdatereason",
@@ -84,7 +84,7 @@
   },
   {
     "fields": {
-      "name": "Move from Service Area",
+      "name": "Move out of service area",
       "description": "Move out of benefit service area",
       "category": 4
     },
@@ -93,8 +93,8 @@
   },
   {
     "fields": {
-      "name": "No Longer Eligible",
-      "description": "No longer eligible for selected benefits",
+      "name": "Child over age not a student",
+      "description": "Child over age not a student",
       "category": 4
     },
     "model": "app.sysbenefitupdatereason",
@@ -111,15 +111,134 @@
   },
   {
     "fields": {
-      "name": "Terminate Dependent (Please specify dependent)",
+      "name": "Terminate dependent (Please specify dependent)",
       "description": "Terminate dependent who is cover under an existing benefit plan",
       "category": 4,
       "detail_required": "True"
     },
     "model": "app.sysbenefitupdatereason",
     "pk": 13
-  }
-  ,
+  },
+  {
+    "fields": {
+      "name": "Student over student age limit",
+      "description": "Student over student age limit",
+      "category": 4,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 14
+  },
+  {
+    "fields": {
+      "name": "Laid off more than 39 weeks",
+      "description": "Laid off more than 39 weeks",
+      "category": 4,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 15
+  },
+  {
+    "fields": {
+      "name": "Divorce",
+      "description": "Divorce",
+      "category": 4,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 16
+  },
+  {
+    "fields": {
+      "name": "Dependent child married",
+      "description": "Dependent Child Married",
+      "category": 4,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 17
+  },
+  {
+    "fields": {
+      "name": "Student graduated",
+      "description": "Student Graduated",
+      "category": 4,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 18
+  },
+  {
+    "fields": {
+      "name": "Cobra eligibility has expired",
+      "description": "Cobra eligibility has expired",
+      "category": 4,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 19
+  },
+  {
+    "fields": {
+      "name": "Continuation of Coverage (COC) has expired",
+      "description": "Continuation of Coverage (COC) has expired",
+      "category": 4,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 20
+  },
+  {
+    "fields": {
+      "name": "Military service",
+      "description": "Military Service",
+      "category": 5,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 21
+  },
+  {
+    "fields": {
+      "name": "Dissatisfied with plan",
+      "description": "Dissatisfied with plan",
+      "category": 5,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 22
+  },
+  {
+    "fields": {
+      "name": "Transferred to an HMO",
+      "description": "Transferred to an HMO",
+      "category": 5,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 23
+  },
+  {
+    "fields": {
+      "name": "Transferred to other insurer",
+      "description": "Transferred to other insurer",
+      "category": 5,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 24
+  },
+  {
+    "fields": {
+      "name": "Covered under another policy",
+      "description": "Covered under another policy",
+      "category": 5,
+      "detail_required": "False"
+    },
+    "model": "app.sysbenefitupdatereason",
+    "pk": 25
+  },
   {
     "fields": {
       "name": "Other",
@@ -128,6 +247,6 @@
       "detail_required": "True"
     },
     "model": "app.sysbenefitupdatereason",
-    "pk": 14
+    "pk": 26
   }
 ]
