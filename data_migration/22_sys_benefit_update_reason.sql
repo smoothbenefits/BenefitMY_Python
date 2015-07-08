@@ -33,12 +33,12 @@ END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'Open enrollment') THEN
     insert into app_sysbenefitupdatereason (name, description, category_id, detail_required)
-    values('Open Enrollment', 'Annual company wide enrollment', 2, False);
+    values('Open enrollment', 'Annual company wide enrollment', 2, False);
 END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'New hire') THEN
     insert into app_sysbenefitupdatereason (name, description, category_id, detail_required)
-    values('New Hire', 'Initial enrollment for new employee start', 2, False);
+    values('New hire', 'Initial enrollment for new employee start', 2, False);
 END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'COBRA') THEN
@@ -53,12 +53,12 @@ END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'Add spouse') THEN
     insert into app_sysbenefitupdatereason (name, description, category_id, detail_required)
-    values('Add Spouse', 'Add spouse to an existing benefit plan', 3, False);
+    values('Add spouse', 'Add spouse to an existing benefit plan', 3, False);
 END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'Add dependent (Please specify dependent)') THEN
     insert into app_sysbenefitupdatereason (name, description, category_id, detail_required)
-    values('Add Dependent (Please specify dependent)', 'Add dependent to an existing benefit plan', 3, True);
+    values('Add dependent (Please specify dependent)', 'Add dependent to an existing benefit plan', 3, True);
 END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'Marriage') THEN
@@ -73,7 +73,7 @@ END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'Left employment') THEN
     insert into app_sysbenefitupdatereason (name, description, category_id, detail_required)
-    values('Left Employment', 'No longer employed in the position to receive benefits', 4, False);
+    values('Left employment', 'No longer employed in the position to receive benefits', 4, False);
 END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'Reduction in work hours') THEN
@@ -83,7 +83,7 @@ END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'Move out of service area') THEN
     insert into app_sysbenefitupdatereason (name, description, category_id, detail_required)
-    values('Move from Service Area', 'Move out of benefit service area', 4, False);
+    values('Move out of service area', 'Move out of benefit service area', 4, False);
 END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'Subscriber/Member age over 65') THEN
@@ -138,7 +138,7 @@ END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'Terminate dependent (Please specify dependent)') THEN
     insert into app_sysbenefitupdatereason (name, description, category_id, detail_required)
-    values('Terminate Dependent (Please specify dependent)', 'Terminate dependent who is cover under an existing benefit plan', 4, True);
+    values('Terminate dependent (Please specify dependent)', 'Terminate dependent who is cover under an existing benefit plan', 4, True);
 END IF;
 
 IF NOT EXISTS (select 1 from app_sysbenefitupdatereason where name = 'Military service') THEN
