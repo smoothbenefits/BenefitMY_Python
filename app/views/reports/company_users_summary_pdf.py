@@ -75,6 +75,12 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
         return
 
+    def _get_person_birth_date_line(self, person):
+        if person and person.birth_date:
+            return '(' + person.birth_date.strftime("%Y-%m-%d") + ')'
+        else:
+            return ''
+
     def _write_employee(self, employee_user_id):
         person = self._get_person_by_user(employee_user_id)
         user = self._get_user_by_id(employee_user_id)
@@ -86,7 +92,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         full_name = self._get_person_full_name(person, user)
         self._write_line([ \
             full_name, \
-            '(' + person.birth_date.strftime("%Y-%m-%d") + ')' if person is not None else ''])
+            self._get_person_birth_date_line(person) if person is not None else ''])
 
         self._start_new_line()
 
