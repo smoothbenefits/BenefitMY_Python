@@ -19,5 +19,12 @@
     },
     "model": "app.company",
     "pk": 3
+  },
+  {
+    "fields": {
+      "name": "ForTesting"
+    },
+    "model": "app.company",
+    "pk": 4
   }
 ]

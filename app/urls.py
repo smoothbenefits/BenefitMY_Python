@@ -135,6 +135,7 @@ from app.views.data_modification.company_user_data_modification import CompanyUs
 from app.views.sys_benefit_update_reason_view import SysBenefitUpdateReasonView
 
 from app.views.person_enrollment_summary_view import PersonEnrollmentSummaryView
+from app.views.company_benefit_availability_view import CompanyBenefitAvailabilityView
 
 PREFIX = "api/v1"
 
@@ -305,7 +306,10 @@ urlpatterns = patterns('app.views',
 
     # Reporting API
     url(r'^%s/person/(?P<person_id>\w+)/benefits/?$' % PREFIX,
-        PersonEnrollmentSummaryView.as_view(), name='person_benefit_summary_api')
+        PersonEnrollmentSummaryView.as_view(), name='person_benefit_summary_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/benefits/?$' % PREFIX,
+        CompanyBenefitAvailabilityView.as_view(), name='company_benefit_availability_api'),
 
     # upload API
     url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX, UserUploadView.as_view(), name='uploads_by_user'),

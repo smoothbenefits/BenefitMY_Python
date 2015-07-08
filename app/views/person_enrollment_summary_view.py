@@ -90,12 +90,7 @@ class PersonEnrollmentSummaryView(APIView):
 
     def get(self, request, person_id, format=None):
         person_info = self.get_person_info(person_id)
-        print person_info
         user_id = self.hash_service.decode_key(person_info['user'])
-        company_id = self.hash_service.decode_key(person_info['company'])
-
-        company_benefit = CompanyBenefitAvailabilityView()
-        benefit_availability = company_benefit.get_benefit_availability_by_company(company_id)
 
         health_benefit = self.get_health_benefit_enrollment(user_id)
         health_benefit_waived = self.get_health_benefit_waive(user_id)
