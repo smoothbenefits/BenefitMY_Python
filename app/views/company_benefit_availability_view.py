@@ -77,7 +77,7 @@ class CompanyBenefitAvailabilityView(APIView):
         serializer = CompanyLtdInsurancePlanSerializer(ltd_insurance, required=False, many=True)
         return serializer.data
 
-    def get_benefit_availability_by_company(self, company_id):
+    def get(self, request, company_id, format=None):
         company_info = self.get_company_info(company_id)
 
         health_benefit = self.get_health_benefit(company_id)
@@ -110,4 +110,4 @@ class CompanyBenefitAvailabilityView(APIView):
             "ltd": ltd_insurance
         }
 
-        return response
+        return Response(response)
