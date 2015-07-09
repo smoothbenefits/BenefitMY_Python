@@ -88,7 +88,7 @@ class CompanyBenefitAvailabilityView(APIView):
             if benefit['benefit_plan']['benefit_type']['name'] == 'Dental':
                 dental.append(benefit)
             if benefit['benefit_plan']['benefit_type']['name'] == 'Vision':
-                dental.append(benefit)
+                vision.append(benefit)
 
         hra_plan = self.get_hra_plan(company_id)
         fsa_plan = self.get_fsa_plan(company_id)

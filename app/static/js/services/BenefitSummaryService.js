@@ -4,10 +4,16 @@ benefitmyService.factory('BenefitSummaryService',
   ['$q',
   'PersonService',
   'PersonBenefitEnrollmentRepository',
+  'CompanyBenefitAvailabilityService',
   function BenefitSummaryService(
     $q,
     PersonService,
-    PersonBenefitEnrollmentRepository){
+    PersonBenefitEnrollmentRepository,
+    CompanyBenefitAvailabilityService){
+
+    var SELECTED = 'SELECTED';
+    var NOT_SELECTED = 'NOT_SELECTED';
+    var WAIVED = 'WAIVED';
 
     var mapPersonBenefitToViewModel = function (domainModel) {
       var viewModel = {};
@@ -16,57 +22,50 @@ benefitmyService.factory('BenefitSummaryService',
       if (domainModel.health_benefit_enrolled[0] != null) {
         viewModel.health_benefit_enrolled = [];
         _.each(domainModel.health_benefit_enrolled, function(enrolled) {
+          var benefitType = enrolled.benefit.benefit_plan.benefit_type.name.toLowerCase();
           var viewEnrolled = {
             "plan_name": enrolled.benefit.benefit_plan.name,
-            "benefit_type": enrolled.benefit.benefit_plan.benefit_type.name,
-            "enrolled_member": enrolled.enrolleds
+            "status": SELECTED
           };
-          viewModel.health_benefit_enrolled.push(viewEnrolled);
+          viewModel[benefitType] = viewEnrolled;
         });
-      } else {
-        viewModel.health_benefit_enrolled = undefined;
       }
 
       // Map waived health benefits
       if (domainModel.health_benefit_waived[0] != null) {
         viewModel.health_benefit_waived = [];
         _.each(domainModel.health_benefit_waived, function(waived) {
+          var benefitType = waived.benefit_type.name;
           var viewWaived = {
-            "benefit_type": waived.benefit_type.name,
+            "status": WAIVED,
             "reason": waived.reason
           };
-          viewModel.health_benefit_waived.push(viewWaived);
+          viewModel[benefitType] = viewWaived;
         });
-      } else {
-        viewModel.health_benefit_waived = undefined;
       }
 
       // Map HRA plan enrollment
       if (domainModel.hra[0] != null) {
         var domainHra = domainModel.hra[0];
-        viewModel.hra = {
+        viewModel['hra'] = {
           "plan_name": domainHra.company_hra_plan.hra_plan.name,
           "description": domainHra.company_hra_plan.hra_plan.description
         };
-      } else {
-        viewModel.hra = undefined;
       }
 
       // Map basic life insurance enrollment
       if (domainModel.basic_life[0] != null) {
         var domainBasicLife = domainModel.basic_life[0];
-        viewModel.basic_life = {
+        viewModel['basic_life'] = {
           "plan_name": domainBasicLife.company_life_insurance.life_insurance_plan.name,
           "beneficiary": domainBasicLife.life_insurance_beneficiary
         };
-      } else {
-        viewModel.basic_life = undefined;
       }
 
       // Map supplemental life insurance enrollment
       if (domainModel.supplemental_life[0] != null) {
         var domainSupplementalLife = domainModel.supplemental_life[0];
-        viewModel.supplemental_life = {
+        viewModel['supplemental_life'] = {
           "plan_name": domainSupplementalLife.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name,
           "beneficiary": domainSupplementalLife.suppl_life_insurance_beneficiary,
           "self_elected_amount": domainSupplementalLife.self_elected_amount,
@@ -75,14 +74,12 @@ benefitmyService.factory('BenefitSummaryService',
           "self_condition": domainSupplementalLife.self_condition.name,
           "spouse_condition": domainSupplementalLife.spouse_condition.name
         };
-      } else {
-        viewModel.supplemental_life = undefined;
       }
 
       // Map STD enrollment
       if (domainModel.std[0] != null) {
         var domainStd = domainModel.std[0];
-        viewModel.std = {
+        viewModel['std'] = {
           "plan_name": domainStd.company_std_insurance.std_insurance_plan.name,
           "percentage_of_salary": domainStd.company_std_insurance.percentage_of_salary,
           "max_benefit_weekly": domainStd.company_std_insurance.max_benefit_weekly,
@@ -91,14 +88,12 @@ benefitmyService.factory('BenefitSummaryService',
           "employer_contribution_percentage": domainStd.company_std_insurance.employer_contribution_percentage,
           "elimination_period_in_days": domainStd.company_std_insurance.elimination_period_in_days
         };
-      } else {
-        viewModel.std = undefined;
       }
 
       // Map LTD enrollment
       if (domainModel.ltd[0] != null) {
         var domainLtd = domainModel.ltd[0];
-        viewModel.ltd = {
+        viewModel['ltd'] = {
           "plan_name": domainLtd.company_ltd_insurance.ltd_insurance_plan.name,
           "percentage_of_salary": domainLtd.company_ltd_insurance.percentage_of_salary,
           "max_benefit_monthly": domainLtd.company_ltd_insurance.max_benefit_monthly,
@@ -107,28 +102,16 @@ benefitmyService.factory('BenefitSummaryService',
           "employer_contribution_percentage": domainLtd.company_ltd_insurance.employer_contribution_percentage,
           "elimination_period_in_months": domainLtd.company_ltd_insurance.elimination_period_in_months
         };
-      } else {
-        viewModel.ltd = undefined;
       }
 
       // Map FSA selection
       if (domainModel.fsa[0] != null) {
         var domainFsa = domainModel.fsa[0];
-        viewModel.fsa = {
+        viewModel['fsa'] = {
           "primary_amount_per_year": domainFsa.primary_amount_per_year,
           "dependent_amount_per_year": domainFsa.dependent_amount_per_year,
           "update_reason": domainFsa.update_reason
         };
-      } else {
-        viewModel.fsa = undefined;
-      }
-
-      var allUndefined = _.every(_.pairs(viewModel), function(keyValue) {
-        return keyValue[1] === undefined;
-      });
-
-      if (allUndefined) {
-        viewModel = undefined;
       }
 
       return viewModel;
@@ -138,14 +121,40 @@ benefitmyService.factory('BenefitSummaryService',
       var deferred = $q.defer();
 
       PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
-        var personId = personInfo.id;
-        PersonBenefitEnrollmentRepository.BenefitEnrollmentByPerson.get({personId: personId})
+        return personInfo.id;
+      }).then(function(personId) {
+        var enrolled = PersonBenefitEnrollmentRepository.BenefitEnrollmentByPerson.get({personId: personId})
         .$promise.then(function(enrollments) {
           var viewPersonBenefits = mapPersonBenefitToViewModel(enrollments);
-          deferred.resolve(viewPersonBenefits);
-        }, function(error) {
-          deferred.reject(error);
+          return viewPersonBenefits;
         });
+        return enrolled;
+      }).then(function(personEnrollment) {
+        CompanyBenefitAvailabilityService.getBenefitAvailabilityByCompany(companyId)
+        .then(function(companyBenefits) {
+          // First, get all benefits that the company offers
+          var companyBenefitHash = _.pairs(companyBenefits);
+          var offeredBenefits = _.filter(companyBenefitHash, function(keyValue){
+            return keyValue[1];
+          });
+
+          // Loop through offered benefits and fill in any unselected gap
+          _.each(offeredBenefits, function(companyBenefitKeyValue) {
+            var offeredBenefitType = companyBenefitKeyValue[0];
+
+            if (!personEnrollment[offeredBenefitType]) {
+              personEnrollment[offeredBenefitType] = {
+                "status": NOT_SELECTED
+              };
+            } else if (!personEnrollment[offeredBenefitType].status) {
+              personEnrollment[offeredBenefitType].status = SELECTED;
+            }
+          });
+
+          deferred.resolve(personEnrollment);
+        });
+      }).catch(function(error) {
+        deferred.reject(error);
       });
 
       return deferred.promise;
