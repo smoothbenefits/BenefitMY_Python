@@ -183,7 +183,9 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=user_model.id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
         if (len(employee_plans) > 0):
             # Render header
-            self._write_line_uniform_width(['Basic Life (AD&D)', 'Coverage', 'Employee Premium'])
+            column_width_dists = [0.45, 0.35, 0.2]
+            self._write_line_uniform_width(['Basic Life (AD&D)', 'Coverage', 'Employee Premium'],
+                                           column_width_dists)
             self._draw_line()
 
             employee_plan = employee_plans[0]
@@ -198,7 +200,8 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 salary = self._get_salary_by_person(person_model)
                 if (salary):
                     coverage_amount = company_plan.salary_multiplier * salary
-            self._write_line_uniform_width([plan.name, coverage_amount, 'N/A'])
+            self._write_line_uniform_width([plan.name[:50], coverage_amount, 'N/A'],
+                                           column_width_dists)
 
             self._start_new_line()
             self._start_new_line()
@@ -234,7 +237,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 plan = employee_plans[0]
 
                 text_block = [[],[],[],[],[]]
-                text_block[0].append(plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
+                text_block[0].append(plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name[:22])
 
                 text_block[1].append('Employee')
                 text_block[1].append('Spouse')
