@@ -62,9 +62,16 @@ class PdfExportViewBase(ReportExportViewBase):
 
     def _write_text_fix_width(self, text, text_width):
         text = self._normalize_text(text)
+        computed_text_width = self._get_text_width(text)
+        cut_text = None
+        if text_width > 0 and computed_text_width > text_width:
+            text_char_count = len(text)
+            substring_char_count = int(text_char_count* int(text_width)/int(computed_text_width)) - 2
+            cut_text = text[substring_char_count:]
+            text = text[:substring_char_count] + '-'
         self._canvas.drawString(self._translate_X(self._current_X), self._translate_Y(self._current_Y), text)
         self._current_X = self._current_X + text_width
-        return
+        return cut_text
 
     def _start_new_line(self):
         self.__start_new_line_internal(self._line_height)
@@ -95,11 +102,18 @@ class PdfExportViewBase(ReportExportViewBase):
             for i, segment_length in enumerate(segment_lengths):
                 segment_lengths[i] = self._write_area_width * segment_length_fractions[i]
 
-        for idx, text in enumerate(text_items):
-            self._write_text_fix_width(text, segment_lengths[idx])
-
-        # End this line and move to next
-        self._start_new_line()
+        cut_text_array = [None] * num_items
+        have_cut_text = True
+        while have_cut_text:
+            have_cut_text = False
+            for idx, text in enumerate(text_items):
+                cut_text = self._write_text_fix_width(text, segment_lengths[idx])
+                if cut_text:
+                    have_cut_text = True
+                    cut_text_array[idx] = cut_text
+            # End this line and move to next
+            self._start_new_line()
+            text_items = cut_text_array
 
         return 
 

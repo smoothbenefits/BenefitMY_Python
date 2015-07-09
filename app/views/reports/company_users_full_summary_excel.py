@@ -14,6 +14,7 @@ from app.models.company_user import CompanyUser
 from app.models.person import Person
 from app.models.phone import Phone
 from app.models.address import Address
+from app.models.employee_profile import EmployeeProfile
 from app.models.user_company_benefit_plan_option import \
     UserCompanyBenefitPlanOption
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
@@ -62,6 +63,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Gender')
         col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Med PCP NO.')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Date of Hire')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
         col_num = self._write_field(excelSheet, 0, col_num, 'Work Phone')
         col_num = self._write_field(excelSheet, 0, col_num, 'Home Phone')
@@ -189,7 +191,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         # All helpers are built with capability of skiping proper number of columns when
         # person given is None. This is to ensure other information written after these
         # would be written to the right columns
-        cur_column_num = self._write_person_basic_info(person, write_pcp, excelSheet, row_num, cur_column_num, employee_user_id)
+        cur_column_num = self._write_person_basic_info(person, write_pcp, excelSheet, row_num, cur_column_num, employee_user_id, True)
         cur_column_num = self._write_person_email_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
 
         # Write out phone number info
@@ -205,7 +207,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
 
         return cur_column_num
 
-    def _write_person_basic_info(self, person_model, write_pcp, excelSheet, row_num, col_num, employee_user_id = None):
+    def _write_person_basic_info(self, person_model, write_pcp, excelSheet, row_num, col_num, employee_user_id=None, write_employee_profile=False):
         if (person_model):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.first_name)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.middle_name)
@@ -238,6 +240,9 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         # information section
         if (write_pcp):
             col_num = self._write_person_PCP_number(person_model, excelSheet, row_num, col_num)
+
+        if write_employee_profile:
+            col_num = self._write_employee_profile_info(person_model, excelSheet, row_num, col_num)
         
         return col_num
 
@@ -249,6 +254,13 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 if (enrolled.pcp): 
                     return self._write_field(excelSheet, row_num, col_num, enrolled.pcp)
 
+        return col_num + 1
+
+    def _write_employee_profile_info(self, person_model, excelSheet, row_num, col_num):
+        if person_model:
+            employee_profiles = EmployeeProfile.objects.filter(person=person_model)
+            if len(employee_profiles) > 0 and employee_profiles[0].start_date:
+                return self._write_field(excelSheet, row_num, col_num, employee_profiles[0].start_date.strftime("%d/%m/%Y"))
         return col_num + 1
 
     def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
