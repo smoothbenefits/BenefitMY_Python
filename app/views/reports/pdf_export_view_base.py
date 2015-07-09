@@ -62,6 +62,11 @@ class PdfExportViewBase(ReportExportViewBase):
 
     def _write_text_fix_width(self, text, text_width):
         text = self._normalize_text(text)
+        computed_text_width = self._get_text_width(text)
+        if text_width > 0 and computed_text_width > text_width:
+            text_char_count = len(text)
+            substring_char_count = int(text_char_count* int(text_width)/int(computed_text_width)) - 1
+            text = text[:substring_char_count]
         self._canvas.drawString(self._translate_X(self._current_X), self._translate_Y(self._current_Y), text)
         self._current_X = self._current_X + text_width
         return
