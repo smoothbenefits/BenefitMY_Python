@@ -20,7 +20,6 @@ benefitmyService.factory('BenefitSummaryService',
 
       // Map enrolled health benefits
       if (domainModel.health_benefit_enrolled[0] != null) {
-        viewModel.health_benefit_enrolled = [];
         _.each(domainModel.health_benefit_enrolled, function(enrolled) {
           var benefitType = enrolled.benefit.benefit_plan.benefit_type.name.toLowerCase();
           var viewEnrolled = {
@@ -34,9 +33,8 @@ benefitmyService.factory('BenefitSummaryService',
 
       // Map waived health benefits
       if (domainModel.health_benefit_waived[0] != null) {
-        viewModel.health_benefit_waived = [];
         _.each(domainModel.health_benefit_waived, function(waived) {
-          var benefitType = waived.benefit_type.name;
+          var benefitType = waived.benefit_type.name.toLowerCase();
           var viewWaived = {
             "status": WAIVED,
             "reason": waived.reason,

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
 
@@ -342,7 +341,5 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/benefit_update_reasons/?$' % PREFIX, SysBenefitUpdateReasonView.as_view(), name='sys_benefit_update_reason_api'),
 )
-
-
 
 urlpatterns = format_suffix_patterns(urlpatterns)
