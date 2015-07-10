@@ -1089,6 +1089,9 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
       $scope.go_to_state = function(state) {
         $state.go(state);
+        for (i = 0; i < $scope.tabs.length; i++) {
+          $scope.tabs[i].active = ($scope.tabs[i].state === state);
+        }
       };
 
       $scope.addMember = function(){
@@ -2226,11 +2229,42 @@ var benefitSignupSummary = employeeControllers.controller(
          });
        });
 
-       $scope.enrollNow = function(){
-         $state.go('employee_benefit_signup.health');
+       $scope.goToState = function(state){
+         $state.go(state);
          for (i = 0; i < $scope.tabs.length; i++) {
-           $scope.tabs[i].active = ($scope.tabs[i].state === originalState.name);
+           $scope.tabs[i].active = ($scope.tabs[i].state === state);
          }
+       };
+
+       // Decide whether user has finished enrollment on a given benefit type
+       $scope.completed = function(benefitType) {
+         if (!$scope.enrollments) {
+           return false;
+         }
+
+         return ($scope.enrollments[benefitType].status === 'SELECTED' ||
+             $scope.enrollments[benefitType].status === 'WAIVED');
+       };
+
+       // Update panel class based on benefit enrollment status
+       $scope.getPanelClass = function(benefitType) {
+         if ($scope.completed(benefitType)) {
+           return "panel-success";
+         }
+
+         return "panel-warning";
+       };
+
+       // Determine if the company provide a given benefit type
+       $scope.companyProvide = function(benefitType) {
+         if (!$scope.enrollments) {
+           return false;
+         }
+
+         if ($scope.enrollments[benefitType]) {
+           return true;
+         }
+         return false;
        };
 
        // Placeholder for document review flow
