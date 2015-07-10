@@ -37,7 +37,7 @@ class CompanyBenefitAvailabilityTestCase(TestCase, ViewTestBase):
 
         self.assertTrue(len(summary['medical']) > 0)
         self.assertTrue(len(summary['dental']) > 0)
-        self.assertTrue(len(summary['vision']) == 0)
+        self.assertTrue(len(summary['vision']) > 0)
         self.assertTrue(len(summary['hra']) > 0)
         self.assertTrue(len(summary['basic_life']) > 0)
         self.assertTrue(len(summary['supplemental_life']) > 0)
