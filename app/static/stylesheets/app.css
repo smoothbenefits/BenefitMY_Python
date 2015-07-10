@@ -9,7 +9,7 @@
     margin-top: 20px;
 }
 
-ul.client-list 
+ul.client-list
 {
     list-style-type:none;
 }
@@ -194,7 +194,7 @@ th .editable-container{
     border-left:solid 1px #e4e4e4;
 }
 .table-striped thead{
-    border-left:solid 1px #e4e4e4;    
+    border-left:solid 1px #e4e4e4;
     border-right:solid 1px #e4e4e4;
 }
 .table-sub-title{
@@ -237,8 +237,8 @@ span.doc-buttons{
     cursor: pointer;
 }
 .employee-terminate{
-    color:red; 
-    font-size:15px; 
+    color:red;
+    font-size:15px;
     font-weight:bold;
 }
 .datebox > .input-group > .form-control {
@@ -258,4 +258,8 @@ span.doc-buttons{
 .view-instruction .gray-link{
     color:gray;
     font-weight:bold;
+}
+div.submit-box.benefit-selection-button{
+  padding-left: 10px;
+  max-width: 200px;
 }
