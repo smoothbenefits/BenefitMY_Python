@@ -25,6 +25,7 @@ benefitmyService.factory('BenefitSummaryService',
           var benefitType = enrolled.benefit.benefit_plan.benefit_type.name.toLowerCase();
           var viewEnrolled = {
             "plan_name": enrolled.benefit.benefit_plan.name,
+            "option_type": enrolled.benefit.benefit_option_type,
             "status": SELECTED
           };
           viewModel[benefitType] = viewEnrolled;
@@ -38,7 +39,9 @@ benefitmyService.factory('BenefitSummaryService',
           var benefitType = waived.benefit_type.name;
           var viewWaived = {
             "status": WAIVED,
-            "reason": waived.reason
+            "reason": waived.reason,
+            "plan_name": "Not Applicable",
+            "option_type": "Not Applicable"
           };
           viewModel[benefitType] = viewWaived;
         });
