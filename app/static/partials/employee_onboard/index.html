@@ -61,7 +61,9 @@
                         <div class="form-label">Date Of Birth</div>
                         <div class="datebox">
                             <bm-date-picker model="employee.birth_date"
-                                            required="true" />
+                                            required="true"
+                                            fieldname="'birth_date'"
+                                            dirty="form.birth_date.$dirty" />
                         </div>
 
                         <div class="form-label">Gender</div>
