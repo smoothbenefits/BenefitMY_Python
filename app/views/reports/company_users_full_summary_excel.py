@@ -260,7 +260,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         if person_model:
             employee_profiles = EmployeeProfile.objects.filter(person=person_model)
             if len(employee_profiles) > 0 and employee_profiles[0].start_date:
-                return self._write_field(excelSheet, row_num, col_num, employee_profiles[0].start_date.strftime("%d/%m/%Y"))
+                return self._write_field(excelSheet, row_num, col_num, employee_profiles[0].start_date.strftime("%m/%d/%Y"))
         return col_num + 1
 
     def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
@@ -484,7 +484,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, row_num, col_num, employee_benefit_record.record_reason_note)
 
         if (employee_benefit_record.updated_at):
-            col_num = self._write_field(excelSheet, row_num, col_num, employee_benefit_record.updated_at.strftime("%Y-%m-%d"))
+            col_num = self._write_field(excelSheet, row_num, col_num, employee_benefit_record.updated_at.strftime("%m/%d/%Y"))
         else:
             col_num = col_num + 1
 
