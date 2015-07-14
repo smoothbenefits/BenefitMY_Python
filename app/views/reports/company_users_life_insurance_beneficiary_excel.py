@@ -36,6 +36,7 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersFullSummar
         col_num = self._write_field(excelSheet, 0, col_num, 'SSN')
         col_num = self._write_field(excelSheet, 0, col_num, 'Gender')
         col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Date of Hire')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
         col_num = self._write_field(excelSheet, 0, col_num, 'Work Phone')
         col_num = self._write_field(excelSheet, 0, col_num, 'Home Phone')
