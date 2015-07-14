@@ -58,7 +58,9 @@
                             <div class="datebox col-md-10">
                                 <bm-date-picker model="employee.birth_date"
                                                 required="true"
-                                                disabled="employee.expiration_na" />
+                                                disabled="employee.expiration_na"
+                                                fieldname="'expiry'"
+                                                dirty="form.expiry.$dirty" />
                             </div>
                             <div class="checkbox col-md-2">
                                 <label>
