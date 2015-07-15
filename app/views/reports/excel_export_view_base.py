@@ -3,8 +3,6 @@ import xlwt
 from report_export_view_base import ReportExportViewBase
 
 class ExcelExportViewBase(ReportExportViewBase):
-    date_field_format = xlwt.XFStyle()
-    date_field_format.num_format_str= 'mm-dd-yyyy'
 
     ''' Sadly Python does not support the ++ operator, or else we don't need
         this below helper to keep track of the next column number for writing

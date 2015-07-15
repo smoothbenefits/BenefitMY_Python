@@ -53,3 +53,10 @@ class ReportExportViewBase(APIView):
             users_id.append(user.user_id)
 
         return users_id
+
+    @staticmethod
+    def get_date_string(date):
+        if date:
+            return date.strftime("%m/%d/%Y")
+        else:
+            return ''
