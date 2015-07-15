@@ -57,6 +57,9 @@ class ReportExportViewBase(APIView):
     @staticmethod
     def get_date_string(date):
         if date:
-            return date.strftime("%m/%d/%Y")
+            try:
+                return date.strftime("%m/%d/%Y")
+            except:
+                return ''
         else:
             return ''
