@@ -49,6 +49,7 @@ from app.views.permission import (
     company_employer,
     company_employer_or_broker)
 from excel_export_view_base import ExcelExportViewBase
+from report_export_view_base import ReportExportViewBase
 
 User = get_user_model()
 
@@ -214,7 +215,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.last_name)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.ssn)
             col_num = self._write_field(excelSheet, row_num, col_num, person_model.gender)
-            col_num = self._write_field(excelSheet, row_num, col_num, person_model.birth_date, ExcelExportViewBase.date_field_format)
+            col_num = self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(person_model.birth_date))
         elif (employee_user_id):
             # TODO:
             # This is not a clean solution, but is the only one we have for the short term
@@ -260,7 +261,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         if person_model:
             employee_profiles = EmployeeProfile.objects.filter(person=person_model)
             if len(employee_profiles) > 0 and employee_profiles[0].start_date:
-                return self._write_field(excelSheet, row_num, col_num, employee_profiles[0].start_date.strftime("%d/%m/%Y"))
+                return self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(employee_profiles[0].start_date))
         return col_num + 1
 
     def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
@@ -482,11 +483,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
             col_num = col_num + 1
 
         col_num = self._write_field(excelSheet, row_num, col_num, employee_benefit_record.record_reason_note)
-
-        if (employee_benefit_record.updated_at):
-            col_num = self._write_field(excelSheet, row_num, col_num, employee_benefit_record.updated_at.strftime("%Y-%m-%d"))
-        else:
-            col_num = col_num + 1
+        col_num = self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(employee_benefit_record.updated_at))
 
         return col_num
 

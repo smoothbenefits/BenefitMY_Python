@@ -55,7 +55,8 @@ class UserDocumentGenerator(object):
         field_keys = []
         for d_type in DocumentType.objects.all():
             content = self.template_service.get_most_recent_content_by_doc_type(d_type, self.company)
-            field_keys += self.template_service.get_field_keys_from_template_content(content)
+            if content:
+                field_keys += self.template_service.get_field_keys_from_template_content(content)
 
         fields = {}
         field_keys = self.template_service.dedupe_field_keys(field_keys)
@@ -71,6 +72,9 @@ class UserDocumentGenerator(object):
             # For each document type
             # We need to get the template associated with the document type
             content = self.template_service.get_most_recent_content_by_doc_type(d_type, self.company)
+            if not content:
+                # We cannot find the proper template, skip
+                continue
             doc_name = "{} for employee".format(d_type.name) 
             content = self.template_service.populate_content_with_field_values(content, field_values)
             #Create a new document based on type

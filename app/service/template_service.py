@@ -16,7 +16,7 @@ class TemplateService(object):
         templates = Template.objects.filter(document_type=doc_type, company=company).order_by('-id')
         if templates:
             return templates[0].content
-        return doc_type.default_content
+        return None
 
     def get_field_keys_from_template_content(self, content):
         field_keys = []
