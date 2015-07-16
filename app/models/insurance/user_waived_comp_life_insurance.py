@@ -1,9 +1,9 @@
 import reversion
 
 from django.db import models
-from company import Company
+from ..company import Company
+from ..sys_benefit_update_reason import SysBenefitUpdateReason
 from app.custom_authentication import AuthUser
-from sys_benefit_update_reason import SysBenefitUpdateReason
 from company_life_insurance_plan import CompanyLifeInsurancePlan
 
 @reversion.register

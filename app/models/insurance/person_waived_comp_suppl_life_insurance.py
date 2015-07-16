@@ -1,9 +1,9 @@
 import reversion
 
 from django.db import models
-from company import Company
+from ..company import Company
 from ..person import Person
-from sys_benefit_update_reason import SysBenefitUpdateReason
+from ..sys_benefit_update_reason import SysBenefitUpdateReason
 from comp_suppl_life_insurance_plan import CompSupplLifeInsurancePlan
 
 @reversion.register
@@ -15,7 +15,7 @@ class PersonWaivedCompSupplLifeInsurance(models.Model):
 
     company_supplemental_life_insurance_plan = models.ForeignKey(CompSupplLifeInsurancePlan,
                                                related_name='person_waived_suppl_life')
-                                               
+
     reason = models.CharField(max_length=2048,
                               null=True,
                               blank=True)
