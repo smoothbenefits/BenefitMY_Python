@@ -13,7 +13,7 @@ class UserWaivedCompanyFsa(models.Model):
 
     company = models.ForeignKey(Company, related_name='user_waived_fsa_company')
 
-    company_ltd_insurance = models.ForeignKey(CompanyFsaPlan,
+    company_fsa = models.ForeignKey(CompanyFsaPlan,
                                               related_name='user_waived_fsa')
 
     reason = models.CharField(max_length=2048,

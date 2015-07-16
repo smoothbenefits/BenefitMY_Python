@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
                 ('updated_at', models.DateTimeField(auto_now=True, null=True)),
                 ('company', models.ForeignKey(related_name='user_waived_fsa_company', to='app.Company')),
-                ('company_ltd_insurance', models.ForeignKey(related_name='user_waived_fsa', to='app.CompanyFsaPlan')),
+                ('company_fsa', models.ForeignKey(related_name='user_waived_fsa', to='app.CompanyFsaPlan')),
                 ('record_reason', models.ForeignKey(related_name='fsa_waive_update_reason', blank=True, to='app.SysBenefitUpdateReason', null=True)),
                 ('user', models.ForeignKey(related_name='user_waived_fsa_user', to=settings.AUTH_USER_MODEL)),
             ],
