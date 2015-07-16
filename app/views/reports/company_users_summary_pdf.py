@@ -50,6 +50,7 @@ from app.views.permission import (
     company_employer,
     company_employer_or_broker)
 from pdf_export_view_base import PdfExportViewBase
+from report_export_view_base import ReportExportViewBase
 
 class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
@@ -78,7 +79,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
     def _get_person_birth_date_line(self, person):
         if person and person.birth_date:
-            return '(' + person.birth_date.strftime("%m/%d/%Y") + ')'
+            return '(' + ReportExportViewBase.get_date_string(person.birth_date) + ')'
         else:
             return ''
 
@@ -362,7 +363,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 self._write_line_uniform_width([ \
                     document.name, \
                     'Signed' if document.signature is not None else 'Not Signed', \
-                    document.signature.created_at.strftime("%m/%d/%Y") if document.signature is not None else ''
+                    ReportExportViewBase.get_date_string(document.signature.created_at) if document.signature is not None else ''
                 ], \
                 [0.6, 0.2, 0.2])  
 
