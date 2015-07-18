@@ -346,7 +346,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         company_plans = CompanyFsaPlan.objects.filter(company=company_id)
         if (len(fsas) > 0):
             fsa = fsas[0]
-            if (fsa.company_fsa_plan and fsa.company_fsa_plan != None):
+            if (fsa.company_fsa_plan):
                 # Render header
                 self._write_line_uniform_width(['Account Type', 'Elected Annual Amount'])
                 self._draw_line()
