@@ -10,10 +10,12 @@ from ..sys_benefit_update_reason import SysBenefitUpdateReason
 class FSA(models.Model):
     primary_amount_per_year = models.DecimalField(max_digits=8,
                                                   decimal_places=2,
+                                                  blank=True,
                                                   null=True)
 
     dependent_amount_per_year = models.DecimalField(max_digits=8,
                                                     decimal_places=2,
+                                                    blank=True,
                                                     null=True)
 
     user = models.ForeignKey(AuthUser, related_name="fsa_user")

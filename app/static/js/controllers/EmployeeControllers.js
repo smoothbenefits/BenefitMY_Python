@@ -1572,18 +1572,27 @@ var fsaBenefitsSignup = employeeControllers.controller(
           if ($scope.isFsaUpdateReasonSelected()){
             $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
             $scope.fsaElection.company_fsa_plan = $scope.fsaPlan.companyPlanId;
-            FsaService.saveFsaElection($scope.fsaElection, $scope.updateReason
-              , function() {
-                    var modalInstance = $scope.showSaveSuccessModal();
-                    modalInstance.result.then(function(){
-                        $scope.transitionToNextTab($scope.tabs);
-                    });
-                    $scope.myForm.$setPristine();
-              }
-              , function() {
-                  $scope.savedSuccess = false;
-              });
           }
+
+          // Set values to NULL if user chooses to waive FSA plan
+          if ($scope.waivedFsa) {
+            $scope.fsaElection.update_reason = '';
+            $scope.fsaElection.company_fsa_plan = null;
+            $scope.fsaElection.primary_amount_per_year = null;
+            $scope.fsaElection.dependent_amount_per_year = null;
+          }
+
+          FsaService.saveFsaElection($scope.fsaElection, $scope.updateReason
+            , function() {
+                  var modalInstance = $scope.showSaveSuccessModal();
+                  modalInstance.result.then(function(){
+                      $scope.transitionToNextTab($scope.tabs);
+                  });
+                  $scope.myForm.$setPristine();
+            }
+            , function() {
+                $scope.savedSuccess = false;
+            });
         };
 
         $scope.benefit_type = 'FSA'
@@ -2380,7 +2389,7 @@ var benefitsSignupControllerBase = employeeControllers.controller(
                 nextTab.active = true;
                 $state.go(curTab.next);
             }
-          
+
         }
 
     }]);
