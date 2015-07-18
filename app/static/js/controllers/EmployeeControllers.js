@@ -2286,6 +2286,14 @@ var benefitSignupSummary = employeeControllers.controller(
              $scope.enrollments[benefitType].status === 'WAIVED');
        };
 
+       $scope.waived = function(benefitType) {
+         if (!$scope.enrollments) {
+           return false;
+         }
+
+         return $scope.enrollments[benefitType].status === 'WAIVED';
+       };
+
        // Update panel class based on benefit enrollment status
        $scope.getPanelClass = function(benefitType) {
          if ($scope.completed(benefitType)) {

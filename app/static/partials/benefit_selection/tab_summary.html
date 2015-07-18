@@ -377,7 +377,7 @@
             <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('fsa')"></span>
         </div>
         <div class="panel-body" collapse="!fsaInfoExpanded">
-          <table class="table table-striped" ng-show="completed('fsa')">
+          <table class="table table-striped" ng-show="completed('fsa') && !waived('fsa')">
             <thead>
               <tr>
                 <th><span>Account Type</span></th>
@@ -392,6 +392,15 @@
               <tr>
                 <td>Dependent Care Account</td>
                 <td>${{enrollments['fsa'].dependent_amount_per_year}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" ng-show="completed('fsa') && waived('fsa')">
+            <tbody>
+              <tr>
+                <td width="180">The FSA plan was waived.
+                  <a ng-click="goToState('employee_benefit_signup.fsa')">Enroll now</a>?
+                </td>
               </tr>
             </tbody>
           </table>
