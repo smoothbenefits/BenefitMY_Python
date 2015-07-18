@@ -4,29 +4,12 @@
   </div>
   <div class="panel-body">
     <form name="myForm" confirm-unsaved-on-exit>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-label">Waive Provided FSA Option?</div>
-        </div>
-      </div>
-      <div class="row" styple="margin-top:10px;">
-        <div class="col-md-offset-2 col-md-8">
-          <div ng-show="waivedFsa" style="padding-bottom: 10px;">
-            <span class="label label-danger">You have chosen NOT to select an FSA plan.</span>
-          </div>
-          <div class="check-box">
-            <input type="checkbox"
-            ng-model="waivedFsa"
-            name="waive_fsa"> No, I do NOT want to select an FSA plan.
-          </div>
-        </div>
-      </div>
-      <div class="row" style="margin-top:10px;" ng-hide="waivedFsa">
+      <div class="row" style="margin-top:10px;">
         <div class="col-md-4">
           <div class="form-label">Please specify a reason for change</div>
         </div>
       </div>
-      <div class="row" ng-hide="waivedFsa">
+      <div class="row">
         <div class="col-md-offset-2 col-md-6">
           <div class="select-box">
             <select ng-model="selectedFsaUpdateReason"
@@ -35,7 +18,7 @@
           </div>
         </div>
       </div>
-      <div ng-show="isFsaUpdateReasonSelected() && !waivedFsa">
+      <div ng-show="isFsaUpdateReasonSelected() && !waivedFsa()">
         <div class="row" style="margin-top:10px;">
           <div class="col-md-4">
             <div class="form-label">Elected Annual Amount</div>
