@@ -87,7 +87,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
 
         $stateProvider.
             state('/settings', {
-                url: "/settings?forced",
+                url: "/settings?onboard",
                 templateUrl: '/static/partials/settings.html',
                 controller: 'settingsController'
             }).
