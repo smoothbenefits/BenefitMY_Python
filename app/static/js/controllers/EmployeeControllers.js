@@ -1519,7 +1519,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
 
         // FSA election data
         $scope.fsaUpdateReasons = [
-          { text: 'Make selection here...', value: 0 },
+          { text: 'Please make a selection here...', value: 0 },
           { text: 'Waive FSA plan', value: 1 },
           { text: 'New Enrollment or annual enrollment changes', value: 2 },
           { text: 'Dependent care cost provider changes', value: 3 },

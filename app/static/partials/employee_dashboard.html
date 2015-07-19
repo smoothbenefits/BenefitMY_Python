@@ -78,7 +78,7 @@
                 <tr>
                     <td width="180">No active HRA plan</td>
                 </tr>
-            </tbody>    
+            </tbody>
         </table>
         <table class="table table-striped" ng-show="hraPlan">
             <thead>
@@ -106,7 +106,7 @@
                 <tr>
                     <td width="180">No active basic life insurance plan</td>
                 </tr>
-            </tbody>    
+            </tbody>
         </table>
         <table class="table table-striped" ng-show="basicLifeInsurancePlan.enrolled">
             <thead>
@@ -129,10 +129,10 @@
             </tbody>
         </table>
     </div>
-    
+
     <!-- Supplemental life insurance summary table -->
     <div class="table-responsive table-holder table" ng-show="supplementalLifeInsurancePlan !== undefined">
-        <div class="table-sub-title"> 
+        <div class="table-sub-title">
             Supplemental Life Insurance
         </div>
         <table class="table table-striped" ng-if="supplementalLifeInsurancePlan">
@@ -196,7 +196,7 @@
                 <tr>
                     <td width="180">No active Short Term Disability insurance plan</td>
                 </tr>
-            </tbody>    
+            </tbody>
         </table>
         <table class="table table-striped" ng-show="userStdPlan">
             <thead>
@@ -234,7 +234,7 @@
                 <tr>
                     <td width="180">No active Long Term Disability insurance plan</td>
                 </tr>
-            </tbody>    
+            </tbody>
         </table>
         <table class="table table-striped" ng-show="userLtdPlan">
             <thead>
@@ -272,9 +272,16 @@
                 <tr>
                     <td width="180">No active FSA plan</td>
                 </tr>
-            </tbody>    
+            </tbody>
         </table>
-        <table class="table-striped table" ng-show="fsaElection.enrolled">
+        <table class="table table-striped" ng-show="fsaElection.enrolled && fsaElection.waived">
+            <tbody>
+                <tr>
+                    <td width="180">Waived FSA plan</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table-striped table" ng-show="fsaElection.enrolled && !fsaElection.waived">
             <thead>
                 <tr>
                     <th><span>Account Type</span></th>
@@ -335,7 +342,7 @@
                     <tr>
                         <td width="180">We do not have your W4 form information yet.</td>
                     </tr>
-                </tbody>    
+                </tbody>
             </table>
         </div>
         <div class="table-responsive table-holder table" ng-hide="disabledFeatures.DD">
@@ -370,7 +377,7 @@
                     <tr>
                         <td width="180">We do not have your direct deposit account information yet.</td>
                     </tr>
-                </tbody>    
+                </tbody>
             </table>
         </div>
     </div><!-- / .content-body -->
@@ -430,7 +437,7 @@
                     <tr>
                         <td>{{i9Info.worker_type}}</td>
                     </tr>
-                </tbody> 
+                </tbody>
             </table>
             <table class="table table-striped" ng-hide="i9Info">
                 <thead>
@@ -442,7 +449,7 @@
                     <tr>
                         <td width="180">We do not have your employment authorization information yet.</td>
                     </tr>
-                </tbody>  
+                </tbody>
             </table>
         </div>
     </div><!-- / .content-body -->
