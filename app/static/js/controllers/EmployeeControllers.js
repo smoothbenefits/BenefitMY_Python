@@ -65,7 +65,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
           return response;
         }, function(){
           //we need to redirect to edit profile page
-          $location.path('/settings').search({forced:1});
+          $location.path('/settings').search({onboard:1});
         });
       }
       return response;
