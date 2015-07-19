@@ -38,6 +38,7 @@ from app.models.hra.hra_plan import HraPlan
 from app.models.hra.company_hra_plan import CompanyHraPlan
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.fsa.fsa import FSA
+from app.models.fsa.company_fsa_plan import CompanyFsaPlan
 from app.models.sys_benefit_update_reason import SysBenefitUpdateReason
 from app.models.document import Document
 from app.models.document_type import DocumentType
@@ -49,6 +50,7 @@ from app.views.permission import (
     company_employer,
     company_employer_or_broker)
 from pdf_export_view_base import PdfExportViewBase
+from report_export_view_base import ReportExportViewBase
 
 class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
@@ -71,17 +73,17 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
         # For each of them, write out his/her information
         for i in range(len(users_id)):
-            self._write_employee(users_id[i])
+            self._write_employee(users_id[i], company_id)
 
         return
 
     def _get_person_birth_date_line(self, person):
         if person and person.birth_date:
-            return '(' + person.birth_date.strftime("%Y-%m-%d") + ')'
+            return '(' + ReportExportViewBase.get_date_string(person.birth_date) + ')'
         else:
             return ''
 
-    def _write_employee(self, employee_user_id):
+    def _write_employee(self, employee_user_id, company_id):
         person = self._get_person_by_user(employee_user_id)
         user = self._get_user_by_id(employee_user_id)
 
@@ -97,13 +99,13 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         self._start_new_line()
 
         # Now starts writing benefit enrollments
-        self._write_employee_all_health_benefits_info(user)
-        self._write_employee_basic_life_insurance_info(user, person)
-        self._write_employee_hra_info(person)
-        self._write_employee_supplemental_life_insurance_info(person)
-        self._write_employee_std_insurance_info(user)
-        self._write_employee_ltd_insurance_info(user)
-        self._write_employee_fsa_info(user)
+        self._write_employee_all_health_benefits_info(user, company_id)
+        self._write_employee_basic_life_insurance_info(user, person, company_id)
+        self._write_employee_hra_info(person, company_id)
+        self._write_employee_supplemental_life_insurance_info(person, company_id)
+        self._write_employee_std_insurance_info(user, company_id)
+        self._write_employee_ltd_insurance_info(user, company_id)
+        self._write_employee_fsa_info(user, company_id)
 
         # extra space between main sections
         self._start_new_line()
@@ -118,19 +120,29 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
         return
 
-    def _write_employee_all_health_benefits_info(self, user_model):
+    def _write_not_selected_plan(self, benefit_name):
+        # Render header
+        self._write_line_uniform_width([benefit_name])
+        self._draw_line()
+        self._write_line_uniform_width(['Not Selected'])
+        self._start_new_line()
+        self._start_new_line()
+
+    def _write_employee_all_health_benefits_info(self, user_model, company_id):
         user_benefit_plan_options = UserCompanyBenefitPlanOption.objects.filter(user=user_model.id)
         user_benefit_waived = UserCompanyWaivedBenefit.objects.filter(user=user_model.id)
+        company_benefit_list = CompanyBenefitPlanOption.objects.filter(company=company_id)
 
-        self._write_employee_health_benefit_info(user_benefit_plan_options, user_benefit_waived, 'Medical')
-        self._write_employee_health_benefit_info(user_benefit_plan_options, user_benefit_waived, 'Dental')
-        self._write_employee_health_benefit_info(user_benefit_plan_options, user_benefit_waived, 'Vision')
+        self._write_employee_health_benefit_info(user_benefit_plan_options, user_benefit_waived, company_benefit_list, 'Medical')
+        self._write_employee_health_benefit_info(user_benefit_plan_options, user_benefit_waived, company_benefit_list, 'Dental')
+        self._write_employee_health_benefit_info(user_benefit_plan_options, user_benefit_waived, company_benefit_list, 'Vision')
 
         return
 
-    def _write_employee_health_benefit_info(self, employee_health_benefit_options, employee_health_waived_benefit, benefit_type):
+    def _write_employee_health_benefit_info(self, employee_health_benefit_options, employee_health_waived_benefit, company_benefit_list, benefit_type):
         user_benefit_options = employee_health_benefit_options.filter(benefit__benefit_plan__benefit_type__name = benefit_type)
         user_waived_benefit = employee_health_waived_benefit.filter(benefit_type__name = benefit_type)
+        company_plan_options = company_benefit_list.filter(benefit_plan__benefit_type__name = benefit_type)
 
         if len(user_benefit_options) > 0:
             # column width distributions
@@ -159,7 +171,6 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 text_block[1].append(relationship + ': ' + member_name)
 
             self._write_block_uniform_width(text_block, column_width_dists)
-
             self._start_new_line()
             self._start_new_line()
 
@@ -173,14 +184,18 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
             self._write_line_uniform_width([ \
                 'Waived', \
                 user_waived.reason])
+            self._start_new_line()
+            self._start_new_line()
 
-            self._start_new_line()
-            self._start_new_line()
+        elif len(company_plan_options) > 0:
+            self._write_not_selected_plan(benefit_type + ' Plan')
 
         return
 
-    def _write_employee_basic_life_insurance_info(self, user_model, person_model):
+    def _write_employee_basic_life_insurance_info(self, user_model, person_model, company_id):
         employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=user_model.id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
+        company_plans = CompanyLifeInsurancePlan.objects.filter(company=company_id)
+
         if (len(employee_plans) > 0):
             # Render header
             column_width_dists = [0.45, 0.35, 0.2]
@@ -202,16 +217,21 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                     coverage_amount = company_plan.salary_multiplier * salary
             self._write_line_uniform_width([plan.name, coverage_amount, 'N/A'],
                                            column_width_dists)
+            self._start_new_line()
+            self._start_new_line()
 
-            self._start_new_line()
-            self._start_new_line()
+        elif company_plans:
+            self._write_not_selected_plan('Basic Life (AD&D)')
 
         return
 
-    def _write_employee_hra_info(self, person_model):
+    def _write_employee_hra_info(self, person_model, company_id):
+        company_plans = CompanyHraPlan.objects.filter(company=company_id)
+        plan_selected = False
         if (person_model):
             employee_plans = PersonCompanyHraPlan.objects.filter(person=person_model.id)
             if (len(employee_plans) > 0):
+                plan_selected = True
                 # Render header
                 self._write_line_uniform_width(['HRA Plan', 'Description'])
                 self._draw_line()
@@ -224,12 +244,18 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 self._start_new_line()
                 self._start_new_line()
 
+        if not plan_selected and company_plans:
+            self._write_not_selected_plan('HRA Plan')
+
         return
 
-    def _write_employee_supplemental_life_insurance_info(self, person_model):
+    def _write_employee_supplemental_life_insurance_info(self, person_model, company_id):
+        plan_selected = False
+        company_plans = CompSupplLifeInsurancePlan.objects.filter(company=company_id)
         if (person_model):
             employee_plans = PersonCompSupplLifeInsurancePlan.objects.filter(person=person_model.id)
             if (len(employee_plans) > 0):
+                plan_selected = True
                 # Render header
                 self._write_line_uniform_width(['Suppl. Life Plan', 'Coverage Target', 'Elected Amount', 'Premium', 'Condition'])
                 self._draw_line()
@@ -260,10 +286,14 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 self._start_new_line()
                 self._start_new_line()
 
+        if not plan_selected and company_plans:
+            self._write_not_selected_plan('Suppl. Life Plan')
+
         return
 
-    def _write_employee_std_insurance_info(self, user_model):
+    def _write_employee_std_insurance_info(self, user_model, company_id):
         employee_plans = UserCompanyStdInsurancePlan.objects.filter(user=user_model.id)
+        company_plans = CompanyStdInsurancePlan.objects.filter(company=company_id)
         if (len(employee_plans) > 0):
             # Render header
             self._write_line_uniform_width(['STD Plan', 'Employee Premium'])
@@ -277,11 +307,14 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
             self._start_new_line()
             self._start_new_line()
+        elif company_plans:
+            self._write_not_selected_plan('STD Plan')
 
         return
 
-    def _write_employee_ltd_insurance_info(self, user_model):
+    def _write_employee_ltd_insurance_info(self, user_model, company_id):
         employee_plans = UserCompanyLtdInsurancePlan.objects.filter(user=user_model.id)
+        company_plans = CompanyLtdInsurancePlan.objects.filter(company=company_id)
         if (len(employee_plans) > 0):
             # Render header
             self._write_line_uniform_width(['LTD Plan', 'Employee Premium'])
@@ -295,11 +328,14 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
             self._start_new_line()
             self._start_new_line()
+        elif company_plans:
+            self._write_not_selected_plan('LTD Plan')
 
         return
 
-    def _write_employee_fsa_info(self, user_model):
+    def _write_employee_fsa_info(self, user_model, company_id):
         fsas = FSA.objects.filter(user=user_model.id)
+        company_plans = CompanyFsaPlan.objects.filter(company=company_id)
         if (len(fsas) > 0):
             # Render header
             self._write_line_uniform_width(['Account Type', 'Elected Annual Amount'])
@@ -312,6 +348,8 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
             
             self._start_new_line()
             self._start_new_line()
+        elif company_plans:
+            self._write_not_selected_plan('Flexible Spending Account')
 
         return
 
@@ -325,7 +363,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 self._write_line_uniform_width([ \
                     document.name, \
                     'Signed' if document.signature is not None else 'Not Signed', \
-                    document.signature.created_at.strftime("%Y-%m-%d") if document.signature is not None else ''
+                    ReportExportViewBase.get_date_string(document.signature.created_at) if document.signature is not None else ''
                 ], \
                 [0.6, 0.2, 0.2])  
 

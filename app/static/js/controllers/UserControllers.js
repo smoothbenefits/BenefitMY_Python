@@ -280,14 +280,15 @@ var preBenefitSelectionModalController = userControllers.controller('preBenefitS
 
 var settingsController = userControllers.controller('settingsController', ['$scope',
    '$location',
+   '$state',
    '$stateParams',
    'currentUser',
    'userSettingService',
    'PersonService',
-   function settingsController ($scope, $location, $stateParams, currentUser, userSettingService, PersonService){
+   function settingsController ($scope, $location, $state, $stateParams, currentUser, userSettingService, PersonService){
       $('body').removeClass('onboarding-page');
       $scope.profile = {};
-      $scope.forced = $stateParams.forced;
+      $scope.onboard = $stateParams.onboard;
       currentUser.get()
         .$promise.then(function(response){
           $scope.curUser = response.user;
@@ -309,7 +310,11 @@ var settingsController = userControllers.controller('settingsController', ['$sco
         PersonService.savePersonInfo($scope.curUser.id, $scope.person)
         .then(function(response){
           alert('Changes saved successfully');
-          $location.path('/');
+          if($scope.onboard){
+            $state.go('employee_family', {employeeId: $scope.curUser.id, onboard:true});
+          } else{
+            $location.path('/');
+          }
         }, function(errorResponse){
           alert('Failed to add the basic info. The error is: ' +
                 JSON.stringify(errorResponse.data) +

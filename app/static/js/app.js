@@ -28,7 +28,7 @@ var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 
 // The URL to which logging to server side should be posted to
-var LOGGING_SERVER_URL = 'http://localhost:3999/api/bm_log' 
+var LOGGING_SERVER_URL = 'http://localhost:3999/api/bm_log'
 
 BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs
@@ -40,40 +40,40 @@ BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourcePro
 
 // Configure global error logging
 // - Preserves the default local logging to console
-// - Add logging to server 
+// - Add logging to server
 BenefitMyApp.config(function ($provide) {
-  $provide.decorator("$exceptionHandler", 
-    ['$delegate', '$window', '$log', 'BrowserDetectionService',  
+  $provide.decorator("$exceptionHandler",
+    ['$delegate', '$window', '$log', 'BrowserDetectionService',
     function($delegate, $window, $log, BrowserDetectionService) {
     return function (exception, cause) {
-        // now try to log the error to the server side. 
+        // now try to log the error to the server side.
         try {
-            var errorMessage = exception.toString(); 
+            var errorMessage = exception.toString();
 
-            // use our traceService to generate a stack trace 
-            var stackTrace = printStackTrace({e: exception}); 
+            // use our traceService to generate a stack trace
+            var stackTrace = printStackTrace({e: exception});
 
-            // use AJAX (in this example jQuery) and NOT 
-            // an angular service such as $http 
-            $.ajax({ 
-                type: "POST", 
-                url: LOGGING_SERVER_URL, 
-                contentType: "application/json", 
-                data: angular.toJson({ 
-                    url: $window.location.href, 
+            // use AJAX (in this example jQuery) and NOT
+            // an angular service such as $http
+            $.ajax({
+                type: "POST",
+                url: LOGGING_SERVER_URL,
+                contentType: "application/json",
+                data: angular.toJson({
+                    url: $window.location.href,
                     message: errorMessage,
-                    browser: BrowserDetectionService.getCurrentBrowser(), 
-                    type: "exception", 
+                    browser: BrowserDetectionService.getCurrentBrowser(),
+                    type: "exception",
                     stackTrace: stackTrace.join('\n\n')}) })
             .fail(function(jqXHR, textStatus, errorThrown) {
                 $log.warn("Error server-side logging failed");
                 $log.log(errorThrown);
-            }); 
+            });
         } catch (loggingError) {
-            $log.warn("Error server-side logging failed"); 
+            $log.warn("Error server-side logging failed");
             $log.log(loggingError);
         }
-        
+
         // Delegate to the default behavior
         $delegate(exception, cause);
     }
@@ -83,11 +83,11 @@ BenefitMyApp.config(function ($provide) {
 BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
         // For any unmatched url, redirect to state "/"
-        $urlRouterProvider.otherwise("/");    
+        $urlRouterProvider.otherwise("/");
 
         $stateProvider.
             state('/settings', {
-                url: "/settings?forced",
+                url: "/settings?onboard",
                 templateUrl: '/static/partials/settings.html',
                 controller: 'settingsController'
             }).
@@ -277,6 +277,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_selection/tab_hra.html',
                 controller:'hraBenefitsSignup'
             }).
+            state('employee_benefit_signup.summary', {
+                url: '/summary',
+                templateUrl: '/static/partials/benefit_selection/tab_summary.html',
+                controller:'benefitSignupSummary'
+            }).
             state('employee_payroll', {
                 url: '/employee/payroll',
                 templateUrl: '/static/partials/payroll/main.html',
@@ -354,7 +359,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('employeeUploads', {
                 url:'/employee/uploads',
-                templateUrl:'/static/partials/manage_uploads.html'            
+                templateUrl:'/static/partials/manage_uploads.html'
             });
      }
  ]);

@@ -21,7 +21,9 @@
                 <div class="datebox col-md-10">
                     <bm-date-picker model="employee.auth_expiration"
                                     required="false"
-                                    disabled="employee.expiration_na" />
+                                    disabled="employee.expiration_na"
+                                    fieldName="'authexp'"
+                                    dirty="form.authexp.$dirty" />
                 </div>
                 <div class="checkbox col-md-2">
                     <label>

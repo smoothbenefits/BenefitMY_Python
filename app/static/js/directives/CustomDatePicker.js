@@ -4,7 +4,9 @@ BenefitMyApp.directive('bmDatePicker', function() {
     scope: {
     	model: '=',
     	required: '=',
-    	disabled: '=?'
+      fieldname: '=',
+    	disabled: '=?',
+      dirty: '='
     },
     templateUrl: '/static/partials/common/datepicker.html',
     controller: ['$scope',
@@ -12,7 +14,10 @@ BenefitMyApp.directive('bmDatePicker', function() {
                   if ($scope.model) {
                     $scope.model = moment($scope.model).format('MM/DD/YYYY');
                   } else {
-                    $scope.model = moment().format('MM/DD/YYYY');
+                    $scope.model = null;
+                  }
+                  if(!$scope.fieldname){
+                    $scope.fieldname = 'date_field';
                   }
                   $scope.opened = false;
                   $scope.format = 'MM/dd/yyyy';
@@ -22,6 +27,10 @@ BenefitMyApp.directive('bmDatePicker', function() {
                     $event.stopPropagation();
 
                     $scope.opened = !$scope.opened;
+                  };
+
+                  $scope.dateValidate = function(){
+                    return !$scope.model && $scope.required && $scope.dirty;
                   };
                 }]
     };

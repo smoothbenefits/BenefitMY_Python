@@ -5,7 +5,7 @@ from view_test_base import ViewTestBase
 
 class CompanySupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate', 
+    fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate',
     '39_company_supplement_life_insurance', '17_supplemental_life_insurance_condition',
     '10_company']
 
@@ -40,7 +40,7 @@ class CompanySupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.delete(reverse('comp_suppl_life_api', 
+        response = self.client.delete(reverse('comp_suppl_life_api',
                                               kwargs={'pk': self.normalize_key(1)}))
 
         self.assertIsNotNone(response)
@@ -59,7 +59,7 @@ class CompanySupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('comp_suppl_life_api',
                                             kwargs={'pk': self.normalize_key(4)}),
                                             suppl_life_data)
-        
+
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
 
@@ -79,5 +79,3 @@ class CompanySupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertIsNotNone(response)
         self.assertEqual(result['company'], self.normalize_key(2))
-
-

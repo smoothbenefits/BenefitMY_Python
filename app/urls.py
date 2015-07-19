@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
 
-
 from app.views.person_view import (
     PersonView, FamilyByUserView)
 from app.views.employee_profile_view import (
@@ -30,8 +29,8 @@ from app.views.template_view import (
     TemplateFieldView,
     templates)
 
-from app.views.benefit_plan_view import(BenefitPlanView,
-                                        BenefitPlanCreationView)
+from app.views.benefit_plan_view import (
+    BenefitPlanView, BenefitPlanCreationView)
 
 from app.views.company_benefit_plan_option_view import (
     CompanyBenefitPlanOptionView,
@@ -70,7 +69,6 @@ from app.views.insurance.user_company_life_insurance_plan_view import (
     CompanyUsersLifeInsuranceView)
 from app.views.insurance.life_insurance_plan_view import LifeInsurancePlanView
 
-
 from app.views.insurance.company_std_insurance_plan_view import \
     CompanyStdInsurancePlanView
 
@@ -87,7 +85,7 @@ from app.views.insurance.user_company_ltd_insurance_plan_view import (
 from app.views.insurance.ltd_insurance_plan_view import LtdInsurancePlanView
 
 from app.views.insurance.company_supplemental_life_insurance_plan_view import (
-    CompanySupplementalLifeInsurancePlanView, 
+    CompanySupplementalLifeInsurancePlanView,
     CompanySupplementalLifeInsurancePlanByCompanyView)
 from app.views.insurance.person_company_supplemental_life_insurance_plan_view import (
     PersonCompanySupplementalLifeInsurancePlanView,
@@ -135,6 +133,9 @@ from app.views.upload_audience_view import UploadAudienceByCompanyView
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
 
 from app.views.sys_benefit_update_reason_view import SysBenefitUpdateReasonView
+
+from app.views.person_enrollment_summary_view import PersonEnrollmentSummaryView
+from app.views.company_benefit_availability_view import CompanyBenefitAvailabilityView
 
 PREFIX = "api/v1"
 
@@ -208,7 +209,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
 
     # FSA api
-    url(r'^%s/brokers/(?P<pk>\w+)/fsa/?$' % PREFIX, 
+    url(r'^%s/brokers/(?P<pk>\w+)/fsa/?$' % PREFIX,
         FsaPlanView.as_view(), name='broker_fsa_api'),
 
     url(r'^%s/company_users/(?P<pk>\w+)/fsa/?$' % PREFIX,
@@ -301,14 +302,17 @@ urlpatterns = patterns('app.views',
         PersonCompanyHraPlanByPersonView.as_view(), name='person_company_hra_plan_by_person_api'),
 
     # util api
-
     url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
 
+    # Reporting API
+    url(r'^%s/person/(?P<person_id>\w+)/benefits/?$' % PREFIX,
+        PersonEnrollmentSummaryView.as_view(), name='person_benefit_summary_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/benefits/?$' % PREFIX,
+        CompanyBenefitAvailabilityView.as_view(), name='company_benefit_availability_api'),
+
     # upload API
-    url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX,
-        UserUploadView.as_view(),
-        name='uploads_by_user'),
-    # GET and POST
+    url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX, UserUploadView.as_view(), name='uploads_by_user'),
 
     # GET PUT and DELETE
     url(r'^%s/upload/(?P<pk>\w+)/?$' % PREFIX,
@@ -337,7 +341,5 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/benefit_update_reasons/?$' % PREFIX, SysBenefitUpdateReasonView.as_view(), name='sys_benefit_update_reason_api'),
 )
-
-
 
 urlpatterns = format_suffix_patterns(urlpatterns)

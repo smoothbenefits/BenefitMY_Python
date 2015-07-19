@@ -59,7 +59,8 @@
                     <bm-date-picker model="employeeProfileModel.startDate"
                                     required="false"
                                     name="start-date"
-                                    placeholder="mm/dd/yyyy" />
+                                    fieldname="'start_date'"
+                                    dirty="form.start_date.$dirty" />
                     <div class="form-inline-error" ng-show="form.start-date.$dirty && form.start-date.$invalid">
                         <span ng-show="form.start-date.$invalid">Please enter a valid Date</span>
                     </div>
@@ -71,7 +72,8 @@
                     <bm-date-picker model="employeeProfileModel.endDate"
                                     required="false"
                                     name="end-date"
-                                    placeholder="mm/dd/yyyy" />
+                                    fieldname="'end_date'"
+                                    dirty="form.end_date.$dirty" />
                     <div class="form-inline-error" ng-show="form.end-date.$dirty && form.end-date.$invalid">
                         <span ng-show="form.end-date.$invalid">Please enter a valid Date</span>
                     </div>

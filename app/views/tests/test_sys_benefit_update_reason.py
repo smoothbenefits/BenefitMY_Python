@@ -14,6 +14,5 @@ class SysBenefitUpdateReasonTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 200)
 
         result = json.loads(response.content)
-        print result
         self.assertEqual(type(result), list)
         self.assertTrue(len(result) > 0)

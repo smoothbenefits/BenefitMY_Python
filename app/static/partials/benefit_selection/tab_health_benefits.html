@@ -8,6 +8,7 @@
                     ng-required="true"
                     name="{{benefitTypePlan.type}}_benefit_plan"
                     ng-options="plan.benefit.benefit_plan.name + ', ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
+                    ng-change="preSelectEmployee(benefitTypePlan.selected)"
                     class="form-control"></select>
             </div>
             <div class="row" ng-hide="isWaived(benefitTypePlan.selected)">
@@ -55,7 +56,7 @@
 <div class="form-holder">
     <div class="row">
         <div class="col-sm-6">
-            <div class="submit-box" style="max-width: 200px;">
+            <div class="submit-box benefit-selection-button">
                 <a ng-click="save()" class="btn green">Save Selection</a>
             </div>
         </div>
