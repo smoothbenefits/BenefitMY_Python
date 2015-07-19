@@ -1,0 +1,416 @@
+<div class="content-header">
+  <h4>Your benefit enrollment summary</h4>
+</div>
+
+<div class="content-body">
+  <!-- Medical enrollment status -->
+  <div class="row" ng-show="companyProvide('medical')">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel" ng-class="getPanelClass('medical')">
+        <div class="panel-heading"
+             ng-click="medicalInfoExpanded = !medicalInfoExpanded"
+             ng-class="getPanelClass('medical')">
+            <b class="clickable"><span class="fa fa-toggle-down"></span>  Medical Plan</b>
+            <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('medical')"></span>
+            <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('medical')"></span>
+        </div>
+        <div class="panel-body" collapse="!medicalInfoExpanded">
+          <table class="table table-striped" ng-show="completed('medical')">
+            <thead>
+              <tr>
+                <th><span>Benefit Name</span></th>
+                <th><span>Type</span></th>
+                <th><span>Status</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="vertical-align: top;"><div>{{enrollments['medical'].plan_name}}</div></td>
+                <td>{{enrollments['medical'].option_type}}</td>
+                <td>{{enrollments['medical'].status}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" ng-hide="completed('medical')">
+            <tbody>
+              <tr>
+                <td width="180">No medical plan selected. <a ng-click="goToState('employee_benefit_signup.health')">Enroll now</a>?</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div> <!-- Medical -->
+
+  <!-- Dental enrollment status -->
+  <div class="row" ng-show="companyProvide('dental')">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel" ng-class="getPanelClass('dental')">
+        <div class="panel-heading"
+             ng-click="dentalInfoExpanded = !dentalInfoExpanded"
+             ng-class="getPanelClass('dental')">
+            <b class="clickable"><span class="fa fa-toggle-down"></span>  Dental Plan</b>
+            <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('dental')"></span>
+            <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('dental')"></span>
+        </div>
+        <div class="panel-body" collapse="!dentalInfoExpanded">
+          <table class="table table-striped" ng-show="completed('dental')">
+            <thead>
+              <tr>
+                <th><span>Benefit Name</span></th>
+                <th><span>Type</span></th>
+                <th><span>Status</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="vertical-align: top;">
+                  <div>{{enrollments['dental'].plan_name}}</div>
+                </td>
+                <td>{{enrollments['dental'].option_type}}</td>
+                <td>{{enrollments['dental'].status}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" ng-hide="completed('dental')">
+            <tbody>
+              <tr>
+                <td width="180">No dental plan selected. <a ng-click="goToState('employee_benefit_signup.health')">Enroll now</a>?</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div> <!-- Dental -->
+
+  <!-- Vision enrollment status -->
+  <div class="row" ng-show="companyProvide('vision')">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel" ng-class="getPanelClass('vision')">
+        <div class="panel-heading"
+             ng-click="visionInfoExpanded = !visionInfoExpanded"
+             ng-class="getPanelClass('vision')">
+            <b class="clickable"><span class="fa fa-toggle-down"></span>  Vision Plan</b>
+            <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('vision')"></span>
+            <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('vision')"></span>
+        </div>
+        <div class="panel-body" collapse="!visionInfoExpanded">
+          <table class="table table-striped" ng-show="completed('vision')">
+            <thead>
+              <tr>
+                <th><span>Benefit Name</span></th>
+                <th><span>Type</span></th>
+                <th><span>Status</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="vertical-align: top;">
+                  <div>{{enrollments['vision'].plan_name}}</div>
+                </td>
+                <td>{{enrollments['vision'].option_type}}</td>
+                <td>{{enrollments['vision'].status}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" ng-hide="completed('vision')">
+            <tbody>
+              <tr>
+                <td width="180">No vision plan selected. <a ng-click="goToState('employee_benefit_signup.health')">Enroll now</a>?</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div> <!-- Vision -->
+
+  <!-- HRA enrollment status -->
+  <div class="row" ng-show="companyProvide('hra')">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel" ng-class="getPanelClass('hra')">
+        <div class="panel-heading"
+             ng-click="hraInfoExpanded = !hraInfoExpanded"
+             ng-class="getPanelClass('hra')">
+            <b class="clickable"><span class="fa fa-toggle-down"></span>  HRA Plan</b>
+            <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('hra')"></span>
+            <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('hra')"></span>
+        </div>
+        <div class="panel-body" collapse="!hraInfoExpanded">
+          <table class="table table-striped" ng-show="completed('hra')">
+            <thead>
+              <tr>
+                <th><span>Plan Name</span></th>
+                <th><span>Description</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="vertical-align: top;">
+                  <div>{{enrollments['hra'].plan_name}}</div>
+                </td>
+                <td>{{enrollments['hra'].description}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" ng-hide="completed('hra')">
+            <tbody>
+              <tr>
+                <td width="180">No HRA plan selected. <a ng-click="goToState('employee_benefit_signup.hra')">Enroll now</a>?</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div> <!-- HRA -->
+
+  <!-- Basic life enrollment status -->
+  <div class="row" ng-show="companyProvide('basic_life')">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel" ng-class="getPanelClass('basic_life')">
+        <div class="panel-heading"
+             ng-click="basicLifeInfoExpanded = !basicLifeInfoExpanded"
+             ng-class="getPanelClass('basic_life')">
+            <b class="clickable"><span class="fa fa-toggle-down"></span>  Basic Life Insurance</b>
+            <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('basic_life')"></span>
+            <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('basic_life')"></span>
+        </div>
+        <div class="panel-body" collapse="!basicLifeInfoExpanded">
+          <table class="table table-striped" ng-show="completed('basic_life')">
+            <thead>
+              <tr>
+                <th><span>Plan Name</span></th>
+                <th><span>Beneficiary</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="vertical-align: top;">
+                  <div>{{enrollments['basic_life'].plan_name}}</div>
+                </td>
+                <td>
+                  <span class="inline" ng-repeat="beneficiary in enrollments['basic_life'].beneficiary">
+                    {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" ng-hide="completed('basic_life')">
+            <tbody>
+              <tr>
+                <td width="180">No basic life insurance selected.
+                  <a ng-click="goToState('employee_benefit_signup.basic_life')">Enroll now</a>?
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div> <!-- Basic life -->
+
+  <!-- Supplemental life enrollment status -->
+  <div class="row" ng-show="companyProvide('supplemental_life')">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel" ng-class="getPanelClass('supplemental_life')">
+        <div class="panel-heading"
+             ng-click="supplLifeInfoExpanded = !supplLifeInfoExpanded"
+             ng-class="getPanelClass('supplemental_life')">
+            <b class="clickable"><span class="fa fa-toggle-down"></span>  Supplemental Life Insurance</b>
+            <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('supplemental_life')"></span>
+            <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('supplemental_life')"></span>
+        </div>
+        <div class="panel-body" collapse="!supplLifeInfoExpanded">
+          <table class="table table-striped" ng-show="completed('supplemental_life')">
+            <thead>
+              <tr>
+                <th><span>Plan Name</span></th>
+                <th width="160"><span>Coverage Target</span></th>
+                <th width="160"><span>Elected Amount</span></th>
+                <th><span>Beneficiary</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="vertical-align: top;">
+                  <div>{{enrollments['supplemental_life'].plan_name}}</div>
+                </td>
+                <td colspan="2" style="padding: 0;">
+                  <table class="table">
+                    <tr>
+                      <td width="160">Employee</td>
+                      <td width="160">${{enrollments['supplemental_life'].self_elected_amount}}</td>
+                    </tr>
+                    <tr>
+                      <td width="160">Spouse</td>
+                      <td width="160">${{enrollments['supplemental_life'].spouse_elected_amount}}</td>
+                    </tr>
+                    <tr>
+                      <td width="160">Child(ren)</td>
+                      <td width="160">${{enrollments['supplemental_life'].child_elected_amount}}</td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  <span class="inline" ng-repeat="beneficiary in enrollments['supplemental_life'].beneficiary">
+                    {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" ng-hide="completed('supplemental_life')">
+            <tbody>
+              <tr>
+                <td width="180">No supplemental life insurance selected.
+                  <a ng-click="goToState('employee_benefit_signup.supplemental_life')">Enroll now</a>?
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div> <!-- Supplemental life -->
+
+  <!-- STD enrollment status -->
+  <div class="row" ng-show="companyProvide('std')">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel" ng-class="getPanelClass('std')">
+        <div class="panel-heading"
+             ng-click="stdInfoExpanded = !stdInfoExpanded"
+             ng-class="getPanelClass('std')">
+            <b class="clickable"><span class="fa fa-toggle-down"></span>  STD Plan</b>
+            <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('std')"></span>
+            <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('std')"></span>
+        </div>
+        <div class="panel-body" collapse="!stdInfoExpanded">
+          <table class="table table-striped" ng-show="completed('std')">
+            <thead>
+              <tr>
+                <th><span>Plan Name</span></th>
+                <th><span>Benefit Amount</span></th>
+                <th><span>Duration</span></th>
+                <th><span>Employer Contribution</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{enrollments['std'].plan_name}}</td>
+                <td>{{enrollments['std'].percentage_of_salary}}% of Base Salary</td>
+                <td>{{enrollments['std'].duration}} Days</td>
+                <td>{{enrollments['std'].employer_contribution_percentage}}%</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" ng-hide="completed('std')">
+            <tbody>
+              <tr>
+                <td width="180">No STD plan selected.
+                  <a ng-click="goToState('employee_benefit_signup.std')">Enroll now</a>?
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div> <!-- STD -->
+
+  <!-- LTD enrollment status -->
+  <div class="row" ng-show="companyProvide('ltd')">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel" ng-class="getPanelClass('ltd')">
+        <div class="panel-heading"
+             ng-click="ltdInfoExpanded = !ltdInfoExpanded"
+             ng-class="getPanelClass('ltd')">
+            <b class="clickable"><span class="fa fa-toggle-down"></span>  LTD Plan</b>
+            <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('ltd')"></span>
+            <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('ltd')"></span>
+        </div>
+        <div class="panel-body" collapse="!ltdInfoExpanded">
+          <table class="table table-striped" ng-show="completed('ltd')">
+            <thead>
+              <tr>
+                <th><span>Plan Name</span></th>
+                <th><span>Benefit Amount</span></th>
+                <th><span>Duration</span></th>
+                <th><span>Employer Contribution</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{enrollments['ltd'].plan_name}}</td>
+                <td>{{enrollments['ltd'].percentage_of_salary}}% of Base Salary</td>
+                <td>{{enrollments['ltd'].duration}} Months or Until Retirement Age</td>
+                <td>{{enrollments['ltd'].employer_contribution_percentage}}%</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" ng-hide="completed('ltd')">
+            <tbody>
+              <tr>
+                <td width="180">No LTD plan selected.
+                  <a ng-click="goToState('employee_benefit_signup.ltd')">Enroll now</a>?
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div> <!-- LTD -->
+
+  <!-- FSA enrollment status -->
+  <div class="row" ng-show="companyProvide('fsa')">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel" ng-class="getPanelClass('fsa')">
+        <div class="panel-heading"
+             ng-click="fsaInfoExpanded = !fsaInfoExpanded"
+             ng-class="getPanelClass('fsa')">
+            <b class="clickable"><span class="fa fa-toggle-down"></span>  FSA Plan</b>
+            <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('fsa')"></span>
+            <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('fsa')"></span>
+        </div>
+        <div class="panel-body" collapse="!fsaInfoExpanded">
+          <table class="table table-striped" ng-show="completed('fsa')">
+            <thead>
+              <tr>
+                <th><span>Account Type</span></th>
+                <th><span>Elected Annual Amount</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Health Account</td>
+                <td>${{enrollments['fsa'].primary_amount_per_year}}</td>
+              </tr>
+              <tr>
+                <td>Dependent Care Account</td>
+                <td>${{enrollments['fsa'].dependent_amount_per_year}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" ng-hide="completed('fsa')">
+            <tbody>
+              <tr>
+                <td width="180">No FSA plan selected.
+                  <a ng-click="goToState('employee_benefit_signup.fsa')">Enroll now</a>?
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div> <!-- FSA -->
+</div>
+
+<!-- Continue button -->
+<div class="submit-box benefit-selection-button">
+  <a ng-click="continue()" class="btn green">Finish</a>
+</div>

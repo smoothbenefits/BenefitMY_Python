@@ -9,8 +9,8 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="attention" ng-show="forced">
-        <span class="fa fa-warning"></span>You have to complete your personal information before you can proceed to the dashboard!
+    <div class="attention" ng-show="onboard">
+        <span class="fa fa-warning"></span>You have to complete your personal information before you can proceed to the next step!
     </div>
     <div class="row">
         <div class="col-md-4">
@@ -122,7 +122,9 @@
                     <div class="datebox">
                         <bm-date-picker model="person.birth_date"
                                         required="true"
-                                        name="birth_date" />
+                                        name="birth_date"
+                                        fieldname="'birth_date'"
+                                        dirty="form.birth_date.$dirty" />
                         <div class="form-validation-error" ng-show="form.birth_date.$dirty && form.birth_date.$invalid">
                             <span ng-show="form.birth_date.$error.required">Date of Birth field is required</span>
                             <span ng-show="form.birth_date.$invalid">Please enter a valid Date of Birth</span>
