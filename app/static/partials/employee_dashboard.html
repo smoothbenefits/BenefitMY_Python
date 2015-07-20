@@ -267,21 +267,21 @@
     <!-- FSA summary table -->
     <div class="table-responsive table-holder table" ng-if="fsaElection !== undefined">
         <div class="table-sub-title">Flexible Spending Account</div>
-        <table class="table table-striped" ng-hide="fsaElection.enrolled">
+        <table class="table table-striped" ng-hide="fsaElection.selected">
             <tbody>
                 <tr>
                     <td width="180">No active FSA plan</td>
                 </tr>
             </tbody>
         </table>
-        <table class="table table-striped" ng-show="fsaElection.enrolled && fsaElection.waived">
+        <table class="table table-striped" ng-show="fsaElection.selected && fsaElection.waived">
             <tbody>
                 <tr>
                     <td width="180">Waived FSA plan</td>
                 </tr>
             </tbody>
         </table>
-        <table class="table-striped table" ng-show="fsaElection.enrolled && !fsaElection.waived">
+        <table class="table-striped table" ng-show="fsaElection.selected && !fsaElection.waived">
             <thead>
                 <tr>
                     <th><span>Account Type</span></th>
