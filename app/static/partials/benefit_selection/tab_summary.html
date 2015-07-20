@@ -82,7 +82,6 @@
       </table>
     </div>
   </div>
-</div>
 </div> <!-- Dental -->
 
 <!-- Vision enrollment status -->
@@ -124,7 +123,6 @@
       </table>
     </div>
   </div>
-</div>
 </div> <!-- Vision -->
 
 <!-- HRA enrollment status -->
@@ -164,7 +162,6 @@
       </table>
     </div>
   </div>
-</div>
 </div> <!-- HRA -->
 
 <!-- Basic life enrollment status -->
@@ -210,7 +207,6 @@
       </table>
     </div>
   </div>
-</div>
 </div> <!-- Basic life -->
 
 <!-- Supplemental life enrollment status -->
@@ -274,7 +270,6 @@
       </table>
     </div>
   </div>
-</div>
 </div> <!-- Supplemental life -->
 
 <!-- STD enrollment status -->
@@ -318,7 +313,6 @@
       </table>
     </div>
   </div>
-</div>
 </div> <!-- STD -->
 
 <!-- LTD enrollment status -->
@@ -362,62 +356,21 @@
       </table>
     </div>
   </div>
-</div>
 </div> <!-- LTD -->
 
-  <!-- FSA enrollment status -->
-  <div class="row" ng-show="companyProvide('fsa')">
-    <div class="col-md-10 col-md-offset-1">
-      <div class="panel" ng-class="getPanelClass('fsa')">
-        <div class="panel-heading"
-             ng-click="fsaInfoExpanded = !fsaInfoExpanded"
-             ng-class="getPanelClass('fsa')">
-            <b class="clickable"><span class="fa fa-toggle-down"></span>  FSA Plan</b>
-            <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('fsa')"></span>
-            <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('fsa')"></span>
-        </div>
-        <div class="panel-body" collapse="!fsaInfoExpanded">
-          <table class="table table-striped" ng-show="completed('fsa') && !waived('fsa')">
-            <thead>
-              <tr>
-                <th><span>Account Type</span></th>
-                <th><span>Elected Annual Amount</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Health Account</td>
-                <td>${{enrollments['fsa'].primary_amount_per_year}}</td>
-              </tr>
-              <tr>
-                <td>Dependent Care Account</td>
-                <td>${{enrollments['fsa'].dependent_amount_per_year}}</td>
-              </tr>
-            </tbody>
-          </table>
-          <table class="table table-striped" ng-show="completed('fsa') && waived('fsa')">
-            <tbody>
-              <tr>
-                <td width="180">The FSA plan was waived.
-                  <a ng-click="goToState('employee_benefit_signup.fsa')">Enroll now</a>?
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <table class="table table-striped" ng-hide="completed('fsa')">
-            <tbody>
-              <tr>
-                <td width="180">No FSA plan selected.
-                  <a ng-click="goToState('employee_benefit_signup.fsa')">Enroll now</a>?
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<!-- FSA enrollment status -->
+<div class="row" ng-show="companyProvide('fsa')">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="panel" ng-class="getPanelClass('fsa')">
+      <div class="panel-heading"
+      ng-click="fsaInfoExpanded = !fsaInfoExpanded"
+      ng-class="getPanelClass('fsa')">
+      <b class="clickable"><span class="fa fa-toggle-down"></span>  FSA Plan</b>
+      <span class="fa fa-check-circle-o fa-2x pull-right" ng-show="completed('fsa')"></span>
+      <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('fsa')"></span>
     </div>
     <div class="panel-body" collapse="!fsaInfoExpanded">
-      <table class="table table-striped" ng-show="completed('fsa')">
+      <table class="table table-striped" ng-show="completed('fsa') && !waived('fsa')">
         <thead>
           <tr>
             <th><span>Account Type</span></th>
@@ -435,6 +388,15 @@
           </tr>
         </tbody>
       </table>
+      <table class="table table-striped" ng-show="completed('fsa') && waived('fsa')">
+        <tbody>
+          <tr>
+            <td width="180">The FSA plan was waived.
+              <a ng-click="goToState('employee_benefit_signup.fsa')">Enroll now</a>?
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <table class="table table-striped" ng-hide="completed('fsa')">
         <tbody>
           <tr>
@@ -446,9 +408,7 @@
       </table>
     </div>
   </div>
-</div>
 </div> <!-- FSA -->
-</div>
 
 <!-- Continue button -->
 <div class="submit-box benefit-selection-button">
