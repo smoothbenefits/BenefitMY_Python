@@ -17,7 +17,7 @@ class UserCompanyWaivedBenefit(models.Model):
                               blank=True)
 
     record_reason = models.ForeignKey(
-        SysBenefitUpdateReason, 
+        SysBenefitUpdateReason,
         blank=True,
         null=True,
         related_name="health_benefit_waive_update_reason")

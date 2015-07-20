@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from app.models.company_user import CompanyUser
 from app.models.fsa.fsa_plan import FsaPlan
 from app.serializers.fsa.fsa_plan_serializer import (
-    FsaPlanSerializer, 
+    FsaPlanSerializer,
     FsaPlanPostSerializer)
 
 
@@ -42,4 +42,3 @@ class FsaPlanView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-

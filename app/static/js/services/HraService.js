@@ -1,6 +1,6 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('HraService', 
+benefitmyService.factory('HraService',
     ['$q',
     'HraRepository',
     'PersonService',
@@ -8,7 +8,7 @@ benefitmyService.factory('HraService',
 
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
-            
+
             viewModel.planId = planDomainModel.id;
             viewModel.planName = planDomainModel.name;
             viewModel.planDescription = planDomainModel.description;
@@ -17,32 +17,32 @@ benefitmyService.factory('HraService',
         };
 
         var mapCompanyPlanDomainToViewModel = function(companyPlanDomainModel) {
-            var viewModel = companyPlanDomainModel.hra_plan ? 
+            var viewModel = companyPlanDomainModel.hra_plan ?
                 mapPlanDomainToViewModel(companyPlanDomainModel.hra_plan) :
                 {};
 
             viewModel.companyPlanId = companyPlanDomainModel.id;
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
-            
+
             return viewModel;
         };
 
         var mapPersonCompanyPlanDomainToViewModel = function(personCompanyPlanDomainModel) {
-            var viewModel = personCompanyPlanDomainModel.company_hra_plan ? 
+            var viewModel = personCompanyPlanDomainModel.company_hra_plan ?
                 mapCompanyPlanDomainToViewModel(personCompanyPlanDomainModel.company_hra_plan) :
                 {};
 
             viewModel.personCompanyPlanId = personCompanyPlanDomainModel.id;
             viewModel.planOwner = personCompanyPlanDomainModel.person;
             viewModel.lastUpdateDateTime = moment(personCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
-        
+
             return viewModel;
         };
 
         var mapPlanViewToDomainModel = function(planViewModel) {
             var domainModel = {};
-            
+
             domainModel.id = planViewModel.planId;
             domainModel.name = planViewModel.planName;
             domainModel.description = planViewModel.planDescription;
@@ -106,7 +106,7 @@ benefitmyService.factory('HraService',
 
                 deferred.resolve(blankCompanyPlan);
 
-                return deferred.promise; 
+                return deferred.promise;
             },
 
             addPlanForCompany: function(companyPlanToSave, companyId) {
@@ -137,7 +137,7 @@ benefitmyService.factory('HraService',
                 function(error){
                     deferred.reject(error)
                 });
-                
+
                 return deferred.promise;
             },
 
@@ -151,8 +151,8 @@ benefitmyService.factory('HraService',
                 function(error) {
                     deferred.reject(error);
                 });
-                
-                return deferred.promise; 
+
+                return deferred.promise;
             },
 
             deletePlansForUser: function(userId, company) {
@@ -188,7 +188,7 @@ benefitmyService.factory('HraService',
                 personPlanToSave.updateReason = updateReason;
 
                 var planDomainModel = mapPersonCompanyPlanViewToDomainModel(personPlanToSave);
-                
+
                 // "Flatten out" any nested structure for the POST to work
                 planDomainModel.company_hra_plan = planDomainModel.company_hra_plan.id;
 
@@ -208,9 +208,9 @@ benefitmyService.factory('HraService',
                     function(error){
                         deferred.reject(error);
                     });
-                } 
+                }
 
-                return deferred.promise; 
+                return deferred.promise;
             },
 
             getPersonPlanByUser: function(userId, company, getBlankPlanIfNoneFound) {
@@ -224,12 +224,12 @@ benefitmyService.factory('HraService',
                             HraRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
                             .$promise.then(function(personPlans) {
                                 if (personPlans.length > 0) {
-                                    // Found existing person enrolled plans, for now, take the first 
+                                    // Found existing person enrolled plans, for now, take the first
                                     // one.
                                     deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0]));
                                 } else {
                                     // The person does not have enrolled plans yet.
-                                    // If indicated so, construct and return an structured 
+                                    // If indicated so, construct and return an structured
                                     // blank person plan.
                                     // Or else, return null;
                                     if (getBlankPlanIfNoneFound) {
@@ -252,10 +252,10 @@ benefitmyService.factory('HraService',
                         function(error){
                             deferred.reject(error);
                         });
-                    
+
                     }
                 });
-                return deferred.promise; 
+                return deferred.promise;
             }
         };
     }

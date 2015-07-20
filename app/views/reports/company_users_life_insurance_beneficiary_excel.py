@@ -148,9 +148,9 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersFullSummar
 
         return col_num + 7
 
-    ''' Both broker and employer should be able to get summary of beneficiary 
+    ''' Both broker and employer should be able to get summary of beneficiary
         information about employees
-    '''  
+    '''
     @user_passes_test(company_employer_or_broker)
     def get(self, request, pk, format=None):
         book = xlwt.Workbook(encoding='utf8')

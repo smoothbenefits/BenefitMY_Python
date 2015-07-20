@@ -2,187 +2,187 @@
 {% load compressed %}
 <html class="gt-ie8 gt-ie9 not-ie">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>BenefitMy</title>
-    <!-- Open Sans font from Google CDN -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
-    {% compressed_css "dashboard" %}
-    <script type="text/javascript">var init = [];</script>
-    {% load staticfiles %}
-    <script type="text/javascript" src='{% static 'jquery/dist/jquery.min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'jquery-ui/jquery-ui.min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'angular/angular.js' %}'></script>
-    <script type="text/javascript" src='{% static 'angular-resource/angular-resource.min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'angular-ui/build/angular-ui.min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'angular-ui-router/release/angular-ui-router.min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'angular-ui-utils/ui-utils.min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'underscore/underscore-min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'moment/min/moment.min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'angular-input-masks/releases/masks.min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'angular-bootstrap/ui-bootstrap-tpls.min.js' %}'></script>
-    <script type="text/javascript" src='{% static 'ng-file-upload/angular-file-upload-shim.js' %}'></script>
-    <script type="text/javascript" src='{% static 'ng-file-upload/angular-file-upload.js' %}'></script>
-    <script type="text/javascript" src='{% static 'stacktrace-js/dist/stacktrace.js' %}'></script>
-    {% compressed_js "dashboard" %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <title>BenefitMy</title>
+  <!-- Open Sans font from Google CDN -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
+  {% compressed_css "dashboard" %}
+  <script type="text/javascript">var init = [];</script>
+  {% load staticfiles %}
+  <script type="text/javascript" src='{% static 'jquery/dist/jquery.min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'jquery-ui/jquery-ui.min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'angular/angular.js' %}'></script>
+  <script type="text/javascript" src='{% static 'angular-resource/angular-resource.min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'angular-ui/build/angular-ui.min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'angular-ui-router/release/angular-ui-router.min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'angular-ui-utils/ui-utils.min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'underscore/underscore-min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'moment/min/moment.min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'angular-input-masks/releases/masks.min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'angular-bootstrap/ui-bootstrap-tpls.min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'ng-file-upload/angular-file-upload-shim.js' %}'></script>
+  <script type="text/javascript" src='{% static 'ng-file-upload/angular-file-upload.js' %}'></script>
+  <script type="text/javascript" src='{% static 'stacktrace-js/dist/stacktrace.js' %}'></script>
+  {% compressed_js "dashboard" %}
 </head>
 
 
 <body ng-app="BenefitMyApp">
 
-    <script type="text/javascript">var init = [];</script>
-    <div id="dashboard-wrapper" ng-controller="userController">
+<script type="text/javascript">var init = [];</script>
+<div id="dashboard-wrapper" ng-controller="userController">
 
-        <div id="header">
-            <a href="/" id="logo-link"></a>
-            <div class="pull-right">
-                {%verbatim%}
-                <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="drop-trigger">
-                    {{curUser.email}}
-                    <span class="caret"></span>
-                </span>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                    <li><a href="javascript:void(0);" ng-click="gotoSettings()"><span class="flaticon flaticon-wheel21"></span>Edit Profile</a></li>
-                    <li><a href="javascript:void(0);" ng-click="logout()"><span class="flaticon flaticon-logout5"></span>Log Out</a></li>
-                </ul>
-                {%endverbatim%}
-            </div>
-        </div><!-- / #header -->
+  <div id="header">
+    <a href="/" id="logo-link"></a>
+    <div class="pull-right">
+      {%verbatim%}
+      <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="drop-trigger">
+        {{curUser.email}}
+        <span class="caret"></span>
+      </span>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+        <li><a href="javascript:void(0);" ng-click="gotoSettings()"><span class="flaticon flaticon-wheel21"></span>Edit Profile</a></li>
+        <li><a href="javascript:void(0);" ng-click="logout()"><span class="flaticon flaticon-logout5"></span>Log Out</a></li>
+      </ul>
+      {%endverbatim%}
+    </div>
+  </div><!-- / #header -->
 
-        <div id="sidebar">
-            <ul class="nav-list">
-                <li class="expandable">
-                    <div class="primary-nav active">
-                        <button data-toggle="collapse" data-target="#dashboard-nav" aria-expanded="true" aria-controls="dashboard-nav"><span class="flaticon flaticon-dashboard6"></span>Dashboard</button>
-                    </div>
-                    <div class="sub-nav collapse in" id="dashboard-nav">
-                        <a href="#/admin" ng-class="getActiveRoleClass('/admin')" ng-if="isRoleActive('admin')">Employer Dashboard</a>
-                        <a href="#/employee" ng-class="getActiveRoleClass('/employee')" ng-if="isRoleActive('employee')">Employee Dashboard</a>
-                        <a href="#/broker" ng-class="getActiveRoleClass('/broker')" ng-if="isRoleActive('broker')">Broker Dashboard</a>
-                    </div>
-                </li>
+  <div id="sidebar">
+    <ul class="nav-list">
+      <li class="expandable">
+        <div class="primary-nav active">
+          <button data-toggle="collapse" data-target="#dashboard-nav" aria-expanded="true" aria-controls="dashboard-nav"><span class="flaticon flaticon-dashboard6"></span>Dashboard</button>
+        </div>
+        <div class="sub-nav collapse in" id="dashboard-nav">
+          <a href="#/admin" ng-class="getActiveRoleClass('/admin')" ng-if="isRoleActive('admin')">Employer Dashboard</a>
+          <a href="#/employee" ng-class="getActiveRoleClass('/employee')" ng-if="isRoleActive('employee')">Employee Dashboard</a>
+          <a href="#/broker" ng-class="getActiveRoleClass('/broker')" ng-if="isRoleActive('broker')">Broker Dashboard</a>
+        </div>
+      </li>
 
-                <!-- EMPLOYER NAVS START -->
-                <li class="expandable" ng-show="isCurRoleAdmin()">
-                    <div class="primary-nav">
-                        <button data-toggle="collapse" data-target="#hr-nav" aria-expanded="false" aria-controls="hr-nav"><span class="flaticon flaticon-user135"></span>HR</button>
-                    </div>
-                    <div class="sub-nav collapse" id="hr-nav">
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/add/')">Add Employee</a>
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/')">View Employees</a>
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'COBRA'})">COBRA</a>
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Employee Handbook'})">Employee Handbook</a>
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Employment Agreement'})">Employee Agreement Template</a>
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'NDA'})">NDA Template</a>
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Offer Letter'})">Offer Letter Template</a>
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Privacy Policy'})">Privacy Policy</a>
-                    </div>
-                </li>
-                <li class="expandable" ng-show="isCurRoleAdmin()">
-                    <div class="primary-nav">
-                        <button data-toggle="collapse" data-target="#employer-benefit-nav" aria-expanded="false" aria-controls="employer-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
-                    </div>
-                    <div class="sub-nav collapse" id="employer-benefit-nav">
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/broker/add/')">Add Broker Info</a>
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/broker/')">View Broker Info</a>
-                        <a ng-click="goToFunctionalViewByCompanyId('/admin/benefits/')">View Benefits</a>
-                    </div>
-                </li>
-                <li class="expandable" ng-show="isCurRoleAdmin()">
-                    <div class="primary-nav">
-                        <button data-toggle="collapse" data-target="#employer-report-nav" aria-expanded="false" aria-controls="employer-report-nav"><span class="flaticon flaticon-file46"></span>Reports</button>
-                    </div>
-                    <div class="sub-nav collapse" id="employer-report-nav">
-                        <a ng-click="downloadEmployeeSummaryReport()">Complete Report</a>
-                        <a ng-click="downloadEmployeeDirectDepositReport()">Direct Deposit</a>
-                        <a ng-click="downloadCompanyEmployeeLifeBeneficiaryReport()">Life Insurance Beneficiary</a>
-                    </div>
-                </li>
-                <!-- EMPLOYER NAVS END -->
+      <!-- EMPLOYER NAVS START -->
+      <li class="expandable" ng-show="isCurRoleAdmin()">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#hr-nav" aria-expanded="false" aria-controls="hr-nav"><span class="flaticon flaticon-user135"></span>HR</button>
+        </div>
+        <div class="sub-nav collapse" id="hr-nav">
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/add/')">Add Employee</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/')">View Employees</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'COBRA'})">COBRA</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Employee Handbook'})">Employee Handbook</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Employment Agreement'})">Employee Agreement Template</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'NDA'})">NDA Template</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Offer Letter'})">Offer Letter Template</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Privacy Policy'})">Privacy Policy</a>
+        </div>
+      </li>
+      <li class="expandable" ng-show="isCurRoleAdmin()">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#employer-benefit-nav" aria-expanded="false" aria-controls="employer-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
+        </div>
+        <div class="sub-nav collapse" id="employer-benefit-nav">
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/broker/add/')">Add Broker Info</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/broker/')">View Broker Info</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/benefits/')">View Benefits</a>
+        </div>
+      </li>
+      <li class="expandable" ng-show="isCurRoleAdmin()">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#employer-report-nav" aria-expanded="false" aria-controls="employer-report-nav"><span class="flaticon flaticon-file46"></span>Reports</button>
+        </div>
+        <div class="sub-nav collapse" id="employer-report-nav">
+          <a ng-click="downloadEmployeeSummaryReport()">Complete Report</a>
+          <a ng-click="downloadEmployeeDirectDepositReport()">Direct Deposit</a>
+          <a ng-click="downloadCompanyEmployeeLifeBeneficiaryReport()">Life Insurance Beneficiary</a>
+        </div>
+      </li>
+      <!-- EMPLOYER NAVS END -->
 
-                <!-- EMPLOYEE NAV STARTS -->
-                <li class="expandable" ng-show="isCurRoleEmployee()">
-                    <div class="primary-nav">
-                        <button data-toggle="collapse" data-target="#employee-profile-nav" aria-expanded="false" aria-controls="employee-profile-nav"><span class="flaticon flaticon-user135"></span>Profile</button>
-                    </div>
-                    <div class="sub-nav collapse" id="employee-profile-nav">
-                        <a href="#/settings">My Profile</a>
-                        <a ng-click="goToFunctionalView('/employee/family/')">Family Member</a>
-                    </div>
-                </li>
-                <li class="expandable" ng-show="isCurRoleEmployee()">
-                    <div class="primary-nav">
-                        <button data-toggle="collapse" data-target="#employee-benefit-nav" aria-expanded="false" aria-controls="employee-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
-                    </div>
-                    <div class="sub-nav collapse" id="employee-benefit-nav">
-                        <a href="#/employee">View Benefits</a>
-                        <a ng-click="startModifyBenefit()">Modify Benefits</a>
-                    </div>
-                </li>
-                <li class="expandable" ng-show="isCurRoleEmployee() && (!disabledFeatures.W4 || !disabledFeature.DD)">
-                    <div class="primary-nav">
-                        <button data-toggle="collapse" data-target="#employee-payroll-nav" aria-expanded="false" aria-controls="employee-payroll-nav"><span class="flaticon flaticon-star145"></span>Payroll</button>
-                    </div>
-                    <div class="sub-nav collapse" id="employee-payroll-nav">
-                        <a href="#/employee/payroll/w4" ng-hide="disabledFeatures.W4">W4 Form</a>
-                        <a href="#/employee/payroll/direct_deposit" ng-hide="disabledFeatures.DD">Direct Deposit</a>
-                    </div>
-                </li>
-                <li class="expandable" ng-show="isCurRoleEmployee()">
-                    <div class="primary-nav">
-                        <button data-toggle="collapse" data-target="#employee-documents-nav" aria-expanded="false" aria-controls="employee-documents-nav"><span class="flaticon flaticon-rounded47"></span>Documents</button>
-                    </div>
-                    <div class="sub-nav collapse" id="employee-documents-nav">
-                        <a href="#/employee">Documents From My Employer</a>
-                        <a href="#/employee/uploads">Uploads</a>
-                    </div>
-                </li>
-                <!-- EMPLOYEE NAV ENDS -->
+      <!-- EMPLOYEE NAV STARTS -->
+      <li class="expandable" ng-show="isCurRoleEmployee()">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#employee-profile-nav" aria-expanded="false" aria-controls="employee-profile-nav"><span class="flaticon flaticon-user135"></span>Profile</button>
+        </div>
+        <div class="sub-nav collapse" id="employee-profile-nav">
+          <a href="#/settings">My Profile</a>
+          <a ng-click="goToFunctionalView('/employee/family/')">Family Member</a>
+        </div>
+      </li>
+      <li class="expandable" ng-show="isCurRoleEmployee()">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#employee-benefit-nav" aria-expanded="false" aria-controls="employee-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
+        </div>
+        <div class="sub-nav collapse" id="employee-benefit-nav">
+          <a href="#/employee">View Benefits</a>
+          <a ng-click="startModifyBenefit()">Modify Benefits</a>
+        </div>
+      </li>
+      <li class="expandable" ng-show="isCurRoleEmployee() && (!disabledFeatures.W4 || !disabledFeature.DD)">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#employee-payroll-nav" aria-expanded="false" aria-controls="employee-payroll-nav"><span class="flaticon flaticon-star145"></span>Payroll</button>
+        </div>
+        <div class="sub-nav collapse" id="employee-payroll-nav">
+          <a href="#/employee/payroll/w4" ng-hide="disabledFeatures.W4">W4 Form</a>
+          <a href="#/employee/payroll/direct_deposit" ng-hide="disabledFeatures.DD">Direct Deposit</a>
+        </div>
+      </li>
+      <li class="expandable" ng-show="isCurRoleEmployee()">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#employee-documents-nav" aria-expanded="false" aria-controls="employee-documents-nav"><span class="flaticon flaticon-rounded47"></span>Documents</button>
+        </div>
+        <div class="sub-nav collapse" id="employee-documents-nav">
+          <a href="#/employee">Documents From My Employer</a>
+          <a href="#/employee/uploads">Uploads</a>
+        </div>
+      </li>
+      <!-- EMPLOYEE NAV ENDS -->
 
-                <!-- BROKER NAV STARTS -->
-                <li class="expandable" ng-show="isCurRoleBroker()">
-                    <div class="primary-nav">
-                        <button data-toggle="collapse" data-target="#clients-nav" aria-expanded="false" aria-controls="clients-nav"><span class="flaticon flaticon-user135"></span>Clients</button>
-                    </div>
-                    <div class="sub-nav collapse" id="clients-nav">
-                        <a href="#/broker">Client List</a>
-                        <a href="#/broker/add_client">Add New Client</a>
-                    </div>
-                </li>
-                <!-- BROKER NAV ENDS -->
+      <!-- BROKER NAV STARTS -->
+      <li class="expandable" ng-show="isCurRoleBroker()">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#clients-nav" aria-expanded="false" aria-controls="clients-nav"><span class="flaticon flaticon-user135"></span>Clients</button>
+        </div>
+        <div class="sub-nav collapse" id="clients-nav">
+          <a href="#/broker">Client List</a>
+          <a href="#/broker/add_client">Add New Client</a>
+        </div>
+      </li>
+      <!-- BROKER NAV ENDS -->
 
-            </ul>
+    </ul>
 
-            <div id="side-footer">
-                <div class="footer-nav">
-                    <a href="http://www.benefitmy.com">Home</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="http://www.benefitmy.com/our-crew/">About Us</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="http://www.benefitmy.com/contact-us/">Contact Us</a>
-                </div>
-                <div class="copyright">&copy; 2015 BenefitMy</div>
-            </div>
+    <div id="side-footer">
+      <div class="footer-nav">
+        <a href="http://www.benefitmy.com">Home</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="http://www.benefitmy.com/our-crew/">About Us</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="http://www.benefitmy.com/contact-us/">Contact Us</a>
+      </div>
+      <div class="copyright">&copy; 2015 BenefitMy</div>
+    </div>
 
-        </div><!-- / #sidebar -->
+  </div><!-- / #sidebar -->
 
 
-        <div id="content-wrapper"><div ui-view></div></div> <!-- / #content-wrapper -->
-    </div> <!-- / #dashboard-wrapper -->
-    <script type="text/javascript">
-        if(!init)
-        {
-            var init = [];
-        }
-        init.push(function () {
-            $(".primary-nav").on("click", function() {
-                $(".primary-nav.active").removeClass("active");
-                $(".collapse.in").removeClass("in");
-                $(this).addClass("active");
-            });
-            $(".sub-nav a").on("click", function() {
-                $(".sub-nav a.active").removeClass("active");
-                $(this).addClass("active");
-            });
-        })
-        window.PixelAdmin.start(init);
-    </script>
+  <div id="content-wrapper"><div ui-view></div></div> <!-- / #content-wrapper -->
+</div> <!-- / #dashboard-wrapper -->
+<script type="text/javascript">
+if(!init)
+{
+  var init = [];
+}
+init.push(function () {
+  $(".primary-nav").on("click", function() {
+    $(".primary-nav.active").removeClass("active");
+    $(".collapse.in").removeClass("in");
+    $(this).addClass("active");
+  });
+  $(".sub-nav a").on("click", function() {
+    $(".sub-nav a.active").removeClass("active");
+    $(this).addClass("active");
+  });
+})
+window.PixelAdmin.start(init);
+</script>
 
 </body>
 </html>

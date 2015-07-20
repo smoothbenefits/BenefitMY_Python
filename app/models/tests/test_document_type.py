@@ -11,13 +11,13 @@ class DemoTestCase(TestCase):
         self.assertEqual(curType.id, 1)
         self.assertEqual(curType.name, 'Offer Letter')
         self.assertIsNotNone(curType.default_content)
-        
+
         curType = DocumentType.objects.get(name='Employment Agreement')
         self.assertIsNotNone(curType)
         self.assertEqual(curType.id, 2)
         self.assertEqual(curType.name, 'Employment Agreement')
         self.assertIsNotNone(curType.default_content)
-        
+
         curType = DocumentType.objects.get(name='NDA')
         self.assertIsNotNone(curType)
         self.assertEqual(curType.id, 3)

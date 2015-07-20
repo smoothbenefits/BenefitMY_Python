@@ -58,7 +58,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
     def get(self, request, pk, format=None):
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="employee_benefit_summary.pdf"'
-        
+
         # initialize the canvas
         self._init_canvas(response)
 
@@ -209,7 +209,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
             # compute the coverage
             coverage_amount = ''
-            if (company_plan.insurance_amount): 
+            if (company_plan.insurance_amount):
                 coverage_amount = company_plan.insurance_amount
             elif (company_plan.salary_multiplier):
                 salary = self._get_salary_by_person(person_model)
@@ -238,9 +238,9 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
                 plan = employee_plans[0]
                 self._write_line_uniform_width([ \
-                    plan.company_hra_plan.hra_plan.name, 
+                    plan.company_hra_plan.hra_plan.name,
                     plan.company_hra_plan.hra_plan.description])
-        
+
                 self._start_new_line()
                 self._start_new_line()
 
@@ -276,7 +276,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 text_block[3].append(plan.self_premium_per_month)
                 text_block[3].append(plan.spouse_premium_per_month)
                 text_block[3].append(plan.child_premium_per_month)
-                
+
                 text_block[4].append(plan.self_condition.name)
                 text_block[4].append(plan.spouse_condition.name)
                 text_block[4].append('N/A')
@@ -345,7 +345,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
             self._write_line_uniform_width(['Health Account', fsa.primary_amount_per_year])
             self._write_line_uniform_width(['Dependent Care Account', fsa.dependent_amount_per_year])
-            
+
             self._start_new_line()
             self._start_new_line()
         elif company_plans:
@@ -365,9 +365,9 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                     'Signed' if document.signature is not None else 'Not Signed', \
                     ReportExportViewBase.get_date_string(document.signature.created_at) if document.signature is not None else ''
                 ], \
-                [0.6, 0.2, 0.2])  
+                [0.6, 0.2, 0.2])
 
-        return  
+        return
 
     def _get_person_full_name(self, person_model, fallback_user=None):
         full_name = 'N/A'
@@ -419,4 +419,3 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
     def _check_None(self, target, default_value):
         return target if target is not None else default_value
-

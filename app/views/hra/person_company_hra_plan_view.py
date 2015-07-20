@@ -9,7 +9,7 @@ from app.models.company_user import CompanyUser
 from app.models.hra.person_company_hra_plan import \
     PersonCompanyHraPlan
 from app.serializers.hra.person_company_hra_plan_serializer import (
-    PersonCompanyHraPlanSerializer, 
+    PersonCompanyHraPlanSerializer,
     PersonCompanyHraPlanPostSerializer)
 
 class PersonCompanyHraPlanView(APIView):
@@ -60,4 +60,3 @@ class PersonCompanyHraPlanByPersonView(APIView):
         plans = self._get_object(person_id)
         serializer = PersonCompanyHraPlanSerializer(plans, many=True)
         return Response(serializer.data)
-

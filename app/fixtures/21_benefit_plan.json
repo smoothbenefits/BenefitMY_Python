@@ -12,7 +12,7 @@
   {
     "fields": {
       "benefit_type": 1,
-      "mandatory_pcp": false, 
+      "mandatory_pcp": false,
       "name": "Blue Cross Blue Shield of Mass. PPO"
     },
     "model": "app.benefitplan",
@@ -21,7 +21,7 @@
   {
     "fields": {
       "benefit_type": 2,
-      "mandatory_pcp": false, 
+      "mandatory_pcp": false,
       "name": "Aetna Dental"
     },
     "model": "app.benefitplan",
@@ -30,7 +30,7 @@
   {
     "fields": {
       "benefit_type": 3,
-      "mandatory_pcp": false, 
+      "mandatory_pcp": false,
       "name": "VSP Vision"
     },
     "model": "app.benefitplan",

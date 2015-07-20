@@ -7,7 +7,7 @@ from rest_framework import status
 from app.models.insurance.supplemental_life_insurance_plan import \
     SupplementalLifeInsurancePlan
 from app.serializers.insurance.supplemental_life_insurance_plan_serializer import (
-    SupplementalLifeInsurancePlanSerializer, 
+    SupplementalLifeInsurancePlanSerializer,
     SupplementalLifeInsurancePlanPostSerializer)
 
 

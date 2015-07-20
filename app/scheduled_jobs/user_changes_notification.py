@@ -13,7 +13,7 @@ class UserChangeNotifications(CronJobBase):
     schedule = Schedule(run_every_mins=1)
     code = 'app.EmployeeDataChangeNotifications'    # a unique code
 
-    # For now, notify brokers and HRs with the same schedule. 
+    # For now, notify brokers and HRs with the same schedule.
     # This could be easily separated by coming up with a separate
     # cron job class.
     def do(self):
@@ -24,4 +24,3 @@ class UserChangeNotifications(CronJobBase):
 
         # Notify brokers
         mod_service.employee_modifications_notify_all_brokers(settings.DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES)
-

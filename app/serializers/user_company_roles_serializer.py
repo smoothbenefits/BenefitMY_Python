@@ -12,5 +12,5 @@ class UserCompanyRolesSerializer(HashPkSerializerBase):
 		model = CompanyUser
 		fields = ('id',
 			'company_user_type',
-			'company', 
+			'company',
 			'new_employee')

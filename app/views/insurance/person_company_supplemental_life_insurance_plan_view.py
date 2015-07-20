@@ -9,7 +9,7 @@ from app.models.company_user import CompanyUser
 from app.models.insurance.person_comp_suppl_life_insurance_plan import \
     PersonCompSupplLifeInsurancePlan
 from app.serializers.insurance.person_company_supplemental_life_insurance_plan_serializer import (
-    PersonCompanySupplementalLifeInsurancePlanSerializer, 
+    PersonCompanySupplementalLifeInsurancePlanSerializer,
     PersonCompanySupplementalLifeInsurancePlanPostSerializer)
 
 class PersonCompanySupplementalLifeInsurancePlanView(APIView):

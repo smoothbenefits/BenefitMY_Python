@@ -35,7 +35,7 @@ class BenefitPlanTestCase(TestCase, ViewTestBase):
                         "mandatory_pcp": True,
                         "pcp_link": "http://www.bluecrossma.com"}
 
-        response = self.client.post(reverse('benefit_post_api'), 
+        response = self.client.post(reverse('benefit_post_api'),
                                     data=json.dumps(benefit_data),
                                     content_type='application/json')
 
@@ -79,4 +79,3 @@ class CompanyBenefitPlanTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['benefits'][2]['benefit_option_type'], 'individual_plus_children')
         self.assertEqual(result['benefits'][2]['benefit_plan']['name'], 'Blue Cross Blue Shield of Mass. HMO Blue')
         self.assertEqual(result['benefits'][2]['benefit_plan']['pcp_link'], 'https://www.bluecrossma.com/wps/portal/members/using-my-plan/doctors-hospitals/findadoctor/')
-

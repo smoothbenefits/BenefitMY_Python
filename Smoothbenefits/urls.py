@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^$', home_view.index, name='home'),
 
     url(r'^admin/', include(admin.site.urls)),
-    
+
     url(r'^employee/signup/(?P<user_id>\w+)/?$', register_view.register_employee),
     url(r'^signup/$', register_view.register),
     url(r'^login/(?P<info_message>\w+)/?$', login_view.user_login, name='user_login_with_message'),
@@ -20,4 +20,3 @@ urlpatterns = patterns('',
 urlpatterns += patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
 )
-

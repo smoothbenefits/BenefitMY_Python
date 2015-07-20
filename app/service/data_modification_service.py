@@ -17,8 +17,8 @@ from reversion.models import Revision
 User = get_user_model()
 
 ''' Provides services to detect/collect modification to the
-    data store, and provide surrounding services for this 
-    info. 
+    data store, and provide surrounding services for this
+    info.
 '''
 class DataModificationService(object):
 
@@ -32,9 +32,9 @@ class DataModificationService(object):
 
     def _employee_mod_notify_employer_by_company(self, company_model, in_last_num_minutes):
 
-        # Get the list of employee users made modifications in the search range 
+        # Get the list of employee users made modifications in the search range
         persons = self.employee_modifications_summary_person_info_only(company_model.id, in_last_num_minutes)
-        
+
         if (len(persons) > 0):
             # Get the list of users (employers) to notify
             c_users = CompanyUser.objects.filter(company=company_model.id,
@@ -45,7 +45,7 @@ class DataModificationService(object):
 
 
     ''' Send email notification to all brokers.
-        All clients of each broker would have the relevant notification data 
+        All clients of each broker would have the relevant notification data
         aggregated into 1 email
     '''
     def employee_modifications_notify_all_brokers(self, in_last_num_minutes):
@@ -56,12 +56,12 @@ class DataModificationService(object):
 
     def _employee_mod_notify_broker(self, broker_user_id, in_last_num_minutes):
         company_ids = CompanyUser.objects.filter(company_user_type='broker', user=broker_user_id).values_list('company', flat=True).distinct()
-        
+
         # The result collection of data to bind to the email content
         # Each entry will be for 1 client company
         company_users_collection = []
         for company_id in company_ids:
-            # Get the list of employee users made modifications in the search range 
+            # Get the list of employee users made modifications in the search range
             persons = self.employee_modifications_summary_person_info_only(company_id, in_last_num_minutes)
             if (len(persons) > 0):
                 companies = Company.objects.filter(pk=company_id)
@@ -101,7 +101,7 @@ class DataModificationService(object):
 
         persons = Person.objects.filter(user__in=employee_user_ids, relationship='self')
 
-        return persons 
+        return persons
 
     def _get_all_user_ids_made_modifications_for_company(self, company, in_last_num_minutes):
         users = CompanyUser.objects.filter(company=company.id,

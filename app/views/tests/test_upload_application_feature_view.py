@@ -6,12 +6,12 @@ from view_test_base import ViewTestBase
 
 class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['23_auth_user', 
-                'upload', 
-                '10_company', 
-                '34_company_user', 
-                'sys_application_feature', 
-                'upload_application_feature']        
+    fixtures = ['23_auth_user',
+                'upload',
+                '10_company',
+                '34_company_user',
+                'sys_application_feature',
+                'upload_application_feature']
 
     def test_get_upload_application_feature_success(self):
         response = self.client.get(reverse('uploads_application_feature_api',
@@ -86,7 +86,7 @@ class UploadApplicationFeatureTestCase(TestCase, ViewTestBase):
                                     content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
-    
+
     def test_post_upload_application_feature_fail_bad_application_feature(self):
         upload_feature_data = {
             'upload': self.normalize_key(2),

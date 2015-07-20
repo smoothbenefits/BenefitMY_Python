@@ -5,8 +5,8 @@ benefitmyService.factory(
   ['$q',
    'currentUser',
    'DirectDepositRepository',
-  function($q, 
-           currentUser, 
+  function($q,
+           currentUser,
            DirectDepositRepository){
 
     var deleteDirectDepositById = function(directDeposit){
@@ -81,7 +81,7 @@ benefitmyService.factory(
     var mapViewDirectDepositToDto = function(viewDirectDeposit){
       var dto = {
         id: viewDirectDeposit.direct_deposit_id,
-        user: viewDirectDeposit.user, 
+        user: viewDirectDeposit.user,
         bank_account: viewDirectDeposit,
         amount: viewDirectDeposit.amount,
         percentage: viewDirectDeposit.percentage,

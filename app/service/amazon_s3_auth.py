@@ -10,7 +10,7 @@ This is the service to provide various authentication strings for Amazon S3.
 '''
 
 class AmazonS3AuthService(object):
-    
+
     def encode_key(self, company_id, user_id):
         raw_value = "{compid}__{uid}__{timestamp}".format(compid=company_id, uid=user_id, timestamp=datetime.utcnow())
         return base64.b64encode(raw_value)
@@ -33,7 +33,7 @@ class AmazonS3AuthService(object):
             'policy':upload_policy,
             'signature': signature,
             'accessKey': settings.AMAZON_AWS_ACCESS_KEY_ID,
-            'fileKey': s3_key, 
+            'fileKey': s3_key,
         }
 
 
@@ -42,9 +42,9 @@ class AmazonS3AuthService(object):
 
 
     def get_s3_request_auth(self, request_method, content_type, file_path, cur_time):
-        string_to_sign = '{0}\n\n\n{1}\n{2}\n{3}'.format(request_method, 
-                                                       content_type, 
-                                                       "x-amz-date:"+ cur_time, 
+        string_to_sign = '{0}\n\n\n{1}\n{2}\n{3}'.format(request_method,
+                                                       content_type,
+                                                       "x-amz-date:"+ cur_time,
                                                        "/" + settings.AMAZON_S3_BUCKET + file_path)
         signature = base64.b64encode(hmac.new(settings.AMAZON_AWS_SECRET, string_to_sign, hashlib.sha1).digest())
         return "AWS" + " " + settings.AMAZON_AWS_ACCESS_KEY_ID + ":" + signature;

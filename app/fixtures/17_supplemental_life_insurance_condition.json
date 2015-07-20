@@ -9,7 +9,7 @@
   },
   {
     "fields": {
-      "name": "Tobacco", 
+      "name": "Tobacco",
       "description": "If the applicant is a smoker within the last 6 months"
     },
     "model": "app.syssuppllifeinsurancecondition",
@@ -25,7 +25,7 @@
   },
   {
     "fields": {
-      "name": "Other", 
+      "name": "Other",
       "description": "Any other conditions"
     },
     "model": "app.syssuppllifeinsurancecondition",

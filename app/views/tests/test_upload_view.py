@@ -183,7 +183,7 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 404)
         self.assertIsNotNone(response.content)
-        
+
 
     def test_get_by_id_success(self):
         response = self.client.get(reverse('upload_api',
@@ -213,8 +213,8 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertTrue(login_resp)
         self.assertIn('_auth_user_id', self.client.session)
         self.assertEqual(self.client.session['_auth_user_id'], 2)
-        response = self.client.get(reverse('get_comp_uploads', 
-                                           kwargs={'comp_id': comp_id, 
+        response = self.client.get(reverse('get_comp_uploads',
+                                           kwargs={'comp_id': comp_id,
                                                    'pk': user_id}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
@@ -240,8 +240,8 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertTrue(login_resp)
         self.assertIn('_auth_user_id', self.client.session)
         self.assertEqual(self.client.session['_auth_user_id'], 4)
-        response = self.client.get(reverse('get_comp_uploads', 
-                                           kwargs={'comp_id': comp_id, 
+        response = self.client.get(reverse('get_comp_uploads',
+                                           kwargs={'comp_id': comp_id,
                                                    'pk': user_id}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 405)
@@ -257,8 +257,8 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertTrue(login_resp)
         self.assertIn('_auth_user_id', self.client.session)
         self.assertEqual(self.client.session['_auth_user_id'], 2)
-        response = self.client.get(reverse('get_comp_uploads', 
-                                           kwargs={'comp_id': comp_id, 
+        response = self.client.get(reverse('get_comp_uploads',
+                                           kwargs={'comp_id': comp_id,
                                                    'pk': user_id}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 405)
@@ -274,8 +274,8 @@ class UploadTestCase(TestCase, ViewTestBase):
         self.assertTrue(login_resp)
         self.assertIn('_auth_user_id', self.client.session)
         self.assertEqual(self.client.session['_auth_user_id'], 2)
-        response = self.client.get(reverse('get_comp_uploads', 
-                                           kwargs={'comp_id': comp_id, 
+        response = self.client.get(reverse('get_comp_uploads',
+                                           kwargs={'comp_id': comp_id,
                                                    'pk': user_id}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 405)

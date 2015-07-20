@@ -1,5 +1,5 @@
 DO $$
-DECLARE 
+DECLARE
     item varchar[];
     item_array varchar[] := ARRAY[
         ['Individual Deductible', '100'],
@@ -41,16 +41,16 @@ BEGIN
     -- Now, fill in the items where missing, and update items accoridngly
     FOREACH item SLICE 1 IN ARRAY item_array
     LOOP
-        IF NOT EXISTS (select 1 from app_benefitpolicykey where trim(name) = item[1]) 
+        IF NOT EXISTS (select 1 from app_benefitpolicykey where trim(name) = item[1])
         THEN
-            insert into app_benefitpolicykey (name, rank) 
+            insert into app_benefitpolicykey (name, rank)
             values(item[1], item[2]::integer);
-        ELSE 
+        ELSE
             update app_benefitpolicykey
             set rank = item[2] :: integer
             where name = item[1];
         END IF;
-    End LOOP; 
+    End LOOP;
 
 END
 $$;

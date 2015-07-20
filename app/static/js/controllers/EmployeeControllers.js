@@ -2380,7 +2380,7 @@ var benefitsSignupControllerBase = employeeControllers.controller(
                 nextTab.active = true;
                 $state.go(curTab.next);
             }
-          
+
         }
 
     }]);

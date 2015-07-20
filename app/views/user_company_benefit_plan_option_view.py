@@ -81,5 +81,3 @@ class CompanyUsersBenefitPlanOptionView(APIView):
         plans = self._get_objects(users_id)
         serializer = UserCompanyBenefitPlanOptionSerializer(plans, many=True)
         return Response({'benefits': serializer.data})
-
-

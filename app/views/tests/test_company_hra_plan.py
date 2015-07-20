@@ -38,7 +38,7 @@ class CompanyHraPlanTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.delete(reverse('company_hra_plan_api', 
+        response = self.client.delete(reverse('company_hra_plan_api',
                                               kwargs={'pk': self.normalize_key(1)}))
 
         self.assertIsNotNone(response)
@@ -57,7 +57,7 @@ class CompanyHraPlanTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('company_hra_plan_api',
                                             kwargs={'pk': self.normalize_key(3)}),
                                             post_data)
-        
+
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
 
@@ -77,5 +77,3 @@ class CompanyHraPlanTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertIsNotNone(response)
         self.assertEqual(result['company'], self.normalize_key(2))
-
-

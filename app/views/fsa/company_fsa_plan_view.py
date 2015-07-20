@@ -5,7 +5,7 @@ from rest_framework import status
 
 from app.models.fsa.company_fsa_plan import CompanyFsaPlan
 from app.serializers.fsa.company_fsa_plan_serializer import (
-    CompanyFsaPlanSerializer, 
+    CompanyFsaPlanSerializer,
     CompanyFsaPlanPostSerializer)
 
 

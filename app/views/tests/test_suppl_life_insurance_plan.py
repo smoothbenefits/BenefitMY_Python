@@ -5,7 +5,7 @@ from view_test_base import ViewTestBase
 
 class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate', 
+    fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate',
     '39_company_supplement_life_insurance', '17_supplemental_life_insurance_condition',
     '10_company']
 
@@ -39,7 +39,7 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.delete(reverse('suppl_life_api', 
+        response = self.client.delete(reverse('suppl_life_api',
                                               kwargs={'pk': self.normalize_key(1)}))
 
         self.assertIsNotNone(response)
@@ -69,7 +69,7 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
                                             kwargs={'pk': self.normalize_key(4)}),
                                             data=json.dumps(suppl_life_data),
                                             content_type='application/json')
-        
+
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
 
@@ -89,7 +89,7 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertIsNotNone(response)
         self.assertEqual(result['name'], "Test SLI")
-        self.assertEqual(result['supplemental_life_insurance_plan_rate'][0]['supplemental_life_insurance_plan'], 
+        self.assertEqual(result['supplemental_life_insurance_plan_rate'][0]['supplemental_life_insurance_plan'],
           self.normalize_key(4))
 
     def test_put_suppl_life_insurance(self):
@@ -137,4 +137,3 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
         self.assertEqual(rates[0]['rate'], "3.33")
         self.assertEqual(rates[0]['benefit_reduction_percentage'], "20.22")
         self.assertEqual(rates[0]['condition']['id'], self.normalize_key(3))
-
