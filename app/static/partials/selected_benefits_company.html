@@ -22,7 +22,7 @@
         <div class="panel-body">
             <!-- Health benefits summary table -->
             <div class="row" ng-if="employee.selectedBenefits !== undefined">
-                <div class="col-sm-2">                
+                <div class="col-sm-2">
                     <div>Benefit Plan Selections</div>
                 </div>
                 <div class="col-sm-10">
@@ -37,7 +37,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="plan in employee.selectedBenefits">
-                                    <td width="300">{{plan.selectedPlanName}} 
+                                    <td width="300">{{plan.selectedPlanName}}
                                         <span ng-show="plan.selectedPlanType">({{plan.selectedPlanType}})</span>
                                         <div ng-show="plan.pcp"> PCP Number: {{plan.pcp}}</div></td>
                                     <td width="300">
@@ -130,7 +130,7 @@
 
             <!-- Supplemental life insurance summary table -->
             <div class="row" ng-show="employee.supplementalLifeInsurancePlan !== undefined">
-                <div class="col-sm-2">    
+                <div class="col-sm-2">
                     <div>Supplemental Life Insurance</div>
                 </div>
                 <div class="col-sm-10" ng-if="employee.supplementalLifeInsurancePlan">
@@ -201,7 +201,7 @@
 
             <!-- STD summary table -->
             <div class="row" ng-if="employee.userStdPlan !== undefined">
-                <div class="col-sm-2">    
+                <div class="col-sm-2">
                     <div>Short Term Disability Benefits</div>
                 </div>
                 <div class="col-sm-10" ng-show="employee.userStdPlan">
@@ -254,7 +254,7 @@
 
             <!-- LTD summary table -->
             <div class="row" ng-if="employee.userLtdPlan !== undefined">
-                <div class="col-sm-2">    
+                <div class="col-sm-2">
                     <div>Long Term Disability Benefits</div>
                 </div>
                 <div class="col-sm-10" ng-show="employee.userLtdPlan">
@@ -306,12 +306,21 @@
             </div>
 
             <!-- FSA summary table -->
-            <div class="row" ng-if="employee.fsaElection !== undefined">
-                <div class="col-sm-2">    
+            <div class="row" ng-if="employee.fsaElection.selected">
+                <div class="col-sm-2">
                     <div>Flexible Spending Accounts</div>
                 </div>
+                <div class="col-sm-10" style="margin-bottom: 10px;">
+                  <div class="table-responsive table-holder" ng-show="employee.fsaElection.waived">
+                      <table class="table table-striped">
+                        <thead>
+                          <tr><th><span>Waived FSA plan</span></th></tr>
+                        </thead>
+                      </table>
+                  </div>
+                </div>
                 <div class="col-sm-10">
-                    <div class="table-responsive table-holder">
+                    <div class="table-responsive table-holder" ng-hide="employee.fsaElection.waived">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -340,7 +349,7 @@
 
             <!-- HRA summary table -->
             <div class="row" ng-if="employee.hraPlan !== undefined">
-                <div class="col-sm-2">    
+                <div class="col-sm-2">
                     <div>Health Reimbursement Accounts (HRA)</div>
                 </div>
                 <div class="col-sm-10" ng-show="employee.hraPlan">
