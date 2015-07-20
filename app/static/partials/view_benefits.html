@@ -1,320 +1,320 @@
 <div class="breadcrumb">
-    <a ng-click="backtoDashboard()">{{role}} Dashboard</a>
-    <span>View Benefits</span>
+  <a ng-click="backtoDashboard()">{{role}} Dashboard</a>
+  <span>View Benefits</span>
 </div>
 
 <div class="content-header">
-    <h1>{{client.name}} Benefits</h1>
-    <span class="general-info">Total <b>{{benefitCount}}</b> benefits</span>
-    <div class="cta" ng-if="showAddBenefitButton"><a ng-click="addBenefitLinkClicked()" class="btn green">Add new benefit</a></div>
+  <h1>{{client.name}} Benefits</h1>
+  <span class="general-info">Total <b>{{benefitCount}}</b> benefits</span>
+  <div class="cta" ng-if="showAddBenefitButton"><a ng-click="addBenefitLinkClicked()" class="btn green">Add new benefit</a></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
 
-    <!-- Here is the medical benefit section -->
-    <div class="table-responsive table-holder" ng-show="medicalBenefitGroup.benefitNameArray.length > 0">
-        <table class="table table-striped medical-plan-display-table">
-            <thead>
-                <th colspan="2"><span>{{medicalBenefitGroup.groupTitle}}</span></th>
-                <th colspan="6" ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" class="benefit-name">
-                    <span>
-                        {{benefitName.name}}
-                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteBenefit(benefitName.id)" href="javascript:void(0);">X</a>
-                    </span>
-                </th>
-            </thead>
-            <tbody>
-                <tr class="title-row">
-                    <td colspan="2" class="plan-row-head"><span>Summary Document(s)</span></td>
-                    <td ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" colspan="6" class="upload-td">
-                        <bmuploadmanager upload-type="MedicalBenefit" upload-mode="button" feature-id="{{benefitName.id}}" hide-type="true"></bmuploadmanager>
-                    </td>
-                </tr>
-                <tr class="title-row">
-                    <td colspan="2" class="plan-row-head"><span>PCP Search Link</span></td>
-                    <td ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" colspan="6" style="text-align:center;">
-                        <a ng-if="benefitName.pcpLink" ng-href="{{benefitName.pcpLink}}" target="_blank">{{benefitName.pcpLink}}</a>
-                        <span ng-if="!benefitName.pcpLink">Not Available</span>
-                    </td>
-                </tr>
-                <tr class="title-row">
-                    <td colspan="2" class="plan-row-head"><span>Plans Premium</span></td>
-                    <td ng-repeat="benefitOption in medicalBenefitGroup.benefitOptionMetaArray" colspan="{{benefitOption.colspan}}">
-                        <span>{{benefitOption.name}}</span>
-                    </td>
-                </tr>
-                <tr class="value-row" ng-repeat="optionValue in medicalBenefitGroup.benefitOptionValueArray">
-                    <td colspan="2" class="row-head"><span>{{optionValue.optionName}}</span></td>
-                    <td ng-repeat="cost in optionValue.benefitCostArray" colspan="{{cost.colspan}}"><span>{{cost.value}}</span></td>
-                </tr>
-                <tr class="title-row">
-                    <td colspan="2"><span>Options</span></td>
-                    <td ng-repeat="benefitPolicy in medicalBenefitGroup.policyNameArray", colspan="{{benefitPolicy.colspan}}">
-                        <span>{{benefitPolicy.name}}</span>
-                    </td>
-                </tr>
-                <tr class="value-row" ng-repeat="policyListMember in medicalBenefitGroup.policyList">
-                    <td colspan="2" class="row-head"><span>{{policyListMember.name}}</span></td>
-                    <td ng-repeat="policyValue in policyListMember.valueArray", colspan="{{policyValue.colspan}}">
-                        <span>{{policyValue.value}}</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <!-- Here is the medical benefit section -->
+  <div class="table-responsive table-holder" ng-show="medicalBenefitGroup.benefitNameArray.length > 0">
+    <table class="table table-striped medical-plan-display-table">
+      <thead>
+        <th colspan="2"><span>{{medicalBenefitGroup.groupTitle}}</span></th>
+        <th colspan="6" ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" class="benefit-name">
+          <span>
+            {{benefitName.name}}
+            <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteBenefit(benefitName.id)" href="javascript:void(0);">X</a>
+          </span>
+        </th>
+      </thead>
+      <tbody>
+        <tr class="title-row">
+          <td colspan="2" class="plan-row-head"><span>Summary Document(s)</span></td>
+          <td ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" colspan="6" class="upload-td">
+            <bmuploadmanager upload-type="MedicalBenefit" upload-mode="button" feature-id="{{benefitName.id}}" hide-type="true"></bmuploadmanager>
+          </td>
+        </tr>
+        <tr class="title-row">
+          <td colspan="2" class="plan-row-head"><span>PCP Search Link</span></td>
+          <td ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" colspan="6" style="text-align:center;">
+            <a ng-if="benefitName.pcpLink" ng-href="{{benefitName.pcpLink}}" target="_blank">{{benefitName.pcpLink}}</a>
+            <span ng-if="!benefitName.pcpLink">Not Available</span>
+          </td>
+        </tr>
+        <tr class="title-row">
+          <td colspan="2" class="plan-row-head"><span>Plans Premium</span></td>
+          <td ng-repeat="benefitOption in medicalBenefitGroup.benefitOptionMetaArray" colspan="{{benefitOption.colspan}}">
+            <span>{{benefitOption.name}}</span>
+          </td>
+        </tr>
+        <tr class="value-row" ng-repeat="optionValue in medicalBenefitGroup.benefitOptionValueArray">
+          <td colspan="2" class="row-head"><span>{{optionValue.optionName}}</span></td>
+          <td ng-repeat="cost in optionValue.benefitCostArray" colspan="{{cost.colspan}}"><span>{{cost.value}}</span></td>
+        </tr>
+        <tr class="title-row">
+          <td colspan="2"><span>Options</span></td>
+          <td ng-repeat="benefitPolicy in medicalBenefitGroup.policyNameArray", colspan="{{benefitPolicy.colspan}}">
+            <span>{{benefitPolicy.name}}</span>
+          </td>
+        </tr>
+        <tr class="value-row" ng-repeat="policyListMember in medicalBenefitGroup.policyList">
+          <td colspan="2" class="row-head"><span>{{policyListMember.name}}</span></td>
+          <td ng-repeat="policyValue in policyListMember.valueArray", colspan="{{policyValue.colspan}}">
+            <span>{{policyValue.value}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <!-- HRA benefits summary -->
-    <div class="table-responsive table-holder" ng-if="hraPlans && hraPlans.length > 0">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Health Reimbursement Accounts (HRA)</span></th>
-                    <th><span>Description</span></th>
-                    <td><span>Document</span></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="hraPlan in hraPlans">
-                    <td>
-                        {{hraPlan.planName}}
-                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteHraPlan(hraPlan)" href="javascript:void(0);">X</a>
-                    </td>
-                    <td >
-                        {{hraPlan.planDescription}}
-                    </td>
-                    <td class="upload-td">
-                        <bmuploadmanager
-                            upload-type="HRA"
-                            upload-mode="button"
-                            feature-id="{{hraPlan.companyPlanId}}"
-                            hide-type="true">
-                        </bmuploadmanager>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <!-- HRA benefits summary -->
+  <div class="table-responsive table-holder" ng-if="hraPlans && hraPlans.length > 0">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Health Reimbursement Accounts (HRA)</span></th>
+          <th><span>Description</span></th>
+          <td><span>Document</span></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="hraPlan in hraPlans">
+          <td>
+            {{hraPlan.planName}}
+            <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteHraPlan(hraPlan)" href="javascript:void(0);">X</a>
+          </td>
+          <td >
+            {{hraPlan.planDescription}}
+          </td>
+          <td class="upload-td">
+            <bmuploadmanager
+            upload-type="HRA"
+            upload-mode="button"
+            feature-id="{{hraPlan.companyPlanId}}"
+            hide-type="true">
+          </bmuploadmanager>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-    <!-- Here is the non medical benefit section -->
-    <div class="table-responsive table-holder" ng-repeat="benefitArray in nonMedicalBenefitArray">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>{{benefitArray.type}}</span></th>
-                    <th><span>Summary Documents</span></th>
-                    <th width="250"><span>Types</span></th>
-                    <th width="180"><span>Total Premiums<br />(per month)</span></th>
-                    <th width="180"><span>Employee Premiums<br />(per pay period)</span></th>
-                </tr>
-            </thead>
-            <tbody>
+<!-- Here is the non medical benefit section -->
+<div class="table-responsive table-holder" ng-repeat="benefitArray in nonMedicalBenefitArray">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><span>{{benefitArray.type}}</span></th>
+        <th><span>Summary Documents</span></th>
+        <th width="250"><span>Types</span></th>
+        <th width="180"><span>Total Premiums<br />(per month)</span></th>
+        <th width="180"><span>Employee Premiums<br />(per pay period)</span></th>
+      </tr>
+    </thead>
+    <tbody>
 
-                <tr ng-repeat="benefit in benefitArray.benefitList">
-                    <td style="vertical-align: top;">
-                        {{benefit.name}}
-                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteBenefit(benefit.id)" href="javascript:void(0);">X</a>
-                    </td>
-                    <td class="upload-td">
-                        <bmuploadmanager
-                            ng-if="benefitArray.type==='Dental'"
-                            upload-type="DentalBenefit"
-                            upload-mode="button"
-                            feature-id="{{benefit.id}}"
-                            hide-type="true">
-                        </bmuploadmanager>
-                        <bmuploadmanager
-                            ng-if="benefitArray.type==='Vision'"
-                            upload-type="VisionBenefit"
-                            upload-mode="button"
-                            feature-id="{{benefit.id}}"
-                            hide-type="true">
-                        </bmuploadmanager>
-                    </td>
-                    <td colspan="3" style="padding: 0;">
-                        <table class="table">
-                            <tr ng-repeat="option in benefit.options">
-                                <td width="250">{{option.optionType}}</td>
-                                <td width="180">${{option.totalCost}}</td>
-                                <td width="180">${{option.employeeCost}}</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
+      <tr ng-repeat="benefit in benefitArray.benefitList">
+        <td style="vertical-align: top;">
+          {{benefit.name}}
+          <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteBenefit(benefit.id)" href="javascript:void(0);">X</a>
+        </td>
+        <td class="upload-td">
+          <bmuploadmanager
+          ng-if="benefitArray.type==='Dental'"
+          upload-type="DentalBenefit"
+          upload-mode="button"
+          feature-id="{{benefit.id}}"
+          hide-type="true">
+        </bmuploadmanager>
+        <bmuploadmanager
+        ng-if="benefitArray.type==='Vision'"
+        upload-type="VisionBenefit"
+        upload-mode="button"
+        feature-id="{{benefit.id}}"
+        hide-type="true">
+      </bmuploadmanager>
+    </td>
+    <td colspan="3" style="padding: 0;">
+      <table class="table">
+        <tr ng-repeat="option in benefit.options">
+          <td width="250">{{option.optionType}}</td>
+          <td width="180">${{option.totalCost}}</td>
+          <td width="180">${{option.employeeCost}}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
 
-            </tbody>
-        </table>
-    </div>
+</tbody>
+</table>
+</div>
 
-    <!-- Basic life insurance plans summary -->
-    <div class="table-responsive table-holder" ng-if="lifeInsurancePlans && lifeInsurancePlans.length > 0">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Basic Life Insurance (AD&D)</span></th>
-                    <th><span>Document</span></th>
-                    <th><span>Total Cost (Monthly)</span></th>
-                    <th><span>Employee Contribution (Per Pay Period)</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="lifeInsurancePlan in lifeInsurancePlans">
-                    <td>
-                        <b>{{lifeInsurancePlan.life_insurance_plan.name}}</b>
-                        <span ng-show="lifeInsurancePlan.insurance_amount">, benefit amount of ${{lifeInsurancePlan.insurance_amount}}</span>
-                        <span ng-show="lifeInsurancePlan.salary_multiplier">, benefit amount equals to {{lifeInsurancePlan.salary_multiplier}} times of base salary</span>
-                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLifeInsurancePlan(lifeInsurancePlan)" href="javascript:void(0);">X</a>
-                    </td>
-                    <td class="upload-td">
-                        <bmuploadmanager
-                            upload-type="BasicLife"
-                            upload-mode="button"
-                            feature-id="{{lifeInsurancePlan.id}}"
-                            hide-type="true">
-                        </bmuploadmanager>
-                    </td>
-                    <td>$ {{lifeInsurancePlan.total_cost_per_period}}</td>
-                    <td>$ {{lifeInsurancePlan.employee_cost_per_period}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<!-- Basic life insurance plans summary -->
+<div class="table-responsive table-holder" ng-if="lifeInsurancePlans && lifeInsurancePlans.length > 0">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><span>Basic Life Insurance (AD&D)</span></th>
+        <th><span>Document</span></th>
+        <th><span>Total Cost (Monthly)</span></th>
+        <th><span>Employee Contribution (Per Pay Period)</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="lifeInsurancePlan in lifeInsurancePlans">
+        <td>
+          <b>{{lifeInsurancePlan.life_insurance_plan.name}}</b>
+          <span ng-show="lifeInsurancePlan.insurance_amount">, benefit amount of ${{lifeInsurancePlan.insurance_amount}}</span>
+          <span ng-show="lifeInsurancePlan.salary_multiplier">, benefit amount equals to {{lifeInsurancePlan.salary_multiplier}} times of base salary</span>
+          <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLifeInsurancePlan(lifeInsurancePlan)" href="javascript:void(0);">X</a>
+        </td>
+        <td class="upload-td">
+          <bmuploadmanager
+          upload-type="BasicLife"
+          upload-mode="button"
+          feature-id="{{lifeInsurancePlan.id}}"
+          hide-type="true">
+        </bmuploadmanager>
+      </td>
+      <td>$ {{lifeInsurancePlan.total_cost_per_period}}</td>
+      <td>$ {{lifeInsurancePlan.employee_cost_per_period}}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
-    <!-- Supplemental Life insurance plans summary -->
-    <div class="table-responsive table-holder" ng-if="supplementalLifeInsurancePlans && supplementalLifeInsurancePlans.length > 0">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Supplemental Life Insurance</span></th>
-                    <th><span>Document</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="supplementalLifeInsurancePlan in supplementalLifeInsurancePlans">
-                    <td>
-                        {{supplementalLifeInsurancePlan.planName}}
-                        <a ng-click="openSupplementalLifePlanDetailsModal(supplementalLifeInsurancePlan)"><b>View Details</b></a>
-                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteSupplementalLifePlan(supplementalLifeInsurancePlan)" href="javascript:void(0);">X</a>
-                    </td>
-                    <td class="upload-td">
-                        <bmuploadmanager
-                            upload-type="OptionalLife"
-                            upload-mode="button"
-                            feature-id="{{supplementalLifeInsurancePlan.companyPlanId}}"
-                            hide-type="true">
-                        </bmuploadmanager>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<!-- Supplemental Life insurance plans summary -->
+<div class="table-responsive table-holder" ng-if="supplementalLifeInsurancePlans && supplementalLifeInsurancePlans.length > 0">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><span>Supplemental Life Insurance</span></th>
+        <th><span>Document</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="supplementalLifeInsurancePlan in supplementalLifeInsurancePlans">
+        <td>
+          {{supplementalLifeInsurancePlan.planName}}
+          <a ng-click="openSupplementalLifePlanDetailsModal(supplementalLifeInsurancePlan)"><b>View Details</b></a>
+          <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteSupplementalLifePlan(supplementalLifeInsurancePlan)" href="javascript:void(0);">X</a>
+        </td>
+        <td class="upload-td">
+          <bmuploadmanager
+          upload-type="OptionalLife"
+          upload-mode="button"
+          feature-id="{{supplementalLifeInsurancePlan.companyPlanId}}"
+          hide-type="true">
+        </bmuploadmanager>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
-    <!-- STD benefits summary -->
-    <div class="table-responsive table-holder" ng-if="stdPlans && stdPlans.length > 0">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>STD Plan Name</span></th>
-                    <th><span>Document</span></th>
-                    <th><span>Benefit Amount</span></th>
-                    <th><span>Max Benefit</span></th>
-                    <th><span>Duration</span></th>
-                    <th><span>Rate</span></th>
-                    <th><span>Employer Pays</span></th>
-                    <th><span>Elimination Period</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="stdPlan in stdPlans">
-                    <td>
-                        {{stdPlan.planName}}
-                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteStdPlan(stdPlan)" href="javascript:void(0);">X</a>
-                    </td>
-                    <td class="upload-td">
-                        <bmuploadmanager
-                            upload-type="STD"
-                            upload-mode="button"
-                            feature-id="{{stdPlan.companyPlanId}}"
-                            hide-type="true">
-                        </bmuploadmanager>
-                    </td>
-                    <td>{{stdPlan.percentageOfSalary}}% of Base Salary</td>
-                    <td>${{stdPlan.maxBenefitWeekly}}/Week</td>
-                    <td>{{stdPlan.duration}} Days</td>
-                    <td>${{stdPlan.rate}} of $10 benefit</td>
-                    <td>{{stdPlan.employerContributionPercentage}}%</td>
-                    <td>{{stdPlan.eliminationPeriodInDays}} Days</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<!-- STD benefits summary -->
+<div class="table-responsive table-holder" ng-if="stdPlans && stdPlans.length > 0">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><span>STD Plan Name</span></th>
+        <th><span>Document</span></th>
+        <th><span>Benefit Amount</span></th>
+        <th><span>Max Benefit</span></th>
+        <th><span>Duration</span></th>
+        <th><span>Rate</span></th>
+        <th><span>Employer Pays</span></th>
+        <th><span>Elimination Period</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="stdPlan in stdPlans">
+        <td>
+          {{stdPlan.planName}}
+          <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteStdPlan(stdPlan)" href="javascript:void(0);">X</a>
+        </td>
+        <td class="upload-td">
+          <bmuploadmanager
+          upload-type="STD"
+          upload-mode="button"
+          feature-id="{{stdPlan.companyPlanId}}"
+          hide-type="true">
+        </bmuploadmanager>
+      </td>
+      <td>{{stdPlan.percentageOfSalary}}% of Base Salary</td>
+      <td>${{stdPlan.maxBenefitWeekly}}/Week</td>
+      <td>{{stdPlan.duration}} Days</td>
+      <td>${{stdPlan.rate}} of $10 benefit</td>
+      <td>{{stdPlan.employerContributionPercentage}}%</td>
+      <td>{{stdPlan.eliminationPeriodInDays}} Days</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
-    <!-- LTD benefits summary -->
-    <div class="table-responsive table-holder" ng-if="ltdPlans && ltdPlans.length > 0">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>LTD Plan Name</span></th>
-                    <th><span>Document</span></th>
-                    <th><span>Benefit Amount</span></th>
-                    <th><span>Max Benefit</span></th>
-                    <th><span>Duration</span></th>
-                    <th><span>Rate</span></th>
-                    <th><span>Employer Pays</span></th>
-                    <th><span>Elimination Period</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="ltdPlan in ltdPlans">
-                    <td>
-                        {{ltdPlan.planName}}
-                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLtdPlan(ltdPlan)" href="javascript:void(0);">X</a>
-                    </td>
-                    <td class="upload-td">
-                        <bmuploadmanager
-                            upload-type="LTD"
-                            upload-mode="button"
-                            feature-id="{{ltdPlan.companyPlanId}}"
-                            hide-type="true">
-                        </bmuploadmanager>
-                    </td>
-                    <td>{{ltdPlan.percentageOfSalary}}% of Base Salary</td>
-                    <td>${{ltdPlan.maxBenefitMonthly}}/Month</td>
-                    <td>{{ltdPlan.duration}} Months or Until Retirement Age</td>
-                    <td>${{ltdPlan.rate}} of $10 benefit</td>
-                    <td>{{ltdPlan.employerContributionPercentage}}%</td>
-                    <td>{{ltdPlan.eliminationPeriodInMonths}} Months</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<!-- LTD benefits summary -->
+<div class="table-responsive table-holder" ng-if="ltdPlans && ltdPlans.length > 0">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><span>LTD Plan Name</span></th>
+        <th><span>Document</span></th>
+        <th><span>Benefit Amount</span></th>
+        <th><span>Max Benefit</span></th>
+        <th><span>Duration</span></th>
+        <th><span>Rate</span></th>
+        <th><span>Employer Pays</span></th>
+        <th><span>Elimination Period</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="ltdPlan in ltdPlans">
+        <td>
+          {{ltdPlan.planName}}
+          <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteLtdPlan(ltdPlan)" href="javascript:void(0);">X</a>
+        </td>
+        <td class="upload-td">
+          <bmuploadmanager
+          upload-type="LTD"
+          upload-mode="button"
+          feature-id="{{ltdPlan.companyPlanId}}"
+          hide-type="true">
+        </bmuploadmanager>
+      </td>
+      <td>{{ltdPlan.percentageOfSalary}}% of Base Salary</td>
+      <td>${{ltdPlan.maxBenefitMonthly}}/Month</td>
+      <td>{{ltdPlan.duration}} Months or Until Retirement Age</td>
+      <td>${{ltdPlan.rate}} of $10 benefit</td>
+      <td>{{ltdPlan.employerContributionPercentage}}%</td>
+      <td>{{ltdPlan.eliminationPeriodInMonths}} Months</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
-    <!-- FSA plans summary -->
-    <div class="table-responsive table-holder" ng-if="fsaPlans && fsaPlans.length > 0">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>FSA Plan Name</span></th>
-                    <th><span>Document</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="fsaPlan in fsaPlans">
-                    <td>
-                        {{fsaPlan.fsaPlanName}}
-                        <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteFsaPlan(fsaPlan)" href="javascript:void(0);">X</a>
-                    </td>
-                    <td class="upload-td">
-                        <bmuploadmanager
-                            upload-type="FSA"
-                            upload-mode="button"
-                            feature-id="{{fsaPlan.companyPlanId}}"
-                            hide-type="true">
-                        </bmuploadmanager>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<!-- FSA plans summary -->
+<div class="table-responsive table-holder" ng-if="fsaPlans && fsaPlans.length > 0">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><span>FSA Plan Name</span></th>
+        <th><span>Document</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="fsaPlan in fsaPlans">
+        <td>
+          {{fsaPlan.fsaPlanName}}
+          <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteFsaPlan(fsaPlan)" href="javascript:void(0);">X</a>
+        </td>
+        <td class="upload-td">
+          <bmuploadmanager
+          upload-type="FSA"
+          upload-mode="button"
+          feature-id="{{fsaPlan.companyPlanId}}"
+          hide-type="true">
+        </bmuploadmanager>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
-    <div class="back"><a href="javascript:void(0);" ng-click="backtoDashboard()">&laquo; Back</a></div>
+<div class="back"><a href="javascript:void(0);" ng-click="backtoDashboard()">&laquo; Back</a></div>
 </div>

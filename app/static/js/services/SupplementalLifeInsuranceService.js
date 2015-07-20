@@ -1,19 +1,19 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('SupplementalLifeInsuranceService', 
+benefitmyService.factory('SupplementalLifeInsuranceService',
     ['$q',
     'SupplementalLifeInsuranceRepository',
     'SupplementalLifeInsuranceConditionService',
     'PersonService',
     function (
-        $q, 
+        $q,
         SupplementalLifeInsuranceRepository,
         SupplementalLifeInsuranceConditionService,
         PersonService){
 
         // Constants
         // Assumption: rateTableMinAgeLimit + N * rateTableAgeInterval = rateTableMaxAgeLimit
-        //             i.e. no "fractions" at the end. 
+        //             i.e. no "fractions" at the end.
         var rateTableMinAgeLimit = 20;
         var rateTableMaxAgeLimit = 85;
         var rateTableAgeInterval = 5;
@@ -24,7 +24,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
-            
+
             viewModel.planId = planDomainModel.id;
             viewModel.planName = planDomainModel.name;
             viewModel.planRates = mapPlanRateTableDomainToViewModel(planDomainModel.supplemental_life_insurance_plan_rate);
@@ -34,26 +34,26 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         };
 
         var mapCompanyPlanDomainToViewModel = function(companyPlanDomainModel) {
-            var viewModel = companyPlanDomainModel.supplemental_life_insurance_plan ? 
+            var viewModel = companyPlanDomainModel.supplemental_life_insurance_plan ?
                 mapPlanDomainToViewModel(companyPlanDomainModel.supplemental_life_insurance_plan) :
                 {};
 
             viewModel.companyPlanId = companyPlanDomainModel.id;
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
-            
+
             return viewModel;
         };
 
         var mapPersonCompanyPlanDomainToViewModel = function(personCompanyPlanDomainModel) {
-            var viewModel = personCompanyPlanDomainModel.company_supplemental_life_insurance_plan ? 
+            var viewModel = personCompanyPlanDomainModel.company_supplemental_life_insurance_plan ?
                 mapCompanyPlanDomainToViewModel(personCompanyPlanDomainModel.company_supplemental_life_insurance_plan) :
                 {};
 
             viewModel.personCompanyPlanId = personCompanyPlanDomainModel.id;
             viewModel.planOwner = personCompanyPlanDomainModel.person;
             viewModel.lastUpdateDateTime = moment(personCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
-        
+
             viewModel.selfPlanCondition = mapConditionDomainToViewModel(personCompanyPlanDomainModel.self_condition);
             viewModel.spousePlanCondition = mapConditionDomainToViewModel(personCompanyPlanDomainModel.spouse_condition);
             viewModel.selfElectedAmount = personCompanyPlanDomainModel.self_elected_amount;
@@ -129,7 +129,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         };
 
         var mapPlanRateTableDomainToViewModel = function(planRateTableDomainModel) {
-            
+
             // First map all entries to view model
             var entries = [];
             _.each(planRateTableDomainModel, function(planRateDomainModel)
@@ -180,7 +180,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
         var mapPlanViewToDomainModel = function(planViewModel) {
             var domainModel = {};
-            
+
             domainModel.id = planViewModel.planId;
             domainModel.name = planViewModel.planName;
             domainModel.supplemental_life_insurance_plan_rate = mapPlanRateTableViewToDomainModel(planViewModel.planRates)
@@ -258,8 +258,8 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         };
 
         var mapConditionViewToDomainModel = function(conditionViewModel) {
-            
-            // We only need plain ID for this 
+
+            // We only need plain ID for this
             return conditionViewModel.conditionId;
         };
 
@@ -272,8 +272,8 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             domainModel.age_max = planRateViewModel.ageMax >= ageRangeMax ? null : planRateViewModel.ageMax;
             domainModel.bind_type = planRateViewModel.bindType;
             domainModel.rate = planRateViewModel.ratePer10000;
-            domainModel.benefit_reduction_percentage = planRateViewModel.benefitReductionPercentage <= 0 
-                                                        ? null 
+            domainModel.benefit_reduction_percentage = planRateViewModel.benefitReductionPercentage <= 0
+                                                        ? null
                                                         : planRateViewModel.benefitReductionPercentage;
             domainModel.condition = planRateViewModel.planCondition.conditionId;
 
@@ -319,8 +319,8 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
         //////////////////////////////////////////////////////////////////
 
         /**
-            Combine the given tobacco and non-tobacco rate tables by age range. 
-            e.g. tables were in the form 
+            Combine the given tobacco and non-tobacco rate tables by age range.
+            e.g. tables were in the form
                 age_range  tobacco_rate     age_range non_tobacco_rate
             and result would be a list with entries in the form
                 age_range   tobacco_rate    non_tobacco_rate
@@ -330,10 +330,10 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
             _.each(tobaccoTable, function(item) {
                 var key = item.ageMin+':'+item.ageMax;
-                map[key] = { 
+                map[key] = {
                     'ageMin':item.ageMin,
                     'ageMax':item.ageMax,
-                    'tobaccoRate': item  
+                    'tobaccoRate': item
                 };
             });
 
@@ -342,14 +342,14 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 if (map[key]) {
                     map[key].nonTobaccoRate = item;
                 } else {
-                    // This should not happen at all, but 
+                    // This should not happen at all, but
                     // just for the sake of not making too
-                    // many assumptions, and let logic be 
+                    // many assumptions, and let logic be
                     // generic where possible...
-                    map[key] = { 
+                    map[key] = {
                         'ageMin':item.ageMin,
                         'ageMax':item.ageMax,
-                        'nonTobaccoRate': item  
+                        'nonTobaccoRate': item
                     };
                 }
             });
@@ -360,12 +360,12 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
                 // For display age range text
                 item.getAgeRangeForDisplay = function() { return getAgeRangeForDisplay(this); };
-                
+
                 // Solicit the benefit reduction percentage
                 // Note: This is under the assumption that the benefit reduction
-                //       percentage is consistent/shared between tobacco and 
-                //       non-tobacco rate entries.  
-                item.benefitReductionPercentage = item.nonTobaccoRate.benefitReductionPercentage; 
+                //       percentage is consistent/shared between tobacco and
+                //       non-tobacco rate entries.
+                item.benefitReductionPercentage = item.nonTobaccoRate.benefitReductionPercentage;
 
                 resultRateList.push(item);
             }
@@ -388,7 +388,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             }
             ageRanges.push({"min": rateTableMaxAgeLimit, "max": ageRangeMax});
 
-            // Construct the rate table based on the inputs and the 
+            // Construct the rate table based on the inputs and the
             // age ranges
             var rateTable = [];
             _.each(ageRanges, function(ageRange) {
@@ -430,7 +430,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 deferred.resolve(viewModel);
             });
 
-            return deferred.promise; 
+            return deferred.promise;
         };
 
         var getAgeRangeForDisplay = function(rateViewModel) {
@@ -469,7 +469,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
         return {
             planBindTypes: ['self', 'spouse', 'dependent'],
-            
+
             getPlansForCompany: getPlansForCompany,
 
             getBlankPlanForCompany: function(companyId) {
@@ -486,7 +486,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                     deferred.resolve(blankCompanyPlan);
                 });
 
-                return deferred.promise; 
+                return deferred.promise;
             },
 
             addPlanForCompany: function(companyPlanToSave, companyId) {
@@ -517,7 +517,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 function(error){
                     deferred.reject(error)
                 });
-                
+
                 return deferred.promise;
             },
 
@@ -531,8 +531,8 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 function(error) {
                     deferred.reject(error);
                 });
-                
-                return deferred.promise; 
+
+                return deferred.promise;
             },
 
             getPlanByUser: function(userId, company, getBlankPlanIfNoneFound) {
@@ -546,12 +546,12 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                             SupplementalLifeInsuranceRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
                             .$promise.then(function(personPlans) {
                                 if (personPlans.length > 0) {
-                                    // Found existing person enrolled plans, for now, take the first 
+                                    // Found existing person enrolled plans, for now, take the first
                                     // one.
                                     deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0]));
                                 } else {
                                     // The person does not have enrolled plans yet.
-                                    // If indicated so, construct and return an structured 
+                                    // If indicated so, construct and return an structured
                                     // blank person plan.
                                     // Or else, return null;
                                     if (getBlankPlanIfNoneFound) {
@@ -581,8 +581,8 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                         });
                     }
                 });
-                
-                return deferred.promise; 
+
+                return deferred.promise;
             },
 
             deletePlansForUser: function(userId) {
@@ -618,7 +618,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 personPlanToSave.updateReason = updateReason;
 
                 var planDomainModel = mapPersonCompanyPlanViewToDomainModel(personPlanToSave);
-                
+
                 // "Flatten out" any nested structure for the POST to work
                 planDomainModel.company_supplemental_life_insurance_plan = planDomainModel.company_supplemental_life_insurance_plan.id;
 
@@ -638,10 +638,10 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                     function(error){
                         deferred.reject(error);
                     });
-                } 
+                }
 
-                return deferred.promise; 
+                return deferred.promise;
             },
-        }; 
+        };
     }
 ]);

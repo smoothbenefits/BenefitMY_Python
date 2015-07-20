@@ -36,8 +36,8 @@ AMAZON_S3_HOST = 'https://{0}.s3.amazonaws.com/'.format(AMAZON_S3_BUCKET)
 AMAZON_AWS_ACCESS_KEY_ID = 'AKIAJSUUQXOJS5GNUTKA'
 AMAZON_AWS_SECRET = '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'
 AMAZON_S3_UPLOAD_POLICY= {
-    "conditions": [ 
-        {"bucket": AMAZON_S3_BUCKET}, 
+    "conditions": [
+        {"bucket": AMAZON_S3_BUCKET},
         ["starts-with", "$key", ""],
         {"acl": "private"},
         ["starts-with", "$Content-Type", ""],

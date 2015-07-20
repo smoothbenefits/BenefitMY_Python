@@ -1,6 +1,6 @@
 var benefitmyService = angular.module('benefitmyService', ['benefitmyDomainModelFactories']);
 
-var utilityService = benefitmyService.factory('utilityServcie', 
+var utilityService = benefitmyService.factory('utilityServcie',
   ['$q',
    'profileSettings',
     function($q,

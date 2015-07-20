@@ -1,92 +1,92 @@
 <div class="benefit-form-holder">
-    <form name="form" class="dynamic-form">
-        <div class="form-holder col-md-8">
-            <div class="row">
-                <div class="form-label">Plan Name *</div>
-                <div class="textbox">
-                    <input type="text"
-                        name="new_life_insurance_plan_name"
-                        ng-model="newLifeInsurancePlan.name"
-                        ng-required="true" />
-                    <div class="form-error" ng-show="form.new_life_insurance_plan_name.$dirty && form.new_life_insurance_plan_name.$invalid">
-                      <span ng-show="form.new_life_insurance_plan_name.$error.required">Plan name field is required</span>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-label">Total Cost (Monthly) *</div>
-                    <div class="textbox input-group">
-                        <span class="input-group-addon">$</span>
-                        <input
-                            min="0"
-                            type="number"
-                            name="total_cost"
-                            ng-required="true"
-                            ng-model="newLifeInsurancePlan.totalCost" />
-                    </div>
-                    <div class="form-error-relative" ng-show="form.total_cost.$dirty && form.total_cost.$invalid">
-                        <span>Total cost field is invalid</span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-label">Employee Contribution (Per Pay Period) *</div>
-                    <div class="textbox input-group">
-                        <span class="input-group-addon">$</span>
-                        <input
-                            min="0"
-                            type="number"
-                            name="employee_contribution"
-                            ng-required="true"
-                            ng-model="newLifeInsurancePlan.employeeContribution" />
-                        <div class="form-error-relative" ng-show="form.employee_contribution.$dirty && form.employee_contribution.$invalid">
-                            <span>Employee contribution field is invalid</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-label">Amount</div>
-                    <div class="textbox input-group">
-                        <span class="input-group-addon">$</span>
-                        <input
-                            min="0"
-                            type="number"
-                            name="amount"
-                            ng-model="newLifeInsurancePlan.amount"
-                            ng-disabled="newLifeInsurancePlan.multiplier || newLifeInsurancePlan.multiplier === 0" />
-                    </div>
-                    <div class="form-error-relative" ng-show="form.amount.$invalid">Amount is invalid</div>
-                </div>
-                <div class="col-md-2" style="text-align:center;display:inline-table;">
-                    <div style="vertical-align:bottom; height:70px;display:table-cell;">
-                        <h4><b>OR</b></h4>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-label">Multiplier</div>
-                    <div class="textbox input-group">
-                        <input
-                            type="number"
-                            min="0"
-                            name="multiplier"
-                            ng-model="newLifeInsurancePlan.multiplier"
-                            ng-disabled="newLifeInsurancePlan.amount || newLifeInsurancePlan.amount === 0" />
-                        <span class="input-group-addon">X Annual Base Salary</span>
-                    </div>
-                    <div class="form-error-relative" ng-show="form.multiplier.$invalid">
-                        Multiplier is invalid
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="submit-box" style="max-width: 200px;">
-                        <a ng-click="addLifeInsurancePlan()" class="btn green" ng-disabled="!buttonEnabled()">Add</a>
-                    </div>
-                </div>
-            </div>
+  <form name="form" class="dynamic-form">
+    <div class="form-holder col-md-8">
+      <div class="row">
+        <div class="form-label">Plan Name *</div>
+        <div class="textbox">
+          <input type="text"
+          name="new_life_insurance_plan_name"
+          ng-model="newLifeInsurancePlan.name"
+          ng-required="true" />
+          <div class="form-error" ng-show="form.new_life_insurance_plan_name.$dirty && form.new_life_insurance_plan_name.$invalid">
+            <span ng-show="form.new_life_insurance_plan_name.$error.required">Plan name field is required</span>
+          </div>
         </div>
-    </form>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-label">Total Cost (Monthly) *</div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$</span>
+            <input
+            min="0"
+            type="number"
+            name="total_cost"
+            ng-required="true"
+            ng-model="newLifeInsurancePlan.totalCost" />
+          </div>
+          <div class="form-error-relative" ng-show="form.total_cost.$dirty && form.total_cost.$invalid">
+            <span>Total cost field is invalid</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-label">Employee Contribution (Per Pay Period) *</div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$</span>
+            <input
+            min="0"
+            type="number"
+            name="employee_contribution"
+            ng-required="true"
+            ng-model="newLifeInsurancePlan.employeeContribution" />
+            <div class="form-error-relative" ng-show="form.employee_contribution.$dirty && form.employee_contribution.$invalid">
+              <span>Employee contribution field is invalid</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-label">Amount</div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$</span>
+            <input
+            min="0"
+            type="number"
+            name="amount"
+            ng-model="newLifeInsurancePlan.amount"
+            ng-disabled="newLifeInsurancePlan.multiplier || newLifeInsurancePlan.multiplier === 0" />
+          </div>
+          <div class="form-error-relative" ng-show="form.amount.$invalid">Amount is invalid</div>
+        </div>
+        <div class="col-md-2" style="text-align:center;display:inline-table;">
+          <div style="vertical-align:bottom; height:70px;display:table-cell;">
+            <h4><b>OR</b></h4>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-label">Multiplier</div>
+          <div class="textbox input-group">
+            <input
+            type="number"
+            min="0"
+            name="multiplier"
+            ng-model="newLifeInsurancePlan.multiplier"
+            ng-disabled="newLifeInsurancePlan.amount || newLifeInsurancePlan.amount === 0" />
+            <span class="input-group-addon">X Annual Base Salary</span>
+          </div>
+          <div class="form-error-relative" ng-show="form.multiplier.$invalid">
+            Multiplier is invalid
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="submit-box" style="max-width: 200px;">
+            <a ng-click="addLifeInsurancePlan()" class="btn green" ng-disabled="!buttonEnabled()">Add</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>

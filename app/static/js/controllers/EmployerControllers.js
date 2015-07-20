@@ -218,7 +218,7 @@ var employerUser = employersController.controller('employerUser',
                 .then(function(docTypeMapModel) {
                     employee.documentCollection = docTypeMapModel;
                 });
-            }); 
+            });
         });
 
       templateRepository.getAllFields.query({id:compId})
@@ -301,7 +301,7 @@ var employerUser = employersController.controller('employerUser',
         {
             pathKey='view_letter';
         }
-          
+
         $location.path('/admin/' + pathKey + '/' +compId +'/'+employeeId).search({'type': docEntry.docType.name});
       };
 
@@ -315,27 +315,27 @@ var employerUser = employersController.controller('employerUser',
   }
 ]);
 
-var employerBenefits = employersController.controller('employerBenefits', 
-  ['$scope', 
-  '$location', 
+var employerBenefits = employersController.controller('employerBenefits',
+  ['$scope',
+  '$location',
   '$stateParams',
-  '$modal', 
-  'benefitDisplayService', 
-  'BasicLifeInsuranceService', 
+  '$modal',
+  'benefitDisplayService',
+  'BasicLifeInsuranceService',
   'SupplementalLifeInsuranceService',
   'StdService',
   'LtdService',
-  'FsaService', 
+  'FsaService',
   'HraService',
-  function ($scope, 
-            $location, 
-            $stateParams, 
+  function ($scope,
+            $location,
+            $stateParams,
             $modal,
-            benefitDisplayService, 
+            benefitDisplayService,
             BasicLifeInsuranceService,
-            SupplementalLifeInsuranceService, 
+            SupplementalLifeInsuranceService,
             StdService,
-            LtdService, 
+            LtdService,
             FsaService,
             HraService){
 
@@ -399,11 +399,11 @@ var employerBenefits = employersController.controller('employerBenefits',
 ]);
 
 var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
-  ['$scope', 
+  ['$scope',
    '$modal',
    '$modalInstance',
    function selectedBenefitsController(
-    $scope, 
+    $scope,
     $modal,
     $modalInstance){
         $scope.closePlanDetailsModal = function() {
@@ -659,21 +659,21 @@ var employerViewLetter = employersController.controller('employerViewLetter',
   }]);
 
 var employerViewEmployeeDetail = employersController.controller('employerViewEmployeeDetail', [
-  '$scope', 
-  '$location', 
-  '$stateParams', 
+  '$scope',
+  '$location',
+  '$stateParams',
   '$modal',
   '$controller',
-  'profileSettings', 
+  'profileSettings',
   'peopleRepository',
   'employmentAuthRepository',
   'employeeTaxRepository',
   'EmployeeProfileService',
   'EmploymentStatuses',
-  function($scope, 
-           $location, 
+  function($scope,
+           $location,
            $stateParams,
-           $modal, 
+           $modal,
            $controller,
            profileSettings,
            peopleRepository,
@@ -708,7 +708,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId)
           .then(function(profile) {
             $scope.employee.employeeProfile = profile;
-            $scope.$watch('employee.employeeProfile.employmentStatus', 
+            $scope.$watch('employee.employeeProfile.employmentStatus',
               function(employmentStatus){
                 $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmploymentStatuses.terminated;
                 $scope.terminateMessage = undefined;
@@ -835,12 +835,12 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
              EmployeeProfileService,
              employeeProfileModel,
              EmploymentStatuses){
-      
+
       $scope.errorMessage = null;
       $scope.employeeProfileModel = employeeProfileModel;
       $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern'];
       $scope.employmentStatusList = _.reject(
-        _.values(EmploymentStatuses), 
+        _.values(EmploymentStatuses),
           function(status){
             return status === EmploymentStatuses.terminated;
           }
@@ -874,7 +874,7 @@ var confirmTerminateEmployeeModalController = employersController.controller('co
            $modalInstance,
            employeeProfile,
            EmploymentStatuses){
-    
+
     $scope.employeeProfile = employeeProfile;
     $scope.endDateRequired = function(){
       return _.isNull($scope.employeeProfile.endDate) || _.isUndefined($scope.employeeProfile.endDate);
@@ -888,14 +888,14 @@ var confirmTerminateEmployeeModalController = employersController.controller('co
     $scope.cancel = function(){
       $modalInstance.dismiss();
     };
-  }                                                                           
+  }
 
 ])
 
 var employerBenefitsSelected = employersController.controller('employerBenefitsSelected', [
-  '$scope', 
-  '$location', 
-  '$stateParams', 
+  '$scope',
+  '$location',
+  '$stateParams',
   'companyRepository',
   'employeeBenefitElectionService',
   'FsaService',
@@ -905,9 +905,9 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   'StdService',
   'LtdService',
   'HraService',
-  function($scope, 
-           $location, 
-           $stateParams, 
+  function($scope,
+           $location,
+           $stateParams,
            companyRepository,
            employeeBenefitElectionService,
            FsaService,
@@ -933,7 +933,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
 
         // TODO: Could/should FSA information be considered one kind of benefit election
         //       and this logic of getting FSA data for an employee be moved into the
-        //       employeeBenefitElectionService? 
+        //       employeeBenefitElectionService?
         _.each(employeeList, function(employee) {
           FsaService.getFsaElectionForUser(employee.user.id, company_id).then(function(response) {
             employee.fsaElection = response;
@@ -941,11 +941,11 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         });
 
         // TODO: like the above comment for FSA, Life Insurance, or more generally speaking,
-        //       all new benefits going forward, we should consider creating as separate 
-        //       entity and maybe avoid trying to artificially bundle them together. 
+        //       all new benefits going forward, we should consider creating as separate
+        //       entity and maybe avoid trying to artificially bundle them together.
         //       Also, once we have tabs working, we should split them into proper flows.
         _.each(employeeList, function(employee) {
-          
+
           BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, company_id)
           .then(function(response){
             employee.basicLifeInsurancePlan = response;
@@ -977,9 +977,9 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
       }, function(errorResponse){
         alert(errorResponse.content);
       });
-    
+
     $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
-        return (!employeeFamilyLifeInsurancePlan) 
+        return (!employeeFamilyLifeInsurancePlan)
           || (!employeeFamilyLifeInsurancePlan.mainPlan)
           || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
       };
@@ -1000,11 +1000,11 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
 }]);
 
 var employerViewUploads = employersController.controller('employerViewUploads', [
-  '$scope', 
-  '$stateParams', 
+  '$scope',
+  '$stateParams',
   'UploadService',
   'users',
-  function($scope, 
+  function($scope,
            $stateParams,
            UploadService,
            users){
@@ -1022,4 +1022,3 @@ var employerViewUploads = employersController.controller('employerViewUploads', 
     });
   }
 ]);
-

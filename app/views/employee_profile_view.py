@@ -58,7 +58,7 @@ class EmployeeProfileByCompanyUserView(APIView):
             return EmployeeProfile.objects.get(person=person.id, company=company_id)
         except (Person.DoesNotExist, EmployeeProfile.DoesNotExist):
             raise Http404
-            
+
     def get(self, request, company_id, user_id, format=None):
         employee_profile = self._get_object(company_id, user_id)
         serializer = EmployeeProfileSerializer(employee_profile)

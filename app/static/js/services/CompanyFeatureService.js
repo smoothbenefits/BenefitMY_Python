@@ -2,7 +2,7 @@ var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory(
    'CompanyFeatureService',
-   ['$q', 'CompanyFeatureRepository', 
+   ['$q', 'CompanyFeatureRepository',
    function($q, CompanyFeatureRepository){
 
       var mapToViewModel = function(dataModel) {
@@ -15,7 +15,7 @@ benefitmyService.factory(
 
          return viewModel;
       };
-      
+
       var getDisabledCompanyFeatureByCompany = function(companyId) {
          var deferred = $q.defer();
 

@@ -1,130 +1,130 @@
 <div class="benefit-form-holder">
-    <form name="form" class="dynamic-form">
-        <div class="form-holder">
-            <div class="form-label">Benefit Type</div>
-            <div class="select-box">
-                <select id="benefit_type_select" 
-                    ng-model="benefit.benefit_type"
-                    ng-required="true"
-                    name="benefit_type"
-                    ng-options="benefit_type for benefit_type in benefit_types"
-                    class="form-control"
-                    ng-change="resetModel(benefit.benefit_type)"></select>
-                <div class="form-error" ng-show="form.benefit_type.$dirty">
-                  <span ng-show="form.benefit_type.$error.required">Benefit Type must be selected</span>
-                </div>
-            </div>
-            <div ng-show="benefitTypeSelected(benefit.benefit_type)">
-                <div class="form-label">Benefit Name</div>
-                <div class="textbox">
-                    <input type="text"
-                        name="benefit_name"
-                        ng-model="benefit.benefit_name"
-                        ng-required="true">
-                    <div class="form-error" ng-show="form.benefit_name.$dirty && form.benefit_name.$invalid">
-                      <span ng-show="form.benefit_name.$error.required">Benefit name field is required</span>
-                    </div>
-                </div>
-                <div class="row" ng-show="isTypeMedical(benefit.benefit_type)">
-                    <div class="form-label">This benefit plan requires PCP number?</div>
-                    <div class="col-sm-2" style="margin-bottom: 10px;">
-                        <input type="radio"
-                            data-ng-model="benefit.mandatory_pcp"
-                            name="mandatory_pcp"
-                            data-ng-value="true"
-                            ng-change="mandatoryPcpUpdated(benefit)"><span> Yes</span>
-                    </div>
-                    <div class="col-sm-2" style="margin-bottom: 10px;">
-                        <input type="radio"
-                            data-ng-model="benefit.mandatory_pcp"
-                            name="mandatory_pcp"
-                            data-ng-value="false"
-                            ng-change="mandatoryPcpUpdated(benefit)"><span> No</span>
-                    </div>
-                </div>
-                <div class="row" ng-show="benefit.mandatory_pcp">
-                    <div class="form-label">PCP Search Link</div>
-                    <div class="textbox">
-                        <input type="text"
-                            name="benefit_pcp_link"
-                            ng-model="benefit.pcp_link"
-                            ng-required="benefit.mandatory_pcp"
-                            ng-maxlength="2048"
-                            ng-change="setLink(benefit.pcp_link)">
-                        <div class="form-error" ng-show="form.benefit_pcp_link.$dirty && form.benefit_pcp_link.$error">
-                          <span ng-show="form.benefit_pcp_link.$error.required">PCP search link is required when PCP number is required</span>
-                          <span ng-show="form.benefit_pcp_link.$error.maxlength">PCP Search Link cannot be more this long</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- / .form-holder -->
-        <div ng-show="benefitTypeSelected(benefit.benefit_type)">
-            <div class="row">
-                <div class="table-responsive table-holder">
-                    <table class="table table-striped benefit-table" id="plan_option_table">
-                        <thead>
-                            <th><div>Benefit Plan Option</div></th>
-                            <th><div>Total Premium<br />(per month)</div></th>
-                            <th><div>Employee Premium<br />(per pay period)</div></th>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="option in benefit.benefit_option_types" b-option="{{option.name}}" ng-class="{'benefit-option-disabled': option.disabled}">
-                                <td>{{option.name}}<br/>
-                                    <a href="javascript:void(0);" ng-show="!option.disabled" ng-click="toggleBenefitOptionDisabled(option)">Disable</a>
-                                    <a href="javascript:void(0);" ng-show="option.disabled" ng-click="toggleBenefitOptionDisabled(option)">Enable</a></td>
-                                <td b-option="{{option.name}}" field-name="total" ng-disabled="option.disabled">
-                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" ng-keypress="changeInputKeyPress($event)" ng-blur="lostFocusNoBlankHandler($event)">
-                                </td>
-                                <td b-option="{{option.name}}" field-name="employee" ng-disabled="option.disabled">
-                                    $ <input type="number" ng-disabled="option.disabled" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" ng-keypress="changeInputKeyPress($event)" ng-blur="lostFocusNoBlankHandler($event)"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="row" ng-show="isTypeMedical(benefit.benefit_type)">
-                <div class="table-responsive table-holder">
-                    <table class="table table-striped benefit-table" id="details_container_table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div>
-                                        Benefit Options
-                                    </div>
-                                </th>
-                                <!-- existing types-->
-                                <th>
-                                    <div class="editable-container">
-                                        <a ng-click="handleElementEvent($event)">Add New Plan</a>
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="details_container_table_body">
-                            <tr ng-repeat="policyKey in policyKeyArray" option-key="{{policyKey.name}}">
-                                <td>{{policyKey.name}}</td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div ng-show="optionEmptyError" class="validation-error">
-                        * Benefit plan data is required. See highlighted input fields
-                    </div>
-                    <div ng-show="inputUnfilledError" class="validation-error">
-                        * Please fill out all the input fields because all these values are required.
-                    </div>
-                    <div ng-show="noPolicyTypeError" class="validation-error">
-                        * Please make sure you created a benefit option set. Please click on the "Add New Plan" link "
-                    </div>
-                </div>
-            </div>
-
-            <div class="submit-box">
-                <button ng-click="addBenefit()" class="btn green" ng-disabled="form.$invalid">Add Benefit</button>
-            </div>
+  <form name="form" class="dynamic-form">
+    <div class="form-holder">
+      <div class="form-label">Benefit Type</div>
+      <div class="select-box">
+        <select id="benefit_type_select"
+        ng-model="benefit.benefit_type"
+        ng-required="true"
+        name="benefit_type"
+        ng-options="benefit_type for benefit_type in benefit_types"
+        class="form-control"
+        ng-change="resetModel(benefit.benefit_type)"></select>
+        <div class="form-error" ng-show="form.benefit_type.$dirty">
+          <span ng-show="form.benefit_type.$error.required">Benefit Type must be selected</span>
         </div>
+      </div>
+      <div ng-show="benefitTypeSelected(benefit.benefit_type)">
+        <div class="form-label">Benefit Name</div>
+        <div class="textbox">
+          <input type="text"
+          name="benefit_name"
+          ng-model="benefit.benefit_name"
+          ng-required="true">
+          <div class="form-error" ng-show="form.benefit_name.$dirty && form.benefit_name.$invalid">
+            <span ng-show="form.benefit_name.$error.required">Benefit name field is required</span>
+          </div>
+        </div>
+        <div class="row" ng-show="isTypeMedical(benefit.benefit_type)">
+          <div class="form-label">This benefit plan requires PCP number?</div>
+          <div class="col-sm-2" style="margin-bottom: 10px;">
+            <input type="radio"
+            data-ng-model="benefit.mandatory_pcp"
+            name="mandatory_pcp"
+            data-ng-value="true"
+            ng-change="mandatoryPcpUpdated(benefit)"><span> Yes</span>
+          </div>
+          <div class="col-sm-2" style="margin-bottom: 10px;">
+            <input type="radio"
+            data-ng-model="benefit.mandatory_pcp"
+            name="mandatory_pcp"
+            data-ng-value="false"
+            ng-change="mandatoryPcpUpdated(benefit)"><span> No</span>
+          </div>
+        </div>
+        <div class="row" ng-show="benefit.mandatory_pcp">
+          <div class="form-label">PCP Search Link</div>
+          <div class="textbox">
+            <input type="text"
+            name="benefit_pcp_link"
+            ng-model="benefit.pcp_link"
+            ng-required="benefit.mandatory_pcp"
+            ng-maxlength="2048"
+            ng-change="setLink(benefit.pcp_link)">
+            <div class="form-error" ng-show="form.benefit_pcp_link.$dirty && form.benefit_pcp_link.$error">
+              <span ng-show="form.benefit_pcp_link.$error.required">PCP search link is required when PCP number is required</span>
+              <span ng-show="form.benefit_pcp_link.$error.maxlength">PCP Search Link cannot be more this long</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- / .form-holder -->
+    <div ng-show="benefitTypeSelected(benefit.benefit_type)">
+      <div class="row">
+        <div class="table-responsive table-holder">
+          <table class="table table-striped benefit-table" id="plan_option_table">
+            <thead>
+              <th><div>Benefit Plan Option</div></th>
+              <th><div>Total Premium<br />(per month)</div></th>
+              <th><div>Employee Premium<br />(per pay period)</div></th>
+            </thead>
+            <tbody>
+              <tr ng-repeat="option in benefit.benefit_option_types" b-option="{{option.name}}" ng-class="{'benefit-option-disabled': option.disabled}">
+                <td>{{option.name}}<br/>
+                  <a href="javascript:void(0);" ng-show="!option.disabled" ng-click="toggleBenefitOptionDisabled(option)">Disable</a>
+                  <a href="javascript:void(0);" ng-show="option.disabled" ng-click="toggleBenefitOptionDisabled(option)">Enable</a></td>
+                  <td b-option="{{option.name}}" field-name="total" ng-disabled="option.disabled">
+                    $ <input type="number" ng-disabled="option.disabled" placeholder="Total Premium" show-dollar="1" value="{{option.total_cost_per_period}}" ng-keypress="changeInputKeyPress($event)" ng-blur="lostFocusNoBlankHandler($event)">
+                  </td>
+                  <td b-option="{{option.name}}" field-name="employee" ng-disabled="option.disabled">
+                    $ <input type="number" ng-disabled="option.disabled" placeholder="Employee Premium" show-dollar="1" value="{{option.employee_cost_per_period}}" ng-keypress="changeInputKeyPress($event)" ng-blur="lostFocusNoBlankHandler($event)"/>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row" ng-show="isTypeMedical(benefit.benefit_type)">
+          <div class="table-responsive table-holder">
+            <table class="table table-striped benefit-table" id="details_container_table">
+              <thead>
+                <tr>
+                  <th>
+                    <div>
+                      Benefit Options
+                    </div>
+                  </th>
+                  <!-- existing types-->
+                  <th>
+                    <div class="editable-container">
+                      <a ng-click="handleElementEvent($event)">Add New Plan</a>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="details_container_table_body">
+                <tr ng-repeat="policyKey in policyKeyArray" option-key="{{policyKey.name}}">
+                  <td>{{policyKey.name}}</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+            <div ng-show="optionEmptyError" class="validation-error">
+              * Benefit plan data is required. See highlighted input fields
+            </div>
+            <div ng-show="inputUnfilledError" class="validation-error">
+              * Please fill out all the input fields because all these values are required.
+            </div>
+            <div ng-show="noPolicyTypeError" class="validation-error">
+              * Please make sure you created a benefit option set. Please click on the "Add New Plan" link "
+            </div>
+          </div>
+        </div>
+
+        <div class="submit-box">
+          <button ng-click="addBenefit()" class="btn green" ng-disabled="form.$invalid">Add Benefit</button>
+        </div>
+      </div>
     </form>
-</div>
+  </div>

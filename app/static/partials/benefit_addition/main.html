@@ -1,24 +1,24 @@
 <div class="breadcrumb">
-    <a href="#/clients">Broker Dashboard</a>
-    <a href="javascript:void(0);" ng-click="viewBenefits()">View Benefits</a>
-    <span>Add Benefit</span>
+  <a href="#/clients">Broker Dashboard</a>
+  <a href="javascript:void(0);" ng-click="viewBenefits()">View Benefits</a>
+  <span>Add Benefit</span>
 </div>
 
 <div class="content-header">
-    <h1>Add A New Benefit</h1>
-    <span class="general-info">Please use the form below to add a new benefit</span>
+  <h1>Add A New Benefit</h1>
+  <span class="general-info">Please use the form below to add a new benefit</span>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <tabset type="pills">
-                <tab ng-repeat="tab in section.tabs | orderBy:'tab.id'" heading="{{tab.verbose_name}}" active="tab.active" select="goToState(tab.state)" />
-            </tabset>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <tabset type="pills">
+        <tab ng-repeat="tab in section.tabs | orderBy:'tab.id'" heading="{{tab.verbose_name}}" active="tab.active" select="goToState(tab.state)" />
+      </tabset>
 
-            <div ui-view></div>
-        </div>
+      <div ui-view></div>
     </div>
+  </div>
 </div>
 
 <div class="back"><a href="javascript:void(0);" ng-click="viewBenefits()">&laquo; Back</a></div>

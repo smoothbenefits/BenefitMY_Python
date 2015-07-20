@@ -32,5 +32,5 @@ var homeUserController = benefitMyHomeControllers.controller('homeUserController
                 window.location = '/';
               });
         }
-    }                                                             
+    }
 ]);

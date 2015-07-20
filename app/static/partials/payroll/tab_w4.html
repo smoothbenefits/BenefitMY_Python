@@ -1,21 +1,21 @@
 <!-- Here is the info table for the employee details -->
 <div class="row">
-    <div class="col-md-10 col-md-offset-1">
-        <div class='panel'>
-            <div class="panel-body">
-                <ul class="list-group">
-                    <li class="list-group-item" ng-if="field.value != null" ng-repeat="field in fields | orderBy: field.id">
-                        <h4 class="col-md-6"> {{field.display_name}}</h4>
-                        <div class="col-md-6 text-center">
-                            {{field.value}}
-                        </div>
-                        <div style="clear:both"></div>
-                    </li>
-                </ul>
+  <div class="col-md-10 col-md-offset-1">
+    <div class='panel'>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item" ng-if="field.value != null" ng-repeat="field in fields | orderBy: field.id">
+            <h4 class="col-md-6"> {{field.display_name}}</h4>
+            <div class="col-md-6 text-center">
+              {{field.value}}
             </div>
-        </div>
+            <div style="clear:both"></div>
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
 </div>
 <div class="row">
-    <div class="cta col-md-2 col-md-offset-5"><a ng-click="editW4()" class="btn green" >Edit W4</a></div>
+  <div class="cta col-md-2 col-md-offset-5"><a ng-click="editW4()" class="btn green" >Edit W4</a></div>
 </div>

@@ -21,4 +21,3 @@ class TemplateSerializer(HashPkSerializerBase):
     class Meta:
         model = Template
         fields = ("id", "company", "document_type", "name", "content", "fields")
-

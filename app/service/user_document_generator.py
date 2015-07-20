@@ -13,7 +13,7 @@ from app.service.template_service import TemplateService
 
 
 class UserDocumentGenerator(object):
-    '''This is a service class to help auto generate all documents 
+    '''This is a service class to help auto generate all documents
     for a specific user based on context information'''
     def __init__(self, company, user):
         self.user = user
@@ -75,7 +75,7 @@ class UserDocumentGenerator(object):
             if not content:
                 # We cannot find the proper template, skip
                 continue
-            doc_name = "{} for employee".format(d_type.name) 
+            doc_name = "{} for employee".format(d_type.name)
             content = self.template_service.populate_content_with_field_values(content, field_values)
             #Create a new document based on type
             doc = Document(company_id=self.company.id,
@@ -84,5 +84,5 @@ class UserDocumentGenerator(object):
                            name=doc_name,
                            content=content,
                            signature=None
-                          ) 
+                          )
             doc.save()

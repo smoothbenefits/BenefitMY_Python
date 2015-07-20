@@ -16,4 +16,3 @@ class UserCompanyWaivedBenefitSerializer(HashPkSerializerBase):
 
     class Meta:
         model = UserCompanyWaivedBenefit
-

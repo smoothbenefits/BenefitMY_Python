@@ -1,84 +1,84 @@
 <div class="modal-header">
-    <h4 class="modal-title">View Family</h4>
+  <h4 class="modal-title">View Family</h4>
 </div>
 <div class="modal-body">
-    <ul class="list-group">
-        <li class="list-group-item">
-            <h4 class="col-md-5">
-                First Name
-            </h4>
-            <div class="col-md-7">
-                {{member.first_name}}
-            </div>
-            <div style="clear:both"></div>
-        </li>
-        <li class="list-group-item">
-            <h4 class="col-md-5">
-                Last Name
-            </h4>
-            <div class="col-md-7">
-                {{member.last_name}}
-            </div>
-            <div style="clear:both"></div>
-        </li>
-        <li class="list-group-item">
-            <h4 class="col-md-5">
-                Relationship
-            </h4>
-            <div class="col-md-7">
-                {{member.relationship}}
-            </div>
-            <div style="clear:both"></div>
-        </li>
-        <li class="list-group-item" ng-if='member.birth_date'>
-            <h4 class="col-md-5">
-                 Date of Birth
-            </h4>
-            <div class="col-md-7">
-                {{member.birth_date}}
-            </div>
-            <div style="clear:both"></div>
-        </li>
-        <li class="list-group-item" ng-if='member.gender'>
-            <h4 class="col-md-5">
-                 Gender
-            </h4>
-            <div class="col-md-7">
-                {{member.gender}}
-            </div>
-            <div style="clear:both"></div>
-        </li>
-        <li class="list-group-item" ng-if="member.email">
-            <h4 class="col-md-5">
-                Email
-            </h4>
-            <div class="col-md-7">
-                {{member.email}}
-            </div>
-            <div style="clear:both"></div>
-        </li>
-        <li class="list-group-item" ng-repeat="phone in member.phones">
-            <h4 class="col-md-5">
-                {{phone.phone_type.capitalize()}} Phone
-            </h4>
-            <div class="col-md-7">
-                {{phone.number}}
-            </div>
-            <div style="clear:both"></div>
-        </li>
-        <li class="list-group-item" ng-repeat="address in member.addresses">
-            <h4 class="col-md-5">
-                {{address.address_type.capitalize()}} Address
-            </h4>
-            <div class="col-md-7">
-                {{address.street_1}} {{address.street_2}} <br />
-                {{address.city}}, {{address.state}} {{address.zipcode}}
-            </div>
-            <div style="clear:both"></div>
-        </li>
-    </ul>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <h4 class="col-md-5">
+        First Name
+      </h4>
+      <div class="col-md-7">
+        {{member.first_name}}
+      </div>
+      <div style="clear:both"></div>
+    </li>
+    <li class="list-group-item">
+      <h4 class="col-md-5">
+        Last Name
+      </h4>
+      <div class="col-md-7">
+        {{member.last_name}}
+      </div>
+      <div style="clear:both"></div>
+    </li>
+    <li class="list-group-item">
+      <h4 class="col-md-5">
+        Relationship
+      </h4>
+      <div class="col-md-7">
+        {{member.relationship}}
+      </div>
+      <div style="clear:both"></div>
+    </li>
+    <li class="list-group-item" ng-if='member.birth_date'>
+      <h4 class="col-md-5">
+        Date of Birth
+      </h4>
+      <div class="col-md-7">
+        {{member.birth_date}}
+      </div>
+      <div style="clear:both"></div>
+    </li>
+    <li class="list-group-item" ng-if='member.gender'>
+      <h4 class="col-md-5">
+        Gender
+      </h4>
+      <div class="col-md-7">
+        {{member.gender}}
+      </div>
+      <div style="clear:both"></div>
+    </li>
+    <li class="list-group-item" ng-if="member.email">
+      <h4 class="col-md-5">
+        Email
+      </h4>
+      <div class="col-md-7">
+        {{member.email}}
+      </div>
+      <div style="clear:both"></div>
+    </li>
+    <li class="list-group-item" ng-repeat="phone in member.phones">
+      <h4 class="col-md-5">
+        {{phone.phone_type.capitalize()}} Phone
+      </h4>
+      <div class="col-md-7">
+        {{phone.number}}
+      </div>
+      <div style="clear:both"></div>
+    </li>
+    <li class="list-group-item" ng-repeat="address in member.addresses">
+      <h4 class="col-md-5">
+        {{address.address_type.capitalize()}} Address
+      </h4>
+      <div class="col-md-7">
+        {{address.street_1}} {{address.street_2}} <br />
+        {{address.city}}, {{address.state}} {{address.zipcode}}
+      </div>
+      <div style="clear:both"></div>
+    </li>
+  </ul>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary green left" ng-click="edit()">Edit</button>
-    <button class="btn btn-primary right" ng-click="ok()">OK</button>
+  <button class="btn btn-primary green left" ng-click="edit()">Edit</button>
+  <button class="btn btn-primary right" ng-click="ok()">OK</button>
 </div>

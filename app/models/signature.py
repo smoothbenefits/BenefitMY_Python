@@ -7,7 +7,7 @@ from app.custom_authentication import AuthUser
 class Signature(models.Model):
     signature = models.TextField()
     signature_type = models.CharField(max_length=10)
-    user = models.ForeignKey(AuthUser, 
+    user = models.ForeignKey(AuthUser,
                              related_name="signature",
                              blank=True,
                              null=True)

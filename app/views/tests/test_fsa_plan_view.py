@@ -43,7 +43,7 @@ class FsaTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['detail'], 'Not found')
 
     def test_post_fsa(self):
-        dd_data = {"name": "New FSA", 
+        dd_data = {"name": "New FSA",
                    "broker_user": 4}
 
         response = self.client.post(reverse('broker_fsa_api', kwargs={'pk': self.normalize_key(4)}),

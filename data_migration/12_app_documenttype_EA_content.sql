@@ -3,11 +3,11 @@ set default_content = 'This Employment Agreement is entered into as of the date 
 In consideration of the mutual promises and covenants set forth herein, and other good and valuable consideration, the sufficiency of which is hereby acknowledged, {{CompanyName}} and Employee hereby agree as follows:
 1 Position of Employment. The Company will employ the Employee in the position of {{EmployeeTitle}} of the Company.  {{CompanyName}} retains the right to change Employee''s title, duties, and reporting relationships as may be determined to be in the best interests of the Company; provided, however, that any such change in Employee''s duties shall be consistent with Employee''s training, experience, and qualifications.
 
-The terms and conditions of the Employee''s employment shall, to the extent not addressed or described in this Employment Agreement, be governed by {{CompanyName}}''s Policies and Procedures Manual and existing practices. In the event of a conflict between this Employment Agreement and the Policies and Procedures Manual or existing practices, the terms of this Agreement shall govern. 
+The terms and conditions of the Employee''s employment shall, to the extent not addressed or described in this Employment Agreement, be governed by {{CompanyName}}''s Policies and Procedures Manual and existing practices. In the event of a conflict between this Employment Agreement and the Policies and Procedures Manual or existing practices, the terms of this Agreement shall govern.
 
 2 Term of Employment. Employee''s employment with {{CompanyName}} Company shall begin on {{EmployeeStartDate}} and the time continued employment shall be on an "at will" basis, unless:
 
-    a. Employee''s employment is terminated by either party in accordance with the terms of Section 5 of this Employment Agreement; or 
+    a. Employee''s employment is terminated by either party in accordance with the terms of Section 5 of this Employment Agreement; or
 
     b. Such term of employment is extended or shortened by a subsequent agreement duly executed by each of the parties to this Employment Agreement, in which case such employment shall be subject to the terms and conditions contained in the subsequent written agreement.
 
@@ -63,7 +63,7 @@ The terms and conditions of the Employee''s employment shall, to the extent not 
 
     e. Waiver of Rights. No waiver by {{CompanyName}} Company or Employee of a right or remedy hereunder shall be deemed to be a waiver of any other right or remedy or of any subsequent right or remedy of the same kind.
 
-    f. Definitions; Headings; and Number. A term defined in any part of this Employment Agreement shall have the defined meaning wherever such term is used herein. The headings contained in this Agreement are for reference purposes only and shall not affect in any manner the meaning or interpretation of this Employment Agreement. Where appropriate to the context of this Agreement, use of the singular shall be deemed also to refer to the plural, and use of the plural to the singular. 
+    f. Definitions; Headings; and Number. A term defined in any part of this Employment Agreement shall have the defined meaning wherever such term is used herein. The headings contained in this Agreement are for reference purposes only and shall not affect in any manner the meaning or interpretation of this Employment Agreement. Where appropriate to the context of this Agreement, use of the singular shall be deemed also to refer to the plural, and use of the plural to the singular.
 
     g. Counterparts. This Agreement may be executed in separate counterparts, each of which shall be deemed an original but both of which taken together shall constitute but one and the same instrument.
 
@@ -73,6 +73,6 @@ IN WITNESS WHEREOF, {{CompanyName}} Company and Employee have executed and deliv
 _________________________
 {{EmployeeName}}
 
-{{CompanyName}} 
+{{CompanyName}}
 {{CompanyHRManagerName}}'
 where name='Employment Agreement';

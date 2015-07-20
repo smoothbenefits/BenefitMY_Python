@@ -14,7 +14,7 @@ benefitmyService.factory('BenefitPolicyKeyService',
             BenefitPolicyKeyRepository.query().$promise.then(
                 function(data) {
                    _benefitPolicyKeys = data;
-                   deferred.resolve(_benefitPolicyKeys); 
+                   deferred.resolve(_benefitPolicyKeys);
                 },
                 function(data){
                     deferred.reject(data);

@@ -1,118 +1,118 @@
 <div class="breadcrumb">
-    <a ng-href="#/admin">Employer Dashboard</a>
-    <span>Add Employee</span>
+  <a ng-href="#/admin">Employer Dashboard</a>
+  <span>Add Employee</span>
 </div>
 
 
 <div class="content-header">
-    <h1>Add Employee</h1>
-    <span class="general-info">Please enter your employee basic information below</span>
+  <h1>Add Employee</h1>
+  <span class="general-info">Please enter your employee basic information below</span>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="form-holder">
-        <form name="form">
-            <div ng-show="alreadyExists" class="form-validation-error">
-                The user with email "{{addUser.email}}" already exists in our system!
-                Please check if your email has been used to register an account before.  
-                An email is only allowed to register once. 
-            </div>
-            <div ng-show="addError" class="form-validation-error">
-                We are sorry but error happened while trying to add the employee. Please email 
-                <a href="mailto:support@benefitmy.com?subject=Add%20Employee%20Error">support@benefitmy.com</a> 
-                with detailed steps you've performed before seeing this problem.
-            </div>
-            <div class="form-label">First Name*</div>
-            <div class="textbox">
-                <input type="text"
-                    name="employee_firstname"
-                    ng-model="addUser.first_name"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.employee_firstname.$dirty && form.employee_firstname.$invalid">
-                  <span ng-show="form.employee_firstname.$error.required">Employee First name field is required</span>
-                </div>
-            </div>
-            <div class="form-label">Last Name*</div>
-            <div class="textbox">
-                <input type="text"
-                    name="employee_lastname"
-                    ng-model="addUser.last_name"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.employee_lastname.$dirty && form.employee_lastname.$invalid">
-                  <span ng-show="form.employee_lastname.$error.required">Employee Last name field is required</span>
-                </div>
-            </div>
+  <div class="form-holder">
+    <form name="form">
+      <div ng-show="alreadyExists" class="form-validation-error">
+        The user with email "{{addUser.email}}" already exists in our system!
+        Please check if your email has been used to register an account before.
+        An email is only allowed to register once.
+      </div>
+      <div ng-show="addError" class="form-validation-error">
+        We are sorry but error happened while trying to add the employee. Please email
+        <a href="mailto:support@benefitmy.com?subject=Add%20Employee%20Error">support@benefitmy.com</a>
+        with detailed steps you've performed before seeing this problem.
+      </div>
+      <div class="form-label">First Name*</div>
+      <div class="textbox">
+        <input type="text"
+        name="employee_firstname"
+        ng-model="addUser.first_name"
+        ng-required="true">
+        <div class="form-error" ng-show="form.employee_firstname.$dirty && form.employee_firstname.$invalid">
+          <span ng-show="form.employee_firstname.$error.required">Employee First name field is required</span>
+        </div>
+      </div>
+      <div class="form-label">Last Name*</div>
+      <div class="textbox">
+        <input type="text"
+        name="employee_lastname"
+        ng-model="addUser.last_name"
+        ng-required="true">
+        <div class="form-error" ng-show="form.employee_lastname.$dirty && form.employee_lastname.$invalid">
+          <span ng-show="form.employee_lastname.$error.required">Employee Last name field is required</span>
+        </div>
+      </div>
 
-            <div class="form-label">Email*</div>
-            <div class="textbox">
-                <input type="email"
-                    name="employee_email"
-                    ng-model="addUser.email"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.employee_email.$dirty && form.employee_email.$invalid">
-                  <span ng-show="form.employee_email.$error.required">Employee email field is required</span>
-                  <span ng-show="form.employee_email.$error.email">Not a valid email address</span>
-                </div>
-            </div>
+      <div class="form-label">Email*</div>
+      <div class="textbox">
+        <input type="email"
+        name="employee_email"
+        ng-model="addUser.email"
+        ng-required="true">
+        <div class="form-error" ng-show="form.employee_email.$dirty && form.employee_email.$invalid">
+          <span ng-show="form.employee_email.$error.required">Employee email field is required</span>
+          <span ng-show="form.employee_email.$error.email">Not a valid email address</span>
+        </div>
+      </div>
 
-            <div class="form-label">Annual Base Salary*</div>
-            <div class="textbox input-group">
-                <span class="input-group-addon">$</span>
-                <input type="number"
-                    name="employee_salary"
-                    ng-model="addUser.annual_base_salary"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.employee_salary.$dirty && form.employee_salary.$invalid">
-                  <span ng-show="form.employee_email.$error.required">Annual base salary is required</span>
-                </div>
-            </div>
-            
-           <div class="checkbox">
-                <label>
-                    <input type="checkbox"
-                        name="is_employee_new"
-                        ng-model="addUser.new_employee"
-                        ng-require="false">
-                        New Employee
-                </label>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"
-                        name="employee_send_email"
-                        ng-model="addUser.send_email"
-                        ng-require="false">
-                    Send email to Employee to sign up
-                </label>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"
-                        name="employee_create_docs"
-                        ng-model="addUser.create_docs"
-                        ng-require="false"/>
-                    Auto create all documents
-                </label>
-            </div>
-            <div class="template-field-section" ng-show="addUser.create_docs">
-                Fill out the fields below, so we can create all the documents
-                <div ng-repeat="field in templateFields">
-                    <div class="form-label">
-                        {{field.key}}
-                    </div>
-                    <div class="textbox">
-                        <input type="text"
-                            name="{{field.value}}"
-                            ng-model="field.value"
-                            ng-required="addUser.create_docs">
-                    </div>
-                </div>
-            </div>
-            <div class="submit-box">
-                <button ng-click="createUser('employee')" class="btn green" ng-disabled="form.$invalid">Add Employee</button>
-            </div>
+      <div class="form-label">Annual Base Salary*</div>
+      <div class="textbox input-group">
+        <span class="input-group-addon">$</span>
+        <input type="number"
+        name="employee_salary"
+        ng-model="addUser.annual_base_salary"
+        ng-required="true">
+        <div class="form-error" ng-show="form.employee_salary.$dirty && form.employee_salary.$invalid">
+          <span ng-show="form.employee_email.$error.required">Annual base salary is required</span>
+        </div>
+      </div>
 
-        </form>
-    </div><!-- / .form-holder -->
-    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"
+          name="is_employee_new"
+          ng-model="addUser.new_employee"
+          ng-require="false">
+          New Employee
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"
+          name="employee_send_email"
+          ng-model="addUser.send_email"
+          ng-require="false">
+          Send email to Employee to sign up
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"
+          name="employee_create_docs"
+          ng-model="addUser.create_docs"
+          ng-require="false"/>
+          Auto create all documents
+        </label>
+      </div>
+      <div class="template-field-section" ng-show="addUser.create_docs">
+        Fill out the fields below, so we can create all the documents
+        <div ng-repeat="field in templateFields">
+          <div class="form-label">
+            {{field.key}}
+          </div>
+          <div class="textbox">
+            <input type="text"
+            name="{{field.value}}"
+            ng-model="field.value"
+            ng-required="addUser.create_docs">
+          </div>
+        </div>
+      </div>
+      <div class="submit-box">
+        <button ng-click="createUser('employee')" class="btn green" ng-disabled="form.$invalid">Add Employee</button>
+      </div>
+
+    </form>
+  </div><!-- / .form-holder -->
+  <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
 </div><!-- / .content-body -->

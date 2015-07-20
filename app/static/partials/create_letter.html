@@ -1,51 +1,51 @@
 <div class="breadcrumb">
-    <a ng-href="#/admin">Employer Dashboard</a>
-    <a ng-href="#/admin/employee/{{companyId}}">View Employee</a>
-    <span>Create {{documentType}}</span>
+  <a ng-href="#/admin">Employer Dashboard</a>
+  <a ng-href="#/admin/employee/{{companyId}}">View Employee</a>
+  <span>Create {{documentType}}</span>
 </div>
 
 <div class="content-header">
-    <h1>Create {{documentType}}</h1>
-    <span class="general-info">HR {{documentType}} Generation</span>
+  <h1>Create {{documentType}}</h1>
+  <span class="general-info">HR {{documentType}} Generation</span>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="form-holder">
-        <form name="form">
+  <div class="form-holder">
+    <form name="form">
 
-            <div class="form-label">Document Name*</div>
-            <div class="textbox">
-                <input type="text"
-                    ng-required="true"
-                    ng-model="newDoc.name"
-                    name="document_name">
-            </div>
+      <div class="form-label">Document Name*</div>
+      <div class="textbox">
+        <input type="text"
+        ng-required="true"
+        ng-model="newDoc.name"
+        name="document_name">
+      </div>
 
-            <div class="form-label">Select Template</div>
-            <div class="select-box">
-                <select name="templateSelect"
-                    ng-required="true"
-                    ng-options="template.name for template in templateArray"
-                    ng-model="selectedTemplate"
-                    class="form-control">
-                </select>
-            </div>
+      <div class="form-label">Select Template</div>
+      <div class="select-box">
+        <select name="templateSelect"
+        ng-required="true"
+        ng-options="template.name for template in templateArray"
+        ng-model="selectedTemplate"
+        class="form-control">
+      </select>
+    </div>
 
-            <div ng-repeat="field in getTemplateFields(selectedTemplate)">
-                <div class="form-label">{{field.name}}</div>
-                <div class="textbox">
-                    <input type="text"
-                        ng-required="true"
-                        ng-model="field.value"
-                        name="field_{{field.name}}">
-                </div>
-            </div>
+    <div ng-repeat="field in getTemplateFields(selectedTemplate)">
+      <div class="form-label">{{field.name}}</div>
+      <div class="textbox">
+        <input type="text"
+        ng-required="true"
+        ng-model="field.value"
+        name="field_{{field.name}}">
+      </div>
+    </div>
 
-            <div class="submit-box">
-                <button ng-click="doCreateLetter()" class="btn green" ng-disabled="form.$invalid">Create Letter</button>
-            </div>
+    <div class="submit-box">
+      <button ng-click="doCreateLetter()" class="btn green" ng-disabled="form.$invalid">Create Letter</button>
+    </div>
 
-        </form>
-    </div><!-- / .form-holder -->
-    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+  </form>
+</div><!-- / .form-holder -->
+<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
 </div><!-- / .content-body -->

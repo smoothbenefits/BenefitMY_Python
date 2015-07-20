@@ -49,7 +49,7 @@ class UserCompanyWaivedBenefitView(APIView):
                 w.save()
             return Response({'Success':'true'})
         else:
-            return Response({'Success':'false', 'error': 'the request do not have \'company\' field specified'}, 
+            return Response({'Success':'false', 'error': 'the request do not have \'company\' field specified'},
                             status=status.HTTP_400_BAD_REQUEST)
 
 class CompanyWaivedBenefitView(APIView):

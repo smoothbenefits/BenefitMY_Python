@@ -1,6 +1,6 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('BasicLifeInsuranceService', 
+benefitmyService.factory('BasicLifeInsuranceService',
   ['BasicLifeInsurancePlanRepository',
    'CompanyBasicLifeInsurancePlanRepository',
    'CompanyUserBasicLifeInsurancePlanRepository',
@@ -73,7 +73,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
           CompanyUserBasicLifeInsurancePlanRepository.ByUser.query({userId: userId})
           .$promise.then(
             function(response){
-              planEnrollments = _.find(response, 
+              planEnrollments = _.find(response,
                 function(plan){ return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';}
               );
 
@@ -102,9 +102,9 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
               //If we have the salary multiplier, we need to figure that out.
               if(planEnrollments.enrolled &&
-                 !planEnrollments.company_life_insurance.insurance_amount && 
+                 !planEnrollments.company_life_insurance.insurance_amount &&
                  _.isNumber(planEnrollments.company_life_insurance.salary_multiplier)){
-                
+
                 getInsuranceAmountBasedOnSalary(planEnrollments.company_life_insurance.company, userId, planEnrollments)
                 .then(function(enrolledPlan){
                   deferred.resolve(enrolledPlan);
@@ -119,7 +119,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
             });
         }
       });
-      
+
       return deferred.promise;
     };
 
@@ -139,7 +139,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
             , function (successResponse) {
                 if (successCallBack) {
                   successCallBack(successResponse);
-                }  
+                }
               }
             , function(errorResponse) {
                 if (errorCallBack) {
@@ -148,12 +148,12 @@ benefitmyService.factory('BasicLifeInsuranceService',
           });
         }
         else {
-          // Existing, PUT it 
+          // Existing, PUT it
           BasicLifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave
             , function (successResponse) {
                 if (successCallBack) {
                   successCallBack(successResponse);
-                }  
+                }
               }
             , function(errorResponse) {
                 if (errorCallBack) {
@@ -168,7 +168,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
           , function (successResponse) {
                 if (successCallBack) {
                   successCallBack(successResponse);
-                }  
+                }
               }
             , function(errorResponse) {
                 if (errorCallBack) {
@@ -203,9 +203,9 @@ benefitmyService.factory('BasicLifeInsuranceService',
       enrollCompanyForBasicLifeInsurancePlan: function(basicLife, companyBasicLife) {
         var deferred = $q.defer();
 
-        var linkToSave = { 
-          "company": companyBasicLife.companyId, 
-          "life_insurance_plan": basicLife.id, 
+        var linkToSave = {
+          "company": companyBasicLife.companyId,
+          "life_insurance_plan": basicLife.id,
           "insurance_amount": companyBasicLife.amount,
           "salary_multiplier": companyBasicLife.multiplier,
           "total_cost_per_period": companyBasicLife.totalCost,
@@ -214,7 +214,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
         CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
-              deferred.resolve(successResponse); 
+              deferred.resolve(successResponse);
             }
           , function(errorResponse) {
               deferred.reject(errorResponse);
@@ -229,7 +229,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
           , function (successResponse) {
               if (successCallBack) {
                 successCallBack(successResponse);
-              }  
+              }
             }
           , function(errorResponse) {
               if (errorCallBack) {
@@ -245,7 +245,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
             function (successResponse) {
               if (successCallBack) {
                 successCallBack(successResponse);
-              }  
+              }
             },
             function(errorResponse) {
               if (errorCallBack) {
@@ -281,7 +281,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
               planToSave.life_insurance_beneficiary.push(beneficiary);
             });
           }
-          
+
           if (basicLifeToSave.life_insurance_contingent_beneficiary){
             _.each(basicLifeToSave.life_insurance_contingent_beneficiary, function(beneficiary){
               beneficiary.tier = "2";
@@ -298,7 +298,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
                   if (successCallBack) {
                     successCallBack(response);
                   }
-                }, 
+                },
                 function(response){
                   errorCallBack(response);
                 });
@@ -309,7 +309,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
                   if (successCallBack) {
                     successCallBack(response);
                   }
-                }, 
+                },
                 function(response){
                   errorCallBack(response);
                 });
@@ -323,7 +323,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
         CompanyUserBasicLifeInsurancePlanRepository.ByUser.query({userId:userId})
           .$promise.then(function(plans){
             _.each(plans, function(plan){
-              if (plan.company_life_insurance.life_insurance_plan 
+              if (plan.company_life_insurance.life_insurance_plan
                   && plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic'){
                 CompanyUserBasicLifeInsurancePlanRepository.ById.delete({id: plan.id});
               }
@@ -338,6 +338,6 @@ benefitmyService.factory('BasicLifeInsuranceService',
             }
           });
       }
-    }; 
+    };
   }
 ]);
