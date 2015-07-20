@@ -121,11 +121,17 @@ benefitmyService.factory(
           .$promise.then(function(existingFsa){
 
             var userFsa = existingFsa;
-
-            userFsa.primary_amount_per_year = parseFloat(userFsa.primary_amount_per_year);
-            userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
+            userFsa.selected = true;
             userFsa.last_update_date_time = moment(userFsa.updated_at).format(DATE_FORMAT_STRING);
-            userFsa.enrolled = true;
+
+            if (userFsa.company_fsa_plan) {
+              userFsa.primary_amount_per_year = parseFloat(userFsa.primary_amount_per_year);
+              userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
+              userFsa.waived = false;
+            } else {
+              userFsa.waived = true;
+            }
+
             deferred.resolve(userFsa);
           },
           function(failedResponse){
@@ -135,7 +141,8 @@ benefitmyService.factory(
                 user:user_id,
                 primary_amount_per_year:0,
                 dependent_amount_per_year:0,
-                enrolled:false
+                selected: false,
+                waived: false
               };
               deferred.resolve(shellFsa);
             }

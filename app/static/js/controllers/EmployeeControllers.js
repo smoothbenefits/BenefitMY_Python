@@ -1519,18 +1519,19 @@ var fsaBenefitsSignup = employeeControllers.controller(
 
         // FSA election data
         $scope.fsaUpdateReasons = [
-          { text: '<Not making updates>', value: 0 },
-          { text: 'New Enrollment or annual enrollment changes', value: 1 },
-          { text: 'Dependent care cost provider changes', value: 2 },
-          { text: 'Dependent satisfies or ceases to satisfy dependent eligibility requirements', value: 3 },
-          { text: 'Birth/Death of spouse or dependent, adoption or placement for adoption', value: 4 },
-          { text: 'Spouse\'s employment commenced/terminated', value: 5 },
-          { text: 'Status change from full-time to part-time or vice versa by employee or spouse', value: 6 },
-          { text: 'Eligibility or Ineligibility of Medicare/Medicaid', value: 7 },
-          { text: 'Change from salaried to hourly or vice versa', value: 8 },
-          { text: 'Marriage/Divorce/Legal Separation', value: 9 },
-          { text: 'Unpaid leave of absence by employee or spouse', value: 10 },
-          { text: 'Return from unpaid leave of absence by employee or spouse', value: 11 }
+          { text: 'Please make a selection...', value: 0 },
+          { text: 'Waive FSA plan', value: 1 },
+          { text: 'New Enrollment or annual enrollment changes', value: 2 },
+          { text: 'Dependent care cost provider changes', value: 3 },
+          { text: 'Dependent satisfies or ceases to satisfy dependent eligibility requirements', value: 4 },
+          { text: 'Birth/Death of spouse or dependent, adoption or placement for adoption', value: 5 },
+          { text: 'Spouse\'s employment commenced/terminated', value: 6 },
+          { text: 'Status change from full-time to part-time or vice versa by employee or spouse', value: 7 },
+          { text: 'Eligibility or Ineligibility of Medicare/Medicaid', value: 8 },
+          { text: 'Change from salaried to hourly or vice versa', value: 9 },
+          { text: 'Marriage/Divorce/Legal Separation', value: 10 },
+          { text: 'Unpaid leave of absence by employee or spouse', value: 11 },
+          { text: 'Return from unpaid leave of absence by employee or spouse', value: 12 }
         ];
 
         $scope.companyIdPromise.then(function(companyId) {
@@ -1557,6 +1558,10 @@ var fsaBenefitsSignup = employeeControllers.controller(
           return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value > 0;
         };
 
+        $scope.waivedFsa = function() {
+          return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value === 1;
+        };
+
         $scope.openPlanDetailsModal = function(){
           $scope.fsaPlanModal = $scope.fsaPlan;
           $modal.open({
@@ -1572,22 +1577,30 @@ var fsaBenefitsSignup = employeeControllers.controller(
           if ($scope.isFsaUpdateReasonSelected()){
             $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
             $scope.fsaElection.company_fsa_plan = $scope.fsaPlan.companyPlanId;
-            FsaService.saveFsaElection($scope.fsaElection, $scope.updateReason
-              , function() {
-                    var modalInstance = $scope.showSaveSuccessModal();
-                    modalInstance.result.then(function(){
-                        $scope.transitionToNextTab($scope.tabs);
-                    });
-                    $scope.myForm.$setPristine();
-              }
-              , function() {
-                  $scope.savedSuccess = false;
-              });
           }
+
+          // Set values to NULL if user chooses to waive FSA plan
+          if ($scope.selectedFsaUpdateReason.value === 1) {
+            $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
+            $scope.fsaElection.company_fsa_plan = null;
+            $scope.fsaElection.primary_amount_per_year = null;
+            $scope.fsaElection.dependent_amount_per_year = null;
+          }
+
+          FsaService.saveFsaElection($scope.fsaElection, $scope.updateReason
+            , function() {
+                  var modalInstance = $scope.showSaveSuccessModal();
+                  modalInstance.result.then(function(){
+                      $scope.transitionToNextTab($scope.tabs);
+                  });
+                  $scope.myForm.$setPristine();
+            }
+            , function() {
+                $scope.savedSuccess = false;
+            });
         };
 
         $scope.benefit_type = 'FSA'
-
     }]);
 
 var basicLifeBenefitsSignup = employeeControllers.controller(
@@ -2275,6 +2288,14 @@ var benefitSignupSummary = employeeControllers.controller(
 
          return ($scope.enrollments[benefitType].status === 'SELECTED' ||
              $scope.enrollments[benefitType].status === 'WAIVED');
+       };
+
+       $scope.waived = function(benefitType) {
+         if (!$scope.enrollments) {
+           return false;
+         }
+
+         return $scope.enrollments[benefitType].status === 'WAIVED';
        };
 
        // Update panel class based on benefit enrollment status

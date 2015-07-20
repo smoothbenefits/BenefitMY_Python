@@ -113,6 +113,11 @@ benefitmyService.factory('BenefitSummaryService',
           "dependent_amount_per_year": domainFsa.dependent_amount_per_year,
           "update_reason": domainFsa.update_reason
         };
+        if (domainFsa.company_fsa_plan){
+          viewModel['fsa'].status = SELECTED;
+        } else {
+          viewModel['fsa'].status = WAIVED;
+        }
       }
 
       return viewModel;

@@ -457,10 +457,16 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         fsas = FSA.objects.filter(user=employee_user_id)
         if (len(fsas) > 0):
             fsa = fsas[0]
-            col_num = self._write_field(excelSheet, row_num, col_num, fsa.primary_amount_per_year)
-            col_num = self._write_field(excelSheet, row_num, col_num, fsa.dependent_amount_per_year)
-            col_num = self._write_employee_benefit_record_reason(fsa, excelSheet, row_num, col_num)
-            return col_num
+            if (fsa.company_fsa_plan):
+                col_num = self._write_field(excelSheet, row_num, col_num, fsa.primary_amount_per_year)
+                col_num = self._write_field(excelSheet, row_num, col_num, fsa.dependent_amount_per_year)
+                col_num = self._write_employee_benefit_record_reason(fsa, excelSheet, row_num, col_num)
+                return col_num
+            else:
+                col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
+                col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
+                col_num = self._write_employee_benefit_record_reason(fsa, excelSheet, row_num, col_num)
+                return col_num
 
         return col_num + 5
 

@@ -128,6 +128,14 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         self._start_new_line()
         self._start_new_line()
 
+    def _write_waived_plan(self, benefit_name):
+        #Render header
+        self._write_line_uniform_width([benefit_name])
+        self._draw_line()
+        self._write_line_uniform_width(['Waived'])
+        self._start_new_line()
+        self._start_new_line()
+
     def _write_employee_all_health_benefits_info(self, user_model, company_id):
         user_benefit_plan_options = UserCompanyBenefitPlanOption.objects.filter(user=user_model.id)
         user_benefit_waived = UserCompanyWaivedBenefit.objects.filter(user=user_model.id)
@@ -337,17 +345,19 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         fsas = FSA.objects.filter(user=user_model.id)
         company_plans = CompanyFsaPlan.objects.filter(company=company_id)
         if (len(fsas) > 0):
-            # Render header
-            self._write_line_uniform_width(['Account Type', 'Elected Annual Amount'])
-            self._draw_line()
-
             fsa = fsas[0]
+            if (fsa.company_fsa_plan):
+                # Render header
+                self._write_line_uniform_width(['Account Type', 'Elected Annual Amount'])
+                self._draw_line()
 
-            self._write_line_uniform_width(['Health Account', fsa.primary_amount_per_year])
-            self._write_line_uniform_width(['Dependent Care Account', fsa.dependent_amount_per_year])
+                self._write_line_uniform_width(['Health Account', fsa.primary_amount_per_year])
+                self._write_line_uniform_width(['Dependent Care Account', fsa.dependent_amount_per_year])
 
-            self._start_new_line()
-            self._start_new_line()
+                self._start_new_line()
+                self._start_new_line()
+            else:
+                self._write_waived_plan('Flexible Spending Account')
         elif company_plans:
             self._write_not_selected_plan('Flexible Spending Account')
 
