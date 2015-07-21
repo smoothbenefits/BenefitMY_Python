@@ -1,0 +1,50 @@
+[
+  {
+    "fields": {
+      "name": "Weekly",
+      "month_factor": 0.23076923076923
+    },
+    "model": "app.sysperioddefinition",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "Bi-Weekly",
+      "month_factor": 0.46153846153846
+    },
+    "model": "app.sysperioddefinition",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "Semi-Monthly",
+      "month_factor": 0.5
+    },
+    "model": "app.sysperioddefinition",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "name": "Monthly",
+      "month_factor": 1
+    },
+    "model": "app.sysperioddefinition",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "name": "Quarterly",
+      "month_factor": 3
+    },
+    "model": "app.sysperioddefinition",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "name": "Annually",
+      "month_factor": 12
+    },
+    "model": "app.sysperioddefinition",
+    "pk": 6
+  }
+]
