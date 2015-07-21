@@ -1642,10 +1642,15 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = plans[0];
               $scope.basicLifeInsurancePlan.selected = true;
+              $scope.basicLifeInsurancePlan.mandatory = true;
               // Ideally, basicLifeInsurancePlan should be user basic life insurance plan
               // plans returned here are company life insurance plan, which should be a property of
               // the basicLifeInsurancePlan rather than make the two parallel.
               $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = plans[0];
+
+              if (parseFloat($scope.basicLifeInsurancePlan.employee_cost_per_period)){
+                $scope.basicLifeInsurancePlan.mandatory = false;
+              }
             }
 
             // Get current user's basic life insurance plan situation
