@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='SysPayPeriodDefinition',
+            name='SysPeriodDefinition',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=32)),
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='company',
             name='pay_period_definition',
-            field=models.ForeignKey(related_name='sys_pay_period_definition', blank=True, to='app.SysPayPeriodDefinition', null=True),
+            field=models.ForeignKey(related_name='sys_pay_period_definition', blank=True, to='app.SysPeriodDefinition', null=True),
             preserve_default=True,
         ),
     ]
