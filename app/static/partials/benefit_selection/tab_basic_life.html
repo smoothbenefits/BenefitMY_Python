@@ -13,13 +13,22 @@
           </div>
         </div>
         <div class="col-md-8">
-          <div ng-show="!basicLifeInsurancePlan.selected" style="padding-bottom: 10px;">
+          <div class="row" ng-show="!basicLifeInsurancePlan.selected" style="padding-bottom: 10px;">
             <span class="label label-danger">You have choosed NOT to enrolled in the basic life insurance (AD&D).</span>
           </div>
-          <div class="check-box">
-            <input type="checkbox"
-            ng-model="basicLifeInsurancePlan.selected"
-            name="basic_life_insurance"> Yes, I want to enroll in the basic life insurance (AD&D) provided by my employer.
+          <div class="row" ng-hide="basicLifeInsurancePlan.mandatory">
+            <div class="check-box">
+              <input type="checkbox"
+              ng-disabled="basicLifeInsurancePlan.mandatory"
+              ng-model="basicLifeInsurancePlan.selected"
+              name="basic_life_insurance"> Yes, I want to enroll in the basic life insurance (AD&D) provided by my employer.
+            </div>
+            <div style="padding-top: 10px;">
+              <span class="label label-info">Premium per pay period is ${{basicLifeInsurancePlan.employee_cost_per_period}}</span>
+            </div>
+          </div>
+          <div class="row" ng-show="basicLifeInsurancePlan.mandatory">
+            <span class="label label-info">You will be enrolled in the basic life insurance (AD&D) that is fully sponsored by your employer.</span>
           </div>
         </div>
         <div class="row"  style="margin-top:10px;">
@@ -224,7 +233,10 @@
       <div class="row">
         <div class="col-sm-6">
           <div class="submit-box benefit-selection-button">
-            <a ng-click="save()" class="btn green">Save Selection</a>
+            <a ng-click="save()" class="btn green">
+              <span ng-show="!basicLifeInsurancePlan.madatory">Save Selection</span>
+              <span ng-show="basicLifeInsurancePlan.madatory">Acknowledge and Save</span>
+           </a>
           </div>
         </div>
       </div>
