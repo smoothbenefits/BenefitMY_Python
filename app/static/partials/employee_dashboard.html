@@ -101,14 +101,21 @@
     <!-- Basic life insurance summary table -->
     <div class="table-responsive table-holder table" ng-if="basicLifeInsurancePlan !== undefined">
       <div class="table-sub-title">Basic Life Insurance</div>
-      <table class="table table-striped" ng-show="!basicLifeInsurancePlan.enrolled">
+      <table class="table table-striped" ng-show="!basicLifeInsurancePlan.selected">
         <tbody>
           <tr>
             <td width="180">No active basic life insurance plan</td>
           </tr>
         </tbody>
       </table>
-      <table class="table table-striped" ng-show="basicLifeInsurancePlan.enrolled">
+      <table class="table table-striped" ng-show="basicLifeInsurancePlan.selected && basicLifeInsurancePlan.waived">
+        <tbody>
+          <tr>
+            <td width="180">Waived basic life insurance plan</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-striped" ng-show="basicLifeInsurancePlan.selected && !basicLifeInsurancePlan.waived">
         <thead>
           <tr>
             <th><span>Plan Name</span></th>
