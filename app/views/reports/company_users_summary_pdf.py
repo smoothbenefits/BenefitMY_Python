@@ -201,32 +201,36 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         return
 
     def _write_employee_basic_life_insurance_info(self, user_model, person_model, company_id):
-        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=user_model.id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
+        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=user_model.id)
         company_plans = CompanyLifeInsurancePlan.objects.filter(company=company_id)
 
         if (len(employee_plans) > 0):
-            # Render header
-            column_width_dists = [0.45, 0.35, 0.2]
-            self._write_line_uniform_width(['Basic Life (AD&D)', 'Coverage', 'Employee Premium'],
-                                           column_width_dists)
-            self._draw_line()
-
             employee_plan = employee_plans[0]
-            company_plan = employee_plan.company_life_insurance
-            plan = company_plan.life_insurance_plan
 
-            # compute the coverage
-            coverage_amount = ''
-            if (company_plan.insurance_amount):
-                coverage_amount = company_plan.insurance_amount
-            elif (company_plan.salary_multiplier):
-                salary = self._get_salary_by_person(person_model)
-                if (salary):
-                    coverage_amount = company_plan.salary_multiplier * salary
-            self._write_line_uniform_width([plan.name, coverage_amount, 'N/A'],
-                                           column_width_dists)
-            self._start_new_line()
-            self._start_new_line()
+            if (employee_plan.company_life_insurance):
+                # Render header
+                column_width_dists = [0.45, 0.35, 0.2]
+                self._write_line_uniform_width(['Basic Life (AD&D)', 'Coverage', 'Employee Premium'],
+                                               column_width_dists)
+                self._draw_line()
+
+                company_plan = employee_plan.company_life_insurance
+                plan = company_plan.life_insurance_plan
+
+                # compute the coverage
+                coverage_amount = ''
+                if (company_plan.insurance_amount):
+                    coverage_amount = company_plan.insurance_amount
+                elif (company_plan.salary_multiplier):
+                    salary = self._get_salary_by_person(person_model)
+                    if (salary):
+                        coverage_amount = company_plan.salary_multiplier * salary
+                self._write_line_uniform_width([plan.name, coverage_amount, 'N/A'],
+                                               column_width_dists)
+                self._start_new_line()
+                self._start_new_line()
+            else:
+                self._write_waived_plan('Basic Life (AD&D)')
 
         elif company_plans:
             self._write_not_selected_plan('Basic Life (AD&D)')
