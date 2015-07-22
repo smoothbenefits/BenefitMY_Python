@@ -6,7 +6,7 @@ import json
 
 class BenefitPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '10_company', '13_benefit_type']
+    fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '49_period_definition', '10_company', '13_benefit_type']
 
     def test_get_benefit_plan_by_id(self):
         response = self.client.get(reverse('benefit_plan_api',
@@ -60,7 +60,7 @@ class BenefitPlanTestCase(TestCase, ViewTestBase):
 
 class CompanyBenefitPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '10_company', '13_benefit_type']
+    fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '49_period_definition', '10_company', '13_benefit_type']
 
     def test_get_company_benefit_plan_by_id(self):
         response = self.client.get(reverse('company_benefit_plan_api',

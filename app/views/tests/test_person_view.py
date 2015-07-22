@@ -9,6 +9,7 @@ from view_test_base import ViewTestBase
 class PersonTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['24_person',
+                '49_period_definition',
                 '10_company',
                 '23_auth_user',
                 '11_address',

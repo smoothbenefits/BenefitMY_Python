@@ -7,7 +7,7 @@ from view_test_base import ViewTestBase
 User = get_user_model()
 
 class LoginViewTestCase(TestCase, ViewTestBase):
-    fixtures = ['24_person', '23_auth_user', '10_company']
+    fixtures = ['24_person', '23_auth_user', '49_period_definition', '10_company']
 
     def setUp(self):
         self.user_password = 'foobar'

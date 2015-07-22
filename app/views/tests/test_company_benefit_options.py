@@ -6,8 +6,8 @@ import json
 
 class CompanyBenefitPlanOptionTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['15_benefit_policy_key', '23_auth_user', '24_person', '10_company',
-                '16_benefit_policy_type', '21_benefit_plan', '22_benefit_details',
+    fixtures = ['15_benefit_policy_key', '23_auth_user', '24_person', '49_period_definition', 
+                '10_company', '16_benefit_policy_type', '21_benefit_plan', '22_benefit_details',
                 '13_benefit_type', '31_company_benefit_plan_option']
 
     def test_get_company_benefit_plan_by_company(self):

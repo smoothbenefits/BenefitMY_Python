@@ -8,6 +8,7 @@ class UploadAudienceTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['23_auth_user',
                 'upload',
+                '49_period_definition',
                 '10_company',
                 '34_company_user',
                 'upload_audience']
