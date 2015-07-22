@@ -10,6 +10,7 @@ User = get_user_model()
 class UserViewTestCase(TestCase, ViewTestBase):
 
     fixtures = ['24_person',
+                '49_period_definition',
                 '10_company',
                 '23_auth_user',
                 '11_address',

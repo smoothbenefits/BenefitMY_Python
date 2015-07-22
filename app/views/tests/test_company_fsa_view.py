@@ -6,7 +6,7 @@ import json
 
 class CompanyFsaTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['37_fsa_plan', '23_auth_user', '24_person', '10_company', '42_company_fsa']
+    fixtures = ['37_fsa_plan', '23_auth_user', '24_person', '49_period_definition', '10_company', '42_company_fsa']
 
     def test_get_company_fsa_by_company(self):
         response = self.client.get(reverse('company_fsa_api',

@@ -7,7 +7,7 @@ class SupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate',
     '39_company_supplement_life_insurance', '17_supplemental_life_insurance_condition',
-    '10_company']
+    '49_period_definition', '10_company']
 
     def test_get_suppl_life_insurance(self):
         response = self.client.get(reverse('suppl_life_api',
