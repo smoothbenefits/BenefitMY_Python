@@ -416,7 +416,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         return col_num + 5
 
     def _write_employee_basic_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
-        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
+        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=employee_user_id)
         if (len(employee_plans) > 0):
             employee_plan = employee_plans[0]
 
