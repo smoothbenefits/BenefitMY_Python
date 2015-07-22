@@ -179,7 +179,7 @@
       <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('basic_life')"></span>
     </div>
     <div class="panel-body" collapse="!basicLifeInfoExpanded">
-      <table class="table table-striped" ng-show="completed('basic_life')">
+      <table class="table table-striped" ng-show="completed('basic_life') && !waived('basic_life')">
         <thead>
           <tr>
             <th><span>Plan Name</span></th>
@@ -195,6 +195,15 @@
               <span class="inline" ng-repeat="beneficiary in enrollments['basic_life'].beneficiary">
                 {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br>
               </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-striped" ng-show="completed('basic_life') && waived('basic_life')">
+        <tbody>
+          <tr>
+            <td width="180">Waived basic life insurance.
+              <a ng-click="goToState('employee_benefit_signup.basic_life')">Enroll now</a>?
             </td>
           </tr>
         </tbody>
@@ -398,7 +407,7 @@
       <table class="table table-striped" ng-show="completed('fsa') && waived('fsa')">
         <tbody>
           <tr>
-            <td width="180">The FSA plan was waived.
+            <td width="180">Waived FSA plan.
               <a ng-click="goToState('employee_benefit_signup.fsa')">Enroll now</a>?
             </td>
           </tr>

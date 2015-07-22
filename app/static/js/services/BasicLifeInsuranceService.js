@@ -73,9 +73,9 @@ benefitmyService.factory('BasicLifeInsuranceService',
           CompanyUserBasicLifeInsurancePlanRepository.ByUser.query({userId: userId})
           .$promise.then(
             function(response){
-              planEnrollments = _.find(response,
-                function(plan){ return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';}
-              );
+              planEnrollments = _.find(response, function(plan){
+                return plan.company_life_insurance;
+              });
 
               // Check if user enrolls basic life insurance. If yes, map response to view model
               // If not, return simple object
@@ -259,8 +259,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
       saveBasicLifeInsurancePlanForUser: function(basicLifeToSave, updateReason, successCallBack, errorCallBack) {
         var userId = basicLifeToSave.currentUserId;
-        PersonService.getSelfPersonInfo(userId)
-        .then(function(mainPlanPerson){
+        PersonService.getSelfPersonInfo(userId).then(function(mainPlanPerson){
 
           var planToSave = {
             "id": basicLifeToSave.id,
@@ -272,6 +271,11 @@ benefitmyService.factory('BasicLifeInsuranceService',
             "record_reason_note": updateReason.notes,
             "record_reason": updateReason.selectedReason.id
           };
+
+          // Remove company life insurance if people waives basic life
+          if (!basicLifeToSave.selected) {
+            planToSave.company_life_insurance = null;
+          }
 
           // Map beneficiary to according tiers
           if (basicLifeToSave.life_insurance_beneficiary){

@@ -57,10 +57,18 @@ benefitmyService.factory('BenefitSummaryService',
       // Map basic life insurance enrollment
       if (domainModel.basic_life[0] != null) {
         var domainBasicLife = domainModel.basic_life[0];
-        viewModel['basic_life'] = {
-          "plan_name": domainBasicLife.company_life_insurance.life_insurance_plan.name,
-          "beneficiary": domainBasicLife.life_insurance_beneficiary
-        };
+
+        if (domainBasicLife.company_life_insurance) {
+          viewModel['basic_life'] = {
+            "plan_name": domainBasicLife.company_life_insurance.life_insurance_plan.name,
+            "beneficiary": domainBasicLife.life_insurance_beneficiary,
+            "status": SELECTED
+          };
+        } else {
+          viewModel['basic_life'] = {
+            "status": WAIVED
+          };
+        }
       }
 
       // Map supplemental life insurance enrollment
