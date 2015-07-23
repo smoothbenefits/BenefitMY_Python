@@ -594,30 +594,6 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 return deferred.promise;
             },
 
-            waivePlansForUser: function(personPlanToSave, updateReason) {
-                var requests = [];
-
-                PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
-                    SupplementalLifeInsuranceRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
-                    .$promise.then(function(plans) {
-                        _.each(plans, function(plan) {
-                            var deferred = $q.defer();
-                            requests.push(deferred);
-
-                            SupplementalLifeInsuranceRepository.CompanyPersonPlanById.delete({id:plan.id})
-                            .$promise.then(function(response){
-                                deferred.resolve(response);
-                            },
-                            function(error) {
-                                deferred.reject(error);
-                            })
-                        });
-                    });
-                });
-
-                return $q.all(requests);
-            },
-
             savePersonPlan: function(personPlanToSave, updateReason) {
                 // This should be take care of 2 cases
                 // - user does not have a plan. Create one for him/her
