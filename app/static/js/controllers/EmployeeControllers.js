@@ -1648,7 +1648,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               // the basicLifeInsurancePlan rather than make the two parallel.
               $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = plans[0];
 
-              if (parseFloat($scope.basicLifeInsurancePlan.employee_cost_per_period)){
+              if (parseFloat($scope.basicLifeInsurancePlan.employee_cost_per_period) > 0){
                 $scope.basicLifeInsurancePlan.mandatory = false;
               }
             }
