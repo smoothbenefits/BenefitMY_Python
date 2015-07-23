@@ -7,7 +7,7 @@ benefitmyService.factory('benefitDisplayService',
    function(benefitListRepository,
             benefitDetailsRepository,
             BenefitPolicyKeyService){
-    return function(companyId, showEmployeePremium, populatedFunc){
+    return function(company, showEmployeePremium, populatedFunc){
 
         var populateMedicalArray = function(array, benefitOption){
           var member = _.findWhere(array, {benefitId:benefitOption.benefit_plan.id});
@@ -16,7 +16,7 @@ benefitmyService.factory('benefitDisplayService',
             optionArray.push({
               name: benefitOption.benefit_option_type,
               totalCost: benefitOption.total_cost_per_period,
-              employeeCost: benefitOption.employee_cost_per_period
+              employeeCost: benefitOption.employee_cost_per_period * company.pay_period_definition.month_factor
             });
             array.push({
               benefitName: benefitOption.benefit_plan.name,
@@ -29,7 +29,7 @@ benefitmyService.factory('benefitDisplayService',
             member.benefitOptionArray.push({
               name: benefitOption.benefit_option_type,
               totalCost: benefitOption.total_cost_per_period,
-              employeeCost: benefitOption.employee_cost_per_period
+              employeeCost: benefitOption.employee_cost_per_period * company.pay_period_definition.month_factor
             });
           }
         }
@@ -60,7 +60,7 @@ benefitmyService.factory('benefitDisplayService',
             }
 
             var optionColSpan = 3;
-            var optionEmployeeLabel = 'Employee\n(per pay period)';
+            var optionEmployeeLabel = 'Employee\n(' + company.pay_period_definition.name + ')';
             if(showEmployeePremium){
               optionColSpan = 6;
               optionEmployeeLabel = '';
@@ -172,7 +172,7 @@ benefitmyService.factory('benefitDisplayService',
               sameNameBenefit.options.push({
                   optionType:benefit.benefit_option_type,
                   totalCost:benefit.total_cost_per_period,
-                  employeeCost: benefit.employee_cost_per_period,
+                  employeeCost: benefit.employee_cost_per_period * company.pay_period_definition.month_factor,
                   id: benefit.id
                 });
               array.benefitList.push(sameNameBenefit);
@@ -182,7 +182,7 @@ benefitmyService.factory('benefitDisplayService',
               sameBenefit.options.push({
                   optionType:benefit.benefit_option_type,
                   totalCost:benefit.total_cost_per_period,
-                  employeeCost: benefit.employee_cost_per_period,
+                  employeeCost: benefit.employee_cost_per_period * company.pay_period_definition.month_factor,
                   id: benefit.id
               });
             }
@@ -208,7 +208,7 @@ benefitmyService.factory('benefitDisplayService',
         var benefitCount = 0;
 
         BenefitPolicyKeyService.getAllKeys().then(function(benefitPolicyKeys) {
-            benefitListRepository.get({clientId:companyId})
+            benefitListRepository.get({clientId:company.id})
             .$promise.then(function(response){
                 _.each(response.benefits, function(benefitOption){
                     if(benefitOption.benefit_plan.benefit_type.name === 'Medical'){

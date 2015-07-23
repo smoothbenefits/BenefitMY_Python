@@ -327,6 +327,7 @@ var employerBenefits = employersController.controller('employerBenefits',
   'LtdService',
   'FsaService',
   'HraService',
+  'companyRepository',
   function ($scope,
             $location,
             $stateParams,
@@ -337,16 +338,21 @@ var employerBenefits = employersController.controller('employerBenefits',
             StdService,
             LtdService,
             FsaService,
-            HraService){
+            HraService,
+            companyRepository){
 
     var compId = $stateParams.company_id;
     $scope.role = 'Admin';
     $scope.showAddBenefitButton = false;
 
-    benefitDisplayService($stateParams.company_id, false, function(groupObj, nonMedicalArray, benefitCount){
-      $scope.medicalBenefitGroup = groupObj;
-      $scope.nonMedicalBenefitArray = nonMedicalArray;
-      $scope.benefitCount = benefitCount;
+    companyRepository.get({clientId:$stateParams.company_id})
+    .$promise.then(function(company){
+      $scope.company = company;
+      benefitDisplayService(company, false, function(groupObj, nonMedicalArray, benefitCount){
+        $scope.medicalBenefitGroup = groupObj;
+        $scope.nonMedicalBenefitArray = nonMedicalArray;
+        $scope.benefitCount = benefitCount;
+      });
     });
 
     $scope.sortBy = function(predicate){

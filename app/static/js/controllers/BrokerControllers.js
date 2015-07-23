@@ -61,6 +61,7 @@ var benefitsController = brokersControllers.controller(
     'LtdService',
     'FsaService',
     'HraService',
+    'companyRepository',
     function ($scope,
               $location,
               $stateParams,
@@ -73,15 +74,21 @@ var benefitsController = brokersControllers.controller(
               StdService,
               LtdService,
               FsaService,
-              HraService){
+              HraService,
+              companyRepository){
       $scope.role = 'Broker';
       $scope.showAddBenefitButton = true;
       $scope.benefitDeletable = true;
 
-      benefitDisplayService($stateParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
-        $scope.medicalBenefitGroup = groupObj;
-        $scope.nonMedicalBenefitArray = nonMedicalArray;
-        $scope.benefitCount = benefitCount;
+
+      companyRepository.get({clientId: $stateParams.clientId})
+      .$promise.then(function(company){
+        $scope.company = company;
+        benefitDisplayService(company, false, function(groupObj, nonMedicalArray, benefitCount){
+          $scope.medicalBenefitGroup = groupObj;
+          $scope.nonMedicalBenefitArray = nonMedicalArray;
+          $scope.benefitCount = benefitCount;
+        });
       });
 
       $scope.backtoDashboard = function(){
@@ -347,6 +354,23 @@ var brokerAddBenefits = brokersControllers.controller(
   }
 ]);
 
+var brokerAddBenefitControllerBase = brokersControllers.controller(
+  'brokerAddBenefitControllerBase',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$controller',
+   'companyRepository',
+  function($scope, $state, $stateParams, $controller, companyRepository){
+    // Inherite scope from base
+    $controller('modalMessageControllerBase', {$scope: $scope});
+    $scope.clientId = $stateParams.clientId;
+    companyRepository.get({clientId:$scope.clientId})
+    .$promise.then(function(company){
+      $scope.company = company;
+    });
+  }]);
+
 var brokerAddBasicLifeInsurance = brokersControllers.controller(
   'brokerAddBasicLifeInsurance',
   ['$scope',
@@ -363,7 +387,7 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
             BasicLifeInsuranceService){
 
     // Inherite scope from base
-    $controller('modalMessageControllerBase', {$scope: $scope});
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
     var clientId = $stateParams.clientId;
     $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
@@ -420,7 +444,7 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
             UserService){
 
     // Inherite scope from base
-    $controller('modalMessageControllerBase', {$scope: $scope});
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
     var clientId = $stateParams.clientId;
 
@@ -461,7 +485,7 @@ var brokerAddStdPlanController = brokersControllers.controller(
             StdService){
 
         // Inherite scope from base
-        $controller('modalMessageControllerBase', {$scope: $scope});
+        $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
         $scope.paidByParties = StdService.paidByParties;
 
@@ -507,7 +531,7 @@ var brokerAddLtdPlanController = brokersControllers.controller(
             LtdService){
 
         // Inherite scope from base
-        $controller('modalMessageControllerBase', {$scope: $scope});
+        $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
         $scope.paidByParties = LtdService.paidByParties;
 
@@ -552,7 +576,7 @@ var brokerAddFsaPlan = brokersControllers.controller(
              FsaService,
              UserService){
     // Inherite scope from base
-    $controller('modalMessageControllerBase', {$scope: $scope});
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
     var clientId = $stateParams.clientId;
     $scope.newPlan = {};
@@ -589,7 +613,7 @@ var brokerAddHraPlanController = brokersControllers.controller(
             UserService){
 
     // Inherite scope from base
-    $controller('modalMessageControllerBase', {$scope: $scope});
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
     var clientId = $stateParams.clientId;
 
@@ -637,7 +661,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       BenefitPolicyKeyService){
 
       // Inherite scope from base
-      $controller('modalMessageControllerBase', {$scope: $scope});
+      $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
       var clientId = $stateParams.clientId;
 
@@ -1111,7 +1135,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
                     benefit_plan_id: $scope.addedBenefitPlan.id,
                     benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
                     total_cost_per_period: optionTypeItem.total_cost_per_period,
-                    employee_cost_per_period: optionTypeItem.employee_cost_per_period
+                    employee_cost_per_period: optionTypeItem.employee_cost_per_period / $scope.company.pay_period_definition.month_factor
                   }
                 });
               }
