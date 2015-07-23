@@ -1642,10 +1642,15 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = plans[0];
               $scope.basicLifeInsurancePlan.selected = true;
+              $scope.basicLifeInsurancePlan.mandatory = true;
               // Ideally, basicLifeInsurancePlan should be user basic life insurance plan
               // plans returned here are company life insurance plan, which should be a property of
               // the basicLifeInsurancePlan rather than make the two parallel.
               $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = plans[0];
+
+              if (parseFloat($scope.basicLifeInsurancePlan.employee_cost_per_period) > 0){
+                $scope.basicLifeInsurancePlan.mandatory = false;
+              }
             }
 
             // Get current user's basic life insurance plan situation
@@ -1694,51 +1699,39 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           // Save basic life insurance
           // TO-DO: Need to better organize the logic to save basic life insurance
           ///////////////////////////////////////////////////////////////////////////
-          if (!$scope.basicLifeInsurancePlan.selected){
-            BasicLifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
-              , function() {
-                  var modalInstance = $scope.showSaveSuccessModal();
-                  modalInstance.result.then(function(){
-                      $scope.transitionToNextTab($scope.tabs);
-                  });
-                  $scope.myForm.$setPristine();
-              }
-              , function(error) {
-                $scope.savedSuccess = false;
-              });
-          }
-          else{
-            BasicLifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
-              var enrolledBasic = _.find(enrolledPlans, function(plan){
-                return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';
-              });
-              if (enrolledBasic){
-                $scope.basicLifeInsurancePlan.enrolled = true;
-                $scope.basicLifeInsurancePlan.id = enrolledBasic.id;
-                $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = enrolledBasic.company_life_insurance;
-              }
-              else{
-                $scope.basicLifeInsurancePlan.enrolled = false;
-              }
-
-              $scope.basicLifeInsurancePlan.currentUserId = employeeId;
-
-              BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, $scope.updateReason
-              , function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
-                $scope.myForm.$setPristine();
-              }
-              , function(error){
-                $scope.savedSuccess = false;
-                alert('Failed to save basic life insurance. Please make sure all required fields have been filled.')
-              });
-            }, function(error) {
-              $scope.savedSuccess = false;
+          BasicLifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
+            var enrolledBasic = _.find(enrolledPlans, function(plan){
+              return plan.company_life_insurance;
             });
-          }
+
+            if (enrolledBasic){
+              $scope.basicLifeInsurancePlan.enrolled = true;
+              $scope.basicLifeInsurancePlan.id = enrolledBasic.id;
+              $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = enrolledBasic.company_life_insurance;
+            }
+            else{
+              $scope.basicLifeInsurancePlan.enrolled = false;
+            }
+
+            $scope.basicLifeInsurancePlan.currentUserId = employeeId;
+
+            BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, $scope.updateReason
+            , function() {
+              var modalInstance = $scope.showSaveSuccessModal();
+              modalInstance.result.then(function(){
+                $scope.transitionToNextTab($scope.tabs);
+              });
+              $scope.myForm.$setPristine();
+            }
+            , function(error){
+              $scope.savedSuccess = false;
+              alert('Failed to save basic life insurance. Please make sure all required fields have been filled.')
+            });
+
+
+          }, function(error) {
+            $scope.savedSuccess = false;
+          });
         };
 
         $scope.benefit_type = 'Basic Life Insurance';

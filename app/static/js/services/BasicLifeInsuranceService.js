@@ -73,14 +73,16 @@ benefitmyService.factory('BasicLifeInsuranceService',
           CompanyUserBasicLifeInsurancePlanRepository.ByUser.query({userId: userId})
           .$promise.then(
             function(response){
-              planEnrollments = _.find(response,
-                function(plan){ return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';}
-              );
+
+              planEnrollments = _.find(response, function(plan){
+                return plan.company_life_insurance;
+              });
 
               // Check if user enrolls basic life insurance. If yes, map response to view model
               // If not, return simple object
               if (planEnrollments){
-                planEnrollments.enrolled = true;
+                planEnrollments.selected = true;
+                planEnrollments.waived = false;
                 planEnrollments.last_update_date = moment(planEnrollments.updated_at).format(DATE_FORMAT_STRING);
 
                 var firstTier = [];
@@ -95,9 +97,10 @@ benefitmyService.factory('BasicLifeInsuranceService',
                 });
                 planEnrollments.life_insurance_beneficiary = firstTier;
                 planEnrollments.life_insurance_contingent_beneficiary = secondTier;
-              }
-              else{
-                planEnrollments = { enrolled: false, life_insurance_beneficiary: [] };
+              } else if (response.length > 0) {
+                planEnrollments = { selected: true, waived: true, life_insurance_beneficiary: [] };
+              } else {
+                planEnrollments = { selected: true, waived: true, life_insurance_beneficiary: [] };
               }
 
               //If we have the salary multiplier, we need to figure that out.
@@ -259,8 +262,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
       saveBasicLifeInsurancePlanForUser: function(basicLifeToSave, updateReason, successCallBack, errorCallBack) {
         var userId = basicLifeToSave.currentUserId;
-        PersonService.getSelfPersonInfo(userId)
-        .then(function(mainPlanPerson){
+        PersonService.getSelfPersonInfo(userId).then(function(mainPlanPerson){
 
           var planToSave = {
             "id": basicLifeToSave.id,
@@ -272,6 +274,11 @@ benefitmyService.factory('BasicLifeInsuranceService',
             "record_reason_note": updateReason.notes,
             "record_reason": updateReason.selectedReason.id
           };
+
+          // Remove company life insurance if people waives basic life
+          if (!basicLifeToSave.selected) {
+            planToSave.company_life_insurance = null;
+          }
 
           // Map beneficiary to according tiers
           if (basicLifeToSave.life_insurance_beneficiary){
@@ -317,26 +324,6 @@ benefitmyService.factory('BasicLifeInsuranceService',
         }, function(error){
           errorCallBack(error);
         });
-      },
-
-      deleteBasicLifeInsurancePlanForUser: function(userId, successCallBack, errorCallBack) {
-        CompanyUserBasicLifeInsurancePlanRepository.ByUser.query({userId:userId})
-          .$promise.then(function(plans){
-            _.each(plans, function(plan){
-              if (plan.company_life_insurance.life_insurance_plan
-                  && plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic'){
-                CompanyUserBasicLifeInsurancePlanRepository.ById.delete({id: plan.id});
-              }
-            });
-
-            if (successCallBack){
-              successCallBack();
-            }
-          }, function(error){
-            if (errorCallBack){
-              errorCallBack(error);
-            }
-          });
       }
     };
   }
