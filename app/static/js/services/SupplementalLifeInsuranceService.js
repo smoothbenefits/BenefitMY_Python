@@ -65,6 +65,9 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
             viewModel.beneficiaryList = mapBeneficiaryListDomainToViewModel(personCompanyPlanDomainModel.suppl_life_insurance_beneficiary);
 
+            viewModel.selected = personCompanyPlanDomainModel.selected;
+            viewModel.waived = personCompanyPlanDomainModel.waived;
+
             return viewModel;
         };
 
@@ -548,6 +551,9 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                                 if (personPlans.length > 0) {
                                     // Found existing person enrolled plans, for now, take the first
                                     // one.
+                                    var personPlan = personPlans[0];
+                                    personPlan.selected = true;
+                                    personPlan.waived = !personPlan.company_supplemental_life_insurance_plan
                                     deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0]));
                                 } else {
                                     // The person does not have enrolled plans yet.
@@ -564,6 +570,9 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                                         blankPersonPlan.selfElectedAmount = 0;
                                         blankPersonPlan.spouseElectedAmount = 0;
                                         blankPersonPlan.childElectedAmount = 0;
+                                        // Setup flag to indicate current enrollment state
+                                        blankPersonPlan.selected = false;
+                                        blankPersonPlan.waived = false;
 
                                         deferred.resolve(blankPersonPlan);
                                     }
@@ -585,7 +594,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 return deferred.promise;
             },
 
-            deletePlansForUser: function(userId) {
+            waivePlansForUser: function(personPlanToSave, updateReason) {
                 var requests = [];
 
                 PersonService.getSelfPersonInfo(userId).then(function(personInfo) {

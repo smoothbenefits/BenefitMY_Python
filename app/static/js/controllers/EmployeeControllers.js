@@ -1962,8 +1962,10 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
         $scope.save = function(){
           // Save life insurance
           if ($scope.isWaiveBenefitSelected()) {
-            // Waive selected. Delete all user plans for this user
-            SupplementalLifeInsuranceService.deletePlansForUser(employeeId).then(
+
+            // Set company plan id to null when user choose to waive
+            $scope.supplementalLifeInsurancePlan.companyPlanId = null;
+            SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then(
               function() {
                 var modalInstance = $scope.showSaveSuccessModal();
                 modalInstance.result.then(function(){

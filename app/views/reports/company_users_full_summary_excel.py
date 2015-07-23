@@ -442,21 +442,28 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
             employee_plans = PersonCompSupplLifeInsurancePlan.objects.filter(person=employee_person.id)
             if (len(employee_plans) > 0):
                 plan = employee_plans[0]
-                # Employee
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.self_elected_amount)
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.self_premium_per_month)
-                # Spouse
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.spouse_elected_amount)
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.spouse_premium_per_month)
-                # Child
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.child_elected_amount)
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.child_premium_per_month)
 
-                col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
-                return col_num
+                if plan.company_supplemental_life_insurance_plan:
+                    # Employee
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.self_elected_amount)
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.self_premium_per_month)
+                    # Spouse
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.spouse_elected_amount)
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.spouse_premium_per_month)
+                    # Child
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.child_elected_amount)
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.child_premium_per_month)
+
+                    col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
+                    return col_num
+                else:
+                    for i in range(9):
+                        col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
+                    col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
+                    return col_num
         return col_num + 12
 
     def _write_employee_fsa_info(self, employee_user_id, excelSheet, row_num, col_num):

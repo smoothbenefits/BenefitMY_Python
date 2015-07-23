@@ -268,35 +268,38 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
             employee_plans = PersonCompSupplLifeInsurancePlan.objects.filter(person=person_model.id)
             if (len(employee_plans) > 0):
                 plan_selected = True
-                # Render header
-                self._write_line_uniform_width(['Suppl. Life Plan', 'Coverage Target', 'Elected Amount', 'Premium', 'Condition'])
-                self._draw_line()
-
                 plan = employee_plans[0]
 
-                text_block = [[],[],[],[],[]]
-                text_block[0].append(plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
+                if plan.company_supplemental_life_insurance_plan:
+                    # Render header
+                    self._write_line_uniform_width(['Suppl. Life Plan', 'Coverage Target', 'Elected Amount', 'Premium', 'Condition'])
+                    self._draw_line()
 
-                text_block[1].append('Employee')
-                text_block[1].append('Spouse')
-                text_block[1].append('Child(ren)')
+                    text_block = [[],[],[],[],[]]
+                    text_block[0].append(plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
 
-                text_block[2].append(plan.self_elected_amount)
-                text_block[2].append(plan.spouse_elected_amount)
-                text_block[2].append(plan.child_elected_amount)
+                    text_block[1].append('Employee')
+                    text_block[1].append('Spouse')
+                    text_block[1].append('Child(ren)')
 
-                text_block[3].append(plan.self_premium_per_month)
-                text_block[3].append(plan.spouse_premium_per_month)
-                text_block[3].append(plan.child_premium_per_month)
+                    text_block[2].append(plan.self_elected_amount)
+                    text_block[2].append(plan.spouse_elected_amount)
+                    text_block[2].append(plan.child_elected_amount)
 
-                text_block[4].append(plan.self_condition.name)
-                text_block[4].append(plan.spouse_condition.name)
-                text_block[4].append('N/A')
+                    text_block[3].append(plan.self_premium_per_month)
+                    text_block[3].append(plan.spouse_premium_per_month)
+                    text_block[3].append(plan.child_premium_per_month)
 
-                self._write_block_uniform_width(text_block)
+                    text_block[4].append(plan.self_condition.name)
+                    text_block[4].append(plan.spouse_condition.name)
+                    text_block[4].append('N/A')
 
-                self._start_new_line()
-                self._start_new_line()
+                    self._write_block_uniform_width(text_block)
+
+                    self._start_new_line()
+                    self._start_new_line()
+                else:
+                    self._write_waived_plan('Supplemental Life Plan')
 
         if not plan_selected and company_plans:
             self._write_not_selected_plan('Suppl. Life Plan')
