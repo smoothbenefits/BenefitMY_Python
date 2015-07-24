@@ -234,7 +234,7 @@
       <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('supplemental_life')"></span>
     </div>
     <div class="panel-body" collapse="!supplLifeInfoExpanded">
-      <table class="table table-striped" ng-show="completed('supplemental_life')">
+      <table class="table table-striped" ng-show="completed('supplemental_life') && !waived('supplemental_life')">
         <thead>
           <tr>
             <th><span>Plan Name</span></th>
@@ -268,6 +268,15 @@
               <span class="inline" ng-repeat="beneficiary in enrollments['supplemental_life'].beneficiary">
                 {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br>
               </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-striped" ng-show="completed('supplemental_life') && waived('supplemental_life')">
+        <tbody>
+          <tr>
+            <td width="180">Waived supplemental life insurance.
+              <a ng-click="goToState('employee_benefit_signup.supplemental_life')">Enroll now</a>?
             </td>
           </tr>
         </tbody>

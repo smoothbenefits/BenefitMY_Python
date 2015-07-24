@@ -1962,19 +1962,9 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
         $scope.save = function(){
           // Save life insurance
           if ($scope.isWaiveBenefitSelected()) {
-            // Waive selected. Delete all user plans for this user
-            SupplementalLifeInsuranceService.deletePlansForUser(employeeId).then(
-              function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
-                $scope.myForm.$setPristine();
-              }
-              , function(error) {
-                alert('Failed to save your benefits election. Please try again later.');
-              }
-            );
+
+            // Set company plan id to null when user choose to waive
+            $scope.supplementalLifeInsurancePlan.companyPlanId = null;
           } else {
             $scope.supplementalLifeInsurancePlan.companyPlanId = $scope.selectedCompanyPlan.value.companyPlanId;
 
@@ -1992,19 +1982,19 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             $scope.supplementalLifeInsurancePlan.selfPremiumPerMonth = $scope.computeSelfPremium();
             $scope.supplementalLifeInsurancePlan.spousePremiumPerMonth = $scope.computeSpousePremium();
             $scope.supplementalLifeInsurancePlan.childPremiumPerMonth = $scope.computeChildPremium();
-
-            SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
-              function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
-                $scope.myForm.$setPristine();
-              }
-              , function(error) {
-                alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
-              });
           }
+          
+          SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
+            function() {
+              var modalInstance = $scope.showSaveSuccessModal();
+              modalInstance.result.then(function(){
+                $scope.transitionToNextTab($scope.tabs);
+              });
+              $scope.myForm.$setPristine();
+            }
+            , function(error) {
+              alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
+            });
         };
 
         $scope.openPlanDetailsModal = function() {

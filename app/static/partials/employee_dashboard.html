@@ -29,7 +29,6 @@
           </tr>
         </thead>
         <tbody>
-
           <tr ng-repeat="benefitElement in benefits">
             <td style="vertical-align: top;">
               <div>
@@ -142,43 +141,65 @@
       <div class="table-sub-title">
         Supplemental Life Insurance
       </div>
-      <table class="table table-striped" ng-if="supplementalLifeInsurancePlan">
+      <table class="table table-striped" ng-if="supplementalLifeInsurancePlan.selected && !supplementalLifeInsurancePlan.waived">
         <thead>
           <tr>
-            <td width="160">Employee</td>
-            <td width="160">${{supplementalLifeInsurancePlan.selfElectedAmount}}</td>
-            <td width="160">${{supplementalLifeInsurancePlan.selfPremiumPerMonth}}/Month</td>
-            <td width="160">{{supplementalLifeInsurancePlan.selfPlanCondition.name}}</td>
+            <th><span>Plan Name</span></th>
+            <th width="160"><span>Coverage Target</span></th>
+            <th width="160"><span>Elected Amount</span></th>
+            <th width="160"><span>Premium</span></th>
+            <th width="160"><span>Condition</span></th>
+            <th width="160"><span>Beneficiary</span></th>
+            <th><span>Last Update</span></th>
           </tr>
+        </thead>
+        <tbody>
           <tr>
-            <td width="160">Spouse</td>
-            <td width="160">${{supplementalLifeInsurancePlan.spouseElectedAmount}}</td>
-            <td width="160">${{supplementalLifeInsurancePlan.spousePremiumPerMonth}}/Month</td>
-            <td width="160">{{supplementalLifeInsurancePlan.spousePlanCondition.name}}</td>
+            <td>{{supplementalLifeInsurancePlan.planName}}</td>
+            <td colspan="4" style="padding: 0;">
+              <table class="table">
+                <tr>
+                  <td width="160">Employee</td>
+                  <td width="160">${{supplementalLifeInsurancePlan.selfElectedAmount}}</td>
+                  <td width="160">${{supplementalLifeInsurancePlan.selfPremiumPerMonth}}/Month</td>
+                  <td width="160">{{supplementalLifeInsurancePlan.selfPlanCondition.name}}</td>
+                </tr>
+                <tr>
+                  <td width="160">Spouse</td>
+                  <td width="160">${{supplementalLifeInsurancePlan.spouseElectedAmount}}</td>
+                  <td width="160">${{supplementalLifeInsurancePlan.spousePremiumPerMonth}}/Month</td>
+                  <td width="160">{{supplementalLifeInsurancePlan.spousePlanCondition.name}}</td>
+                </tr>
+                <tr>
+                  <td width="160">Child(ren)</td>
+                  <td width="160">${{supplementalLifeInsurancePlan.childElectedAmount}}</td>
+                  <td width="160">${{supplementalLifeInsurancePlan.childPremiumPerMonth}}/Month</td>
+                  <td width="160">N/A</td>
+                </tr>
+              </table>
+            </td>
+            <td width="160">
+              <span class="inline" ng-repeat="beneficiary in supplementalLifeInsurancePlan.beneficiaryList.mainBeneficiaries"> {{$index + 1}}. {{beneficiary.firstName}} {{beneficiary.lastName}}; </br></span>
+            </td>
+            <td>{{supplementalLifeInsurancePlan.lastUpdateDateTime}}</td>
           </tr>
+        </tbody>
+      </table>
+      <table class="table table-striped" ng-if="supplementalLifeInsurancePlan.selected && supplementalLifeInsurancePlan.waived">
+        <tbody>
           <tr>
-            <td width="160">Child(ren)</td>
-            <td width="160">${{supplementalLifeInsurancePlan.childElectedAmount}}</td>
-            <td width="160">${{supplementalLifeInsurancePlan.childPremiumPerMonth}}/Month</td>
-            <td width="160">N/A</td>
+            <td width="280">Waived supplemental life insurance plan</td>
           </tr>
-        </table>
-      </td>
-      <td width="160">
-        <span class="inline" ng-repeat="beneficiary in supplementalLifeInsurancePlan.beneficiaryList.mainBeneficiaries"> {{$index + 1}}. {{beneficiary.firstName}} {{beneficiary.lastName}}; </br></span>
-      </td>
-      <td>{{supplementalLifeInsurancePlan.lastUpdateDateTime}}</td>
-    </tr>
-  </tbody>
-</table>
-<table class="table table-striped" ng-if="!supplementalLifeInsurancePlan">
-  <tbody>
-    <tr>
-      <td width="280">No active life insurance plan</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+        </tbody>
+      </table>
+      <table class="table table-striped" ng-if="!supplementalLifeInsurancePlan.selected">
+        <tbody>
+          <tr>
+            <td width="280">No active life insurance plan</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
 <!-- STD summary table -->
 <div class="table-responsive table-holder table" ng-if="userLtdPlan !== undefined">
