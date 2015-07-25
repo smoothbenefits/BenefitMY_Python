@@ -1,57 +1,57 @@
 <div class="breadcrumb">
-    <a ng-href="#/clients">Broker Dashboard</a>
-    <a ng-href="#/employee">View Benefits</a>
-    <span>Family Member(s)</span>
+  <a ng-href="#/clients">Broker Dashboard</a>
+  <a ng-href="#/employee">View Benefits</a>
+  <span>Family Member(s)</span>
 </div>
 
 <div class="content-header">
-    <h1>Family Member(s)</h1>
-    <span class="general-info" ng-show="!family|| !family.length">You have no family member</span>
-    <span class="general-info" ng-show="family.length">You have {{family.length}} family member(s)</span>
-    <div class="cta"><span class="btn green" ng-if="family && family.length > 0" ng-click="addMember()">Add a new family member</span></div>
-    <div class="view-instruction" ng-if="family && family.length > 0">
-        <p> Please use the <span class="green-link">Add Button</span> on the top right of the screen to add your family members</p>
-        <p><b>The table below</b> shows the family members you have already setup in our system.</p>
-    </div>
-    <div class="view-instruction" ng-if="!family|| !family.length">
-        <p> Please use the <span class="green-link">Add a new family member Button</span> below to add your family members</p>
-        <p ng-if="isOnboarding"> Or you can use the <span class="gray-link"> Skip this step Button</span> to go to the next step</p>
-    </div>
+  <h1>Family Member(s)</h1>
+  <span class="general-info" ng-show="!family|| !family.length">You have no family member</span>
+  <span class="general-info" ng-show="family.length">You have {{family.length}} family member(s)</span>
+  <div class="cta"><span class="btn green" ng-if="family && family.length > 0" ng-click="addMember()">Add a new family member</span></div>
+  <div class="view-instruction" ng-if="family && family.length > 0">
+    <p> Please use the <span class="green-link">Add Button</span> on the top right of the screen to add your family members</p>
+    <p><b>The table below</b> shows the family members you have already setup in our system.</p>
+  </div>
+  <div class="view-instruction" ng-if="!family|| !family.length">
+    <p> Please use the <span class="green-link">Add a new family member Button</span> below to add your family members</p>
+    <p ng-if="isOnboarding"> Or you can use the <span class="gray-link"> Skip this step Button</span> to go to the next step</p>
+  </div>
 </div><!-- / .content-header -->
 
 
 <div class="content-body">
-    <div class="row" ng-if="!family|| !family.length">
-        <div class="col-md-5"><span class="btn green" ng-click="addMember()">Add a new family member</span></div>
-        <div class="col-md-5 col-md-offset-1" ng-if="isOnboarding"><span class="btn gray" ng-click="startModifyBenefit()">Skip this step</span></div>
+  <div class="row" ng-if="!family|| !family.length">
+    <div class="col-md-5"><span class="btn green" ng-click="addMember()">Add a new family member</span></div>
+    <div class="col-md-5 col-md-offset-1" ng-if="isOnboarding"><span class="btn gray" ng-click="startModifyBenefit()">Skip this step</span></div>
+  </div>
+  <div class="table-responsive table-holder" ng-if="family && family.length > 0">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Name</span></th>
+          <th><span>Relationship</span></th>
+          <th><span>Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="member in family">
+          <td>
+            <a href="javascript:void(0);" ng-click="viewDetails(member)">{{member.first_name}} {{member.last_name}}</a>
+          </td>
+          <td>
+            {{member.relationship.capitalize()}}
+          </td>
+          <td>
+            <a href="javascript:void(0);" ng-click="editMember(member)">Edit</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="row" ng-if="isOnboarding">
+    <div class="col-md-3 col-md-offset-9">
+      <span class="btn green" ng-if="family && family.length > 0" ng-click="startModifyBenefit()">Continue</span>
     </div>
-    <div class="table-responsive table-holder" ng-if="family && family.length > 0">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Name</span></th>
-                    <th><span>Relationship</span></th>
-                    <th><span>Actions</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="member in family">
-                    <td>
-                        <a href="javascript:void(0);" ng-click="viewDetails(member)">{{member.first_name}} {{member.last_name}}</a>
-                    </td>
-                    <td>
-                        {{member.relationship.capitalize()}}
-                    </td>
-                    <td>
-                        <a href="javascript:void(0);" ng-click="editMember(member)">Edit</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="row" ng-if="isOnboarding">
-        <div class="col-md-3 col-md-offset-9">
-            <span class="btn green" ng-if="family && family.length > 0" ng-click="startModifyBenefit()">Continue</span>
-        </div>
-    </div>
+  </div>
 </div><!-- / .content-body -->

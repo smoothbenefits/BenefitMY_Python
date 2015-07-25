@@ -2,16 +2,16 @@
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory(
-  'FsaService', 
+  'FsaService',
   ['FsaRepository',
-   'FsaPlanRepository', 
-   'CompanyFsaPlanRepository', 
+   'FsaPlanRepository',
+   'CompanyFsaPlanRepository',
    '$q',
    function (FsaRepository,
              FsaPlanRepository,
-             CompanyFsaPlanRepository, 
+             CompanyFsaPlanRepository,
              $q){
-               
+
     var mapFsaPlanViewModelToDomainModel = function(broker, fsaPlanView) {
       return {
         broker_user: broker,
@@ -28,11 +28,11 @@ benefitmyService.factory(
         updated: moment(fsaPlan.updated_at).format(DATE_FORMAT_STRING)
       };
     };
-    
+
     var createFsaPlan = function(broker, fsaPlan) {
       var deferred = $q.defer();
-      
-      // To save a new FSA plan, use broker user id in the URL since 
+
+      // To save a new FSA plan, use broker user id in the URL since
       // there is no plan id assigned to the new plan yet.
       var fsaDomainModel = mapFsaPlanViewModelToDomainModel(broker, fsaPlan);
       FsaPlanRepository.save({id: broker}, fsaDomainModel).$promise.then(function(response){
@@ -41,14 +41,14 @@ benefitmyService.factory(
       }, function(error){
         deferred.reject(error);
       });
-      
+
       return deferred.promise;
     };
-    
+
     var assignFsaPlanToCompany = function(company, fsaPlan){
       var deferred = $q.defer();
-      
-      // To assign a company to a new FSA plan, use company id in the URL 
+
+      // To assign a company to a new FSA plan, use company id in the URL
       // since there is no company plan id assigned to the new plan yet.
       var postData = {"company": company, "fsa_plan": fsaPlan};
       CompanyFsaPlanRepository.ById.save({id: company}, postData).$promise.then(function(response){
@@ -56,13 +56,13 @@ benefitmyService.factory(
       }, function(error){
         deferred.reject(error);
       });
-      
+
       return deferred.promise;
     };
-    
+
     var signUpCompanyForFsaPlan = function(broker, company, fsaPlan){
       var deferred = $q.defer();
-      
+
       createFsaPlan(broker, fsaPlan).then(function(fsaPlanId){
         assignFsaPlanToCompany(company, fsaPlanId).then(function(response){
           deferred.resolve(response);
@@ -70,7 +70,7 @@ benefitmyService.factory(
       }).catch(function(error){
         deferred.reject(error);
       });
-      
+
       return deferred.promise;
     };
 
@@ -121,21 +121,28 @@ benefitmyService.factory(
           .$promise.then(function(existingFsa){
 
             var userFsa = existingFsa;
-
-            userFsa.primary_amount_per_year = parseFloat(userFsa.primary_amount_per_year);
-            userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
+            userFsa.selected = true;
             userFsa.last_update_date_time = moment(userFsa.updated_at).format(DATE_FORMAT_STRING);
-            userFsa.enrolled = true;
+
+            if (userFsa.company_fsa_plan) {
+              userFsa.primary_amount_per_year = parseFloat(userFsa.primary_amount_per_year);
+              userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
+              userFsa.waived = false;
+            } else {
+              userFsa.waived = true;
+            }
+
             deferred.resolve(userFsa);
           },
           function(failedResponse){
             if (failedResponse.status === 404) {
-              // Didn't locate FSA record for the user, return a shell one 
-              var shellFsa = { 
-                user:user_id, 
-                primary_amount_per_year:0, 
-                dependent_amount_per_year:0, 
-                enrolled:false 
+              // Didn't locate FSA record for the user, return a shell one
+              var shellFsa = {
+                user:user_id,
+                primary_amount_per_year:0,
+                dependent_amount_per_year:0,
+                selected: false,
+                waived: false
               };
               deferred.resolve(shellFsa);
             }
@@ -147,7 +154,7 @@ benefitmyService.factory(
       });
       return deferred.promise;
     };
-    
+
     return {
       signUpCompanyForFsaPlan: signUpCompanyForFsaPlan,
 
@@ -163,13 +170,13 @@ benefitmyService.factory(
 
         if(!fsaElectionToSave.id) {
           // New one, POST it
-          // TODO: have to give a dummy ID for now to match the URL rules, 
+          // TODO: have to give a dummy ID for now to match the URL rules,
           // can this be eliminated?
           FsaRepository.ById.save({id:fsaElectionToSave.user}, fsaElectionToSave
             , function (successResponse) {
                 if (successCallBack) {
                   successCallBack(successResponse);
-                }  
+                }
               }
             , function(errorResponse) {
                 if (errorCallBack) {
@@ -178,12 +185,12 @@ benefitmyService.factory(
           });
         }
         else {
-          // Existing, PUT it 
+          // Existing, PUT it
           FsaRepository.ById.update({id:fsaElectionToSave.id}, fsaElectionToSave
             , function (successResponse) {
                 if (successCallBack) {
                   successCallBack(successResponse);
-                }  
+                }
               }
             , function(errorResponse) {
                 if (errorCallBack) {
@@ -192,6 +199,6 @@ benefitmyService.factory(
           });
         }
       }
-    }; 
+    };
   }
 ]);

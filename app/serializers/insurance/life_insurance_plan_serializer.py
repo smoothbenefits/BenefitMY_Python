@@ -14,4 +14,3 @@ class LifeInsurancePlanPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LifeInsurancePlan
-

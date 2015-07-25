@@ -1,69 +1,69 @@
 <div class="breadcrumb">
-    <a ng-href="#/admin">Employer Dashboard</a>
-    <span>Add Broker</span>
+  <a ng-href="#/admin">Employer Dashboard</a>
+  <span>Add Broker</span>
 </div>
 
 <div class="content-header">
-    <h1>Add Broker</h1>
-    <span class="general-info">Please enter the broker information below</span>
+  <h1>Add Broker</h1>
+  <span class="general-info">Please enter the broker information below</span>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="form-holder">
-        <form name="form">
+  <div class="form-holder">
+    <form name="form">
 
-            <div class="form-label">First Name*</div>
-            <div class="textbox">
-                <input type="text"
-                    name="broker_firstname"
-                    ng-model="addUser.first_name"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.broker_firstname.$dirty && form.broker_firstname.$invalid">
-                  <span ng-show="form.broker_firstname.$error.required">Broker first name field is required</span>
-                </div>
-            </div>
+      <div class="form-label">First Name*</div>
+      <div class="textbox">
+        <input type="text"
+        name="broker_firstname"
+        ng-model="addUser.first_name"
+        ng-required="true">
+        <div class="form-error" ng-show="form.broker_firstname.$dirty && form.broker_firstname.$invalid">
+          <span ng-show="form.broker_firstname.$error.required">Broker first name field is required</span>
+        </div>
+      </div>
 
-            <div class="form-label">Last Name*</div>
-            <div class="textbox">
-                <input type="text"
-                    name="broker_lastname"
-                    ng-model="addUser.last_name"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.broker_lastname.$dirty && form.broker_lastname.$invalid">
-                  <span ng-show="form.broker_lastname.$error.required">Broker last name field is required</span>
-                </div>
-            </div>
+      <div class="form-label">Last Name*</div>
+      <div class="textbox">
+        <input type="text"
+        name="broker_lastname"
+        ng-model="addUser.last_name"
+        ng-required="true">
+        <div class="form-error" ng-show="form.broker_lastname.$dirty && form.broker_lastname.$invalid">
+          <span ng-show="form.broker_lastname.$error.required">Broker last name field is required</span>
+        </div>
+      </div>
 
-            <div class="form-label">Email*</div>
-            <div class="textbox">
-                <input type="email"
-                    name="broker_email"
-                    ng-model="addUser.email"
-                    ng-required="true">
-                <div class="form-error" ng-show="form.broker_email.$dirty && form.broker_email.$invalid">
-                  <span ng-show="form.broker_email.$error.required">Broker email field is required</span>
-                  <span ng-show="form.broker_email.$error.email">Not a valid email address</span>
-                </div>
-            </div>
+      <div class="form-label">Email*</div>
+      <div class="textbox">
+        <input type="email"
+        name="broker_email"
+        ng-model="addUser.email"
+        ng-required="true">
+        <div class="form-error" ng-show="form.broker_email.$dirty && form.broker_email.$invalid">
+          <span ng-show="form.broker_email.$error.required">Broker email field is required</span>
+          <span ng-show="form.broker_email.$error.email">Not a valid email address</span>
+        </div>
+      </div>
 
-            <div class="form-label">Phone*</div>
-            <div class="textbox">
-                <input type="masked"
-                    name="broker_phone"
-                    ng-model="addUser.phone"
-                    ng-required="true"
-                    ui-mask="(999) 999-9999">
-                <div class="form-error" ng-show="form.broker_phone.$dirty && form.broker_phone.$invalid">
-                  <span ng-show="form.broker_phone.$error.required">Phone field is required</span>
-                  <span ng-show="form.broker_phone.$invalid">Please enter an valid phone number</span>
-                </div>
-            </div>
+      <div class="form-label">Phone*</div>
+      <div class="textbox">
+        <input type="masked"
+        name="broker_phone"
+        ng-model="addUser.phone"
+        ng-required="true"
+        ui-mask="(999) 999-9999">
+        <div class="form-error" ng-show="form.broker_phone.$dirty && form.broker_phone.$invalid">
+          <span ng-show="form.broker_phone.$error.required">Phone field is required</span>
+          <span ng-show="form.broker_phone.$invalid">Please enter an valid phone number</span>
+        </div>
+      </div>
 
-            <div class="submit-box">
-                <button ng-click="createUser('broker')" class="btn green" ng-disabled="form.$invalid">Add Broker</button>
-            </div>
+      <div class="submit-box">
+        <button ng-click="createUser('broker')" class="btn green" ng-disabled="form.$invalid">Add Broker</button>
+      </div>
 
-        </form>
-    </div><!-- / .form-holder -->
-    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+    </form>
+  </div><!-- / .form-holder -->
+  <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
 </div><!-- / .content-body -->

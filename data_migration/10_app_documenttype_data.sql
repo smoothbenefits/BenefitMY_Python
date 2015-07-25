@@ -21,8 +21,8 @@ END IF;
 IF NOT EXISTS (select 1 from app_documenttype where name = 'Policies') THEN
     insert into app_documenttype(name, default_content) values('Policies', 'This is where you input your Policies');
 END IF;
-PERFORM setval(pg_get_serial_sequence('app_documenttype', 'id'), 
-              (select max(id) from app_documenttype)); 
+PERFORM setval(pg_get_serial_sequence('app_documenttype', 'id'),
+              (select max(id) from app_documenttype));
 END
 $$
 ;

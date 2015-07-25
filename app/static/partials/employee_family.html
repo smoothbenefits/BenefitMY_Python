@@ -1,25 +1,25 @@
 <div class="breadcrumb">
-    <a ng-href="#/employee">Employee Dashboard</a>
-    <a ng-href="#/employee/benefits/{{employeeId}}">View Benefits</a>
-    <span>Select Family Member</span>
+  <a ng-href="#/employee">Employee Dashboard</a>
+  <a ng-href="#/employee/benefits/{{employeeId}}">View Benefits</a>
+  <span>Select Family Member</span>
 </div>
 
 <!-- Select Family Member Page -->
 <div class="content-header">
-    <h1>My Family Member List</h1>
-    <span class="general-info">Please select your family member below</span>
-    <div class="cta"><span class="btn green" ng-click="addMember()">Add a new family member</span></div>
+  <h1>My Family Member List</h1>
+  <span class="general-info">Please select your family member below</span>
+  <div class="cta"><span class="btn green" ng-click="addMember()">Add a new family member</span></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="form-holder">
-        <div class="select-box">
-            <select multiple class="form-control" ng-multiple="true" ng-model="selected_members" ng-options="member.full_name + ' (' + member.relationship + ')' for member in family">
-            </select>
-        </div>
-        <div class="submit-box">
-            <a ng-click="select(selected_members)" class="btn green">Select</a>
-        </div>
+  <div class="form-holder">
+    <div class="select-box">
+      <select multiple class="form-control" ng-multiple="true" ng-model="selected_members" ng-options="member.full_name + ' (' + member.relationship + ')' for member in family">
+      </select>
     </div>
-    <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+    <div class="submit-box">
+      <a ng-click="select(selected_members)" class="btn green">Select</a>
+    </div>
+  </div>
+  <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
 </div>

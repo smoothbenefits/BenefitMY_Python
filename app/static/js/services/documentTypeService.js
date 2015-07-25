@@ -7,7 +7,7 @@ benefitmyService.factory(
     return {
 
       getDocumentTypes: function(companyId) {
-        var deferred = $q.defer(); 
+        var deferred = $q.defer();
 
         documentRepository.type.get({companyId:companyId})
           .$promise.then(

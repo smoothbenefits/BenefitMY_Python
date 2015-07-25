@@ -3,7 +3,7 @@ var benefitmyService = angular.module('benefitmyService');
 var API_PREFIX = '/api/v1'
 
 benefitmyService.factory(
-  'CompanyEmployeeSummaryService', 
+  'CompanyEmployeeSummaryService',
   [
   function (){
     return {
@@ -26,6 +26,6 @@ benefitmyService.factory(
       getCompanyEmployeeSummaryPdfUrl: function(companyId) {
         return API_PREFIX + '/companies/' + companyId + '/users/pdf';
       }
-    }; 
+    };
   }
 ]);

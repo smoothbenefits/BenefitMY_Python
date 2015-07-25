@@ -1,45 +1,45 @@
 <div class="modal-header">
-    <h4 class="modal-title">Health Reimbursement Accounts (HRA) Details</h4>
+  <h4 class="modal-title">Health Reimbursement Accounts (HRA) Details</h4>
 </div>
 <div class="modal-body">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-label">Documents</div>
-        </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-label">Documents</div>
     </div>
-    <div class="row">
-        <div class="col-md-8 col-md-offset-1">
-            <bmuploadviewer feature-id="{{detailsModalCompanyPlanToDisplay.companyPlanId}}" upload-type="HRA"></bmuploadviewer>
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-1">
+      <bmuploadviewer feature-id="{{detailsModalCompanyPlanToDisplay.companyPlanId}}" upload-type="HRA"></bmuploadviewer>
     </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-label">HRA benefits details from your company</div>
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-label">HRA benefits details from your company</div>
     </div>
-    <div class="row">
-        <div class="col-md-8 col-md-offset-1">
-            <div class="table-responsive table-holder" ng-if="detailsModalCompanyPlanToDisplay">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th><span>Plan Name</span></th>
-                            <th><span>Description</span></th>
-                            <th><span>Paid By</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{detailsModalCompanyPlanToDisplay.planName}}</td>
-                            <td>{{detailsModalCompanyPlanToDisplay.planDescription}}</td>
-                            <td>100% by Employer</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-1">
+      <div class="table-responsive table-holder" ng-if="detailsModalCompanyPlanToDisplay">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th><span>Plan Name</span></th>
+              <th><span>Description</span></th>
+              <th><span>Paid By</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{detailsModalCompanyPlanToDisplay.planName}}</td>
+              <td>{{detailsModalCompanyPlanToDisplay.planDescription}}</td>
+              <td>100% by Employer</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
+  <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
 </div>

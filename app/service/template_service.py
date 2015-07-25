@@ -7,7 +7,7 @@ from app.models.template import Template
 
 
 class TemplateService(object):
-    '''This is a service class that helps the system to 
+    '''This is a service class that helps the system to
        process template related logic and data'''
     def dump_down_key_name(self, key_name):
         return key_name.lower().translate('_').replace(" ", "")

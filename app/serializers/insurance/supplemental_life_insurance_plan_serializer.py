@@ -16,6 +16,6 @@ class SupplementalLifeInsurancePlanSerializer(HashPkSerializerBase):
 class SupplementalLifeInsurancePlanPostSerializer(serializers.ModelSerializer):
     supplemental_life_insurance_plan_rate = SupplementalLifeInsurancePlanRatePostSerializer(many=True,
     	allow_add_remove=True)
-    
+
     class Meta:
         model = SupplementalLifeInsurancePlan

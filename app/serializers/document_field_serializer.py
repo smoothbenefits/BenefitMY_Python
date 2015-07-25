@@ -7,4 +7,3 @@ class DocumentFieldSerializer(HashPkSerializerBase):
 
     class Meta:
         model = DocumentField
-

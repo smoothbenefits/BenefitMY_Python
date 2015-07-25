@@ -8,9 +8,10 @@ from view_test_base import ViewTestBase
 
 class PersonTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['24_person', 
-                '10_company', 
-                '23_auth_user', 
+    fixtures = ['24_person',
+                '49_period_definition',
+                '10_company',
+                '23_auth_user',
                 '11_address',
                 '12_phone']
 
@@ -138,7 +139,7 @@ class PersonTestCase(TestCase, ViewTestBase):
         self.assertEqual(len(result['family']), 0)
 
     def test_create_new_family_member_success(self):
-        response = self.client.post(reverse('user_family_api', kwargs={'pk':self.normalize_key(3)}), 
+        response = self.client.post(reverse('user_family_api', kwargs={'pk':self.normalize_key(3)}),
                                     data=json.dumps(self.new_person),
                                     content_type='application/json')
         self.assertIsNotNone(response)
@@ -149,7 +150,7 @@ class PersonTestCase(TestCase, ViewTestBase):
     def test_create_new_family_member_repeat_spouse(self):
         another=copy.deepcopy(self.new_person)
         another['relationship'] = 'spouse'
-        response = self.client.post(reverse('user_family_api', kwargs={'pk':self.normalize_key(3)}), 
+        response = self.client.post(reverse('user_family_api', kwargs={'pk':self.normalize_key(3)}),
                                     data=json.dumps(another),
                                     content_type='application/json')
         self.assertIsNotNone(response)

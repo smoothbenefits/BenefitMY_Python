@@ -1,49 +1,49 @@
 <div class="modal-header">
-    <h4 class="modal-title">Long Term Disability Benefits Details</h4>
+  <h4 class="modal-title">Long Term Disability Benefits Details</h4>
 </div>
 <div class="modal-body">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-label">Documents</div>
-        </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-label">Documents</div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <bmuploadviewer feature-id="{{companyLtdPlan.companyPlanId}}" upload-type="LTD"></bmuploadviewer>
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <bmuploadviewer feature-id="{{companyLtdPlan.companyPlanId}}" upload-type="LTD"></bmuploadviewer>
     </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-label">LTD benefits details from your company</div>
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-label">LTD benefits details from your company</div>
     </div>
-    <div class="table-responsive table-holder" ng-if="companyLtdPlan">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Plan Name</span></th>
-                    <th><span>Benefit Amount</span></th>
-                    <th><span>Max Benefit</span></th>
-                    <th><span>Duration</span></th>
-                    <th><span>Rate</span></th>
-                    <th><span>Elimination Period</span></th>
-                    <th><span>Paid By</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{companyLtdPlan.planName}}</td>
-                    <td>{{companyLtdPlan.percentageOfSalary}}% of Base Salary</td>
-                    <td>${{companyLtdPlan.maxBenefitMonthly}}/Month</td>
-                    <td>{{companyLtdPlan.duration}} Months or Until Retirement Age</td>
-                    <td>${{companyLtdPlan.rate}} of $10 benefit</td>
-                    <td>{{companyLtdPlan.eliminationPeriodInMonths}} Months</td>
-                    <td>{{companyLtdPlan.paidBy}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  </div>
+  <div class="table-responsive table-holder" ng-if="companyLtdPlan">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Plan Name</span></th>
+          <th><span>Benefit Amount</span></th>
+          <th><span>Max Benefit</span></th>
+          <th><span>Duration</span></th>
+          <th><span>Rate</span></th>
+          <th><span>Elimination Period</span></th>
+          <th><span>Paid By</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{companyLtdPlan.planName}}</td>
+          <td>{{companyLtdPlan.percentageOfSalary}}% of Base Salary</td>
+          <td>${{companyLtdPlan.maxBenefitMonthly}}/Month</td>
+          <td>{{companyLtdPlan.duration}} Months or Until Retirement Age</td>
+          <td>${{companyLtdPlan.rate}} of $10 benefit</td>
+          <td>{{companyLtdPlan.eliminationPeriodInMonths}} Months</td>
+          <td>{{companyLtdPlan.paidBy}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
+  <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
 </div>

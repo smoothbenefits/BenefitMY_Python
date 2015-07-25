@@ -6,7 +6,7 @@ import json
 
 class CompanyFsaTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['37_fsa_plan', '23_auth_user', '24_person', '10_company', '42_company_fsa']
+    fixtures = ['37_fsa_plan', '23_auth_user', '24_person', '49_period_definition', '10_company', '42_company_fsa']
 
     def test_get_company_fsa_by_company(self):
         response = self.client.get(reverse('company_fsa_api',
@@ -37,7 +37,7 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.delete(reverse('broker_company_fsa_api', 
+        response = self.client.delete(reverse('broker_company_fsa_api',
                                               kwargs={'pk': self.normalize_key(2)}))
 
         self.assertIsNotNone(response)
@@ -56,7 +56,7 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('broker_company_fsa_api',
                                             kwargs={'pk': self.normalize_key(2)}),
                                             fsa_data)
-        
+
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
 
@@ -76,5 +76,3 @@ class CompanyFsaTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
         self.assertIsNotNone(response)
         self.assertEqual(result['company'], self.normalize_key(3))
-
-

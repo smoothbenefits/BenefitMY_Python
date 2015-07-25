@@ -7,14 +7,14 @@ from view_test_base import ViewTestBase
 User = get_user_model()
 
 class LoginViewTestCase(TestCase, ViewTestBase):
-    fixtures = ['24_person', '23_auth_user', '10_company']
+    fixtures = ['24_person', '23_auth_user', '49_period_definition', '10_company']
 
     def setUp(self):
         self.user_password = 'foobar'
         self.broker_user = User.objects.get(email='user1@benefitmy.com')
         self.broker_user.set_password(self.user_password)
         self.broker_user.save()
-        
+
     def test_get_not_logged_in(self):
         response = self.client.get(reverse('current_user'))
         self.assertIsNotNone(response)

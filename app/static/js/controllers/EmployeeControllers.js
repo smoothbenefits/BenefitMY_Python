@@ -1519,18 +1519,19 @@ var fsaBenefitsSignup = employeeControllers.controller(
 
         // FSA election data
         $scope.fsaUpdateReasons = [
-          { text: '<Not making updates>', value: 0 },
-          { text: 'New Enrollment or annual enrollment changes', value: 1 },
-          { text: 'Dependent care cost provider changes', value: 2 },
-          { text: 'Dependent satisfies or ceases to satisfy dependent eligibility requirements', value: 3 },
-          { text: 'Birth/Death of spouse or dependent, adoption or placement for adoption', value: 4 },
-          { text: 'Spouse\'s employment commenced/terminated', value: 5 },
-          { text: 'Status change from full-time to part-time or vice versa by employee or spouse', value: 6 },
-          { text: 'Eligibility or Ineligibility of Medicare/Medicaid', value: 7 },
-          { text: 'Change from salaried to hourly or vice versa', value: 8 },
-          { text: 'Marriage/Divorce/Legal Separation', value: 9 },
-          { text: 'Unpaid leave of absence by employee or spouse', value: 10 },
-          { text: 'Return from unpaid leave of absence by employee or spouse', value: 11 }
+          { text: 'Please make a selection...', value: 0 },
+          { text: 'Waive FSA plan', value: 1 },
+          { text: 'New Enrollment or annual enrollment changes', value: 2 },
+          { text: 'Dependent care cost provider changes', value: 3 },
+          { text: 'Dependent satisfies or ceases to satisfy dependent eligibility requirements', value: 4 },
+          { text: 'Birth/Death of spouse or dependent, adoption or placement for adoption', value: 5 },
+          { text: 'Spouse\'s employment commenced/terminated', value: 6 },
+          { text: 'Status change from full-time to part-time or vice versa by employee or spouse', value: 7 },
+          { text: 'Eligibility or Ineligibility of Medicare/Medicaid', value: 8 },
+          { text: 'Change from salaried to hourly or vice versa', value: 9 },
+          { text: 'Marriage/Divorce/Legal Separation', value: 10 },
+          { text: 'Unpaid leave of absence by employee or spouse', value: 11 },
+          { text: 'Return from unpaid leave of absence by employee or spouse', value: 12 }
         ];
 
         $scope.companyIdPromise.then(function(companyId) {
@@ -1557,6 +1558,10 @@ var fsaBenefitsSignup = employeeControllers.controller(
           return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value > 0;
         };
 
+        $scope.waivedFsa = function() {
+          return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value === 1;
+        };
+
         $scope.openPlanDetailsModal = function(){
           $scope.fsaPlanModal = $scope.fsaPlan;
           $modal.open({
@@ -1572,22 +1577,30 @@ var fsaBenefitsSignup = employeeControllers.controller(
           if ($scope.isFsaUpdateReasonSelected()){
             $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
             $scope.fsaElection.company_fsa_plan = $scope.fsaPlan.companyPlanId;
-            FsaService.saveFsaElection($scope.fsaElection, $scope.updateReason
-              , function() {
-                    var modalInstance = $scope.showSaveSuccessModal();
-                    modalInstance.result.then(function(){
-                        $scope.transitionToNextTab($scope.tabs);
-                    });
-                    $scope.myForm.$setPristine();
-              }
-              , function() {
-                  $scope.savedSuccess = false;
-              });
           }
+
+          // Set values to NULL if user chooses to waive FSA plan
+          if ($scope.selectedFsaUpdateReason.value === 1) {
+            $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
+            $scope.fsaElection.company_fsa_plan = null;
+            $scope.fsaElection.primary_amount_per_year = null;
+            $scope.fsaElection.dependent_amount_per_year = null;
+          }
+
+          FsaService.saveFsaElection($scope.fsaElection, $scope.updateReason
+            , function() {
+                  var modalInstance = $scope.showSaveSuccessModal();
+                  modalInstance.result.then(function(){
+                      $scope.transitionToNextTab($scope.tabs);
+                  });
+                  $scope.myForm.$setPristine();
+            }
+            , function() {
+                $scope.savedSuccess = false;
+            });
         };
 
         $scope.benefit_type = 'FSA'
-
     }]);
 
 var basicLifeBenefitsSignup = employeeControllers.controller(
@@ -1629,10 +1642,15 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = plans[0];
               $scope.basicLifeInsurancePlan.selected = true;
+              $scope.basicLifeInsurancePlan.mandatory = true;
               // Ideally, basicLifeInsurancePlan should be user basic life insurance plan
               // plans returned here are company life insurance plan, which should be a property of
               // the basicLifeInsurancePlan rather than make the two parallel.
               $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = plans[0];
+
+              if (parseFloat($scope.basicLifeInsurancePlan.employee_cost_per_period) > 0){
+                $scope.basicLifeInsurancePlan.mandatory = false;
+              }
             }
 
             // Get current user's basic life insurance plan situation
@@ -1681,51 +1699,39 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           // Save basic life insurance
           // TO-DO: Need to better organize the logic to save basic life insurance
           ///////////////////////////////////////////////////////////////////////////
-          if (!$scope.basicLifeInsurancePlan.selected){
-            BasicLifeInsuranceService.deleteBasicLifeInsurancePlanForUser(employeeId
-              , function() {
-                  var modalInstance = $scope.showSaveSuccessModal();
-                  modalInstance.result.then(function(){
-                      $scope.transitionToNextTab($scope.tabs);
-                  });
-                  $scope.myForm.$setPristine();
-              }
-              , function(error) {
-                $scope.savedSuccess = false;
-              });
-          }
-          else{
-            BasicLifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
-              var enrolledBasic = _.find(enrolledPlans, function(plan){
-                return plan.company_life_insurance.life_insurance_plan.insurance_type === 'Basic';
-              });
-              if (enrolledBasic){
-                $scope.basicLifeInsurancePlan.enrolled = true;
-                $scope.basicLifeInsurancePlan.id = enrolledBasic.id;
-                $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = enrolledBasic.company_life_insurance;
-              }
-              else{
-                $scope.basicLifeInsurancePlan.enrolled = false;
-              }
-
-              $scope.basicLifeInsurancePlan.currentUserId = employeeId;
-
-              BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, $scope.updateReason
-              , function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
-                $scope.myForm.$setPristine();
-              }
-              , function(error){
-                $scope.savedSuccess = false;
-                alert('Failed to save basic life insurance. Please make sure all required fields have been filled.')
-              });
-            }, function(error) {
-              $scope.savedSuccess = false;
+          BasicLifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
+            var enrolledBasic = _.find(enrolledPlans, function(plan){
+              return plan.company_life_insurance;
             });
-          }
+
+            if (enrolledBasic){
+              $scope.basicLifeInsurancePlan.enrolled = true;
+              $scope.basicLifeInsurancePlan.id = enrolledBasic.id;
+              $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = enrolledBasic.company_life_insurance;
+            }
+            else{
+              $scope.basicLifeInsurancePlan.enrolled = false;
+            }
+
+            $scope.basicLifeInsurancePlan.currentUserId = employeeId;
+
+            BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, $scope.updateReason
+            , function() {
+              var modalInstance = $scope.showSaveSuccessModal();
+              modalInstance.result.then(function(){
+                $scope.transitionToNextTab($scope.tabs);
+              });
+              $scope.myForm.$setPristine();
+            }
+            , function(error){
+              $scope.savedSuccess = false;
+              alert('Failed to save basic life insurance. Please make sure all required fields have been filled.')
+            });
+
+
+          }, function(error) {
+            $scope.savedSuccess = false;
+          });
         };
 
         $scope.benefit_type = 'Basic Life Insurance';
@@ -1956,19 +1962,9 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
         $scope.save = function(){
           // Save life insurance
           if ($scope.isWaiveBenefitSelected()) {
-            // Waive selected. Delete all user plans for this user
-            SupplementalLifeInsuranceService.deletePlansForUser(employeeId).then(
-              function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
-                $scope.myForm.$setPristine();
-              }
-              , function(error) {
-                alert('Failed to save your benefits election. Please try again later.');
-              }
-            );
+
+            // Set company plan id to null when user choose to waive
+            $scope.supplementalLifeInsurancePlan.companyPlanId = null;
           } else {
             $scope.supplementalLifeInsurancePlan.companyPlanId = $scope.selectedCompanyPlan.value.companyPlanId;
 
@@ -1986,19 +1982,19 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             $scope.supplementalLifeInsurancePlan.selfPremiumPerMonth = $scope.computeSelfPremium();
             $scope.supplementalLifeInsurancePlan.spousePremiumPerMonth = $scope.computeSpousePremium();
             $scope.supplementalLifeInsurancePlan.childPremiumPerMonth = $scope.computeChildPremium();
-
-            SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
-              function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                  $scope.transitionToNextTab($scope.tabs);
-                });
-                $scope.myForm.$setPristine();
-              }
-              , function(error) {
-                alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
-              });
           }
+          
+          SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
+            function() {
+              var modalInstance = $scope.showSaveSuccessModal();
+              modalInstance.result.then(function(){
+                $scope.transitionToNextTab($scope.tabs);
+              });
+              $scope.myForm.$setPristine();
+            }
+            , function(error) {
+              alert('Failed to save your beneficiary information. Please make sure all required fields have been filled.');
+            });
         };
 
         $scope.openPlanDetailsModal = function() {
@@ -2277,6 +2273,14 @@ var benefitSignupSummary = employeeControllers.controller(
              $scope.enrollments[benefitType].status === 'WAIVED');
        };
 
+       $scope.waived = function(benefitType) {
+         if (!$scope.enrollments) {
+           return false;
+         }
+
+         return $scope.enrollments[benefitType].status === 'WAIVED';
+       };
+
        // Update panel class based on benefit enrollment status
        $scope.getPanelClass = function(benefitType) {
          if ($scope.completed(benefitType)) {
@@ -2380,7 +2384,7 @@ var benefitsSignupControllerBase = employeeControllers.controller(
                 nextTab.active = true;
                 $state.go(curTab.next);
             }
-          
+
         }
 
     }]);

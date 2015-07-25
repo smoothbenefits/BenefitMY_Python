@@ -45,7 +45,7 @@ benefitmyService.factory('employeeBenefitElectionService',
               employeeList.push(compUser);
             }
           });
-          
+
           BenefitElectionService.getBenefitElectionsByCompany(companyId)
           .then(function(array){
             addBenefitPlanToSelectionList(array);

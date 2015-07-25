@@ -16,7 +16,7 @@ class UserCompanyBenefitPlanOption(models.Model):
         related_name="user_company_benefit_plan")
 
     record_reason = models.ForeignKey(
-        SysBenefitUpdateReason, 
+        SysBenefitUpdateReason,
         blank=True,
         null=True,
         related_name="health_benefit_update_reason")

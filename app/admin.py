@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from app.custom_authentication import AuthUser
-from app.models import Company, CompanyUser, Person
+from app.models import Company, CompanyUser, Person, SysPeriodDefinition
 
 # Register your models here.
 class UserCreationForm(forms.ModelForm):
@@ -37,7 +37,7 @@ class UserChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
-    password = ReadOnlyPasswordHashField(label=("Password"), 
+    password = ReadOnlyPasswordHashField(label=("Password"),
         help_text=("You can change user's password using <a href=\"password/\">this form</a>."))
 
     class Meta:
@@ -78,8 +78,8 @@ class AuthUserAdmin(UserAdmin):
     filter_horizontal = ()
 
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    fields = ['name']
+    list_display = ('name','pay_period_definition')
+    fields = ['name', 'pay_period_definition']
 
 class CompanyUserAdmin(admin.ModelAdmin):
     list_display = ('user', 'company', 'company_user_type', 'new_employee')
@@ -93,11 +93,16 @@ class PersonAdmin(admin.ModelAdmin):
         ('Company Relation', {'fields': ('company',)}),
     )
 
+class SysPeriodDefinitionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'month_factor')
+    fields = ['name', 'month_factor']
+
 # Now register the new UserAdmin...
 admin.site.register(AuthUser, AuthUserAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(CompanyUser, CompanyUserAdmin)
 admin.site.register(Person, PersonAdmin)
+admin.site.register(SysPeriodDefinition, SysPeriodDefinitionAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

@@ -136,6 +136,7 @@ from app.views.sys_benefit_update_reason_view import SysBenefitUpdateReasonView
 
 from app.views.person_enrollment_summary_view import PersonEnrollmentSummaryView
 from app.views.company_benefit_availability_view import CompanyBenefitAvailabilityView
+from app.views.sys_period_definition_view import SysPeriodDefinitionView
 
 PREFIX = "api/v1"
 
@@ -200,6 +201,7 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
     url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
+    url(r'^%s/period_definitions/?$' % PREFIX, SysPeriodDefinitionView.as_view(), name='sys_period_definition_api'),
     url(r'^%s/benefits/?$' % PREFIX, BenefitPlanCreationView.as_view(), name='benefit_post_api'),
     url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),

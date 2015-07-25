@@ -57,24 +57,40 @@ benefitmyService.factory('BenefitSummaryService',
       // Map basic life insurance enrollment
       if (domainModel.basic_life[0] != null) {
         var domainBasicLife = domainModel.basic_life[0];
-        viewModel['basic_life'] = {
-          "plan_name": domainBasicLife.company_life_insurance.life_insurance_plan.name,
-          "beneficiary": domainBasicLife.life_insurance_beneficiary
-        };
+
+        if (domainBasicLife.company_life_insurance) {
+          viewModel['basic_life'] = {
+            "plan_name": domainBasicLife.company_life_insurance.life_insurance_plan.name,
+            "beneficiary": domainBasicLife.life_insurance_beneficiary,
+            "status": SELECTED
+          };
+        } else {
+          viewModel['basic_life'] = {
+            "status": WAIVED
+          };
+        }
       }
 
       // Map supplemental life insurance enrollment
       if (domainModel.supplemental_life[0] != null) {
         var domainSupplementalLife = domainModel.supplemental_life[0];
-        viewModel['supplemental_life'] = {
-          "plan_name": domainSupplementalLife.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name,
-          "beneficiary": domainSupplementalLife.suppl_life_insurance_beneficiary,
-          "self_elected_amount": domainSupplementalLife.self_elected_amount,
-          "spouse_elected_amount": domainSupplementalLife.spouse_elected_amount,
-          "child_elected_amount": domainSupplementalLife.child_elected_amount,
-          "self_condition": domainSupplementalLife.self_condition.name,
-          "spouse_condition": domainSupplementalLife.spouse_condition.name
-        };
+
+        if (domainSupplementalLife.company_supplemental_life_insurance_plan){
+          viewModel['supplemental_life'] = {
+            "plan_name": domainSupplementalLife.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name,
+            "beneficiary": domainSupplementalLife.suppl_life_insurance_beneficiary,
+            "self_elected_amount": domainSupplementalLife.self_elected_amount,
+            "spouse_elected_amount": domainSupplementalLife.spouse_elected_amount,
+            "child_elected_amount": domainSupplementalLife.child_elected_amount,
+            "self_condition": domainSupplementalLife.self_condition.name,
+            "spouse_condition": domainSupplementalLife.spouse_condition.name,
+            "status": SELECTED
+          };
+        } else {
+          viewModel['supplemental_life'] = {
+            "status": WAIVED
+          };
+        }
       }
 
       // Map STD enrollment
@@ -113,6 +129,11 @@ benefitmyService.factory('BenefitSummaryService',
           "dependent_amount_per_year": domainFsa.dependent_amount_per_year,
           "update_reason": domainFsa.update_reason
         };
+        if (domainFsa.company_fsa_plan){
+          viewModel['fsa'].status = SELECTED;
+        } else {
+          viewModel['fsa'].status = WAIVED;
+        }
       }
 
       return viewModel;

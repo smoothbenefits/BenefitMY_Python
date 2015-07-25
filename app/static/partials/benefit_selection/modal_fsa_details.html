@@ -1,15 +1,15 @@
 <div class="modal-header">
-    <h4 class="modal-title">Flexible Spending Accounts - {{fsaPlanModal.fsaPlanName}}</h4>
+  <h4 class="modal-title">Flexible Spending Accounts - {{fsaPlanModal.fsaPlanName}}</h4>
 </div>
 <div class="modal-body">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-label">Documents</div>
-        </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-label">Documents</div>
     </div>
-    <bmuploadviewer feature-id="{{fsaPlanModal.companyPlanId}}" upload-type="FSA"></bmuploadviewer>
+  </div>
+  <bmuploadviewer feature-id="{{fsaPlanModal.companyPlanId}}" upload-type="FSA"></bmuploadviewer>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
+  <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
 </div>

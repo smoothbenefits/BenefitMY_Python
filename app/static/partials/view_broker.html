@@ -1,35 +1,35 @@
 <div class="breadcrumb">
-    <a ng-href="#/admin">Employer Dashboard</a>
-    <span>View Broker</span>
+  <a ng-href="#/admin">Employer Dashboard</a>
+  <span>View Broker</span>
 </div>
 
 <div class="content-header">
-    <h1>View Brokers</h1>
-    <span class="general-info">You have total <b>{{brokerCount}}</b> brokers</span>
-    <div class="cta"><span class="btn green" ng-click="addLink('broker')">Add Broker</span></div>
+  <h1>View Brokers</h1>
+  <span class="general-info">You have total <b>{{brokerCount}}</b> brokers</span>
+  <div class="cta"><span class="btn green" ng-click="addLink('broker')">Add Broker</span></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="table-responsive table-holder">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Name</span></th>
-                    <th><span>Contact Info</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-if="brokers.length==0">
-                    <td colspan="2" class="no-related-users">
-                       There is no broker associated for this company
-                   </td>
-                </tr>
-                <tr ng-repeat="broker in brokers">
-                    <td>{{broker.user.first_name}} {{broker.user.last_name}}</td>
-                    <td><a href="mailto:{{broker.user.email}}">{{broker.user.email}}</a></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="back"><a ng-click="gotoEmployerDashboardLink()">&laquo; Back</a></div>
+  <div class="table-responsive table-holder">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Name</span></th>
+          <th><span>Contact Info</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="brokers.length==0">
+          <td colspan="2" class="no-related-users">
+            There is no broker associated for this company
+          </td>
+        </tr>
+        <tr ng-repeat="broker in brokers">
+          <td>{{broker.user.first_name}} {{broker.user.last_name}}</td>
+          <td><a href="mailto:{{broker.user.email}}">{{broker.user.email}}</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="back"><a ng-click="gotoEmployerDashboardLink()">&laquo; Back</a></div>
 </div><!-- / .content-body -->

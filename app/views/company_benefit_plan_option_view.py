@@ -40,11 +40,11 @@ class CompanyBenefitPlanOptionView(APIView):
 @api_view(['POST'])
 @transaction.atomic
 def create_benefit_plan_option(request):
-    if (not "company" in request.DATA or 
-        not "benefit" in request.DATA or 
-        not "benefit_plan_id" in request.DATA["benefit"] or 
-        not "benefit_option_type" in request.DATA["benefit"] or 
-        not "total_cost_per_period" in request.DATA["benefit"] or 
+    if (not "company" in request.DATA or
+        not "benefit" in request.DATA or
+        not "benefit_plan_id" in request.DATA["benefit"] or
+        not "benefit_option_type" in request.DATA["benefit"] or
+        not "total_cost_per_period" in request.DATA["benefit"] or
         not "employee_cost_per_period" in request.DATA["benefit"]):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     company_benefits = CompanyBenefitPlanOption.objects.filter(

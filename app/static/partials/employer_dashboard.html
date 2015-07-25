@@ -1,81 +1,81 @@
 <div class="breadcrumb">
-    <span ng-href="#/admin">Employer Dashboard</span>
+  <span ng-href="#/admin">Employer Dashboard</span>
 </div>
 
 <div class="content-header">
-    <h1>Welcome, {{curUser.first_name}}</h1>
-    <span class="general-info">Account Type: Employer<!-- , <a href="/">Broker</a> --></span>
-    <!-- <span class="divider">|</span>
-    <span class="general-info">Last Login: 3:23pm 24 Oct 2014</span> -->
+  <h1>Welcome, {{curUser.first_name}}</h1>
+  <span class="general-info">Account Type: Employer<!-- , <a href="/">Broker</a> --></span>
+  <!-- <span class="divider">|</span>
+  <span class="general-info">Last Login: 3:23pm 24 Oct 2014</span> -->
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <h6>HR Overview</h6>
-    <div class="dashboard-card">
-        <div class="info-row">
-            <div class="col-xs-4 img-col"><span class="flaticon-user135"></span></div>
-            <div class="col-xs-8 info-col">
-                <h3>{{employeeCount}}</h3>
-                <p>Employees</p>
-            </div>
-        </div>
-        <div class="action-row">
-            <div class="col-xs-6"><a ng-click="addEmployeeClick(company.id)">Add</a></div>
-            <div class="col-xs-6"><a ng-click="viewEmployeeClick(company.id)">View</a></div>
-        </div>
-    </div><!-- / .dashboard-card -->
+  <h6>HR Overview</h6>
+  <div class="dashboard-card">
+    <div class="info-row">
+      <div class="col-xs-4 img-col"><span class="flaticon-user135"></span></div>
+      <div class="col-xs-8 info-col">
+        <h3>{{employeeCount}}</h3>
+        <p>Employees</p>
+      </div>
+    </div>
+    <div class="action-row">
+      <div class="col-xs-6"><a ng-click="addEmployeeClick(company.id)">Add</a></div>
+      <div class="col-xs-6"><a ng-click="viewEmployeeClick(company.id)">View</a></div>
+    </div>
+  </div><!-- / .dashboard-card -->
 
-    <h6>Templates</h6>
-    <div class="dashboard-card" ng-repeat="docType in documentTypes">
-        <div class="info-row">
-            <div class="col-xs-4 img-col"><span class="flaticon-rounded47"></span></div>
-            <div class="col-xs-8 info-col">
-                <h3>{{templateCountArray[docType.name]}}</h3>
-                <p>{{docType.name}} Template</p>
-            </div>
-        </div>
-        <div class="action-row">
-            <div class="col-xs-12"><a ng-click="templateClick(company.id, docType)">Manage</a></div>
-        </div>
-    </div><!-- / .dashboard-card -->
+  <h6>Templates</h6>
+  <div class="dashboard-card" ng-repeat="docType in documentTypes">
+    <div class="info-row">
+      <div class="col-xs-4 img-col"><span class="flaticon-rounded47"></span></div>
+      <div class="col-xs-8 info-col">
+        <h3>{{templateCountArray[docType.name]}}</h3>
+        <p>{{docType.name}} Template</p>
+      </div>
+    </div>
+    <div class="action-row">
+      <div class="col-xs-12"><a ng-click="templateClick(company.id, docType)">Manage</a></div>
+    </div>
+  </div><!-- / .dashboard-card -->
 
-    <h6>Benefits Overview</h6>
-    <div class="dashboard-card">
-        <div class="info-row">
-            <div class="col-xs-4 img-col"><span class="flaticon-user135"></span></div>
-            <div class="col-xs-8 info-col">
-                <h3>{{brokerCount}}</h3>
-                <p>Broker</p>
-            </div>
-        </div>
-        <div class="action-row">
-            <div class="col-xs-6"><a ng-click="addBrokerClick(company.id)">Add</a></div>
-            <div class="col-xs-6"><a ng-click="viewBrokerClick(company.id)">View</a></div>
-        </div>
-    </div><!-- / .dashboard-card -->
-    <div class="dashboard-card">
-        <div class="info-row">
-            <div class="col-xs-4 img-col"><span class="flaticon-heart260"></span></div>
-            <div class="col-xs-8 info-col">
-                <h3>{{benefitCount}}</h3>
-                <p>Benefits Plans</p>
-            </div>
-        </div>
-        <div class="action-row">
-            <div class="col-xs-12"><a ng-click="viewBenefitsClick(company.id)">View</a></div>
-        </div>
-    </div><!-- / .dashboard-card -->
-    <div class="dashboard-card">
-        <div class="info-row">
-            <div class="col-xs-4 img-col"><span class="flaticon-heart260"></span></div>
-            <div class="col-xs-8 info-col">
-                <h3>{{benefitEnrollCount}}</h3>
-                <p>Employee Benefits Selections</p>
-            </div>
-        </div>
-        <div class="action-row">
-            <div class="col-xs-12"><a ng-click="viewBenefitElection(company.id)">View</a></div>
-        </div>
-    </div><!-- / .dashboard-card -->
+  <h6>Benefits Overview</h6>
+  <div class="dashboard-card">
+    <div class="info-row">
+      <div class="col-xs-4 img-col"><span class="flaticon-user135"></span></div>
+      <div class="col-xs-8 info-col">
+        <h3>{{brokerCount}}</h3>
+        <p>Broker</p>
+      </div>
+    </div>
+    <div class="action-row">
+      <div class="col-xs-6"><a ng-click="addBrokerClick(company.id)">Add</a></div>
+      <div class="col-xs-6"><a ng-click="viewBrokerClick(company.id)">View</a></div>
+    </div>
+  </div><!-- / .dashboard-card -->
+  <div class="dashboard-card">
+    <div class="info-row">
+      <div class="col-xs-4 img-col"><span class="flaticon-heart260"></span></div>
+      <div class="col-xs-8 info-col">
+        <h3>{{benefitCount}}</h3>
+        <p>Benefits Plans</p>
+      </div>
+    </div>
+    <div class="action-row">
+      <div class="col-xs-12"><a ng-click="viewBenefitsClick(company.id)">View</a></div>
+    </div>
+  </div><!-- / .dashboard-card -->
+  <div class="dashboard-card">
+    <div class="info-row">
+      <div class="col-xs-4 img-col"><span class="flaticon-heart260"></span></div>
+      <div class="col-xs-8 info-col">
+        <h3>{{benefitEnrollCount}}</h3>
+        <p>Employee Benefits Selections</p>
+      </div>
+    </div>
+    <div class="action-row">
+      <div class="col-xs-12"><a ng-click="viewBenefitElection(company.id)">View</a></div>
+    </div>
+  </div><!-- / .dashboard-card -->
 
 </div><!-- / .content-body -->
