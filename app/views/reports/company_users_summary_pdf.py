@@ -1,3 +1,4 @@
+import time
 from django.http import HttpResponse
 from django.http import Http404
 from django.db import transaction
@@ -7,7 +8,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from app.models.company_user import CompanyUser
+from app.models.company import Company
 from app.models.person import Person
 from app.models.phone import Phone
 from app.models.address import Address
@@ -77,11 +78,14 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
         return
 
-    def _get_person_birth_date_line(self, person):
-        if person and person.birth_date:
-            return '(' + ReportExportViewBase.get_date_string(person.birth_date) + ')'
+    def _get_page_title(self, company_id):
+        comp = Company.objects.get(pk=company_id)
+        if comp:
+            return comp.name + ' - Enrollment Confirmation - ' + \
+                time.strftime('%B') + ' ' + time.strftime('%Y')
         else:
             return ''
+
 
     def _write_employee(self, employee_user_id, company_id):
         person = self._get_person_by_user(employee_user_id)
@@ -90,13 +94,19 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         # set the common configuration on the page
         self._init_page()
 
+        # Write title of the page
+        title = self._get_page_title(company_id)
+        self._set_font(14)
+        self._write_line([title])
+        self._start_new_line()
+
         # Write full name of the employee being rendered
+        self._set_font(12)
         full_name = self._get_person_full_name(person, user)
-        self._write_line([ \
-            full_name, \
-            self._get_person_birth_date_line(person) if person is not None else ''])
+        self._write_line([full_name])
 
         self._start_new_line()
+        self._set_font(10)
 
         # Now starts writing benefit enrollments
         self._write_employee_all_health_benefits_info(user, company_id)
