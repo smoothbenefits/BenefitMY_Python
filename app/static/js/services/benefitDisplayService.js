@@ -60,7 +60,7 @@ benefitmyService.factory('benefitDisplayService',
             }
 
             var optionColSpan = 3;
-            var optionEmployeeLabel = 'Employee\n(' + company.pay_period_definition.name + ')';
+            var optionEmployeeLabel = 'Employee\n(per pay period)';
             if(showEmployeePremium){
               optionColSpan = 6;
               optionEmployeeLabel = '';

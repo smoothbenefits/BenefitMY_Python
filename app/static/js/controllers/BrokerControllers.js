@@ -89,6 +89,11 @@ var benefitsController = brokersControllers.controller(
           $scope.nonMedicalBenefitArray = nonMedicalArray;
           $scope.benefitCount = benefitCount;
         });
+
+        BasicLifeInsuranceService.getLifeInsurancePlansForCompany($scope.company)
+        .then(function(response) {
+          $scope.lifeInsurancePlans = response;
+        });
       });
 
       $scope.backtoDashboard = function(){
@@ -106,10 +111,6 @@ var benefitsController = brokersControllers.controller(
           });
         }
       };
-
-      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId).then(function(response) {
-        $scope.lifeInsurancePlans = response;
-      });
 
       $scope.deleteLifeInsurancePlan = function(companyLifeInsurancePlan) {
         BasicLifeInsuranceService.deleteLifeInsurancePlanForCompany(companyLifeInsurancePlan.id, function() {
@@ -390,6 +391,7 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
     var clientId = $stateParams.clientId;
+
     $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
 
     $scope.buttonEnabled = function() {
@@ -408,9 +410,10 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
         // For now, we combine the gestures of
         //  1. Broker creates the plan
         //  2. Broker enrolls the company for the plan
-        BasicLifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
-
-          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan).then(
+        BasicLifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan)
+        .then(function(newPlan) {
+          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan, $scope.company)
+          .then(
             function() {
               var successMessage = "The new basic life insurance plan has been saved successfully."
 
