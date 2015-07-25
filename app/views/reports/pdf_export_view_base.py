@@ -35,6 +35,11 @@ class PdfExportViewBase(ReportExportViewBase):
         self._canvas.setFont(self._font_family, self._font_size)
         return
 
+    def _set_font(self, font_size):
+        if font_size > 0:
+            self._font_size = font_size
+            self._canvas.setFont(self._font_family, self._font_size)
+
     def _translate_X(self, x):
         return self._page_margin_left_right + x
 
