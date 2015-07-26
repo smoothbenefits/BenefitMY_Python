@@ -2033,7 +2033,7 @@ var stdBenefitsSignup = employeeControllers.controller(
         $scope.enrollBenefits = true;
 
         $scope.companyPromise.then(function(company){
-
+            $scope.company = company;
             StdService.getStdPlansForCompany(company.id).then(function(stdPlans) {
 
                 // For now, similar to basic life, simplify the problem space by
@@ -2050,7 +2050,10 @@ var stdBenefitsSignup = employeeControllers.controller(
                     return;
                 }
 
-                StdService.getEmployeePremiumForUserCompanyStdPlan($scope.employeeId, stdPlan)
+                StdService.getEmployeePremiumForUserCompanyStdPlan(
+                    $scope.employeeId, 
+                    stdPlan, 
+                    company.pay_period_definition)
                 .then(function(premium) {
                     $scope.companyStdPlan.employeePremium = premium;
                 });
@@ -2061,7 +2064,10 @@ var stdBenefitsSignup = employeeControllers.controller(
 
             // Save std
             var savePromise = $scope.enrollBenefits ?
-                StdService.enrollStdPlanForUser(employeeId, $scope.companyStdPlan, $scope.updateReason) :
+                StdService.enrollStdPlanForUser(employeeId,
+                                                $scope.companyStdPlan,
+                                                $scope.company.pay_period_definition,
+                                                $scope.updateReason) :
                 StdService.deleteStdPlansForUser(employeeId);
 
             savePromise.then(
@@ -2108,7 +2114,7 @@ var ltdBenefitsSignup = employeeControllers.controller(
         $scope.enrollBenefits = true;
 
         $scope.companyPromise.then(function(company){
-
+            $scope.company = company;
             LtdService.getLtdPlansForCompany(company.id).then(function(ltdPlans) {
 
                 // For now, similar to basic life, simplify the problem space by
@@ -2125,7 +2131,10 @@ var ltdBenefitsSignup = employeeControllers.controller(
                     return;
                 }
 
-                LtdService.getEmployeePremiumForUserCompanyLtdPlan($scope.employeeId, ltdPlan)
+                LtdService.getEmployeePremiumForUserCompanyLtdPlan(
+                    $scope.employeeId, 
+                    ltdPlan, 
+                    company.pay_period_definition)
                 .then(function(premium) {
                     $scope.companyLtdPlan.employeePremium = premium;
                 });
@@ -2136,7 +2145,10 @@ var ltdBenefitsSignup = employeeControllers.controller(
         $scope.save = function() {
             // Save ltd
             var savePromise = $scope.enrollBenefits ?
-                LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan, $scope.updateReason) :
+                LtdService.enrollLtdPlanForUser(employeeId,
+                                                $scope.companyLtdPlan,
+                                                $scope.company.pay_period_definition,
+                                                $scope.updateReason) :
                 LtdService.deleteLtdPlansForUser(employeeId);
 
             savePromise.then(

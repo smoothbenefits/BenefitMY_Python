@@ -72,12 +72,12 @@ benefitmyService.factory('StdService',
             return domainModel;
         };
 
-        var mapUserCompanyPlanViewToDomainModel = function(userCompanyPlanViewModel) {
+        var mapUserCompanyPlanViewToDomainModel = function(userCompanyPlanViewModel, payPeriod) {
             var domainModel = {};
 
             domainModel.id = userCompanyPlanViewModel.userCompanyPlanId;
             domainModel.user = userCompanyPlanViewModel.planOwner;
-            domainModel.total_premium_per_period = userCompanyPlanViewModel.employeePremium;
+            domainModel.total_premium_per_period = userCompanyPlanViewModel.employeePremium / payPeriod.month_factor;
 
             domainModel.company_std_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
@@ -111,7 +111,7 @@ benefitmyService.factory('StdService',
 
             getStdPlansForCompany: getStdPlansForCompany,
 
-            getEmployeePremiumForUserCompanyStdPlan: function(userId, stdPlan) {
+            getEmployeePremiumForUserCompanyStdPlan: function(userId, stdPlan, companyPayPeriod) {
                 var deferred = $q.defer();
 
                 if (!stdPlan) {
@@ -133,11 +133,10 @@ benefitmyService.factory('StdService',
                         var rate = stdPlan.rate;
                         var rateBase = 10;
 
-                        var numOfPeriods = 26; // biweekly
 
-                        var premium = (maxBenefit * (rate / rateBase) * employeeContribution / numOfPeriods).toFixed(2);
+                        var premiumPerPayPeriod = (maxBenefit / 12 * (rate / rateBase) * companyPayPeriod.month_factor * employeeContribution).toFixed(2);
 
-                        deferred.resolve(premium);
+                        deferred.resolve(premiumPerPayPeriod);
                     }, function(error) {
                         deferred.reject(error);
                     });
@@ -214,7 +213,10 @@ benefitmyService.factory('StdService',
                 return $q.all(requests);
             },
 
-            enrollStdPlanForUser: function(userId, companyStdPlanToEnroll, updateReason) {
+            enrollStdPlanForUser: function(userId,
+                                           companyStdPlanToEnroll,
+                                           payPeriod,
+                                           updateReason) {
                 // This should be take care of 2 cases
                 // - user does not have a plan. Create one for him/her
                 // - user already has a plan. Update
@@ -224,7 +226,7 @@ benefitmyService.factory('StdService',
                 userPlan.planOwner = userId;
                 userPlan.updateReason = updateReason;
 
-                var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll);
+                var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll, payPeriod);
                 planDomainModel.company_std_insurance = planDomainModel.company_std_insurance.id;
 
                 StdRepository.CompanyUserPlanByUser.query({userId:userId})
