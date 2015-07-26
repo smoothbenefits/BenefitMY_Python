@@ -411,11 +411,17 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         employee_plans = UserCompanyLtdInsurancePlan.objects.filter(user=employee_user_id)
         if (len(employee_plans) > 0):
             employee_plan = employee_plans[0]
-            company_plan = employee_plan.company_ltd_insurance
-            plan = company_plan.ltd_insurance_plan
-            col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
-            col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
-            col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
+
+            if employee_plan.company_ltd_insurance:
+                company_plan = employee_plan.company_ltd_insurance
+                plan = company_plan.ltd_insurance_plan
+                col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
+                col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
+                col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
+            else:
+                col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
+                col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
+                col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
 
             return col_num
 
