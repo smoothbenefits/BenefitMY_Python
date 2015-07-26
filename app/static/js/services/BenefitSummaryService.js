@@ -96,15 +96,22 @@ benefitmyService.factory('BenefitSummaryService',
       // Map STD enrollment
       if (domainModel.std[0] != null) {
         var domainStd = domainModel.std[0];
-        viewModel['std'] = {
-          "plan_name": domainStd.company_std_insurance.std_insurance_plan.name,
-          "percentage_of_salary": domainStd.company_std_insurance.percentage_of_salary,
-          "max_benefit_weekly": domainStd.company_std_insurance.max_benefit_weekly,
-          "duration": domainStd.company_std_insurance.duration,
-          "rate": domainStd.company_std_insurance.rate,
-          "employer_contribution_percentage": domainStd.company_std_insurance.employer_contribution_percentage,
-          "elimination_period_in_days": domainStd.company_std_insurance.elimination_period_in_days
-        };
+        if (domainStd.company_std_insurance) {
+          viewModel['std'] = {
+            "plan_name": domainStd.company_std_insurance.std_insurance_plan.name,
+            "percentage_of_salary": domainStd.company_std_insurance.percentage_of_salary,
+            "max_benefit_weekly": domainStd.company_std_insurance.max_benefit_weekly,
+            "duration": domainStd.company_std_insurance.duration,
+            "rate": domainStd.company_std_insurance.rate,
+            "employer_contribution_percentage": domainStd.company_std_insurance.employer_contribution_percentage,
+            "elimination_period_in_days": domainStd.company_std_insurance.elimination_period_in_days,
+            "status": SELECTED
+          };
+        } else {
+          viewModel['std'] = {
+            "status": WAIVED
+          };
+        }
       }
 
       // Map LTD enrollment
