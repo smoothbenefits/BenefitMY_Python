@@ -35,15 +35,18 @@ benefitmyService.factory('LtdService',
         };
 
         var mapUserCompanyPlanDomainToViewModel = function(userCompanyPlanDomainModel) {
-            var viewModel = userCompanyPlanDomainModel.company_ltd_insurance ?
-                mapCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_ltd_insurance) :
-                {};
+          var viewModel = {};
+          if (userCompanyPlanDomainModel.company_ltd_insurance) {
+            viewModel = mapCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_ltd_insurance);
+          }
 
-            viewModel.userCompanyPlanId = userCompanyPlanDomainModel.id;
-            viewModel.planOwner = userCompanyPlanDomainModel.user;
-            viewModel.lastUpdateDateTime = moment(userCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
+          viewModel.userCompanyPlanId = userCompanyPlanDomainModel.id;
+          viewModel.planOwner = userCompanyPlanDomainModel.user;
+          viewModel.lastUpdateDateTime = moment(userCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
+          viewModel.selected = true;
+          viewModel.waived = !userCompanyPlanDomainModel.company_ltd_insurance;
 
-            return viewModel;
+          return viewModel;
         };
 
         var mapPlanViewToDomainModel = function(planViewModel) {
