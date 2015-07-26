@@ -42,7 +42,7 @@ benefitmyService.factory('StdService',
             } else {
               viewModel = {
                 "selected": true,
-                "waived": false
+                "waived": true
               };
             }
 
