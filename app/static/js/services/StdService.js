@@ -33,17 +33,14 @@ benefitmyService.factory('StdService',
         };
 
         var mapUserCompanyPlanDomainToViewModel = function(userCompanyPlanDomainModel) {
-            var viewModel = {};
+
+            var viewModel = {"selected": true};
 
             if (userCompanyPlanDomainModel.company_std_insurance) {
               viewModel = mapUserCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_std_insurance);
-              viewModel.selected = true;
               viewModel.waived = false;
             } else {
-              viewModel = {
-                "selected": true,
-                "waived": true
-              };
+              viewModel.waived = true;
             }
 
             viewModel.userCompanyPlanId = userCompanyPlanDomainModel.id;
