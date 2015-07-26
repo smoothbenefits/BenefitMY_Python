@@ -117,15 +117,22 @@ benefitmyService.factory('BenefitSummaryService',
       // Map LTD enrollment
       if (domainModel.ltd[0] != null) {
         var domainLtd = domainModel.ltd[0];
-        viewModel['ltd'] = {
-          "plan_name": domainLtd.company_ltd_insurance.ltd_insurance_plan.name,
-          "percentage_of_salary": domainLtd.company_ltd_insurance.percentage_of_salary,
-          "max_benefit_monthly": domainLtd.company_ltd_insurance.max_benefit_monthly,
-          "duration": domainLtd.company_ltd_insurance.duration,
-          "rate": domainLtd.company_ltd_insurance.rate,
-          "employer_contribution_percentage": domainLtd.company_ltd_insurance.employer_contribution_percentage,
-          "elimination_period_in_months": domainLtd.company_ltd_insurance.elimination_period_in_months
-        };
+        if (domainLtd.company_ltd_insurance) {
+          viewModel['ltd'] = {
+            "plan_name": domainLtd.company_ltd_insurance.ltd_insurance_plan.name,
+            "percentage_of_salary": domainLtd.company_ltd_insurance.percentage_of_salary,
+            "max_benefit_monthly": domainLtd.company_ltd_insurance.max_benefit_monthly,
+            "duration": domainLtd.company_ltd_insurance.duration,
+            "rate": domainLtd.company_ltd_insurance.rate,
+            "employer_contribution_percentage": domainLtd.company_ltd_insurance.employer_contribution_percentage,
+            "elimination_period_in_months": domainLtd.company_ltd_insurance.elimination_period_in_months,
+            "status": SELECTED
+          };
+        } else {
+          viewModel['ltd'] = {
+            "status": WAIVED
+          };
+        }
       }
 
       // Map FSA selection

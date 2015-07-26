@@ -2131,23 +2131,23 @@ var ltdBenefitsSignup = employeeControllers.controller(
         })
 
         $scope.save = function() {
-            // Save ltd
-            var savePromise = $scope.enrollBenefits ?
-                LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan, $scope.updateReason) :
-                LtdService.deleteLtdPlansForUser(employeeId);
+          // Save ltd
+          if (!$scope.enrollBenefits) {
+            $scope.companyLtdPlan.companyPlanId = null;
+          }
 
-            savePromise.then(
-                function() {
-                    var modalInstance = $scope.showSaveSuccessModal();
-                    modalInstance.result.then(function(){
-                        $scope.transitionToNextTab($scope.tabs);
-                    });
-                    $scope.myForm.$setPristine();
-                }
-              , function(error) {
-                    alert('Failed to save your benefits election. Please try again later.');
-                }
-            );
+          LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan, $scope.updateReason)
+          .then(function() {
+              var modalInstance = $scope.showSaveSuccessModal();
+              modalInstance.result.then(function(){
+                $scope.transitionToNextTab($scope.tabs);
+              });
+              $scope.myForm.$setPristine();
+            }
+          , function(error) {
+              alert('Failed to save your benefits election. Please try again later.');
+            }
+          );
         };
 
         $scope.openPlanDetailsModal = function() {

@@ -345,18 +345,20 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         employee_plans = UserCompanyLtdInsurancePlan.objects.filter(user=user_model.id)
         company_plans = CompanyLtdInsurancePlan.objects.filter(company=company_id)
         if (len(employee_plans) > 0):
-            # Render header
-            self._write_line_uniform_width(['LTD Plan', 'Employee Premium'])
-            self._draw_line()
-
             employee_plan = employee_plans[0]
-            company_plan = employee_plan.company_ltd_insurance
-            plan = company_plan.ltd_insurance_plan
+            if employee_plan.company_ltd_insurance:
+                # Render header
+                self._write_line_uniform_width(['LTD Plan', 'Employee Premium'])
+                self._draw_line()
+                company_plan = employee_plan.company_ltd_insurance
+                plan = company_plan.ltd_insurance_plan
 
-            self._write_line_uniform_width([plan.name, 'N/A'])
+                self._write_line_uniform_width([plan.name, 'N/A'])
 
-            self._start_new_line()
-            self._start_new_line()
+                self._start_new_line()
+                self._start_new_line()
+            else:
+                self._write_waived_plan('LTD Plan')
         elif company_plans:
             self._write_not_selected_plan('LTD Plan')
 
