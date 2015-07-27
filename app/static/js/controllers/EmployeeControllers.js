@@ -1985,7 +1985,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             $scope.supplementalLifeInsurancePlan.spousePremiumPerMonth = $scope.computeSpousePremium();
             $scope.supplementalLifeInsurancePlan.childPremiumPerMonth = $scope.computeChildPremium();
           }
-          
+
           SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
             function() {
               var modalInstance = $scope.showSaveSuccessModal();
@@ -2062,25 +2062,24 @@ var stdBenefitsSignup = employeeControllers.controller(
 
         $scope.save = function() {
 
-            // Save std
-            var savePromise = $scope.enrollBenefits ?
-                StdService.enrollStdPlanForUser(employeeId,
-                                                $scope.companyStdPlan,
-                                                $scope.company.pay_period_definition,
-                                                $scope.updateReason) :
-                StdService.deleteStdPlansForUser(employeeId);
+          // Save std
+          if (!$scope.enrollBenefits) {
+            $scope.companyStdPlan.companyPlanId = null;
+          }
 
-            savePromise.then(
-                function() {
-                    var modalInstance = $scope.showSaveSuccessModal();
-                    modalInstance.result.then(function(){
-                        $scope.transitionToNextTab($scope.tabs);
-                    });
-                    $scope.myForm.$setPristine();
-                }, function(error) {
-                    alert('Failed to save your benefits election. Please try again later.');
-                }
-            );
+          StdService.enrollStdPlanForUser(employeeId,
+                                          $scope.companyStdPlan,
+                                          $scope.company.pay_period_definition,
+                                          $scope.updateReason)
+          .then(function() {
+            var modalInstance = $scope.showSaveSuccessModal();
+            modalInstance.result.then(function(){
+                $scope.transitionToNextTab($scope.tabs);
+            });
+            $scope.myForm.$setPristine();
+          }, function(error) {
+            alert('Failed to save your benefits election. Please try again later.');
+          })
         };
 
         $scope.openPlanDetailsModal = function() {

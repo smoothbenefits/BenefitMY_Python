@@ -204,14 +204,21 @@
 <!-- STD summary table -->
 <div class="table-responsive table-holder table" ng-if="userLtdPlan !== undefined">
   <div class="table-sub-title">Short Term Disability Benefits</div>
-  <table class="table table-striped" ng-show="!userStdPlan">
+  <table class="table table-striped" ng-hide="userStdPlan.selected">
     <tbody>
       <tr>
         <td width="180">No active Short Term Disability insurance plan</td>
       </tr>
     </tbody>
   </table>
-  <table class="table table-striped" ng-show="userStdPlan">
+  <table class="table table-striped" ng-show="userStdPlan.selected && userStdPlan.waived">
+    <tbody>
+      <tr>
+        <td width="180">Waived Short Term Disability insurance plan</td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="table table-striped" ng-show="userStdPlan.selected && !userStdPlan.waived">
     <thead>
       <tr>
         <th><span>Plan Name</span></th>
