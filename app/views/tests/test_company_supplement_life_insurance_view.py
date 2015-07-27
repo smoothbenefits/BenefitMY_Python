@@ -6,8 +6,8 @@ from view_test_base import ViewTestBase
 class CompanySupplementalLifeInsuranceTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate',
-    '39_company_supplement_life_insurance', '17_supplemental_life_insurance_condition',
-    '10_company']
+                '39_company_supplement_life_insurance', '17_supplemental_life_insurance_condition',
+                '49_period_definition', '10_company']
 
     def test_get_company_suppl_life(self):
         response = self.client.get(reverse('comp_suppl_life_api',

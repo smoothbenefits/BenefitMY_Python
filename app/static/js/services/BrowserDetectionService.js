@@ -1,11 +1,11 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('BrowserDetectionService', 
+benefitmyService.factory('BrowserDetectionService',
     [function () {
 
     	// Use Regex to fetch major browsers and their version number
-    	// A better way to do is to detect rendering engine or directly 
-    	// detect features that we need the browser to support. 
+    	// A better way to do is to detect rendering engine or directly
+    	// detect features that we need the browser to support.
     	// We might want to know more about the concept polyfill later if
     	// we decide to support older version of browsers.
         var getCurrentBrowser = function () {

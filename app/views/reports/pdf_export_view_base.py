@@ -1,6 +1,6 @@
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from reportlab.pdfbase.pdfmetrics import stringWidth  
+from reportlab.pdfbase.pdfmetrics import stringWidth
 
 from report_export_view_base import ReportExportViewBase
 
@@ -24,7 +24,7 @@ class PdfExportViewBase(ReportExportViewBase):
     _canvas = None
 
     def _init_canvas(self, response):
-        if self._canvas is None: 
+        if self._canvas is None:
             self._canvas = canvas.Canvas(response, pagesize=letter)
             self._width, self._height = letter
             self._write_area_width = self._width - self._page_margin_left_right * 2.0
@@ -34,6 +34,11 @@ class PdfExportViewBase(ReportExportViewBase):
     def _init_page(self):
         self._canvas.setFont(self._font_family, self._font_size)
         return
+
+    def _set_font(self, font_size):
+        if font_size > 0:
+            self._font_size = font_size
+            self._canvas.setFont(self._font_family, self._font_size)
 
     def _translate_X(self, x):
         return self._page_margin_left_right + x
@@ -83,7 +88,7 @@ class PdfExportViewBase(ReportExportViewBase):
             self._start_new_page()
         return
 
-    def _write_line_uniform_width(self, text_items, segment_length_fractions=None):    
+    def _write_line_uniform_width(self, text_items, segment_length_fractions=None):
         if text_items is None or len(text_items) <= 0:
             return
 
@@ -115,7 +120,7 @@ class PdfExportViewBase(ReportExportViewBase):
             self._start_new_line()
             text_items = cut_text_array
 
-        return 
+        return
 
     def _write_line(self, text_items=None):
         if text_items is None or len(text_items) <= 0:
@@ -130,7 +135,7 @@ class PdfExportViewBase(ReportExportViewBase):
         # End this line and move to next
         self._start_new_line()
 
-        return 
+        return
 
     def _write_block_uniform_width(self, text_items_block, segment_length_fractions=None):
         if text_items_block is None or len(text_items_block) <= 0:
@@ -165,7 +170,7 @@ class PdfExportViewBase(ReportExportViewBase):
         if self._current_X > 0:
             self._start_new_line()
 
-        # Draw the line through the middle (aka at half way of the height) 
+        # Draw the line through the middle (aka at half way of the height)
         # of the current text line
         self._canvas.line(
             self._translate_X(0), \

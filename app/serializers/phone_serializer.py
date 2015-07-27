@@ -8,4 +8,3 @@ class PhoneSerializer(HashPkSerializerBase):
     class Meta:
         model = Phone
         fields = ('id', 'phone_type', 'number')
-

@@ -1,56 +1,56 @@
 <div class="breadcrumb">
-    <a ng-href="#/clients">Broker Dashboard</a>
-    <a href="javascript:void(0);" ng-click="viewBenefits()">View Benefits</a>
-    <span>Modify Benefit Details</span>
+  <a ng-href="#/clients">Broker Dashboard</a>
+  <a href="javascript:void(0);" ng-click="viewBenefits()">View Benefits</a>
+  <span>Modify Benefit Details</span>
 </div>
 
 <div class="content-header">
-    <h1>Please provide details to "{{benefit.benefit_plan.name}}"</h1>
+  <h1>Please provide details to "{{benefit.benefit_plan.name}}"</h1>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="dynamic-form">
-        <form name="form">
-            <div class="row">
-                <div class="table-responsive table-holder">
-                    <table class="table table-striped" id="details_container_table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div>
-                                        Benefit Options
-                                    </div>
-                                </th>
-                                <!-- existing types-->
-                                <th>
-                                    <div class="editable-container">
-                                        <a ng-click="handleElementEvent($event)">Add New Plan</a>
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="details_container_table_body">
-                            <tr ng-repeat="policyKey in policyKeyArray" option-key="{{policyKey.position}}">
-                                <td>{{policyKey.name}}</td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div ng-show="inputUnfilledError" class="validation-error">
-                        * Please fill out all the input fields because all these values are required.
-                    </div>
-                    <div ng-show="noPolicyTypeError" class="validation-error">
-                        * Please make sure you created a benefit option set
-                    </div>
-                </div>
-            </div>
+  <div class="dynamic-form">
+    <form name="form">
+      <div class="row">
+        <div class="table-responsive table-holder">
+          <table class="table table-striped" id="details_container_table">
+            <thead>
+              <tr>
+                <th>
+                  <div>
+                    Benefit Options
+                  </div>
+                </th>
+                <!-- existing types-->
+                <th>
+                  <div class="editable-container">
+                    <a ng-click="handleElementEvent($event)">Add New Plan</a>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="details_container_table_body">
+              <tr ng-repeat="policyKey in policyKeyArray" option-key="{{policyKey.position}}">
+                <td>{{policyKey.name}}</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div ng-show="inputUnfilledError" class="validation-error">
+            * Please fill out all the input fields because all these values are required.
+          </div>
+          <div ng-show="noPolicyTypeError" class="validation-error">
+            * Please make sure you created a benefit option set
+          </div>
+        </div>
+      </div>
 
 
-            <div class="submit-box">
-                <button ng-click="addBenefitDetail()" class="btn green"> Save Details</button>
-            </div>
+      <div class="submit-box">
+        <button ng-click="addBenefitDetail()" class="btn green"> Save Details</button>
+      </div>
 
-        </form>
-    </div>
-    <div class="back"><a href="javascript:void(0);" ng-click="backToBenefitDisplay()">&laquo; Cancel</a></div>
+    </form>
+  </div>
+  <div class="back"><a href="javascript:void(0);" ng-click="backToBenefitDisplay()">&laquo; Cancel</a></div>
 </div><!-- / .content-body -->

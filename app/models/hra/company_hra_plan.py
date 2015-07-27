@@ -9,7 +9,7 @@ class CompanyHraPlan(models.Model):
     hra_plan = models.ForeignKey(
         HraPlan,
         related_name="company_hra_plan")
-    
+
     company = models.ForeignKey(
         Company,
         related_name="company_hra_plan")

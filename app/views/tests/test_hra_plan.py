@@ -5,8 +5,8 @@ from view_test_base import ViewTestBase
 
 class HraPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['46_hra_plan', '47_company_hra_plan', '48_person_company_hra_plan', '10_company',
-    '24_person', '23_auth_user']
+    fixtures = ['46_hra_plan', '47_company_hra_plan', '48_person_company_hra_plan', 
+                '49_period_definition', '10_company', '24_person', '23_auth_user']
 
     def test_get_hra_plan(self):
         response = self.client.get(reverse('hra_plan_api',
@@ -24,7 +24,7 @@ class HraPlanTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.delete(reverse('hra_plan_api', 
+        response = self.client.delete(reverse('hra_plan_api',
                                               kwargs={'pk': self.normalize_key(1)}))
 
         self.assertIsNotNone(response)
@@ -44,7 +44,7 @@ class HraPlanTestCase(TestCase, ViewTestBase):
                                             kwargs={'pk': self.normalize_key(3)}),
                                             data=json.dumps(post_data),
                                             content_type='application/json')
-        
+
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
 

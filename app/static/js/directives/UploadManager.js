@@ -4,12 +4,12 @@ BenefitMyApp.directive('bmuploadmanager',
       restrict: 'E',
       scope: {},
       templateUrl: '/static/partials/common/upload.html',
-      controller: ['$scope', 
-                   '$timeout', 
-                   '$attrs', 
-                   'UploadService', 
-          function($scope, 
-                   $timeout, 
+      controller: ['$scope',
+                   '$timeout',
+                   '$attrs',
+                   'UploadService',
+          function($scope,
+                   $timeout,
                    $attrs,
                    UploadService) {
             $scope.uploadManager = {
@@ -67,8 +67,8 @@ BenefitMyApp.directive('bmuploadmanager',
                 UploadService.getUploadsByFeature($attrs.featureId, $attrs.uploadType)
                 .then(function(resp){
                   $scope.uploadManager.uploadedFiles = resp;
-                });  
-              });  
+                });
+              });
             }
             else{
               UploadService.getAllUploadsByCurrentUser().then(function(resp){

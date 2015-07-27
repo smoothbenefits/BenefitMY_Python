@@ -17,4 +17,3 @@ class EnrolledView(APIView):
         person = self.get_object(pk)
         serializer = PersonSerializer(person)
         return Response(serializer.data)
-

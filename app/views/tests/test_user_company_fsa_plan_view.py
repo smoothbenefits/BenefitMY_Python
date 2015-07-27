@@ -7,7 +7,7 @@ import json
 class CompanyFsaTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['37_fsa_plan', '23_auth_user', '24_person', '10_company',
-                '42_company_fsa', '43_fsa', 'sys_benefit_update_reason',
+                '49_period_definition', '42_company_fsa', '43_fsa', 'sys_benefit_update_reason',
                 'sys_benefit_update_reason_category']
 
     def test_get_user_company_fsa_by_user(self):

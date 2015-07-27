@@ -5,7 +5,7 @@ import json
 
 
 class UserCompanyTestCase(TestCase, ViewTestBase):
-    fixtures = ['34_company_user', '10_company', '23_auth_user']
+    fixtures = ['34_company_user', '49_period_definition', '10_company', '23_auth_user']
 
     def test_get_company_users(self):
         response = self.client.get(reverse('user_company_api',
@@ -16,10 +16,14 @@ class UserCompanyTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['company_roles'][0]['id'], self.normalize_key(1))
         self.assertEqual(result['company_roles'][0]['company']['name'],
                          'BenefitMy Inc.')
+        self.assertIn('pay_period_definition', result['company_roles'][0]['company'])
+        self.assertEqual(result['company_roles'][0]['company']['pay_period_definition']['name'], 'Semi-Monthly')
+        self.assertEqual(result['company_roles'][0]['company']['pay_period_definition']['id'], self.normalize_key(3))
+        self.assertEqual(result['company_roles'][0]['company']['pay_period_definition']['month_factor'], 0.5)
 
 
 class CompanyUsersTestCase(TestCase, ViewTestBase):
-    fixtures = ['34_company_user', '10_company', '23_auth_user']
+    fixtures = ['34_company_user', '49_period_definition', '10_company', '23_auth_user']
 
     def test_get_company_users(self):
         response = self.client.get(reverse('company_users_api',

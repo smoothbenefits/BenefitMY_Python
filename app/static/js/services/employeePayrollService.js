@@ -1,19 +1,19 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('employeePayrollService', 
-  ['$q', 
+benefitmyService.factory('employeePayrollService',
+  ['$q',
    'employeeTaxRepository',
-   'utilityServcie', 
-   'profileSettings', 
+   'utilityServcie',
+   'profileSettings',
    function ($q,
              employeeTaxRepository,
-             utilityServcie, 
+             utilityServcie,
              profileSettings){
 
     var getMarriageNumber = function(withholdingType){
       if (withholdingType === 'married'){
         return 2;
-      } 
+      }
       else if(withholdingType === 'higher'){
         return 1;
       }
@@ -65,7 +65,7 @@ benefitmyService.factory('employeePayrollService',
         };
         return w4Dto;
       },
-      
+
       calculateTotalBasedOnViewW4: function(viewW4){
         var total = getMarriageNumber(viewW4.withholdingType);
         if (total === 0){
@@ -101,6 +101,6 @@ benefitmyService.factory('employeePayrollService',
       },
 
       getMarriageNumberForUser: getMarriageNumber
-    }  
+    }
   }
 ]);

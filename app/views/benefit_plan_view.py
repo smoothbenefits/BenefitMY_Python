@@ -33,23 +33,23 @@ class BenefitPlanView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class BenefitPlanCreationView(APIView):
-    
+
     def post(self, request, format=None):
-        if (not "benefit_type" in request.DATA or 
-            not "benefit_name" in request.DATA or 
+        if (not "benefit_type" in request.DATA or
+            not "benefit_name" in request.DATA or
             not "mandatory_pcp" in request.DATA):
             return Response(status=status.HTTP_400_BAD_REQUEST)
- 
+
         benefit_data = {
             "name": request.DATA["benefit_name"],
             "benefit_type": TYPE[request.DATA['benefit_type']],
             "mandatory_pcp": request.DATA["mandatory_pcp"]
         }
- 
+
         if 'pcp_link' in request.DATA:
             benefit_data['pcp_link'] = request.DATA['pcp_link']
- 
- 
+
+
         serializer = BenefitPlanPostSerializer(data=benefit_data)
         if serializer.is_valid():
             serializer.save()

@@ -1,6 +1,6 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('DocumentService', 
+benefitmyService.factory('DocumentService',
     ['$q',
     'userDocument',
     'documentTypeService',
@@ -9,7 +9,7 @@ benefitmyService.factory('DocumentService',
         var constructDocumentsToTypeMap = function(docTypes, documents) {
             var mapModel = {};
             mapModel.entries = {};
-            
+
             _.each(docTypes, function(type) {
                 var entry = { 'docType':type, 'documents': [] };
 
@@ -20,7 +20,7 @@ benefitmyService.factory('DocumentService',
                 };
 
                 entry.hasDocument = function() {
-                    return entry.documents != null 
+                    return entry.documents != null
                         && entry.documents.length > 0;
                 };
 

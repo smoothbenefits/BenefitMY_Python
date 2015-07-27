@@ -6,7 +6,7 @@ import json
 
 class BenefitPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '10_company', '13_benefit_type']
+    fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '49_period_definition', '10_company', '13_benefit_type']
 
     def test_get_benefit_plan_by_id(self):
         response = self.client.get(reverse('benefit_plan_api',
@@ -35,7 +35,7 @@ class BenefitPlanTestCase(TestCase, ViewTestBase):
                         "mandatory_pcp": True,
                         "pcp_link": "http://www.bluecrossma.com"}
 
-        response = self.client.post(reverse('benefit_post_api'), 
+        response = self.client.post(reverse('benefit_post_api'),
                                     data=json.dumps(benefit_data),
                                     content_type='application/json')
 
@@ -60,7 +60,7 @@ class BenefitPlanTestCase(TestCase, ViewTestBase):
 
 class CompanyBenefitPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '10_company', '13_benefit_type']
+    fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '49_period_definition', '10_company', '13_benefit_type']
 
     def test_get_company_benefit_plan_by_id(self):
         response = self.client.get(reverse('company_benefit_plan_api',
@@ -79,4 +79,3 @@ class CompanyBenefitPlanTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['benefits'][2]['benefit_option_type'], 'individual_plus_children')
         self.assertEqual(result['benefits'][2]['benefit_plan']['name'], 'Blue Cross Blue Shield of Mass. HMO Blue')
         self.assertEqual(result['benefits'][2]['benefit_plan']['pcp_link'], 'https://www.bluecrossma.com/wps/portal/members/using-my-plan/doctors-hospitals/findadoctor/')
-

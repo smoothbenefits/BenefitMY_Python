@@ -1,6 +1,6 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('LoggingService', 
+benefitmyService.factory('LoggingService',
   ['$window',
    '$log',
    '$timeout',
@@ -15,31 +15,31 @@ benefitmyService.factory('LoggingService',
             // log the issue to console, and swallow the exception
             try {
 
-                // use our traceService to generate a stack trace 
-                var stackTrace = printStackTrace(); 
+                // use our traceService to generate a stack trace
+                var stackTrace = printStackTrace();
 
-                // use AJAX (in this example jQuery) and NOT 
-                // an angular service such as $http 
-                $.ajax({ 
-                    type: "POST", 
-                    url: LOGGING_SERVER_URL, 
-                    contentType: "application/json", 
-                    data: angular.toJson({ 
-                        url: $window.location.href, 
+                // use AJAX (in this example jQuery) and NOT
+                // an angular service such as $http
+                $.ajax({
+                    type: "POST",
+                    url: LOGGING_SERVER_URL,
+                    contentType: "application/json",
+                    data: angular.toJson({
+                        url: $window.location.href,
                         message: message,
-                        browser: BrowserDetectionService.getCurrentBrowser(), 
-                        type: logType, 
+                        browser: BrowserDetectionService.getCurrentBrowser(),
+                        type: logType,
                         customData: customData,
                         stackTrace: stackTrace.join('\n\n')}) })
                 .fail(function(jqXHR, textStatus, errorThrown) {
                     $log.warn("Error server-side logging failed");
                     $log.log(errorThrown);
-                }); 
+                });
 
             } catch (loggingError) {
-                $log.warn("Error server-side logging failed"); 
+                $log.warn("Error server-side logging failed");
                 $log.log(loggingError);
-            }    
+            }
         });
     };
     return {

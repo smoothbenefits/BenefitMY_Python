@@ -19,7 +19,7 @@ class TestUser(TestCase):
         User.objects.create_user(email='test@testing.ave')
         user = User.objects.get(email='test@testing.ave')
         self.assertIsNotNone(user)
-    
+
     def test_user_create_failed_when_email_missing(self):
         with self.assertRaises(ValueError):
             user_error = User.objects.create_user(None, "bad_password")

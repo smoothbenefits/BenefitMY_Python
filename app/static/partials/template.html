@@ -1,71 +1,71 @@
 <div class="breadcrumb">
-    <a ng-href="#/admin">Employer Dashboard</a>
-    <span>{{viewTitle}}</span>
+  <a ng-href="#/admin">Employer Dashboard</a>
+  <span>{{viewTitle}}</span>
 </div>
 
 <div class="content-header">
-    <h1>{{viewTitle}}</h1>
-    <div class="cta" ng-show="!isInAddMode()"><span class="btn green" ng-click="addOfferTemplate()">Add Template</span></div>
+  <h1>{{viewTitle}}</h1>
+  <div class="cta" ng-show="!isInAddMode()"><span class="btn green" ng-click="addOfferTemplate()">Add Template</span></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="table-responsive table-holder" ng-if="!isInAddMode()">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>{{documentType}} Template List</span></th>
-                    <th><span>Actions</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="template in existingTemplateList">
-                    <td>{{template.name}}</td>
-                    <td><span class="btn inline" ng-click="modifyExistingTemplate(template)">View</span></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="table-responsive table-holder" ng-if="!isInAddMode()">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>{{documentType}} Template List</span></th>
+          <th><span>Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="template in existingTemplateList">
+          <td>{{template.name}}</td>
+          <td><span class="btn inline" ng-click="modifyExistingTemplate(template)">View</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <div class="template-holder" ng-show="addMode==='true' || templateContent">
-        <h2>View/Edit {{documentType}} Template</h2>
-        <div class="form-holder">
-            <form name="form">
-                <div class="form-label">Template Name</div>
-                <div class="textbox">
-                    <input type="text"
-                        name="template_name"
-                        ng-model="templateName"
-                        ng-required="true">
-                </div>
-                <div class="textbox">
-                    <textarea class="template-field"
-                        rows="10"
-                        ng-required="true"
-                        name="template"
-                        ng-model="templateContent">
-                    </textarea>
-                </div>
-                <div class="notes" ng-non-bindable>
-                    <p><b>Please note: For dynamically changing fields to be replaced later, use double curly brackets ({{}}). </b></p>
-                    <p>For example: {{salaryFigure}}, {{sign_date}}, {{Title}}</p>
-                </div>
-                <div ng-show="justCreated" class="response">
-                  The template has just been created!
-                </div>
-                <div class="submit-box">
-                    <button ng-show="isInAddMode()" ng-click="createTemplate()"
-                        class="btn green"
-                        ng-disabled="form.$invalid">
-                        Create Template
-                    </button>
-                    <button ng-show="showEditButton" ng-click="saveTemplateChanges()" class="btn green">
-                        Save Template
-                    </button>
-                </div>
-            </form>
+  <div class="template-holder" ng-show="addMode==='true' || templateContent">
+    <h2>View/Edit {{documentType}} Template</h2>
+    <div class="form-holder">
+      <form name="form">
+        <div class="form-label">Template Name</div>
+        <div class="textbox">
+          <input type="text"
+          name="template_name"
+          ng-model="templateName"
+          ng-required="true">
         </div>
-    </div><!-- / .template-holder -->
+        <div class="textbox">
+          <textarea class="template-field"
+          rows="10"
+          ng-required="true"
+          name="template"
+          ng-model="templateContent">
+        </textarea>
+      </div>
+      <div class="notes" ng-non-bindable>
+        <p><b>Please note: For dynamically changing fields to be replaced later, use double curly brackets ({{}}). </b></p>
+        <p>For example: {{salaryFigure}}, {{sign_date}}, {{Title}}</p>
+      </div>
+      <div ng-show="justCreated" class="response">
+        The template has just been created!
+      </div>
+      <div class="submit-box">
+        <button ng-show="isInAddMode()" ng-click="createTemplate()"
+        class="btn green"
+        ng-disabled="form.$invalid">
+        Create Template
+      </button>
+      <button ng-show="showEditButton" ng-click="saveTemplateChanges()" class="btn green">
+        Save Template
+      </button>
+    </div>
+  </form>
+</div>
+</div><!-- / .template-holder -->
 
-    <div class="back"><a ng-click="viewDashboard()">&laquo; Back</a></div>
+<div class="back"><a ng-click="viewDashboard()">&laquo; Back</a></div>
 
 </div><!-- / .content-body -->

@@ -6,8 +6,8 @@ import json
 
 class WaivedBenefitTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '10_company', '13_benefit_type',
-                'waived_benefit', '23_auth_user']
+    fixtures = ['31_company_benefit_plan_option', '21_benefit_plan', '49_period_definition',
+                '10_company', '13_benefit_type', 'waived_benefit', '23_auth_user']
 
     def test_user_waived_benefit(self):
         response = self.client.get(reverse('user_waived_benefit_api',

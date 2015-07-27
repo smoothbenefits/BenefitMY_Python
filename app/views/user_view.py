@@ -179,4 +179,3 @@ class CurrentUserView(APIView):
             result['person'] = personSerializer.data
 
         return Response(result)
-

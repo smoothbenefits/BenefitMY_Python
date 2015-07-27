@@ -1,32 +1,32 @@
 <div class="breadcrumb">
-    <a ng-href="#/clients">Broker Dashboard</a>
-    <span>Broker Dashboard</span>
+  <a ng-href="#/clients">Broker Dashboard</a>
+  <span>Broker Dashboard</span>
 </div>
 
 <div class="content-header">
-    <h1>My Client List</h1>
-    <span class="general-info">You have total <b>{{clientCount}}</b> clients</span>
-    <div class="cta"><span class="btn green" ng-click="addClient()">Add new client</span></div>
+  <h1>My Client List</h1>
+  <span class="general-info">You have total <b>{{clientCount}}</b> clients</span>
+  <div class="cta"><span class="btn green" ng-click="addClient()">Add new client</span></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="table-responsive table-holder">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Name</span></th>
-                    <th><span>Actions</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="client in clientList">
-                    <td>{{client.name}}</td>
-                    <td>
-                        <span class="btn inline" ng-click="viewElegibleBenefits(client.id)">View Benefit Plans</span>
-                        <span class="btn inline" ng-click="viewSelectedBenefits(client.id)">Employee Benefit Elections</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="table-responsive table-holder">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Name</span></th>
+          <th><span>Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="client in clientList">
+          <td>{{client.name}}</td>
+          <td>
+            <span class="btn inline" ng-click="viewElegibleBenefits(client.id)">View Benefit Plans</span>
+            <span class="btn inline" ng-click="viewSelectedBenefits(client.id)">Employee Benefit Elections</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div><!-- / .content-body -->

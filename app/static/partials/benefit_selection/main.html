@@ -1,35 +1,35 @@
 <div class="breadcrumb">
-    <a ng-href="#/employee">Employee Dashboard</a>
-    <span>Update Benefits</span>
+  <a ng-href="#/employee">Employee Dashboard</a>
+  <span>Update Benefits</span>
 </div>
 
 <div class="content-header">
-    <h1>Modify Benefits</h1>
-    <span class="general-info">Please use the form below to update your benefit</span>
-    <div class="cta"><a ng-click="addMember()" class="btn green" >Family member(s)</a></div>
-    <div class="view-instruction">
-        <p>Please consider to provide your family information before making benefit selection by clicking on the <span class="green-link">Family member(s) button</span> on the top right.</p> 
-        <p>Family members are needed to make the correct <b>benefit selections</b></p>
-        <p><b>Each tab below</b> represent a distinct set of benefits provided by your employer. Please make your benefit selections by going through each tab</p>
-    </div>
+  <h1>Modify Benefits</h1>
+  <span class="general-info">Please use the form below to update your benefit</span>
+  <div class="cta"><a ng-click="addMember()" class="btn green" >Family member(s)</a></div>
+  <div class="view-instruction">
+    <p>Please consider to provide your family information before making benefit selection by clicking on the <span class="green-link">Family member(s) button</span> on the top right.</p>
+    <p>Family members are needed to make the correct <b>benefit selections</b></p>
+    <p><b>Each tab below</b> represent a distinct set of benefits provided by your employer. Please make your benefit selections by going through each tab</p>
+  </div>
 </div>
 </div><!-- / .content-header -->
 <div class="content-body">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div>
-                <div>You have indicated that the reason for this modification is: <b>{{updateReason.selectedReason.name}}</b></div>
-                <div>Additional notes from you: <b>{{updateReason.notes}}</b></div>
-            </div>
-        </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div>
+        <div>You have indicated that the reason for this modification is: <b>{{updateReason.selectedReason.name}}</b></div>
+        <div>Additional notes from you: <b>{{updateReason.notes}}</b></div>
+      </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <tabset type="pills">
-                <tab ng-repeat="tab in tabs | orderBy:'id'" heading="{{tab.heading}}" active="tab.active" select="go_to_state(tab.state)"/>
-            </tabset>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <tabset type="pills">
+        <tab ng-repeat="tab in tabs | orderBy:'id'" heading="{{tab.heading}}" active="tab.active" select="go_to_state(tab.state)"/>
+      </tabset>
 
-            <div ui-view></div>
-        </div>
+      <div ui-view></div>
     </div>
+  </div>
 </div>

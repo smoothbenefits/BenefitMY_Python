@@ -77,7 +77,7 @@ var benefitsController = brokersControllers.controller(
       $scope.role = 'Broker';
       $scope.showAddBenefitButton = true;
       $scope.benefitDeletable = true;
-      
+
       benefitDisplayService($stateParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
         $scope.medicalBenefitGroup = groupObj;
         $scope.nonMedicalBenefitArray = nonMedicalArray;
@@ -172,11 +172,11 @@ var benefitsController = brokersControllers.controller(
 }]);
 
 var planDetailsModalController = brokersControllers.controller('planDetailsModalController',
-  ['$scope', 
+  ['$scope',
    '$modal',
    '$modalInstance',
    function selectedBenefitsController(
-    $scope, 
+    $scope,
     $modal,
     $modalInstance){
         $scope.closePlanDetailsModal = function() {
@@ -185,10 +185,10 @@ var planDetailsModalController = brokersControllers.controller('planDetailsModal
 }]);
 
 var selectedBenefitsController = brokersControllers.controller('selectedBenefitsController',
-  ['$scope', 
-   '$location', 
-   '$stateParams', 
-   'companyRepository', 
+  ['$scope',
+   '$location',
+   '$stateParams',
+   'companyRepository',
    'employeeBenefitElectionService',
    'FsaService',
    'BasicLifeInsuranceService',
@@ -198,10 +198,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    'LtdService',
    'HraService',
    function selectedBenefitsController(
-    $scope, 
-    $location, 
-    $stateParams, 
-    companyRepository, 
+    $scope,
+    $location,
+    $stateParams,
+    companyRepository,
     employeeBenefitElectionService,
     FsaService,
     BasicLifeInsuranceService,
@@ -224,10 +224,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       var promise = employeeBenefitElectionService(clientId);
       promise.then(function(employeeList){
-        
+
         // TODO: Could/should FSA information be considered one kind of benefit election
         //       and this logic of getting FSA data for an employee be moved into the
-        //       employeeBenefitElectionService? 
+        //       employeeBenefitElectionService?
         _.each(employeeList, function(employee) {
           FsaService.getFsaElectionForUser(employee.user.id, clientId).then(function(response) {
             employee.fsaElection = response;
@@ -277,7 +277,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       });
 
       $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
-        return (!employeeFamilyLifeInsurancePlan) 
+        return (!employeeFamilyLifeInsurancePlan)
           || (!employeeFamilyLifeInsurancePlan.mainPlan)
           || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
       };
@@ -355,24 +355,24 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
    '$controller',
    'currentUser',
    'BasicLifeInsuranceService',
-   function($scope, 
-            $state, 
+   function($scope,
+            $state,
             $stateParams,
-            $controller, 
+            $controller,
             currentUser,
             BasicLifeInsuranceService){
 
-    // Inherite scope from base 
+    // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
-    
+
     var clientId = $stateParams.clientId;
     $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
 
     $scope.buttonEnabled = function() {
-      return $scope.newLifeInsurancePlan.name 
+      return $scope.newLifeInsurancePlan.name
              && _.isNumber($scope.newLifeInsurancePlan.totalCost)
              && _.isNumber($scope.newLifeInsurancePlan.employeeContribution)
-             && (_.isNumber($scope.newLifeInsurancePlan.amount) 
+             && (_.isNumber($scope.newLifeInsurancePlan.amount)
                  || _.isNumber($scope.newLifeInsurancePlan.multiplier));
     };
 
@@ -388,12 +388,12 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
 
           BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan).then(
             function() {
-              var successMessage = "The new basic life insurance plan has been saved successfully." 
+              var successMessage = "The new basic life insurance plan has been saved successfully."
 
               $scope.showMessageWithOkayOnly('Success', successMessage);
             },
             function() {
-              var failureMessage = "There was a problem saving the data. Please try again." 
+              var failureMessage = "There was a problem saving the data. Please try again."
 
               $scope.showMessageWithOkayOnly('Failed', failureMessage);
             }
@@ -412,16 +412,16 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
    '$controller',
    'SupplementalLifeInsuranceService',
    'UserService',
-   function($scope, 
-            $state, 
+   function($scope,
+            $state,
             $stateParams,
-            $controller, 
+            $controller,
             SupplementalLifeInsuranceService,
             UserService){
 
-    // Inherite scope from base 
+    // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
-    
+
     var clientId = $stateParams.clientId;
 
     SupplementalLifeInsuranceService.getBlankPlanForCompany(clientId).then(function(blankCompanyPlan) {
@@ -432,12 +432,12 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
     $scope.addPlan = function() {
         SupplementalLifeInsuranceService.addPlanForCompany($scope.newPlan, clientId).then(
             function() {
-              var successMessage = "The new supplemental life insurance plan has been saved successfully." 
+              var successMessage = "The new supplemental life insurance plan has been saved successfully."
 
               $scope.showMessageWithOkayOnly('Success', successMessage);
             },
             function() {
-              var failureMessage = "There was a problem saving the data. Please make sure all required fields have been filled out and try again." 
+              var failureMessage = "There was a problem saving the data. Please make sure all required fields have been filled out and try again."
 
               $scope.showMessageWithOkayOnly('Failed', failureMessage);
             });
@@ -453,21 +453,21 @@ var brokerAddStdPlanController = brokersControllers.controller(
    '$controller',
    'UserService',
    'StdService',
-    function($scope, 
-            $state, 
+    function($scope,
+            $state,
             $stateParams,
-            $controller, 
+            $controller,
             UserService,
             StdService){
 
-        // Inherite scope from base 
+        // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
-        
+
         $scope.paidByParties = StdService.paidByParties;
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
-        
+
         $scope.buttonEnabled = function() {
             return $scope.newPlan.planName && _.isNumber($scope.newPlan.employerContributionPercentage);
         };
@@ -479,11 +479,11 @@ var brokerAddStdPlanController = brokersControllers.controller(
 
                 StdService.addPlanForCompany($scope.newPlan, clientId).then(
                     function(response) {
-                        var successMessage = "The new STD plan has been saved successfully." 
+                        var successMessage = "The new STD plan has been saved successfully."
                         $scope.showMessageWithOkayOnly('Success', successMessage);
                     },
                     function(response) {
-                        var failureMessage = "There was a problem saving the data. Please try again." 
+                        var failureMessage = "There was a problem saving the data. Please try again."
                         $scope.showMessageWithOkayOnly('Failed', failureMessage);
                     });
             });
@@ -499,16 +499,16 @@ var brokerAddLtdPlanController = brokersControllers.controller(
    '$controller',
    'UserService',
    'LtdService',
-    function($scope, 
-            $state, 
+    function($scope,
+            $state,
             $stateParams,
-            $controller, 
+            $controller,
             UserService,
             LtdService){
 
-        // Inherite scope from base 
+        // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
-        
+
         $scope.paidByParties = LtdService.paidByParties;
 
         var clientId = $stateParams.clientId;
@@ -525,42 +525,42 @@ var brokerAddLtdPlanController = brokersControllers.controller(
 
                 LtdService.addPlanForCompany($scope.newPlan, clientId).then(
                     function(response) {
-                        var successMessage = "The new LTD plan has been saved successfully." 
+                        var successMessage = "The new LTD plan has been saved successfully."
                         $scope.showMessageWithOkayOnly('Success', successMessage);
                     },
                     function(response) {
-                        var failureMessage = "There was a problem saving the data. Please try again." 
+                        var failureMessage = "There was a problem saving the data. Please try again."
                         $scope.showMessageWithOkayOnly('Failed', failureMessage);
                     });
             });
         };
     }
   ]);
-  
+
 var brokerAddFsaPlan = brokersControllers.controller(
   'brokerAddFsaPlanController',
   ['$scope',
    '$state',
-   '$stateParams', 
+   '$stateParams',
    '$controller',
-   'FsaService', 
+   'FsaService',
    'UserService',
-   function ($scope, 
+   function ($scope,
              $state,
-             $stateParams, 
-             $controller, 
-             FsaService, 
+             $stateParams,
+             $controller,
+             FsaService,
              UserService){
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
-     
+
     var clientId = $stateParams.clientId;
     $scope.newPlan = {};
-     
+
     $scope.saveNewPlan = function() {
       UserService.getCurUserInfo().then(function(userInfo) {
         var broker = userInfo.user.id;
-         
+
         FsaService.signUpCompanyForFsaPlan(broker, clientId, $scope.newPlan).then(function(response){
           var successMessage = "The new FSA plan has been saved successfully.";
           $scope.showMessageWithOkayOnly('Success', successMessage);
@@ -581,16 +581,16 @@ var brokerAddHraPlanController = brokersControllers.controller(
    '$controller',
    'HraService',
    'UserService',
-   function($scope, 
-            $state, 
+   function($scope,
+            $state,
             $stateParams,
-            $controller, 
+            $controller,
             HraService,
             UserService){
 
-    // Inherite scope from base 
+    // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
-    
+
     var clientId = $stateParams.clientId;
 
     HraService.getBlankPlanForCompany(clientId).then(function(blankCompanyPlan) {
@@ -601,12 +601,12 @@ var brokerAddHraPlanController = brokersControllers.controller(
     $scope.addPlan = function() {
         HraService.addPlanForCompany($scope.newPlan, clientId).then(
             function() {
-              var successMessage = "The new HRA plan has been saved successfully." 
+              var successMessage = "The new HRA plan has been saved successfully."
 
               $scope.showMessageWithOkayOnly('Success', successMessage);
             },
             function() {
-              var failureMessage = "There was a problem saving the data. Please make sure all required fields have been filled out and try again." 
+              var failureMessage = "There was a problem saving the data. Please make sure all required fields have been filled out and try again."
 
               $scope.showMessageWithOkayOnly('Failed', failureMessage);
         });
@@ -619,7 +619,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
   ['$scope',
    '$location',
    '$stateParams',
-   '$controller', 
+   '$controller',
    'benefitPlanRepository',
    'benefitDetailsRepository',
    'BasicLifeInsuranceService',
@@ -629,18 +629,18 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       $scope,
       $location,
       $stateParams,
-      $controller, 
+      $controller,
       benefitPlanRepository,
       benefitDetailsRepository,
       BasicLifeInsuranceService,
       currentUser,
       BenefitPolicyKeyService){
 
-      // Inherite scope from base 
+      // Inherite scope from base
       $controller('modalMessageControllerBase', {$scope: $scope});
 
       var clientId = $stateParams.clientId;
-      
+
       // Reset/reinitialize the model in scope
       var resetModel = function(selectedBenefitType) {
         if (!selectedBenefitType) {
@@ -648,7 +648,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         }
 
         $scope.benefit = {
-            mandatory_pcp: false, 
+            mandatory_pcp: false,
             benefit_type: selectedBenefitType,
             benefit_option_types: [
               {name:'Individual', disabled: false},
@@ -679,7 +679,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       $scope.policyKeyArray = [];
 
       BenefitPolicyKeyService.getAllKeys().then(function(allKeys) {
-        $scope.policyKeyArray = allKeys;   
+        $scope.policyKeyArray = allKeys;
       });
 
       $scope.benefitDetailArray = [];

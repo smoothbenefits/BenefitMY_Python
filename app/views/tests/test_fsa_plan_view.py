@@ -6,7 +6,7 @@ import json
 
 class FsaTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['37_fsa_plan', '23_auth_user', '24_person', '10_company']
+    fixtures = ['37_fsa_plan', '23_auth_user', '24_person', '49_period_definition', '10_company']
 
     def test_get_fsa(self):
         response = self.client.get(reverse('broker_fsa_api',
@@ -43,7 +43,7 @@ class FsaTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['detail'], 'Not found')
 
     def test_post_fsa(self):
-        dd_data = {"name": "New FSA", 
+        dd_data = {"name": "New FSA",
                    "broker_user": 4}
 
         response = self.client.post(reverse('broker_fsa_api', kwargs={'pk': self.normalize_key(4)}),

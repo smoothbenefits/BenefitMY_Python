@@ -120,7 +120,7 @@ class CompanyUsersBenefitsBillingExcelExportView(ExcelExportViewBase):
         else:
             # Skip the columns
             col_num = col_num + 3
-        
+
         return col_num
 
     def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
@@ -230,7 +230,7 @@ class CompanyUsersBenefitsBillingExcelExportView(ExcelExportViewBase):
         except Company.DoesNotExist:
             raise Http404
 
-    ''' Both broker and employer should be able to get summary of all 
+    ''' Both broker and employer should be able to get summary of all
         benefit situations of all employees of the company
     '''
     @user_passes_test(company_employer_or_broker)

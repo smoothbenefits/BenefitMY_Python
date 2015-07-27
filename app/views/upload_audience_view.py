@@ -17,9 +17,9 @@ class UploadAudienceByCompanyView(APIView):
     def _get_uploads_for_user(self, company_id, user_id):
         uploads = UploadAudience.objects.filter(company=company_id, user_for=user_id)
         return uploads
-    
+
     def _get_uploads_for_request(self, request, comp_id):
-        user_id = self.hash_service.decode_key(request.GET.get('user_id', None))      
+        user_id = self.hash_service.decode_key(request.GET.get('user_id', None))
         upload_audience = None
         if user_id:
             upload_audience = self._get_uploads_for_user(comp_id, user_id)
@@ -36,12 +36,12 @@ class UploadAudienceByCompanyView(APIView):
         # expect upload_id to be valid
         upload_id = request.DATA.get('upload')
         if not upload_id:
-            return Response({'message': 'upload is not posted with the request'}, 
+            return Response({'message': 'upload is not posted with the request'},
                             status=status.HTTP_400_BAD_REQUEST)
 
         user_id = self.hash_service.decode_key(request.GET.get('user_id', None))
-        serialized = UploadAudiencePostSerializer(data={'upload': upload_id, 
-                                                                  'company': comp_id, 
+        serialized = UploadAudiencePostSerializer(data={'upload': upload_id,
+                                                                  'company': comp_id,
                                                                   'user_for':user_id})
         if serialized.is_valid():
             serialized.save()

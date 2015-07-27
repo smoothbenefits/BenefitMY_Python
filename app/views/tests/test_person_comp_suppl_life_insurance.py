@@ -6,10 +6,10 @@ from view_test_base import ViewTestBase
 class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['26_supplemental_life_insurance', '38_supplemental_life_rate',
-    '39_company_supplement_life_insurance', '17_supplemental_life_insurance_condition',
-    '10_company', '44_person_company_suppl_life', '24_person', '23_auth_user',
-    '45_suppl_life_beneficiary', 'sys_benefit_update_reason',
-    'sys_benefit_update_reason_category']
+                '39_company_supplement_life_insurance', '17_supplemental_life_insurance_condition',
+                '49_period_definition', '10_company', '44_person_company_suppl_life', '24_person', 
+                '23_auth_user', '45_suppl_life_beneficiary', 'sys_benefit_update_reason',
+                'sys_benefit_update_reason_category']
 
     def test_get_person_company_suppl_life_by_person(self):
         response = self.client.get(reverse('person_person_supple_life',

@@ -19,7 +19,7 @@ class PersonCompanyHraPlan(models.Model):
         related_name="person_company_hra_plan")
 
     record_reason = models.ForeignKey(
-        SysBenefitUpdateReason, 
+        SysBenefitUpdateReason,
         blank=True,
         null=True,
         related_name="hra_update_reason")

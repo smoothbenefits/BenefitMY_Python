@@ -1,6 +1,6 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('UserService', 
+benefitmyService.factory('UserService',
   ['currentUser',
    'clientListRepository',
    '$location',

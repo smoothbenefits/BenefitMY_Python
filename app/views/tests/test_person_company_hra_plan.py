@@ -6,8 +6,8 @@ from view_test_base import ViewTestBase
 class PersonCompanyHraPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['46_hra_plan', '47_company_hra_plan', '48_person_company_hra_plan',
-                '10_company', '24_person', '23_auth_user', 'sys_benefit_update_reason',
-                'sys_benefit_update_reason_category']
+                '49_period_definition', '10_company', '24_person', '23_auth_user', 
+                'sys_benefit_update_reason', 'sys_benefit_update_reason_category']
 
     def test_get_person_company_hra_plan_by_person(self):
         response = self.client.get(reverse('person_company_hra_plan_by_person_api',

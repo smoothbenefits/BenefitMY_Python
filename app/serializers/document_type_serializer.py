@@ -7,4 +7,3 @@ class DocumentTypeSerializer(HashPkSerializerBase):
 
     class Meta:
         model = DocumentType
-

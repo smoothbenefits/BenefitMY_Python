@@ -13,14 +13,14 @@ BenefitMyApp.directive('confirmUnsavedOnExit', ['$modal', '$state', function ($m
                       size: 'md'
                     })
                     .result.then(
-                        function() { stopListen(); $state.go(toState, toParams); }, 
-                        function() { 
+                        function() { stopListen(); $state.go(toState, toParams); },
+                        function() {
                             if ($scope.state_exit_cancelled) {
-                                $scope.state_exit_cancelled(fromState); 
+                                $scope.state_exit_cancelled(fromState);
                             }
                         });
 
-                    event.preventDefault(); 
+                    event.preventDefault();
                 }
             });
 

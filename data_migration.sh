@@ -10,4 +10,3 @@ do
         psql -f $entry
     fi
 done
-

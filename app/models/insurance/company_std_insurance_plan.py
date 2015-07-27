@@ -13,7 +13,7 @@ class CompanyStdInsurancePlan(models.Model):
 
     # This is in Weeks for STD
     duration= models.IntegerField(blank=True, null=True)
-    
+
     percentage_of_salary = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True)
 
@@ -23,7 +23,7 @@ class CompanyStdInsurancePlan(models.Model):
     rate = models.DecimalField(
         max_digits=10, decimal_places=6, blank=True, null=True)
 
-    employer_contribution_percentage = models.DecimalField(max_digits=5, 
+    employer_contribution_percentage = models.DecimalField(max_digits=5,
                                                            decimal_places=2,
                                                            blank=True,
                                                            null=True)

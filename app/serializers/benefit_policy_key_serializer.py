@@ -7,4 +7,3 @@ class BenefitPolicyKeySerializer(HashPkSerializerBase):
 
     class Meta:
         model = BenefitPolicyKey
-
