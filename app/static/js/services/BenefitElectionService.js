@@ -29,7 +29,7 @@ benefitmyService.factory('BenefitElectionService',
 
             benefitElectedArray.push(displayBenefit);
           });
-          deferred.resolve(benefitElectedArray); 
+          deferred.resolve(benefitElectedArray);
         }, function(failedResponse){
           deferred.reject(failedResponse);
         });

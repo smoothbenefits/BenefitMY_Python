@@ -1,28 +1,32 @@
 [
   {
     "fields": {
-      "name": "BenefitMy Inc."
+      "name": "BenefitMy Inc.",
+      "pay_period_definition": 3
     },
     "model": "app.company",
     "pk": 1
   },
   {
     "fields": {
-      "name": "Startup.Com"
+      "name": "Startup.Com",
+      "pay_period_definition": 2
     },
     "model": "app.company",
     "pk": 2
   },
   {
     "fields": {
-      "name": "Telamon"
+      "name": "Telamon",
+      "pay_period_definition": 2
     },
     "model": "app.company",
     "pk": 3
   },
   {
     "fields": {
-      "name": "ForTesting"
+      "name": "ForTesting",
+      "pay_period_definition": 2
     },
     "model": "app.company",
     "pk": 4

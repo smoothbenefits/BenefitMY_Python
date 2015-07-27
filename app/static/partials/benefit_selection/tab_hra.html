@@ -1,29 +1,29 @@
 <!-- HRA -->
 <div class="panel" ng-show="companyPlan">
-    <div class="panel-head">Health Reimbursement Accounts (HRA)<br/><a ng-click="openPlanDetailsModal()"><b>View Details</b></a></div>
-    <div class="panel-body">
-        <form name="myForm" confirm-unsaved-on-exit>
-            <div class="row">
-                <div class="col-md-8">
-                    <div ng-show="!enrollBenefits" style="padding-bottom: 10px;">
-                        <span class="label label-danger">You have chosen NOT to enroll the HRA benefits.</span>
-                    </div>
-                    <div class="check-box">
-                        <input type="checkbox"
-                            ng-model="enrollBenefits"
-                            name="hra_enroll"> Yes, I want to enroll the HRA benefits provided by my employer.
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
+  <div class="panel-head">Health Reimbursement Accounts (HRA)<br/><a ng-click="openPlanDetailsModal()"><b>View Details</b></a></div>
+  <div class="panel-body">
+    <form name="myForm" confirm-unsaved-on-exit>
+      <div class="row">
+        <div class="col-md-8">
+          <div ng-show="!enrollBenefits" style="padding-bottom: 10px;">
+            <span class="label label-danger">You have chosen NOT to enroll the HRA benefits.</span>
+          </div>
+          <div class="check-box">
+            <input type="checkbox"
+            ng-model="enrollBenefits"
+            name="hra_enroll"> Yes, I want to enroll the HRA benefits provided by my employer.
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 <div class="form-holder">
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="submit-box benefit-selection-button">
-                <a ng-click="save()" class="btn green">Save Selection</a>
-            </div>
-        </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="submit-box benefit-selection-button">
+        <a ng-click="save()" class="btn green">Save Selection</a>
+      </div>
     </div>
+  </div>
 </div>

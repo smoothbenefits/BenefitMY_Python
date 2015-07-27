@@ -11,4 +11,4 @@ Users made changes in the last 24 hours::
 
 {% endfor %}
 
-Visit the site to check them out: {{site_url}} 
+Visit the site to check them out: {{site_url}}

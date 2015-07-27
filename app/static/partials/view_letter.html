@@ -2,96 +2,96 @@
 <script src="/static/js/jSignature.min.js"></script>
 
 <div class="breadcrumb">
-    <a ng-href="#/admin">Employer Dashboard</a>
-    <a ng-href="#/admin/employee/{{companyId}}">View Employees</a>
-    <span>View {{documentType}}</span>
+  <a ng-href="#/admin">Employer Dashboard</a>
+  <a ng-href="#/admin/employee/{{companyId}}">View Employees</a>
+  <span>View {{documentType}}</span>
 </div>
 
 <div class="content-header">
-    <h1>View {{documentType}}</h1>
-    <div class="cta"><span class="btn green" ng-click="createNewLetter()">Add {{documentType}}</span></div>
+  <h1>View {{documentType}}</h1>
+  <div class="cta"><span class="btn green" ng-click="createNewLetter()">Add {{documentType}}</span></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="table-responsive table-holder" ng-if="!_.isEmpty(documentList)">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th><span>Name</span></th>
-                    <th><span>Template</span></th>
-                    <th><span>Actions</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="doc in documentList">
-                    <td>{{doc.name}}</td>
-                    <td>{{doc.template.name}}</td>
-                    <td>
-                        <span class="btn inline" ng-click="viewExistingLetter(doc)">View</span>
-                        <span class="btn inline" ng-click="deleteExistingLetter(doc)">Delete</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+  <div class="table-responsive table-holder" ng-if="!_.isEmpty(documentList)">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Name</span></th>
+          <th><span>Template</span></th>
+          <th><span>Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="doc in documentList">
+          <td>{{doc.name}}</td>
+          <td>{{doc.template.name}}</td>
+          <td>
+            <span class="btn inline" ng-click="viewExistingLetter(doc)">View</span>
+            <span class="btn inline" ng-click="deleteExistingLetter(doc)">Delete</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel colourable" ng-show="anyActiveDocument()">
+    <div class="panel-heading">
+      <span class="panel-title">{{activeDocument.name}}</span>
     </div>
-
-    <div class="panel colourable" ng-show="anyActiveDocument()">
-        <div class="panel-heading">
-            <span class="panel-title">{{activeDocument.name}}</span>
-        </div>
-        <div class="panel-body">
-            <textarea
-                class="col-md-12"
-                name="document_content"
-                ng-model="activeDocument.content"
-                wrap="true"
-                cols="100"
-                rows="10">{{activeDocument.content}}</textarea>
-            <div class="update-button col-md-12">
-                <button type="button"
-                    ng-disabled="signaturePresent"
-                    class="btn green"
-                    ng-click="updateExistingLetter()">Update</button>
-            </div>
-        </div>
-        <div class="signature-display-container" ng-show="signaturePresent">
-            <div class="signature-image-container col-md-10 col-md-offset-1">
-                <img ng-src="{{signatureImage}}" alt="signature"/>
-            </div>
-            <div class="col-md-10 col-md-offset-1 text-right" style="padding-bottom: 20px;">
-                {{signatureCreatedDate}}
-            </div>
-            <div style="clear:both;"></div>
-        </div>
+    <div class="panel-body">
+      <textarea
+      class="col-md-12"
+      name="document_content"
+      ng-model="activeDocument.content"
+      wrap="true"
+      cols="100"
+      rows="10">{{activeDocument.content}}</textarea>
+      <div class="update-button col-md-12">
+        <button type="button"
+        ng-disabled="signaturePresent"
+        class="btn green"
+        ng-click="updateExistingLetter()">Update</button>
+      </div>
     </div>
+    <div class="signature-display-container" ng-show="signaturePresent">
+      <div class="signature-image-container col-md-10 col-md-offset-1">
+        <img ng-src="{{signatureImage}}" alt="signature"/>
+      </div>
+      <div class="col-md-10 col-md-offset-1 text-right" style="padding-bottom: 20px;">
+        {{signatureCreatedDate}}
+      </div>
+      <div style="clear:both;"></div>
+    </div>
+  </div>
 
 
 
-    <div class="template-holder" ng-show="addMode || templateContent">
-        <h2>View {{documentType}} Template</h2>
-        <div class="form-holder">
-            <form name="form">
-                <div class="form-label">Template Name</div>
-                <div class="textbox">
-                    <p>{{curDocument.name}}</p>
-                </div>
-                <div class="textbox">
-                    <textarea class="form-control"
-                        ng-model="curDocument.content"
-                        rows="10"> </textarea>
-                </div>
-                <div class="submit-box">
-                    <button ng-click="Send(employeeId)" class="btn green">
-                        Email PDF to
-                    </button>
-                    <button ng-click="Send(employeeId)" class="btn green">
-                        Download PDF
-                    </button>
-                </div>
-            </form>
+  <div class="template-holder" ng-show="addMode || templateContent">
+    <h2>View {{documentType}} Template</h2>
+    <div class="form-holder">
+      <form name="form">
+        <div class="form-label">Template Name</div>
+        <div class="textbox">
+          <p>{{curDocument.name}}</p>
         </div>
-    </div><!-- / .template-holder -->
+        <div class="textbox">
+          <textarea class="form-control"
+          ng-model="curDocument.content"
+          rows="10"> </textarea>
+        </div>
+        <div class="submit-box">
+          <button ng-click="Send(employeeId)" class="btn green">
+            Email PDF to
+          </button>
+          <button ng-click="Send(employeeId)" class="btn green">
+            Download PDF
+          </button>
+        </div>
+      </form>
+    </div>
+  </div><!-- / .template-holder -->
 
-    <div class="back pull-left"><a ng-click="viewEmployeesLink()">&laquo; Back</a></div>
+  <div class="back pull-left"><a ng-click="viewEmployeesLink()">&laquo; Back</a></div>
 
 </div><!-- / .content-body -->

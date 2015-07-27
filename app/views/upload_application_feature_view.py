@@ -21,11 +21,11 @@ class UploadApplicationFeatureView(APIView):
         # expect upload_id to be valid
         upload_id = request.DATA.get('upload')
         if not upload_id:
-            return Response({'message': 'upload is not posted with the request'}, 
+            return Response({'message': 'upload is not posted with the request'},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        serialized = UploadApplicationFeaturePostSerializer(data={'upload': upload_id, 
-                                                                  'application_feature': pk, 
+        serialized = UploadApplicationFeaturePostSerializer(data={'upload': upload_id,
+                                                                  'application_feature': pk,
                                                                   'feature_id':feature_id})
         if serialized.is_valid():
             serialized.save()

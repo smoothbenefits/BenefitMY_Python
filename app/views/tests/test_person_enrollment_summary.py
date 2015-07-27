@@ -6,7 +6,7 @@ from view_test_base import ViewTestBase
 
 class PersonEnrollmentSummaryTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['24_person', '10_company', '23_auth_user', '13_benefit_type',
+    fixtures = ['24_person', '49_period_definition', '10_company', '23_auth_user', '13_benefit_type',
                 '17_supplemental_life_insurance_condition', '15_benefit_policy_key',
                 '16_benefit_policy_type', 'sys_application_feature',
                 '21_benefit_plan', '22_benefit_details', '26_supplemental_life_insurance',

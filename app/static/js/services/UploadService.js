@@ -41,8 +41,8 @@ benefitmyService.factory('UploadService',
               method: 'POST',
               fields : {
                 key: uploadInfo.fileKey, // the key to store the file on S3, could be file name or customized
-                AWSAccessKeyId: uploadInfo.accessKey, 
-                acl: 'private', // sets the access to the uploaded file in the bucket: private or public 
+                AWSAccessKeyId: uploadInfo.accessKey,
+                acl: 'private', // sets the access to the uploaded file in the bucket: private or public
                 policy: uploadInfo.policy, // base64-encoded json policy (see article below)
                 signature: uploadInfo.signature, // base64-encoded signature based on policy string (see article below)
                 "Content-Type": get_file_type(file),// content type of the file (NotEmpty)
@@ -70,7 +70,7 @@ benefitmyService.factory('UploadService',
             headers: {
               'Authorization': auth,
               'x-amz-date': curTime
-             }      
+             }
         };
 
         $http(req).success(function(response){
@@ -95,9 +95,9 @@ benefitmyService.factory('UploadService',
             deferred.resolve(resp);
           }, function(error){
             deferred.reject(error);
-          });      
+          });
       });
-      
+
       return deferred.promise;
     };
 
@@ -113,7 +113,7 @@ benefitmyService.factory('UploadService',
               'file_type': get_file_type(file)
             }
             UploadRepository.uploadsByUser.save(
-                {pk:userInfo.user.id}, 
+                {pk:userInfo.user.id},
                 fileToUpload,
                 function(response){
                   //now we are able to actually upload to S3
@@ -167,7 +167,7 @@ benefitmyService.factory('UploadService',
             deferred.reject(error);
           });
       });
-  
+
       return deferred.promise;
     };
 

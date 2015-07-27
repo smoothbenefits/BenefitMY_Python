@@ -9,11 +9,12 @@ User = get_user_model()
 
 class UserViewTestCase(TestCase, ViewTestBase):
 
-    fixtures = ['24_person', 
-                '10_company', 
-                '23_auth_user', 
+    fixtures = ['24_person',
+                '49_period_definition',
+                '10_company',
+                '23_auth_user',
                 '11_address',
-                '12_phone', 
+                '12_phone',
                 '34_company_user']
 
     def setUp(self):
@@ -150,8 +151,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
-                'first_name':'fiddfrstvvv5', 
-                'last_name':'lastvvfdvv5', 
+                'first_name':'fiddfrstvvv5',
+                'last_name':'lastvvfdvv5',
                 'email':'user456@smoothbenefits.com'
                 },
             'company': 1,
@@ -159,7 +160,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'true',
             'fields':[
-                {'company_name':'benefitmy'}, 
+                {'company_name':'benefitmy'},
                 {'position': 'Software Engineer'}]
         }
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
@@ -181,8 +182,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
-                'first_name':'fiddfrstvvv5', 
-                'last_name':'lastvvfdvv5', 
+                'first_name':'fiddfrstvvv5',
+                'last_name':'lastvvfdvv5',
                 'email':'user456@smoothbenefits.com'
                 },
             'company': self.normalize_key(1),
@@ -190,7 +191,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'false',
             'create_docs': 'true',
             'fields':[
-                {'company_name':'benefitmy'}, 
+                {'company_name':'benefitmy'},
                 {'position': 'Software Engineer'}]
         }
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
@@ -208,8 +209,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
-                'first_name':'fiddfrstvvv5', 
-                'last_name':'lastvvfdvv5', 
+                'first_name':'fiddfrstvvv5',
+                'last_name':'lastvvfdvv5',
                 'email':'user456@smoothbenefits.com'
                 },
             'company': self.normalize_key(1),
@@ -233,8 +234,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
-                'first_name':'fiddfrstvvv5', 
-                'last_name':'lastvvfdvv5', 
+                'first_name':'fiddfrstvvv5',
+                'last_name':'lastvvfdvv5',
                 'email':'user456@smoothbenefits.com'
                 },
             'company_user_type': 'employee',
@@ -248,8 +249,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
-                'first_name':'fiddfrstvvv5', 
-                'last_name':'lastvvfdvv5', 
+                'first_name':'fiddfrstvvv5',
+                'last_name':'lastvvfdvv5',
                 'email':'user456@smoothbenefits.com'
                 },
             'company': self.normalize_key(1),
@@ -258,13 +259,13 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.content, '')
-        
+
     def test_user_create_non_existing_company(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
-                'first_name':'fiddfrstvvv5', 
-                'last_name':'lastvvfdvv5', 
+                'first_name':'fiddfrstvvv5',
+                'last_name':'lastvvfdvv5',
                 'email':'user456@smoothbenefits.com'
                 },
             'company': 300,
@@ -278,8 +279,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
-                'first_name':'fiddfrstvvv5', 
-                'last_name':'lastvvfdvv5', 
+                'first_name':'fiddfrstvvv5',
+                'last_name':'lastvvfdvv5',
                 'email':'user3@benefitmy.com'
                 },
             'company': self.normalize_key(1),
@@ -294,8 +295,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
-                'first_name':'34543klj5ff', 
-                'last_name':'fdjklg4939', 
+                'first_name':'34543klj5ff',
+                'last_name':'fdjklg4939',
                 'email':'user116@smoothbenefits.com'
                 },
             'company': 1,
@@ -303,7 +304,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'true',
             'fields':[
-                {'company_name':'benefitmy'}, 
+                {'company_name':'benefitmy'},
                 {'position': 'Software Engineer'}]
         }
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
@@ -344,8 +345,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
-                'first_name':'hahatest', 
-                'last_name':'profiler', 
+                'first_name':'hahatest',
+                'last_name':'profiler',
                 'email':'user166@smoothbenefits.com'
                 },
             'company': 1,
@@ -354,7 +355,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'create_docs': 'true',
             'annual_base_salary': 243433,
             'fields':[
-                {'company_name':'benefitmy'}, 
+                {'company_name':'benefitmy'},
                 {'position': 'Software Engineer'}]
         }
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
@@ -376,9 +377,9 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertTrue('annual_base_salary' in created_profile)
         self.assertEqual(int(float(created_profile['annual_base_salary'])), new_user['annual_base_salary'])
 
-        
+
         response = self.client.get(reverse('employee_profile_by_company_user_api',
-                                           kwargs={'user_id': created_user['id'], 
+                                           kwargs={'user_id': created_user['id'],
                                                    'company_id': self.normalize_key(new_user['company'])}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
@@ -395,8 +396,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
         new_user = {
             'user': {
-                'first_name':'nosalary', 
-                'last_name':'tester', 
+                'first_name':'nosalary',
+                'last_name':'tester',
                 'email':'user106@smoothbenefits.com'
                 },
             'company': 1,
@@ -404,7 +405,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'true',
             'fields':[
-                {'company_name':'benefitmy'}, 
+                {'company_name':'benefitmy'},
                 {'position': 'Software Engineer'}]
         }
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
@@ -426,7 +427,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertIsNone(created_profile['annual_base_salary'])
 
         response = self.client.get(reverse('employee_profile_by_company_user_api',
-                                           kwargs={'user_id': created_user['id'], 
+                                           kwargs={'user_id': created_user['id'],
                                                    'company_id': self.normalize_key(new_user['company'])}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)

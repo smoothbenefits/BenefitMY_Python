@@ -28,4 +28,3 @@ deployment:
     branch: beta
     commands:
       - sh ./deployment.sh benefitmy-python-beta HEROKU_POSTGRESQL_OLIVE
-

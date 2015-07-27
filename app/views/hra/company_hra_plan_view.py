@@ -5,7 +5,7 @@ from rest_framework import status
 
 from app.models.hra.company_hra_plan import CompanyHraPlan
 from app.serializers.hra.company_hra_plan_serializer import (
-    CompanyHraPlanSerializer, 
+    CompanyHraPlanSerializer,
     CompanyHraPlanPostSerializer)
 
 class CompanyHraPlanView(APIView):

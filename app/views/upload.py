@@ -49,7 +49,7 @@ class UploadView(APIView):
             return Upload.objects.get(pk=pk)
         except Upload.DoesNotExist:
             raise Http404
-    
+
     def _delete_from_upload_dependent(self, upload_dependent, upload_id):
         upload_dependents = upload_dependent.objects.filter(upload=upload_id)
         for upload_dependent in upload_dependents:
@@ -57,7 +57,7 @@ class UploadView(APIView):
 
     def get(self, request,  pk, format=None):
         upload = self._get_object(pk)
-        serialized = UploadSerializer(upload) 
+        serialized = UploadSerializer(upload)
         return Response(serialized.data)
 
 
@@ -85,14 +85,13 @@ def get_company_uploads(request, comp_id, pk, format=None):
         comp_users = CompanyUser.objects.get(company=comp_id, user=admin_id, company_user_type="admin")
     except CompanyUser.DoesNotExist:
         return Response({'message': 'The company and the current user do not match'}, status=405)
-    
+
     # Validate the employee id provided is an employee of the company specified
     try:
         employee_users = CompanyUser.objects.get(company=comp_id, user=pk, company_user_type="employee")
     except CompanyUser.DoesNotExist:
-        return Response({'message': 'The company and the employee do not match'}, status=405)        
+        return Response({'message': 'The company and the employee do not match'}, status=405)
 
     uploads = Upload.objects.filter(company=comp_id, user=pk)
     serialized = UploadSerializer(uploads, many=True)
-    return Response(serialized.data) 
-
+    return Response(serialized.data)

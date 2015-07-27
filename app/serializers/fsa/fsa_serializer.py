@@ -14,6 +14,6 @@ class FsaSerializer(HashPkSerializerBase):
         model = FSA
 
 class FsaPostSerializer(HashPkSerializerBase):
-    
+
     class Meta:
         model = FSA

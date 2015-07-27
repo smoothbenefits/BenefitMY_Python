@@ -49,4 +49,3 @@ class TestHashKeyService(TestCase):
 		encodedKey = self.hash_key_service.encode_key(key)
 		decodedKey = self.hash_key_service.decode_key(encodedKey)
 		self.assertEqual(str(key), str(decodedKey))
-

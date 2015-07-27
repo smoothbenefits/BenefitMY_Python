@@ -17,7 +17,7 @@ class BenefitPolicyKeyTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result), list)
         self.assertTrue(len(result) > 0)
 
-        # Also assure that the ordering of the result is respecting 
+        # Also assure that the ordering of the result is respecting
         # the "rank" field properly
         for i in range(1, len(result)):
-            self.assertTrue(result[i]['rank'] >= result[i-1]['rank'])    
+            self.assertTrue(result[i]['rank'] >= result[i-1]['rank'])

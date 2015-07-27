@@ -5,13 +5,13 @@ Introduction
 
 You’re getting this notice because you recently gained coverage under a group health plan (the Plan).  This notice has important information about your right to COBRA continuation coverage, which is a temporary extension of coverage under the Plan.  This notice explains COBRA continuation coverage, when it may become available to you and your family, and what you need to do to protect your right to get it.  When you become eligible for COBRA, you may also become eligible for other coverage options that may cost less than COBRA continuation coverage.
 
-The right to COBRA continuation coverage was created by a federal law, the Consolidated Omnibus Budget Reconciliation Act of 1985 (COBRA).  COBRA continuation coverage can become available to you and other members of your family when group health coverage would otherwise end.  For more information about your rights and obligations under the Plan and under federal law, you should review the Plan’s Summary Plan Description or contact the Plan Administrator.  
+The right to COBRA continuation coverage was created by a federal law, the Consolidated Omnibus Budget Reconciliation Act of 1985 (COBRA).  COBRA continuation coverage can become available to you and other members of your family when group health coverage would otherwise end.  For more information about your rights and obligations under the Plan and under federal law, you should review the Plan’s Summary Plan Description or contact the Plan Administrator.
 
-You may have other options available to you when you lose group health coverage.  For example, you may be eligible to buy an individual plan through the Health Insurance Marketplace.  By enrolling in coverage through the Marketplace, you may qualify for lower costs on your monthly premiums and lower out-of-pocket costs.  Additionally, you may qualify for a 30-day special enrollment period for another group health plan for which you are eligible (such as a spouse’s plan), even if that plan generally doesn’t accept late enrollees.  
+You may have other options available to you when you lose group health coverage.  For example, you may be eligible to buy an individual plan through the Health Insurance Marketplace.  By enrolling in coverage through the Marketplace, you may qualify for lower costs on your monthly premiums and lower out-of-pocket costs.  Additionally, you may qualify for a 30-day special enrollment period for another group health plan for which you are eligible (such as a spouse’s plan), even if that plan generally doesn’t accept late enrollees.
 
 What is COBRA continuation coverage?
 
-COBRA continuation coverage is a continuation of Plan coverage when it would otherwise end because of a life event.  This is also called a “qualifying event.”  Specific qualifying events are listed later in this notice.  After a qualifying event, COBRA continuation coverage must be offered to each person who is a “qualified beneficiary.”  You, your spouse, and your dependent children could become qualified beneficiaries if coverage under the Plan is lost because of the qualifying event.  Under the Plan, qualified beneficiaries who elect COBRA continuation coverage must pay for COBRA continuation coverage.  
+COBRA continuation coverage is a continuation of Plan coverage when it would otherwise end because of a life event.  This is also called a “qualifying event.”  Specific qualifying events are listed later in this notice.  After a qualifying event, COBRA continuation coverage must be offered to each person who is a “qualified beneficiary.”  You, your spouse, and your dependent children could become qualified beneficiaries if coverage under the Plan is lost because of the qualifying event.  Under the Plan, qualified beneficiaries who elect COBRA continuation coverage must pay for COBRA continuation coverage.
 
 If you’re an employee, you’ll become a qualified beneficiary if you lose your coverage under the Plan because of the following qualifying events:
 
@@ -22,7 +22,7 @@ If you’re the spouse of an employee, you’ll become a qualified beneficiary i
 
 * Your spouse dies;
 * Your spouse’s hours of employment are reduced;
-* Your spouse’s employment ends for any reason other than his or her gross misconduct;  
+* Your spouse’s employment ends for any reason other than his or her gross misconduct;
 * Your spouse becomes entitled to Medicare benefits (under Part A, Part B, or both); or
 * You become divorced or legally separated from your spouse.
 
@@ -38,24 +38,24 @@ Your dependent children will become qualified beneficiaries if they lose coverag
 When is COBRA continuation coverage available?
 
 The Plan will offer COBRA continuation coverage to qualified beneficiaries only after the Plan Administrator has been notified that a qualifying event has occurred.  The employer must notify the Plan Administrator of the following qualifying events:
-* The end of employment or reduction of hours of employment; 
-* Death of the employee; 
-* [add if Plan provides retiree health coverage:  Commencement of a proceeding in bankruptcy with respect to the employer;]; or 
+* The end of employment or reduction of hours of employment;
+* Death of the employee;
+* [add if Plan provides retiree health coverage:  Commencement of a proceeding in bankruptcy with respect to the employer;]; or
 * The employee’s becoming entitled to Medicare benefits (under Part A, Part B, or both).
 
-For all other qualifying events (divorce or legal separation of the employee and spouse or a dependent child’s losing eligibility for coverage as a dependent child), you must notify the Plan Administrator within 60 days after the qualifying event occurs.  You must provide this notice to: HR at {{CompanyName}}. 
+For all other qualifying events (divorce or legal separation of the employee and spouse or a dependent child’s losing eligibility for coverage as a dependent child), you must notify the Plan Administrator within 60 days after the qualifying event occurs.  You must provide this notice to: HR at {{CompanyName}}.
 
 How is COBRA continuation coverage provided?
 
-Once the Plan Administrator receives notice that a qualifying event has occurred, COBRA continuation coverage will be offered to each of the qualified beneficiaries.  Each qualified beneficiary will have an independent right to elect COBRA continuation coverage.  Covered employees may elect COBRA continuation coverage on behalf of their spouses, and parents may elect COBRA continuation coverage on behalf of their children.  
+Once the Plan Administrator receives notice that a qualifying event has occurred, COBRA continuation coverage will be offered to each of the qualified beneficiaries.  Each qualified beneficiary will have an independent right to elect COBRA continuation coverage.  Covered employees may elect COBRA continuation coverage on behalf of their spouses, and parents may elect COBRA continuation coverage on behalf of their children.
 
 COBRA continuation coverage is a temporary continuation of coverage that generally lasts for 18 months due to employment termination or reduction of hours of work. Certain qualifying events, or a second qualifying event during the initial period of coverage, may permit a beneficiary to receive a maximum of 36 months of coverage.
 
-There are also ways in which this 18-month period of COBRA continuation coverage can be extended:  
+There are also ways in which this 18-month period of COBRA continuation coverage can be extended:
 
 Disability extension of 18-month period of COBRA continuation coverage
 
-If you or anyone in your family covered under the Plan is determined by Social Security to be disabled and you notify the Plan Administrator in a timely fashion, you and your entire family may be entitled to get up to an additional 11 months of COBRA continuation coverage, for a maximum of 29 months.  The disability would have to have started at some time before the 60th day of COBRA continuation coverage and must last at least until the end of the 18-month period of COBRA continuation coverage. 
+If you or anyone in your family covered under the Plan is determined by Social Security to be disabled and you notify the Plan Administrator in a timely fashion, you and your entire family may be entitled to get up to an additional 11 months of COBRA continuation coverage, for a maximum of 29 months.  The disability would have to have started at some time before the 60th day of COBRA continuation coverage and must last at least until the end of the 18-month period of COBRA continuation coverage.
 
 Second qualifying event extension of 18-month period of continuation coverage
 
@@ -67,7 +67,7 @@ Yes.  Instead of enrolling in COBRA continuation coverage, there may be other co
 
 If you have questions
 
-Questions concerning your Plan or your COBRA continuation coverage rights should be addressed to the contact or contacts identified below.  For more information about your rights under the Employee Retirement Income Security Act (ERISA), including COBRA, the Patient Protection and Affordable Care Act, and other laws affecting group health plans, contact the nearest Regional or District Office of the U.S. Department of Labor’s Employee Benefits Security Administration (EBSA) in your area or visit www.dol.gov/ebsa.  (Addresses and phone numbers of Regional and District EBSA Offices are available through EBSA’s website.)  For more information about the Marketplace, visit www.HealthCare.gov.  
+Questions concerning your Plan or your COBRA continuation coverage rights should be addressed to the contact or contacts identified below.  For more information about your rights under the Employee Retirement Income Security Act (ERISA), including COBRA, the Patient Protection and Affordable Care Act, and other laws affecting group health plans, contact the nearest Regional or District Office of the U.S. Department of Labor’s Employee Benefits Security Administration (EBSA) in your area or visit www.dol.gov/ebsa.  (Addresses and phone numbers of Regional and District EBSA Offices are available through EBSA’s website.)  For more information about the Marketplace, visit www.HealthCare.gov.
 
 Keep your Plan informed of address changes
 

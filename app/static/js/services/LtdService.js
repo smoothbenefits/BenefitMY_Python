@@ -1,13 +1,13 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('LtdService', 
+benefitmyService.factory('LtdService',
     ['$q',
     'LtdRepository',
-    'EmployeeProfileService', 
+    'EmployeeProfileService',
     function ($q, LtdRepository, EmployeeProfileService){
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
-            
+
             viewModel.planId = planDomainModel.id;
             viewModel.planName = planDomainModel.name;
             viewModel.planBroker = planDomainModel.user;
@@ -16,7 +16,7 @@ benefitmyService.factory('LtdService',
         };
 
         var mapCompanyPlanDomainToViewModel = function(companyPlanDomainModel) {
-            var viewModel = companyPlanDomainModel.ltd_insurance_plan ? 
+            var viewModel = companyPlanDomainModel.ltd_insurance_plan ?
                 mapPlanDomainToViewModel(companyPlanDomainModel.ltd_insurance_plan) :
                 {};
 
@@ -30,25 +30,25 @@ benefitmyService.factory('LtdService',
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
             viewModel.employerContributionPercentage = companyPlanDomainModel.employer_contribution_percentage;
-            
+
             return viewModel;
         };
 
         var mapUserCompanyPlanDomainToViewModel = function(userCompanyPlanDomainModel) {
-            var viewModel = userCompanyPlanDomainModel.company_ltd_insurance ? 
+            var viewModel = userCompanyPlanDomainModel.company_ltd_insurance ?
                 mapCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_ltd_insurance) :
                 {};
 
             viewModel.userCompanyPlanId = userCompanyPlanDomainModel.id;
             viewModel.planOwner = userCompanyPlanDomainModel.user;
             viewModel.lastUpdateDateTime = moment(userCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
-        
+
             return viewModel;
         };
 
         var mapPlanViewToDomainModel = function(planViewModel) {
             var domainModel = {};
-            
+
             domainModel.id = planViewModel.planId;
             domainModel.name = planViewModel.planName;
             domainModel.user = planViewModel.planBroker;
@@ -109,7 +109,7 @@ benefitmyService.factory('LtdService',
 
         return {
             paidByParties: ['Employee', 'Employer'],
-            
+
             getLtdPlansForCompany: getLtdPlansForCompany,
 
             getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan) {
@@ -133,7 +133,7 @@ benefitmyService.factory('LtdService',
                         var benefitAmount = Math.min(salary * benefitPercentage, maxBenefitAnnually); // Benefit amount cannot exceed preset cap
                         var rate = ltdPlan.rate;
                         var rateBase = 10;
-                        
+
                         var numOfPeriods = 26; // biweekly
 
                         var premium = (benefitAmount * (rate / rateBase) * employeeContribution / numOfPeriods).toFixed(2);
@@ -175,7 +175,7 @@ benefitmyService.factory('LtdService',
                 function(error){
                     deferred.reject(error)
                 });
-                
+
                 return deferred.promise;
             },
 
@@ -189,8 +189,8 @@ benefitmyService.factory('LtdService',
                 function(error) {
                     deferred.reject(error);
                 });
-                
-                return deferred.promise; 
+
+                return deferred.promise;
             },
 
             deleteLtdPlansForUser: function(userId) {
@@ -251,9 +251,9 @@ benefitmyService.factory('LtdService',
                 },
                 function(error) {
                     deferred.reject(error);
-                }); 
-                
-                return deferred.promise; 
+                });
+
+                return deferred.promise;
             },
 
             getUserEnrolledLtdPlanByUser: function(userId, company) {
@@ -266,7 +266,7 @@ benefitmyService.factory('LtdService',
                         LtdRepository.CompanyUserPlanByUser.query({userId:userId})
                         .$promise.then(function(plans) {
 
-                            var plan = plans.length > 0 ? 
+                            var plan = plans.length > 0 ?
                                 mapUserCompanyPlanDomainToViewModel(plans[0]) :
                                 null;
 
@@ -277,9 +277,9 @@ benefitmyService.factory('LtdService',
                         });
                     }
                 });
-                
-                return deferred.promise; 
+
+                return deferred.promise;
             }
-        }; 
+        };
     }
 ]);

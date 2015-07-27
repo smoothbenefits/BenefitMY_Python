@@ -1,3 +1,4 @@
+import time
 from django.http import HttpResponse
 from django.http import Http404
 from django.db import transaction
@@ -7,7 +8,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from app.models.company_user import CompanyUser
+from app.models.company import Company
 from app.models.person import Person
 from app.models.phone import Phone
 from app.models.address import Address
@@ -58,7 +59,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
     def get(self, request, pk, format=None):
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="employee_benefit_summary.pdf"'
-        
+
         # initialize the canvas
         self._init_canvas(response)
 
@@ -77,11 +78,14 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
         return
 
-    def _get_person_birth_date_line(self, person):
-        if person and person.birth_date:
-            return '(' + ReportExportViewBase.get_date_string(person.birth_date) + ')'
+    def _get_page_title(self, company_id):
+        comp = Company.objects.get(pk=company_id)
+        if comp:
+            return comp.name + ' - Enrollment Confirmation - ' + \
+                time.strftime('%B') + ' ' + time.strftime('%Y')
         else:
             return ''
+
 
     def _write_employee(self, employee_user_id, company_id):
         person = self._get_person_by_user(employee_user_id)
@@ -90,13 +94,19 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         # set the common configuration on the page
         self._init_page()
 
+        # Write title of the page
+        title = self._get_page_title(company_id)
+        self._set_font(14)
+        self._write_line([title])
+        self._start_new_line()
+
         # Write full name of the employee being rendered
+        self._set_font(12)
         full_name = self._get_person_full_name(person, user)
-        self._write_line([ \
-            full_name, \
-            self._get_person_birth_date_line(person) if person is not None else ''])
+        self._write_line([full_name])
 
         self._start_new_line()
+        self._set_font(10)
 
         # Now starts writing benefit enrollments
         self._write_employee_all_health_benefits_info(user, company_id)
@@ -125,6 +135,14 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         self._write_line_uniform_width([benefit_name])
         self._draw_line()
         self._write_line_uniform_width(['Not Selected'])
+        self._start_new_line()
+        self._start_new_line()
+
+    def _write_waived_plan(self, benefit_name):
+        #Render header
+        self._write_line_uniform_width([benefit_name])
+        self._draw_line()
+        self._write_line_uniform_width(['Waived'])
         self._start_new_line()
         self._start_new_line()
 
@@ -193,32 +211,36 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         return
 
     def _write_employee_basic_life_insurance_info(self, user_model, person_model, company_id):
-        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=user_model.id).filter(company_life_insurance__life_insurance_plan__insurance_type='Basic')
+        employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=user_model.id)
         company_plans = CompanyLifeInsurancePlan.objects.filter(company=company_id)
 
         if (len(employee_plans) > 0):
-            # Render header
-            column_width_dists = [0.45, 0.35, 0.2]
-            self._write_line_uniform_width(['Basic Life (AD&D)', 'Coverage', 'Employee Premium'],
-                                           column_width_dists)
-            self._draw_line()
-
             employee_plan = employee_plans[0]
-            company_plan = employee_plan.company_life_insurance
-            plan = company_plan.life_insurance_plan
 
-            # compute the coverage
-            coverage_amount = ''
-            if (company_plan.insurance_amount): 
-                coverage_amount = company_plan.insurance_amount
-            elif (company_plan.salary_multiplier):
-                salary = self._get_salary_by_person(person_model)
-                if (salary):
-                    coverage_amount = company_plan.salary_multiplier * salary
-            self._write_line_uniform_width([plan.name, coverage_amount, 'N/A'],
-                                           column_width_dists)
-            self._start_new_line()
-            self._start_new_line()
+            if (employee_plan.company_life_insurance):
+                # Render header
+                column_width_dists = [0.45, 0.35, 0.2]
+                self._write_line_uniform_width(['Basic Life (AD&D)', 'Coverage', 'Employee Premium'],
+                                               column_width_dists)
+                self._draw_line()
+
+                company_plan = employee_plan.company_life_insurance
+                plan = company_plan.life_insurance_plan
+
+                # compute the coverage
+                coverage_amount = ''
+                if (company_plan.insurance_amount):
+                    coverage_amount = company_plan.insurance_amount
+                elif (company_plan.salary_multiplier):
+                    salary = self._get_salary_by_person(person_model)
+                    if (salary):
+                        coverage_amount = company_plan.salary_multiplier * salary
+                self._write_line_uniform_width([plan.name, coverage_amount, 'N/A'],
+                                               column_width_dists)
+                self._start_new_line()
+                self._start_new_line()
+            else:
+                self._write_waived_plan('Basic Life (AD&D)')
 
         elif company_plans:
             self._write_not_selected_plan('Basic Life (AD&D)')
@@ -238,9 +260,9 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
                 plan = employee_plans[0]
                 self._write_line_uniform_width([ \
-                    plan.company_hra_plan.hra_plan.name, 
+                    plan.company_hra_plan.hra_plan.name,
                     plan.company_hra_plan.hra_plan.description])
-        
+
                 self._start_new_line()
                 self._start_new_line()
 
@@ -256,35 +278,38 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
             employee_plans = PersonCompSupplLifeInsurancePlan.objects.filter(person=person_model.id)
             if (len(employee_plans) > 0):
                 plan_selected = True
-                # Render header
-                self._write_line_uniform_width(['Suppl. Life Plan', 'Coverage Target', 'Elected Amount', 'Premium', 'Condition'])
-                self._draw_line()
-
                 plan = employee_plans[0]
 
-                text_block = [[],[],[],[],[]]
-                text_block[0].append(plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
+                if plan.company_supplemental_life_insurance_plan:
+                    # Render header
+                    self._write_line_uniform_width(['Suppl. Life Plan', 'Coverage Target', 'Elected Amount', 'Premium', 'Condition'])
+                    self._draw_line()
 
-                text_block[1].append('Employee')
-                text_block[1].append('Spouse')
-                text_block[1].append('Child(ren)')
+                    text_block = [[],[],[],[],[]]
+                    text_block[0].append(plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
 
-                text_block[2].append(plan.self_elected_amount)
-                text_block[2].append(plan.spouse_elected_amount)
-                text_block[2].append(plan.child_elected_amount)
+                    text_block[1].append('Employee')
+                    text_block[1].append('Spouse')
+                    text_block[1].append('Child(ren)')
 
-                text_block[3].append(plan.self_premium_per_month)
-                text_block[3].append(plan.spouse_premium_per_month)
-                text_block[3].append(plan.child_premium_per_month)
-                
-                text_block[4].append(plan.self_condition.name)
-                text_block[4].append(plan.spouse_condition.name)
-                text_block[4].append('N/A')
+                    text_block[2].append(plan.self_elected_amount)
+                    text_block[2].append(plan.spouse_elected_amount)
+                    text_block[2].append(plan.child_elected_amount)
 
-                self._write_block_uniform_width(text_block)
+                    text_block[3].append(plan.self_premium_per_month)
+                    text_block[3].append(plan.spouse_premium_per_month)
+                    text_block[3].append(plan.child_premium_per_month)
 
-                self._start_new_line()
-                self._start_new_line()
+                    text_block[4].append(plan.self_condition.name)
+                    text_block[4].append(plan.spouse_condition.name)
+                    text_block[4].append('N/A')
+
+                    self._write_block_uniform_width(text_block)
+
+                    self._start_new_line()
+                    self._start_new_line()
+                else:
+                    self._write_waived_plan('Supplemental Life Plan')
 
         if not plan_selected and company_plans:
             self._write_not_selected_plan('Suppl. Life Plan')
@@ -337,17 +362,19 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         fsas = FSA.objects.filter(user=user_model.id)
         company_plans = CompanyFsaPlan.objects.filter(company=company_id)
         if (len(fsas) > 0):
-            # Render header
-            self._write_line_uniform_width(['Account Type', 'Elected Annual Amount'])
-            self._draw_line()
-
             fsa = fsas[0]
+            if (fsa.company_fsa_plan):
+                # Render header
+                self._write_line_uniform_width(['Account Type', 'Elected Annual Amount'])
+                self._draw_line()
 
-            self._write_line_uniform_width(['Health Account', fsa.primary_amount_per_year])
-            self._write_line_uniform_width(['Dependent Care Account', fsa.dependent_amount_per_year])
-            
-            self._start_new_line()
-            self._start_new_line()
+                self._write_line_uniform_width(['Health Account', fsa.primary_amount_per_year])
+                self._write_line_uniform_width(['Dependent Care Account', fsa.dependent_amount_per_year])
+
+                self._start_new_line()
+                self._start_new_line()
+            else:
+                self._write_waived_plan('Flexible Spending Account')
         elif company_plans:
             self._write_not_selected_plan('Flexible Spending Account')
 
@@ -365,9 +392,9 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                     'Signed' if document.signature is not None else 'Not Signed', \
                     ReportExportViewBase.get_date_string(document.signature.created_at) if document.signature is not None else ''
                 ], \
-                [0.6, 0.2, 0.2])  
+                [0.6, 0.2, 0.2])
 
-        return  
+        return
 
     def _get_person_full_name(self, person_model, fallback_user=None):
         full_name = 'N/A'
@@ -419,4 +446,3 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
     def _check_None(self, target, default_value):
         return target if target is not None else default_value
-

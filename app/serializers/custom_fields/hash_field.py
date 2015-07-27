@@ -14,4 +14,3 @@ class HashField(serializers.Field):
 	def from_native(self, data):
 		hash_key_service = HashKeyService()
 		return hash_key_service.decode_key(data)
-

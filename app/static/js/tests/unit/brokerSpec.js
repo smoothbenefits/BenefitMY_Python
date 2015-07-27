@@ -30,6 +30,6 @@ describe('brokerController', function() {
     it('verify setup state', function(){
       expect(scope.employeeList.length).toBe(0);
     });
-    
+
   });
 });

@@ -1,63 +1,63 @@
 <div class="breadcrumb">
-    <a ng-href="#/employee">Employee Dashboard</a>
-    <span>View Document</span>
+  <a ng-href="#/employee">Employee Dashboard</a>
+  <span>View Document</span>
 </div>
 
 <script type="text/javascript" src="/static/js/flashcanvas.js"></script>
 <script src="/static/js/jSignature.min.js"></script>
 
 <div class="content-header">
-    <h1>{{document.name}}</h1>
+  <h1>{{document.name}}</h1>
 </div><!-- / .content-header -->
 <div class="content-body col-md-12">
-    <textarea name="document_content" readonly="true" wrap="true" cols="100" rows="20">
-        {{document.content}}
-    </textarea>
+  <textarea name="document_content" readonly="true" wrap="true" cols="100" rows="20">
+    {{document.content}}
+  </textarea>
 </div>
 <div class="col-md-10">
-    <div class="signature-display-container" ng-show="signatureSaved || signaturePresent">
-        <div class="signature-action-container">
-            <div class="signature-image-container">
-                <img ng-src="{{signatureImage}}" alt="signature" />
-            </div>
-            <div class="text-right col-md-10" style="padding-bottom: 20px;">
-                {{signatureCreatedDate}}
-            </div>
-            <div class="col-md-6">
-                <div class="signature-saved-successful" ng-show="signatureSaved">
-                    The document signed successfully!
-                </div>
-                <button ng-click="goToDashboard()" class="btn green">
-                        Back to Dashboard
-                </button>
-            </div>
-            <div style="clear:both;"></div>
+  <div class="signature-display-container" ng-show="signatureSaved || signaturePresent">
+    <div class="signature-action-container">
+      <div class="signature-image-container">
+        <img ng-src="{{signatureImage}}" alt="signature" />
+      </div>
+      <div class="text-right col-md-10" style="padding-bottom: 20px;">
+        {{signatureCreatedDate}}
+      </div>
+      <div class="col-md-6">
+        <div class="signature-saved-successful" ng-show="signatureSaved">
+          The document signed successfully!
         </div>
+        <button ng-click="goToDashboard()" class="btn green">
+          Back to Dashboard
+        </button>
+      </div>
+      <div style="clear:both;"></div>
     </div>
-    <div class="signature-container" ng-show="!signatureSaved && !signaturePresent">
-        <div id="doc_signature" class="employee-doc-signature-pad"></div>
-        <div class="signature-saved-fail" ng-show="signatureSaveFailed">
-            The document signature has not been saved successfully! :(
-        </div>
-        <div class="signature-action-container" ng-show="!signatureSaved">
+  </div>
+  <div class="signature-container" ng-show="!signatureSaved && !signaturePresent">
+    <div id="doc_signature" class="employee-doc-signature-pad"></div>
+    <div class="signature-saved-fail" ng-show="signatureSaveFailed">
+      The document signature has not been saved successfully! :(
+    </div>
+    <div class="signature-action-container" ng-show="!signatureSaved">
 
-            <div class="signature-reset col-md-6 pull-left">
-                <button ng-click="clearSignature()" class="btn">
-                    Reset
-                </button>
-            </div>
-            <div class="signature-reset col-md-6 pull-right">
-                <button ng-click="signDocument()" class="btn green">
-                    Sign
-                </button>
-            </div>
-            <div style="clear:both"></div>
-            <input type="hidden" name="signatureHiddenData" value="{{signatureImage}}"/>
-        </div>
+      <div class="signature-reset col-md-6 pull-left">
+        <button ng-click="clearSignature()" class="btn">
+          Reset
+        </button>
+      </div>
+      <div class="signature-reset col-md-6 pull-right">
+        <button ng-click="signDocument()" class="btn green">
+          Sign
+        </button>
+      </div>
+      <div style="clear:both"></div>
+      <input type="hidden" name="signatureHiddenData" value="{{signatureImage}}"/>
     </div>
-    <div class="back" ng-if="!signatureSaved && !signaturePresent">
-        <a href="javascript:void(0);" onclick="history.back()">« Cancel</a>
-    </div>
+  </div>
+  <div class="back" ng-if="!signatureSaved && !signaturePresent">
+    <a href="javascript:void(0);" onclick="history.back()">« Cancel</a>
+  </div>
 </div>
 <div class="col-md-1">
 </div>

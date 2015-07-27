@@ -14,4 +14,3 @@ class AddressSerializer(HashPkSerializerBase):
                   'city',
                   'state',
                   'zipcode')
-

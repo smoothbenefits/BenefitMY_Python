@@ -60,7 +60,7 @@ class FamilyByUserView(APIView):
         relationship = request.DATA['relationship']
         if relationship == 'spouse' or relationship == 'self':
             if self.is_person_associated_with_user(pk, relationship):
-                return Response({'message':'Cannot add a new {0} when you already have a {0} in DB'.format(relationship)}, 
+                return Response({'message':'Cannot add a new {0} when you already have a {0} in DB'.format(relationship)},
                                 status=status.HTTP_400_BAD_REQUEST)
         serializer = PersonFullPostSerializer(data=request.DATA)
         if serializer.is_valid():

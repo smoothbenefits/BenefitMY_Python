@@ -3,7 +3,7 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('PersonService',
   ['peopleRepository',
    '$q',
-    function(peopleRepository, 
+    function(peopleRepository,
       $q){
 
       var getSelfPersonInfo = function(uId){
