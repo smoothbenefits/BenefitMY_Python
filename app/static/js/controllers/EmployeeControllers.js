@@ -2051,8 +2051,8 @@ var stdBenefitsSignup = employeeControllers.controller(
                 }
 
                 StdService.getEmployeePremiumForUserCompanyStdPlan(
-                    $scope.employeeId, 
-                    stdPlan, 
+                    $scope.employeeId,
+                    stdPlan,
                     company.pay_period_definition)
                 .then(function(premium) {
                     $scope.companyStdPlan.employeePremium = premium;
@@ -2131,8 +2131,8 @@ var ltdBenefitsSignup = employeeControllers.controller(
                 }
 
                 LtdService.getEmployeePremiumForUserCompanyLtdPlan(
-                    $scope.employeeId, 
-                    ltdPlan, 
+                    $scope.employeeId,
+                    ltdPlan,
                     company.pay_period_definition)
                 .then(function(premium) {
                     $scope.companyLtdPlan.employeePremium = premium;
@@ -2142,26 +2142,23 @@ var ltdBenefitsSignup = employeeControllers.controller(
         })
 
         $scope.save = function() {
-            // Save ltd
-            var savePromise = $scope.enrollBenefits ?
-                LtdService.enrollLtdPlanForUser(employeeId,
-                                                $scope.companyLtdPlan,
-                                                $scope.company.pay_period_definition,
-                                                $scope.updateReason) :
-                LtdService.deleteLtdPlansForUser(employeeId);
+          // Save ltd
+          if (!$scope.enrollBenefits) {
+            $scope.companyLtdPlan.companyPlanId = null;
+          }
 
-            savePromise.then(
-                function() {
-                    var modalInstance = $scope.showSaveSuccessModal();
-                    modalInstance.result.then(function(){
-                        $scope.transitionToNextTab($scope.tabs);
-                    });
-                    $scope.myForm.$setPristine();
-                }
-              , function(error) {
-                    alert('Failed to save your benefits election. Please try again later.');
-                }
-            );
+          LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan, $scope.updateReason)
+          .then(function() {
+              var modalInstance = $scope.showSaveSuccessModal();
+              modalInstance.result.then(function(){
+                $scope.transitionToNextTab($scope.tabs);
+              });
+              $scope.myForm.$setPristine();
+            }
+          , function(error) {
+              alert('Failed to save your benefits election. Please try again later.');
+            }
+          );
         };
 
         $scope.openPlanDetailsModal = function() {
