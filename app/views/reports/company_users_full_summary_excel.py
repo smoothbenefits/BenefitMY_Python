@@ -411,21 +411,10 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                                                  row_num, 
                                                  col_num):
         if employee_profile:
-            salary = employee_profile.annual_base_salary
-            benefit_from_salary = salary * company_plan.percentage_of_salary / 100
-            max_benefit_amount = max(annual_max_benefit, benefit_from_salary)
-            total_premium = max_benefit_amount / 12 * company_plan.rate / 10
-            if not total_premium:
-                total_premium = 0
+            total_premium, employee_premium = self._get_disability_premium_numbers(company_plan,
+                                                                                   annual_max_benefit,
+                                                                                   employee_profile)
             col_num = self._write_field(excelSheet, row_num, col_num, total_premium)
-            employee_contribution_percent = 0
-            if company_plan.employer_contribution_percentage:
-                employee_contribution_percent = 100 - company_plan.employer_contribution_percentage
-            employee_premium = 0
-            if employee_contribution_percent and employee_contribution_percent > 0:
-                employee_premium = float(total_premium) *  float(employee_contribution_percent) / 100 * company_plan.company.pay_period_definition.month_factor
-            if not employee_premium:
-                employee_premium = 0
             col_num = self._write_field(excelSheet, row_num, col_num, employee_premium)
         else:
             col_num = self._write_field(excelSheet, row_num, col_num, 'No Employee Salary')
