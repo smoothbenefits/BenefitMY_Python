@@ -80,11 +80,11 @@ class ReportExportViewBase(APIView):
         benefit_from_salary = salary * company_plan.percentage_of_salary / 100
         max_benefit_amount = max(annual_max_benefit, benefit_from_salary)
         total_premium = max_benefit_amount / 12 * company_plan.rate / 10
-        employee_contribution_percent = 0
+        employee_contribution_percent = 100
         if company_plan.employer_contribution_percentage:
             employee_contribution_percent = 100 - company_plan.employer_contribution_percentage
         employee_premium = 0
-        if employee_contribution_percent and employee_contribution_percent > 0:
+        if employee_contribution_percent > 0:
             employee_premium = float(total_premium) *  float(employee_contribution_percent) / 100 * company_plan.company.pay_period_definition.month_factor
         return total_premium, employee_premium
     
