@@ -65,6 +65,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Med PCP NO.')
         col_num = self._write_field(excelSheet, 0, col_num, 'Date of Hire')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Annual Salary')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
         col_num = self._write_field(excelSheet, 0, col_num, 'Work Phone')
         col_num = self._write_field(excelSheet, 0, col_num, 'Home Phone')
@@ -273,9 +274,18 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
     def _write_employee_profile_info(self, person_model, excelSheet, row_num, col_num):
         if person_model:
             employee_profiles = EmployeeProfile.objects.filter(person=person_model)
-            if len(employee_profiles) > 0 and employee_profiles[0].start_date:
-                return self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(employee_profiles[0].start_date))
-        return col_num + 1
+            if len(employee_profiles) > 0:
+                if employee_profiles[0].start_date:
+                    col_num = self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(employee_profiles[0].start_date))
+                else:
+                    col_num = col_num + 1
+
+                col_num = self._write_field(excelSheet, row_num, col_num, employee_profiles[0].annual_base_salary)
+                return col_num
+
+            return col_num + 2
+
+        return col_num + 2
 
     def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
         if (person_model and person_model.email):
@@ -506,7 +516,9 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                         insurance_total = 'No Salary Info'
                 col_num = self._write_field(excelSheet, row_num, col_num, insurance_total)
                 col_num = self._write_field(excelSheet, row_num, col_num, company_plan.total_cost_per_period)
-                employee_premium = float(company_plan.employee_cost_per_period) * company_plan.company.pay_period_definition.month_factor
+                employee_premium = None
+                if (company_plan.employee_cost_per_period):
+                    employee_premium = float(company_plan.employee_cost_per_period) * company_plan.company.pay_period_definition.month_factor
                 col_num = self._write_field(excelSheet, row_num, col_num, employee_premium)
                 col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
                 return col_num
