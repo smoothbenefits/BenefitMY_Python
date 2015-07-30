@@ -2147,7 +2147,8 @@ var ltdBenefitsSignup = employeeControllers.controller(
             $scope.companyLtdPlan.companyPlanId = null;
           }
 
-          LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan, $scope.updateReason)
+          LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan,
+            $scope.company.pay_period_definition, $scope.updateReason)
           .then(function() {
               var modalInstance = $scope.showSaveSuccessModal();
               modalInstance.result.then(function(){
