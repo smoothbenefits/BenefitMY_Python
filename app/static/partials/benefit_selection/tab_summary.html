@@ -307,7 +307,7 @@
       <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('std')"></span>
     </div>
     <div class="panel-body" collapse="!stdInfoExpanded">
-      <table class="table table-striped" ng-show="completed('std')">
+      <table class="table table-striped" ng-show="completed('std') && !waived('std')">
         <thead>
           <tr>
             <th><span>Plan Name</span></th>
@@ -322,6 +322,15 @@
             <td>{{enrollments['std'].percentage_of_salary}}% of Base Salary</td>
             <td>{{enrollments['std'].duration}} Days</td>
             <td>{{enrollments['std'].employer_contribution_percentage}}%</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-striped" ng-show="completed('std') && waived('std')">
+        <tbody>
+          <tr>
+            <td width="180">Waived STD plan.
+              <a ng-click="goToState('employee_benefit_signup.std')">Enroll now</a>?
+            </td>
           </tr>
         </tbody>
       </table>
@@ -351,7 +360,7 @@
       <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('ltd')"></span>
     </div>
     <div class="panel-body" collapse="!ltdInfoExpanded">
-      <table class="table table-striped" ng-show="completed('ltd')">
+      <table class="table table-striped" ng-show="completed('ltd') && !waived('ltd')">
         <thead>
           <tr>
             <th><span>Plan Name</span></th>
@@ -366,6 +375,15 @@
             <td>{{enrollments['ltd'].percentage_of_salary}}% of Base Salary</td>
             <td>{{enrollments['ltd'].duration}} Months or Until Retirement Age</td>
             <td>{{enrollments['ltd'].employer_contribution_percentage}}%</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-striped" ng-show="completed('ltd') && waived('ltd')">
+        <tbody>
+          <tr>
+            <td width="180">Waived LTD plan.
+              <a ng-click="goToState('employee_benefit_signup.ltd')">Enroll now</a>?
+            </td>
           </tr>
         </tbody>
       </table>
