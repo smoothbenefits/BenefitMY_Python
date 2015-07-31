@@ -1186,10 +1186,13 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       };
   }]);
 
-var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',
-  function addClientController($scope, $location, addClientRepository){
+var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository', 'PeriodDefinitionRepository',
+  function addClientController($scope, $location, addClientRepository, PeriodDefinitionRepository){
     $scope.client = {};
-
+    PeriodDefinitionRepository.query()
+    .$promise.then(function(payPeriods){
+      $scope.payPeriods = payPeriods;
+    });
     $scope.createClient = function(){
       var viewClient = $scope.client;
       var apiClient = mapToAPIClient(viewClient);
@@ -1204,6 +1207,7 @@ var addClientController = brokersControllers.controller('addClientController', [
       apiClient.addresses = [];
       apiClient.contacts = [];
       apiClient.name = viewClient.company.name;
+      apiClient.pay_period_definition = viewClient.payPeriod.id;
       var apiContact = {};
       apiContact.first_name = viewClient.contact.first_name;
       apiContact.last_name = viewClient.contact.last_name;

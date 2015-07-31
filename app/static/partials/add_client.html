@@ -52,6 +52,18 @@
           <span ng-show="form.contact_email.$error.email">This is not a valid email.</span>
         </div>
       </div>
+      <div class="form-label">Pay Period*</div>
+      <div class="select-box">
+        <select ng-model="client.payPeriod"
+          ng-required="true"
+          name="payPeriod"
+          ng-options="period.name for period in payPeriods"
+          class="form-control">
+        </select>
+        <div class="form-error" ng-show="form.payPeriod.$dirty && form.payPeriod.$invalid">
+          <span ng-show="form.payPeriod.$error.required">Pay Period Selection is required</span>
+        </div>
+      </div>
 
       <div class="row">
         <div class="col-sm-6">
@@ -107,6 +119,7 @@
             name="company_address_state"
             ng-model="client.address.state"
             ng-required="true"
+            class="input-upper"
             placeholder="State"
             maxlength="2">
             <div class="form-error" ng-show="form.company_address_state.$dirty && form.company_address_state.$invalid">
@@ -120,7 +133,8 @@
             name="company_address_zip"
             ng-model="client.address.zip"
             ng-required="true"
-            placeholder="Zip Code">
+            placeholder="Zip Code"
+            maxlength="5">
             <div class="form-error" ng-show="form.company_address_zip.$dirty && form.company_address_zip.$invalid">
               <span ng-show="form.company_address_zip.$error.required">Zip code is required</span>
             </div>
