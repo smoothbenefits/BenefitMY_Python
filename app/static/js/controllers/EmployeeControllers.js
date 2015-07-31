@@ -2269,9 +2269,7 @@ var benefitSignupSummary = employeeControllers.controller(
 
        $scope.goToState = function(state){
          $state.go(state);
-         for (i = 0; i < $scope.tabs.length; i++) {
-           $scope.tabs[i].active = ($scope.tabs[i].state === state);
-           // Need to explicitly update tabs state in parent scope
+         for (i = 0; i < $scope.$parent.tabs.length; i++) {
            $scope.$parent.tabs[i].active = ($scope.tabs[i].state === state);
          }
        };
