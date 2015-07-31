@@ -2276,7 +2276,7 @@ var benefitSignupSummary = employeeControllers.controller(
 
        // Decide whether user has finished enrollment on a given benefit type
        $scope.completed = function(benefitType) {
-         if (!$scope.enrollments) {
+         if (!$scope.enrollments || !$scope.enrollments[benefitType]) {
            return false;
          }
 
@@ -2285,7 +2285,7 @@ var benefitSignupSummary = employeeControllers.controller(
        };
 
        $scope.waived = function(benefitType) {
-         if (!$scope.enrollments) {
+         if (!$scope.enrollments || !$scope.enrollments[benefitType]) {
            return false;
          }
 
