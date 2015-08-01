@@ -1936,7 +1936,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
           return premium.toFixed(10);
         };
 
-        #TODO: We need to move the calculation below to service level, Not controller level
+        //TODO: We need to move the calculation below to service level, Not controller level
         $scope.computeSelfPremium = function() {
             // Refresh the local cached copy of self rate info
             $scope.selfRateInfo = $scope.getSelfRateInfo();
@@ -1948,8 +1948,8 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
                     * (1.0 - $scope.selfRateInfo.benefitReductionPercentage / 100.0) / 10000 * $scope.selfRateInfo.rate;
             return premium;
         };
-        
-        #TODO: We need to move the calculation below to service level, Not controller level
+
+        //TODO: We need to move the calculation below to service level, Not controller level
         $scope.computeSpousePremium = function() {
             // Refresh the local cached copy of self rate info
             $scope.spouseRateInfo = $scope.getSpouseRateInfo();
@@ -1962,7 +1962,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             return premium;
         };
 
-        #TODO: We need to move the calculation below to service level, Not controller level
+        //TODO: We need to move the calculation below to service level, Not controller level
         $scope.computeChildPremium = function() {
             var rate = $scope.getChildRate();
             if (!rate) {
