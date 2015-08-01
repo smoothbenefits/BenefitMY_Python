@@ -23,6 +23,7 @@ sample_request:
   {
 
       "name": "Acme Widgets, Inc.",
+      "pay_period_definition": 2 #Bi-Weekly
       "addresses": [
         {
           "address_type": "main",
@@ -51,6 +52,11 @@ sample_request:
 sample_response: |
 {
     "name": "Acme Widgets, Inc.", 
+    "pay_period_definition": 
+        {"id":2, 
+          "name": "Bi-Weekly", 
+          "month_factor": 0.46153846153846
+        }
     "contacts": [
         {
             "person_type": "primary_contact", 
