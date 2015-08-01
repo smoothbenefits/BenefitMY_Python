@@ -2156,7 +2156,8 @@ var ltdBenefitsSignup = employeeControllers.controller(
             $scope.companyLtdPlan.companyPlanId = null;
           }
 
-          LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan, $scope.updateReason)
+          LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan,
+            $scope.company.pay_period_definition, $scope.updateReason)
           .then(function() {
               var modalInstance = $scope.showSaveSuccessModal();
               modalInstance.result.then(function(){
@@ -2277,14 +2278,14 @@ var benefitSignupSummary = employeeControllers.controller(
 
        $scope.goToState = function(state){
          $state.go(state);
-         for (i = 0; i < $scope.tabs.length; i++) {
-           $scope.tabs[i].active = ($scope.tabs[i].state === state);
+         for (i = 0; i < $scope.$parent.tabs.length; i++) {
+           $scope.$parent.tabs[i].active = ($scope.tabs[i].state === state);
          }
        };
 
        // Decide whether user has finished enrollment on a given benefit type
        $scope.completed = function(benefitType) {
-         if (!$scope.enrollments) {
+         if (!$scope.enrollments || !$scope.enrollments[benefitType]) {
            return false;
          }
 
@@ -2293,7 +2294,7 @@ var benefitSignupSummary = employeeControllers.controller(
        };
 
        $scope.waived = function(benefitType) {
-         if (!$scope.enrollments) {
+         if (!$scope.enrollments || !$scope.enrollments[benefitType]) {
            return false;
          }
 
