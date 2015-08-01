@@ -45,7 +45,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             return viewModel;
         };
 
-        var mapPersonCompanyPlanDomainToViewModel = function(personCompanyPlanDomainModel) {
+        var mapPersonCompanyPlanDomainToViewModel = function(personCompanyPlanDomainModel, company) {
             var viewModel = personCompanyPlanDomainModel.company_supplemental_life_insurance_plan ?
                 mapCompanyPlanDomainToViewModel(personCompanyPlanDomainModel.company_supplemental_life_insurance_plan) :
                 {};
@@ -59,9 +59,9 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             viewModel.selfElectedAmount = personCompanyPlanDomainModel.self_elected_amount;
             viewModel.spouseElectedAmount = personCompanyPlanDomainModel.spouse_elected_amount;
             viewModel.childElectedAmount = personCompanyPlanDomainModel.child_elected_amount;
-            viewModel.selfPremiumPerMonth = personCompanyPlanDomainModel.self_premium_per_month;
-            viewModel.spousePremiumPerMonth = personCompanyPlanDomainModel.spouse_premium_per_month;
-            viewModel.childPremiumPerMonth = personCompanyPlanDomainModel.child_premium_per_month;
+            viewModel.selfPremiumPerMonth = (personCompanyPlanDomainModel.self_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
+            viewModel.spousePremiumPerMonth = (personCompanyPlanDomainModel.spouse_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
+            viewModel.childPremiumPerMonth = (personCompanyPlanDomainModel.child_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
 
             viewModel.beneficiaryList = mapBeneficiaryListDomainToViewModel(personCompanyPlanDomainModel.suppl_life_insurance_beneficiary);
 
@@ -540,7 +540,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
             getPlanByUser: function(userId, company, getBlankPlanIfNoneFound) {
                 var deferred = $q.defer();
-                getPlansForCompany(company).then(function(plans){
+                getPlansForCompany(company.id).then(function(plans){
                     if(!plans || plans.length <= 0){
                         deferred.resolve(undefined);
                     }
@@ -554,7 +554,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                                     var personPlan = personPlans[0];
                                     personPlan.selected = true;
                                     personPlan.waived = !personPlan.company_supplemental_life_insurance_plan
-                                    deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0]));
+                                    deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0], company));
                                 } else {
                                     // The person does not have enrolled plans yet.
                                     // If indicated so, construct and return an structured

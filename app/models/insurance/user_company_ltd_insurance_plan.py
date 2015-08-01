@@ -16,8 +16,8 @@ class UserCompanyLtdInsurancePlan(models.Model):
                                               blank=True,
                                               null=True)
 
-    total_premium_per_period = models.DecimalField(max_digits=10,
-                                                   decimal_places=2,
+    total_premium_per_period = models.DecimalField(max_digits=20,
+                                                   decimal_places=10,
                                                    blank=True,
                                                    null=True)
 
