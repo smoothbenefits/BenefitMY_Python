@@ -111,9 +111,9 @@ class PersonCompSupplLifeInsuranceCase(TestCase, ViewTestBase):
         self.assertEqual(result['self_elected_amount'], "10.00")
         self.assertEqual(result['spouse_elected_amount'], "10.00")
         self.assertEqual(result['child_elected_amount'], "10.00")
-        self.assertEqual(result["self_premium_per_month"], "1.00")
-        self.assertEqual(result["spouse_premium_per_month"], "1.00")
-        self.assertEqual(result["child_premium_per_month"], "1.00")
+        self.assertEqual(result["self_premium_per_month"], "1.0000000000")
+        self.assertEqual(result["spouse_premium_per_month"], "1.0000000000")
+        self.assertEqual(result["child_premium_per_month"], "1.0000000000")
         self.assertEqual(result['record_reason']['id'], self.normalize_key(1))
         self.assertEqual(result['record_reason_note'], 'Test Note')
 
