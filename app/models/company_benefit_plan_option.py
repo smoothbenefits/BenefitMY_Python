@@ -17,7 +17,7 @@ class CompanyBenefitPlanOption(models.Model):
     total_cost_per_period = models.DecimalField(
         max_digits=20, decimal_places=2)
     employee_cost_per_period = models.DecimalField(
-        max_digits=20, decimal_places=2)
+        max_digits=20, decimal_places=10)
     benefit_option_type = models.TextField(choices=TYPES)
 
     company = models.ForeignKey(Company,

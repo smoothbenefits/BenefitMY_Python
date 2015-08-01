@@ -32,20 +32,20 @@ class PersonCompSupplLifeInsurancePlan(models.Model):
                                                blank=True,
                                                null=True)
 
-    self_premium_per_month = models.DecimalField(max_digits=10,
-                                                 decimal_places=2,
+    self_premium_per_month = models.DecimalField(max_digits=22,
+                                                 decimal_places=10,
                                                  blank=True,
                                                  null=True,
                                                  verbose_name="calculated premium for self")
 
-    spouse_premium_per_month = models.DecimalField(max_digits=10,
-                                                   decimal_places=2,
+    spouse_premium_per_month = models.DecimalField(max_digits=22,
+                                                   decimal_places=10,
                                                    blank=True,
                                                    null=True,
                                                    verbose_name="calculated premium for spouse")
 
-    child_premium_per_month = models.DecimalField(max_digits=10,
-                                                  decimal_places=2,
+    child_premium_per_month = models.DecimalField(max_digits=22,
+                                                  decimal_places=10,
                                                   blank=True,
                                                   null=True,
                                                   verbose_name="calculated premium for child")

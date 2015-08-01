@@ -7,7 +7,7 @@
         <select ng-model="benefitTypePlan.selected"
         ng-required="true"
         name="{{benefitTypePlan.type}}_benefit_plan"
-        ng-options="plan.benefit.benefit_plan.name + ', ' + plan.benefit.benefit_option_type + ' (Premium: $' + plan.benefit.employee_cost_per_period + ')' for plan in benefitTypePlan.benefitList"
+        ng-options="plan.benefit.benefit_plan.name + ', ' + plan.benefit.benefit_option_type + ' (Premium: $' + (plan.benefit.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2) + ')' for plan in benefitTypePlan.benefitList"
         ng-change="preSelectEmployee(benefitTypePlan.selected)"
         class="form-control"></select>
       </div>

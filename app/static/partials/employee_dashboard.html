@@ -39,7 +39,7 @@
               </div>
             </td>
             <td width="250">{{benefitElement.benefit.benefit_option_type}}</td>
-            <td width="180">${{benefitElement.benefit.employee_cost_per_period}}</td>
+            <td width="180">${{(benefitElement.benefit.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2)}}</td>
             <td width="300">
               <div class="inner-td-div" ng-repeat="enrolled in benefitElement.enrolleds">
                 {{enrolled.person.relationship.capitalize()}} : {{enrolled.person.first_name}} {{enrolled.person.last_name}} <span ng-show="enrolled.pcp && benefitElement.benefit.benefit_plan.benefit_type.name === 'Medical'">(PCP#: {{enrolled.pcp}})</span>
