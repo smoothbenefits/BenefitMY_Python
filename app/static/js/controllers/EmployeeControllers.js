@@ -48,6 +48,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
     var userPromise = UserService.getCurUserInfo();
     userPromise.then(function(response){
       $scope.employee_id = response.user.id;
+      $scope.company = response.currentRole.company;
       var employeeRole = _.findWhere(response.roles, {company_user_type:'employee'});
       if(employeeRole && employeeRole.new_employee){
         EmployeeLetterSignatureValidationService($scope.employee_id, 'Offer Letter', function(){
@@ -115,12 +116,12 @@ var employeeHome = employeeControllers.controller('employeeHome',
       });
 
       // Supplemental Life Insurance
-      SupplementalLifeInsuranceService.getPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(plan) {
+      SupplementalLifeInsuranceService.getPlanByUser(userInfo.user.id, userInfo.currentRole.company).then(function(plan) {
         $scope.supplementalLifeInsurancePlan = plan;
       });
 
       // Basic Life Insurance
-      BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userInfo.user.id, userInfo.currentRole.company.id)
+      BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userInfo.user.id, userInfo.currentRole.company)
       .then(function(response){
         $scope.basicLifeInsurancePlan = response;
       });
@@ -993,7 +994,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
       var promise = $scope.companyPromise.then(function(comp){
         company = comp;
-        return BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(comp.id, 'Basic');
+        return BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(comp, 'Basic');
       })
       .then(function(basicPlans) {
         basicLifePlans = basicPlans;
@@ -1639,7 +1640,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
         var employeeId = $scope.employeeId;
 
         $scope.companyPromise.then(function(company){
-          BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(company.id, 'Basic').then(function(plans) {
+          BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(company, 'Basic').then(function(plans) {
 
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = plans[0];
@@ -1656,7 +1657,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             }
 
             // Get current user's basic life insurance plan situation
-            BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, company.id).then(function(plan){
+            BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, company).then(function(plan){
               $scope.basicLifeInsurancePlan.life_insurance_beneficiary = plan.life_insurance_beneficiary;
               $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = plan.life_insurance_contingent_beneficiary;
             }, function(error){
@@ -1798,7 +1799,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             });
 
             // Get current user's plan situation
-            SupplementalLifeInsuranceService.getPlanByUser(employeeId, company.id, true).then(function(plan) {
+            SupplementalLifeInsuranceService.getPlanByUser(employeeId, company, true).then(function(plan) {
                 // It is guaranteed there is a plan returned, as the call above
                 // asks the service to return a blank plan if non-existing plan
                 // enrollments found.
@@ -1918,14 +1919,22 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
                     ? combinedRate.tobaccoRate.ratePer10000
                     : combinedRate.nonTobaccoRate.ratePer10000
             };
-        }
+        };
 
         $scope.getChildRate = function() {
             if (!$scope.familyInfo.hasChild) {
                 return null;
             }
             return $scope.selectedCompanyPlan.value.planRates.childRate.ratePer10000;
-        }
+        };
+
+        $scope.getPremiumForDisplay = function(premium){
+          return premium.toFixed(2);
+        };
+
+        var getPremiumForStore = function(premium){
+          return premium.toFixed(10);
+        };
 
         $scope.computeSelfPremium = function() {
             // Refresh the local cached copy of self rate info
@@ -1936,8 +1945,8 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             var premium =
                 $scope.supplementalLifeInsurancePlan.selfElectedAmount
                     * (1.0 - $scope.selfRateInfo.benefitReductionPercentage / 100.0) / 10000 * $scope.selfRateInfo.rate;
-            return premium.toFixed(2);
-        }
+            return premium;
+        };
 
         $scope.computeSpousePremium = function() {
             // Refresh the local cached copy of self rate info
@@ -1948,7 +1957,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             var premium =
                 $scope.supplementalLifeInsurancePlan.spouseElectedAmount
                    * (1.0 - $scope.spouseRateInfo.benefitReductionPercentage / 100.0) / 10000 * $scope.spouseRateInfo.rate;
-            return premium.toFixed(2);
+            return premium;
         }
 
         $scope.computeChildPremium = function() {
@@ -1958,7 +1967,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             }
             var premium =
                 $scope.supplementalLifeInsurancePlan.childElectedAmount / 10000 * rate;
-            return premium.toFixed(2);
+            return premium;
         }
 
         $scope.save = function(){
@@ -1981,9 +1990,9 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
                                                                         : $scope.conditions['Non-Tobacco'];
 
             // Persists the premium calculations
-            $scope.supplementalLifeInsurancePlan.selfPremiumPerMonth = $scope.computeSelfPremium();
-            $scope.supplementalLifeInsurancePlan.spousePremiumPerMonth = $scope.computeSpousePremium();
-            $scope.supplementalLifeInsurancePlan.childPremiumPerMonth = $scope.computeChildPremium();
+            $scope.supplementalLifeInsurancePlan.selfPremiumPerMonth = getPremiumForStore($scope.computeSelfPremium());
+            $scope.supplementalLifeInsurancePlan.spousePremiumPerMonth = getPremiumForStore($scope.computeSpousePremium());
+            $scope.supplementalLifeInsurancePlan.childPremiumPerMonth = getPremiumForStore($scope.computeChildPremium());
           }
 
           SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
@@ -2347,6 +2356,7 @@ var benefitsSignupControllerBase = employeeControllers.controller(
 
         $scope.companyPromise =  UserService.getCurUserInfo()
         .then(function(userInfo){
+            $scope.company = userInfo.currentRole.company;
             return userInfo.currentRole.company;
           });
 

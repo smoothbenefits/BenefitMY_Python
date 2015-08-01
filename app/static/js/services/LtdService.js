@@ -82,7 +82,7 @@ benefitmyService.factory('LtdService',
 
             domainModel.id = userCompanyPlanViewModel.userCompanyPlanId;
             domainModel.user = userCompanyPlanViewModel.planOwner;
-            domainModel.total_premium_per_period = userCompanyPlanViewModel.employeePremium / payPeriod.month_factor;
+            domainModel.total_premium_per_period = (userCompanyPlanViewModel.employeePremium / payPeriod.month_factor).toFixed(10);
 
             domainModel.company_ltd_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
@@ -137,7 +137,7 @@ benefitmyService.factory('LtdService',
                         var rate = ltdPlan.rate;
                         var rateBase = 10;
 
-                        var premiumPerPayPeriod = (annualBenefitAmount / 12 * (rate / rateBase) * companyPayPeriod.month_factor * employeeContribution).toFixed(2);
+                        var premiumPerPayPeriod = annualBenefitAmount / 12 * (rate / rateBase) * companyPayPeriod.month_factor * employeeContribution;
 
                         deferred.resolve(premiumPerPayPeriod);
                     }, function(error) {
