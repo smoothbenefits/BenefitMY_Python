@@ -930,59 +930,61 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
       $location.path('/admin');
     };
 
-    companyRepository.get({clientId: company_id}).$promise.then(function(response){
-        $scope.companyName = response.name;
-      });
+    companyRepository.get({clientId: company_id})
+    .$promise.then(function(response){
+        $scope.company = response;
+      
 
-      var promise = employeeBenefitElectionService(company_id);
-      promise.then(function(employeeList){
+        var promise = employeeBenefitElectionService(company_id);
+        promise.then(function(employeeList){
 
-        // TODO: Could/should FSA information be considered one kind of benefit election
-        //       and this logic of getting FSA data for an employee be moved into the
-        //       employeeBenefitElectionService?
-        _.each(employeeList, function(employee) {
-          FsaService.getFsaElectionForUser(employee.user.id, company_id).then(function(response) {
-            employee.fsaElection = response;
+            // TODO: Could/should FSA information be considered one kind of benefit election
+            //       and this logic of getting FSA data for an employee be moved into the
+            //       employeeBenefitElectionService?
+            _.each(employeeList, function(employee) {
+              FsaService.getFsaElectionForUser(employee.user.id, company_id).then(function(response) {
+                employee.fsaElection = response;
+              });
+            });
+
+            // TODO: like the above comment for FSA, Life Insurance, or more generally speaking,
+            //       all new benefits going forward, we should consider creating as separate
+            //       entity and maybe avoid trying to artificially bundle them together.
+            //       Also, once we have tabs working, we should split them into proper flows.
+            _.each(employeeList, function(employee) {
+
+              BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, $scope.company)
+              .then(function(response){
+                employee.basicLifeInsurancePlan = response;
+              });
+
+              SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, $scope.company).then(function(plan) {
+                employee.supplementalLifeInsurancePlan = plan;
+              });
+
+              // STD
+              StdService.getUserEnrolledStdPlanByUser(employee.user.id, $scope.company.id).then(function(response){
+                employee.userStdPlan = response;
+              });
+
+              // LTD
+              LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, $scope.company.id).then(function(response){
+                employee.userLtdPlan = response;
+              });
+
+              // HRA
+              HraService.getPersonPlanByUser(employee.user.id, $scope.company.id).then(function(plan) {
+                employee.hraPlan = plan;
+              });
+
+            });
+
+            $scope.clientCount = _.size(employeeList);
+            $scope.employeeList = employeeList;
+          }, function(errorResponse){
+            alert(errorResponse.content);
           });
-        });
-
-        // TODO: like the above comment for FSA, Life Insurance, or more generally speaking,
-        //       all new benefits going forward, we should consider creating as separate
-        //       entity and maybe avoid trying to artificially bundle them together.
-        //       Also, once we have tabs working, we should split them into proper flows.
-        _.each(employeeList, function(employee) {
-
-          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, company_id)
-          .then(function(response){
-            employee.basicLifeInsurancePlan = response;
-          });
-
-          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, company_id).then(function(plan) {
-            employee.supplementalLifeInsurancePlan = plan;
-          });
-
-          // STD
-          StdService.getUserEnrolledStdPlanByUser(employee.user.id, company_id).then(function(response){
-            employee.userStdPlan = response;
-          });
-
-          // LTD
-          LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, company_id).then(function(response){
-            employee.userLtdPlan = response;
-          });
-
-          // HRA
-          HraService.getPersonPlanByUser(employee.user.id, company_id).then(function(plan) {
-            employee.hraPlan = plan;
-          });
-
-        });
-
-        $scope.clientCount = _.size(employeeList);
-        $scope.employeeList = employeeList;
-      }, function(errorResponse){
-        alert(errorResponse.content);
-      });
+    })
 
     $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
         return (!employeeFamilyLifeInsurancePlan)

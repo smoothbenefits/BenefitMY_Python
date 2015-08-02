@@ -227,61 +227,61 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       };
 
       companyRepository.get({clientId: clientId}).$promise.then(function(response){
-        $scope.companyName = response.name;
-      });
+          $scope.company = response;      
 
-      var promise = employeeBenefitElectionService(clientId);
-      promise.then(function(employeeList){
+          var promise = employeeBenefitElectionService(clientId);
+          promise.then(function(employeeList){
 
-        // TODO: Could/should FSA information be considered one kind of benefit election
-        //       and this logic of getting FSA data for an employee be moved into the
-        //       employeeBenefitElectionService?
-        _.each(employeeList, function(employee) {
-          FsaService.getFsaElectionForUser(employee.user.id, clientId).then(function(response) {
-            employee.fsaElection = response;
-          });
-        });
-
-        // Supplemental life insurance
-        _.each(employeeList, function(employee) {
-          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, clientId).then(function(plan) {
-            employee.supplementalLifeInsurancePlan = plan;
-          });
-        });
-
-        // Basic life insurance
-        _.each(employeeList, function(employee) {
-          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, clientId)
-          .then(function(response){
-            employee.basicLifeInsurancePlan = response;
-          });
-        });
-
-        // STD
-        _.each(employeeList, function(employee) {
-            StdService.getUserEnrolledStdPlanByUser(employee.user.id, clientId).then(function(response){
-                employee.userStdPlan = response;
+            // TODO: Could/should FSA information be considered one kind of benefit election
+            //       and this logic of getting FSA data for an employee be moved into the
+            //       employeeBenefitElectionService?
+            _.each(employeeList, function(employee) {
+              FsaService.getFsaElectionForUser(employee.user.id, $scope.company.id).then(function(response) {
+                employee.fsaElection = response;
+              });
             });
-        });
 
-        // LTD
-        _.each(employeeList, function(employee) {
-            LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, clientId).then(function(response){
-                employee.userLtdPlan = response;
+            // Supplemental life insurance
+            _.each(employeeList, function(employee) {
+              SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, $scope.company).then(function(plan) {
+                employee.supplementalLifeInsurancePlan = plan;
+              });
             });
-        });
 
-        // HRA
-        _.each(employeeList, function(employee) {
-          HraService.getPersonPlanByUser(employee.user.id, clientId).then(function(plan) {
-            employee.hraPlan = plan;
+            // Basic life insurance
+            _.each(employeeList, function(employee) {
+              BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, $scope.company)
+              .then(function(response){
+                employee.basicLifeInsurancePlan = response;
+              });
+            });
+
+            // STD
+            _.each(employeeList, function(employee) {
+                StdService.getUserEnrolledStdPlanByUser(employee.user.id, $scope.company.id).then(function(response){
+                    employee.userStdPlan = response;
+                });
+            });
+
+            // LTD
+            _.each(employeeList, function(employee) {
+                LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, $scope.company.id).then(function(response){
+                    employee.userLtdPlan = response;
+                });
+            });
+
+            // HRA
+            _.each(employeeList, function(employee) {
+              HraService.getPersonPlanByUser(employee.user.id, $scope.company.id).then(function(plan) {
+                employee.hraPlan = plan;
+              });
+            });
+
+            $scope.clientCount = _.size(employeeList);
+            $scope.employeeList = employeeList;
+          }, function(errorResponse){
+            alert(errorResponse.content);
           });
-        });
-
-        $scope.clientCount = _.size(employeeList);
-        $scope.employeeList = employeeList;
-      }, function(errorResponse){
-        alert(errorResponse.content);
       });
 
       $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
@@ -1138,7 +1138,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
                     benefit_plan_id: $scope.addedBenefitPlan.id,
                     benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
                     total_cost_per_period: optionTypeItem.total_cost_per_period,
-                    employee_cost_per_period: optionTypeItem.employee_cost_per_period / $scope.company.pay_period_definition.month_factor
+                    employee_cost_per_period: (optionTypeItem.employee_cost_per_period / $scope.company.pay_period_definition.month_factor).toFixed(10)
                   }
                 });
               }

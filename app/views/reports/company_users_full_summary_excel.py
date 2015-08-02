@@ -393,7 +393,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 col_num = col_num + 1
             col_num = self._write_field(excelSheet, row_num, col_num, company_plan_option.total_cost_per_period)
             employee_premium = float(company_plan_option.employee_cost_per_period) * company_plan_option.company.pay_period_definition.month_factor
-            col_num = self._write_field(excelSheet, row_num, col_num, employee_premium)
+            col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_premium))
             col_num = self._write_employee_benefit_record_reason(user_benefit_option, excelSheet, row_num, col_num)
             return col_num
 
@@ -424,8 +424,8 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
             total_premium, employee_premium = self._get_disability_premium_numbers(company_plan,
                                                                                    annual_max_benefit,
                                                                                    employee_profile)
-            col_num = self._write_field(excelSheet, row_num, col_num, total_premium)
-            col_num = self._write_field(excelSheet, row_num, col_num, employee_premium)
+            col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(total_premium))
+            col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_premium))
         else:
             col_num = self._write_field(excelSheet, row_num, col_num, 'No Employee Salary')
             col_num = self._write_field(excelSheet, row_num, col_num, 'No Employee Salary')
@@ -508,7 +508,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 employee_premium = None
                 if (company_plan.employee_cost_per_period):
                     employee_premium = float(company_plan.employee_cost_per_period) * company_plan.company.pay_period_definition.month_factor
-                col_num = self._write_field(excelSheet, row_num, col_num, employee_premium)
+                col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_premium))
                 col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
                 return col_num
             else:
@@ -534,23 +534,23 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.self_elected_amount)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.self_premium_per_month)
                     employee_self_premium = float(plan.self_premium_per_month) * plan.company_supplemental_life_insurance_plan.company.pay_period_definition.month_factor
-                    col_num = self._write_field(excelSheet, row_num, col_num, employee_self_premium)
+                    col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_self_premium))
                     # Spouse
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.spouse_elected_amount)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.spouse_premium_per_month)
                     employee_spouse_premium = float(plan.spouse_premium_per_month) * plan.company_supplemental_life_insurance_plan.company.pay_period_definition.month_factor
-                    col_num = self._write_field(excelSheet, row_num, col_num, employee_spouse_premium)
+                    col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_spouse_premium))
                     # Child
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.child_elected_amount)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.child_premium_per_month)
                     employee_child_premium = float(plan.child_premium_per_month) * plan.company_supplemental_life_insurance_plan.company.pay_period_definition.month_factor
-                    col_num = self._write_field(excelSheet, row_num, col_num, employee_child_premium)
+                    col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_child_premium))
                     total_premium = plan.self_premium_per_month + plan.spouse_premium_per_month + plan.child_premium_per_month
-                    col_num = self._write_field(excelSheet, row_num, col_num, total_premium)
+                    col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(total_premium))
                     total_employee_premium = employee_self_premium + employee_spouse_premium + employee_child_premium
-                    col_num = self._write_field(excelSheet, row_num, col_num, total_employee_premium)
+                    col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(total_employee_premium))
                     col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
                     return col_num
                 else:
@@ -568,7 +568,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, fsa.primary_amount_per_year)
                 col_num = self._write_field(excelSheet, row_num, col_num, fsa.dependent_amount_per_year)
                 fsa_employee_withhold = float((fsa.primary_amount_per_year + fsa.dependent_amount_per_year)) / 12 * fsa.company_fsa_plan.company.pay_period_definition.month_factor
-                col_num = self._write_field(excelSheet, row_num, col_num, fsa_employee_withhold) 
+                col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(fsa_employee_withhold))
                 col_num = self._write_employee_benefit_record_reason(fsa, excelSheet, row_num, col_num)
                 return col_num
             else:
