@@ -16,7 +16,7 @@ benefitmyService.factory('benefitDisplayService',
             optionArray.push({
               name: benefitOption.benefit_option_type,
               totalCost: benefitOption.total_cost_per_period,
-              employeeCost: benefitOption.employee_cost_per_period * company.pay_period_definition.month_factor
+              employeeCost: (benefitOption.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2)
             });
             array.push({
               benefitName: benefitOption.benefit_plan.name,
@@ -29,7 +29,7 @@ benefitmyService.factory('benefitDisplayService',
             member.benefitOptionArray.push({
               name: benefitOption.benefit_option_type,
               totalCost: benefitOption.total_cost_per_period,
-              employeeCost: benefitOption.employee_cost_per_period * company.pay_period_definition.month_factor
+              employeeCost: (benefitOption.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2)
             });
           }
         }
@@ -172,7 +172,7 @@ benefitmyService.factory('benefitDisplayService',
               sameNameBenefit.options.push({
                   optionType:benefit.benefit_option_type,
                   totalCost:benefit.total_cost_per_period,
-                  employeeCost: benefit.employee_cost_per_period * company.pay_period_definition.month_factor,
+                  employeeCost: (benefit.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2),
                   id: benefit.id
                 });
               array.benefitList.push(sameNameBenefit);
@@ -182,7 +182,7 @@ benefitmyService.factory('benefitDisplayService',
               sameBenefit.options.push({
                   optionType:benefit.benefit_option_type,
                   totalCost:benefit.total_cost_per_period,
-                  employeeCost: benefit.employee_cost_per_period * company.pay_period_definition.month_factor,
+                  employeeCost: (benefit.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2),
                   id: benefit.id
               });
             }

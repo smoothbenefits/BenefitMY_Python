@@ -53,7 +53,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
             companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
             if (companyPlan.life_insurance_plan.insurance_type.toLowerCase() === 'basic'){
               companyPlan.life_insurance_plan.display_insurance_type = 'Basic and AD&D';
-              companyPlan.employee_cost_per_period *= company.pay_period_definition.month_factor;
+              companyPlan.employee_cost_per_period = (companyPlan.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2);
             }
           });
           deferred.resolve(plans);
@@ -177,14 +177,16 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
       getLifeInsurancePlansForCompany: getLifeInsurancePlansForCompany,
 
-      getLifeInsurancePlansForCompanyByType: function(companyId, plan_type) {
+      getLifeInsurancePlansForCompanyByType: function(company, plan_type) {
         var deferred = $q.defer();
 
-        CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
+        CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:company.id})
           .$promise.then(function(plans) {
             var resultPlans = [];
             _.each(plans, function(companyPlan) {
               companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
+              companyPlan.employee_cost_per_period *= company.pay_period_definition.month_factor;
+              companyPlan.employee_cost_per_period = companyPlan.employee_cost_per_period.toFixed(2);
               if (companyPlan.life_insurance_plan.insurance_type === plan_type) {
                 resultPlans.push(companyPlan);
               }
@@ -207,7 +209,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
           "insurance_amount": companyBasicLife.amount,
           "salary_multiplier": companyBasicLife.multiplier,
           "total_cost_per_period": companyBasicLife.totalCost,
-          "employee_cost_per_period": companyBasicLife.employeeContribution / company.pay_period_definition.month_factor
+          "employee_cost_per_period": (companyBasicLife.employeeContribution / company.pay_period_definition.month_factor).toFixed(10)
         };
 
         CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
