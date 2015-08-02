@@ -10,7 +10,7 @@ description: >
 parameters:
 sample_url: /api/v1/users/207119551/family
 
-relationship should be one of ('self', 'spouse', 'dependent')
+relationship should be one of ('self', 'spouse', 'dependent', 'child', 'ex spouse', 'life partner', 'step child', 'disabled dependent')
 
 sample_request: |
  {
