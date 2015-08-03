@@ -4,7 +4,7 @@
 </div>
 
 <div class="content-header">
-  <h1>Employee Benefit Elections for {{companyName}}</h1>
+  <h1>Employee Benefit Elections for {{company.name}}</h1>
   <span class="general-info">Total <b>{{clientCount}}</b> employees</span>
   <div><a ng-href="{{exportCompanyEmployeeSummaryUrl}}"><b>Download Complete Report</b></a></div>
   <div><a ng-href="{{exportCompanyEmployeeDirectDepositUrl}}" ng-show="isCurRoleAdmin()"><b>Download Direct Deposit Report</b></a></div>
@@ -237,7 +237,7 @@
               <div class="col-sm-2">
                 <div>Short Term Disability Benefits</div>
               </div>
-              <div class="col-sm-10" ng-show="employee.userStdPlan">
+              <div class="col-sm-10" ng-show="employee.userStdPlan.selected && !employee.userStdPlan.waived">
                 <div class="table-responsive table-holder">
                   <table class="table table-striped">
                     <thead>
@@ -267,7 +267,23 @@
                   </table>
                 </div>
               </div>
-              <div class="col-sm-10" ng-show="!employee.userStdPlan">
+              <div class="col-sm-10" ng-show="employee.userStdPlan.selected && employee.userStdPlan.waived">
+                <div class="table-responsive table-holder">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th width="280"><span>Short Term Disability Benefits</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td width="280">Waived Short Term Disability insurance plan</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-sm-10" ng-hide="employee.userStdPlan.selected">
                 <div class="table-responsive table-holder">
                   <table class="table table-striped">
                     <thead>
@@ -290,7 +306,7 @@
               <div class="col-sm-2">
                 <div>Long Term Disability Benefits</div>
               </div>
-              <div class="col-sm-10" ng-show="employee.userLtdPlan">
+              <div class="col-sm-10" ng-show="employee.userLtdPlan.selected && !employee.userLtdPlan.waived">
                 <div class="table-responsive table-holder">
                   <table class="table table-striped">
                     <thead>
@@ -315,6 +331,22 @@
                         <td>{{employee.userLtdPlan.paidBy}}</td>
                         <td>{{employee.userLtdPlan.eliminationPeriodInMonths}} Months</td>
                         <td>{{employee.userLtdPlan.lastUpdateDateTime}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-sm-10" ng-show="employee.userLtdPlan && employee.userLtdPlan.waived">
+                <div class="table-responsive table-holder">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th width="280"><span>Long Term Disability Benefits</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td width="280">Waived Long Term Disability insurance plan</td>
                       </tr>
                     </tbody>
                   </table>

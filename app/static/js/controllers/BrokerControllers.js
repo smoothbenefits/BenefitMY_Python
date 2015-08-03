@@ -61,6 +61,7 @@ var benefitsController = brokersControllers.controller(
     'LtdService',
     'FsaService',
     'HraService',
+    'companyRepository',
     function ($scope,
               $location,
               $stateParams,
@@ -73,15 +74,26 @@ var benefitsController = brokersControllers.controller(
               StdService,
               LtdService,
               FsaService,
-              HraService){
+              HraService,
+              companyRepository){
       $scope.role = 'Broker';
       $scope.showAddBenefitButton = true;
       $scope.benefitDeletable = true;
 
-      benefitDisplayService($stateParams.clientId, false, function(groupObj, nonMedicalArray, benefitCount){
-        $scope.medicalBenefitGroup = groupObj;
-        $scope.nonMedicalBenefitArray = nonMedicalArray;
-        $scope.benefitCount = benefitCount;
+
+      companyRepository.get({clientId: $stateParams.clientId})
+      .$promise.then(function(company){
+        $scope.company = company;
+        benefitDisplayService(company, false, function(groupObj, nonMedicalArray, benefitCount){
+          $scope.medicalBenefitGroup = groupObj;
+          $scope.nonMedicalBenefitArray = nonMedicalArray;
+          $scope.benefitCount = benefitCount;
+        });
+
+        BasicLifeInsuranceService.getLifeInsurancePlansForCompany($scope.company)
+        .then(function(response) {
+          $scope.lifeInsurancePlans = response;
+        });
       });
 
       $scope.backtoDashboard = function(){
@@ -99,10 +111,6 @@ var benefitsController = brokersControllers.controller(
           });
         }
       };
-
-      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.clientId).then(function(response) {
-        $scope.lifeInsurancePlans = response;
-      });
 
       $scope.deleteLifeInsurancePlan = function(companyLifeInsurancePlan) {
         BasicLifeInsuranceService.deleteLifeInsurancePlanForCompany(companyLifeInsurancePlan.id, function() {
@@ -219,61 +227,61 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       };
 
       companyRepository.get({clientId: clientId}).$promise.then(function(response){
-        $scope.companyName = response.name;
-      });
+          $scope.company = response;      
 
-      var promise = employeeBenefitElectionService(clientId);
-      promise.then(function(employeeList){
+          var promise = employeeBenefitElectionService(clientId);
+          promise.then(function(employeeList){
 
-        // TODO: Could/should FSA information be considered one kind of benefit election
-        //       and this logic of getting FSA data for an employee be moved into the
-        //       employeeBenefitElectionService?
-        _.each(employeeList, function(employee) {
-          FsaService.getFsaElectionForUser(employee.user.id, clientId).then(function(response) {
-            employee.fsaElection = response;
-          });
-        });
-
-        // Supplemental life insurance
-        _.each(employeeList, function(employee) {
-          SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, clientId).then(function(plan) {
-            employee.supplementalLifeInsurancePlan = plan;
-          });
-        });
-
-        // Basic life insurance
-        _.each(employeeList, function(employee) {
-          BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, clientId)
-          .then(function(response){
-            employee.basicLifeInsurancePlan = response;
-          });
-        });
-
-        // STD
-        _.each(employeeList, function(employee) {
-            StdService.getUserEnrolledStdPlanByUser(employee.user.id, clientId).then(function(response){
-                employee.userStdPlan = response;
+            // TODO: Could/should FSA information be considered one kind of benefit election
+            //       and this logic of getting FSA data for an employee be moved into the
+            //       employeeBenefitElectionService?
+            _.each(employeeList, function(employee) {
+              FsaService.getFsaElectionForUser(employee.user.id, $scope.company.id).then(function(response) {
+                employee.fsaElection = response;
+              });
             });
-        });
 
-        // LTD
-        _.each(employeeList, function(employee) {
-            LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, clientId).then(function(response){
-                employee.userLtdPlan = response;
+            // Supplemental life insurance
+            _.each(employeeList, function(employee) {
+              SupplementalLifeInsuranceService.getPlanByUser(employee.user.id, $scope.company).then(function(plan) {
+                employee.supplementalLifeInsurancePlan = plan;
+              });
             });
-        });
 
-        // HRA
-        _.each(employeeList, function(employee) {
-          HraService.getPersonPlanByUser(employee.user.id, clientId).then(function(plan) {
-            employee.hraPlan = plan;
+            // Basic life insurance
+            _.each(employeeList, function(employee) {
+              BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employee.user.id, $scope.company)
+              .then(function(response){
+                employee.basicLifeInsurancePlan = response;
+              });
+            });
+
+            // STD
+            _.each(employeeList, function(employee) {
+                StdService.getUserEnrolledStdPlanByUser(employee.user.id, $scope.company.id).then(function(response){
+                    employee.userStdPlan = response;
+                });
+            });
+
+            // LTD
+            _.each(employeeList, function(employee) {
+                LtdService.getUserEnrolledLtdPlanByUser(employee.user.id, $scope.company.id).then(function(response){
+                    employee.userLtdPlan = response;
+                });
+            });
+
+            // HRA
+            _.each(employeeList, function(employee) {
+              HraService.getPersonPlanByUser(employee.user.id, $scope.company.id).then(function(plan) {
+                employee.hraPlan = plan;
+              });
+            });
+
+            $scope.clientCount = _.size(employeeList);
+            $scope.employeeList = employeeList;
+          }, function(errorResponse){
+            alert(errorResponse.content);
           });
-        });
-
-        $scope.clientCount = _.size(employeeList);
-        $scope.employeeList = employeeList;
-      }, function(errorResponse){
-        alert(errorResponse.content);
       });
 
       $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
@@ -347,6 +355,23 @@ var brokerAddBenefits = brokersControllers.controller(
   }
 ]);
 
+var brokerAddBenefitControllerBase = brokersControllers.controller(
+  'brokerAddBenefitControllerBase',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$controller',
+   'companyRepository',
+  function($scope, $state, $stateParams, $controller, companyRepository){
+    // Inherite scope from base
+    $controller('modalMessageControllerBase', {$scope: $scope});
+    $scope.clientId = $stateParams.clientId;
+    companyRepository.get({clientId:$scope.clientId})
+    .$promise.then(function(company){
+      $scope.company = company;
+    });
+  }]);
+
 var brokerAddBasicLifeInsurance = brokersControllers.controller(
   'brokerAddBasicLifeInsurance',
   ['$scope',
@@ -363,9 +388,10 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
             BasicLifeInsuranceService){
 
     // Inherite scope from base
-    $controller('modalMessageControllerBase', {$scope: $scope});
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
     var clientId = $stateParams.clientId;
+
     $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
 
     $scope.buttonEnabled = function() {
@@ -384,9 +410,10 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
         // For now, we combine the gestures of
         //  1. Broker creates the plan
         //  2. Broker enrolls the company for the plan
-        BasicLifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan, function(newPlan) {
-
-          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan).then(
+        BasicLifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan)
+        .then(function(newPlan) {
+          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan, $scope.company)
+          .then(
             function() {
               var successMessage = "The new basic life insurance plan has been saved successfully."
 
@@ -420,7 +447,7 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
             UserService){
 
     // Inherite scope from base
-    $controller('modalMessageControllerBase', {$scope: $scope});
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
     var clientId = $stateParams.clientId;
 
@@ -461,7 +488,7 @@ var brokerAddStdPlanController = brokersControllers.controller(
             StdService){
 
         // Inherite scope from base
-        $controller('modalMessageControllerBase', {$scope: $scope});
+        $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
         $scope.paidByParties = StdService.paidByParties;
 
@@ -507,7 +534,7 @@ var brokerAddLtdPlanController = brokersControllers.controller(
             LtdService){
 
         // Inherite scope from base
-        $controller('modalMessageControllerBase', {$scope: $scope});
+        $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
         $scope.paidByParties = LtdService.paidByParties;
 
@@ -552,7 +579,7 @@ var brokerAddFsaPlan = brokersControllers.controller(
              FsaService,
              UserService){
     // Inherite scope from base
-    $controller('modalMessageControllerBase', {$scope: $scope});
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
     var clientId = $stateParams.clientId;
     $scope.newPlan = {};
@@ -589,7 +616,7 @@ var brokerAddHraPlanController = brokersControllers.controller(
             UserService){
 
     // Inherite scope from base
-    $controller('modalMessageControllerBase', {$scope: $scope});
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
     var clientId = $stateParams.clientId;
 
@@ -637,7 +664,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       BenefitPolicyKeyService){
 
       // Inherite scope from base
-      $controller('modalMessageControllerBase', {$scope: $scope});
+      $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
       var clientId = $stateParams.clientId;
 
@@ -1111,7 +1138,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
                     benefit_plan_id: $scope.addedBenefitPlan.id,
                     benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
                     total_cost_per_period: optionTypeItem.total_cost_per_period,
-                    employee_cost_per_period: optionTypeItem.employee_cost_per_period
+                    employee_cost_per_period: (optionTypeItem.employee_cost_per_period / $scope.company.pay_period_definition.month_factor).toFixed(10)
                   }
                 });
               }
@@ -1159,10 +1186,13 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       };
   }]);
 
-var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository',
-  function addClientController($scope, $location, addClientRepository){
+var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository', 'PeriodDefinitionRepository',
+  function addClientController($scope, $location, addClientRepository, PeriodDefinitionRepository){
     $scope.client = {};
-
+    PeriodDefinitionRepository.query()
+    .$promise.then(function(payPeriods){
+      $scope.payPeriods = payPeriods;
+    });
     $scope.createClient = function(){
       var viewClient = $scope.client;
       var apiClient = mapToAPIClient(viewClient);
@@ -1177,6 +1207,7 @@ var addClientController = brokersControllers.controller('addClientController', [
       apiClient.addresses = [];
       apiClient.contacts = [];
       apiClient.name = viewClient.company.name;
+      apiClient.pay_period_definition = viewClient.payPeriod.id;
       var apiContact = {};
       apiContact.first_name = viewClient.contact.first_name;
       apiContact.last_name = viewClient.contact.last_name;

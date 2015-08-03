@@ -33,13 +33,17 @@ benefitmyService.factory('StdService',
         };
 
         var mapUserCompanyPlanDomainToViewModel = function(userCompanyPlanDomainModel) {
-            var viewModel = userCompanyPlanDomainModel.company_std_insurance ?
-                mapCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_std_insurance) :
-                {};
+
+            var viewModel = {};
+            if (userCompanyPlanDomainModel.company_std_insurance) {
+              viewModel = mapCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_std_insurance);
+            }
 
             viewModel.userCompanyPlanId = userCompanyPlanDomainModel.id;
             viewModel.planOwner = userCompanyPlanDomainModel.user;
             viewModel.lastUpdateDateTime = moment(userCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
+            viewModel.selected = true;
+            viewModel.waived = !userCompanyPlanDomainModel.company_std_insurance;
 
             return viewModel;
         };
@@ -72,12 +76,12 @@ benefitmyService.factory('StdService',
             return domainModel;
         };
 
-        var mapUserCompanyPlanViewToDomainModel = function(userCompanyPlanViewModel) {
+        var mapUserCompanyPlanViewToDomainModel = function(userCompanyPlanViewModel, payPeriod) {
             var domainModel = {};
 
             domainModel.id = userCompanyPlanViewModel.userCompanyPlanId;
             domainModel.user = userCompanyPlanViewModel.planOwner;
-            domainModel.total_premium_per_period = userCompanyPlanViewModel.employeePremium;
+            domainModel.total_premium_per_period = (userCompanyPlanViewModel.employeePremium / payPeriod.month_factor).toFixed(10);
 
             domainModel.company_std_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
@@ -111,7 +115,7 @@ benefitmyService.factory('StdService',
 
             getStdPlansForCompany: getStdPlansForCompany,
 
-            getEmployeePremiumForUserCompanyStdPlan: function(userId, stdPlan) {
+            getEmployeePremiumForUserCompanyStdPlan: function(userId, stdPlan, companyPayPeriod) {
                 var deferred = $q.defer();
 
                 if (!stdPlan) {
@@ -133,11 +137,10 @@ benefitmyService.factory('StdService',
                         var rate = stdPlan.rate;
                         var rateBase = 10;
 
-                        var numOfPeriods = 26; // biweekly
 
-                        var premium = (maxBenefit * (rate / rateBase) * employeeContribution / numOfPeriods).toFixed(2);
+                        var premiumPerPayPeriod = maxBenefit / 12 * (rate / rateBase) * companyPayPeriod.month_factor * employeeContribution;
 
-                        deferred.resolve(premium);
+                        deferred.resolve(premiumPerPayPeriod);
                     }, function(error) {
                         deferred.reject(error);
                     });
@@ -214,7 +217,10 @@ benefitmyService.factory('StdService',
                 return $q.all(requests);
             },
 
-            enrollStdPlanForUser: function(userId, companyStdPlanToEnroll, updateReason) {
+            enrollStdPlanForUser: function(userId,
+                                           companyStdPlanToEnroll,
+                                           payPeriod,
+                                           updateReason) {
                 // This should be take care of 2 cases
                 // - user does not have a plan. Create one for him/her
                 // - user already has a plan. Update
@@ -224,7 +230,7 @@ benefitmyService.factory('StdService',
                 userPlan.planOwner = userId;
                 userPlan.updateReason = updateReason;
 
-                var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll);
+                var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll, payPeriod);
                 planDomainModel.company_std_insurance = planDomainModel.company_std_insurance.id;
 
                 StdRepository.CompanyUserPlanByUser.query({userId:userId})

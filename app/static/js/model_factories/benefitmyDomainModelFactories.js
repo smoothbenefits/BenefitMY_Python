@@ -433,3 +433,10 @@ benefitmyDomainModelFactories.factory('BenefitPolicyKeyRepository', ['$resource'
     return $resource('/api/v1/benefit_policy_keys');
   }
 ]);
+
+benefitmyDomainModelFactories.factory('PeriodDefinitionRepository', ['$resource',
+  function($resource){
+    return $resource('/api/v1/period_definitions');
+  }
+]);
+

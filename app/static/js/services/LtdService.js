@@ -35,15 +35,18 @@ benefitmyService.factory('LtdService',
         };
 
         var mapUserCompanyPlanDomainToViewModel = function(userCompanyPlanDomainModel) {
-            var viewModel = userCompanyPlanDomainModel.company_ltd_insurance ?
-                mapCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_ltd_insurance) :
-                {};
+          var viewModel = {};
+          if (userCompanyPlanDomainModel.company_ltd_insurance) {
+            viewModel = mapCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_ltd_insurance);
+          }
 
-            viewModel.userCompanyPlanId = userCompanyPlanDomainModel.id;
-            viewModel.planOwner = userCompanyPlanDomainModel.user;
-            viewModel.lastUpdateDateTime = moment(userCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
+          viewModel.userCompanyPlanId = userCompanyPlanDomainModel.id;
+          viewModel.planOwner = userCompanyPlanDomainModel.user;
+          viewModel.lastUpdateDateTime = moment(userCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
+          viewModel.selected = true;
+          viewModel.waived = !userCompanyPlanDomainModel.company_ltd_insurance;
 
-            return viewModel;
+          return viewModel;
         };
 
         var mapPlanViewToDomainModel = function(planViewModel) {
@@ -74,12 +77,12 @@ benefitmyService.factory('LtdService',
             return domainModel;
         };
 
-        var mapUserCompanyPlanViewToDomainModel = function(userCompanyPlanViewModel) {
+        var mapUserCompanyPlanViewToDomainModel = function(userCompanyPlanViewModel, payPeriod) {
             var domainModel = {};
 
             domainModel.id = userCompanyPlanViewModel.userCompanyPlanId;
             domainModel.user = userCompanyPlanViewModel.planOwner;
-            domainModel.total_premium_per_period = userCompanyPlanViewModel.employeePremium;
+            domainModel.total_premium_per_period = (userCompanyPlanViewModel.employeePremium / payPeriod.month_factor).toFixed(10);
 
             domainModel.company_ltd_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
@@ -112,7 +115,7 @@ benefitmyService.factory('LtdService',
 
             getLtdPlansForCompany: getLtdPlansForCompany,
 
-            getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan) {
+            getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan, companyPayPeriod) {
                 var deferred = $q.defer();
 
                 if (!ltdPlan) {
@@ -129,16 +132,14 @@ benefitmyService.factory('LtdService',
 
                         var maxBenefitAnnually = ltdPlan.maxBenefitMonthly * 12;
                         var benefitPercentage = (ltdPlan.percentageOfSalary / 100);
-
-                        var benefitAmount = Math.min(salary * benefitPercentage, maxBenefitAnnually); // Benefit amount cannot exceed preset cap
+                        // Benefit amount cannot exceed preset cap
+                        var annualBenefitAmount = Math.min(salary * benefitPercentage, maxBenefitAnnually);
                         var rate = ltdPlan.rate;
                         var rateBase = 10;
 
-                        var numOfPeriods = 26; // biweekly
+                        var premiumPerPayPeriod = annualBenefitAmount / 12 * (rate / rateBase) * companyPayPeriod.month_factor * employeeContribution;
 
-                        var premium = (benefitAmount * (rate / rateBase) * employeeContribution / numOfPeriods).toFixed(2);
-
-                        deferred.resolve(premium);
+                        deferred.resolve(premiumPerPayPeriod);
                     }, function(error) {
                         deferred.reject(error);
                     });
@@ -215,7 +216,10 @@ benefitmyService.factory('LtdService',
                 return $q.all(requests);
             },
 
-            enrollLtdPlanForUser: function(userId, companyLtdPlanToEnroll, updateReason) {
+            enrollLtdPlanForUser: function(userId,
+                                           companyLtdPlanToEnroll,
+                                           payPeriod,
+                                           updateReason) {
                 // This should be take care of 2 cases
                 // - user does not have a plan. Create one for him/her
                 // - user already has a plan. Update
@@ -225,7 +229,7 @@ benefitmyService.factory('LtdService',
                 userPlan.planOwner = userId;
                 userPlan.updateReason = updateReason;
 
-                var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyLtdPlanToEnroll);
+                var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyLtdPlanToEnroll, payPeriod);
                 planDomainModel.company_ltd_insurance = planDomainModel.company_ltd_insurance.id;
 
                 LtdRepository.CompanyUserPlanByUser.query({userId:userId})
