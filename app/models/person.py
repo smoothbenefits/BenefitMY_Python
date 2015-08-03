@@ -9,9 +9,19 @@ GENDER_TYPES = ([(item, item) for item in ['F', 'M']])
 SELF = 'self'
 DEPENDENT = 'dependent'
 SPOUSE = 'spouse'
+CHILD = 'child'
+LIFE_PARTNER = 'life partner'
+EX_SPOUSE = 'ex spouse'
+DISABLED_DEPENDENT = 'disabled dependent'
+STEP_CHILD = 'step child'
 RELATIONSHIPS = ((SELF, 'self'),
                  (DEPENDENT, 'dependent'),
-                 (SPOUSE, 'spouse'),)
+                 (SPOUSE, 'spouse'),
+                 (CHILD, 'child'),
+                 (LIFE_PARTNER, 'life partner'),
+                 (EX_SPOUSE, 'ex spouse'),
+                 (DISABLED_DEPENDENT, 'disabled dependent'),
+                 (STEP_CHILD, 'step child'))
 
 @reversion.register
 class Person(models.Model):

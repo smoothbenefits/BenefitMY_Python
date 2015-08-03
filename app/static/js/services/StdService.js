@@ -36,7 +36,7 @@ benefitmyService.factory('StdService',
 
             var viewModel = {};
             if (userCompanyPlanDomainModel.company_std_insurance) {
-              viewModel = mapUserCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_std_insurance);
+              viewModel = mapCompanyPlanDomainToViewModel(userCompanyPlanDomainModel.company_std_insurance);
             }
 
             viewModel.userCompanyPlanId = userCompanyPlanDomainModel.id;
