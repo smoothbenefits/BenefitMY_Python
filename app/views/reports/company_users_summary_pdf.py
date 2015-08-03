@@ -182,7 +182,8 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
             text_block = [[],[],[]]
             text_block[0].append(benefit_plan.name)
             text_block[0].append(company_plan_option.benefit_option_type)
-            text_block[2].append(company_plan_option.employee_cost_per_period)
+            pay_period_month_factor = company_plan_option.company.pay_period_definition.month_factor
+            text_block[2].append("${:.2f}".format(float(company_plan_option.employee_cost_per_period) * pay_period_month_factor))
             for enrolled_member in enrolled_members.all():
                 member_name = self._get_person_full_name(enrolled_member.person)
                 relationship = enrolled_member.person.relationship
@@ -235,7 +236,16 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                     salary = self._get_salary_by_person(person_model)
                     if (salary):
                         coverage_amount = company_plan.salary_multiplier * salary
-                self._write_line_uniform_width([plan.name, coverage_amount, 'N/A'],
+
+                # now compute the employee premium
+                month_factor = employee_plan.company_life_insurance.company.pay_period_definition.month_factor
+                employee_premium = float(employee_plan.company_life_insurance.employee_cost_per_period) * month_factor
+                if not employee_premium:
+                    employee_premium = 'N/A'
+                else:
+                    employee_premium = "${:.2f}".format(employee_premium)
+
+                self._write_line_uniform_width([plan.name, coverage_amount, employee_premium],
                                                column_width_dists)
                 self._start_new_line()
                 self._start_new_line()
@@ -295,10 +305,10 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                     text_block[2].append(plan.self_elected_amount)
                     text_block[2].append(plan.spouse_elected_amount)
                     text_block[2].append(plan.child_elected_amount)
-
-                    text_block[3].append(plan.self_premium_per_month)
-                    text_block[3].append(plan.spouse_premium_per_month)
-                    text_block[3].append(plan.child_premium_per_month)
+                    month_factor = plan.company_supplemental_life_insurance_plan.company.pay_period_definition.month_factor
+                    text_block[3].append("${:.2f}".format(float(plan.self_premium_per_month) * month_factor))
+                    text_block[3].append("${:.2f}".format(float(plan.spouse_premium_per_month) * month_factor))
+                    text_block[3].append("${:.2f}".format(float(plan.child_premium_per_month) * month_factor))
 
                     text_block[4].append(plan.self_condition.name)
                     text_block[4].append(plan.spouse_condition.name)
@@ -320,18 +330,31 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         employee_plans = UserCompanyStdInsurancePlan.objects.filter(user=user_model.id)
         company_plans = CompanyStdInsurancePlan.objects.filter(company=company_id)
         if (len(employee_plans) > 0):
-            # Render header
-            self._write_line_uniform_width(['STD Plan', 'Employee Premium'])
-            self._draw_line()
-
             employee_plan = employee_plans[0]
-            company_plan = employee_plan.company_std_insurance
-            plan = company_plan.std_insurance_plan
 
-            self._write_line_uniform_width([plan.name, 'N/A'])
+            if employee_plan.company_std_insurance:
+                # Render header
+                self._write_line_uniform_width(['STD Plan', 'Employee Premium'])
+                self._draw_line()
 
-            self._start_new_line()
-            self._start_new_line()
+                company_plan = employee_plan.company_std_insurance
+                plan = company_plan.std_insurance_plan
+
+                # get the premium
+                annual_max_benefit = company_plan.max_benefit_weekly * 52
+                employee_profile = self._get_employee_profile_by_user_id(user_model.id)
+                if employee_profile and employee_profile.annual_base_salary:
+                    total_premium, employee_premium = self._get_disability_premium_numbers(company_plan,
+                                                                                           annual_max_benefit,
+                                                                                           employee_profile)
+                    self._write_line_uniform_width([plan.name, "${:.2f}".format(employee_premium)])
+                else:
+                    self._write_line_uniform_width([plan.name, 'N/A'])
+
+                self._start_new_line()
+                self._start_new_line()
+            else:
+                self._write_waived_plan('STD Plan')
         elif company_plans:
             self._write_not_selected_plan('STD Plan')
 
@@ -341,18 +364,28 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         employee_plans = UserCompanyLtdInsurancePlan.objects.filter(user=user_model.id)
         company_plans = CompanyLtdInsurancePlan.objects.filter(company=company_id)
         if (len(employee_plans) > 0):
-            # Render header
-            self._write_line_uniform_width(['LTD Plan', 'Employee Premium'])
-            self._draw_line()
-
             employee_plan = employee_plans[0]
-            company_plan = employee_plan.company_ltd_insurance
-            plan = company_plan.ltd_insurance_plan
+            if employee_plan.company_ltd_insurance:
+                # Render header
+                self._write_line_uniform_width(['LTD Plan', 'Employee Premium'])
+                self._draw_line()
+                company_plan = employee_plan.company_ltd_insurance
+                plan = company_plan.ltd_insurance_plan
+                # get the premium
+                annual_max_benefit = company_plan.max_benefit_monthly * 12
+                employee_profile = self._get_employee_profile_by_user_id(user_model.id)
+                if employee_profile and employee_profile.annual_base_salary:
+                    total_premium, employee_premium = self._get_disability_premium_numbers(company_plan,
+                                                                                           annual_max_benefit,
+                                                                                           employee_profile)
+                    self._write_line_uniform_width([plan.name, "${:.2f}".format(employee_premium)])
+                else:
+                    self._write_line_uniform_width([plan.name, 'N/A'])
 
-            self._write_line_uniform_width([plan.name, 'N/A'])
-
-            self._start_new_line()
-            self._start_new_line()
+                self._start_new_line()
+                self._start_new_line()
+            else:
+                self._write_waived_plan('LTD Plan')
         elif company_plans:
             self._write_not_selected_plan('LTD Plan')
 
@@ -365,11 +398,12 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
             fsa = fsas[0]
             if (fsa.company_fsa_plan):
                 # Render header
-                self._write_line_uniform_width(['Account Type', 'Elected Annual Amount'])
+                self._write_line_uniform_width(['Account Type', 'Elected Annual Amount', 'Paycheck Withhold'])
                 self._draw_line()
 
-                self._write_line_uniform_width(['Health Account', fsa.primary_amount_per_year])
-                self._write_line_uniform_width(['Dependent Care Account', fsa.dependent_amount_per_year])
+                month_factor = fsa.company_fsa_plan.company.pay_period_definition.month_factor
+                self._write_line_uniform_width(['Health Account', fsa.primary_amount_per_year, "${:.2f}".format(float(fsa.primary_amount_per_year) / 12 * month_factor)])
+                self._write_line_uniform_width(['Dependent Care Account', fsa.dependent_amount_per_year, "${:.2f}".format(float(fsa.dependent_amount_per_year) / 12 * month_factor)])
 
                 self._start_new_line()
                 self._start_new_line()

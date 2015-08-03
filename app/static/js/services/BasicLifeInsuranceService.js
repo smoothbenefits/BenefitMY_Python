@@ -45,14 +45,15 @@ benefitmyService.factory('BasicLifeInsuranceService',
       return deferred.promise;
     };
 
-    var getLifeInsurancePlansForCompany = function(companyId) {
+    var getLifeInsurancePlansForCompany = function(company) {
       var deferred = $q.defer();
-      CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
+      CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:company.id})
         .$promise.then(function(plans) {
           _.each(plans, function(companyPlan) {
             companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
             if (companyPlan.life_insurance_plan.insurance_type.toLowerCase() === 'basic'){
               companyPlan.life_insurance_plan.display_insurance_type = 'Basic and AD&D';
+              companyPlan.employee_cost_per_period = (companyPlan.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2);
             }
           });
           deferred.resolve(plans);
@@ -127,7 +128,8 @@ benefitmyService.factory('BasicLifeInsuranceService',
     };
 
     return {
-      saveLifeInsurancePlan: function(planToSave, successCallBack, errorCallBack) {
+      saveLifeInsurancePlan: function(planToSave){
+        var deferred = $q.defer();
         // map to API fields
         if (planToSave.amount){
           planToSave.insurance_amount = planToSave.amount;
@@ -140,30 +142,23 @@ benefitmyService.factory('BasicLifeInsuranceService',
           // Not existing yet, POST it
           BasicLifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave
             , function (successResponse) {
-                if (successCallBack) {
-                  successCallBack(successResponse);
-                }
+                deferred.resolve(successResponse);
               }
             , function(errorResponse) {
-                if (errorCallBack) {
-                  errorCallBack(errorResponse);
-              }
+                deferred.reject(errorResponse);
           });
         }
         else {
           // Existing, PUT it
           BasicLifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave
             , function (successResponse) {
-                if (successCallBack) {
-                  successCallBack(successResponse);
-                }
+                deferred.resolve(successResponse);
               }
             , function(errorResponse) {
-                if (errorCallBack) {
-                  errorCallBack(errorResponse);
-              }
+                deferred.resolve(errorResponse);
           });
         }
+        return deferred.promise;
       },
 
       deleteLifeInsurancePlan: function(planIdToDelete, successCallBack, errorCallBack) {
@@ -182,14 +177,16 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
       getLifeInsurancePlansForCompany: getLifeInsurancePlansForCompany,
 
-      getLifeInsurancePlansForCompanyByType: function(companyId, plan_type) {
+      getLifeInsurancePlansForCompanyByType: function(company, plan_type) {
         var deferred = $q.defer();
 
-        CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:companyId})
+        CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:company.id})
           .$promise.then(function(plans) {
             var resultPlans = [];
             _.each(plans, function(companyPlan) {
               companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
+              companyPlan.employee_cost_per_period *= company.pay_period_definition.month_factor;
+              companyPlan.employee_cost_per_period = companyPlan.employee_cost_per_period.toFixed(2);
               if (companyPlan.life_insurance_plan.insurance_type === plan_type) {
                 resultPlans.push(companyPlan);
               }
@@ -203,16 +200,16 @@ benefitmyService.factory('BasicLifeInsuranceService',
         return deferred.promise;
       },
 
-      enrollCompanyForBasicLifeInsurancePlan: function(basicLife, companyBasicLife) {
+      enrollCompanyForBasicLifeInsurancePlan: function(basicLife, companyBasicLife, company) {
         var deferred = $q.defer();
 
         var linkToSave = {
-          "company": companyBasicLife.companyId,
+          "company": company.id,
           "life_insurance_plan": basicLife.id,
           "insurance_amount": companyBasicLife.amount,
           "salary_multiplier": companyBasicLife.multiplier,
           "total_cost_per_period": companyBasicLife.totalCost,
-          "employee_cost_per_period": companyBasicLife.employeeContribution
+          "employee_cost_per_period": (companyBasicLife.employeeContribution / company.pay_period_definition.month_factor).toFixed(10)
         };
 
         CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave

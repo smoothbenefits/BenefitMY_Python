@@ -5,13 +5,13 @@
     <form name="myForm" confirm-unsaved-on-exit>
       <div class="row">
         <div class="label label-info col-md-4">
-          <span>Your premium per pay period is <b>${{companyStdPlan.employeePremium}}</b></span>
+          <span>Your premium per pay period is <b>${{companyStdPlan.employeePremium.toFixed(2)}}</b></span>
         </div>
       </div>
       <div class="row">
         <div class="col-md-8">
           <div ng-show="!enrollBenefits" style="padding-bottom: 10px;">
-            <span class="label label-danger">You have chosen NOT to enroll the STD benefits.</span>
+            <span class="label label-danger">You have chosen to waive the STD benefits.</span>
           </div>
           <div class="check-box">
             <input type="checkbox"

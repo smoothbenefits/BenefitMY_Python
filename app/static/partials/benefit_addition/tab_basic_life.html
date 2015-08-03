@@ -30,15 +30,15 @@
           </div>
         </div>
         <div class="col-md-6">
-          <div class="form-label">Employee Contribution (Per Pay Period) *</div>
+          <div class="form-label">Employee cost (Per Pay Period) *</div>
           <div class="textbox input-group">
             <span class="input-group-addon">$</span>
             <input
-            min="0"
-            type="number"
-            name="employee_contribution"
-            ng-required="true"
-            ng-model="newLifeInsurancePlan.employeeContribution" />
+              min="0"
+              type="number"
+              name="employee_contribution"
+              ng-required="true"
+              ng-model="newLifeInsurancePlan.employeeContribution" />
             <div class="form-error-relative" ng-show="form.employee_contribution.$dirty && form.employee_contribution.$invalid">
               <span>Employee contribution field is invalid</span>
             </div>
