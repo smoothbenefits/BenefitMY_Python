@@ -36,7 +36,6 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersFullSummar
         col_num = self._write_field(excelSheet, 0, col_num, 'SSN')
         col_num = self._write_field(excelSheet, 0, col_num, 'Gender')
         col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Date of Hire')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
         col_num = self._write_field(excelSheet, 0, col_num, 'Work Phone')
         col_num = self._write_field(excelSheet, 0, col_num, 'Home Phone')
@@ -86,7 +85,7 @@ class CompanyUsersLifeInsuranceBeneficiaryExcelExportView(CompanyUsersFullSummar
 
     def _write_employee(self, employee_user_id, excelSheet, row_num):
         start_column_num = 0
-        start_column_num = self._write_employee_personal_info(employee_user_id, False, False, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_personal_info(employee_user_id, False, False, False, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_basic_life_insurance_beneficiary_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_supplemental_life_insurance_beneficiary_info(employee_user_id, excelSheet, row_num, start_column_num)
         return

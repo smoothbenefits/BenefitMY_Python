@@ -186,7 +186,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
 
     def _write_employee(self, employee_user_id, excelSheet, row_num):
         start_column_num = 0
-        start_column_num = self._write_employee_personal_info(employee_user_id, True, True, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_personal_info(employee_user_id, True, True, True, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_all_health_benefits_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_std_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_ltd_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
@@ -197,7 +197,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         start_column_num = self._write_all_dependents_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
         return
 
-    def _write_employee_personal_info(self, employee_user_id, include_spouse_info, write_pcp, excelSheet, row_num, start_column_num):
+    def _write_employee_personal_info(self, employee_user_id, include_spouse_info, write_pcp, write_profile, excelSheet, row_num, start_column_num):
         cur_column_num = start_column_num
         person = None
         persons = Person.objects.filter(user=employee_user_id, relationship='self')
@@ -206,7 +206,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         # All helpers are built with capability of skiping proper number of columns when
         # person given is None. This is to ensure other information written after these
         # would be written to the right columns
-        cur_column_num = self._write_person_basic_info(person, write_pcp, excelSheet, row_num, cur_column_num, employee_user_id, True)
+        cur_column_num = self._write_person_basic_info(person, write_pcp, excelSheet, row_num, cur_column_num, employee_user_id, write_profile)
         cur_column_num = self._write_person_email_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
 
         # Write out phone number info
