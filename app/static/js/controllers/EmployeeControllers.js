@@ -1176,7 +1176,7 @@ var healthBenefitsSignup = employeeControllers.controller(
             break;
             case 'individual_plus_spouse':
               availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
-                return elem.relationship == 'self' 
+                return elem.relationship == 'self'
                     || elem.relationship == 'spouse'
                     || elem.relationship == 'ex spouse'
                     || elem.relationship == 'life partner'
@@ -1191,7 +1191,7 @@ var healthBenefitsSignup = employeeControllers.controller(
             break;
             case 'individual_plus_children':
               availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
-                return elem.relationship == 'self' 
+                return elem.relationship == 'self'
                     || elem.relationship == 'dependent'
                     || elem.relationship == 'child'
                     || elem.relationship == 'step child'
@@ -2407,7 +2407,7 @@ var benefitsSignupControllerBase = employeeControllers.controller(
             else{
                 nextTab = sortedTabList[curTabIndex + 1];
                 nextTab.active = true;
-                $state.go(curTab.next);
+                $state.go(nextTab.state);
             }
 
         }
