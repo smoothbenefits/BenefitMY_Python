@@ -1,0 +1,22 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-06-24",
+      "name": "Annual adjustment",
+      "description": "Annual adjustment",
+      "updated_at": "2015-06-24"
+    },
+    "model": "app.compensationupdatereason",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-28",
+      "name": "Promotion",
+      "description": "Promotion",
+      "updated_at": "2015-04-28"
+    },
+    "model": "app.compensationupdatereason",
+    "pk": 2
+  }
+]

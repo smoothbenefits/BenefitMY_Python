@@ -7,6 +7,9 @@ from app.views.employee_profile_view import (
     EmployeeProfileView,
     EmployeeProfileByPersonCompanyView,
     EmployeeProfileByCompanyUserView)
+from app.views.employee_compensation_view import (
+    EmployeeCompensationView,
+    EmployeeCompensationByPersonView)
 from app.views.user_view import (
     UserView,
     UsersView,
@@ -340,6 +343,13 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/user/(?P<user_id>\w+)/employee_profile/?$' % PREFIX,
         EmployeeProfileByCompanyUserView.as_view(),
         name='employee_profile_by_company_user_api'),
+
+    url(r'^%s/employee_compensation/(?P<pk>\w+)/?$' % PREFIX,
+        EmployeeCompensationView.as_view(),
+        name='employee_compensation_api'),
+    url(r'^%s/person/(?P<person_id>\w+)/employee_compensation/?$' % PREFIX,
+        EmployeeCompensationByPersonView.as_view(),
+        name='employee_compensation_by_person_api'),
 
     url(r'^%s/benefit_update_reasons/?$' % PREFIX, SysBenefitUpdateReasonView.as_view(), name='sys_benefit_update_reason_api'),
 )
