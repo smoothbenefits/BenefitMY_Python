@@ -1,0 +1,28 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-04-27T04:00:00Z",
+      "effective_date": "2015-08-27T04:00:00Z",
+      "annual_base_salary": "100000.00",
+      "updated_at": "2015-04-27T04:00:00Z",
+      "person": 3,
+      "increase_percentage": "3.5",
+      "reason": 1
+    },
+    "model": "app.employeecompensation",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-07-27T04:00:00Z",
+      "effective_date": "2015-09-27T04:00:00Z",
+      "annual_base_salary": "110000.00",
+      "updated_at": "2015-04-27T04:00:00Z",
+      "person": 3,
+      "increase_percentage": "10",
+      "reason": 2
+    },
+    "model": "app.employeecompensation",
+    "pk": 2
+  }
+]
