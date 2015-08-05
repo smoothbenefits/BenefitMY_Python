@@ -1,11 +1,11 @@
 import datetime
+import reversion
 from django.db import models
 
-class CompensationUpdateReason(models.Model):
+@reversion.register
+class SysCompensationUpdateReason(models.Model):
 
     name = models.CharField(max_length=256)
-
-    description = models.CharField(max_length=1024, blank=True, null=True)
 
     created_at = models.DateField(auto_now_add=True, default=datetime.datetime.now)
 

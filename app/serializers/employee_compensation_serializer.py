@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from app.models.employee_compensation import EmployeeCompensation
 from hash_pk_serializer_base import HashPkSerializerBase
-from compensation_update_reason_serializer import CompensationUpdateReasonSerializer
+from sys_compensation_update_reason_serializer import SysCompensationUpdateReasonSerializer
 
 class EmployeeCompensationSerializer(HashPkSerializerBase):
-    reason = CompensationUpdateReasonSerializer()
+    reason = SysCompensationUpdateReasonSerializer()
     class Meta:
         model = EmployeeCompensation
 
