@@ -2072,6 +2072,7 @@ var stdBenefitsSignup = employeeControllers.controller(
                     $scope.companyStdPlan.totalPremium = premiumInfo.totalPremium;
                     $scope.companyStdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
                 }, function(error){
+                    alert("Could not get premium info. Error is: " + error);
                     $scope.companyStdPlan.totalPremium = 0;
                     $scope.companyStdPlan.employeePremium = 0;
                 });
@@ -2151,6 +2152,7 @@ var ltdBenefitsSignup = employeeControllers.controller(
                     $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium;
                     $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
                 }, function(error){
+                  alert("Could not get premium info. Error is: " + error);
                   $scope.companyLtdPlan.totalPremium = 0;
                   $scope.companyLtdPlan.employeePremium = 0;
                 });

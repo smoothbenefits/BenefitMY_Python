@@ -127,7 +127,7 @@ benefitmyService.factory('StdService',
 
                         var salary = profile.annualBaseSalary;
                         if (_.isNaN(salary)) {
-                            deferred.reject({});
+                            deferred.reject('No Salary Info');
                         }
 
                         var maxBenefitAnnually = stdPlan.maxBenefitWeekly * 52;

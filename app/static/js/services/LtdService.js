@@ -125,7 +125,7 @@ benefitmyService.factory('LtdService',
                     EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId).then(function(profile) {
                         var salary = profile.annualBaseSalary;
                         if (_.isNaN(salary)) {
-                            deferred.resolve(null);
+                            deferred.reject('No Salary Info');
                         }
 
                         var maxBenefitAnnually = ltdPlan.maxBenefitMonthly * 12;
