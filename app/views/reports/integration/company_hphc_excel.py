@@ -139,7 +139,7 @@ class CompanyHphcExcelView(ExcelExportViewBase):
             self._skip_cells(1)  # Suffix
             self._write_cell(ReportExportViewBase.get_date_string(person_model.birth_date))
             self._write_cell(person_model.ssn)
-            self._write_cell(person_model.relationship)
+            self._write_cell(person_model.relationship.title())
             self._write_cell(person_model.gender)
         else:
             self._skip_cells(9)
@@ -192,7 +192,7 @@ class CompanyHphcExcelView(ExcelExportViewBase):
     def _write_person_plan_option_info(self, enrolled_model):
         self._write_cell(enrolled_model.user_company_benefit_plan_option.benefit.benefit_plan.name)
 
-    @user_passes_test(company_employer_or_broker)
+    # @user_passes_test(company_employer_or_broker)
     def get(self, request, pk, format=None):
         self._init()
         self._start_work_sheet('Hphc Company Summary')
