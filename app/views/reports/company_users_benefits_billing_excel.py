@@ -150,7 +150,7 @@ class CompanyUsersBenefitsBillingExcelExportView(ExcelExportViewBase):
             company_plan = employee_plan.company_std_insurance
             plan = company_plan.std_insurance_plan
             col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
-            employee_premium = employee_plan.total_premium_per_period or 0
+            employee_premium = employee_plan.total_premium_per_month or 0
             employer_contribution = company_plan.employer_contribution_percentage or 0
             total_premium = float(employee_premium) * 100 / (100 - float(employer_contribution))
             col_num = self._write_field(excelSheet, row_num, col_num, '{0:.2f}'.format(total_premium))
@@ -169,7 +169,7 @@ class CompanyUsersBenefitsBillingExcelExportView(ExcelExportViewBase):
             company_plan = employee_plan.company_ltd_insurance
             plan = company_plan.ltd_insurance_plan
             col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
-            employee_premium = employee_plan.total_premium_per_period or 0
+            employee_premium = employee_plan.total_premium_per_month or 0
             employer_contribution = company_plan.employer_contribution_percentage or 0
             total_premium = float(employee_premium) * 100 / (100 - float(employer_contribution))
             col_num = self._write_field(excelSheet, row_num, col_num, '{0:.2f}'.format(total_premium))
