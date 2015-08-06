@@ -239,12 +239,9 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
                 # now compute the employee premium
                 month_factor = employee_plan.company_life_insurance.company.pay_period_definition.month_factor
-                employee_premium = float(employee_plan.company_life_insurance.employee_cost_per_period) * month_factor
-                if not employee_premium:
-                    employee_premium = 'N/A'
-                else:
-                    employee_premium = "${:.2f}".format(employee_premium)
-
+                employee_premium = 'N/A'
+                if employee_plan.company_life_insurance.employee_cost_per_period:
+                    employee_premium = "${:.2f}".format(float(employee_plan.company_life_insurance.employee_cost_per_period) * month_factor)
                 self._write_line_uniform_width([plan.name, coverage_amount, employee_premium],
                                                column_width_dists)
                 self._start_new_line()

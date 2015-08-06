@@ -78,7 +78,7 @@ class ReportExportViewBase(APIView):
         if not salary:
             salary = 0
         benefit_from_salary = salary * company_plan.percentage_of_salary / 100
-        max_benefit_amount = max(annual_max_benefit, benefit_from_salary)
+        max_benefit_amount = min(annual_max_benefit, benefit_from_salary)
         total_premium = max_benefit_amount / 12 * company_plan.rate / 10
         employee_contribution_percent = 100
         if company_plan.employer_contribution_percentage:

@@ -499,13 +499,13 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 insurance_total = company_plan.insurance_amount
                 if not insurance_total and company_plan.salary_multiplier:
                     employee_profile = self._get_employee_profile_by_user_id(employee_user_id)
-                    if employee_profile:
+                    if employee_profile and employee_profile.annual_base_salary:
                         insurance_total = employee_profile.annual_base_salary * company_plan.salary_multiplier
                     else:
                         insurance_total = 'No Salary Info'
                 col_num = self._write_field(excelSheet, row_num, col_num, insurance_total)
                 col_num = self._write_field(excelSheet, row_num, col_num, company_plan.total_cost_per_period)
-                employee_premium = None
+                employee_premium = 0
                 if (company_plan.employee_cost_per_period):
                     employee_premium = float(company_plan.employee_cost_per_period) * company_plan.company.pay_period_definition.month_factor
                 col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_premium))
