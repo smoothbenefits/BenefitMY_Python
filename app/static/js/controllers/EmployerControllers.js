@@ -1,6 +1,5 @@
 var employersController = angular.module('benefitmyApp.employers.controllers',[]);
 
-
 var employerHome = employersController.controller('employerHome',
   ['$scope',
   '$location',
@@ -676,6 +675,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'employeeTaxRepository',
   'EmployeeProfileService',
   'EmploymentStatuses',
+  'CompensationService',
   function($scope,
            $location,
            $stateParams,
@@ -686,7 +686,8 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            employmentAuthRepository,
            employeeTaxRepository,
            EmployeeProfileService,
-           EmploymentStatuses){
+           EmploymentStatuses,
+           CompensationService){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
@@ -721,6 +722,15 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
                 if(employmentStatus && employmentStatus === EmploymentStatuses.terminated){
                   $scope.terminateMessage = "Employment terminated";
                 };
+            });
+            return profile.personId;
+          }).then(function(personId) {
+            CompensationService.getCompensationByPerson(personId).then(function(response) {
+              // sorted compensation list here to avoid buggy angularjs sort on html
+              _.sortBy(response, function(compensation) {
+                return moment(compensation.effectiveDate).format('yyyy-MM-dd hh:mm:ss');
+              });
+              $scope.compensations = response.reverse();
             });
           });
         }
@@ -823,15 +833,28 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
         resolve: {
           employeeProfile: function() {
             return angular.copy($scope.employee.employeeProfile);
+          },
+          currentCompensation: function() {
+            if ($scope.compensations.length > 0) {
+              var compensations = angular.copy($scope.compensations);
+              _.sortBy(compensations, function(compensation) {
+                return compensation.effectiveDate;
+              });
+
+              return compensations[0];
+            } else {
+              return { salary: null};
+            }
           }
         }
       });
 
-      modalInstance.result.then(function(newEmployeeCompensations) {
+      modalInstance.result.then(function(newEmployeeCompensation) {
         var successMessage = "A new compensation record has been saved successfully.";
         $scope.showMessageWithOkayOnly('Success', successMessage);
 
-        angular.copy(newEmployeeCompensations, $scope.employee.compensations);
+        // Always insert new compensation to the top
+        $scope.compensations.unshift(newEmployeeCompensation);
       });
     };
 
@@ -894,13 +917,16 @@ var addEmployeeCompensationModalController = employersController.controller(
    '$modalInstance',
    'CompensationService',
    'employeeProfile',
+   'currentCompensation',
     function($scope,
              $modal,
              $modalInstance,
              CompensationService,
-             employeeProfile){
+             employeeProfile,
+             currentCompensation){
 
       $scope.errorMessage = null;
+      $scope.currentSalary = Number(currentCompensation.salary);
       var personId = employeeProfile.personId;
       var companyId = employeeProfile.companyId;
 
@@ -909,9 +935,21 @@ var addEmployeeCompensationModalController = employersController.controller(
       };
 
       $scope.save = function(compensation) {
+        if (compensation.increasePercentage && currentCompensation.salary) {
+          compensation.salary = currentCompensation.salary * (1 + compensation.increasePercentage / 100);
+        } else if (compensation.salary && currentCompensation.salary) {
+          compensation.increasePercentage = (compensation.salary - currentCompensation.salary) / currentCompensation.salary * 100;
+        } else if (!currentCompensation.salary) {
+          compensation.increasePercentage = null;
+        } else {
+          $scope.errorMessage = "Error detected in input numbers. Please verify."
+          $modalInstance.dismiss('error');
+        }
+
         CompensationService.addCompensationByPerson(compensation, personId, companyId)
         .then(function(response){
-          $modalInstance.close(response);
+          var newCompensation = CompensationService.mapToViewModel(response);
+          $modalInstance.close(newCompensation);
         }, function(error){
           $scope.errorMessage = "Error occurred during saving operation. Please verify " +
             "all the information enterred are valid. Message: " + error;

@@ -9,10 +9,10 @@ benefitmyService.factory(
          var viewModel = {
             company: dataModel.company,
             person: dataModel.person,
-            salary: dataModel.annual_base_salary,
+            salary: Number(dataModel.annual_base_salary).toFixed(2),
             increasePercentage: dataModel.increase_percentage,
-            effectiveDate: dataModel.effective_date,
-            created: dataModel.created_at
+            effectiveDate: moment(dataModel.effective_date).format(DATE_FORMAT_STRING),
+            created: moment(dataModel.created_at).format(DATE_FORMAT_STRING)
          };
 
          return viewModel;
@@ -38,11 +38,7 @@ benefitmyService.factory(
         var toSave = mapToDomainModel(compensation);
         CompensationRepository.ByCompensationId.save({id: personId}, toSave)
         .$promise.then(function(response){
-          return personId;
-        }).then(function(personId) {
-          getCompensationByPerson(personId).then(function(response) {
-            deferred.resolve(response);
-          });
+          deferred.resolve(response);
         }).catch(function(error) {
           deferred.reject(error);
         });
@@ -71,7 +67,8 @@ benefitmyService.factory(
 
       return{
          getCompensationByPerson: getCompensationByPerson,
-         addCompensationByPerson: addCompensationByPerson
+         addCompensationByPerson: addCompensationByPerson,
+         mapToViewModel: mapToViewModel
       };
    }
 ]);

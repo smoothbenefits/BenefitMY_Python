@@ -33,13 +33,16 @@
                    min="0"
                    name="percentage"
                    ng-model="compensation.increasePercentage"
-                   ng-disabled="compensation.salary || compensation.salary === 0" />
+                   ng-disabled="compensation.salary || compensation.salary === 0 || !currentSalary" />
             <span class="input-group-addon"> %</span>
           </div>
           <div class="form-error-relative" ng-show="form.percentage.$invalid">
             Increase percentage is invalid
           </div>
         </div>
+      </div>
+      <div class="row" ng-show="!currentCompensation">
+        <div class="form-inline-error">* Salary number is required because no previous record found.</div>
       </div>
       <div class="row">
         <div class="form-label">Effective Date</div>

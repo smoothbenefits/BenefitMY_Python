@@ -169,11 +169,11 @@
           </a>
         </div>
         <div class="panel-body" collapse="!compensationExpanded">
-          <div ng-show="!employee.compensations">
+          <div ng-show="compensations.length === 0">
             No compensation record for {{employee.first_name}} {{employee.last_name}} yet.
             <a ng-click="addCompensation()">Add one now?</a>
           </div>
-          <table class="table table-striped" ng-show="employee.compensations">
+          <table class="table table-striped" ng-show="compensations.length > 0">
             <thead>
               <tr>
                 <th><span>Annual Salary</span></th>
@@ -183,9 +183,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="compensation in employee.compensations">
+              <tr ng-repeat="compensation in compensations">
                 <td>$ {{compensation.salary}}</td>
-                <td>{{compensation.increasePercentage}}</td>
+                <td>
+                  <span ng-show="compensation.increasePercentage">
+                    {{compensation.increasePercentage}} %
+                  </span>
+                  <span ng-show="!compensation.increasePercentage">
+                    Not Applicable
+                  </span>
+                </td>
                 <td>{{compensation.effectiveDate}}</td>
                 <td>{{compensation.created}}</td>
               </tr>
