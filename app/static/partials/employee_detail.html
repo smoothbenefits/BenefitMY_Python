@@ -12,11 +12,10 @@
 
 <div class="content-body">
   <div class="row">
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-8 col-md-offset-2">
       <div class='panel'>
         <div class='panel-heading' ng-click="basicInfoExpanded = !basicInfoExpanded">
           <b class="clickable"><span class="fa fa-toggle-down"></span>  Basic Information</b>
-
         </div>
         <div class="panel-body" collapse="!basicInfoExpanded">
           <ul class="list-group">
@@ -90,7 +89,9 @@
       <div class='panel' ng-show="employee.employeeProfile">
         <div class='panel-heading' ng-click="employeeProfileExpanded = !employeeProfileExpanded">
           <b class="clickable"><span class="fa fa-toggle-down"></span>  Employee Profile</b>
-          <a ng-click="editEmployeeProfile();$event.stopPropagation();"><span class="fa fa-edit pull-right"></span></a>
+          <a ng-click="editEmployeeProfile();$event.stopPropagation();">
+            <span class="fa fa-2x fa-pencil pull-right"></span>
+          </a>
         </div>
         <div class="panel-body" collapse="!employeeProfileExpanded">
           <ul class="list-group">
@@ -158,6 +159,38 @@
               <div style="clear:both"></div>
             </li>
           </ul>
+        </div>
+      </div>
+      <div class='panel'>
+        <div class='panel-heading' ng-click="compensationExpanded = !compensationExpanded">
+          <b class="clickable"><span class="fa fa-toggle-down"></span>  Compensation</b>
+          <a ng-click="addCompensation();$event.stopPropagation();">
+            <span class="fa fa-2x fa-plus-square-o pull-right"></span>
+          </a>
+        </div>
+        <div class="panel-body" collapse="!compensationExpanded">
+          <div ng-show="!employee.compensations">
+            No compensation record for {{employee.first_name}} {{employee.last_name}} yet.
+            <a ng-click="addCompensation()">Add one now?</a>
+          </div>
+          <table class="table table-striped" ng-show="employee.compensations">
+            <thead>
+              <tr>
+                <th><span>Annual Salary</span></th>
+                <th><span>Increase Percentage</span></th>
+                <th><span>Effective Date</span></th>
+                <th><span>Created Date</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="compensation in employee.compensations">
+                <td>$ {{compensation.salary}}</td>
+                <td>{{compensation.increasePercentage}}</td>
+                <td>{{compensation.effectiveDate}}</td>
+                <td>{{compensation.created}}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class='panel' ng-show="employee.emergency_contact.length > 0">

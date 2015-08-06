@@ -772,10 +772,6 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       });
     };
 
-    $scope.editEmployeeDetail = function(){
-
-    };
-
     $scope.terminateEmployment = function(){
       var modalInstance = $modal.open({
           templateUrl: '/static/partials/employee_record/terminate_confirmation.html',
@@ -817,6 +813,26 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
 
             angular.copy(updatedEmployeeProfile, $scope.employee.employeeProfile)
         });
+    };
+
+    $scope.addCompensation = function() {
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/employee_record/modal_edit_employee_compensation.html',
+        controller: 'addEmployeeCompensationModalController',
+        backdrop: 'static',
+        resolve: {
+          employeeProfile: function() {
+            return angular.copy($scope.employee.employeeProfile);
+          }
+        }
+      });
+
+      modalInstance.result.then(function(newEmployeeCompensations) {
+        var successMessage = "A new compensation record has been saved successfully.";
+        $scope.showMessageWithOkayOnly('Success', successMessage);
+
+        angular.copy(newEmployeeCompensations, $scope.employee.compensations);
+      });
     };
 
     $scope.backToDashboard = function(){
@@ -867,6 +883,39 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
       };
       $scope.updateEndDate = function(){
         $scope.employeeProfileModel.endDate = null;
+      };
+    }
+  ]);
+
+var addEmployeeCompensationModalController = employersController.controller(
+  'addEmployeeCompensationModalController',
+  ['$scope',
+   '$modal',
+   '$modalInstance',
+   'CompensationService',
+   'employeeProfile',
+    function($scope,
+             $modal,
+             $modalInstance,
+             CompensationService,
+             employeeProfile){
+
+      $scope.errorMessage = null;
+      var personId = employeeProfile.personId;
+      var companyId = employeeProfile.companyId;
+
+      $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+      };
+
+      $scope.save = function(compensation) {
+        CompensationService.addCompensationByPerson(compensation, personId, companyId)
+        .then(function(response){
+          $modalInstance.close(response);
+        }, function(error){
+          $scope.errorMessage = "Error occurred during saving operation. Please verify " +
+            "all the information enterred are valid. Message: " + error;
+        });
       };
     }
   ]);
@@ -933,7 +982,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     companyRepository.get({clientId: company_id})
     .$promise.then(function(response){
         $scope.company = response;
-      
+
 
         var promise = employeeBenefitElectionService(company_id);
         promise.then(function(employeeList){
