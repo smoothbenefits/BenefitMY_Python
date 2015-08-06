@@ -10,7 +10,7 @@ benefitmyService.factory(
             company: dataModel.company,
             person: dataModel.person,
             salary: Number(dataModel.annual_base_salary).toFixed(2),
-            increasePercentage: dataModel.increase_percentage,
+            increasePercentage: Number(dataModel.increase_percentage).toFixed(2),
             effectiveDate: moment(dataModel.effective_date).format(DATE_FORMAT_STRING),
             created: moment(dataModel.created_at).format(DATE_FORMAT_STRING)
          };
