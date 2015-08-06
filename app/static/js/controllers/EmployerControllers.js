@@ -182,6 +182,7 @@ var employerUser = employersController.controller('employerUser',
    'documentTypeService',
    'templateRepository',
    'DocumentService',
+   'CompensationService',
   function employerUser($scope,
                         $state,
                         $stateParams,
@@ -191,7 +192,8 @@ var employerUser = employersController.controller('employerUser',
                         emailRepository,
                         documentTypeService,
                         templateRepository,
-                        DocumentService){
+                        DocumentService,
+                        CompensationService){
       var compId = $stateParams.company_id;
       $scope.employees=[];
       $scope.addUser = {send_email:true, new_employee:true, create_docs:true};
@@ -265,10 +267,27 @@ var employerUser = employersController.controller('employerUser',
         if(validateAddUser($scope.addUser))
         {
           usersRepository.save(mapToAPIUser($scope.addUser, userType),
-            function(){
+            function(response){
               if($scope.addUser.send_email){
                 alert('Email sent successful.');
               }
+
+              if ($scope.addUser.annual_base_salary) {
+                  var compensation = {
+                    person: response.person.id,
+                    company: compId,
+                    salary: $scope.addUser.annual_base_salary,
+                    increasePercentage: null,
+                    effectiveDate: new Date()
+                  };
+
+                  CompensationService
+                  .addCompensationByPerson(compensation, response.person.id, compId)
+                  .then(function(){
+                    gotoUserView(userType);
+                  });
+              }
+
               gotoUserView(userType);
             }, function(err){
                 if(err.status === 409){
