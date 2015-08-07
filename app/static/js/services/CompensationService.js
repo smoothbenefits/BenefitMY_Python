@@ -51,11 +51,24 @@ benefitmyService.factory(
 
         CompensationRepository.ByPersonId.query({personId: personId}).$promise
         .then(function(response) {
+          var benchMarkDate = new Date(0);
           var compensations = [];
           _.each(response, function(compensation) {
             var viewModel = mapToViewModel(compensation);
+            var effectiveDate = moment(viewModel.effectiveDate);
+            if (effectiveDate > benchMarkDate && effectiveDate < new Date()) {
+              benchMarkDate = effectiveDate;
+            }
             compensations.push(viewModel);
           });
+
+          var current = _.findWhere(compensations, function(compensation) {
+            return moment(compensation.effectiveDate) === benchMarkDate;
+          });
+
+          if (current) {
+            current.isCurrent = true;
+          }
 
           deferred.resolve(compensations);
         }, function(error) {

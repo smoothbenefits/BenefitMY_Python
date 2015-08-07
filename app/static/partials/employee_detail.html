@@ -170,12 +170,16 @@
                 <th><span>Annual Salary</span></th>
                 <th><span>Increase Percentage</span></th>
                 <th><span>Effective Date</span></th>
-                <th><span>Created Date</span></th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="compensation in compensations">
-                <td>$ {{compensation.salary}}</td>
+                <td>
+                  <span>$ {{compensation.salary}}  </span>
+                  <span ng-show="compensation.isCurrent">
+                    (<i class="fa fa-asterisk"></i>)
+                  <span>
+                </td>
                 <td>
                   <span ng-show="compensation.increasePercentage">
                     {{compensation.increasePercentage}} %
@@ -185,9 +189,11 @@
                   </span>
                 </td>
                 <td>{{compensation.effectiveDate}}</td>
-                <td>{{compensation.created}}</td>
               </tr>
             </tbody>
+            <tfoot>
+              <tr><td>(*) Current compensation;</td></tr>
+            </tfoot>
           </table>
         </div>
       </div>

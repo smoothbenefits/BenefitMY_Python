@@ -286,9 +286,9 @@ var employerUser = employersController.controller('employerUser',
                   .then(function(){
                     gotoUserView(userType);
                   });
+              } else {
+                gotoUserView(userType);
               }
-
-              gotoUserView(userType);
             }, function(err){
                 if(err.status === 409){
                   $scope.alreadyExists = true;
@@ -853,16 +853,15 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           employeeProfile: function() {
             return angular.copy($scope.employee.employeeProfile);
           },
-          currentCompensation: function() {
+          currentSalary: function() {
             if ($scope.compensations.length > 0) {
-              var compensations = angular.copy($scope.compensations);
-              _.sortBy(compensations, function(compensation) {
-                return compensation.effectiveDate;
+              var current = _.findWhere($scope.compensations, function(compensation) {
+                return compensation.isCurrent;
               });
 
-              return compensations[0];
+              return angular.copy(current.salary);
             } else {
-              return { salary: null};
+              return null;
             }
           }
         }
@@ -936,16 +935,16 @@ var addEmployeeCompensationModalController = employersController.controller(
    '$modalInstance',
    'CompensationService',
    'employeeProfile',
-   'currentCompensation',
+   'currentSalary',
     function($scope,
              $modal,
              $modalInstance,
              CompensationService,
              employeeProfile,
-             currentCompensation){
+             currentSalary){
 
       $scope.errorMessage = null;
-      $scope.currentSalary = Number(currentCompensation.salary);
+      $scope.currentSalary = Number(currentSalary);
       var personId = employeeProfile.personId;
       var companyId = employeeProfile.companyId;
 
@@ -954,11 +953,11 @@ var addEmployeeCompensationModalController = employersController.controller(
       };
 
       $scope.save = function(compensation) {
-        if (compensation.increasePercentage && currentCompensation.salary) {
-          compensation.salary = currentCompensation.salary * (1 + compensation.increasePercentage / 100);
-        } else if (compensation.salary && currentCompensation.salary) {
-          compensation.increasePercentage = (compensation.salary - currentCompensation.salary) / currentCompensation.salary * 100;
-        } else if (!currentCompensation.salary) {
+        if (compensation.increasePercentage && currentSalary) {
+          compensation.salary = currentSalary * (1 + compensation.increasePercentage / 100);
+        } else if (compensation.salary && currentSalary) {
+          compensation.increasePercentage = (compensation.salary - currentSalary) / currentSalary * 100;
+        } else if (!currentSalary && compensation.salary) {
           compensation.increasePercentage = null;
         } else {
           $scope.errorMessage = "Error detected in input numbers. Please verify."
