@@ -2064,18 +2064,17 @@ var stdBenefitsSignup = employeeControllers.controller(
                 }
                 return {};
             }).then(function(stdPlan) {
-
-                if (stdPlan.employerContributionPercentage === "100.00") {
-                    $scope.companyStdPlan.employeePremium = 0.0;
-                    return;
-                }
-
-                StdService.getEmployeePremiumForUserCompanyStdPlan(
+                StdService.getTotalPremiumForUserCompanyStdPlan(
                     $scope.employeeId,
                     stdPlan,
                     company.pay_period_definition)
-                .then(function(premium) {
-                    $scope.companyStdPlan.employeePremium = premium;
+                .then(function(premiumInfo) {
+                    $scope.companyStdPlan.totalPremium = premiumInfo.totalPremium;
+                    $scope.companyStdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
+                }, function(error){
+                    alert("Could not get premium info. Error is: " + error);
+                    $scope.companyStdPlan.totalPremium = 0;
+                    $scope.companyStdPlan.employeePremium = 0;
                 });
             });
         });
@@ -2145,17 +2144,17 @@ var ltdBenefitsSignup = employeeControllers.controller(
                 return {};
             }).then(function(ltdPlan) {
 
-                if (ltdPlan.employerContributionPercentage === "100.00") {
-                    $scope.companyLtdPlan.employeePremium = 0.0;
-                    return;
-                }
-
                 LtdService.getEmployeePremiumForUserCompanyLtdPlan(
                     $scope.employeeId,
                     ltdPlan,
                     company.pay_period_definition)
-                .then(function(premium) {
-                    $scope.companyLtdPlan.employeePremium = premium;
+                .then(function(premiumInfo) {
+                    $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium;
+                    $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
+                }, function(error){
+                  alert("Could not get premium info. Error is: " + error);
+                  $scope.companyLtdPlan.totalPremium = 0;
+                  $scope.companyLtdPlan.employeePremium = 0;
                 });
             });
 
