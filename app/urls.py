@@ -127,6 +127,8 @@ from app.views.reports.company_users_direct_deposit_excel import CompanyUsersDir
 from app.views.reports.company_users_life_insurance_beneficiary_excel import CompanyUsersLifeInsuranceBeneficiaryExcelExportView
 from app.views.reports.company_users_summary_pdf import CompanyUsersSummaryPdfExportView
 
+from app.views.reports.integration.company_hphc_excel import CompanyHphcExcelView
+
 from app.views.upload import (UserUploadView,
                               UploadView,
                               get_company_uploads)
@@ -192,6 +194,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_billing?$' % PREFIX, CompanyUsersBenefitsBillingExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/pdf/?$' % PREFIX, CompanyUsersSummaryPdfExportView.as_view()),
+
+    url(r'^%s/companies/(?P<pk>\w+)/hphc/excel/?$' % PREFIX, CompanyHphcExcelView.as_view()),
 
     url(r'^%s/companies/(?P<pk>\w+)/users/modification_summary/?$' % PREFIX, CompanyUsersDataModificationSummaryView.as_view()),
 
