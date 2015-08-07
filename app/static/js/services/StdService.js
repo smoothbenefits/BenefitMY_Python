@@ -81,7 +81,7 @@ benefitmyService.factory('StdService',
 
             domainModel.id = userCompanyPlanViewModel.userCompanyPlanId;
             domainModel.user = userCompanyPlanViewModel.planOwner;
-            domainModel.total_premium_per_period = (userCompanyPlanViewModel.employeePremium / payPeriod.month_factor).toFixed(10);
+            domainModel.total_premium_per_month = userCompanyPlanViewModel.totalPremium.toFixed(10);
 
             domainModel.company_std_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
@@ -115,19 +115,19 @@ benefitmyService.factory('StdService',
 
             getStdPlansForCompany: getStdPlansForCompany,
 
-            getEmployeePremiumForUserCompanyStdPlan: function(userId, stdPlan, companyPayPeriod) {
+            getTotalPremiumForUserCompanyStdPlan: function(userId, stdPlan, companyPayPeriod) {
                 var deferred = $q.defer();
 
                 if (!stdPlan) {
                     deferred.resolve(0);
                 } else {
                     var companyId = stdPlan.company;
-                    EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId).then(function(profile) {
-                        var employeeContribution = 1 - (stdPlan.employerContributionPercentage / 100);
+                    EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId)
+                    .then(function(profile) {
 
                         var salary = profile.annualBaseSalary;
                         if (_.isNaN(salary)) {
-                            deferred.resolve(null);
+                            deferred.reject('No Salary Info');
                         }
 
                         var maxBenefitAnnually = stdPlan.maxBenefitWeekly * 52;
@@ -137,10 +137,14 @@ benefitmyService.factory('StdService',
                         var rate = stdPlan.rate;
                         var rateBase = 10;
 
-
-                        var premiumPerPayPeriod = maxBenefit / 12 * (rate / rateBase) * companyPayPeriod.month_factor * employeeContribution;
-
-                        deferred.resolve(premiumPerPayPeriod);
+                        var totalPremium = maxBenefit / 12 * (rate / rateBase);
+                        var employeePremium = 0;
+                        if(stdPlan.employerContributionPercentage && stdPlan.employerContributionPercentage < 100)
+                        {
+                            var employeeContribution = 1 - (stdPlan.employerContributionPercentage / 100);
+                            employeePremium = totalPremium * employeeContribution * companyPayPeriod.month_factor;
+                        }
+                        deferred.resolve({totalPremium:totalPremium, employeePremiumPerPayPeriod: employeePremium});
                     }, function(error) {
                         deferred.reject(error);
                     });
