@@ -440,3 +440,11 @@ benefitmyDomainModelFactories.factory('PeriodDefinitionRepository', ['$resource'
   }
 ]);
 
+benefitmyDomainModelFactories.factory('CompensationRepository', ['$resource',
+  function($resource){
+    return {
+      ByCompensationId: $resource(PREFIX + 'employee_compensation/:id/', {id: '@id'}),
+      ByPersonId: $resource(PREFIX + 'person/:personId/employee_compensation', {personId: '@personId'})
+    };
+  }
+]);
