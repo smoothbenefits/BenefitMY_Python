@@ -348,10 +348,11 @@ var employerBenefits = employersController.controller('employerBenefits',
     companyRepository.get({clientId:$stateParams.company_id})
     .$promise.then(function(company){
       $scope.company = company;
-      benefitDisplayService(company, false, function(groupObj, nonMedicalArray, benefitCount){
-        $scope.medicalBenefitGroup = groupObj;
-        $scope.nonMedicalBenefitArray = nonMedicalArray;
-        $scope.benefitCount = benefitCount;
+      benefitDisplayService.getHealthBenefitsForDisplay(company, false)
+      .then(function(healthBenefitToDisplay){
+        $scope.medicalBenefitGroup = healthBenefitToDisplay.medicalBenefitGroup;
+        $scope.nonMedicalBenefitArray = healthBenefitToDisplay.nonMedicalBenefitArray;
+        $scope.benefitCount = healthBenefitToDisplay.benefitCount;
       });
     });
 
