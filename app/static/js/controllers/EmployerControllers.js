@@ -744,12 +744,10 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
             });
             return profile.personId;
           }).then(function(personId) {
-            CompensationService.getCompensationByPerson(personId).then(function(response) {
-              // sorted compensation list here to avoid buggy angularjs sort on html
-              _.sortBy(response, function(compensation) {
-                return moment(compensation.effectiveDate).format('yyyy-MM-dd hh:mm:ss');
-              });
-              $scope.compensations = response.reverse();
+            CompensationService.getCompensationByPersonSortedByDate(personId, true)
+            .then(function(response) {
+              // Return sorted compensation records for the person
+              $scope.compensations = response;
             });
           });
         }
@@ -854,12 +852,9 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
             return angular.copy($scope.employee.employeeProfile);
           },
           currentSalary: function() {
-            if ($scope.compensations.length > 0) {
-              var current = _.findWhere($scope.compensations, function(compensation) {
-                return compensation.isCurrent;
-              });
-
-              return angular.copy(current.salary);
+            var currentCompensation = CompensationService.getCurrentCompensationFromViewList($scope.compensations);
+            if (currentCompensation) {
+              return currentCompensation.salary;
             } else {
               return null;
             }
@@ -870,9 +865,10 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       modalInstance.result.then(function(newEmployeeCompensation) {
         var successMessage = "A new compensation record has been saved successfully.";
         $scope.showMessageWithOkayOnly('Success', successMessage);
-
-        // Always insert new compensation to the top
-        $scope.compensations.unshift(newEmployeeCompensation);
+        CompensationService.getCompensationByPersonSortedByDate($scope.employee.employeeProfile.personId, true)
+        .then(function(response) {
+          $scope.compensations = response;
+        });
       });
     };
 
