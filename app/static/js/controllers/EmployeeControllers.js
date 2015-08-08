@@ -1224,9 +1224,10 @@ var healthBenefitsSignup = employeeControllers.controller(
           });
 
           $scope.companyPromise.then(function(company){
-            benefitDisplayService(company, false, function(groupObj, nonMedicalArray, benefitCount){
-              $scope.medicalBenefitGroup = groupObj;
-              $scope.nonMedicalBenefitArray = nonMedicalArray;
+            benefitDisplayService.getHealthBenefitsForDisplay(company, false)
+            .then(function(healthBenefitToDisplay){
+              $scope.medicalBenefitGroup = healthBenefitToDisplay.medicalBenefitGroup;
+              $scope.nonMedicalBenefitArray = healthBenefitToDisplay.nonMedicalBenefitArray;
             });
 
             //First get all the enrolled benefit list
@@ -1506,7 +1507,6 @@ var fsaBenefitsSignup = employeeControllers.controller(
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
-   'benefitDisplayService',
    'FsaService',
    'BasicLifeInsuranceService',
     function fsaBenefitsSignup(
@@ -1519,7 +1519,6 @@ var fsaBenefitsSignup = employeeControllers.controller(
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
-      benefitDisplayService,
       FsaService,
       BasicLifeInsuranceService){
 
@@ -1625,7 +1624,6 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
-   'benefitDisplayService',
    'FsaService',
    'BasicLifeInsuranceService',
     function basicLifeBenefitsSignup(
@@ -1638,7 +1636,6 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
-      benefitDisplayService,
       FsaService,
       BasicLifeInsuranceService){
 
