@@ -7,6 +7,9 @@ from app.views.employee_profile_view import (
     EmployeeProfileView,
     EmployeeProfileByPersonCompanyView,
     EmployeeProfileByCompanyUserView)
+from app.views.employee_compensation_view import (
+    EmployeeCompensationView,
+    EmployeeCompensationByPersonView)
 from app.views.user_view import (
     UserView,
     UsersView,
@@ -124,6 +127,8 @@ from app.views.reports.company_users_direct_deposit_excel import CompanyUsersDir
 from app.views.reports.company_users_life_insurance_beneficiary_excel import CompanyUsersLifeInsuranceBeneficiaryExcelExportView
 from app.views.reports.company_users_summary_pdf import CompanyUsersSummaryPdfExportView
 
+from app.views.reports.integration.company_hphc_excel import CompanyHphcExcelView
+
 from app.views.upload import (UserUploadView,
                               UploadView,
                               get_company_uploads)
@@ -189,6 +194,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_billing?$' % PREFIX, CompanyUsersBenefitsBillingExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/pdf/?$' % PREFIX, CompanyUsersSummaryPdfExportView.as_view()),
+
+    url(r'^%s/companies/(?P<pk>\w+)/hphc/excel/?$' % PREFIX, CompanyHphcExcelView.as_view()),
 
     url(r'^%s/companies/(?P<pk>\w+)/users/modification_summary/?$' % PREFIX, CompanyUsersDataModificationSummaryView.as_view()),
 
@@ -340,6 +347,13 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/user/(?P<user_id>\w+)/employee_profile/?$' % PREFIX,
         EmployeeProfileByCompanyUserView.as_view(),
         name='employee_profile_by_company_user_api'),
+
+    url(r'^%s/employee_compensation/(?P<pk>\w+)/?$' % PREFIX,
+        EmployeeCompensationView.as_view(),
+        name='employee_compensation_api'),
+    url(r'^%s/person/(?P<person_id>\w+)/employee_compensation/?$' % PREFIX,
+        EmployeeCompensationByPersonView.as_view(),
+        name='employee_compensation_by_person_api'),
 
     url(r'^%s/benefit_update_reasons/?$' % PREFIX, SysBenefitUpdateReasonView.as_view(), name='sys_benefit_update_reason_api'),
 )

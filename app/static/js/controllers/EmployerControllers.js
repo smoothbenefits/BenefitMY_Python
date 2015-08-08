@@ -1,6 +1,5 @@
 var employersController = angular.module('benefitmyApp.employers.controllers',[]);
 
-
 var employerHome = employersController.controller('employerHome',
   ['$scope',
   '$location',
@@ -183,6 +182,7 @@ var employerUser = employersController.controller('employerUser',
    'documentTypeService',
    'templateRepository',
    'DocumentService',
+   'CompensationService',
   function employerUser($scope,
                         $state,
                         $stateParams,
@@ -192,7 +192,8 @@ var employerUser = employersController.controller('employerUser',
                         emailRepository,
                         documentTypeService,
                         templateRepository,
-                        DocumentService){
+                        DocumentService,
+                        CompensationService){
       var compId = $stateParams.company_id;
       $scope.employees=[];
       $scope.addUser = {send_email:true, new_employee:true, create_docs:true};
@@ -266,11 +267,28 @@ var employerUser = employersController.controller('employerUser',
         if(validateAddUser($scope.addUser))
         {
           usersRepository.save(mapToAPIUser($scope.addUser, userType),
-            function(){
+            function(response){
               if($scope.addUser.send_email){
                 alert('Email sent successful.');
               }
-              gotoUserView(userType);
+
+              if ($scope.addUser.annual_base_salary) {
+                  var compensation = {
+                    person: response.person.id,
+                    company: compId,
+                    salary: $scope.addUser.annual_base_salary,
+                    increasePercentage: null,
+                    effectiveDate: new Date()
+                  };
+
+                  CompensationService
+                  .addCompensationByPerson(compensation, response.person.id, compId)
+                  .then(function(){
+                    gotoUserView(userType);
+                  });
+              } else {
+                gotoUserView(userType);
+              }
             }, function(err){
                 if(err.status === 409){
                   $scope.alreadyExists = true;
@@ -348,10 +366,11 @@ var employerBenefits = employersController.controller('employerBenefits',
     companyRepository.get({clientId:$stateParams.company_id})
     .$promise.then(function(company){
       $scope.company = company;
-      benefitDisplayService(company, false, function(groupObj, nonMedicalArray, benefitCount){
-        $scope.medicalBenefitGroup = groupObj;
-        $scope.nonMedicalBenefitArray = nonMedicalArray;
-        $scope.benefitCount = benefitCount;
+      benefitDisplayService.getHealthBenefitsForDisplay(company, false)
+      .then(function(healthBenefitToDisplay){
+        $scope.medicalBenefitGroup = healthBenefitToDisplay.medicalBenefitGroup;
+        $scope.nonMedicalBenefitArray = healthBenefitToDisplay.nonMedicalBenefitArray;
+        $scope.benefitCount = healthBenefitToDisplay.benefitCount;
       });
     });
 
@@ -676,6 +695,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'employeeTaxRepository',
   'EmployeeProfileService',
   'EmploymentStatuses',
+  'CompensationService',
   function($scope,
            $location,
            $stateParams,
@@ -686,7 +706,8 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            employmentAuthRepository,
            employeeTaxRepository,
            EmployeeProfileService,
-           EmploymentStatuses){
+           EmploymentStatuses,
+           CompensationService){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
@@ -721,6 +742,13 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
                 if(employmentStatus && employmentStatus === EmploymentStatuses.terminated){
                   $scope.terminateMessage = "Employment terminated";
                 };
+            });
+            return profile.personId;
+          }).then(function(personId) {
+            CompensationService.getCompensationByPersonSortedByDate(personId, true)
+            .then(function(response) {
+              // Return sorted compensation records for the person
+              $scope.compensations = response;
             });
           });
         }
@@ -772,10 +800,6 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       });
     };
 
-    $scope.editEmployeeDetail = function(){
-
-    };
-
     $scope.terminateEmployment = function(){
       var modalInstance = $modal.open({
           templateUrl: '/static/partials/employee_record/terminate_confirmation.html',
@@ -817,6 +841,36 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
 
             angular.copy(updatedEmployeeProfile, $scope.employee.employeeProfile)
         });
+    };
+
+    $scope.addCompensation = function() {
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/employee_record/modal_edit_employee_compensation.html',
+        controller: 'addEmployeeCompensationModalController',
+        backdrop: 'static',
+        resolve: {
+          employeeProfile: function() {
+            return angular.copy($scope.employee.employeeProfile);
+          },
+          currentSalary: function() {
+            var currentCompensation = CompensationService.getCurrentCompensationFromViewList($scope.compensations);
+            if (currentCompensation) {
+              return currentCompensation.salary;
+            } else {
+              return null;
+            }
+          }
+        }
+      });
+
+      modalInstance.result.then(function(newEmployeeCompensation) {
+        var successMessage = "A new compensation record has been saved successfully.";
+        $scope.showMessageWithOkayOnly('Success', successMessage);
+        CompensationService.getCompensationByPersonSortedByDate($scope.employee.employeeProfile.personId, true)
+        .then(function(response) {
+          $scope.compensations = response;
+        });
+      });
     };
 
     $scope.backToDashboard = function(){
@@ -867,6 +921,54 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
       };
       $scope.updateEndDate = function(){
         $scope.employeeProfileModel.endDate = null;
+      };
+    }
+  ]);
+
+var addEmployeeCompensationModalController = employersController.controller(
+  'addEmployeeCompensationModalController',
+  ['$scope',
+   '$modal',
+   '$modalInstance',
+   'CompensationService',
+   'employeeProfile',
+   'currentSalary',
+    function($scope,
+             $modal,
+             $modalInstance,
+             CompensationService,
+             employeeProfile,
+             currentSalary){
+
+      $scope.errorMessage = null;
+      $scope.currentSalary = Number(currentSalary);
+      var personId = employeeProfile.personId;
+      var companyId = employeeProfile.companyId;
+
+      $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+      };
+
+      $scope.save = function(compensation) {
+        if (compensation.increasePercentage && currentSalary) {
+          compensation.salary = currentSalary * (1 + compensation.increasePercentage / 100);
+        } else if (compensation.salary && currentSalary) {
+          compensation.increasePercentage = (compensation.salary - currentSalary) / currentSalary * 100;
+        } else if (!currentSalary && compensation.salary) {
+          compensation.increasePercentage = null;
+        } else {
+          $scope.errorMessage = "Error detected in input numbers. Please verify."
+          $modalInstance.dismiss('error');
+        }
+
+        CompensationService.addCompensationByPerson(compensation, personId, companyId)
+        .then(function(response){
+          var newCompensation = CompensationService.mapToViewModel(response);
+          $modalInstance.close(newCompensation);
+        }, function(error){
+          $scope.errorMessage = "Error occurred during saving operation. Please verify " +
+            "all the information enterred are valid. Message: " + error;
+        });
       };
     }
   ]);
@@ -933,7 +1035,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     companyRepository.get({clientId: company_id})
     .$promise.then(function(response){
         $scope.company = response;
-      
+
 
         var promise = employeeBenefitElectionService(company_id);
         promise.then(function(employeeList){
@@ -1005,6 +1107,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     $scope.exportCompanyEmployeeLifeBeneficiarySummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl(company_id);
     $scope.exportCompanyBenefitsBillingSummaryUrl = CompanyEmployeeSummaryService.getCompanyBenefitsBillingReportExcelUrl(company_id);
     $scope.exportCompanyEmployeeSummaryPdfUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryPdfUrl(company_id);
+    $scope.companyHphcExcelUrl = CompanyEmployeeSummaryService.getCompanyHphcExcelUrl(company_id);
 }]);
 
 var employerViewUploads = employersController.controller('employerViewUploads', [
