@@ -6,6 +6,8 @@ class DisabilityInsuranceService(object):
     def get_total_premium(self, max_annual_benefit, annual_salary):
         if not annual_salary:
             annual_salary = 0
+        if not max_annual_benefit:
+            max_annual_benefit = 0
         benefit_from_salary = annual_salary * self._disability_plan.percentage_of_salary / 100
         max_benefit_amount = min(max_annual_benefit, benefit_from_salary)
         total_premium = float(max_benefit_amount / 12 * self._disability_plan.rate / 10)
@@ -13,6 +15,8 @@ class DisabilityInsuranceService(object):
 
 
     def get_employee_premium(self, total_premium):
+        if not total_premium:
+            total_premium = 0
         employee_contribution_percent = 100
         if self._disability_plan.employer_contribution_percentage:
             employee_contribution_percent = 100 - self._disability_plan.employer_contribution_percentage

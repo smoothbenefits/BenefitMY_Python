@@ -69,7 +69,7 @@ class EmployeeCompensationTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.content)
         self.assertIn('id', result)
-        self.assertEqual(result['id'], self.normalize_key(3))
+        self.assertEqual(result['id'], self.normalize_key(4))
         self.assertEqual(result['person'], 1)
         self.assertEqual(result['reason'], 1)
         self.assertEqual(result['annual_base_salary'], "40022.00")
