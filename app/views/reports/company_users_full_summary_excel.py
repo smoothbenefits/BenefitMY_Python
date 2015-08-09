@@ -50,6 +50,8 @@ from app.views.permission import (
     company_employer_or_broker)
 from excel_export_view_base import ExcelExportViewBase
 from report_export_view_base import ReportExportViewBase
+from app.service.disability_insurance_service import DisabilityInsuranceService
+
 
 User = get_user_model()
 
@@ -413,22 +415,16 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         else:
             return col_num + 8
 
-    def _write_disability_insurance_premium_info(self, 
-                                                 company_plan, 
-                                                 annual_max_benefit, 
-                                                 employee_profile, 
+    def _write_disability_insurance_premium_info(self,
+                                                 disability_service,
+                                                 user_plan,
                                                  excelSheet, 
                                                  row_num, 
                                                  col_num):
-        if employee_profile:
-            total_premium, employee_premium = self._get_disability_premium_numbers(company_plan,
-                                                                                   annual_max_benefit,
-                                                                                   employee_profile)
-            col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(total_premium))
-            col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_premium))
-        else:
-            col_num = self._write_field(excelSheet, row_num, col_num, 'No Employee Salary')
-            col_num = self._write_field(excelSheet, row_num, col_num, 'No Employee Salary')
+        
+        col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(user_plan.total_premium_per_month))
+        col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(
+                                    disability_service.get_employee_premium(user_plan.total_premium_per_month)))
         return col_num
 
     def _write_employee_std_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
@@ -440,11 +436,9 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 plan = company_plan.std_insurance_plan
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
                 col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
-                employee_profile = self._get_employee_profile_by_user_id(employee_user_id)
-                annual_max_benefit = company_plan.max_benefit_weekly * 52;
-                col_num = self._write_disability_insurance_premium_info(company_plan, 
-                                                                        annual_max_benefit, 
-                                                                        employee_profile, 
+                disability_service = DisabilityInsuranceService(company_plan)
+                col_num = self._write_disability_insurance_premium_info(disability_service,
+                                                                        employee_plan,
                                                                         excelSheet, 
                                                                         row_num, 
                                                                         col_num)
@@ -468,11 +462,9 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 plan = company_plan.ltd_insurance_plan
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
                 col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
-                employee_profile = self._get_employee_profile_by_user_id(employee_user_id)
-                annual_max_benefit = company_plan.max_benefit_monthly * 12;
-                col_num = self._write_disability_insurance_premium_info(company_plan, 
-                                                                        annual_max_benefit, 
-                                                                        employee_profile, 
+                disability_service = DisabilityInsuranceService(company_plan)
+                col_num = self._write_disability_insurance_premium_info(disability_service,
+                                                                        employee_plan,
                                                                         excelSheet, 
                                                                         row_num, 
                                                                         col_num)

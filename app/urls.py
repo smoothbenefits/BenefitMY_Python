@@ -142,6 +142,8 @@ from app.views.sys_benefit_update_reason_view import SysBenefitUpdateReasonView
 from app.views.person_enrollment_summary_view import PersonEnrollmentSummaryView
 from app.views.company_benefit_availability_view import CompanyBenefitAvailabilityView
 from app.views.sys_period_definition_view import SysPeriodDefinitionView
+from app.views.insurance.company_ltd_insurance_employee_premium_view import CompanyLtdInsuranceEmployeePremiumView
+from app.views.insurance.company_std_insurance_employee_premium_view import CompanyStdInsuranceEmployeePremiumView
 
 PREFIX = "api/v1"
 
@@ -281,6 +283,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
         CompanyStdInsurancePlanView.as_view(), name='company_std_insurance_plan_api'),
 
+    url(r'^%s/user/(?P<user_id>\w+)/std_insurance/(?P<pk>\w+)/premium/?$' % PREFIX, 
+        CompanyStdInsuranceEmployeePremiumView.as_view(), name='user_company_std_insurance_premium_api'),
+
     # LTD insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         LtdInsurancePlanView.as_view(), name='broker_ltd_insurance_api'),
@@ -293,6 +298,9 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
+
+    url(r'^%s/user/(?P<user_id>\w+)/ltd_insurance/(?P<pk>\w+)/premium/?$' % PREFIX, 
+        CompanyLtdInsuranceEmployeePremiumView.as_view(), name='user_company_ltd_insurance_premium_api'),
 
     # HRA api
     url(r'^%s/hra_plan/(?P<pk>\w+)/?$' % PREFIX,

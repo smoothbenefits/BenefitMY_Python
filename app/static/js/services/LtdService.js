@@ -115,33 +115,16 @@ benefitmyService.factory('LtdService',
 
             getLtdPlansForCompany: getLtdPlansForCompany,
 
-            getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan, companyPayPeriod) {
+            getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan) {
                 var deferred = $q.defer();
 
                 if (!ltdPlan) {
                     deferred.resolve(0);
                 } else {
-                    var companyId = ltdPlan.company;
-                    EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId).then(function(profile) {
-                        var salary = profile.annualBaseSalary;
-                        if (_.isNaN(salary)) {
-                            deferred.reject('No Salary Info');
-                        }
-
-                        var maxBenefitAnnually = ltdPlan.maxBenefitMonthly * 12;
-                        var benefitPercentage = (ltdPlan.percentageOfSalary / 100);
-                        // Benefit amount cannot exceed preset cap
-                        var annualBenefitAmount = Math.min(salary * benefitPercentage, maxBenefitAnnually);
-                        var rate = ltdPlan.rate;
-                        var rateBase = 10;
-                        var totalPremium = annualBenefitAmount / 12 * (rate/rateBase);
-
-                        employeePremium = 0;
-                        if(ltdPlan.employerContributionPercentage && ltdPlan.employerContributionPercentage < 100){
-                            var employeeContribution = 1 - (ltdPlan.employerContributionPercentage / 100);
-                            var employeePremium = totalPremium * employeeContribution * companyPayPeriod.month_factor;
-                        }
-                        deferred.resolve({totalPremium:totalPremium, employeePremiumPerPayPeriod: employeePremium});
+                    LtdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:ltdPlan.companyPlanId})
+                    .$promise.then(function(premiumInfo) {
+                        deferred.resolve({totalPremium:premiumInfo.total, 
+                            employeePremiumPerPayPeriod: premiumInfo.employee});
                     }, function(error) {
                         deferred.reject(error);
                     });
