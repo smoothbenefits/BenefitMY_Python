@@ -7,7 +7,7 @@ class CompensationService(object):
 
     def _get_compensation_records_order_by_effective_date(self):
         try:
-            return EmployeeCompensation.objects.filter(person_id=self.person_id)
+            return EmployeeCompensation.objects.filter(person_id=self.person_id).order_by('-effective_date')
         except EmployeeCompensation.DoesNotExist:
             return None
 
