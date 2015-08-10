@@ -2063,8 +2063,7 @@ var stdBenefitsSignup = employeeControllers.controller(
             }).then(function(stdPlan) {
                 StdService.getTotalPremiumForUserCompanyStdPlan(
                     $scope.employeeId,
-                    stdPlan,
-                    company.pay_period_definition)
+                    stdPlan)
                 .then(function(premiumInfo) {
                     $scope.companyStdPlan.totalPremium = premiumInfo.totalPremium;
                     $scope.companyStdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
@@ -2143,8 +2142,7 @@ var ltdBenefitsSignup = employeeControllers.controller(
 
                 LtdService.getEmployeePremiumForUserCompanyLtdPlan(
                     $scope.employeeId,
-                    ltdPlan,
-                    company.pay_period_definition)
+                    ltdPlan)
                 .then(function(premiumInfo) {
                     $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium;
                     $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
