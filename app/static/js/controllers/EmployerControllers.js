@@ -241,6 +241,7 @@ var employerUser = employersController.controller('employerUser',
         apiUser.new_employee = viewUser.new_employee;
         apiUser.user = {};
         apiUser.user.email = viewUser.email;
+        apiUser.user.password = viewUser.password;
         apiUser.user.first_name = viewUser.first_name;
         apiUser.user.last_name = viewUser.last_name;
         apiUser.create_docs = viewUser.create_docs;
@@ -248,9 +249,28 @@ var employerUser = employersController.controller('employerUser',
         apiUser.send_email = viewUser.send_email;
         apiUser.annual_base_salary = viewUser.annual_base_salary;
         return apiUser;
-      }
+      };
+
+      var invalidPassword = function(password, passwordConfirm) {
+        if (!password) {
+          $scope.passwordValidationError = "Password is required for the new employee account.";
+          return true;
+        } else if (passwordConfirm !== password) {
+          $scope.passwordValidationError = "The two passwords do not match.";
+          return true;
+        } else if (password.length < 8) {
+          $scope.passwordValidationError = "Password should be at least 8 character long.";
+          return true;
+        } else {
+          return false;
+        }
+      };
 
       var validateAddUser = function(addUser){
+        if (!addUser.send_email && invalidPassword(addUser.password, addUser.password_confirm)){
+          return false;
+        }
+
         if(addUser.first_name && addUser.last_name && addUser.email && addUser.annual_base_salary >= 0)
         {
           return true;
@@ -262,6 +282,8 @@ var employerUser = employersController.controller('employerUser',
       {
         $location.path('/admin/'+ userType + '/add/'+compId)
       }
+
+      $scope.invalidPassword = invalidPassword;
 
       $scope.createUser = function(userType){
         if(validateAddUser($scope.addUser))
