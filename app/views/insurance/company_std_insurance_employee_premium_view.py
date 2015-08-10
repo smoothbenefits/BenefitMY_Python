@@ -7,6 +7,7 @@ from app.models.insurance.company_std_insurance_plan import \
 from app.models.person import Person
 from app.models.employee_compensation import EmployeeCompensation
 from app.service.disability_insurance_service import DisabilityInsuranceService
+from app.service.compensation_service import CompensationService
 
 
 class CompanyStdInsuranceEmployeePremiumView(APIView):
@@ -16,28 +17,29 @@ class CompanyStdInsuranceEmployeePremiumView(APIView):
         except CompanyStdInsurancePlan.DoesNotExist:
             raise Http404
 
-    def _get_employee_compensation(self, user_id):
+    def _get_employee_person(self, user_id):
         try:
             person_list = Person.objects.filter(user=user_id, relationship='self')
             if person_list:
-                person = person_list[0]
-                empProfiles = EmployeeCompensation.objects.filter(person=person)
-                if empProfiles:
-                    return empProfiles[0]
+                return person_list[0]
             return None
         except Person.DoesNotExist:
             return None
-        except EmployeeCompensation.DoesNotExist:
-            return None
 
     def get(self, request, pk, user_id, format=None):
-        emp_comp = self._get_employee_compensation(user_id)
-        if not emp_comp or not emp_comp.annual_base_salary:
+        emp_person = self._get_employee_person(user_id)
+        if not emp_person:
+            return Response({'message': 'No Person Found'})
+        compensation_service = CompensationService(emp_person.id)
+        current_salary = None
+        try:
+            current_salary = compensation_service.get_current_annual_salary()
+        except ValueError:
             return Response({'message':'No salary info'})
         std_plan = self._get_plan(pk)
         disability_service = DisabilityInsuranceService(std_plan)
         total_premium = disability_service.get_total_premium(std_plan.max_benefit_weekly,
                                                              52,
-                                                             emp_comp.annual_base_salary)
+                                                             current_salary)
         employee_premium = disability_service.get_employee_premium(total_premium)
         return Response({'total': total_premium, 'employee': employee_premium})
