@@ -17,7 +17,6 @@ class CompensationService(object):
             raise ValueError('No Salary Records')
         current_salary = None
         for comp in comps:
-            print comp.effective_date
             if comp.effective_date < timezone.now():
                 current_salary = comp.annual_base_salary
                 break
