@@ -16,33 +16,38 @@ class MockCompanyPlan(object):
 
 # Create your tests here.
 class TestDisabilityInsuranceService(TestCase):
-    def test_get_premium_success(self):
+    def setUp(self):
         plan = MockCompanyPlan()
-        disability_service = DisabilityInsuranceService(plan)
-        total = disability_service.get_total_premium(23939, 29937)
+        self.disability_service = DisabilityInsuranceService(plan)
+        
+    def test_get_premium_success_monthly(self):
+        total = self.disability_service.get_total_premium(23939, 12, 29937)
         self.assertEqual(total, 62.35)
-        employee = disability_service.get_employee_premium(total)
+        employee = self.disability_service.get_employee_premium(total)
         self.assertEqual(employee, 22.13425)
 
+    def test_get_premium_success_weekly(self):
+        total = self.disability_service.get_total_premium(23939, 52, 29937)
+        self.assertEqual(total, 14.35)
+        employee = self.disability_service.get_employee_premium(total)
+        self.assertEqual(employee, 5.09425)
+
     def test_get_total_premium_no_salary(self):
-        plan = MockCompanyPlan()
-        disability_service = DisabilityInsuranceService(plan)
-        total = disability_service.get_total_premium(23939, None)
+        total = self.disability_service.get_total_premium(23939, 52, None)
         self.assertEqual(total, 0)
 
     def test_get_total_premium_no_max_benefit_amount(self):
-        plan = MockCompanyPlan()
-        disability_service = DisabilityInsuranceService(plan)
-        total = disability_service.get_total_premium(0, 32433)
+        total = self.disability_service.get_total_premium(0, 12, 32433)
         self.assertEqual(total, 0)
-        total = disability_service.get_total_premium(None, 32433)
+        total = self.disability_service.get_total_premium(None, 12, 32433)
         self.assertEqual(total, 0)
 
+    def test_get_total_premium_invalid_year_factor(self):
+        self.assertRaises(ValueError, self.disability_service.get_total_premium, 32444, None, 23414)
+
     def test_get_employee_premium_bad_total_premium(self):
-        plan = MockCompanyPlan()
-        disability_service = DisabilityInsuranceService(plan)
-        employee = disability_service.get_employee_premium(0)
+        employee = self.disability_service.get_employee_premium(0)
         self.assertEqual(employee, 0)
-        employee = disability_service.get_employee_premium(None)
+        employee = self.disability_service.get_employee_premium(None)
         self.assertEqual(employee, 0)
 

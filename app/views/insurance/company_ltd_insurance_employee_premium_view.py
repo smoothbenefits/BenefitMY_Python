@@ -35,8 +35,9 @@ class CompanyLtdInsuranceEmployeePremiumView(APIView):
         if not emp_comp or not emp_comp.annual_base_salary:
             return Response({'message':'No salary info'})
         ltd_plan = self._get_plan(pk)
-        max_annual_benefit = ltd_plan.max_benefit_monthly * 12
         disability_service = DisabilityInsuranceService(ltd_plan)
-        total_premium = disability_service.get_total_premium(max_annual_benefit, emp_comp.annual_base_salary)
+        total_premium = disability_service.get_total_premium(ltd_plan.max_benefit_monthly,
+                                                             12,
+                                                             emp_comp.annual_base_salary)
         employee_premium = disability_service.get_employee_premium(total_premium)
         return Response({'total': total_premium, 'employee': employee_premium})
