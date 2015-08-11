@@ -1195,6 +1195,7 @@ var healthBenefitsSignup = employeeControllers.controller(
                     || elem.relationship == 'dependent'
                     || elem.relationship == 'child'
                     || elem.relationship == 'step child'
+                    || elem.relationship == 'disabled dependent'
                 });
               availFamilyList.eligibleNumber = $scope.family.length;
               availFamilyList.minimumRequired = 2;
