@@ -53,18 +53,17 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             viewModel.personCompanyPlanId = personCompanyPlanDomainModel.id;
             viewModel.planOwner = personCompanyPlanDomainModel.person;
             viewModel.lastUpdateDateTime = moment(personCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
-
-            viewModel.selfPlanCondition = mapConditionDomainToViewModel(personCompanyPlanDomainModel.self_condition);
-            viewModel.spousePlanCondition = mapConditionDomainToViewModel(personCompanyPlanDomainModel.spouse_condition);
-            viewModel.selfElectedAmount = personCompanyPlanDomainModel.self_elected_amount;
-            viewModel.spouseElectedAmount = personCompanyPlanDomainModel.spouse_elected_amount;
-            viewModel.childElectedAmount = personCompanyPlanDomainModel.child_elected_amount;
-            viewModel.selfPremiumPerMonth = (personCompanyPlanDomainModel.self_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
-            viewModel.spousePremiumPerMonth = (personCompanyPlanDomainModel.spouse_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
-            viewModel.childPremiumPerMonth = (personCompanyPlanDomainModel.child_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
-
+            if(!personCompanyPlanDomainModel.waived){
+                viewModel.selfPlanCondition = mapConditionDomainToViewModel(personCompanyPlanDomainModel.self_condition);
+                viewModel.spousePlanCondition = mapConditionDomainToViewModel(personCompanyPlanDomainModel.spouse_condition);
+                viewModel.selfElectedAmount = personCompanyPlanDomainModel.self_elected_amount;
+                viewModel.spouseElectedAmount = personCompanyPlanDomainModel.spouse_elected_amount;
+                viewModel.childElectedAmount = personCompanyPlanDomainModel.child_elected_amount;
+                viewModel.selfPremiumPerMonth = (personCompanyPlanDomainModel.self_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
+                viewModel.spousePremiumPerMonth = (personCompanyPlanDomainModel.spouse_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
+                viewModel.childPremiumPerMonth = (personCompanyPlanDomainModel.child_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
+            }
             viewModel.beneficiaryList = mapBeneficiaryListDomainToViewModel(personCompanyPlanDomainModel.suppl_life_insurance_beneficiary);
-
             viewModel.selected = personCompanyPlanDomainModel.selected;
             viewModel.waived = personCompanyPlanDomainModel.waived;
 
@@ -208,19 +207,23 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
             domainModel.id = personCompanyPlanViewModel.personCompanyPlanId;
             domainModel.person = personCompanyPlanViewModel.planOwner;
-            domainModel.self_condition = mapConditionViewToDomainModel(personCompanyPlanViewModel.selfPlanCondition);
-            domainModel.spouse_condition = mapConditionViewToDomainModel(personCompanyPlanViewModel.spousePlanCondition);
-            domainModel.self_elected_amount = personCompanyPlanViewModel.selfElectedAmount;
-            domainModel.spouse_elected_amount = personCompanyPlanViewModel.spouseElectedAmount;
-            domainModel.child_elected_amount = personCompanyPlanViewModel.childElectedAmount;
-            domainModel.self_premium_per_month = personCompanyPlanViewModel.selfPremiumPerMonth;
-            domainModel.spouse_premium_per_month = personCompanyPlanViewModel.spousePremiumPerMonth;
-            domainModel.child_premium_per_month = personCompanyPlanViewModel.childPremiumPerMonth;
+            if(personCompanyPlanViewModel.companyPlanId){
+                domainModel.self_condition = mapConditionViewToDomainModel(personCompanyPlanViewModel.selfPlanCondition);
+                domainModel.spouse_condition = mapConditionViewToDomainModel(personCompanyPlanViewModel.spousePlanCondition);
+                domainModel.self_elected_amount = personCompanyPlanViewModel.selfElectedAmount;
+                domainModel.spouse_elected_amount = personCompanyPlanViewModel.spouseElectedAmount;
+                domainModel.child_elected_amount = personCompanyPlanViewModel.childElectedAmount;
+                domainModel.self_premium_per_month = personCompanyPlanViewModel.selfPremiumPerMonth;
+                domainModel.spouse_premium_per_month = personCompanyPlanViewModel.spousePremiumPerMonth;
+                domainModel.child_premium_per_month = personCompanyPlanViewModel.childPremiumPerMonth;
 
-            domainModel.company_supplemental_life_insurance_plan = mapCompanyPlanViewToDomainModel(personCompanyPlanViewModel);
+                domainModel.company_supplemental_life_insurance_plan = mapCompanyPlanViewToDomainModel(personCompanyPlanViewModel);
 
-            domainModel.suppl_life_insurance_beneficiary = mapBeneficiaryListViewToDomainModel(personCompanyPlanViewModel.beneficiaryList);
-
+                domainModel.suppl_life_insurance_beneficiary = mapBeneficiaryListViewToDomainModel(personCompanyPlanViewModel.beneficiaryList);
+            }
+            else{
+                domainModel.company_supplemental_life_insurance_plan = null;
+            }
             domainModel.record_reason_note = personCompanyPlanViewModel.updateReason.notes;
             domainModel.record_reason = personCompanyPlanViewModel.updateReason.selectedReason.id;
 
@@ -605,7 +608,9 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 var planDomainModel = mapPersonCompanyPlanViewToDomainModel(personPlanToSave);
 
                 // "Flatten out" any nested structure for the POST to work
-                planDomainModel.company_supplemental_life_insurance_plan = planDomainModel.company_supplemental_life_insurance_plan.id;
+                if(planDomainModel.company_supplemental_life_insurance_plan){
+                    planDomainModel.company_supplemental_life_insurance_plan = planDomainModel.company_supplemental_life_insurance_plan.id;
+                }
 
                 if (planDomainModel.id){
                     SupplementalLifeInsuranceRepository.CompanyPersonPlanById.update({id:planDomainModel.id}, planDomainModel)

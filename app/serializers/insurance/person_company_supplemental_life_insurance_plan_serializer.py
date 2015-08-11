@@ -27,7 +27,9 @@ class PersonCompanySupplementalLifeInsurancePlanSerializer(HashPkSerializerBase)
 
 
 class PersonCompanySupplementalLifeInsurancePlanPostSerializer(serializers.ModelSerializer):
-    suppl_life_insurance_beneficiary = SupplementalLifeInsuranceBeneficiaryPostSerializer(many=True, allow_add_remove=True)
+    suppl_life_insurance_beneficiary = SupplementalLifeInsuranceBeneficiaryPostSerializer(many=True,
+                                                                                          allow_add_remove=True,
+                                                                                          required=False)
 
     class Meta:
         model = PersonCompSupplLifeInsurancePlan
