@@ -228,7 +228,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       };
 
       companyRepository.get({clientId: clientId}).$promise.then(function(response){
-          $scope.company = response;      
+          $scope.company = response;
 
           var promise = employeeBenefitElectionService(clientId);
           promise.then(function(employeeList){
@@ -681,7 +681,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         $scope.benefit = {
             mandatory_pcp: false,
             benefit_type: selectedBenefitType,
-            benefit_option_types: benefitDisplayService.healthOptionTypes
+            benefit_option_types: angular.copy(benefitDisplayService.healthOptionTypes)
           };
       };
       // Initialize the model in scope
@@ -1160,7 +1160,6 @@ var brokerAddHealthBenefits = brokersControllers.controller(
               saveToBackendSequential(apiObjectArray, 0);
 
               var successMessage = "Your health insurance has been saved. ";
-
               $scope.showMessageWithOkayOnly('Success', successMessage);
             },
             function(response){
