@@ -69,7 +69,7 @@
           name="employee_password_confirm"
           ng-model="addUser.password_confirm"
           ng-required="!addUser.send_email">
-          <div class="form-error" ng-show="invalidPassword(addUser.password, addUser.password_confirm)">
+          <div class="form-error" ng-show="validatePassword(addUser.password, addUser.password_confirm)">
             <span>{{passwordValidationError}}</span>
           </div>
         </div>

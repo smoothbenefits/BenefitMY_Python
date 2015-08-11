@@ -251,7 +251,7 @@ var employerUser = employersController.controller('employerUser',
         return apiUser;
       };
 
-      var invalidPassword = function(password, passwordConfirm) {
+      var validatePassword = function(password, passwordConfirm) {
         if (!password) {
           $scope.passwordValidationError = "Password is required for the new employee account.";
           return true;
@@ -267,7 +267,7 @@ var employerUser = employersController.controller('employerUser',
       };
 
       var validateAddUser = function(addUser){
-        if (!addUser.send_email && invalidPassword(addUser.password, addUser.password_confirm)){
+        if (!addUser.send_email && validatePassword(addUser.password, addUser.password_confirm)){
           return false;
         }
 
@@ -283,7 +283,7 @@ var employerUser = employersController.controller('employerUser',
         $location.path('/admin/'+ userType + '/add/'+compId)
       }
 
-      $scope.invalidPassword = invalidPassword;
+      $scope.validatePassword = validatePassword;
 
       $scope.createUser = function(userType){
         if(validateAddUser($scope.addUser))
