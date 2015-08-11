@@ -52,6 +52,7 @@ from excel_export_view_base import ExcelExportViewBase
 from report_export_view_base import ReportExportViewBase
 from app.service.disability_insurance_service import DisabilityInsuranceService
 
+from app.service.compensation_service import CompensationService
 
 User = get_user_model()
 
@@ -282,7 +283,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 else:
                     col_num = col_num + 1
 
-                col_num = self._write_field(excelSheet, row_num, col_num, employee_profiles[0].annual_base_salary)
+                col_num = self._write_field(excelSheet, row_num, col_num, self._get_employee_current_annual_salary(person_model))
                 return col_num
 
             return col_num + 2
@@ -421,8 +422,10 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                                                  excelSheet, 
                                                  row_num, 
                                                  col_num):
-        
-        col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(user_plan.total_premium_per_month))
+        total_premium = 0
+        if (user_plan.total_premium_per_month):
+            total_premium = float(user_plan.total_premium_per_month)
+        col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(total_premium))
         col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(
                                     disability_service.get_employee_premium(user_plan.total_premium_per_month)))
         return col_num
@@ -443,13 +446,14 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                                                                         row_num, 
                                                                         col_num)
                 col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
-
-                return col_num
+            
             else:
                 col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
                 col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
                 col_num += 2
                 col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
+
+            return col_num
 
         return col_num + 7
 
@@ -594,6 +598,13 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(employee_benefit_record.updated_at))
 
         return col_num
+
+    def _get_employee_current_annual_salary(self, person_model):
+        if (not person_model):
+            return None
+
+        comp_service = CompensationService(person_model.id)
+        return comp_service.get_current_annual_salary()
 
     ''' Both broker and employer should be able to get summary of all
         benefit situations of all employees of the company
