@@ -241,33 +241,37 @@ var employerUser = employersController.controller('employerUser',
         apiUser.new_employee = viewUser.new_employee;
         apiUser.user = {};
         apiUser.user.email = viewUser.email;
-        apiUser.user.password = viewUser.password;
         apiUser.user.first_name = viewUser.first_name;
         apiUser.user.last_name = viewUser.last_name;
         apiUser.create_docs = viewUser.create_docs;
         apiUser.fields = $scope.templateFields
         apiUser.send_email = viewUser.send_email;
         apiUser.annual_base_salary = viewUser.annual_base_salary;
+
+        // Do not set password if selected "send email"
+        if (!viewUser.send_email) {
+          apiUser.user.password = viewUser.password;
+        }
         return apiUser;
       };
 
       var validatePassword = function(password, passwordConfirm) {
         if (!password) {
           $scope.passwordValidationError = "Password is required for the new employee account.";
-          return true;
+          return false;
         } else if (passwordConfirm !== password) {
           $scope.passwordValidationError = "The two passwords do not match.";
-          return true;
+          return false;
         } else if (password.length < 8) {
           $scope.passwordValidationError = "Password should be at least 8 character long.";
-          return true;
-        } else {
           return false;
+        } else {
+          return true;
         }
       };
 
       var validateAddUser = function(addUser){
-        if (!addUser.send_email && validatePassword(addUser.password, addUser.password_confirm)){
+        if (!addUser.send_email && !validatePassword(addUser.password, addUser.password_confirm)){
           return false;
         }
 

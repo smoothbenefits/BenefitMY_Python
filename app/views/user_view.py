@@ -69,7 +69,7 @@ class UsersView(APIView):
 
         # Create the actual user data
         password = settings.DEFAULT_USER_PW
-        if request.DATA['user']['password']:
+        if "password" in request.DATA['user']:
             password = request.DATA['user']['password']
         User.objects.create_user(request.DATA['user']['email'], password)
         if not userManager.user_exists(request.DATA['user']['email']):
