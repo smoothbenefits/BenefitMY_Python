@@ -247,10 +247,34 @@ var employerUser = employersController.controller('employerUser',
         apiUser.fields = $scope.templateFields
         apiUser.send_email = viewUser.send_email;
         apiUser.annual_base_salary = viewUser.annual_base_salary;
+
+        // Do not set password if selected "send email"
+        if (!viewUser.send_email) {
+          apiUser.user.password = viewUser.password;
+        }
         return apiUser;
-      }
+      };
+
+      var validatePassword = function(password, passwordConfirm) {
+        if (!password) {
+          $scope.passwordValidationError = "Password is required for the new employee account.";
+          return false;
+        } else if (passwordConfirm !== password) {
+          $scope.passwordValidationError = "The two passwords do not match.";
+          return false;
+        } else if (password.length < 8) {
+          $scope.passwordValidationError = "Password should be at least 8 character long.";
+          return false;
+        } else {
+          return true;
+        }
+      };
 
       var validateAddUser = function(addUser){
+        if (!addUser.send_email && !validatePassword(addUser.password, addUser.password_confirm)){
+          return false;
+        }
+
         if(addUser.first_name && addUser.last_name && addUser.email && addUser.annual_base_salary >= 0)
         {
           return true;
@@ -262,6 +286,8 @@ var employerUser = employersController.controller('employerUser',
       {
         $location.path('/admin/'+ userType + '/add/'+compId)
       }
+
+      $scope.validatePassword = validatePassword;
 
       $scope.createUser = function(userType){
         if(validateAddUser($scope.addUser))
