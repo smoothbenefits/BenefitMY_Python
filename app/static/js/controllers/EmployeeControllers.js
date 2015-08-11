@@ -1178,7 +1178,7 @@ var healthBenefitsSignup = employeeControllers.controller(
               availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
                 return elem.relationship == 'self'
                     || elem.relationship == 'spouse'
-                    || elem.relationship == 'ex spouse'
+                    || elem.relationship == 'ex-spouse'
                     || elem.relationship == 'life partner'
                 });
               availFamilyList.eligibleNumber = 2;
@@ -1194,7 +1194,7 @@ var healthBenefitsSignup = employeeControllers.controller(
                 return elem.relationship == 'self'
                     || elem.relationship == 'dependent'
                     || elem.relationship == 'child'
-                    || elem.relationship == 'step child'
+                    || elem.relationship == 'stepchild'
                 });
               availFamilyList.eligibleNumber = $scope.family.length;
               availFamilyList.minimumRequired = 2;
