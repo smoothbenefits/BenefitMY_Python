@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 import xlwt
 
 from app.models.company_user import CompanyUser
-from app.models.person import Person
+from app.models.person import Person, SELF, SPOUSE, LIFE_PARTNER
 from app.models.phone import Phone
 from app.models.address import Address
 from app.models.employee_profile import EmployeeProfile
@@ -203,7 +203,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
     def _write_employee_personal_info(self, employee_user_id, include_spouse_info, write_pcp, write_profile, excelSheet, row_num, start_column_num):
         cur_column_num = start_column_num
         person = None
-        persons = Person.objects.filter(user=employee_user_id, relationship='self')
+        persons = Person.objects.filter(user=employee_user_id, relationship=SELF)
         if (len(persons) > 0):
             person = persons[0]
         # All helpers are built with capability of skiping proper number of columns when
@@ -336,7 +336,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
     def _write_spouse_personal_info(self, person_model, excelSheet, row_num, col_num):
         family_members = Person.objects.none()
         if (person_model):
-            family_members = Person.objects.filter(user=person_model.user).filter(relationship='spouse')
+            family_members = Person.objects.filter(user=person_model.user).filter(relationship__in=[SPOUSE, LIFE_PARTNER])
 
         spouse = None
         if (len(family_members) > 0):
@@ -353,7 +353,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
 
         family_members = Person.objects.none()
         if (person_model):
-            family_members = Person.objects.filter(user=person_model.user).exclude(relationship='self').exclude(relationship='spouse')
+            family_members = Person.objects.filter(user=person_model.user).exclude(relationship=SELF).exclude(relationship__in=[SPOUSE, LIFE_PARTNER])
 
         for member in family_members:
             col_num = self._write_family_member_personal_info(member, excelSheet, row_num, col_num)
@@ -517,7 +517,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         return col_num + 7
 
     def _write_employee_supplemental_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
-        employee_persons = Person.objects.filter(user=employee_user_id, relationship='self')
+        employee_persons = Person.objects.filter(user=employee_user_id, relationship=SELF)
         if (len(employee_persons) > 0):
             employee_person = employee_persons[0]
             employee_plans = PersonCompSupplLifeInsurancePlan.objects.filter(person=employee_person.id)
@@ -577,7 +577,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         return col_num + 6
 
     def _write_employee_hra_info(self, employee_user_id, excelSheet, row_num, col_num):
-        employee_persons = Person.objects.filter(user=employee_user_id, relationship='self')
+        employee_persons = Person.objects.filter(user=employee_user_id, relationship=SELF)
         if (len(employee_persons) > 0):
             employee_person = employee_persons[0]
             employee_plans = PersonCompanyHraPlan.objects.filter(person=employee_person.id)
