@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 import xlwt
 
 from app.models.company_user import CompanyUser
-from app.models.person import Person
+from app.models.person import Person, SELF, SPOUSE, LIFE_PARTNER
 from app.models.phone import Phone
 from app.models.address import Address
 from app.models.employee_profile import EmployeeProfile
@@ -50,6 +50,9 @@ from app.views.permission import (
     company_employer_or_broker)
 from excel_export_view_base import ExcelExportViewBase
 from report_export_view_base import ReportExportViewBase
+from app.service.disability_insurance_service import DisabilityInsuranceService
+
+from app.service.compensation_service import CompensationService
 
 User = get_user_model()
 
@@ -200,7 +203,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
     def _write_employee_personal_info(self, employee_user_id, include_spouse_info, write_pcp, write_profile, excelSheet, row_num, start_column_num):
         cur_column_num = start_column_num
         person = None
-        persons = Person.objects.filter(user=employee_user_id, relationship='self')
+        persons = Person.objects.filter(user=employee_user_id, relationship=SELF)
         if (len(persons) > 0):
             person = persons[0]
         # All helpers are built with capability of skiping proper number of columns when
@@ -280,7 +283,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 else:
                     col_num = col_num + 1
 
-                col_num = self._write_field(excelSheet, row_num, col_num, employee_profiles[0].annual_base_salary)
+                col_num = self._write_field(excelSheet, row_num, col_num, self._get_employee_current_annual_salary(person_model))
                 return col_num
 
             return col_num + 2
@@ -333,7 +336,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
     def _write_spouse_personal_info(self, person_model, excelSheet, row_num, col_num):
         family_members = Person.objects.none()
         if (person_model):
-            family_members = Person.objects.filter(user=person_model.user).filter(relationship='spouse')
+            family_members = Person.objects.filter(user=person_model.user).filter(relationship__in=[SPOUSE, LIFE_PARTNER])
 
         spouse = None
         if (len(family_members) > 0):
@@ -350,7 +353,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
 
         family_members = Person.objects.none()
         if (person_model):
-            family_members = Person.objects.filter(user=person_model.user).exclude(relationship='self').exclude(relationship='spouse')
+            family_members = Person.objects.filter(user=person_model.user).exclude(relationship=SELF).exclude(relationship__in=[SPOUSE, LIFE_PARTNER])
 
         for member in family_members:
             col_num = self._write_family_member_personal_info(member, excelSheet, row_num, col_num)
@@ -413,22 +416,18 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         else:
             return col_num + 8
 
-    def _write_disability_insurance_premium_info(self, 
-                                                 company_plan, 
-                                                 annual_max_benefit, 
-                                                 employee_profile, 
+    def _write_disability_insurance_premium_info(self,
+                                                 disability_service,
+                                                 user_plan,
                                                  excelSheet, 
                                                  row_num, 
                                                  col_num):
-        if employee_profile:
-            total_premium, employee_premium = self._get_disability_premium_numbers(company_plan,
-                                                                                   annual_max_benefit,
-                                                                                   employee_profile)
-            col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(total_premium))
-            col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_premium))
-        else:
-            col_num = self._write_field(excelSheet, row_num, col_num, 'No Employee Salary')
-            col_num = self._write_field(excelSheet, row_num, col_num, 'No Employee Salary')
+        total_premium = 0
+        if (user_plan.total_premium_per_month):
+            total_premium = float(user_plan.total_premium_per_month)
+        col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(total_premium))
+        col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(
+                                    disability_service.get_employee_premium(user_plan.total_premium_per_month)))
         return col_num
 
     def _write_employee_std_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
@@ -440,22 +439,21 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 plan = company_plan.std_insurance_plan
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
                 col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
-                employee_profile = self._get_employee_profile_by_user_id(employee_user_id)
-                annual_max_benefit = company_plan.max_benefit_weekly * 52;
-                col_num = self._write_disability_insurance_premium_info(company_plan, 
-                                                                        annual_max_benefit, 
-                                                                        employee_profile, 
+                disability_service = DisabilityInsuranceService(company_plan)
+                col_num = self._write_disability_insurance_premium_info(disability_service,
+                                                                        employee_plan,
                                                                         excelSheet, 
                                                                         row_num, 
                                                                         col_num)
                 col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
-
-                return col_num
+            
             else:
                 col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
                 col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
                 col_num += 2
                 col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
+
+            return col_num
 
         return col_num + 7
 
@@ -468,11 +466,9 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 plan = company_plan.ltd_insurance_plan
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
                 col_num = self._write_field(excelSheet, row_num, col_num, str(company_plan.percentage_of_salary) + '% of Salary')
-                employee_profile = self._get_employee_profile_by_user_id(employee_user_id)
-                annual_max_benefit = company_plan.max_benefit_monthly * 12;
-                col_num = self._write_disability_insurance_premium_info(company_plan, 
-                                                                        annual_max_benefit, 
-                                                                        employee_profile, 
+                disability_service = DisabilityInsuranceService(company_plan)
+                col_num = self._write_disability_insurance_premium_info(disability_service,
+                                                                        employee_plan,
                                                                         excelSheet, 
                                                                         row_num, 
                                                                         col_num)
@@ -521,7 +517,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         return col_num + 7
 
     def _write_employee_supplemental_life_insurance_info(self, employee_user_id, excelSheet, row_num, col_num):
-        employee_persons = Person.objects.filter(user=employee_user_id, relationship='self')
+        employee_persons = Person.objects.filter(user=employee_user_id, relationship=SELF)
         if (len(employee_persons) > 0):
             employee_person = employee_persons[0]
             employee_plans = PersonCompSupplLifeInsurancePlan.objects.filter(person=employee_person.id)
@@ -581,7 +577,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         return col_num + 6
 
     def _write_employee_hra_info(self, employee_user_id, excelSheet, row_num, col_num):
-        employee_persons = Person.objects.filter(user=employee_user_id, relationship='self')
+        employee_persons = Person.objects.filter(user=employee_user_id, relationship=SELF)
         if (len(employee_persons) > 0):
             employee_person = employee_persons[0]
             employee_plans = PersonCompanyHraPlan.objects.filter(person=employee_person.id)
@@ -603,6 +599,15 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
 
         return col_num
 
+    def _get_employee_current_annual_salary(self, person_model):
+        if (not person_model):
+            return None
+
+        comp_service = CompensationService(person_model.id)
+        try:
+            return comp_service.get_current_annual_salary()
+        except ValueError:
+            return 'N/A'
     ''' Both broker and employer should be able to get summary of all
         benefit situations of all employees of the company
     '''

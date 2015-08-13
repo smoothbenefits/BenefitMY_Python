@@ -52,6 +52,7 @@ from app.views.permission import (
     company_employer_or_broker)
 from pdf_export_view_base import PdfExportViewBase
 from report_export_view_base import ReportExportViewBase
+from app.service.disability_insurance_service import DisabilityInsuranceService
 
 class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
@@ -336,18 +337,10 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
 
                 company_plan = employee_plan.company_std_insurance
                 plan = company_plan.std_insurance_plan
-
                 # get the premium
-                annual_max_benefit = company_plan.max_benefit_weekly * 52
-                employee_profile = self._get_employee_profile_by_user_id(user_model.id)
-                if employee_profile and employee_profile.annual_base_salary:
-                    total_premium, employee_premium = self._get_disability_premium_numbers(company_plan,
-                                                                                           annual_max_benefit,
-                                                                                           employee_profile)
-                    self._write_line_uniform_width([plan.name, "${:.2f}".format(employee_premium)])
-                else:
-                    self._write_line_uniform_width([plan.name, 'N/A'])
-
+                disability_service = DisabilityInsuranceService(company_plan)
+                employee_premium = disability_service.get_employee_premium(employee_plan.total_premium_per_month)
+                self._write_line_uniform_width([plan.name, "${:.2f}".format(employee_premium)])
                 self._start_new_line()
                 self._start_new_line()
             else:
@@ -367,18 +360,12 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 self._write_line_uniform_width(['LTD Plan', 'Employee Premium'])
                 self._draw_line()
                 company_plan = employee_plan.company_ltd_insurance
-                plan = company_plan.ltd_insurance_plan
+                
                 # get the premium
-                annual_max_benefit = company_plan.max_benefit_monthly * 12
-                employee_profile = self._get_employee_profile_by_user_id(user_model.id)
-                if employee_profile and employee_profile.annual_base_salary:
-                    total_premium, employee_premium = self._get_disability_premium_numbers(company_plan,
-                                                                                           annual_max_benefit,
-                                                                                           employee_profile)
-                    self._write_line_uniform_width([plan.name, "${:.2f}".format(employee_premium)])
-                else:
-                    self._write_line_uniform_width([plan.name, 'N/A'])
-
+                disability_service = DisabilityInsuranceService(company_plan)
+                employee_premium = disability_service.get_employee_premium(employee_plan.total_premium_per_month)
+                plan = company_plan.ltd_insurance_plan
+                self._write_line_uniform_width([plan.name, "${:.2f}".format(employee_premium)])
                 self._start_new_line()
                 self._start_new_line()
             else:

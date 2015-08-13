@@ -1178,7 +1178,7 @@ var healthBenefitsSignup = employeeControllers.controller(
               availFamilyList.familyList = _.filter(angular.copy($scope.family), function(elem){
                 return elem.relationship == 'self'
                     || elem.relationship == 'spouse'
-                    || elem.relationship == 'ex spouse'
+                    || elem.relationship == 'ex-spouse'
                     || elem.relationship == 'life partner'
                 });
               availFamilyList.eligibleNumber = 2;
@@ -1194,7 +1194,7 @@ var healthBenefitsSignup = employeeControllers.controller(
                 return elem.relationship == 'self'
                     || elem.relationship == 'dependent'
                     || elem.relationship == 'child'
-                    || elem.relationship == 'step child'
+                    || elem.relationship == 'stepchild'
                 });
               availFamilyList.eligibleNumber = $scope.family.length;
               availFamilyList.minimumRequired = 2;
@@ -1224,9 +1224,10 @@ var healthBenefitsSignup = employeeControllers.controller(
           });
 
           $scope.companyPromise.then(function(company){
-            benefitDisplayService(company, false, function(groupObj, nonMedicalArray, benefitCount){
-              $scope.medicalBenefitGroup = groupObj;
-              $scope.nonMedicalBenefitArray = nonMedicalArray;
+            benefitDisplayService.getHealthBenefitsForDisplay(company, false)
+            .then(function(healthBenefitToDisplay){
+              $scope.medicalBenefitGroup = healthBenefitToDisplay.medicalBenefitGroup;
+              $scope.nonMedicalBenefitArray = healthBenefitToDisplay.nonMedicalBenefitArray;
             });
 
             //First get all the enrolled benefit list
@@ -1506,7 +1507,6 @@ var fsaBenefitsSignup = employeeControllers.controller(
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
-   'benefitDisplayService',
    'FsaService',
    'BasicLifeInsuranceService',
     function fsaBenefitsSignup(
@@ -1519,7 +1519,6 @@ var fsaBenefitsSignup = employeeControllers.controller(
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
-      benefitDisplayService,
       FsaService,
       BasicLifeInsuranceService){
 
@@ -1625,7 +1624,6 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
    'clientListRepository',
    'employeeBenefits',
    'benefitListRepository',
-   'benefitDisplayService',
    'FsaService',
    'BasicLifeInsuranceService',
     function basicLifeBenefitsSignup(
@@ -1638,7 +1636,6 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
       clientListRepository,
       employeeBenefits,
       benefitListRepository,
-      benefitDisplayService,
       FsaService,
       BasicLifeInsuranceService){
 
@@ -2064,18 +2061,16 @@ var stdBenefitsSignup = employeeControllers.controller(
                 }
                 return {};
             }).then(function(stdPlan) {
-
-                if (stdPlan.employerContributionPercentage === "100.00") {
-                    $scope.companyStdPlan.employeePremium = 0.0;
-                    return;
-                }
-
-                StdService.getEmployeePremiumForUserCompanyStdPlan(
+                StdService.getTotalPremiumForUserCompanyStdPlan(
                     $scope.employeeId,
-                    stdPlan,
-                    company.pay_period_definition)
-                .then(function(premium) {
-                    $scope.companyStdPlan.employeePremium = premium;
+                    stdPlan)
+                .then(function(premiumInfo) {
+                    $scope.companyStdPlan.totalPremium = premiumInfo.totalPremium;
+                    $scope.companyStdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
+                }, function(error){
+                    alert("Could not get premium info. Error is: " + error);
+                    $scope.companyStdPlan.totalPremium = 0;
+                    $scope.companyStdPlan.employeePremium = 0;
                 });
             });
         });
@@ -2145,17 +2140,16 @@ var ltdBenefitsSignup = employeeControllers.controller(
                 return {};
             }).then(function(ltdPlan) {
 
-                if (ltdPlan.employerContributionPercentage === "100.00") {
-                    $scope.companyLtdPlan.employeePremium = 0.0;
-                    return;
-                }
-
                 LtdService.getEmployeePremiumForUserCompanyLtdPlan(
                     $scope.employeeId,
-                    ltdPlan,
-                    company.pay_period_definition)
-                .then(function(premium) {
-                    $scope.companyLtdPlan.employeePremium = premium;
+                    ltdPlan)
+                .then(function(premiumInfo) {
+                    $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium;
+                    $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
+                }, function(error){
+                  alert("Could not get premium info. Error is: " + error);
+                  $scope.companyLtdPlan.totalPremium = 0;
+                  $scope.companyLtdPlan.employeePremium = 0;
                 });
             });
 

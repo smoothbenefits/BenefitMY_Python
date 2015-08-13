@@ -10,7 +10,6 @@ benefitmyService.factory('EmployeeProfileService',
 
             viewModel.id = employeeProfileDomainModel.id;
             viewModel.jobTitle = employeeProfileDomainModel.job_title;
-            viewModel.annualBaseSalary = Number(employeeProfileDomainModel.annual_base_salary);
             viewModel.employmentType = employeeProfileDomainModel.employment_type;
             viewModel.employmentStatus = employeeProfileDomainModel.employment_status;
             viewModel.personId = employeeProfileDomainModel.person;
@@ -44,7 +43,6 @@ benefitmyService.factory('EmployeeProfileService',
 
             domainModel.id = employeeProfileViewModel.id;
             domainModel.job_title = employeeProfileViewModel.jobTitle;
-            domainModel.annual_base_salary = employeeProfileViewModel.annualBaseSalary;
             domainModel.start_date = employeeProfileViewModel.startDate ? moment(employeeProfileViewModel.startDate).format(STORAGE_DATE_FORMAT_STRING) : null;
             domainModel.end_date = employeeProfileViewModel.endDate ? moment(employeeProfileViewModel.endDate).format(STORAGE_DATE_FORMAT_STRING) : null;
             domainModel.employment_type = employeeProfileViewModel.employmentType;

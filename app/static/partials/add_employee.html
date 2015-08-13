@@ -55,6 +55,28 @@
         </div>
       </div>
 
+      <div ng-show="!addUser.send_email">
+        <div class="form-label">Password*</div>
+        <div class="textbox">
+          <input type="password"
+          name="employee_password"
+          ng-model="addUser.password"
+          ng-required="!addUser.send_email"
+          ng-change="validatePassword(addUser.password, addUser.password_confirm)">
+        </div>
+        <div class="form-label">Confirm password*</div>
+        <div class="textbox">
+          <input type="password"
+          name="employee_password_confirm"
+          ng-model="addUser.password_confirm"
+          ng-required="!addUser.send_email"
+          ng-change="validatePassword(addUser.password, addUser.password_confirm)">
+          <div class="form-error" ng-hide="validatePassword(addUser.password, addUser.password_confirm)">
+            <span>{{passwordValidationError}}</span>
+          </div>
+        </div>
+      </div>
+
       <div class="form-label">Annual Base Salary*</div>
       <div class="textbox input-group">
         <span class="input-group-addon">$</span>

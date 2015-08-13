@@ -36,9 +36,6 @@ def user_login(request, info_message=None):
                 # An inactive account was used - no logging in!
                 return HttpResponse("Your account is disabled.")
         else:
-            # Bad login details were provided. So we can't log the user in.
-            print "Invalid login details: {0}, {1}".format(userEmail, password)
-
             external_message = "The combination of your email and password is not correct"
             return render_to_response('login.html', {'message':external_message}, context)
 
