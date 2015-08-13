@@ -607,7 +607,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         try:
             return comp_service.get_current_annual_salary()
         except ValueError:
-            return 0
+            return 'N/A'
     ''' Both broker and employer should be able to get summary of all
         benefit situations of all employees of the company
     '''
