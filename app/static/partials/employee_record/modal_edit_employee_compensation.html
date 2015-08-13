@@ -1,0 +1,68 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add Employee Compensation</h4>
+</div>
+<div class="modal-body col-md-12">
+  <div class="panel panel-danger" ng-show="errorMessage">
+    <div class="panel-heading">Error</div>
+    <div class="panel-body">{{errorMessage}}</div>
+  </div>
+  <div class="form-holder col-md-10 col-md-offset-1">
+    <form name="form">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-label">Annual Base Salary</div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$</span>
+            <input min="0"
+                   type="number"
+                   name="salary"
+                   ng-model="compensation.salary"
+                   ng-disabled="compensation.increasePercentage || compensation.increasePercentage === 0" />
+          </div>
+          <div class="form-error-relative" ng-show="form.salary.$invalid">Annual base salary is invalid</div>
+        </div>
+        <div class="col-md-2" style="text-align:center;display:inline-table;">
+          <div style="vertical-align:bottom; height:70px;display:table-cell;">
+            <h4><b>OR</b></h4>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-label">Increase Percentage</div>
+          <div class="textbox input-group">
+            <input type="number"
+                   min="0"
+                   name="percentage"
+                   ng-model="compensation.increasePercentage"
+                   ng-disabled="compensation.salary || compensation.salary === 0 || !currentSalary" />
+            <span class="input-group-addon"> %</span>
+          </div>
+          <div class="form-error-relative" ng-show="form.percentage.$invalid">
+            Increase percentage is invalid
+          </div>
+        </div>
+      </div>
+      <div class="row" ng-show="!currentSalary">
+        <div class="form-inline-error">* Salary number is required because no previous record found.</div>
+      </div>
+      <div class="row">
+        <div class="form-label">Effective Date</div>
+        <div class="datebox">
+          <bm-date-picker model="compensation.effectiveDate"
+          required="true"
+          name="effective"
+          fieldname="'effective_date'"
+          dirty="form.effective_date.$dirty" />
+          <div class="form-inline-error" ng-show="form.effective.$dirty && form.effective.$invalid">
+            <span ng-show="form.effective.$invalid">Please enter a valid Date</span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-info" ng-click="save(compensation)" ng-disabled="form.$invalid" style="width:20%;">Save</button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width:20%;">Cancel</button>
+  </div>
+</div>

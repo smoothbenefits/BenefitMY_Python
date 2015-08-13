@@ -25,6 +25,10 @@ benefitmyService.factory(
 
       getCompanyEmployeeSummaryPdfUrl: function(companyId) {
         return API_PREFIX + '/companies/' + companyId + '/users/pdf';
+      },
+
+      getCompanyHphcExcelUrl: function(companyId) {
+        return API_PREFIX + '/companies/' + companyId + '/hphc/excel';
       }
     };
   }

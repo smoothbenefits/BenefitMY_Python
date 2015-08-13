@@ -11,17 +11,17 @@ DEPENDENT = 'dependent'
 SPOUSE = 'spouse'
 CHILD = 'child'
 LIFE_PARTNER = 'life partner'
-EX_SPOUSE = 'ex spouse'
+EX_SPOUSE = 'ex-spouse'
 DISABLED_DEPENDENT = 'disabled dependent'
-STEP_CHILD = 'step child'
+STEP_CHILD = 'stepchild'
 RELATIONSHIPS = ((SELF, 'self'),
                  (DEPENDENT, 'dependent'),
                  (SPOUSE, 'spouse'),
                  (CHILD, 'child'),
                  (LIFE_PARTNER, 'life partner'),
-                 (EX_SPOUSE, 'ex spouse'),
+                 (EX_SPOUSE, 'ex-spouse'),
                  (DISABLED_DEPENDENT, 'disabled dependent'),
-                 (STEP_CHILD, 'step child'))
+                 (STEP_CHILD, 'stepchild'))
 
 @reversion.register
 class Person(models.Model):

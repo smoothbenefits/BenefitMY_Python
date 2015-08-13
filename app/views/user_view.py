@@ -68,7 +68,10 @@ class UsersView(APIView):
         userManager = AuthUserManager()
 
         # Create the actual user data
-        User.objects.create_user(request.DATA['user']['email'], settings.DEFAULT_USER_PW)
+        password = settings.DEFAULT_USER_PW
+        if "password" in request.DATA['user']:
+            password = request.DATA['user']['password']
+        User.objects.create_user(request.DATA['user']['email'], password)
         if not userManager.user_exists(request.DATA['user']['email']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

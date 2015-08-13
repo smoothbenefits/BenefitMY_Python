@@ -84,10 +84,11 @@ var benefitsController = brokersControllers.controller(
       companyRepository.get({clientId: $stateParams.clientId})
       .$promise.then(function(company){
         $scope.company = company;
-        benefitDisplayService(company, false, function(groupObj, nonMedicalArray, benefitCount){
-          $scope.medicalBenefitGroup = groupObj;
-          $scope.nonMedicalBenefitArray = nonMedicalArray;
-          $scope.benefitCount = benefitCount;
+        benefitDisplayService.getHealthBenefitsForDisplay(company, false)
+        .then(function(healthBenefitToDisplay){
+          $scope.medicalBenefitGroup = healthBenefitToDisplay.medicalBenefitGroup;
+          $scope.nonMedicalBenefitArray = healthBenefitToDisplay.nonMedicalBenefitArray;
+          $scope.benefitCount = healthBenefitToDisplay.benefitCount;
         });
 
         BasicLifeInsuranceService.getLifeInsurancePlansForCompany($scope.company)
@@ -227,7 +228,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       };
 
       companyRepository.get({clientId: clientId}).$promise.then(function(response){
-          $scope.company = response;      
+          $scope.company = response;
 
           var promise = employeeBenefitElectionService(clientId);
           promise.then(function(employeeList){
@@ -302,6 +303,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       $scope.exportCompanyEmployeeLifeBeneficiarySummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl(clientId);
       $scope.exportCompanyBenefitsBillingSummaryUrl = CompanyEmployeeSummaryService.getCompanyBenefitsBillingReportExcelUrl(clientId);
       $scope.exportCompanyEmployeeSummaryPdfUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryPdfUrl(clientId);
+      $scope.companyHphcExcelUrl = CompanyEmployeeSummaryService.getCompanyHphcExcelUrl(clientId);
 }]);
 
 var brokerEmployeeController = brokersControllers.controller('brokerEmployeeController',
@@ -652,6 +654,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
    'BasicLifeInsuranceService',
    'currentUser',
    'BenefitPolicyKeyService',
+   'benefitDisplayService',
     function brokerAddHealthBenefits(
       $scope,
       $location,
@@ -661,7 +664,8 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       benefitDetailsRepository,
       BasicLifeInsuranceService,
       currentUser,
-      BenefitPolicyKeyService){
+      BenefitPolicyKeyService,
+      benefitDisplayService){
 
       // Inherite scope from base
       $controller('brokerAddBenefitControllerBase', {$scope: $scope});
@@ -677,12 +681,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         $scope.benefit = {
             mandatory_pcp: false,
             benefit_type: selectedBenefitType,
-            benefit_option_types: [
-              {name:'Individual', disabled: false},
-              {name:'Individual plus Spouse', disabled: false},
-              {name:'Individual plus One', disabled: false},
-              {name:'Individual plus Children', disabled: false},
-              {name:'Individual plus Family', disabled: false}],
+            benefit_option_types: angular.copy(benefitDisplayService.healthOptionTypes)
           };
       };
       // Initialize the model in scope
@@ -1161,7 +1160,6 @@ var brokerAddHealthBenefits = brokersControllers.controller(
               saveToBackendSequential(apiObjectArray, 0);
 
               var successMessage = "Your health insurance has been saved. ";
-
               $scope.showMessageWithOkayOnly('Success', successMessage);
             },
             function(response){

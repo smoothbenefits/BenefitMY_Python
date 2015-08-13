@@ -82,7 +82,7 @@ benefitmyService.factory('LtdService',
 
             domainModel.id = userCompanyPlanViewModel.userCompanyPlanId;
             domainModel.user = userCompanyPlanViewModel.planOwner;
-            domainModel.total_premium_per_period = (userCompanyPlanViewModel.employeePremium / payPeriod.month_factor).toFixed(10);
+            domainModel.total_premium_per_month = userCompanyPlanViewModel.totalPremium.toFixed(10);
 
             domainModel.company_ltd_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
@@ -115,31 +115,16 @@ benefitmyService.factory('LtdService',
 
             getLtdPlansForCompany: getLtdPlansForCompany,
 
-            getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan, companyPayPeriod) {
+            getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan) {
                 var deferred = $q.defer();
 
                 if (!ltdPlan) {
                     deferred.resolve(0);
                 } else {
-                    var companyId = ltdPlan.company;
-                    EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId).then(function(profile) {
-                        var employeeContribution = 1 - (ltdPlan.employerContributionPercentage / 100);
-
-                        var salary = profile.annualBaseSalary;
-                        if (_.isNaN(salary)) {
-                            deferred.resolve(null);
-                        }
-
-                        var maxBenefitAnnually = ltdPlan.maxBenefitMonthly * 12;
-                        var benefitPercentage = (ltdPlan.percentageOfSalary / 100);
-                        // Benefit amount cannot exceed preset cap
-                        var annualBenefitAmount = Math.min(salary * benefitPercentage, maxBenefitAnnually);
-                        var rate = ltdPlan.rate;
-                        var rateBase = 10;
-
-                        var premiumPerPayPeriod = annualBenefitAmount / 12 * (rate / rateBase) * companyPayPeriod.month_factor * employeeContribution;
-
-                        deferred.resolve(premiumPerPayPeriod);
+                    LtdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:ltdPlan.companyPlanId})
+                    .$promise.then(function(premiumInfo) {
+                        deferred.resolve({totalPremium:premiumInfo.total, 
+                            employeePremiumPerPayPeriod: premiumInfo.employee});
                     }, function(error) {
                         deferred.reject(error);
                     });

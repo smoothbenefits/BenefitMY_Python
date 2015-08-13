@@ -7,6 +7,9 @@ from app.views.employee_profile_view import (
     EmployeeProfileView,
     EmployeeProfileByPersonCompanyView,
     EmployeeProfileByCompanyUserView)
+from app.views.employee_compensation_view import (
+    EmployeeCompensationView,
+    EmployeeCompensationByPersonView)
 from app.views.user_view import (
     UserView,
     UsersView,
@@ -124,6 +127,8 @@ from app.views.reports.company_users_direct_deposit_excel import CompanyUsersDir
 from app.views.reports.company_users_life_insurance_beneficiary_excel import CompanyUsersLifeInsuranceBeneficiaryExcelExportView
 from app.views.reports.company_users_summary_pdf import CompanyUsersSummaryPdfExportView
 
+from app.views.reports.integration.company_hphc_excel import CompanyHphcExcelView
+
 from app.views.upload import (UserUploadView,
                               UploadView,
                               get_company_uploads)
@@ -137,6 +142,8 @@ from app.views.sys_benefit_update_reason_view import SysBenefitUpdateReasonView
 from app.views.person_enrollment_summary_view import PersonEnrollmentSummaryView
 from app.views.company_benefit_availability_view import CompanyBenefitAvailabilityView
 from app.views.sys_period_definition_view import SysPeriodDefinitionView
+from app.views.insurance.company_ltd_insurance_employee_premium_view import CompanyLtdInsuranceEmployeePremiumView
+from app.views.insurance.company_std_insurance_employee_premium_view import CompanyStdInsuranceEmployeePremiumView
 
 PREFIX = "api/v1"
 
@@ -189,6 +196,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_billing?$' % PREFIX, CompanyUsersBenefitsBillingExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/pdf/?$' % PREFIX, CompanyUsersSummaryPdfExportView.as_view()),
+
+    url(r'^%s/companies/(?P<pk>\w+)/hphc/excel/?$' % PREFIX, CompanyHphcExcelView.as_view()),
 
     url(r'^%s/companies/(?P<pk>\w+)/users/modification_summary/?$' % PREFIX, CompanyUsersDataModificationSummaryView.as_view()),
 
@@ -274,6 +283,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
         CompanyStdInsurancePlanView.as_view(), name='company_std_insurance_plan_api'),
 
+    url(r'^%s/user/(?P<user_id>\w+)/std_insurance/(?P<pk>\w+)/premium/?$' % PREFIX, 
+        CompanyStdInsuranceEmployeePremiumView.as_view(), name='user_company_std_insurance_premium_api'),
+
     # LTD insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         LtdInsurancePlanView.as_view(), name='broker_ltd_insurance_api'),
@@ -286,6 +298,9 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
+
+    url(r'^%s/user/(?P<user_id>\w+)/ltd_insurance/(?P<pk>\w+)/premium/?$' % PREFIX, 
+        CompanyLtdInsuranceEmployeePremiumView.as_view(), name='user_company_ltd_insurance_premium_api'),
 
     # HRA api
     url(r'^%s/hra_plan/(?P<pk>\w+)/?$' % PREFIX,
@@ -340,6 +355,13 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/user/(?P<user_id>\w+)/employee_profile/?$' % PREFIX,
         EmployeeProfileByCompanyUserView.as_view(),
         name='employee_profile_by_company_user_api'),
+
+    url(r'^%s/employee_compensation/(?P<pk>\w+)/?$' % PREFIX,
+        EmployeeCompensationView.as_view(),
+        name='employee_compensation_api'),
+    url(r'^%s/person/(?P<person_id>\w+)/employee_compensation/?$' % PREFIX,
+        EmployeeCompensationByPersonView.as_view(),
+        name='employee_compensation_by_person_api'),
 
     url(r'^%s/benefit_update_reasons/?$' % PREFIX, SysBenefitUpdateReasonView.as_view(), name='sys_benefit_update_reason_api'),
 )
