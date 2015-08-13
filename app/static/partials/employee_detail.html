@@ -89,7 +89,7 @@
       <div class='panel' ng-show="employee.employeeProfile">
         <div class='panel-heading' ng-click="employeeProfileExpanded = !employeeProfileExpanded">
           <b class="clickable"><span class="fa fa-toggle-down"></span>  Employee Profile</b>
-          <a ng-click="editEmployeeProfile();$event.stopPropagation();">
+          <a ng-click="editEmployeeProfile();$event.stopPropagation();" ng-hide="isBroker">
             <span class="fa fa-2x fa-pencil pull-right"></span>
           </a>
         </div>
@@ -155,7 +155,7 @@
       <div class='panel'>
         <div class='panel-heading' ng-click="compensationExpanded = !compensationExpanded">
           <b class="clickable"><span class="fa fa-toggle-down"></span>  Compensation</b>
-          <a ng-click="addCompensation();$event.stopPropagation();">
+          <a ng-click="addCompensation();$event.stopPropagation();" ng-hide="isBroker">
             <span class="fa fa-2x fa-plus-square-o pull-right"></span>
           </a>
         </div>

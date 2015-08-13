@@ -307,11 +307,25 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 }]);
 
 var brokerEmployeeController = brokersControllers.controller('brokerEmployeeController',
-  ['$scope', '$location', '$stateParams', 'peopleRepository',
-    function brokerEmployeeController($scope, $location, $stateParams, peopleRepository){
+  ['$scope',
+  '$location',
+  '$stateParams',
+  'peopleRepository',
+  'EmployeeProfileService',
+  'CompensationService',
+  function brokerEmployeeController(
+    $scope,
+    $location,
+    $stateParams,
+    peopleRepository,
+    EmployeeProfileService,
+    CompensationService){
+
       var employeeId = $stateParams.employee_id;
       var companyId = $stateParams.cid;
       $scope.employee = {};
+      $scope.isBroker = true;
+
       peopleRepository.ByUser.get({userId:employeeId})
       .$promise.then(function(employeeDetail){
         $scope.employee.first_name = employeeDetail.first_name;
@@ -323,6 +337,27 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
           $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
+
+          // Get the employee profile info that bound to this person
+          EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, companyId)
+          .then(function(profile) {
+            $scope.employee.employeeProfile = profile;
+            $scope.$watch('employee.employeeProfile.employmentStatus',
+              function(employmentStatus){
+                $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmploymentStatuses.terminated;
+                $scope.terminateMessage = undefined;
+                if(employmentStatus && employmentStatus === EmploymentStatuses.terminated){
+                  $scope.terminateMessage = "Employment terminated";
+                };
+            });
+            return profile.personId;
+          }).then(function(personId) {
+            CompensationService.getCompensationByPersonSortedByDate(personId, true)
+            .then(function(response) {
+              // Return sorted compensation records for the person
+              $scope.compensations = response;
+            });
+          });
         }
       });
 

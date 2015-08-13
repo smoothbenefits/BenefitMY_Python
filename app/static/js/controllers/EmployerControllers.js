@@ -740,6 +740,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
 
     var compId = $stateParams.company_id;
     var employeeId = $stateParams.eid;
+    $scope.isBroker = false;
     $scope.employee = {};
     $scope.showEditButton = false;
     $scope.terminateEmployeeButton = false;
