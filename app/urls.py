@@ -12,8 +12,7 @@ from app.views.employee_compensation_view import (
     EmployeeCompensationByPersonView)
 from app.views.employee_timetracking_view import (
     EmployeeTimeTrackingView,
-    EmployeeTimeTrackingByPersonCompanyView,
-    EmployeeTimeTrackingByCompanyUserView)
+    EmployeeTimeTrackingByPersonCompanyView)
 from app.views.user_view import (
     UserView,
     UsersView,

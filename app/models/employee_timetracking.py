@@ -12,10 +12,10 @@ class EmployeeTimeTracking(models.Model):
 
     end_date = models.DateField(blank=True, null=True)
 
-    projected_hour_per_mouth = models.DecimalField(max_digits=12, decimal_places=4,
+    projected_hour = models.DecimalField(max_digits=12, decimal_places=4,
                                                     blank=True, null=True)
 
-    actual_hour_per_mouth = models.DecimalField(max_digits=12, decimal_places=4,
+    actual_hour = models.DecimalField(max_digits=12, decimal_places=4,
                                                     blank=True, null=True)
 
     person = models.ForeignKey(Person,
