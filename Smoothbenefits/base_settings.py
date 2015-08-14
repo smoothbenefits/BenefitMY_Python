@@ -55,8 +55,6 @@ TEMPLATES = [
     },
 ]
 
-PDFTK_BIN = '/usr/bin/pdftk'
-
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
