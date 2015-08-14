@@ -44,6 +44,19 @@ INSTALLED_APPS = (
     'django_cron',
 )
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+    },
+    {
+        'BACKEND': 'app.service.report.pdf_tk_engine.PdftkEngine',
+        'APP_DIRS': True,
+    },
+]
+
+PDFTK_BIN = '/usr/bin/pdftk'
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
