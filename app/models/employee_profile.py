@@ -4,6 +4,7 @@ import reversion
 from django.db import models
 from person import Person
 from company import Company
+from sys_pay_rate_definition import SysPayRateDefinition
 
 EMPLOYMENT_TYPES = ([(item, item) for item in ['FullTime', 'PartTime', 'Contractor', 'Intern']])
 EMPLOYMENT_STATUS = ([(item, item) for item in ['Active', 'Prospective', 'Terminated', 'OnLeave']])
@@ -24,6 +25,11 @@ class EmployeeProfile(models.Model):
 
     employment_status = models.CharField(max_length=20, choices=EMPLOYMENT_STATUS,
                                          null=True, blank=True)
+
+    pay_rate = models.ForeignKey(SysPayRateDefinition,
+                                 related_name="employee_profile_pay_rate",
+                                 blank=True,
+                                 null=True)
 
     person = models.ForeignKey(Person,
                                default=0,
