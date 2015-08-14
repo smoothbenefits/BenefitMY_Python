@@ -342,14 +342,6 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
           EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, companyId)
           .then(function(profile) {
             $scope.employee.employeeProfile = profile;
-            $scope.$watch('employee.employeeProfile.employmentStatus',
-              function(employmentStatus){
-                $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmploymentStatuses.terminated;
-                $scope.terminateMessage = undefined;
-                if(employmentStatus && employmentStatus === EmploymentStatuses.terminated){
-                  $scope.terminateMessage = "Employment terminated";
-                };
-            });
             return profile.personId;
           }).then(function(personId) {
             CompensationService.getCompensationByPersonSortedByDate(personId, true)
