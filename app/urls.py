@@ -144,6 +144,7 @@ from app.views.company_benefit_availability_view import CompanyBenefitAvailabili
 from app.views.sys_period_definition_view import SysPeriodDefinitionView
 from app.views.insurance.company_ltd_insurance_employee_premium_view import CompanyLtdInsuranceEmployeePremiumView
 from app.views.insurance.company_std_insurance_employee_premium_view import CompanyStdInsuranceEmployeePremiumView
+from app.views.company_enrollment_summary_view import CompanyEnrollmentSummaryView
 
 PREFIX = "api/v1"
 
@@ -327,6 +328,10 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<company_id>\w+)/benefits/?$' % PREFIX,
         CompanyBenefitAvailabilityView.as_view(), name='company_benefit_availability_api'),
+
+    url(r'^%s/company/(?P<comp_id>\w+)/enrollment_summary/?$' % PREFIX,
+        CompanyEnrollmentSummaryView.as_view(), name='company_enrollment_summary_api'),
+    
 
     # upload API
     url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX, UserUploadView.as_view(), name='uploads_by_user'),
