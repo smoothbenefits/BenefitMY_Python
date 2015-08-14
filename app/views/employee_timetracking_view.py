@@ -33,26 +33,13 @@ class EmployeeTimeTrackingView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EmployeeTimeTrackingByPersonCompanyView(APIView):
-    def _get_object(self, person_id, company_id):
+    def _get_object(self, person_id):
         try:
-            return EmployeeTimeTracking.objects.get(person=person_id, company=company_id)
+            return EmployeeTimeTracking.objects.filter(person=person_id)
         except EmployeeTimeTracking.DoesNotExist:
             raise Http404
 
-    def get(self, request, person_id, company_id, format=None):
-        employee_timetracking = self._get_object(person_id, company_id)
-        serializer = EmployeeTimeTrackingSerializer(employee_timetracking)
-        return Response(serializer.data)
-
-class EmployeeTimeTrackingByCompanyUserView(APIView):
-    def _get_object(self, company_id, user_id):
-        try:
-            person = Person.objects.get(user=user_id, relationship='self')
-            return EmployeeTimeTracking.objects.get(person=person.id, company=company_id)
-        except (Person.DoesNotExist, EmployeeTimeTracking.DoesNotExist):
-            raise Http404
-
-    def get(self, request, company_id, user_id, format=None):
-        employee_timetracking = self._get_object(company_id, user_id)
-        serializer = EmployeeTimeTrackingSerializer(employee_timetracking)
+    def get(self, request, person_id, format=None):
+        employee_timetracking = self._get_object(person_id)
+        serializer = EmployeeTimeTrackingSerializer(employee_timetracking, many=True)
         return Response(serializer.data)
