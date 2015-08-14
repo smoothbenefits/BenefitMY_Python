@@ -1,46 +1,10 @@
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from app.service.hash_key_service import HashKeyService
 from django.db import connection
 
-from app.views.company_benefit_availability_view import CompanyBenefitAvailabilityView
-
-from app.models.person import Person
-from app.models.company_user import CompanyUser
-from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
-from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
-from app.models.fsa.fsa import FSA
-from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
-from app.models.insurance.person_comp_suppl_life_insurance_plan import \
-    PersonCompSupplLifeInsurancePlan
-from app.models.insurance.user_company_life_insurance_plan import \
-    UserCompanyLifeInsurancePlan
-from app.models.insurance.user_company_ltd_insurance_plan import \
-    UserCompanyLtdInsurancePlan
-from app.models.insurance.user_company_std_insurance_plan import \
-    UserCompanyStdInsurancePlan
-
-from app.serializers.person_serializer import PersonSerializer
-from app.serializers.user_company_benefit_plan_option_serializer import \
-    UserCompanyBenefitPlanOptionSerializer
-from app.serializers.user_company_waived_benefit_serializer import \
-    UserCompanyWaivedBenefitSerializer
-from app.serializers.fsa.fsa_serializer import FsaSerializer
-from app.serializers.hra.person_company_hra_plan_serializer import \
-    PersonCompanyHraPlanSerializer
-from app.serializers.insurance.person_company_supplemental_life_insurance_plan_serializer import \
-    PersonCompanySupplementalLifeInsurancePlanSerializer
-from app.serializers.insurance.user_company_life_insurance_serializer import \
-    UserCompanyLifeInsuranceSerializer
-from app.serializers.insurance.user_company_ltd_insurance_serializer import \
-    UserCompanyLtdInsuranceSerializer
-from app.serializers.insurance.user_company_std_insurance_serializer import \
-    UserCompanyStdInsuranceSerializer
 
 class CompanyEnrollmentSummaryView(APIView):
-    def __init__(self):
-        self.hash_service = HashKeyService()
 
     def _retrieve_started_count_from_DB(self, company_id):
         with connection.cursor() as cursor:
