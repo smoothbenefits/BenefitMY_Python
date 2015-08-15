@@ -10,7 +10,7 @@ class CompanyEnrollmentSummaryView(APIView):
     def _retrieve_started_count_from_DB(self, company_id):
         with connection.cursor() as cursor:
             cursor.execute("""select count(distinct cu.user_id) from app_companyuser cu 
-left join app_person p on p.user_id=cu.user_id 
+left join app_person p on p.user_id=cu.user_id and p.relationship='self'
 left join app_usercompanybenefitplanoption health on health.user_id = cu.user_id 
 left join app_usercompanylifeinsuranceplan basic on basic.user_id = cu.user_id 
 left join app_personcompsuppllifeinsuranceplan sp on sp.person_id = p.id 
@@ -22,7 +22,6 @@ left join app_fsa fsa on fsa.user_id = cu.user_id
 where cu.company_id = %s
 and cu.company_user_type = 'employee'
 and p.id is not null 
-and p.relationship='self'
 and (health.id is not null 
      or basic.id is not null 
      or sp.id is not null 
@@ -38,7 +37,7 @@ and (health.id is not null
     def _retrieve_completed_count_from_DB(self, company_id): 
         with connection.cursor() as cursor:
             cursor.execute("""select count(distinct cu.user_id) from app_companyuser as cu 
-left join app_person as p on p.user_id=cu.user_id
+left join app_person as p on p.user_id=cu.user_id and p.relationship='self'
 left join app_companybenefitplanoption as comphealth on comphealth.company_id = cu.company_id
 left join app_usercompanybenefitplanoption as health on health.user_id = cu.user_id and comphealth.id = health.benefit_id
 left join app_companylifeinsuranceplan as compbasic on compbasic.company_id = cu.company_id
@@ -57,7 +56,6 @@ left join app_usercompanywaivedbenefit as hwaive on hwaive.user_id = cu.user_id
 where cu.company_id = %s
 and cu.company_user_type = 'employee' 
 and p.id is not null
-and p.relationship='self'
 and (comphealth.id is null or health.id is not null or hwaive.id is not null)
 and (compbasic.id is null or basic.id is not null)
 and (compsup.id is null or sp.id is not null)
