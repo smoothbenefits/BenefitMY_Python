@@ -1,0 +1,439 @@
+<div class="breadcrumb">
+  <a ng-click="backToDashboard()">{{getCurRoleString()}} Dashboard</a>
+  <span>{{getCurRoleString()}} Dashboard</span>
+</div>
+
+<div class="content-header">
+  <h1>Benefit Elections for {{employee.firstName}} {{employee.lastName}}</h1>
+  <div class="cta"><span class="btn green" ng-click="back()">Back</span></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+      <!-- Health benefits summary table -->
+      <div class="row" ng-if="employee.benefits !== undefined">
+        <div class="col-sm-2">
+          <div>Benefit Plan Selections</div>
+        </div>
+        <div class="col-sm-10">
+          <div class="table-responsive table-holder">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th width="300"><span>Selected Plan</span></th>
+                  <th width="250"><span>Enrolled Member</span></th>
+                  <th width="150"><span>Last Update</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="benefitElement in employee.benefits">
+                  <td width="300">{{benefitElement.benefit.benefit_plan.name}}
+                    <span ng-show="benefitElement.benefit.benefit_option_type">({{benefitElement.benefit.benefit_option_type}})</span>
+                    <td width="300">
+                      <div class="inner-td-div" ng-repeat="enrolled in benefitElement.enrolleds">
+                        {{enrolled.person.relationship.capitalize()}} : {{enrolled.person.first_name}} {{enrolled.person.last_name}} <span ng-show="enrolled.pcp">(PCP#: {{enrolled.pcp}})</span>
+                      </div>
+                    </td>
+                    <td width="250">
+                      <span>{{benefitElement.updateFormatted}}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Waived health benefit summary table -->
+        <div class="row" ng-if="employee.waivedBenefits">
+          <div class="col-sm-2">
+            <div>Waived Benefits</div>
+          </div>
+          <div class="col-sm-10">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th><span>Benefit Type Name</span></th>
+                    <th><span>Last Update</span></th>
+                    <th><span>Reason</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="waivedBenefit in employee.waivedBenefits">
+                    <td>{{waivedBenefit.benefit_type.name}}</td>
+                    <td>{{waivedBenefit.updateFormatted}}</td>
+                    <td >{{waivedBenefit.reason}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Basic life insurance summary table -->
+        <div class="row" ng-if="employee.basicLifeInsurancePlan !== undefined">
+          <div class="col-sm-2">
+            <div>Basic Life Insurance</br>(AD&D)</div>
+          </div>
+          <div class="col-sm-10" ng-if="employee.basicLifeInsurancePlan.selected && !employee.basicLifeInsurancePlan.waived">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th with="180"><span>Plan Name</span></th>
+                    <th with="180"><span>Coverage Amount (USD)</span></th>
+                    <th with="180"><span>Beneficiary</span></th>
+                    <th with="180"><span>Last Update</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td with="180"><span>{{employee.basicLifeInsurancePlan.company_life_insurance.life_insurance_plan.name}}</span></td>
+                    <td with="180"><span>$ {{employee.basicLifeInsurancePlan.company_life_insurance.insurance_amount}}</span></td>
+                    <td with="180">
+                      <span class="inline" ng-repeat="beneficiary in employee.basicLifeInsurancePlan.life_insurance_beneficiary"> {{$index + 1}}. {{beneficiary.first_name}} {{beneficiary.last_name}}; </br></span>
+                    </td>
+                    <td width="180"><span>{{employee.basicLifeInsurancePlan.last_update_date}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10" ng-if="employee.basicLifeInsurancePlan.selected && employee.basicLifeInsurancePlan.waived">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th width="280"><span>Basic Life Insurance</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="280">Waived basic life insurance plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10" ng-if="!employee.basicLifeInsurancePlan.selected">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th width="280"><span>Basic Life Insurance</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="280">No active life insurance plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supplemental life insurance summary table -->
+        <div class="row" ng-show="employee.supplementalLifeInsurancePlan !== undefined">
+          <div class="col-sm-2">
+            <div>Supplemental Life Insurance</div>
+          </div>
+          <div class="col-sm-10" ng-if="employee.supplementalLifeInsurancePlan.selected && !employee.supplementalLifeInsurancePlan.waived">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th><span>Plan Name</span></th>
+                    <th width="160"><span>Coverage Target</span></th>
+                    <th width="160"><span>Elected Amount</span></th>
+                    <th width="160"><span>Premium</span></th>
+                    <th width="160"><span>Condition</span></th>
+                    <th width="160"><span>Beneficiary</span></th>
+                    <th><span>Last Update</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{employee.supplementalLifeInsurancePlan.planName}}</td>
+                    <td colspan="4" style="padding: 0;">
+                      <table class="table">
+                        <tr>
+                          <td width="160">Employee</td>
+                          <td width="160">${{employee.supplementalLifeInsurancePlan.selfElectedAmount}}</td>
+                          <td width="160">${{employee.supplementalLifeInsurancePlan.selfPremiumPerMonth}}/Month</td>
+                          <td width="160">{{employee.supplementalLifeInsurancePlan.selfPlanCondition.name}}</td>
+                        </tr>
+                        <tr>
+                          <td width="160">Spouse</td>
+                          <td width="160">${{employee.supplementalLifeInsurancePlan.spouseElectedAmount}}</td>
+                          <td width="160">${{employee.supplementalLifeInsurancePlan.spousePremiumPerMonth}}/Month</td>
+                          <td width="160">{{employee.supplementalLifeInsurancePlan.spousePlanCondition.name}}</td>
+                        </tr>
+                        <tr>
+                          <td width="160">Child(ren)</td>
+                          <td width="160">${{employee.supplementalLifeInsurancePlan.childElectedAmount}}</td>
+                          <td width="160">${{employee.supplementalLifeInsurancePlan.childPremiumPerMonth}}/Month</td>
+                          <td width="160">N/A</td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td width="160">
+                      <span class="inline" ng-repeat="beneficiary in employee.supplementalLifeInsurancePlan.beneficiaryList.mainBeneficiaries"> {{$index + 1}}. {{beneficiary.firstName}} {{beneficiary.lastName}}; </br></span>
+                    </td>
+                    <td>{{employee.supplementalLifeInsurancePlan.lastUpdateDateTime}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10" ng-if="employee.supplementalLifeInsurancePlan.selected && employee.supplementalLifeInsurancePlan.waived">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th width="280"><span>Supplemental Life Insurance</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="280">Waived life insurance plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10" ng-if="!employee.supplementalLifeInsurancePlan.selected">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th width="280"><span>Supplemental Life Insurance</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="280">No active life insurance plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- STD summary table -->
+        <div class="row" ng-if="employee.userStdPlan !== undefined">
+          <div class="col-sm-2">
+            <div>Short Term Disability Benefits</div>
+          </div>
+          <div class="col-sm-10" ng-show="employee.userStdPlan.selected && !employee.userStdPlan.waived">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                    <th><span>Rate</span></th>
+                    <th><span>Paid By</span></th>
+                    <th><span>Elimination Period</span></th>
+                    <th><span>Last Updated</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{employee.userStdPlan.planName}}</td>
+                    <td>{{employee.userStdPlan.percentageOfSalary}}% of Base Salary</td>
+                    <td>${{employee.userStdPlan.maxBenefitWeekly}}/Week</td>
+                    <td>{{employee.userStdPlan.duration}} Days</td>
+                    <td>${{employee.userStdPlan.rate}} of $10 benefit</td>
+                    <td>{{employee.userStdPlan.paidBy}}</td>
+                    <td>{{employee.userStdPlan.eliminationPeriodInDays}} Days</td>
+                    <td>{{employee.userStdPlan.lastUpdateDateTime}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10" ng-show="employee.userStdPlan.selected && employee.userStdPlan.waived">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th width="280"><span>Short Term Disability Benefits</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="280">Waived Short Term Disability insurance plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10" ng-hide="employee.userStdPlan.selected">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th width="280"><span>Short Term Disability Benefits</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="280">No active Short Term Disability insurance plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- LTD summary table -->
+        <div class="row" ng-if="employee.userLtdPlan !== undefined">
+          <div class="col-sm-2">
+            <div>Long Term Disability Benefits</div>
+          </div>
+          <div class="col-sm-10" ng-show="employee.userLtdPlan.selected && !employee.userLtdPlan.waived">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Benefit Amount</span></th>
+                    <th><span>Max Benefit</span></th>
+                    <th><span>Duration</span></th>
+                    <th><span>Rate</span></th>
+                    <th><span>Paid By</span></th>
+                    <th><span>Elimination Period</span></th>
+                    <th><span>Last Updated</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{employee.userLtdPlan.planName}}</td>
+                    <td>{{employee.userLtdPlan.percentageOfSalary}}% of Base Salary</td>
+                    <td>${{employee.userLtdPlan.maxBenefitMonthly}}/Month</td>
+                    <td>{{employee.userLtdPlan.duration}} Months or Until Retirement Age</td>
+                    <td>${{employee.userLtdPlan.rate}} of $10 benefit</td>
+                    <td>{{employee.userLtdPlan.paidBy}}</td>
+                    <td>{{employee.userLtdPlan.eliminationPeriodInMonths}} Months</td>
+                    <td>{{employee.userLtdPlan.lastUpdateDateTime}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10" ng-show="employee.userLtdPlan && employee.userLtdPlan.waived">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th width="280"><span>Long Term Disability Benefits</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="280">Waived Long Term Disability insurance plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10" ng-show="!employee.userLtdPlan">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th width="280"><span>Long Term Disability Benefits</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="280">No active Long Term Disability insurance plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- FSA summary table -->
+        <div class="row" ng-if="employee.fsaElection.selected">
+          <div class="col-sm-2">
+            <div>Flexible Spending Accounts</div>
+          </div>
+          <div class="col-sm-10" style="margin-bottom: 10px;">
+            <div class="table-responsive table-holder" ng-show="employee.fsaElection.waived">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th><span>Waived FSA plan</span></th></tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10">
+            <div class="table-responsive table-holder" ng-hide="employee.fsaElection.waived">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th width="200"><span>Account Type</span></th>
+                    <th width="200"><span>Elected Annual Amount (USD)</span></th>
+                    <th width="200"><span>Last Update</span></th>
+                    <th width="200"><span>Last Update Reason</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="200">Health Account</td>
+                    <td width="200">${{employee.fsaElection.primary_amount_per_year}}</td>
+                    <td width="200" rowspan="2" style="vertical-align:middle;">{{employee.fsaElection.last_update_date_time}}</td>
+                    <td width="200" rowspan="2" style="vertical-align:middle;">{{employee.fsaElection.update_reason}}</td>
+                  </tr>
+                  <tr>
+                    <td>Dependent Care Account</td>
+                    <td>${{employee.fsaElection.dependent_amount_per_year}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- HRA summary table -->
+        <div class="row" ng-if="employee.hraPlan !== undefined">
+          <div class="col-sm-2">
+            <div>Health Reimbursement Accounts (HRA)</div>
+          </div>
+          <div class="col-sm-10" ng-show="employee.hraPlan">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Description</span></th>
+                    <th><span>Last Updated</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{employee.hraPlan.planName}}</td>
+                    <td>{{employee.hraPlan.planDescription}}</td>
+                    <td>{{employee.hraPlan.lastUpdateDateTime}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10" ng-show="!employee.hraPlan">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <tbody>
+                  <tr>
+                    <td width="280">No active HRA plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
