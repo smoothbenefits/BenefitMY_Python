@@ -2,6 +2,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db import connection
+from app.models.company import Company
 
 
 class CompanyEnrollmentSummaryView(APIView):
@@ -66,6 +67,8 @@ and (compfsa.id is null or fsa.id is not null);""", [company_id])
             return row[0]
 
     def get(self, request, comp_id, format=None):
+        if not Company.objects.filter(pk=comp_id).exists():
+            raise Http404
 
         started_count = self._retrieve_started_count_from_DB(comp_id)
         completed_count = self._retrieve_completed_count_from_DB(comp_id)
