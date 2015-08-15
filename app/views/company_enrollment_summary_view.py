@@ -20,8 +20,9 @@ left join app_usercompanywaivedbenefit hwaive on hwaive.user_id = cu.user_id
 left join app_personcompanyhraplan hra on hra.person_id = p.id
 left join app_fsa fsa on fsa.user_id = cu.user_id
 where cu.company_id = %s
-and cu.company_user_type = 'employee' 
+and cu.company_user_type = 'employee'
 and p.id is not null 
+and p.relationship='self'
 and (health.id is not null 
      or basic.id is not null 
      or sp.id is not null 
@@ -55,7 +56,8 @@ left join app_fsa as fsa on fsa.user_id = cu.user_id and compfsa.id = fsa.compan
 left join app_usercompanywaivedbenefit as hwaive on hwaive.user_id = cu.user_id
 where cu.company_id = %s
 and cu.company_user_type = 'employee' 
-and p.id is not null 
+and p.id is not null
+and p.relationship='self'
 and (comphealth.id is null or health.id is not null or hwaive.id is not null)
 and (compbasic.id is null or basic.id is not null)
 and (compsup.id is null or sp.id is not null)
