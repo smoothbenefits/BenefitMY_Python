@@ -161,6 +161,7 @@ var employerUser = employersController.controller('employerUser',
    'templateRepository',
    'DocumentService',
    'CompensationService',
+   'EmployerEmployeeManagementService',
   function employerUser($scope,
                         $state,
                         $stateParams,
@@ -171,13 +172,25 @@ var employerUser = employersController.controller('employerUser',
                         documentTypeService,
                         templateRepository,
                         DocumentService,
-                        CompensationService){
+                        CompensationService,
+                        EmployerEmployeeManagementService){
       var compId = $stateParams.company_id;
       $scope.employees=[];
-      $scope.addUser = {send_email:true, new_employee:true, create_docs:true};
       $scope.brokers = [];
       $scope.templateFields = [];
       $scope.docTypeArray = [];
+      $scope.employment_types = EmployerEmployeeManagementService.EmploymentTypes;
+      $scope.addUser = {
+        send_email:true,
+        new_employee:true,
+        create_docs:true,
+        employment_type: _.findWhere($scope.employment_types, function(type) {return type.id === 1;})
+      };
+
+      $scope.isFullTime = function(employee) {
+        return employee.employment_type.id === 1;
+      };
+
       employerWorkerRepository.get({companyId:compId})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
@@ -212,28 +225,7 @@ var employerUser = employersController.controller('employerUser',
         $location.path('/admin/' + userType + '/' + compId);
       }
 
-      var mapToAPIUser = function(viewUser, userType){
-        var apiUser = {};
-        apiUser.company = compId;
-        apiUser.company_user_type = userType;
-        apiUser.new_employee = viewUser.new_employee;
-        apiUser.user = {};
-        apiUser.user.email = viewUser.email;
-        apiUser.user.first_name = viewUser.first_name;
-        apiUser.user.last_name = viewUser.last_name;
-        apiUser.create_docs = viewUser.create_docs;
-        apiUser.fields = $scope.templateFields
-        apiUser.send_email = viewUser.send_email;
-        apiUser.annual_base_salary = viewUser.annual_base_salary;
-
-        // Do not set password if selected "send email"
-        if (!viewUser.send_email) {
-          apiUser.user.password = viewUser.password;
-        }
-        return apiUser;
-      };
-
-      var validatePassword = function(password, passwordConfirm) {
+      $scope.validatePassword = function(password, passwordConfirm) {
         if (!password) {
           $scope.passwordValidationError = "Password is required for the new employee account.";
           return false;
@@ -248,69 +240,20 @@ var employerUser = employersController.controller('employerUser',
         }
       };
 
-      var validateAddUser = function(addUser){
-        if (!addUser.send_email && !validatePassword(addUser.password, addUser.password_confirm)){
-          return false;
-        }
-
-        if(addUser.first_name && addUser.last_name && addUser.email && addUser.annual_base_salary >= 0)
-        {
-          return true;
-        }
-        return false;
-      }
-
       $scope.addLink = function(userType)
       {
         $location.path('/admin/'+ userType + '/add/'+compId)
       }
 
-      $scope.validatePassword = validatePassword;
+      $scope.createUser = function(userType) {
+          EmployerEmployeeManagementService.AddNewEmployee(compId, $scope.addUser, $scope.templateFields)
+          .then(function(response) {
+            gotoUserView(userType);
+          }, function(error) {
+            alert('Failed to add a new employee.');
+          });
+      };
 
-      $scope.createUser = function(userType){
-        if(validateAddUser($scope.addUser))
-        {
-          usersRepository.save(mapToAPIUser($scope.addUser, userType),
-            function(response){
-              if($scope.addUser.send_email){
-                alert('Email sent successful.');
-              }
-
-              if ($scope.addUser.annual_base_salary) {
-                  var compensation = {
-                    person: response.person.id,
-                    company: compId,
-                    salary: $scope.addUser.annual_base_salary,
-                    increasePercentage: null,
-                    effectiveDate: new Date()
-                  };
-
-                  CompensationService
-                  .addCompensationByPerson(compensation, response.person.id, compId)
-                  .then(function(){
-                    gotoUserView(userType);
-                  });
-              } else {
-                gotoUserView(userType);
-              }
-            }, function(err){
-                if(err.status === 409){
-                  $scope.alreadyExists = true;
-                }
-        				else if (err.status === 503){
-        				  alert('Failed to send email.');
-        				}
-                else{
-                  $scope.addError = true;
-                }
-        				alert('Failed to add employee.');
-            });
-        }
-        else
-        {
-          $scope.validation_failed = true;
-        }
-      }
       $scope.gotoEmployerDashboardLink = function(){
         $state.go('/admin');
       }

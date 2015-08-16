@@ -55,6 +55,72 @@
         </div>
       </div>
 
+      <div class="form-label">Employment Type*</div>
+      <div class="select-box">
+        <select id="employment_type"
+          ng-model="addUser.employment_type"
+          ng-required="true"
+          name="employment_type"
+          ng-options="type.name for type in employment_types"
+          class="form-control" />
+        <div class="form-error" ng-show="form.employment_status.$error.required">
+          <span>Employment status must be selected</span>
+        </div>
+      </div>
+
+      <div ng-if="isFullTime(addUser)">
+        <div class="form-label">Annual Base Salary*</div>
+        <div class="textbox input-group">
+          <span class="input-group-addon">$</span>
+          <input type="number"
+            name="employee_salary"
+            ng-model="addUser.annual_base_salary"
+            ng-required="isFullTime(addUser)" />
+          <div class="form-error" ng-show="form.employee_salary.$dirty && form.employee_salary.$invalid">
+            <span ng-show="form.employee_salary.$error.required">Annual base salary is required</span>
+          </div>
+        </div>
+      </div>
+
+      <div ng-if="!isFullTime(addUser)">
+        <div class="form-label">Hourly Rate*</div>
+        <div class="textbox input-group">
+          <span class="input-group-addon">$</span>
+          <input type="number"
+            min="0"
+            name="hourly_rate"
+            ng-model="addUser.hourly_rate"
+            ng-required="!isFullTime(addUser)" />
+          <div class="form-error" ng-show="form.hourly_rate.$dirty && form.hourly_rate.$invalid">
+            <span ng-show="form.hourly_rate.$error.required">Hourly rate is required for part time employees</span>
+          </div>
+        </div>
+        <div class="form-label">Projected hours per Month*</div>
+        <div class="textbox input-group">
+          <input type="number"
+            min="0"
+            name="projected_hour_per_month"
+            ng-model="addUser.projected_hour_per_month"
+            ng-required="!isFullTime(addUser)" />
+          <span class="input-group-addon"> Hours </span>
+          <div class="form-error" ng-show="form.projected_hour_per_month.$dirty && form.projected_hour_per_month.$invalid">
+            <span ng-show="form.projected_hour_per_month.$error.required">Hourly rate is required for part time employees</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-label">Compensation Effective Date*</div>
+      <div class="datebox">
+        <bm-date-picker model="addUser.effective_date"
+          required="true"
+          name="effective"
+          fieldname="'effective_date'"
+          dirty="form.effective_date.$dirty" />
+        <div class="form-inline-error" ng-show="form.effective.$dirty && form.effective.$invalid">
+          <span ng-show="form.effective.$invalid">Please enter a valid Date</span>
+        </div>
+      </div>
+
       <div ng-show="!addUser.send_email">
         <div class="form-label">Password*</div>
         <div class="textbox">
@@ -74,18 +140,6 @@
           <div class="form-error" ng-hide="validatePassword(addUser.password, addUser.password_confirm)">
             <span>{{passwordValidationError}}</span>
           </div>
-        </div>
-      </div>
-
-      <div class="form-label">Annual Base Salary*</div>
-      <div class="textbox input-group">
-        <span class="input-group-addon">$</span>
-        <input type="number"
-        name="employee_salary"
-        ng-model="addUser.annual_base_salary"
-        ng-required="true">
-        <div class="form-error" ng-show="form.employee_salary.$dirty && form.employee_salary.$invalid">
-          <span ng-show="form.employee_email.$error.required">Annual base salary is required</span>
         </div>
       </div>
 
