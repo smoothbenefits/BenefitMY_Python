@@ -242,6 +242,7 @@ PIPELINE_JS = {
             'js/services/CompanyBenefitAvailabilityService.js',
             'js/services/employeePayrollService.js',
             'js/services/EmploymentProfileService.js',
+            'js/services/EmployerEmployeeManagementService.js',
             'js/services/FeatureConfigurationService.js',
             'js/services/StdService.js',
             'js/services/LtdService.js',
