@@ -16,6 +16,8 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
+PDFTK_BIN = '/usr/bin/pdftk'
+
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
