@@ -44,6 +44,8 @@ INSTALLED_APPS = (
     'django_cron',
 )
 
+PDFTK_BIN = './.apt/usr/bin/pdftk'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

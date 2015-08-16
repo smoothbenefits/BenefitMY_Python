@@ -14,8 +14,6 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
-PDFTK_BIN = './.apt/usr/bin/pdftk'
-
 # Application configurations
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 MIDDLEWARE_CLASSES = (
