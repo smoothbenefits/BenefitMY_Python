@@ -293,7 +293,7 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
     };
 
     $scope.back = function(){
-      $location.path('/broker/benefit/selected/' + company_id);
+      $state.go('broker_benefit_selected', {client_id:company_id});
     };
 
     companyRepository.get({clientId: company_id})

@@ -146,7 +146,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_hra.html',
                 controller: 'brokerAddHraPlanController'
             }).
-            state('/broker/benefit/selected/:client_id', {
+            state('broker_benefit_selected', {
                 url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',
                 controller: 'selectedBenefitsController'
@@ -226,7 +226,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_detail.html',
                 controller: 'employerViewEmployeeDetail'
             }).
-            state('/admin/benefit/election/:company_id',{
+            state('admin_benefit_elections',{
                 url: '/admin/benefit/election/:company_id',
                 templateUrl:'/static/partials/selected_benefits_company.html',
                 controller: 'employerBenefitsSelected'

@@ -1129,7 +1129,7 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
     };
 
     $scope.back = function(){
-      $location.path('/admin/benefit/election/' + company_id);
+      $state.go('admin_benefit_elections', {company_id:company_id});
     };
 
     companyRepository.get({clientId: company_id})

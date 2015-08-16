@@ -22,7 +22,7 @@ TEMPLATE_DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'proddb',
+        'NAME': 'Benefits_DB',
         'USER': 'postgres',
         'PASSWORD': '',
         'HOST': 'localhost',
