@@ -9,7 +9,6 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['24_person',
                 'employee_profile',
-                'sys_pay_rate_definition',
                 '49_period_definition',
                 '10_company',
                 '23_auth_user',

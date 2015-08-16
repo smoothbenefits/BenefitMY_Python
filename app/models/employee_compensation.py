@@ -25,6 +25,12 @@ class EmployeeCompensation(models.Model):
                                               blank=True,
                                               null=True)
 
+    projected_hour_per_month = models.DecimalField(max_digits=12, decimal_places=4,
+                                                   blank=True, null=True)
+
+    hourly_rate = models.DecimalField(max_digits=12, decimal_places=4,
+                                      blank=True, null=True)
+
     reason = models.ForeignKey(SysCompensationUpdateReason,
                                related_name="employee_compensation",
                                blank=True,

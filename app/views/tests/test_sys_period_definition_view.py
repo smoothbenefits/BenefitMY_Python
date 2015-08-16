@@ -15,7 +15,7 @@ class SysPeriodDefinitionTestCase(TestCase, ViewTestBase):
 
         result = json.loads(response.content)
         self.assertEqual(type(result), list)
-        self.assertEqual(len(result), 6)
+        self.assertEqual(len(result), 8)
 
     def test_post_sys_period_definition_set_failed(self):
         new_def = {'name':'TestPeriod', 'month_factor': 199}
@@ -31,7 +31,7 @@ class SysPeriodDefinitionTestCase(TestCase, ViewTestBase):
 
         result = json.loads(response.content)
         self.assertEqual(type(result), list)
-        self.assertEqual(len(result), 6)
+        self.assertEqual(len(result), 8)
 
     def test_delete_sys_period_definition_set_failed(self):
         response = self.client.delete(reverse('sys_period_definition_api'))
@@ -44,4 +44,4 @@ class SysPeriodDefinitionTestCase(TestCase, ViewTestBase):
 
         result = json.loads(response.content)
         self.assertEqual(type(result), list)
-        self.assertEqual(len(result), 6)
+        self.assertEqual(len(result), 8)

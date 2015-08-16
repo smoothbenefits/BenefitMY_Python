@@ -8,14 +8,9 @@ from company import Company
 @reversion.register
 class EmployeeTimeTracking(models.Model):
 
-    start_date = models.DateField(blank=True, null=True)
+    actual_hour_month = models.DateField()
 
-    end_date = models.DateField(blank=True, null=True)
-
-    projected_hour = models.DecimalField(max_digits=12, decimal_places=4,
-                                                    blank=True, null=True)
-
-    actual_hour = models.DecimalField(max_digits=12, decimal_places=4,
+    actual_hour_per_month = models.DecimalField(max_digits=12, decimal_places=4,
                                                     blank=True, null=True)
 
     person = models.ForeignKey(Person,

@@ -2,10 +2,8 @@
   {
     "fields": {
       "created_at": "2015-04-27T04:00:00Z",
-      "start_date": "2015-08-01",
-      "end_date": "2015-08-31",
-      "projected_hour": "160",
-      "actual_hour": "180",
+      "actual_hour_month": "2015-08-01",
+      "actual_hour_per_month": "180",
       "updated_at": "2015-04-27T04:00:00Z",
       "person": 3,
       "company": 1
