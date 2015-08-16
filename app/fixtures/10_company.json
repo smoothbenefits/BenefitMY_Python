@@ -2,7 +2,7 @@
   {
     "fields": {
       "name": "BenefitMy Inc.",
-      "pay_period_definition": 3
+      "pay_period_definition": 5
     },
     "model": "app.company",
     "pk": 1

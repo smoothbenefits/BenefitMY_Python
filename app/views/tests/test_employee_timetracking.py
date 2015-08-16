@@ -22,8 +22,7 @@ class EmployeeTimeTrackingTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 200)
 
         employee_timetracking = json.loads(response.content)
-        self.assertEqual(employee_timetracking['actual_hour'], '180.0000')
-        self.assertEqual(employee_timetracking['projected_hour'], '160.0000')
+        self.assertEqual(employee_timetracking['actual_hour_per_month'], '180.0000')
         self.assertEqual(employee_timetracking['company'], self.normalize_key(1))
         self.assertEqual(employee_timetracking['person'], self.normalize_key(3))
 
@@ -35,8 +34,7 @@ class EmployeeTimeTrackingTestCase(TestCase, ViewTestBase):
         employee_timetrackings = json.loads(response.content)
         self.assertEqual(len(employee_timetrackings), 1)
         employee_timetracking = employee_timetrackings[0]
-        self.assertEqual(employee_timetracking['actual_hour'], '180.0000')
-        self.assertEqual(employee_timetracking['projected_hour'], '160.0000')
+        self.assertEqual(employee_timetracking['actual_hour_per_month'], '180.0000')
         self.assertEqual(employee_timetracking['company'], self.normalize_key(1))
         self.assertEqual(employee_timetracking['person'], self.normalize_key(3))
 
@@ -58,10 +56,8 @@ class EmployeeTimeTrackingTestCase(TestCase, ViewTestBase):
         post_data = {
             "person": self.normalize_key(1),
             "company": self.normalize_key(1),
-            "projected_hour": "90",
-            "actual_hour": "80",
-            "start_date": "2015-08-01",
-            "end_date": "2015-08-31"
+            "actual_hour_per_month": "80",
+            "actual_hour_month": "2015-08-01"
         }
         response = self.client.post(reverse('employee_timetracking_api',
                                            kwargs={'pk': self.normalize_key(sys.maxint)}),
@@ -75,10 +71,8 @@ class EmployeeTimeTrackingTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['id'], self.normalize_key(2))
         self.assertEqual(result['person'], 1)
         self.assertEqual(result['company'], 1)
-        self.assertEqual(result['projected_hour'], "90")
-        self.assertEqual(result['actual_hour'], "80")
-        self.assertEqual(result['start_date'], "2015-08-01")
-        self.assertEqual(result['end_date'], "2015-08-31")
+        self.assertEqual(result['actual_hour_per_month'], "80")
+        self.assertEqual(result['actual_hour_month'], "2015-08-01")
 
     def test_delete_employee_timetracking_non_exist_failure(self):
         response = self.client.delete(reverse('employee_timetracking_api',
