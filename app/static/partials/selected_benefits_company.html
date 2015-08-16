@@ -20,7 +20,7 @@
       <div class="col-xs-4 img-col"><span class="flaticon-user135"></span></div>
       <div class="col-xs-8 info-col">
         <h3>{{notStarted.length}} / {{totalCount}}</h3>
-        <p>No Enrollment</p>
+        <p>Not started with enrollment</p>
       </div>
       <div class="action-row" ng-click="viewNotStarted()" ng-class="{'highlight': employees == notStarted}">
         <a ng-click="viewNotStarted()">View</a>
@@ -32,7 +32,7 @@
       <div class="col-xs-4 img-col"><span class="flaticon-user135"></span></div>
       <div class="col-xs-8 info-col">
         <h3>{{notComplete.length}} / {{totalCount}}</h3>
-        <p>Enrollment Incomplete</p>
+        <p>Enrollment in progress</p>
       </div>
       <div class="action-row" ng-click="viewNotComplete()" ng-class="{'highlight': employees == notComplete}">
         <a ng-click="viewNotComplete()">View</a>
@@ -44,7 +44,7 @@
       <div class="col-xs-4 img-col"><span class="flaticon-user135"></span></div>
       <div class="col-xs-8 info-col">
         <h3>{{completed.length}} / {{totalCount}}</h3>
-        <p>Completed Enrollment</p>
+        <p>Enrollment Completed</p>
       </div>
       <div class="action-row" ng-click="viewCompleted()" ng-class="{'highlight': employees == completed}">
         <a ng-click="viewCompleted()">View</a>

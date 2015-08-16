@@ -11,7 +11,7 @@ var employerHome = employersController.controller('employerHome',
   'benefitListRepository',
   'countRepository',
   'documentTypeService',
-  'BenefitElectionService',
+  'CompanyEmployeeEnrollmentSummaryRepository',
   function ($scope,
             $location,
             employerRepository,
@@ -22,7 +22,7 @@ var employerHome = employersController.controller('employerHome',
             benefitListRepository,
             countRepository,
             documentTypeService,
-            BenefitElectionService){
+            CompanyEmployeeEnrollmentSummaryRepository){
 
     $scope.employeeCount = 0;
     $scope.brokerCount = 0;
@@ -76,32 +76,10 @@ var employerHome = employersController.controller('employerHome',
     };
 
     var getBenefitElectionCount = function(company){
-      BenefitElectionService.getBenefitElectionsByCompany(company.id)
-      .then(function(benefitSelectionArray){
-        var selectedEmployeeArray = [];
-        _.each(benefitSelectionArray, function(benefitItem){
-          var existingEmployee = _.find(selectedEmployeeArray, function(employee){
-            return employee.userId === benefitItem.userId;
-          });
-          if(!existingEmployee){
-            selectedEmployeeArray.push(benefitItem);
-          }
-        });
-        $scope.benefitEnrollCount += _.size(selectedEmployeeArray);
+      CompanyEmployeeEnrollmentSummaryRepository.ByCompany.get({comp_id:company.id})
+      .$promise.then(function(response){
+        $scope.benefitEnrollCount = response.enrollmentCompleted.length;
       });
-      BenefitElectionService.getBenefitWaivedListByCompany(company.id)
-      .then(function(waivedList){
-        waivedEmployeeArray = [];
-        _.each(waivedList, function(waivedItem){
-          var existingEmployee = _.find(waivedEmployeeArray, function(employee){
-            return employee.userId == waivedItem.userId;
-          });
-          if(!existingEmployee){
-            waivedEmployeeArray.push(waivedItem);
-          }
-        });
-        $scope.benefitEnrollCount += _.size(waivedEmployeeArray);
-      })
     };
 
     var userPromise = currentUser.get()
@@ -1184,7 +1162,7 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
 
         // TODO: Could/should FSA information be considered one kind of benefit election
         //       and this logic of getting FSA data for an employee be moved into the
-        //       employeeBenefitElectionService?
+        //       BenefitElectionService?
         
         FsaService.getFsaElectionForUser($scope.employee.id, company_id).then(function(response) {
           $scope.employee.fsaElection = response;

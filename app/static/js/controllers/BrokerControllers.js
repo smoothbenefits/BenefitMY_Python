@@ -326,7 +326,7 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
 
         // TODO: Could/should FSA information be considered one kind of benefit election
         //       and this logic of getting FSA data for an employee be moved into the
-        //       employeeBenefitElectionService?
+        //       BenefitElectionService?
         
         FsaService.getFsaElectionForUser($scope.employee.id, company_id).then(function(response) {
           $scope.employee.fsaElection = response;
