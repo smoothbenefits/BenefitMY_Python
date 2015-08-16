@@ -24,11 +24,21 @@ class CompanyEnrollmentSummaryTestCase(TestCase, ViewTestBase):
         self.assertNotEqual(response.content, '')
 
         summary = json.loads(response.content)
-        self.assertIn('enrollmentStarted', summary)
-        self.assertIn('enrollmentcompleted', summary)
-        self.assertEqual(summary['enrollmentStarted'], 1)
-        self.assertEqual(summary['enrollmentcompleted'], 1)
+        self.assertIn('enrollmentNotComplete', summary)
+        self.assertIn('enrollmentCompleted', summary)
+        self.assertIn('enrollmentNotStarted', summary)
+        
+        not_started = summary['enrollmentNotStarted']
+        self.assertEqual(len(not_started), 1)
+        self.assertEqual(not_started[0]['id'], self.normalize_key(4))
+        
+        started = summary['enrollmentNotComplete']
+        self.assertEqual(len(started), 0)
 
+        completed = summary['enrollmentCompleted']
+        self.assertEqual(len(completed), 1)
+        self.assertEqual(completed[0]['id'], self.normalize_key(3))
+        
     def test_get_company_enrollment_summary_company_non_existent(self):
 
         response = self.client.get(reverse('company_enrollment_summary_api', kwargs={'comp_id': self.normalize_key(10)}))

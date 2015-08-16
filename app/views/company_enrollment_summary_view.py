@@ -3,13 +3,18 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db import connection
 from app.models.company import Company
+from app.service.hash_key_service import HashKeyService
 
 
 class CompanyEnrollmentSummaryView(APIView):
+    def __init__(self):
+        self.hash_service = HashKeyService()
 
-    def _retrieve_started_count_from_DB(self, company_id):
+    def _retrieve_not_started_from_DB(self, company_id):
         with connection.cursor() as cursor:
-            cursor.execute("""select count(distinct cu.user_id) from app_companyuser cu 
+            cursor.execute("""select distinct cu.user_id, COALESCE(p.first_name, u.first_name), COALESCE(p.last_name, u.last_name) 
+from app_companyuser cu
+join app_authuser u on u.id = cu.user_id
 left join app_person p on p.user_id=cu.user_id and p.relationship='self'
 left join app_usercompanybenefitplanoption health on health.user_id = cu.user_id 
 left join app_usercompanylifeinsuranceplan basic on basic.user_id = cu.user_id 
@@ -21,7 +26,34 @@ left join app_personcompanyhraplan hra on hra.person_id = p.id
 left join app_fsa fsa on fsa.user_id = cu.user_id
 where cu.company_id = %s
 and cu.company_user_type = 'employee'
-and p.id is not null 
+and (p.id is null
+or
+(health.id is null 
+ and basic.id is null 
+ and sp.id is null 
+ and ltd.id is null 
+ and std.id is null 
+ and hwaive.id is null 
+ and hra.id is null 
+ and fsa.id is null))""", [company_id])
+            rows = cursor.fetchall()
+            return self._convert_db_rows_to_list(rows)
+
+    def _retrieve_started_from_DB(self, company_id):
+        with connection.cursor() as cursor:
+            cursor.execute("""select distinct cu.user_id, p.first_name, p.last_name 
+from app_companyuser cu 
+join app_person p on p.user_id=cu.user_id and p.relationship='self'
+left join app_usercompanybenefitplanoption health on health.user_id = cu.user_id 
+left join app_usercompanylifeinsuranceplan basic on basic.user_id = cu.user_id 
+left join app_personcompsuppllifeinsuranceplan sp on sp.person_id = p.id 
+left join app_usercompanyltdinsuranceplan ltd on ltd.user_id = cu.user_id 
+left join app_usercompanystdinsuranceplan std on std.user_id=cu.user_id 
+left join app_usercompanywaivedbenefit hwaive on hwaive.user_id = cu.user_id
+left join app_personcompanyhraplan hra on hra.person_id = p.id
+left join app_fsa fsa on fsa.user_id = cu.user_id
+where cu.company_id = %s
+and cu.company_user_type = 'employee'
 and (health.id is not null 
      or basic.id is not null 
      or sp.id is not null 
@@ -31,13 +63,14 @@ and (health.id is not null
      or hra.id is not null 
      or fsa.id is not null);""", [company_id])
 
-            row = cursor.fetchone()
-            return row[0]
+            rows = cursor.fetchall()
+            return self._convert_db_rows_to_list(rows)
 
-    def _retrieve_completed_count_from_DB(self, company_id): 
+    def _retrieve_completed_from_DB(self, company_id): 
         with connection.cursor() as cursor:
-            cursor.execute("""select count(distinct cu.user_id) from app_companyuser as cu 
-left join app_person as p on p.user_id=cu.user_id and p.relationship='self'
+            cursor.execute("""select distinct cu.user_id, p.first_name, p.last_name
+from app_companyuser as cu 
+join app_person as p on p.user_id=cu.user_id and p.relationship='self'
 left join app_companybenefitplanoption as comphealth on comphealth.company_id = cu.company_id
 left join app_usercompanybenefitplanoption as health on health.user_id = cu.user_id and comphealth.id = health.benefit_id
 left join app_companylifeinsuranceplan as compbasic on compbasic.company_id = cu.company_id
@@ -55,7 +88,6 @@ left join app_fsa as fsa on fsa.user_id = cu.user_id and compfsa.id = fsa.compan
 left join app_usercompanywaivedbenefit as hwaive on hwaive.user_id = cu.user_id
 where cu.company_id = %s
 and cu.company_user_type = 'employee' 
-and p.id is not null
 and (comphealth.id is null or health.id is not null or hwaive.id is not null)
 and (compbasic.id is null or basic.id is not null)
 and (compsup.id is null or sp.id is not null)
@@ -63,19 +95,33 @@ and (compltd.id is null or ltd.id is not null)
 and (compstd.id is null or std.id is not null)
 and (comphra.id is null or hra.id is not null)
 and (compfsa.id is null or fsa.id is not null);""", [company_id])
-            row = cursor.fetchone()
-            return row[0]
+            rows = cursor.fetchall()
+            return self._convert_db_rows_to_list(rows)
+
+    def _convert_db_rows_to_list(self, rows):
+        list = []
+        for row in rows:
+            list.append({"id": self.hash_service.encode_key(row[0]),
+                         "firstName": row[1],
+                         "lastName": row[2]})
+        return list
 
     def get(self, request, comp_id, format=None):
         if not Company.objects.filter(pk=comp_id).exists():
             raise Http404
+        not_started = self._retrieve_not_started_from_DB(comp_id)
+        started = self._retrieve_started_from_DB(comp_id)
+        completed = self._retrieve_completed_from_DB(comp_id)
 
-        started_count = self._retrieve_started_count_from_DB(comp_id)
-        completed_count = self._retrieve_completed_count_from_DB(comp_id)
+        not_complete = []
+        for start_user in started:
+            if not start_user in completed:
+                not_complete.append(start_user)
 
         response = {
-            "enrollmentStarted": started_count,
-            "enrollmentcompleted": completed_count
+            "enrollmentNotStarted": not_started,
+            "enrollmentNotComplete": not_complete,
+            "enrollmentCompleted": completed
         }
 
         return Response(response)

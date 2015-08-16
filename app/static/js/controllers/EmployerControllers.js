@@ -1049,25 +1049,36 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     
     employerWorkerRepository.get({companyId:company_id})
     .$promise.then(function(response){
-        _.each(response.user_roles, function(role){
-          if(role.company_user_type=='employee')
-          {
-            $scope.employees.push(role);
-          }
-        });
+        var allEmployees = _.where(response.user_roles, {company_user_type:'employee'});
+        $scope.totalCount = allEmployees.length;
     });
 
     CompanyEmployeeEnrollmentSummaryRepository.ByCompany.get({comp_id:company_id})
     .$promise.then(function(response){
-      $scope.startedCount = response.enrollmentStarted;
-      $scope.completedCount = response.enrollmentcompleted;
+      $scope.notStarted = response.enrollmentNotStarted;
+      $scope.notComplete = response.enrollmentNotComplete;
+      $scope.completed = response.enrollmentCompleted;
     });
+
+    $scope.viewNotStarted = function(){
+      $scope.employees = $scope.notStarted; 
+    };
+    $scope.viewNotComplete = function(){
+      $scope.employees = $scope.notComplete; 
+    };
+    $scope.viewCompleted = function(){
+      $scope.employees = $scope.completed;
+    };
 
     $scope.viewDetails = function(employeeId){
         $state.go('admin_employee_benefit_selection', {company_id:company_id, employee_id:employeeId});
     };
 
     $scope.back = function(){
+      $location.path('/admin');
+    };
+
+    $scope.backToDashboard = function(){
       $location.path('/admin');
     };
 

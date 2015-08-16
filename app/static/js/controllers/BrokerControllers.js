@@ -212,24 +212,30 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
            CompanyEmployeeEnrollmentSummaryRepository){
 
       var company_id = $stateParams.client_id;
-
       $scope.employees = [];
-    
+      
       employerWorkerRepository.get({companyId:company_id})
       .$promise.then(function(response){
-          _.each(response.user_roles, function(role){
-            if(role.company_user_type=='employee')
-            {
-              $scope.employees.push(role);
-            }
-          });
+          var allEmployees = _.where(response.user_roles, {company_user_type:'employee'});
+          $scope.totalCount = allEmployees.length;
       });
 
       CompanyEmployeeEnrollmentSummaryRepository.ByCompany.get({comp_id:company_id})
       .$promise.then(function(response){
-        $scope.startedCount = response.enrollmentStarted;
-        $scope.completedCount = response.enrollmentcompleted;
+        $scope.notStarted = response.enrollmentNotStarted;
+        $scope.notComplete = response.enrollmentNotComplete;
+        $scope.completed = response.enrollmentCompleted;
       });
+
+      $scope.viewNotStarted = function(){
+        $scope.employees = $scope.notStarted; 
+      };
+      $scope.viewNotComplete = function(){
+        $scope.employees = $scope.notComplete; 
+      };
+      $scope.viewCompleted = function(){
+        $scope.employees = $scope.completed;
+      };
 
       $scope.viewDetails = function(employeeId){
         $state.go('broker_company_employee_enrollment', {company_id:company_id, employee_id:employeeId});
@@ -283,11 +289,11 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
     $scope.employee = {id:$stateParams.employee_id};
 
     $scope.backToDashboard = function(){
-      $location.path('/admin');
+      $location.path('/broker');
     };
 
     $scope.back = function(){
-      $location.path('/admin/benefit/election/' + company_id);
+      $location.path('/broker/benefit/selected/' + company_id);
     };
 
     companyRepository.get({clientId: company_id})

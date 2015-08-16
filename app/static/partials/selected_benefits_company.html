@@ -1,6 +1,6 @@
 <div class="breadcrumb">
   <a ng-click="backToDashboard()">{{getCurRoleString()}} Dashboard</a>
-  <span>{{getCurRoleString()}} Dashboard</span>
+  <span>Employee Benefit Elections</span>
 </div>
 
 <div class="content-header">
@@ -14,15 +14,16 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-  <h6>Benefit Enrollment Summary</h6>
+  <h6>Employee Benefit Enrollment Summary</h6>
   <div class="dashboard-card">
     <div class="info-row">
       <div class="col-xs-4 img-col"><span class="flaticon-heart260"></span></div>
       <div class="col-xs-8 info-col">
-        <h3>{{employees.length}}</h3>
-        <p>Total Employees</p>
+        <h3>{{notStarted.length}} / {{totalCount}}</h3>
+        <p>No Enrollment</p>
       </div>
-      <div class="action-row">
+      <div class="action-row" ng-click="viewNotStarted()" ng-class="{'highlight': employees == notStarted}">
+        <a ng-click="viewNotStarted()">View</a>
       </div>
     </div>
   </div><!-- / .dashboard-card -->
@@ -30,10 +31,11 @@
     <div class="info-row">
       <div class="col-xs-4 img-col"><span class="flaticon-heart260"></span></div>
       <div class="col-xs-8 info-col">
-        <h3>{{startedCount}}</h3>
-        <p>Employee Started Enrollment</p>
+        <h3>{{notComplete.length}} / {{totalCount}}</h3>
+        <p>Enrollment Incomplete</p>
       </div>
-      <div class="action-row">
+      <div class="action-row" ng-click="viewNotComplete()" ng-class="{'highlight': employees == notComplete}">
+        <a ng-click="viewNotComplete()">View</a>
       </div>
     </div>
   </div><!-- / .dashboard-card -->
@@ -41,17 +43,17 @@
     <div class="info-row">
       <div class="col-xs-4 img-col"><span class="flaticon-heart260"></span></div>
       <div class="col-xs-8 info-col">
-        <h3>{{completedCount}}</h3>
-        <p>Employee Completed Enrollment</p>
+        <h3>{{completed.length}} / {{totalCount}}</h3>
+        <p>Completed Enrollment</p>
       </div>
-      <div class="action-row">
+      <div class="action-row" ng-click="viewCompleted()" ng-class="{'highlight': employees == completed}">
+        <a ng-click="viewCompleted()">View</a>
       </div>
     </div>
   </div><!-- / .dashboard-card -->
-  <h6>Employee List</h6>
-  <div class="row">
-    <div class="col-sm-4" ng-repeat="employee in employees | orderBy:'user.last_name'">
-      <a ng-click="viewDetails(employee.user.id)">{{employee.user.first_name}} {{employee.user.last_name}}</a>
+  <div class="row" ng-show="employees">
+    <div class="col-sm-3" ng-repeat="employee in employees | orderBy:'lastName'">
+      <a ng-click="viewDetails(employee.id)">{{employee.firstName}} {{employee.lastName}}</a>
     </div>
   </div>  
 </div><!-- / .content-body -->

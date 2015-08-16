@@ -187,6 +187,8 @@
           text-align: center;
           font-size: 13px;
           padding: 6px; }
+        #dashboard-wrapper #content-wrapper .content-body .dashboard-card .action-row.highlight {
+          background: #DBFFDB; }
       #dashboard-wrapper #content-wrapper .content-body .dashboard-card .info-col {
         padding: 20px;
         padding-right: 10px; }
