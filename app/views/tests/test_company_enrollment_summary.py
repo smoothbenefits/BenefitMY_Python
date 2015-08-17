@@ -27,6 +27,7 @@ class CompanyEnrollmentSummaryTestCase(TestCase, ViewTestBase):
         self.assertIn('enrollmentNotComplete', summary)
         self.assertIn('enrollmentCompleted', summary)
         self.assertIn('enrollmentNotStarted', summary)
+        self.assertIn('totalEmployeeCount', summary)
         
         not_started = summary['enrollmentNotStarted']
         self.assertEqual(len(not_started), 1)
@@ -38,6 +39,9 @@ class CompanyEnrollmentSummaryTestCase(TestCase, ViewTestBase):
         completed = summary['enrollmentCompleted']
         self.assertEqual(len(completed), 1)
         self.assertEqual(completed[0]['id'], self.normalize_key(3))
+
+        totalCount = summary['totalEmployeeCount']
+        self.assertEqual(totalCount, 2)
         
     def test_get_company_enrollment_summary_company_non_existent(self):
 

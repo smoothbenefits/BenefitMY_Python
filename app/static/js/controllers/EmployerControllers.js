@@ -1012,40 +1012,30 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   '$stateParams',
   'companyRepository',
   'CompanyEmployeeSummaryService',
-  'employerWorkerRepository',
-  'CompanyEmployeeEnrollmentSummaryRepository',
+  'CompanyBenefitEnrollmentSummaryService',
   function($scope,
            $location,
            $state,
            $stateParams,
            companyRepository,
            CompanyEmployeeSummaryService,
-           employerWorkerRepository,
-           CompanyEmployeeEnrollmentSummaryRepository){
+           CompanyBenefitEnrollmentSummaryService){
     var company_id = $stateParams.company_id;
     $scope.employees = [];
-    
-    employerWorkerRepository.get({companyId:company_id})
-    .$promise.then(function(response){
-        var allEmployees = _.where(response.user_roles, {company_user_type:'employee'});
-        $scope.totalCount = allEmployees.length;
-    });
 
-    CompanyEmployeeEnrollmentSummaryRepository.ByCompany.get({comp_id:company_id})
-    .$promise.then(function(response){
-      $scope.notStarted = response.enrollmentNotStarted;
-      $scope.notComplete = response.enrollmentNotComplete;
-      $scope.completed = response.enrollmentCompleted;
+    CompanyBenefitEnrollmentSummaryService.getEnrollmentSummary(company_id)
+    .then(function(response){
+      $scope.summary = response;
     });
 
     $scope.viewNotStarted = function(){
-      $scope.employees = $scope.notStarted; 
+      $scope.employees = $scope.summary.notStarted; 
     };
     $scope.viewNotComplete = function(){
-      $scope.employees = $scope.notComplete; 
+      $scope.employees = $scope.summary.notComplete; 
     };
     $scope.viewCompleted = function(){
-      $scope.employees = $scope.completed;
+      $scope.employees = $scope.summary.completed;
     };
 
     $scope.viewDetails = function(employeeId){

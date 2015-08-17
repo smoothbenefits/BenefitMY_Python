@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db import connection
 from app.models.company import Company
+from app.models.company_user import CompanyUser
 from app.service.hash_key_service import HashKeyService
 
 
@@ -118,10 +119,13 @@ and (compfsa.id is null or fsa.id is not null);""", [company_id])
             if not start_user in completed:
                 not_complete.append(start_user)
 
+        totalCount = CompanyUser.objects.filter(company=comp_id, company_user_type='employee').count()
+
         response = {
             "enrollmentNotStarted": not_started,
             "enrollmentNotComplete": not_complete,
-            "enrollmentCompleted": completed
+            "enrollmentCompleted": completed,
+            "totalEmployeeCount": totalCount
         }
 
         return Response(response)
