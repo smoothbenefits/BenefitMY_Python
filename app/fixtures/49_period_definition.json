@@ -54,13 +54,5 @@
     },
     "model": "app.sysperioddefinition",
     "pk": 7
-  },
-  {
-    "fields": {
-      "name": "Daily",
-      "month_factor": null
-    },
-    "model": "app.sysperioddefinition",
-    "pk": 8
   }
 ]

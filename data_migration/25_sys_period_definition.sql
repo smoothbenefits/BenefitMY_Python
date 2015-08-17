@@ -36,10 +36,5 @@ IF NOT EXISTS (select 1 from app_sysperioddefinition where name = 'Per Diem') TH
     values('Per Diem');
 END IF;
 
-IF NOT EXISTS (select 1 from app_sysperioddefinition where name = 'Daily') THEN
-    insert into app_sysperioddefinition (name)
-    values('Daily');
-END IF;
-
 END
 $$
