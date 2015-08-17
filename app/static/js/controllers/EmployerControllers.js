@@ -812,6 +812,13 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
         });
     };
 
+    $scope.isFullTime = function(employee) {
+      if (!employee.employeeProfile){
+        return false;
+      }
+      return employee.employeeProfile.employmentType === 'FullTime';
+    };
+
     $scope.addCompensation = function() {
       var modalInstance = $modal.open({
         templateUrl: '/static/partials/employee_record/modal_edit_employee_compensation.html',

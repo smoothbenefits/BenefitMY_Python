@@ -9,11 +9,22 @@ benefitmyService.factory(
          var viewModel = {
             company: dataModel.company,
             person: dataModel.person,
-            salary: Number(dataModel.annual_base_salary).toFixed(2),
-            increasePercentage: Number(dataModel.increase_percentage).toFixed(2),
             effectiveDate: dataModel.effective_date,
             created: dataModel.created_at
          };
+
+         if (dataModel.annual_base_salary) {
+           viewModel.salary = Number(dataModel.annual_base_salary).toFixed(2);
+         }
+         if (dataModel. increasePercentage) {
+           viewModel.increasePercentage = Number(dataModel.increase_percentage).toFixed(2);
+         }
+         if (dataModel.hourly_rate) {
+           viewModel.hourlyRate = Number(dataModel.hourly_rate).toFixed(2);
+         }
+         if (dataModel.projected_hour_per_month) {
+           viewModel.projectedHourPerMonth = Number(dataModel.projected_hour_per_month).toFixed(2);
+         }
 
          return viewModel;
       };
