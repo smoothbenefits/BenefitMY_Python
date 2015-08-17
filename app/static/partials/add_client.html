@@ -21,6 +21,24 @@
           <span ng-show="form.company_name.$error.required">Company name field is required</span>
         </div>
       </div>
+      <div class="form-label">Employer Identification Number (EIN)*</div>
+      <div class="textbox">
+        <input type="text"
+        name="ein"
+        ng-model="client.company.ein"
+        ui-mask="999999999"
+        ng-required="true">
+        <div class="form-error" ng-show="form.ein.$dirty && form.ein.$invalid">
+          <span ng-show="form.ein.$error.required">Employer Identification Number field is required</span>
+        </div>
+      </div>
+      <div class="form-label">Offer of Coverage Code</div>
+      <div class="textbox">
+        <input type="text"
+        name="offer_of_coverage_code"
+        ng-model="client.company.offer_of_coverage_code"
+        ng-required="false">
+      </div>
       <div class="form-label">First Name of Contact*</div>
       <div class="textbox">
         <input type="text"

@@ -9,6 +9,9 @@ class Company(models.Model):
     pay_period_definition = models.ForeignKey(SysPeriodDefinition,
                                       related_name="sys_pay_period_definition",
                                       default=2)
+    ein = models.CharField(max_length=30, null=True, blank=True)
+
+    offer_of_coverage_code = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
         return self.name
