@@ -1,27 +1,11 @@
 [
   {
     "fields": {
-      "name": "Per Diem",
-      "month_factor": null
-    },
-    "model": "app.sysperioddefinition",
-    "pk": 1
-  },
-  {
-    "fields": {
-      "name": "Daily",
-      "month_factor": null
-    },
-    "model": "app.sysperioddefinition",
-    "pk": 2
-  },
-  {
-    "fields": {
       "name": "Weekly",
       "month_factor": 0.23076923076923
     },
     "model": "app.sysperioddefinition",
-    "pk": 3
+    "pk": 1
   },
   {
     "fields": {
@@ -29,7 +13,7 @@
       "month_factor": 0.46153846153846
     },
     "model": "app.sysperioddefinition",
-    "pk": 4
+    "pk": 2
   },
   {
     "fields": {
@@ -37,7 +21,7 @@
       "month_factor": 0.5
     },
     "model": "app.sysperioddefinition",
-    "pk": 5
+    "pk": 3
   },
   {
     "fields": {
@@ -45,7 +29,7 @@
       "month_factor": 1
     },
     "model": "app.sysperioddefinition",
-    "pk": 6
+    "pk": 4
   },
   {
     "fields": {
@@ -53,12 +37,28 @@
       "month_factor": 3
     },
     "model": "app.sysperioddefinition",
-    "pk": 7
+    "pk": 5
   },
   {
     "fields": {
       "name": "Annually",
       "month_factor": 12
+    },
+    "model": "app.sysperioddefinition",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "name": "Per Diem",
+      "month_factor": null
+    },
+    "model": "app.sysperioddefinition",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "name": "Daily",
+      "month_factor": null
     },
     "model": "app.sysperioddefinition",
     "pk": 8

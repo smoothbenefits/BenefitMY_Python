@@ -18,7 +18,7 @@ class UserCompanyTestCase(TestCase, ViewTestBase):
                          'BenefitMy Inc.')
         self.assertIn('pay_period_definition', result['company_roles'][0]['company'])
         self.assertEqual(result['company_roles'][0]['company']['pay_period_definition']['name'], 'Semi-Monthly')
-        self.assertEqual(result['company_roles'][0]['company']['pay_period_definition']['id'], self.normalize_key(5))
+        self.assertEqual(result['company_roles'][0]['company']['pay_period_definition']['id'], self.normalize_key(3))
         self.assertEqual(result['company_roles'][0]['company']['pay_period_definition']['month_factor'], 0.5)
 
 
