@@ -11,7 +11,7 @@ var employerHome = employersController.controller('employerHome',
   'benefitListRepository',
   'countRepository',
   'documentTypeService',
-  'CompanyEmployeeEnrollmentSummaryRepository',
+  'CompanyBenefitEnrollmentSummaryService',
   function ($scope,
             $location,
             employerRepository,
@@ -22,7 +22,7 @@ var employerHome = employersController.controller('employerHome',
             benefitListRepository,
             countRepository,
             documentTypeService,
-            CompanyEmployeeEnrollmentSummaryRepository){
+            CompanyBenefitEnrollmentSummaryService){
 
     $scope.employeeCount = 0;
     $scope.brokerCount = 0;
@@ -76,9 +76,9 @@ var employerHome = employersController.controller('employerHome',
     };
 
     var getBenefitElectionCount = function(company){
-      CompanyEmployeeEnrollmentSummaryRepository.ByCompany.get({comp_id:company.id})
-      .$promise.then(function(response){
-        $scope.benefitEnrollCount = response.enrollmentCompleted.length;
+      CompanyBenefitEnrollmentSummaryService.getEnrollmentSummary(company.id)
+      .then(function(response){
+        $scope.benefitEnrollCount = response.completed.length;
       });
     };
 
