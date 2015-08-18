@@ -5,6 +5,13 @@ benefitmyService.factory('EmployeeProfileService',
     'EmployeeProfileRepository',
     'PersonService',
     function ($q, EmployeeProfileRepository, PersonService){
+        var isFullTimeEmploymentType = function(employeeProfile) {
+          if (!employeeProfile) {
+            return false;
+          }
+          return employeeProfile.employmentType === 'FullTime';
+        };
+
         var mapDomainToViewModel = function(employeeProfileDomainModel) {
             var viewModel = {};
 
@@ -54,6 +61,8 @@ benefitmyService.factory('EmployeeProfileService',
         };
 
         return {
+            isFullTimeEmploymentType: isFullTimeEmploymentType,
+
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();
 

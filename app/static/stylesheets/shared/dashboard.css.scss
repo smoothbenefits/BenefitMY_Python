@@ -232,6 +232,9 @@
                         font-size: $size-sm;
                         padding: $gutter-xs;
                     }
+                    &.highlight{
+                        background: #99FF66;
+                    }
                 }
                 .info-col {
                     padding: $gutter;

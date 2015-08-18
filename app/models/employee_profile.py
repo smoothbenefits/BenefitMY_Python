@@ -4,8 +4,14 @@ import reversion
 from django.db import models
 from person import Person
 from company import Company
+from sys_period_definition import SysPeriodDefinition
 
-EMPLOYMENT_TYPES = ([(item, item) for item in ['FullTime', 'PartTime', 'Contractor', 'Intern']])
+FULL_TIME = 'FullTime'
+PART_TIME = 'PartTime'
+CONTRACTOR = 'Contractor'
+INTERN = 'Intern'
+
+EMPLOYMENT_TYPES = ([(item, item) for item in [FULL_TIME, PART_TIME, CONTRACTOR, INTERN]])
 EMPLOYMENT_STATUS = ([(item, item) for item in ['Active', 'Prospective', 'Terminated', 'OnLeave']])
 
 @reversion.register
@@ -24,6 +30,11 @@ class EmployeeProfile(models.Model):
 
     employment_status = models.CharField(max_length=20, choices=EMPLOYMENT_STATUS,
                                          null=True, blank=True)
+
+    pay_rate = models.ForeignKey(SysPeriodDefinition,
+                                 related_name="employee_profile_pay_rate",
+                                 blank=True,
+                                 null=True)
 
     person = models.ForeignKey(Person,
                                default=0,

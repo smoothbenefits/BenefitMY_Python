@@ -44,6 +44,19 @@ INSTALLED_APPS = (
     'django_cron',
 )
 
+PDFTK_BIN = './.apt/usr/bin/pdftk'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+    },
+    {
+        'BACKEND': 'app.service.report.pdf_tk_engine.PdftkEngine',
+        'APP_DIRS': True,
+    },
+]
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -242,6 +255,7 @@ PIPELINE_JS = {
             'js/services/CompanyBenefitAvailabilityService.js',
             'js/services/employeePayrollService.js',
             'js/services/EmploymentProfileService.js',
+            'js/services/EmployerEmployeeManagementService.js',
             'js/services/FeatureConfigurationService.js',
             'js/services/StdService.js',
             'js/services/LtdService.js',
@@ -254,7 +268,8 @@ PIPELINE_JS = {
             'js/services/HraService.js',
             'js/services/DocumentService.js',
             'js/services/BenefitUpdateReasonService.js',
-            'js/services/BenefitPolicyKeyService.js'
+            'js/services/BenefitPolicyKeyService.js',
+            'js/services/CompanyBenefitEnrollmentSummaryService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }
