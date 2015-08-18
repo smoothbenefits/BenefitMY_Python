@@ -17,6 +17,10 @@ benefitmyService.factory('EmployerEmployeeManagementService',
       }
     ];
 
+    var isFullTimeEmploymentType = function(employmentType) {
+      return employmentType.id === 1;
+    };
+
     var mapToEmployeeDomainModel = function(companyId, viewModel, templateFields){
       var domainModel = {
         "company": companyId,
@@ -130,6 +134,7 @@ benefitmyService.factory('EmployerEmployeeManagementService',
 
     return {
       EmploymentTypes : employmentTypes,
+      IsFullTimeEmploymentType: isFullTimeEmploymentType,
       AddNewEmployee : addNewEmployee
     };
   }

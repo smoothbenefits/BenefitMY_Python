@@ -206,11 +206,13 @@ var employerUser = employersController.controller('employerUser',
         send_email:true,
         new_employee:true,
         create_docs:true,
-        employment_type: _.findWhere($scope.employment_types, function(type) {return type.id === 1;})
+        employment_type: _.findWhere($scope.employment_types, function(type) {
+          return EmployerEmployeeManagementService.IsFullTimeEmploymentType(type);
+        })
       };
 
       $scope.isFullTime = function(employee) {
-        return employee.employment_type.id === 1;
+        return EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type);
       };
 
       employerWorkerRepository.get({companyId:compId})

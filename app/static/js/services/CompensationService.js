@@ -39,7 +39,7 @@ benefitmyService.factory(
         if (viewModel.salary) {
           domainModel.annual_base_salary = Number(viewModel.salary).toFixed(2);
         }
-        if (viewModel. increasePercentage) {
+        if (viewModel.increasePercentage) {
           domainModel.increase_percentage = Number(viewModel.increasePercentage).toFixed(2);
         }
         if (viewModel.hourly_rate) {
