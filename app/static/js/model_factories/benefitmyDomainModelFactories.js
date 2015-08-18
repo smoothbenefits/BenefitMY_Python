@@ -450,3 +450,11 @@ benefitmyDomainModelFactories.factory('CompensationRepository', ['$resource',
     };
   }
 ]);
+
+benefitmyDomainModelFactories.factory('CompanyEmployeeEnrollmentSummaryRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompany:$resource(PREFIX + 'company/:comp_id/enrollment_summary', {comp_id:'@comp_id'})
+    };
+  }
+]);

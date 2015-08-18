@@ -267,7 +267,8 @@ PIPELINE_JS = {
             'js/services/HraService.js',
             'js/services/DocumentService.js',
             'js/services/BenefitUpdateReasonService.js',
-            'js/services/BenefitPolicyKeyService.js'
+            'js/services/BenefitPolicyKeyService.js',
+            'js/services/CompanyBenefitEnrollmentSummaryService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }
