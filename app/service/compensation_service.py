@@ -1,14 +1,15 @@
 from django.utils import timezone
 from app.models.employee_compensation import EmployeeCompensation
-from app.models.employee_profile import EmployeeProfile
+from app.models.employee_profile import EmployeeProfile, FULL_TIME
 
 class CompensationService(object):
     def __init__(self, person_id):
         self.person_id = person_id
 
     def _is_fulltime_employee(self):
-        profile = EmployeeProfile.objects.get(person_id=self.person_id)
-        return profile['employment_type'] == 'FullTime'
+        profiles = EmployeeProfile.objects.filter(person_id=self.person_id)
+        if profiles and len(profiles) > 0:
+            return profiles[0].employment_type == FULL_TIME
 
     def _get_compensation_records_order_by_effective_date(self):
         try:
@@ -21,7 +22,7 @@ class CompensationService(object):
         if not comps:
             raise ValueError('No Salary Records')
         current_salary = None
-        is_fulltime = _is_fulltime_employee()
+        is_fulltime = self._is_fulltime_employee()
         for comp in comps:
             if comp.effective_date < timezone.now():
                 if is_fulltime:

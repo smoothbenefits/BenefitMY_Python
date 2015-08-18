@@ -797,7 +797,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       if (!employee.employeeProfile){
         return false;
       }
-      return employee.employeeProfile.employmentType === 'FullTime';
+      return EmployeeProfileService.isFullTimeEmploymentType(employee.employeeProfile);
     };
 
     $scope.addCompensation = function() {
@@ -981,10 +981,10 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     });
 
     $scope.viewNotStarted = function(){
-      $scope.employees = $scope.summary.notStarted; 
+      $scope.employees = $scope.summary.notStarted;
     };
     $scope.viewNotComplete = function(){
-      $scope.employees = $scope.summary.notComplete; 
+      $scope.employees = $scope.summary.notComplete;
     };
     $scope.viewCompleted = function(){
       $scope.employees = $scope.summary.completed;
@@ -1105,7 +1105,7 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
         // TODO: Could/should FSA information be considered one kind of benefit election
         //       and this logic of getting FSA data for an employee be moved into the
         //       BenefitElectionService?
-        
+
         FsaService.getFsaElectionForUser($scope.employee.id, company_id).then(function(response) {
           $scope.employee.fsaElection = response;
         });
@@ -1141,5 +1141,5 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
     }, function(errorResponse){
       alert(errorResponse.content);
     });
-  }                                                       
+  }
 ]);

@@ -6,7 +6,12 @@ from person import Person
 from company import Company
 from sys_period_definition import SysPeriodDefinition
 
-EMPLOYMENT_TYPES = ([(item, item) for item in ['FullTime', 'PartTime', 'Contractor', 'Intern']])
+FULL_TIME = 'FullTime'
+PART_TIME = 'PartTime'
+CONTRACTOR = 'Contractor'
+INTERN = 'Intern'
+
+EMPLOYMENT_TYPES = ([(item, item) for item in [FULL_TIME, PART_TIME, CONTRACTOR, INTERN]])
 EMPLOYMENT_STATUS = ([(item, item) for item in ['Active', 'Prospective', 'Terminated', 'OnLeave']])
 
 @reversion.register
