@@ -16,7 +16,7 @@ benefitmyService.factory(
          if (dataModel.annual_base_salary) {
            viewModel.salary = Number(dataModel.annual_base_salary).toFixed(2);
          }
-         if (dataModel. increasePercentage) {
+         if (dataModel.increasePercentage) {
            viewModel.increasePercentage = Number(dataModel.increase_percentage).toFixed(2);
          }
          if (dataModel.hourly_rate) {
