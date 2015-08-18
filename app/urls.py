@@ -10,6 +10,9 @@ from app.views.employee_profile_view import (
 from app.views.employee_compensation_view import (
     EmployeeCompensationView,
     EmployeeCompensationByPersonView)
+from app.views.employee_timetracking_view import (
+    EmployeeTimeTrackingView,
+    EmployeeTimeTrackingByPersonCompanyView)
 from app.views.user_view import (
     UserView,
     UsersView,
@@ -288,7 +291,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
         CompanyStdInsurancePlanView.as_view(), name='company_std_insurance_plan_api'),
 
-    url(r'^%s/user/(?P<user_id>\w+)/std_insurance/(?P<pk>\w+)/premium/?$' % PREFIX, 
+    url(r'^%s/user/(?P<user_id>\w+)/std_insurance/(?P<pk>\w+)/premium/?$' % PREFIX,
         CompanyStdInsuranceEmployeePremiumView.as_view(), name='user_company_std_insurance_premium_api'),
 
     # LTD insurance api
@@ -304,7 +307,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
 
-    url(r'^%s/user/(?P<user_id>\w+)/ltd_insurance/(?P<pk>\w+)/premium/?$' % PREFIX, 
+    url(r'^%s/user/(?P<user_id>\w+)/ltd_insurance/(?P<pk>\w+)/premium/?$' % PREFIX,
         CompanyLtdInsuranceEmployeePremiumView.as_view(), name='user_company_ltd_insurance_premium_api'),
 
     # HRA api
@@ -371,6 +374,13 @@ urlpatterns = patterns('app.views',
     url(r'^%s/person/(?P<person_id>\w+)/employee_compensation/?$' % PREFIX,
         EmployeeCompensationByPersonView.as_view(),
         name='employee_compensation_by_person_api'),
+
+    url(r'^%s/employee_timetracking/(?P<pk>\w+)/?$' % PREFIX,
+        EmployeeTimeTrackingView.as_view(),
+        name='employee_timetracking_api'),
+    url(r'^%s/person/(?P<person_id>\w+)/employee_timetracking/?$' % PREFIX,
+        EmployeeTimeTrackingByPersonCompanyView.as_view(),
+        name='employee_timetracking_by_person_api'),
 
     url(r'^%s/benefit_update_reasons/?$' % PREFIX, SysBenefitUpdateReasonView.as_view(), name='sys_benefit_update_reason_api'),
 )
