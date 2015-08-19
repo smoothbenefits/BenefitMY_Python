@@ -75,17 +75,17 @@ join app_person as p on p.user_id=cu.user_id and p.relationship='self'
 left join app_companybenefitplanoption as comphealth on comphealth.company_id = cu.company_id
 left join app_usercompanybenefitplanoption as health on health.user_id = cu.user_id and comphealth.id = health.benefit_id
 left join app_companylifeinsuranceplan as compbasic on compbasic.company_id = cu.company_id
-left join app_usercompanylifeinsuranceplan as basic on basic.user_id = cu.user_id and basic.company_life_insurance_id = compbasic.id
+left join app_usercompanylifeinsuranceplan as basic on basic.user_id = cu.user_id
 left join app_compsuppllifeinsuranceplan as compsup on compsup.company_id = cu.company_id
-left join app_personcompsuppllifeinsuranceplan as sp on sp.person_id = p.id and sp.company_supplemental_life_insurance_plan_id = compsup.id
+left join app_personcompsuppllifeinsuranceplan as sp on sp.person_id = p.id
 left join app_companyltdinsuranceplan as compltd on compltd.company_id = cu.company_id
-left join app_usercompanyltdinsuranceplan as ltd on ltd.user_id = cu.user_id and compltd.id = ltd.company_ltd_insurance_id
+left join app_usercompanyltdinsuranceplan as ltd on ltd.user_id = cu.user_id
 left join app_companystdinsuranceplan as compstd on compstd.company_id = cu.company_id
-left join app_usercompanystdinsuranceplan as std on std.user_id=cu.user_id and compstd.id = std.company_std_insurance_id
+left join app_usercompanystdinsuranceplan as std on std.user_id=cu.user_id
 left join app_companyhraplan as comphra on comphra.company_id = cu.company_id
-left join app_personcompanyhraplan as hra on hra.person_id = p.id and hra.company_hra_plan_id = comphra.id
+left join app_personcompanyhraplan as hra on hra.person_id = p.id
 left join app_companyfsaplan as compfsa on compfsa.company_id = cu.company_id
-left join app_fsa as fsa on fsa.user_id = cu.user_id and compfsa.id = fsa.company_fsa_plan_id
+left join app_fsa as fsa on fsa.user_id = cu.user_id
 left join app_usercompanywaivedbenefit as hwaive on hwaive.user_id = cu.user_id
 where cu.company_id = %s
 and cu.company_user_type = 'employee' 
