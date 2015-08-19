@@ -68,7 +68,7 @@ benefitmyService.factory(
         compensation.person = personId;
         compensation.company = companyId;
         var toSave = mapToDomainModel(compensation);
-        CompensationRepository.ByCompensationId.save({id: personId}, toSave)
+        CompensationRepository.ByCompensationId.save({id: companyId}, toSave)
         .$promise.then(function(response){
           deferred.resolve(response);
         }).catch(function(error) {
