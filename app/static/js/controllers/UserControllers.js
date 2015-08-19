@@ -205,6 +205,11 @@ var userController = userControllers.controller('userController',
       location.href = link;
     };
 
+    $scope.downloadCompanyEmployeeBenefitSummaryPDF = function(){
+      var link = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryPdfUrl($scope.company_id);
+      location.href = link;
+    };
+
     $scope.goToFunctionalView = function(viewLink, parameter){
       var curRole = $scope.getCurRoleFromPath();
       if(curRole)
