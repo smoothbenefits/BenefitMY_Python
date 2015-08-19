@@ -18,6 +18,13 @@
   <div class="panel" ng-repeat="employee in employeeList | orderBy:'name'">
     <div class="panel-head">
       <a ng-click="viewDetails(employee.user.id)">{{employee.user.first_name}} {{employee.user.last_name}}</a>
+      <div class="btn-group" dropdown ng-if="isCurRoleBroker()" style="margin-left: 10px;">
+        <button id="employee-menu-{{employee.user.id}}" type="button" class="btn inline" dropdown-toggle ng-disabled="disabled">
+            Actions <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="employee-menu-{{employee.user.id}}">
+          <li role="menuitem"><a ng-href="{{getEmployee1095cUrl(employee.user.id)}}">Download 1095-C</a></li>
+      </div>
     </div>
     <div class="panel-body">
       <!-- Health benefits summary table -->

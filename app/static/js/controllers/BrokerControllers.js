@@ -304,6 +304,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       $scope.exportCompanyBenefitsBillingSummaryUrl = CompanyEmployeeSummaryService.getCompanyBenefitsBillingReportExcelUrl(clientId);
       $scope.exportCompanyEmployeeSummaryPdfUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryPdfUrl(clientId);
       $scope.companyHphcExcelUrl = CompanyEmployeeSummaryService.getCompanyHphcExcelUrl(clientId);
+
+      $scope.getEmployee1095cUrl = function(employeeUserId) {
+        return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
+      };
 }]);
 
 var brokerEmployeeController = brokersControllers.controller('brokerEmployeeController',
