@@ -888,19 +888,23 @@ var addEmployeeCompensationModalController = employersController.controller(
    '$modal',
    '$modalInstance',
    'CompensationService',
+   'EmployeeProfileService',
    'employeeProfile',
    'currentSalary',
     function($scope,
              $modal,
              $modalInstance,
              CompensationService,
+             EmployeeProfileService,
              employeeProfile,
              currentSalary){
 
       $scope.errorMessage = null;
       $scope.currentSalary = Number(currentSalary);
+      $scope.isFullTime = EmployeeProfileService.isFullTimeEmploymentType(employeeProfile);
       var personId = employeeProfile.personId;
       var companyId = employeeProfile.companyId;
+
 
       $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
@@ -913,9 +917,6 @@ var addEmployeeCompensationModalController = employersController.controller(
           compensation.increasePercentage = (compensation.salary - currentSalary) / currentSalary * 100;
         } else if (!currentSalary && compensation.salary) {
           compensation.increasePercentage = null;
-        } else {
-          $scope.errorMessage = "Error detected in input numbers. Please verify."
-          $modalInstance.dismiss('error');
         }
 
         CompensationService.addCompensationByPerson(compensation, personId, companyId)
