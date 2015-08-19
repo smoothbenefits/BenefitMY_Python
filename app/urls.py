@@ -10,6 +10,9 @@ from app.views.employee_profile_view import (
 from app.views.employee_compensation_view import (
     EmployeeCompensationView,
     EmployeeCompensationByPersonView)
+from app.views.employee_timetracking_view import (
+    EmployeeTimeTrackingView,
+    EmployeeTimeTrackingByPersonCompanyView)
 from app.views.user_view import (
     UserView,
     UsersView,
@@ -146,6 +149,7 @@ from app.views.company_benefit_availability_view import CompanyBenefitAvailabili
 from app.views.sys_period_definition_view import SysPeriodDefinitionView
 from app.views.insurance.company_ltd_insurance_employee_premium_view import CompanyLtdInsuranceEmployeePremiumView
 from app.views.insurance.company_std_insurance_employee_premium_view import CompanyStdInsuranceEmployeePremiumView
+from app.views.company_enrollment_summary_view import CompanyEnrollmentSummaryView
 
 PREFIX = "api/v1"
 
@@ -287,7 +291,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
         CompanyStdInsurancePlanView.as_view(), name='company_std_insurance_plan_api'),
 
-    url(r'^%s/user/(?P<user_id>\w+)/std_insurance/(?P<pk>\w+)/premium/?$' % PREFIX, 
+    url(r'^%s/user/(?P<user_id>\w+)/std_insurance/(?P<pk>\w+)/premium/?$' % PREFIX,
         CompanyStdInsuranceEmployeePremiumView.as_view(), name='user_company_std_insurance_premium_api'),
 
     # LTD insurance api
@@ -303,7 +307,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
 
-    url(r'^%s/user/(?P<user_id>\w+)/ltd_insurance/(?P<pk>\w+)/premium/?$' % PREFIX, 
+    url(r'^%s/user/(?P<user_id>\w+)/ltd_insurance/(?P<pk>\w+)/premium/?$' % PREFIX,
         CompanyLtdInsuranceEmployeePremiumView.as_view(), name='user_company_ltd_insurance_premium_api'),
 
     # HRA api
@@ -331,6 +335,10 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<company_id>\w+)/benefits/?$' % PREFIX,
         CompanyBenefitAvailabilityView.as_view(), name='company_benefit_availability_api'),
+
+    url(r'^%s/company/(?P<comp_id>\w+)/enrollment_summary/?$' % PREFIX,
+        CompanyEnrollmentSummaryView.as_view(), name='company_enrollment_summary_api'),
+    
 
     # upload API
     url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX, UserUploadView.as_view(), name='uploads_by_user'),
@@ -366,6 +374,13 @@ urlpatterns = patterns('app.views',
     url(r'^%s/person/(?P<person_id>\w+)/employee_compensation/?$' % PREFIX,
         EmployeeCompensationByPersonView.as_view(),
         name='employee_compensation_by_person_api'),
+
+    url(r'^%s/employee_timetracking/(?P<pk>\w+)/?$' % PREFIX,
+        EmployeeTimeTrackingView.as_view(),
+        name='employee_timetracking_api'),
+    url(r'^%s/person/(?P<person_id>\w+)/employee_timetracking/?$' % PREFIX,
+        EmployeeTimeTrackingByPersonCompanyView.as_view(),
+        name='employee_timetracking_by_person_api'),
 
     url(r'^%s/benefit_update_reasons/?$' % PREFIX, SysBenefitUpdateReasonView.as_view(), name='sys_benefit_update_reason_api'),
 )

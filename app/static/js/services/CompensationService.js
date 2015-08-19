@@ -9,11 +9,22 @@ benefitmyService.factory(
          var viewModel = {
             company: dataModel.company,
             person: dataModel.person,
-            salary: Number(dataModel.annual_base_salary).toFixed(2),
-            increasePercentage: Number(dataModel.increase_percentage).toFixed(2),
             effectiveDate: dataModel.effective_date,
             created: dataModel.created_at
          };
+
+         if (dataModel.annual_base_salary) {
+           viewModel.salary = Number(dataModel.annual_base_salary).toFixed(2);
+         }
+         if (dataModel.increasePercentage) {
+           viewModel.increasePercentage = Number(dataModel.increase_percentage).toFixed(2);
+         }
+         if (dataModel.hourly_rate) {
+           viewModel.hourlyRate = Number(dataModel.hourly_rate).toFixed(2);
+         }
+         if (dataModel.projected_hour_per_month) {
+           viewModel.projectedHourPerMonth = Number(dataModel.projected_hour_per_month).toFixed(2);
+         }
 
          return viewModel;
       };
@@ -22,10 +33,21 @@ benefitmyService.factory(
         var domainModel = {
           company: viewModel.company,
           person: viewModel.person,
-          annual_base_salary: Number(viewModel.salary).toFixed(2),
-          increase_percentage: Number(viewModel.increasePercentage).toFixed(2),
-          effective_date: viewModel.effectiveDate
+          effective_date: viewModel.effective_date
         };
+
+        if (viewModel.salary) {
+          domainModel.annual_base_salary = Number(viewModel.salary).toFixed(2);
+        }
+        if (viewModel.increasePercentage) {
+          domainModel.increase_percentage = Number(viewModel.increasePercentage).toFixed(2);
+        }
+        if (viewModel.hourly_rate) {
+          domainModel.hourly_rate = Number(viewModel.hourly_rate).toFixed(4);
+        }
+        if (viewModel.projected_hour_per_month) {
+          domainModel.projected_hour_per_month = Number(viewModel.projected_hour_per_month).toFixed(4);
+        }
 
         return domainModel;
       };

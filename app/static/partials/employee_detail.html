@@ -164,7 +164,8 @@
             No compensation record for {{employee.first_name}} {{employee.last_name}} yet.
             <a ng-click="addCompensation()">Add one now?</a>
           </div>
-          <table class="table table-striped" ng-show="compensations.length > 0">
+          <!-- display annual salary for full time employees -->
+          <table class="table table-striped" ng-show="isFullTime(employee) && compensations.length > 0">
             <thead>
               <tr>
                 <th><span>Annual Salary</span></th>
@@ -194,7 +195,34 @@
             <tfoot>
               <tr><td>(*) Current compensation;</td></tr>
             </tfoot>
-          </table>
+          </table><!-- full time employee compensation -->
+          <!-- display hourly rate and projected hour per month for part time employees -->
+          <table class="table table-striped" ng-show="!isFullTime(employee) && compensations.length > 0">
+            <thead>
+              <tr>
+                <th><span>Hourly Rate</span></th>
+                <th><span>Projected Hour per Month</span></th>
+                <th><span>Effective Date</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="compensation in compensations">
+                <td>
+                  <span>$ {{compensation.hourlyRate}}  </span>
+                  <span ng-show="compensation.isCurrent">
+                    (<i class="fa fa-asterisk"></i>)
+                  <span>
+                </td>
+                <td>
+                  <span>{{compensation.projectedHourPerMonth}} hours/month</span>
+                </td>
+                <td>{{compensation.effectiveDate}}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr><td>(*) Current compensation;</td></tr>
+            </tfoot>
+          </table><!-- part time employee compensation -->
         </div>
       </div>
       <div class='panel' ng-show="employee.emergency_contact.length > 0">
