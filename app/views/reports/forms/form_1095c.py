@@ -1,14 +1,10 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
 from django.http import HttpResponse
-from django.http import Http404
-from django.db import transaction
-from django.db.models import Count, Min
+from django.db.models import Min
 from django.contrib.auth import get_user_model
 
 from app.service.Report.pdf_form_fill_service import PDFFormFillService
 from ..report_export_view_base import ReportExportViewBase
+from app.factory.report_view_model_factory import ReportViewModelFactory
 
 User = get_user_model()
 
@@ -16,9 +12,11 @@ User = get_user_model()
 class Form1095CView(ReportExportViewBase):
 
     def get(self, request, pk, format=None):
-        person_info = self._get_person_basic_info_by_user(pk)
+        model_factory = ReportViewModelFactory()
+        person_info = model_factory.get_employee_person_info(pk)
+        company_info = model_factory.get_employee_company_info(pk)
+
         company_model = self._get_company_by_user(pk)
-        company_info = self._get_company_basic_info(company_model)
 
         # Populate the form fields
         fields = {
