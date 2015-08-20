@@ -1,4 +1,5 @@
 import re
+import json
 from io import BytesIO
 from app.service.hash_key_service import HashKeyService
 from django.http import Http404
@@ -21,6 +22,7 @@ class HashPkValidationMiddleware(object):
 
         return None
 
+
     def process_view(self, request, view_func, view_args, view_kwargs):
 
         ''' Don't like this much at all. We have to know the view arg names
@@ -42,6 +44,20 @@ class HashPkValidationMiddleware(object):
 
         return None
 
+
+    def process_response(self, request, response):
+        ''' Would need to encode anything in the response data, if it is JSON
+        '''
+        if (request.method == 'PUT'):
+            res = json.loads(response.content)
+            self._encode_key('person', res)
+            self._encode_key('company', res)
+
+            response.content = json.dumps(res)
+
+        return response
+
+
     def _decode_key(self, view_kwargs, key_name):
         if (key_name in view_kwargs):
             k = self._decode_value(view_kwargs[key_name])
@@ -49,6 +65,17 @@ class HashPkValidationMiddleware(object):
                 raise Http404
             view_kwargs[key_name] = k
 
+
     def _decode_value(self, value):
         hash_key_service = HashKeyService()
         return hash_key_service.decode_key(value)
+
+
+    def _encode_key(self, key, response):
+        if key in response:
+            response[key] = self._encode_value(response[key])
+
+
+    def _encode_value(self, value):
+        hash_key_service = HashKeyService()
+        return hash_key_service.encode_key(value)
