@@ -54,7 +54,7 @@
   <div class="row" ng-show="employees">
     <div class="col-sm-3" ng-repeat="employee in employees | orderBy:'lastName'">
       <a ng-click="viewDetails(employee.id)">{{employee.firstName}} {{employee.lastName}}</a>
-      <div class="btn-group" dropdown ng-if="isCurRoleBroker()" style="margin-left: 2px;">
+      <div class="btn-group" dropdown style="margin-left: 2px;">
         <div id="employee-menu-{{employee.id}}" dropdown-toggle ng-disabled="disabled">
             <span class="caret"></span>
         </div>
