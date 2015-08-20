@@ -46,5 +46,13 @@
     },
     "model": "app.sysperioddefinition",
     "pk": 6
+  },
+  {
+    "fields": {
+      "name": "Per Diem",
+      "month_factor": null
+    },
+    "model": "app.sysperioddefinition",
+    "pk": 7
   }
 ]

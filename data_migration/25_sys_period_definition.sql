@@ -31,5 +31,10 @@ IF NOT EXISTS (select 1 from app_sysperioddefinition where name = 'Annually') TH
     values('Annually', 12);
 END IF;
 
+IF NOT EXISTS (select 1 from app_sysperioddefinition where name = 'Per Diem') THEN
+    insert into app_sysperioddefinition (name)
+    values('Per Diem');
+END IF;
+
 END
 $$

@@ -110,8 +110,11 @@ class UsersView(APIView):
             'company': request.DATA['company']
         }
 
-        if 'annual_base_salary' in request.DATA and request.DATA['annual_base_salary'] > 0:
+        if ('annual_base_salary' in request.DATA and request.DATA['annual_base_salary'] > 0):
             profile_data['annual_base_salary'] = request.DATA['annual_base_salary']
+
+        if ('employment_type' in request.DATA):
+            profile_data['employment_type'] = request.DATA['employment_type']
 
         profile_serializer = EmployeeProfilePostSerializer(data=profile_data)
         if profile_serializer.is_valid():
