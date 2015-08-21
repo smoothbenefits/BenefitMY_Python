@@ -44,3 +44,11 @@ class HashKeyService(object):
 			return tokens[1]
 		else:
 			return None
+
+	def encoded(self, value):
+		try:
+			decoded = decode_key(value)
+			int(decoded)
+			return True
+		except:
+			return False
