@@ -72,7 +72,7 @@ class HashPkValidationMiddleware(object):
 
     def _encode_value(self, value):
         hash_key_service = HashKeyService()
-        if not hash_key_service.encoded(value):
+        if not hash_key_service.is_encoded(value):
             return hash_key_service.encode_key(value)
 
         return value
