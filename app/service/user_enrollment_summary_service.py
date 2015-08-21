@@ -24,6 +24,7 @@ from app.models.insurance.comp_suppl_life_insurance_plan import CompSupplLifeIns
 NOT_STARTED = 'NOT_STARTED'
 IN_PROGRESS = 'IN_PROGRESS'
 COMPLETED = 'COMPLETED'
+NO_BENEFITS = 'NO_BENEFITS_OFFERED'
 
 class UserEnrollmentSummaryService(object):
     def __init__(self, company_id, user_id, person_id):
@@ -88,7 +89,16 @@ class UserEnrollmentSummaryService(object):
         std_enrollment = self.get_std_insurance()
         suppl_life_enrollment = self.get_supplimental_life_insurance()
         status = IN_PROGRESS
-        if not health_enrollment and \
+        if health_enrollment == None and \
+           health_waived == None and \
+           hra_enrollment == None and \
+           fsa_enrollment == None and \
+           basic_life_enrollment == None and \
+           suppl_life_enrollment == None and \
+           ltd_enrollment == None and \
+           std_enrollment == None:
+            status = NO_BENEFITS
+        elif not health_enrollment and \
            not health_waived and \
            not hra_enrollment and \
            not fsa_enrollment and \
