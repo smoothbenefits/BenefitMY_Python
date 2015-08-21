@@ -1009,6 +1009,10 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     $scope.exportCompanyBenefitsBillingSummaryUrl = CompanyEmployeeSummaryService.getCompanyBenefitsBillingReportExcelUrl(company_id);
     $scope.exportCompanyEmployeeSummaryPdfUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryPdfUrl(company_id);
     $scope.companyHphcExcelUrl = CompanyEmployeeSummaryService.getCompanyHphcExcelUrl(company_id);
+
+    $scope.getEmployee1095cUrl = function(employeeUserId) {
+        return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
+    };
 }]);
 
 var employerViewUploads = employersController.controller('employerViewUploads', [

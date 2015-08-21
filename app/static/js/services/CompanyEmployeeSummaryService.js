@@ -29,6 +29,10 @@ benefitmyService.factory(
 
       getCompanyHphcExcelUrl: function(companyId) {
         return API_PREFIX + '/companies/' + companyId + '/hphc/excel';
+      },
+
+      getEmployee1095cUrl: function(employeeUserId) {
+        return API_PREFIX + '/users/' + employeeUserId + '/forms/1095c';
       }
     };
   }
