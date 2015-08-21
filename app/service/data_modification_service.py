@@ -11,7 +11,7 @@ from app.models.company_user import CompanyUser
 from app.models.person import Person
 from app.models.phone import Phone
 from app.models.address import Address
-
+from app.service.user_enrollment_summary_service import UserEnrollmentSummaryService
 from reversion.models import Revision
 
 User = get_user_model()
@@ -26,22 +26,20 @@ class DataModificationService(object):
     '''
     def employee_modifications_notify_employer_for_all_companies(self, in_last_num_minutes):
         company_list = Company.objects.all()
-
         for company in company_list:
             self._employee_mod_notify_employer_by_company(company, in_last_num_minutes)
 
     def _employee_mod_notify_employer_by_company(self, company_model, in_last_num_minutes):
 
         # Get the list of employee users made modifications in the search range
-        persons = self.employee_modifications_summary_person_info_only(company_model.id, in_last_num_minutes)
-
-        if (len(persons) > 0):
+        mod_summaries = self.employee_modifications_summary(company_model.id, in_last_num_minutes)
+        if (len(mod_summaries) > 0):
             # Get the list of users (employers) to notify
             c_users = CompanyUser.objects.filter(company=company_model.id,
                                            company_user_type='admin')
             for c_user in c_users:
                 email = self._get_email_address_by_user(c_user.user_id)
-                self._send_notification_email(email, [{ 'company':company_model, 'persons':persons }])
+                self._send_notification_email(email, [{ 'company':company_model, 'mod_summary_list':mod_summaries }])
 
 
     ''' Send email notification to all brokers.
@@ -62,12 +60,12 @@ class DataModificationService(object):
         company_users_collection = []
         for company_id in company_ids:
             # Get the list of employee users made modifications in the search range
-            persons = self.employee_modifications_summary_person_info_only(company_id, in_last_num_minutes)
-            if (len(persons) > 0):
+            mod_summaries = self.employee_modifications_summary(company_id, in_last_num_minutes)
+            if (len(mod_summaries) > 0):
                 companies = Company.objects.filter(pk=company_id)
                 if (len(companies) > 0):
                     company = companies[0]
-                    company_users_collection.append({ 'company':company, 'persons':persons })
+                    company_users_collection.append({ 'company':company, 'mod_summary_list':mod_summaries })
 
         # If there is something needs to be notified about, send the email
         if (len(company_users_collection) > 0):
@@ -91,23 +89,29 @@ class DataModificationService(object):
         For now, this produces a list of person information about employee users that
         made data modifications in the last X minutes specified by 'in_last_num_minutes'
     '''
-    def employee_modifications_summary_person_info_only(self, company_id, in_last_num_minutes):
+    def employee_modifications_summary(self, company_id, in_last_num_minutes):
         employee_user_ids = []
         company_list = Company.objects.filter(pk=company_id)
 
         if (len(company_list) > 0):
             company = company_list[0]
             employee_user_ids = self._get_all_user_ids_made_modifications_for_company(company, in_last_num_minutes)
-
-        persons = Person.objects.filter(user__in=employee_user_ids, relationship='self')
-
-        return persons
+        mod_summary_list = []
+        for user_item in employee_user_ids:
+            user_id = user_item['user']
+            mod_summary={}
+            persons = Person.objects.filter(user=user_id, relationship='self')
+            if persons:
+                mod_summary['person'] = persons[0]
+                mod_summary['enrollmentStatus'] = self._get_enrollment_status(user_id, persons[0], company_id)
+                mod_summary_list.append(mod_summary)
+        return mod_summary_list
 
     def _get_all_user_ids_made_modifications_for_company(self, company, in_last_num_minutes):
         users = CompanyUser.objects.filter(company=company.id,
                                            company_user_type='employee').values('user')
 
-        user_ids = Revision.objects.filter(user__in=users, date_created__gte=datetime.datetime.utcnow()-datetime.timedelta(minutes=in_last_num_minutes)).values('user')
+        user_ids = Revision.objects.filter(user__in=users, date_created__gte=datetime.datetime.utcnow()-datetime.timedelta(minutes=in_last_num_minutes)).distinct().values('user')
 
         return user_ids
 
@@ -120,3 +124,10 @@ class DataModificationService(object):
         if (len(person) > 0 and person[0].email):
             email = person[0].email
         return email
+
+    def _get_enrollment_status(self, user_id, person, company_id):
+        enrollment_status_service = UserEnrollmentSummaryService(company_id, user_id, person.id)
+        return enrollment_status_service.get_enrollment_status()
+
+
+

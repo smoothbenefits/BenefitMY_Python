@@ -3,8 +3,8 @@
 Company: {{company_users.company.name}}
 
 Users made changes in the last 24 hours::
-    {% for person in company_users.persons %}
-    - {{ person.first_name }} {{person.last_name}} ( {{person.birth_date}} )
+    {% for mod_summary in company_users.mod_summary_list %}
+    - {{ mod_summary.person.first_name }} {{mod_summary.person.last_name}} ( {{mod_summary.person.birth_date}} ). Benefit Enrollment Status: {{mod_summary.enrollmentStatus}}
     {% endfor %}
 
 ---------------------------------------------------------------------------
