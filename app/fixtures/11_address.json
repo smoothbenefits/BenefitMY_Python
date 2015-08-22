@@ -54,5 +54,19 @@
     },
     "model": "app.address",
     "pk": 5
+  },
+  {
+    "fields": {
+      "city": "Arlington",
+      "company": 1,
+      "zipcode": "02222",
+      "person": null,
+      "state": "MA",
+      "street_1": "732 Highland Road",
+      "street_2": "",
+      "address_type": "main"
+    },
+    "model": "app.address",
+    "pk": 6
   }
 ]

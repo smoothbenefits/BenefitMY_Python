@@ -34,5 +34,14 @@
     },
     "model": "app.phone",
     "pk": 5
+  },
+  {
+    "fields": {
+      "phone_type": "work",
+      "number": "6177255000",
+      "person": 7
+    },
+    "model": "app.phone",
+    "pk": 6
   }
 ]

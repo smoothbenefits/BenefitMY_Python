@@ -100,5 +100,22 @@
     },
     "model": "app.person",
     "pk": 6
+  },
+  {
+    "fields": {
+      "first_name": "Alex",
+      "last_name": "King",
+      "middle_name": null,
+      "relationship": "self",
+      "gender": "M",
+      "company": 1,
+      "person_type": "primary_contact",
+      "ssn": "111111111",
+      "user": null,
+      "birth_date": "1936-01-09",
+      "email": "employer@benefitmy.com"
+    },
+    "model": "app.person",
+    "pk": 7
   }
 ]

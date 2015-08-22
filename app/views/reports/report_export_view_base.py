@@ -12,7 +12,9 @@ from reportlab.pdfgen import canvas
 from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.models.sys_period_definition import SysPeriodDefinition
-from app.models.person import Person
+from app.models.person import Person, SELF, SPOUSE, LIFE_PARTNER
+from app.models.phone import Phone
+from app.models.address import Address
 from app.models.direct_deposit import DirectDeposit
 from app.models.employee_profile import EmployeeProfile
 
@@ -72,7 +74,15 @@ class ReportExportViewBase(APIView):
             users_id.append(user.user_id)
 
         return users_id
-    
+
+    def _get_company_by_user(self, user_id):
+        company_model = None
+
+        companies = CompanyUser.objects.filter(user=user_id)
+        if (len(companies) > 0):
+            company_model = companies[0].company
+
+        return company_model
 
     @staticmethod
     def get_date_string(date):
