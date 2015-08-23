@@ -37,7 +37,7 @@ class UserEnrollmentSummaryService(object):
             return UserCompanyBenefitPlanOption.objects.filter(user=self.user_id)
         else:
             return None
-        
+
     def get_health_benefit_waive(self):
         if CompanyBenefitPlanOption.objects.filter(company=self.company_id).exists():
             return UserCompanyWaivedBenefit.objects.filter(user=self.user_id)
@@ -107,8 +107,8 @@ class UserEnrollmentSummaryService(object):
            not ltd_enrollment and \
            not std_enrollment:
             status = NOT_STARTED
-        elif (health_enrollment is None or len(health_enrollment) > 0) and \
-             (health_waived is None or len(health_waived) > 0) and \
+        elif ((health_enrollment is None or len(health_enrollment) > 0) or \
+             (health_waived is None or len(health_waived) > 0)) and \
              (hra_enrollment is None or len(hra_enrollment) > 0) and \
              (fsa_enrollment is None or len(fsa_enrollment) > 0) and \
              (basic_life_enrollment is None or len(basic_life_enrollment) > 0) and \
