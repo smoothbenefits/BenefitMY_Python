@@ -218,10 +218,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       });
 
       $scope.viewNotStarted = function(){
-        $scope.employees = $scope.summary.notStarted; 
+        $scope.employees = $scope.summary.notStarted;
       };
       $scope.viewNotComplete = function(){
-        $scope.employees = $scope.summary.notComplete; 
+        $scope.employees = $scope.summary.notComplete;
       };
       $scope.viewCompleted = function(){
         $scope.employees = $scope.summary.completed;
@@ -321,7 +321,7 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
         // TODO: Could/should FSA information be considered one kind of benefit election
         //       and this logic of getting FSA data for an employee be moved into the
         //       BenefitElectionService?
-        
+
         FsaService.getFsaElectionForUser($scope.employee.id, company_id).then(function(response) {
           $scope.employee.fsaElection = response;
         });
@@ -357,7 +357,7 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
     }, function(errorResponse){
       alert(errorResponse.content);
     });
-  }                                                       
+  }
 ]);
 
 
@@ -1287,6 +1287,8 @@ var addClientController = brokersControllers.controller('addClientController', [
       apiClient.addresses = [];
       apiClient.contacts = [];
       apiClient.name = viewClient.company.name;
+      apiClient.ein = viewClient.company.ein;
+      apiClient.offer_of_coverage_code = viewClient.company.offer_of_coverage_code;
       apiClient.pay_period_definition = viewClient.payPeriod.id;
       var apiContact = {};
       apiContact.first_name = viewClient.contact.first_name;
