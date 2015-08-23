@@ -1369,10 +1369,12 @@ var healthBenefitsSignup = employeeControllers.controller(
         ];
 
         $scope.save = function(){
+          var invalid = false;
           var saveRequest = {benefits:[],waived:[]};
           var invalidEnrollNumberList = [];
           var noPCPError = false;
           var hasEmptyRequiredPCP = false;
+
           $scope.companyPromise.then(function(company){
 
             _.each($scope.availablePlans, function(benefitTypePlan){
@@ -1419,6 +1421,7 @@ var healthBenefitsSignup = employeeControllers.controller(
                       ", you have to elect at least" + invalidEnrollNumberList[0].requiredNumber + " family members!");
               return;
             }
+
             if(hasEmptyRequiredPCP){
               alert("The benefit plan you selected requires PCP number. Please confirm you have proviced correct number.");
               return;
@@ -1429,6 +1432,7 @@ var healthBenefitsSignup = employeeControllers.controller(
               if (benefitPlan.selected.benefit && benefitPlan.selected.benefit.benefit_plan.name === 'Waive'){
                 if (benefitPlan.benefit_type === 'Medical' && !benefitPlan.selected.benefit.reason){
                   alert("Please select a reason to waive medical plan.");
+                  invalid = true;
                   return;
                 }
 
@@ -1450,6 +1454,10 @@ var healthBenefitsSignup = employeeControllers.controller(
                 saveRequest.waivedRequest.waived.push({benefit_type: typeKey, type_name: type, reason: waiveReason});
               }
             });
+
+            if (invalid) {
+              return;
+            }
 
             console.log(saveRequest);
 
