@@ -2,7 +2,9 @@
   {
     "fields": {
       "name": "BenefitMy Inc.",
-      "pay_period_definition": 3
+      "pay_period_definition": 3,
+      "ein": "1234567890",
+      "offer_of_coverage_code": "1A"
     },
     "model": "app.company",
     "pk": 1
@@ -18,7 +20,9 @@
   {
     "fields": {
       "name": "Telamon",
-      "pay_period_definition": 2
+      "pay_period_definition": 2,
+      "ein": "9999999999",
+      "offer_of_coverage_code": "1B"
     },
     "model": "app.company",
     "pk": 3
