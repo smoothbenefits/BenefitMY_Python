@@ -103,48 +103,6 @@ benefitmyService.factory(
         return null;
       };
 
-      var updateCompensationStatus = function(sortedRawCompensations) {
-        var reversed = false;
-        var benchMark = new Date();
-        var updated = angular.copy(sortedRawCompensations);
-        _.each(updated, function(compensation) {
-          compensation.effectiveDate = new Date(compensation.effectiveDate);
-        })
-
-        // Make sure compensations is sorted descendingly by effective date
-        if (updated.length > 1 &&
-        (updated[1].effectiveDate > updated[0].effectiveDate)) {
-          updated.reverse();
-          reversed = true;
-        }
-
-        // Mark the closest past effective date as current record and update bench mark
-        for (var i = 0; i < updated.length; i++) {
-          if (updated[i].effectiveDate < benchMark) {
-            benchMark = updated[i].effectiveDate;
-            updated[i].isCurrent = true;
-            break;
-          }
-        }
-
-        // Provide detail status to all compensation records
-        _.each(updated, function(compensation) {
-          if (compensation.effectiveDate > benchMark) {
-            compensation.status = 'PENDING';
-          } else if (compensation.effectiveDate < benchMark) {
-            compensation.status = 'EXPIRED';
-          } else {
-            compensation.status = 'CURRENT';
-          }
-        });
-
-        // Restore original sorting
-        if (reversed) {
-          updated.reverse();
-        }
-
-        return updated;
-      };
 
       var getCompensationByPersonSortedByDate = function(personId, descending) {
         var deferred = $q.defer();
@@ -156,12 +114,6 @@ benefitmyService.factory(
             var viewModel = mapToViewModel(compensation);
             compensations.push(viewModel);
           });
-
-          _.sortBy(compensations, function(compensation) {
-            return compensation.effectiveDate;
-          });
-
-          compensations = updateCompensationStatus(compensations);
           compensations = formatDateTimeForView(compensations);
 
           if (descending) {
@@ -180,7 +132,6 @@ benefitmyService.factory(
          getCompensationByPersonSortedByDate: getCompensationByPersonSortedByDate,
          addCompensationByPerson: addCompensationByPerson,
          mapToViewModel: mapToViewModel,
-         getCurrentCompensationByPerson: getCurrentCompensationByPerson,
          getCurrentCompensationFromViewList: getCurrentCompensationFromViewList
       };
    }
