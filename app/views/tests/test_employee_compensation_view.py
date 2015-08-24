@@ -69,12 +69,35 @@ class EmployeeCompensationTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.content)
         self.assertIn('id', result)
-        self.assertEqual(result['id'], self.normalize_key(5))
+        self.assertEqual(result['id'], self.normalize_key(6))
         self.assertEqual(result['person'], 1)
         self.assertEqual(result['reason'], 1)
         self.assertEqual(result['annual_base_salary'], "40022.00")
         self.assertEqual(result['effective_date'], "2008-03-01T15:45:09Z")
         self.assertEqual(result['increase_percentage'], "50")
+
+        post_data = {
+            "person": self.normalize_key(2),
+            "reason": self.normalize_key(1),
+            "projected_hour_per_month": "200.00",
+            "hourly_rate": "980.01",
+            "effective_date": "2008-08-01T15:45:09Z"
+        }
+        response = self.client.post(reverse('employee_compensation_api',
+                                           kwargs={'pk': self.normalize_key(sys.maxint)}),
+                                    data=json.dumps(post_data),
+                                    content_type='application/json')
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 201)
+        result = json.loads(response.content)
+        self.assertIn('id', result)
+        self.assertEqual(result['id'], self.normalize_key(7))
+        self.assertEqual(result['person'], 2)
+        self.assertEqual(result['reason'], 1)
+        self.assertEqual(result['projected_hour_per_month'], "200.00")
+        self.assertEqual(result['effective_date'], "2008-08-01T15:45:09Z")
+        self.assertEqual(result['hourly_rate'], "980.01")
 
     def test_delete_employee_compensation_success(self):
         response = self.client.delete(reverse('employee_compensation_api',

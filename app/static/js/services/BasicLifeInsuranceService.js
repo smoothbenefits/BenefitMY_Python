@@ -101,7 +101,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
               } else if (response.length > 0) {
                 planEnrollments = { selected: true, waived: true, life_insurance_beneficiary: [] };
               } else {
-                planEnrollments = { selected: true, waived: true, life_insurance_beneficiary: [] };
+                planEnrollments = { selected: false, waived: false, life_insurance_beneficiary: [] };
               }
 
               //If we have the salary multiplier, we need to figure that out.

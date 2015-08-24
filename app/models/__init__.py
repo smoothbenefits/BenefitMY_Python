@@ -3,6 +3,7 @@ from phone import Phone
 from person import Person
 from employee_profile import EmployeeProfile
 from employee_compensation import EmployeeCompensation
+from employee_timetracking import EmployeeTimeTracking
 from sys_compensation_update_reason import SysCompensationUpdateReason
 from company import Company
 from company_user import CompanyUser

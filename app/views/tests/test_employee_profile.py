@@ -228,6 +228,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "id": self.normalize_key(1),
             "person": self.normalize_key(3),
             "company": self.normalize_key(1),
+            "pay_rate": self.normalize_key(1),
             "job_title": "Senior Broker",
             "annual_base_salary": "140022.00",
             "start_date": "2010-03-01",
@@ -247,6 +248,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['id'], self.normalize_key(1))
         self.assertEqual(result['person'], self.normalize_key(3))
         self.assertEqual(result['company'], self.normalize_key(1))
+        self.assertEqual(result['pay_rate'], 1)
         self.assertEqual(result['job_title'], "Senior Broker")
         self.assertEqual(result['annual_base_salary'], "140022.00")
         self.assertEqual(result['start_date'], "2010-03-01")
