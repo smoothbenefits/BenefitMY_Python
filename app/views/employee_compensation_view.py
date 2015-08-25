@@ -1,3 +1,4 @@
+import json
 from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.response import Response
@@ -6,6 +7,7 @@ from rest_framework import status
 from app.models.employee_compensation import EmployeeCompensation
 from app.serializers.employee_compensation_serializer import (
     EmployeeCompensationSerializer, EmployeeCompensationPostSerializer)
+from app.service.compensation_service import CompensationService
 
 class EmployeeCompensationView(APIView):
     def _get_object(self, pk):
@@ -32,12 +34,8 @@ class EmployeeCompensationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EmployeeCompensationByPersonView(APIView):
-    def _get_object(self, person_id):
-        try:
-            return EmployeeCompensation.objects.filter(person=person_id)
-        except EmployeeCompensation.DoesNotExist:
-            raise Http404
     def get(self, request, person_id, format=None):
-        employee_compensation = self._get_object(person_id)
-        serializer = EmployeeCompensationSerializer(employee_compensation, many=True)
-        return Response(serializer.data)
+        comp_service = CompensationService(person_id)
+        all_comps = comp_service.get_all_compensation_ordered()
+        json_comps = comp_service.convert_to_json(all_comps)
+        return Response(json_comps)

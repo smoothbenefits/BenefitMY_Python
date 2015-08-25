@@ -10,13 +10,14 @@ benefitmyService.factory(
             company: dataModel.company,
             person: dataModel.person,
             effectiveDate: dataModel.effective_date,
-            created: dataModel.created_at
+            created: dataModel.created_at,
+            isCurrent: dataModel.is_current,
          };
 
          if (dataModel.annual_base_salary) {
            viewModel.salary = Number(dataModel.annual_base_salary).toFixed(2);
          }
-         if (dataModel.increasePercentage) {
+         if (dataModel.increase_percentage) {
            viewModel.increasePercentage = Number(dataModel.increase_percentage).toFixed(2);
          }
          if (dataModel.hourly_rate) {
