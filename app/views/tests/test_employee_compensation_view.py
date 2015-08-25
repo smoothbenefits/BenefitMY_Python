@@ -36,6 +36,7 @@ class EmployeeCompensationTestCase(TestCase, ViewTestBase):
         employee_compensation = employee_compensations[0]
         self.assertEqual(employee_compensation['annual_base_salary'], '100000.00')
         self.assertEqual(employee_compensation['increase_percentage'], None)
+        self.assertEqual(employee_compensation['reason']['id'], self.normalize_key(2))
 
     def test_get_employee_compensation_non_exist(self):
         response = self.client.get(reverse('employee_compensation_api',

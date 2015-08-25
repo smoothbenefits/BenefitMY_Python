@@ -1,4 +1,5 @@
 from app.service.hash_key_service import HashKeyService
+from app.serializers.sys_compensation_update_reason_serializer import SysCompensationUpdateReasonSerializer
 
 class CompensationInfo(object):
     id = None
@@ -10,6 +11,7 @@ class CompensationInfo(object):
     created_at = None
     updated_at = None
     is_current = False
+    reason = None
 
     def __init__(self, compensation_record):
         self.key_hasher = HashKeyService()
@@ -22,12 +24,14 @@ class CompensationInfo(object):
             self.projected_hour_per_month = compensation_record.projected_hour_per_month
             self.created_at = compensation_record.created_at
             self.updated_at = compensation_record.updated_at
+            self.reason = compensation_record.reason
 
     def __cmp__(self, other):
         if hasattr(other, 'effective_date'):
             return self.effective_date.__cmp__(other.effective_date)
 
     def to_json(self):
+        reason_serializer = SysCompensationUpdateReasonSerializer(self.reason)
         return {'id': self.id,
                 'effective_date': self.effective_date,
                 'annual_base_salary': self.annual_base_salary,
@@ -36,4 +40,5 @@ class CompensationInfo(object):
                 'projected_hour_per_month': self.projected_hour_per_month,
                 'created_at': self.created_at,
                 'updated_at': self.updated_at,
-                'is_current': self.is_current}
+                'is_current': self.is_current,
+                'reason': reason_serializer.data}
