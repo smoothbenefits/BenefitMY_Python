@@ -231,6 +231,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         $state.go('broker_company_employee_enrollment', {company_id:company_id, employee_id:employeeId});
       };
 
+      $scope.editPersonalInfo = function(employeeId) {
+        $state.go('broker_company_employee_personal_info', {employee_id: employeeId});
+      };
+
       $scope.back = function(){
         $location.path('/broker');
       };
@@ -249,6 +253,14 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
       };
 }]);
+
+var brokerEmployeeInfoController = brokersControllers.controller('brokerEmployeeInfoController', [
+  '$scope',
+  '$stateParams',
+  function($scope, $stateParams) {
+    $scope.employeeId = $stateParams.employee_id;
+  }
+]);
 
 var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEmployeeEnrollmentController', [
   '$scope',

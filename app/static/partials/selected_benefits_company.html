@@ -53,14 +53,16 @@
   </div><!-- / .dashboard-card -->
   <div class="row" ng-show="employees">
     <div class="col-sm-3" ng-repeat="employee in employees | orderBy:'lastName'">
-      <a ng-click="viewDetails(employee.id)">{{employee.firstName}} {{employee.lastName}}</a>
-      <div class="btn-group" dropdown style="margin-left: 2px;">
-        <div id="employee-menu-{{employee.id}}" dropdown-toggle ng-disabled="disabled">
-            <span class="caret"></span>
-        </div>
+      <span dropdown on-toggle="toggled(open)">
+        <a href id="employee-menu-{{employee.id}}" dropdown-toggle>
+          {{employee.firstName}} {{employee.lastName}}  <i class="fa fa-caret-square-o-down"></i>
+        </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="employee-menu-{{employee.id}}">
           <li role="menuitem"><a ng-href="{{getEmployee1095cUrl(employee.id)}}">Download 1095-C</a></li>
-      </div>
+          <li role="menuitem"><a ng-click="editPersonalInfo(employee.id)">Edit Personal Info</a></li>
+          <li role="menuitem"><a ng-click="viewDetails(employee.id)">View Selected Benefits</a></li>
+        </ul>
+      </span>
     </div>
-  </div>  
+  </div>
 </div><!-- / .content-body -->

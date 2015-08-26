@@ -151,6 +151,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/selected_benefits_company.html',
                 controller: 'selectedBenefitsController'
             }).
+            state('broker_company_employee_personal_info', {
+                url: '/broker/employee/:employee_id/information',
+                templateUrl: '/static/partials/employee_profile/edit_personal_info.html',
+                controller: 'brokerEmployeeInfoController',
+            }).
             state('/broker/benefit/add_details/:client_id/:benefit_id', {
                 url: '/broker/benefit/add_details/:client_id/:benefit_id',
                 templateUrl:'/static/partials/benefit_detail_input.html',
