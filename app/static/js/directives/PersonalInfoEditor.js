@@ -11,13 +11,25 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
       currentUser,
       PersonService) {
 
-        PersonService.getSelfPersonInfo($scope.targetPersonUserId)
+        if ($scope.maskssn) {
+          $scope.ssnDisplayType = 'password';
+        } else {
+          $scope.ssnDisplayType = 'tel';
+        }
+
+        PersonService.getSelfPersonInfo($scope.target)
         .then(function(basicInfo) {
           $scope.person = basicInfo;
+          $scope.infoAvailable = true;
+        }, function(error) {
+          if (!error.exists) {
+            $scope.person = {};
+            $scope.infoAvailable = false;
+          }
         });
 
         $scope.updateBasicInfo = function(){
-          PersonService.savePersonInfo($scope.person.user.id, $scope.person)
+          PersonService.savePersonInfo($scope.person.user, $scope.person)
           .then(function(response){
             alert('Changes saved successfully');
             if($scope.onboard){
@@ -37,7 +49,9 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
   return {
     restrict: 'E',
     scope: {
-    	targetPersonUserId: '=',
+    	target: '=',
+      maskssn: '=',
+      onboard: '=?',
     	editorUserId: '=?'
     },
     templateUrl: '/static/partials/common/personal_info_edit.html',

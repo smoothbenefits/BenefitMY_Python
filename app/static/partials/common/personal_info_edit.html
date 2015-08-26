@@ -1,5 +1,5 @@
 <form name="form">
-  <h2 class="sub-title">Reason for Change</h2>
+  <h3 class="sub-title">Reason for Change</h3>
   <ul class="list-group"><li class="list-group-item">
     <div class="form-label">Reason</div>
     <div class="textbox">
@@ -13,7 +13,10 @@
     </div>
   </li></ul>
 
-  <h2 class="sub-title">Personal Information</h2>
+  <h3 class="col-md-12 label label-warning" ng-if="!infoAvailable">
+    Employee has not onboard. No personal inforamtion available in the system yet.
+  </h3>
+  <h3 class="sub-title">Personal Information</h3>
   <ul class="list-group"><li class="list-group-item">
     <div class="form-label">First Name</div>
     <div class="textbox">
@@ -65,10 +68,10 @@
 
   <div class="form-label">Social Security Number</div>
   <div class="textbox">
-    <input type="tel"
+    <input type="{{ssnDisplayType}}"
       name="person_ssn"
       ng-model="person.ssn"
-      ng-required="true"
+      ng-required="requiressn"
       ui-mask="999-99-9999">
     <div class="form-validation-error" ng-show="form.person_ssn.$dirty && form.person_ssn.$invalid">
       <span ng-show="form.person_ssn.$invalid">Please enter a valid Social Security Number</span>
