@@ -876,6 +876,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
             "all the information enterred are valid. Message: " + error;
         });
       };
+
       $scope.updateEndDate = function(){
         $scope.employeeProfileModel.endDate = null;
       };
@@ -911,12 +912,12 @@ var addEmployeeCompensationModalController = employersController.controller(
       };
 
       $scope.save = function(compensation) {
-        if (compensation.increasePercentage && currentSalary) {
-          compensation.salary = currentSalary * (1 + compensation.increasePercentage / 100);
-        } else if (compensation.salary && currentSalary) {
-          compensation.increasePercentage = (compensation.salary - currentSalary) / currentSalary * 100;
-        } else if (!currentSalary && compensation.salary) {
+        if (!currentSalary && compensation.salary) {
           compensation.increasePercentage = null;
+        }
+        if(!compensation.salary && !compensation.hourly_rate && !compensation.increasePercentage){
+          $scope.errorMessage = "You cannot save compensation record where both salary and increase percentage are empty!"
+          return;
         }
 
         CompensationService.addCompensationByPerson(compensation, personId, companyId)
