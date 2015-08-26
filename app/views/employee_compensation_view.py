@@ -8,6 +8,8 @@ from app.models.employee_compensation import EmployeeCompensation
 from app.serializers.employee_compensation_serializer import (
     EmployeeCompensationSerializer, EmployeeCompensationPostSerializer)
 from app.service.compensation_service import CompensationService
+from app.serializers.compensation_info_serializer import CompensationInfoSerializer
+
 
 class EmployeeCompensationView(APIView):
     def _get_object(self, pk):
@@ -37,5 +39,5 @@ class EmployeeCompensationByPersonView(APIView):
     def get(self, request, person_id, format=None):
         comp_service = CompensationService(person_id)
         all_comps = comp_service.get_all_compensation_ordered()
-        json_comps = comp_service.convert_to_json(all_comps)
-        return Response(json_comps)
+        serializer = CompensationInfoSerializer(all_comps, many=True)
+        return Response(serializer.data)

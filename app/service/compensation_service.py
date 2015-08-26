@@ -63,7 +63,7 @@ class CompensationService(object):
                     current = comp_info
             # Now calculate all the values of the compensation records
             if not comp_info.annual_base_salary and not comp_info.hourly_rate and not base:
-                raise ValueError("The compensation list do not have a valid base record")
+                continue
             elif comp_info.annual_base_salary and not comp_info.hourly_rate:
                 # We are in the full time employee case
                 if base:
@@ -80,12 +80,4 @@ class CompensationService(object):
                     comp_info.annual_base_salary = base.annual_base_salary + (base.annual_base_salary * comp_info.increase_percentage / 100)
             base = comp_info
         return info_list
-
-    def convert_to_json(self, comp_list):
-        json_array = []
-        if not comp_list:
-            return json_array
-        for comp_info in comp_list:
-            json_array.append(comp_info.to_json())
-        return json_array
 

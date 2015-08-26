@@ -29,16 +29,3 @@ class CompensationInfo(object):
     def __cmp__(self, other):
         if hasattr(other, 'effective_date'):
             return self.effective_date.__cmp__(other.effective_date)
-
-    def to_json(self):
-        reason_serializer = SysCompensationUpdateReasonSerializer(self.reason)
-        return {'id': self.id,
-                'effective_date': self.effective_date,
-                'annual_base_salary': self.annual_base_salary,
-                'hourly_rate': self.hourly_rate,
-                'increase_percentage': self.increase_percentage,
-                'projected_hour_per_month': self.projected_hour_per_month,
-                'created_at': self.created_at,
-                'updated_at': self.updated_at,
-                'is_current': self.is_current,
-                'reason': reason_serializer.data}
