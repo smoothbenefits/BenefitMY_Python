@@ -37,7 +37,8 @@ class CompensationService(object):
                     current_salary = comp.annual_base_salary
                 else:
                     # for part time employee, get projected annual wage
-                    current_salary = comp.hourly_rate * comp.projected_hour_per_month * 12
+                    if (comp.hourly_rate and comp.projected_hour_per_month):
+                        current_salary = comp.hourly_rate * comp.projected_hour_per_month * 12
                 break
         if not current_salary:
             raise ValueError('No Salary Records')
