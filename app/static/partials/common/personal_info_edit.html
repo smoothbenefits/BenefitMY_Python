@@ -1,0 +1,196 @@
+<form name="form">
+  <h2 class="sub-title">Reason for Change</h2>
+  <ul class="list-group"><li class="list-group-item">
+    <div class="form-label">Reason</div>
+    <div class="textbox">
+      <input type="text"
+        name="reason"
+        ng-model="person.reason_for_change"
+        ng-required="true" />
+      <div class="form-validation-error" ng-show="form.reason.$invalid">
+        <span ng-show="form.reason.$error.required">Reason field is required</span>
+      </div>
+    </div>
+  </li></ul>
+
+  <h2 class="sub-title">Personal Information</h2>
+  <ul class="list-group"><li class="list-group-item">
+    <div class="form-label">First Name</div>
+    <div class="textbox">
+      <input type="text"
+        name="first_name"
+        ng-model="person.first_name"
+        ng-required="true" />
+      <div class="form-validation-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
+        <span ng-show="form.first_name.$error.required">First Name field is required</span>
+      </div>
+    </div>
+
+    <div class="form-label">Last Name</div>
+    <div class="textbox">
+      <input type="text"
+        name="last_name"
+        ng-model="person.last_name"
+        ng-required="true" />
+      <div class="form-validation-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
+        <span ng-show="form.last_name.$error.required">Last Name field is required</span>
+      </div>
+    </div>
+
+    <div class="form-label">Gender</div>
+    <div class="select-box">
+      <select
+        class="form-control"
+        name="gender"
+        ng-model="person.gender"
+        ng-required="true">
+        <option value="M">Male</option>
+        <option value="F">Female</option>
+      </select>
+    </div>
+
+  <div class="form-label">Date Of Birth</div>
+  <div class="datebox">
+    <bm-date-picker model="person.birth_date"
+      required="true"
+      name="birth_date"
+      fieldname="'birth_date'"
+      dirty="form.birth_date.$dirty" />
+    <div class="form-validation-error" ng-show="form.birth_date.$dirty && form.birth_date.$invalid">
+      <span ng-show="form.birth_date.$error.required">Date of Birth field is required</span>
+      <span ng-show="form.birth_date.$invalid">Please enter a valid Date of Birth</span>
+    </div>
+  </div>
+
+
+  <div class="form-label">Social Security Number</div>
+  <div class="textbox">
+    <input type="tel"
+      name="person_ssn"
+      ng-model="person.ssn"
+      ng-required="true"
+      ui-mask="999-99-9999">
+    <div class="form-validation-error" ng-show="form.person_ssn.$dirty && form.person_ssn.$invalid">
+      <span ng-show="form.person_ssn.$invalid">Please enter a valid Social Security Number</span>
+    </div>
+  </div>
+
+  <div class="form-label">Address</div>
+  <div class="textbox">
+    <input type="text"
+      name="address_street1"
+      ng-model="person.address.street_1"
+      ng-required="true"
+      placeholder="Street Line 1" />
+  </div>
+  <div class="textbox">
+    <input type="text"
+    name="address_street2"
+    ng-model="person.address.street_2"
+    ng-required="false"
+      placeholder="Street Line 2" />
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="textbox">
+          <input type="text"
+          name="address_city"
+          ng-model="person.address.city"
+          ng-required="true"
+          placeholder="City">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="textbox">
+          <input type="text"
+          class="input-upper"
+          name="address_state"
+          ng-model="person.address.state"
+          ng-required="true"
+          placeholder="State"
+          maxlength="2">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="textbox">
+          <input type="text"
+          name="address_zip"
+          ng-model="person.address.zipcode"
+          ng-required="true"
+          placeholder="Zip Code"
+          maxlength="5">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-label">Phone Number</div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="textbox">
+          <input type="tel"
+          name="phone_number"
+          ng-model="person.phone.number"
+          ng-required="true"
+          ui-mask="(999)999-9999">
+        </div>
+      </div>
+    </div>
+  </li></ul>
+
+  <h2 class="sub-title">Emergency Contact</h2>
+  <ul class="list-group"><li class="list-group-item">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-label">First Name</div>
+        <div class="textbox">
+          <input type="text"
+            name="emergency_firstname"
+            ng-model="person.emergency.first_name"
+            ng-required="true" />
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-label">Last Name</div>
+        <div class="textbox">
+          <input type="text"
+            name="emergency_lastname"
+            ng-model="person.emergency.last_name"
+            ng-required="true" />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-label">Relationship</div>
+        <div class="textbox">
+          <input type="text"
+            name="emergency_relationship"
+            ng-model="person.emergency.relationship"
+            ng-required="true" />
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-label">Phone Number</div>
+        <div class="textbox">
+          <input tyle="tel"
+            name="emergency_phone"
+            ng-model="person.emergency.phone"
+            ng-required="true"
+            ui-mask="(999)999-9999" />
+        </div>
+      </div>
+    </div>
+  </li></ul>
+
+  <div class="submit-box col-md-4 col-md-offset-1">
+    <button ng-click="updateBasicInfo()" class="btn green" ng-disabled="form.$invalid">
+      Save
+    </button>
+  </div>
+  <div class="col-md-4 col-md-offset-2">
+    <button onclick="history.back()" class="btn green">
+      Cancel
+    </button>
+  </div>
+</form>
