@@ -78,6 +78,8 @@ class CompensationService(object):
                     comp_info.hourly_rate = base.hourly_rate + (base.hourly_rate * comp_info.increase_percentage / 100)
                 elif base and base.annual_base_salary:
                     comp_info.annual_base_salary = base.annual_base_salary + (base.annual_base_salary * comp_info.increase_percentage / 100)
+            else:
+                raise ValueError('Compensation record with both annual_base_salary and hourly_rate defined. This is invalid record')
             base = comp_info
         return info_list
 
