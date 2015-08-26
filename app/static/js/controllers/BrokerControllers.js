@@ -218,10 +218,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       });
 
       $scope.viewNotStarted = function(){
-        $scope.employees = $scope.summary.notStarted; 
+        $scope.employees = $scope.summary.notStarted;
       };
       $scope.viewNotComplete = function(){
-        $scope.employees = $scope.summary.notComplete; 
+        $scope.employees = $scope.summary.notComplete;
       };
       $scope.viewCompleted = function(){
         $scope.employees = $scope.summary.completed;
@@ -229,6 +229,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       $scope.viewDetails = function(employeeId){
         $state.go('broker_company_employee_enrollment', {company_id:company_id, employee_id:employeeId});
+      };
+
+      $scope.editPersonalInfo = function(employeeId) {
+        $state.go('broker_company_employee_personal_info', {employee_id: employeeId});
       };
 
       $scope.back = function(){
@@ -249,6 +253,14 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
       };
 }]);
+
+var brokerEmployeeInfoController = brokersControllers.controller('brokerEmployeeInfoController', [
+  '$scope',
+  '$stateParams',
+  function($scope, $stateParams) {
+    $scope.employeeId = $stateParams.employee_id;
+  }
+]);
 
 var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEmployeeEnrollmentController', [
   '$scope',
@@ -321,7 +333,7 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
         // TODO: Could/should FSA information be considered one kind of benefit election
         //       and this logic of getting FSA data for an employee be moved into the
         //       BenefitElectionService?
-        
+
         FsaService.getFsaElectionForUser($scope.employee.id, company_id).then(function(response) {
           $scope.employee.fsaElection = response;
         });
@@ -357,7 +369,7 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
     }, function(errorResponse){
       alert(errorResponse.content);
     });
-  }                                                       
+  }
 ]);
 
 
