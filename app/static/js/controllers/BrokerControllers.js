@@ -777,7 +777,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         return benefitType !== '';
       };
 
-      $scope.benefit_types = ['Medical', 'Dental', 'Vision'];
+      $scope.benefit_types = ['', 'Medical', 'Dental', 'Vision'];
 
 
       $scope.viewBenefits = function(){
