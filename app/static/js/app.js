@@ -86,8 +86,8 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
         $urlRouterProvider.otherwise("/");
 
         $stateProvider.
-            state('/settings', {
-                url: "/settings?onboard",
+            state('settings', {
+                url: "/user/:user_id/settings?onboard",
                 templateUrl: '/static/partials/settings.html',
                 controller: 'settingsController'
             }).
@@ -105,6 +105,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/broker/benefits/:clientId',
                 templateUrl: '/static/partials/view_benefits.html',
                 controller: 'benefitsController'
+            }).
+            state('/broker/employee_list', {
+              url: '/broker/client/:client_id/employees',
+              templateUrl: '/static/partials/broker_edit_employee_info.html',
+              controller: 'brokerEmployeeEdit'
             }).
             state('broker_add_benefit', {
                 url: '/broker/add_benefit/:clientId',

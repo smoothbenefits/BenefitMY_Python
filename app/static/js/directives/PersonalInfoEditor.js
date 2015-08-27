@@ -11,12 +11,6 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
       currentUser,
       PersonService) {
 
-        if ($scope.maskssn) {
-          $scope.ssnDisplayType = 'password';
-        } else {
-          $scope.ssnDisplayType = 'tel';
-        }
-
         PersonService.getSelfPersonInfo($scope.target)
         .then(function(basicInfo) {
           $scope.person = basicInfo;
@@ -54,7 +48,7 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
       onboard: '=?',
     	editorUserId: '=?'
     },
-    templateUrl: '/static/partials/common/personal_info_edit.html',
+    templateUrl: '/static/partials/common/directive_personal_info_edit.html',
     controller: controller
   };
 });
