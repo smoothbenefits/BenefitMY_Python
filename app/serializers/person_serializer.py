@@ -31,7 +31,6 @@ class PersonSerializer(HashPkSerializerBase):
                   'first_name',
                   'last_name',
                   'middle_name',
-                  'ssn',
                   'email',
                   'birth_date',
                   'phones',

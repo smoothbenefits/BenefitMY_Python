@@ -1,0 +1,27 @@
+<div class="breadcrumb">
+  <a ng-click="backToDashboard()">{{getCurRoleString()}} Dashboard</a>
+  <span>Employee List</span>
+</div>
+
+<div class="content-header">
+  <h1>Employee List</h1>
+  <div class="cta"><span class="btn green" ng-click="back()">Back</span></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <h6>Total count: </h6>
+  <div class="row" ng-show="employees">
+    <div class="col-sm-3" ng-repeat="employee in employees | orderBy:'lastName'">
+      <span dropdown on-toggle="toggled(open)">
+        <a href id="employee-menu-{{employee.id}}" dropdown-toggle>
+          {{employee.firstName}} {{employee.lastName}}  <i class="fa fa-caret-square-o-down"></i>
+        </a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="employee-menu-{{employee.id}}">
+          <li role="menuitem"><a ng-href="{{getEmployee1095cUrl(employee.id)}}">Download 1095-C</a></li>
+          <li role="menuitem"><a ng-click="editPersonalInfo(employee.id)">Edit Personal Info</a></li>
+          <li role="menuitem"><a ng-click="viewDetails(employee.id)">View Selected Benefits</a></li>
+        </ul>
+      </span>
+    </div>
+  </div>
+</div><!-- / .content-body -->

@@ -1,9 +1,18 @@
 'use strict';
 var brokersControllers = angular.module('benefitmyApp.brokers.controllers',[]);
 
-var clientsController = brokersControllers.controller('clientsController',
-  ['$scope', '$location', 'clientListRepository', 'currentUser',
-  function clientsController($scope, $location, clientListRepository, currentUser){
+var clientsController = brokersControllers.controller('clientsController', [
+  '$scope',
+  '$state',
+  '$location',
+  'clientListRepository',
+  'currentUser',
+  function clientsController(
+    $scope,
+    $state,
+    $location,
+    clientListRepository,
+    currentUser){
 
     $scope.addClient = function()
     {
@@ -16,6 +25,10 @@ var clientsController = brokersControllers.controller('clientsController',
 
     $scope.viewSelectedBenefits = function(clientId){
       $location.path('/broker/benefit/selected/' + clientId);
+    };
+
+    $scope.editEmployeeInfo = function(clientId) {
+      $state.go('/broker/employee_list', {client_id: clientId});
     };
 
     var getClientList = function(theUser)
@@ -45,6 +58,20 @@ var clientsController = brokersControllers.controller('clientsController',
     );
   }]
 );
+
+var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
+  '$scope',
+  '$stateParams',
+  'CompanyEmployeeSummaryService',
+  function($scope, $stateParams, CompanyEmployeeSummaryService) {
+
+    var companyId = $stateParams.client_id;
+    CompanyEmployeeSummaryService.getCompanyEmployeeSummary(companyId)
+    .then(function(companyUsers) {
+      $scope.employees = companyUsers;
+    });
+  }
+]);
 
 var benefitsController = brokersControllers.controller(
    'benefitsController',
