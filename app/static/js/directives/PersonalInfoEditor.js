@@ -3,11 +3,13 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
   var controller = [
     '$scope',
     '$state',
+    '$window',
     'currentUser',
     'PersonService',
     function PersonalInfoEditorDirectiveController(
       $scope,
       $state,
+      $window,
       currentUser,
       PersonService) {
 
@@ -29,7 +31,7 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
             if($scope.onboard){
               $state.go('employee_family', {employeeId: $scope.curUser.id, onboard:true});
             } else{
-              $state.go('/');
+              $window.history.back();
             }
           }, function(errorResponse){
             alert('Failed to add the basic info. The error is: ' +
@@ -44,7 +46,6 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
     restrict: 'E',
     scope: {
     	target: '=',
-      maskssn: '=',
       onboard: '=?',
     	editorUserId: '=?'
     },

@@ -9,19 +9,23 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-  <h6>Total count: </h6>
-  <div class="row" ng-show="employees">
-    <div class="col-sm-3" ng-repeat="employee in employees | orderBy:'lastName'">
-      <span dropdown on-toggle="toggled(open)">
-        <a href id="employee-menu-{{employee.id}}" dropdown-toggle>
-          {{employee.firstName}} {{employee.lastName}}  <i class="fa fa-caret-square-o-down"></i>
-        </a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="employee-menu-{{employee.id}}">
-          <li role="menuitem"><a ng-href="{{getEmployee1095cUrl(employee.id)}}">Download 1095-C</a></li>
-          <li role="menuitem"><a ng-click="editPersonalInfo(employee.id)">Edit Personal Info</a></li>
-          <li role="menuitem"><a ng-click="viewDetails(employee.id)">View Selected Benefits</a></li>
-        </ul>
-      </span>
-    </div>
+  <h6>Total number of employee: {{employees.length}}</h6>
+  <div class="table-responsive table-holder">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Name</span></th>
+          <th><span>Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="employee in employees | orderBy:'lastName'">
+          <td>{{employee.firstName}} {{employee.lastName}}</td>
+          <td>
+            <span class="btn inline" ng-click="editPersonalInfo(employee.userId)">Edit Personal Info</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div><!-- / .content-body -->
