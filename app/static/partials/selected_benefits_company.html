@@ -58,9 +58,8 @@
           {{employee.firstName}} {{employee.lastName}}  <i class="fa fa-caret-square-o-down"></i>
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="employee-menu-{{employee.id}}">
-          <li role="menuitem"><a ng-href="{{getEmployee1095cUrl(employee.id)}}">Download 1095-C</a></li>
-          <li role="menuitem"><a ng-click="editPersonalInfo(employee.id)">Edit Personal Info</a></li>
           <li role="menuitem"><a ng-click="viewDetails(employee.id)">View Selected Benefits</a></li>
+          <li role="menuitem"><a ng-href="{{getEmployee1095cUrl(employee.id)}}">Download 1095-C</a></li>
         </ul>
       </span>
     </div>

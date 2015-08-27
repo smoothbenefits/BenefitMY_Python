@@ -61,15 +61,27 @@ var clientsController = brokersControllers.controller('clientsController', [
 
 var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
   '$scope',
+  '$state',
   '$stateParams',
   'CompanyEmployeeSummaryService',
-  function($scope, $stateParams, CompanyEmployeeSummaryService) {
+  function($scope,
+           $state,
+           $stateParams,
+           CompanyEmployeeSummaryService) {
 
     var companyId = $stateParams.client_id;
     CompanyEmployeeSummaryService.getCompanyEmployeeSummary(companyId)
     .then(function(companyUsers) {
       $scope.employees = companyUsers;
     });
+
+    $scope.editPersonalInfo = function(employeeId) {
+      $state.go('broker_company_employee_personal_info', {employee_id: employeeId});
+    };
+
+    $scope.back = function() {
+      $state.go('/');
+    };
   }
 ]);
 
@@ -258,10 +270,6 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         $state.go('broker_company_employee_enrollment', {company_id:company_id, employee_id:employeeId});
       };
 
-      $scope.editPersonalInfo = function(employeeId) {
-        $state.go('broker_company_employee_personal_info', {employee_id: employeeId});
-      };
-
       $scope.back = function(){
         $location.path('/broker');
       };
@@ -283,9 +291,11 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
 var brokerEmployeeInfoController = brokersControllers.controller('brokerEmployeeInfoController', [
   '$scope',
+  '$location',
   '$stateParams',
-  function($scope, $stateParams) {
+  function($scope, $location, $stateParams) {
     $scope.employeeId = $stateParams.employee_id;
+    $scope.returnTo = $location.path();
   }
 ]);
 
