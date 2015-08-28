@@ -14,7 +14,7 @@
   </li></ul>
 
   <h3 class="col-md-12 label label-warning" ng-if="!infoAvailable">
-    Employee has not onboard. No personal inforamtion available in the system yet.
+    Employee has not come onboard. No personal inforamtion available in the system yet.
   </h3>
   <h3 class="sub-title">Personal Information</h3>
   <ul class="list-group"><li class="list-group-item">
@@ -71,7 +71,7 @@
     <input type="tel"
       name="person_ssn"
       ng-model="person.ssn"
-      ng-required="requiressn"
+      ng-required="false"
       ui-mask="999-99-9999">
     <div class="form-validation-error" ng-show="form.person_ssn.$dirty && form.person_ssn.$invalid">
       <span ng-show="form.person_ssn.$invalid">Please enter a valid Social Security Number</span>
