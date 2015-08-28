@@ -4,10 +4,14 @@ from django.db import models
 from company import Company
 from app.custom_authentication import AuthUser
 
-USER_TYPE = (("employee", "employee"),
-             ("admin", "admin"),
-             ("broker", "broker"),
-             ("super", "super"))
+USER_TYPE_EMPLOYEE = "employee"
+USER_TYPE_ADMIN = "admin"
+USER_TYPE_BROKER = "broker"
+USER_TYPE_SUPER = "super"
+USER_TYPE = ((USER_TYPE_EMPLOYEE, "employee"),
+             (USER_TYPE_ADMIN, "admin"),
+             (USER_TYPE_BROKER, "broker"),
+             (USER_TYPE_SUPER, "super"))
 
 @reversion.register
 class CompanyUser(models.Model):

@@ -23,7 +23,7 @@ benefitmyService.factory('EmployerEmployeeManagementService',
 
     var mapToEmployeeDomainModel = function(companyId, viewModel, templateFields){
       var domainModel = {
-        "company": companyId,
+        "company_id": companyId,
         "company_user_type": "employee",
         "new_employee": viewModel.new_employee,
         "create_docs": viewModel.create_docs,
@@ -32,12 +32,10 @@ benefitmyService.factory('EmployerEmployeeManagementService',
         "hourly_rate": viewModel.hourly_rate,
         "effective_date": viewModel.effective_date,
         "projected_hour_per_month": viewModel.projected_hour_per_month,
-        "fields": templateFields,
-        "user": {
-          "email": viewModel.email,
-          "first_name": viewModel.first_name,
-          "last_name": viewModel.last_name,
-        }
+        "doc_fields": templateFields,
+        "email": viewModel.email,
+        "first_name": viewModel.first_name,
+        "last_name": viewModel.last_name
       };
 
       if (viewModel.employment_type.id === 1) {
@@ -48,7 +46,7 @@ benefitmyService.factory('EmployerEmployeeManagementService',
 
       // Do not set password if selected "send email"
       if (!domainModel.send_email) {
-        domainModel.user.password = viewModel.password;
+        domainModel.password = viewModel.password;
       }
       return domainModel;
     };

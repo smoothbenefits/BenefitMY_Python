@@ -151,6 +151,8 @@ from app.views.insurance.company_ltd_insurance_employee_premium_view import Comp
 from app.views.insurance.company_std_insurance_employee_premium_view import CompanyStdInsuranceEmployeePremiumView
 from app.views.company_enrollment_summary_view import CompanyEnrollmentSummaryView
 
+from app.views.batch_account_creation.batch_account_creation_view import BatchAccountCreationView
+
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',

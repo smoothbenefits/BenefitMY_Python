@@ -282,6 +282,61 @@ var employerUser = employersController.controller('employerUser',
   }
 ]);
 
+var batchEmployeeAdditionController = employersController.controller('batchEmployeeAdditionController', 
+    ['$scope',
+     '$state',
+     '$stateParams',
+     'employerWorkerRepository',
+     'usersRepository',
+     'emailRepository',
+     'CompensationService',
+     'EmployerEmployeeManagementService', 
+    function($scope,
+             $state,
+             $stateParams,
+             employerWorkerRepository,
+             usersRepository,
+             emailRepository,
+             CompensationService,
+             EmployerEmployeeManagementService){
+
+        // Share scope between child states
+        $scope.batchAddUserModel = $scope.batchAddUserModel 
+            || { sendEmail:true, rawData:''};
+
+        $scope.parseData = function() {
+            // Actually parse data here, and get result
+            $scope.batchAddUserModel.parseDataResult = {
+                data: $scope.batchAddUserModel.rawData,
+                errors: ['omg', 'omg2'],
+                isValid: function() {
+                    //return !this.errors || this.errors.length <= 0;
+                    return true;
+                }
+            };
+
+            $state.go('batch_add_employees.parse_result');
+        };
+
+        $scope.save = function() {
+            $scope.batchAddUserModel.saveResult = {
+                data: 'Success',
+                errors: ['bad user'],
+                succeeded: function() {
+                    //return !this.errors || this.errors.length <= 0;
+                    return true;
+                }
+            };
+
+            $state.go('batch_add_employees.save_result');
+        };
+
+        $scope.backtoDashboard = function(){
+          $state.go('/admin');
+        };
+    }
+]);
+
 var employerBenefits = employersController.controller('employerBenefits',
   ['$scope',
   '$location',
