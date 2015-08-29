@@ -1,4 +1,6 @@
 from app.view_models.view_model_base import ViewModelBase
+from app.view_models.validation_issue import ValidationIssue, SEVERITY_ERROR
+
 
 class EmployeeAccountCreationInfo(ViewModelBase):
     user_id = None

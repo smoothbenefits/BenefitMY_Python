@@ -4,6 +4,7 @@ from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.custom_authentication import AuthUserManager
 from app.models.person import Person
+from app.models.employee_profile import FULL_TIME, PART_TIME
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
 from app.view_models.validation_issue import ValidationIssue
@@ -23,7 +24,8 @@ class AccountCreationService(object):
             account_info.company_id is None or
             account_info.company_user_type is None or
             account_info.first_name is None or
-            account_info.last_name is None):
+            account_info.last_name is None or
+            account_info.compensation_info is None):
             account_info.append_validation_issue(
                 "Missing necessary information for account creation"
             )
@@ -50,26 +52,54 @@ class AccountCreationService(object):
                 "Missing initial password for the new account"
             )
 
-        return account_info
+        # Now validate the initial compensation record
+        if (account_info.employment_type == PART_TIME):
+            if (account_info.compensation_info.hourly_rate is None or 
+                account_info.compensation_info.projected_hour_per_month is None):
+                account_info.append_validation_issue(
+                    "Compensation record info is incomplete"
+                )
+        elif (account_info.employment_type == FULL_TIME):
+            if (account_info.compensation_info.annual_base_salary is None):
+                account_info.append_validation_issue(
+                    "Compensation record info is incomplete"
+                )
 
-    def validate_batch(self, account_info_list):
-        result_list = []
+        return
 
-        for account_info in account_info_list:
-            result_list.append(self.validate(account_info))
+    def validate_batch(self, batch_account_creation_info):
+        if (batch_account_creation_info.account_creation_info_list is None):
+            batch_account_creation_info.append_validation_issue(
+                'Did not find any account info to handle'
+            )
+        else:
+            # Also do some batch level validations
+            exist_emails = []
 
-        return result_list
+            for account_info in batch_account_creation_info.account_creation_info_list:
+                self.validate(account_info)
+                if not account_info.email in exist_emails:
+                    exist_emails.append(account_info.email)
+                else:
+                    account_info.append_validation_issue(
+                        'The email specificed is also used on another account in this batch'
+                    )
+
+            if (not batch_account_creation_info.all_accounts_valid()):
+                batch_account_creation_info.append_validation_issue(
+                    'There are validation issues on some account info.'
+                )
 
     def execute_creation(self, account_info, do_validation=True): 
 
         # Do validation first, and short circuit if failed
         if (do_validation):
-            account_info = self.validate(account_info)
+            self.validate(account_info)
 
         # If the account creation info is not valid to begin with
         # simply short circuit and return it
         if (not account_info.is_valid()):
-            return account_info
+            return
 
         userManager = AuthUserManager()
 
@@ -181,12 +211,12 @@ class AccountCreationService(object):
 
             account_info.user_id = user.id
 
-        return account_info
+        return
 
-    def execute_creation_batch(self, account_info_list):
-        result_list = []
+    def execute_creation_batch(self, batch_account_creation_info):
+        self.validate_batch(batch_account_creation_info)
+        if (not batch_account_creation_info.is_valid()):
+            return
 
-        for account_info in account_info_list:
-            result_list.append(self.execute_creation(account_info, False))
-
-        return result_list
+        for account_info in batch_account_creation_info.account_creation_info_list:
+            self.execute_creation(account_info, False)

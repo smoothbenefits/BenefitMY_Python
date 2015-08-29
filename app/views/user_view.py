@@ -52,19 +52,18 @@ class UsersView(APIView):
         serializer = EmployeeAccountCreationInfoSerializer(data=request.DATA)
         if (not serializer.is_valid()):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
         account_info = serializer.object
 
         account_service = AccountCreationService()
-        result_account_info = account_service.execute_creation(account_info)
+        account_service.execute_creation(account_info)
 
-        if (not result_account_info.is_valid()):
+        if (not account_info.is_valid()):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # construct data back to consumer
-        user = User.objects.get(pk=result_account_info.user_id)
-        company_user = CompanyUser.objects.get(user=result_account_info.user_id, company=result_account_info.company_id)
-        person = Person.objects.get(user=result_account_info.user_id, relationship='self')
+        user = User.objects.get(pk=account_info.user_id)
+        company_user = CompanyUser.objects.get(user=account_info.user_id, company=account_info.company_id)
+        person = Person.objects.get(user=account_info.user_id, relationship='self')
         profile = EmployeeProfile.objects.get(person=person.id)
 
         user_serializer = UserSerializer(user)
