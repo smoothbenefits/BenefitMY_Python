@@ -1,6 +1,6 @@
-from app.view_models.validation_issue import ValidationIssue, SEVERITY_ERROR
+from app.view_models.view_model_base import ViewModelBase
 
-class EmployeeAccountCreationInfo(object):
+class EmployeeAccountCreationInfo(ViewModelBase):
     user_id = None
     company_id = None
     company_user_type = None
@@ -14,7 +14,6 @@ class EmployeeAccountCreationInfo(object):
     new_employee = None
     create_docs = None
     doc_fields = None
-    validation_issues = None
     annual_base_salary = None
 
     def __init__(self,
@@ -37,15 +36,3 @@ class EmployeeAccountCreationInfo(object):
         self.create_docs = create_docs
         self.doc_fields = doc_fields
         self.validation_issues = validation_issues
-
-    def append_validation_issue(self, message, severity=SEVERITY_ERROR):
-        if (self.validation_issues is None):
-            self.validation_issues = []
-        self.validation_issues.append(
-            ValidationIssue(message, severity)
-        )
-
-    def is_valid(self):
-        if (self.validation_issues is None or len(self.validation_issues <= 0)):
-            return True
-        return False

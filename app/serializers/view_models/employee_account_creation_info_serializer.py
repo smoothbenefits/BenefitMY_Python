@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from app.serializers.custom_fields.hash_field import HashField
-from app.serializers.compensation_info_serializer import CompensationInfoSerializer
+from app.serializers.view_models.compensation_info_serializer import CompensationInfoSerializer
 from app.serializers.view_models.validation_issue_serializer import ValidationIssueSerializer
 from app.view_models.employee_account_creation_info import EmployeeAccountCreationInfo
 from app.serializers.view_models.key_value_pair_serializer import KeyValuePairSerializer

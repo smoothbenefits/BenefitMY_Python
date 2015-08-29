@@ -9,6 +9,7 @@ from app.service.user_document_generator import UserDocumentGenerator
 from app.view_models.validation_issue import ValidationIssue
 from app.serializers.person_serializer import PersonSimpleSerializer
 from app.serializers.employee_profile_serializer import EmployeeProfilePostSerializer
+from app.serializers.employee_compensation_serializer import EmployeeCompensationPostSerializer
 from app.service.hash_key_service import HashKeyService
 
 User = get_user_model()
@@ -59,9 +60,14 @@ class AccountCreationService(object):
 
         return result_list
 
-    def execute_creation(self, account_info):
+    def execute_creation(self, account_info, do_validation=True): 
+
         # Do validation first, and short circuit if failed
-        account_info = self.validate(account_info)
+        if (do_validation):
+            account_info = self.validate(account_info)
+
+        # If the account creation info is not valid to begin with
+        # simply short circuit and return it
         if (not account_info.is_valid()):
             return account_info
 
@@ -73,10 +79,9 @@ class AccountCreationService(object):
             password = account_info.password
         User.objects.create_user(account_info.email, password)
         if not userManager.user_exists(account_info.email):
-            account_info.append_validation_issue(
+            raise Exception(
                 "Failed to create user account"
             )
-            return account_info
 
         user = userManager.get_user(account_info.email)
         user.first_name = account_info.first_name
@@ -105,11 +110,14 @@ class AccountCreationService(object):
         person_serializer = PersonSimpleSerializer(data=person_data)
         if person_serializer.is_valid():
             person_serializer.save()
+        else:
+            raise Exception("Failed to create person record")
 
         # Create the employee profile
         key_service = HashKeyService()
+        person_id = key_service.decode_key(person_serializer.data['id'])
         profile_data = {
-            'person': key_service.decode_key(person_serializer.data['id']),
+            'person': person_id,
             'company': account_info.company_id
         }
 
@@ -123,9 +131,10 @@ class AccountCreationService(object):
 
         if profile_serializer.is_valid():
             profile_serializer.save()
+        else:
+            raise Exception("Failed to create employee profile record")
 
         # Now check to see send email and create documents
-
         if company_user.company_user_type == 'employee':
             if account_info.send_email:
                 # now try to create the onboard email for this user.
@@ -136,10 +145,9 @@ class AccountCreationService(object):
                                   user.id
                                   )
                 except StandardError:
-                    account_info.append_validation_issue(
+                    raise Exception(
                         "Failed to send email to employee"
                     )
-                    return account_info
 
             if (account_info.create_docs and
                 account_info.doc_fields is not None):
@@ -149,10 +157,27 @@ class AccountCreationService(object):
                     doc_gen = UserDocumentGenerator(company_user.company, user)
                     doc_gen.generate_all_document(account_info.doc_fields)
                 except Exception:
-                    account_info.append_validation_issue(
+                    raise Exception(
                         "Failed to generate documents for employee"
                     )
-                    return account_info
+
+            # Create the initial compensation record
+            compensation_data = {
+                'person': person_id,
+                'company': account_info.company_id,
+                'annual_base_salary': account_info.compensation_info.annual_base_salary,
+                'projected_hour_per_month': account_info.compensation_info.projected_hour_per_month,
+                'hourly_rate': account_info.compensation_info.hourly_rate,
+                'effective_date': account_info.compensation_info.effective_date,
+                'increase_percentage': None
+            }
+
+            compensation_serializer = EmployeeCompensationPostSerializer(data=compensation_data)
+
+            if (compensation_serializer.is_valid()):
+                compensation_serializer.save()
+            else:
+                raise Exception("Failed to create compensation record")
 
             account_info.user_id = user.id
 
@@ -162,6 +187,6 @@ class AccountCreationService(object):
         result_list = []
 
         for account_info in account_info_list:
-            result_list.append(self.execute_creation(account_info))
+            result_list.append(self.execute_creation(account_info, False))
 
         return result_list
