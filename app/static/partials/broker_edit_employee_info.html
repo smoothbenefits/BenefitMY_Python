@@ -1,0 +1,31 @@
+<div class="breadcrumb">
+  <a ng-click="backToDashboard()">{{getCurRoleString()}} Dashboard</a>
+  <span>Employee List</span>
+</div>
+
+<div class="content-header">
+  <h1>Employee List</h1>
+  <div class="cta"><span class="btn green" ng-click="back()">Back</span></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <h6>Total number of employee: {{employees.length}}</h6>
+  <div class="table-responsive table-holder">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Name</span></th>
+          <th><span>Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="employee in employees | orderBy:'lastName'">
+          <td>{{employee.firstName}} {{employee.lastName}}</td>
+          <td>
+            <span class="btn inline" ng-click="editPersonalInfo(employee.userId)">Edit Personal Info</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- / .content-body -->
