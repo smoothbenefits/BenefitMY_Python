@@ -25,7 +25,17 @@ HASH_KEY = '5e14ca8a-4a48-4cf7-aa3b-e207eb1a9adb'
 DEFAULT_USER_PW = 'd4gf6u0hhfg48ds321cdsf'
 
 # Allowed hosts names
-ALLOWED_HOSTS = ['localhost', '.benefitmy.com', 'benefitmy.com.', '.heroku.com', '.herokuapp.com']
+ALLOWED_HOSTS = [ \
+    'localhost', \
+    '.benefitmy.com', \
+    'benefitmy.com.', \
+    '.workbenefitsme.com', \
+    'workbenefitsme.com.', \
+    '.workbenefits.me', \
+    'workbenefits.me.', \
+    '.heroku.com', \
+    '.herokuapp.com' \
+]
 
 # Application definition
 AUTH_USER_MODEL = 'app.AuthUser'
@@ -230,6 +240,7 @@ PIPELINE_JS = {
             'js/directives/UploadManager.js',
             'js/directives/UploadViewer.js',
             'js/directives/CustomDatePicker.js',
+            'js/directives/PersonalInfoEditor.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',

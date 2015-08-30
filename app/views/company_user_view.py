@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.response import Response
 
+from app.models.person import Person
 from app.models.company_user import CompanyUser
 from app.serializers.company_user_serializer import (
     CompanyUserSerializer)
