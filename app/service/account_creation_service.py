@@ -7,33 +7,56 @@ from app.models.person import Person
 from app.models.employee_profile import FULL_TIME, PART_TIME
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
-from app.view_models.validation_issue import ValidationIssue
+from app.dtos.issue import Issue
 from app.serializers.person_serializer import PersonSimpleSerializer
 from app.serializers.employee_profile_serializer import EmployeeProfilePostSerializer
 from app.serializers.employee_compensation_serializer import EmployeeCompensationPostSerializer
 from app.service.hash_key_service import HashKeyService
+from app.dtos.operation_result import OperationResult
 
 User = get_user_model()
 
 class AccountCreationService(object):
-    def parse_raw_data(self, raw_data):
-        return None
+
+    REQUIRED_RAW_DATA_FIELDS = [
+        'first_name',
+        'last_name',
+        'aaa',
+        'bbb'
+    ]
+
+    def parse_raw_data(self, batch_account_raw_data):
+        result = OperationResult(batch_account_raw_data)
+
+        # check all lines for number of fields
+        # if found bad ones, send the main wrapper back without
+        # construting the individual ones
+        for line in batch_account_raw_data.raw_data.split('\n'):
+            tokens = line.split('\t')
+            if (len(tokens) != len(self.REQUIRED_RAW_DATA_FIELDS)):
+                result.append_issue(
+                    'The following line does not have enough information: %s' % line
+                )
+
+        return result
 
     def validate(self, account_info):
+        result = OperationResult(account_info)
+
         if (account_info is None or
             account_info.company_id is None or
             account_info.company_user_type is None or
             account_info.first_name is None or
             account_info.last_name is None or
             account_info.compensation_info is None):
-            account_info.append_validation_issue(
+            result.append_issue(
                 "Missing necessary information for account creation"
             )
 
         try:
             Company.objects.get(pk=account_info.company_id)
         except Company.DoesNotExist:
-            account_info.append_validation_issue(
+            result.append_issue(
                 "Specificed company does not exist"
             )
 
@@ -43,12 +66,12 @@ class AccountCreationService(object):
         for c in company_users:
             if (c.company_user_type == account_info.company_user_type and
                     c.user.email == account_info.email):
-                account_info.append_validation_issue(
+                result.append_issue(
                     "Specified email has already been used"
                 )
 
         if (not account_info.send_email and account_info.password is None):
-            account_info.append_validation_issue(
+            result.append_issue(
                 "Missing initial password for the new account"
             )
 
@@ -56,50 +79,67 @@ class AccountCreationService(object):
         if (account_info.employment_type == PART_TIME):
             if (account_info.compensation_info.hourly_rate is None or 
                 account_info.compensation_info.projected_hour_per_month is None):
-                account_info.append_validation_issue(
+                result.append_issue(
                     "Compensation record info is incomplete"
                 )
         elif (account_info.employment_type == FULL_TIME):
             if (account_info.compensation_info.annual_base_salary is None):
-                account_info.append_validation_issue(
+                result.append_issue(
                     "Compensation record info is incomplete"
                 )
 
-        return
+        result.set_output_data(account_info)
 
-    def validate_batch(self, batch_account_creation_info):
-        if (batch_account_creation_info.account_creation_info_list is None):
-            batch_account_creation_info.append_validation_issue(
+        return result
+
+    def validate_batch(self, account_creation_data_list):
+        result = OperationResult(account_creation_data_list)
+
+        if (account_creation_data_list is None or len(account_creation_data_list) <= 0):
+            result.append_validation_issue(
                 'Did not find any account info to handle'
             )
         else:
             # Also do some batch level validations
             exist_emails = []
+            has_invalid = False
+            account_validation_results = []
 
-            for account_info in batch_account_creation_info.account_creation_info_list:
-                self.validate(account_info)
-                if not account_info.email in exist_emails:
+            for account_info in account_creation_data_list:
+                if account_info.email not in exist_emails:
                     exist_emails.append(account_info.email)
                 else:
-                    account_info.append_validation_issue(
+                    result.append_validation_issue(
                         'The email specificed is also used on another account in this batch'
                     )
+                account_result = self.validate(account_info)
+                if (account_result.has_issue()):
+                    has_invalid = True
+                account_validation_results.append(account_result)
 
-            if (not batch_account_creation_info.all_accounts_valid()):
-                batch_account_creation_info.append_validation_issue(
+            if (has_invalid):
+                result.append_issue(
                     'There are validation issues on some account info.'
                 )
 
+            result.set_output_data(account_validation_results)
+            return result
+
     def execute_creation(self, account_info, do_validation=True): 
+        result = OperationResult(account_info)
+        account_result = None
 
         # Do validation first, and short circuit if failed
         if (do_validation):
-            self.validate(account_info)
+            account_result = self.validate(account_info)
+        else:
+            # directly construct the result, skipping validation
+            account_result = OperationResult(account_info)
 
         # If the account creation info is not valid to begin with
         # simply short circuit and return it
-        if (not account_info.is_valid()):
-            return
+        if (account_result.has_issue()):
+            return account_result
 
         userManager = AuthUserManager()
 
@@ -211,12 +251,20 @@ class AccountCreationService(object):
 
             account_info.user_id = user.id
 
-        return
+            account_result.set_output_data(account_info)
 
-    def execute_creation_batch(self, batch_account_creation_info):
-        self.validate_batch(batch_account_creation_info)
-        if (not batch_account_creation_info.is_valid()):
-            return
+        return account_result
 
-        for account_info in batch_account_creation_info.account_creation_info_list:
-            self.execute_creation(account_info, False)
+    def execute_creation_batch(self, account_creation_data_list):
+        result = self.validate_batch(account_creation_data_list)
+        if (result.has_issue()):
+            return result
+
+        account_results = []
+
+        for account_info in account_creation_data_list:
+            account_result = self.execute_creation(account_info, False)
+            account_results.append(account_result)
+
+        result.set_output_data(account_results)
+        return result

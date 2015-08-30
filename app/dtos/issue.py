@@ -4,7 +4,7 @@ SEVERITY_INFO = 'info'
 SEVERITY_DEBUG = 'debug'
 
 
-class ValidationIssue(object):
+class Issue(object):
     severity = SEVERITY_ERROR
     message = ''
 

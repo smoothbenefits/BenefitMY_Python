@@ -291,6 +291,7 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
      'emailRepository',
      'CompensationService',
      'EmployerEmployeeManagementService', 
+     'BatchAccountCreationService',
     function($scope,
              $state,
              $stateParams,
@@ -298,24 +299,32 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
              usersRepository,
              emailRepository,
              CompensationService,
-             EmployerEmployeeManagementService){
+             EmployerEmployeeManagementService,
+             BatchAccountCreationService){
+
+        var compId = $stateParams.company_id;
 
         // Share scope between child states
         $scope.batchAddUserModel = $scope.batchAddUserModel 
             || { sendEmail:true, rawData:''};
 
         $scope.parseData = function() {
-            // Actually parse data here, and get result
-            $scope.batchAddUserModel.parseDataResult = {
-                data: $scope.batchAddUserModel.rawData,
-                errors: ['omg', 'omg2'],
-                isValid: function() {
-                    //return !this.errors || this.errors.length <= 0;
-                    return true;
-                }
-            };
+            BatchAccountCreationService.parseRawData(compId, $scope.batchAddUserModel).then(function(response) {
+                // Actually parse data here, and get result
+                $scope.batchAddUserModel.parseDataResult = {
+                    data: $scope.batchAddUserModel.rawData,
+                    errors: ['omg', 'omg2'],
+                    isValid: function() {
+                        //return !this.errors || this.errors.length <= 0;
+                        return true;
+                    }
+                };
 
-            $state.go('batch_add_employees.parse_result');
+                $state.go('batch_add_employees.parse_result');
+            },
+            function(error) {
+                alert('Failed to parse the given data!');
+            });
         };
 
         $scope.save = function() {

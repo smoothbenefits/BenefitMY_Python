@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from app.view_models.key_value_pair import KeyValuePair
+from app.dtos.key_value_pair import KeyValuePair
+
 
 class KeyValuePairSerializer(serializers.Serializer):
     key = serializers.CharField(required=False)

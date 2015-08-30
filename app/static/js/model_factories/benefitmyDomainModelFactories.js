@@ -458,3 +458,11 @@ benefitmyDomainModelFactories.factory('CompanyEmployeeEnrollmentSummaryRepositor
     };
   }
 ]);
+
+benefitmyDomainModelFactories.factory('BatchAccountCreationDataParseRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompany:$resource(PREFIX + 'company/:company_id/batch_account_creation/parse_account_data/', {company_id:'@company_id'})
+    };
+  }
+]);

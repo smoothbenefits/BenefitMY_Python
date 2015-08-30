@@ -1,8 +1,4 @@
-from app.view_models.view_model_base import ViewModelBase
-from app.view_models.validation_issue import ValidationIssue, SEVERITY_ERROR
-
-
-class EmployeeAccountCreationInfo(ViewModelBase):
+class AccountCreationData(object):
     user_id = None
     company_id = None
     company_user_type = None
@@ -22,8 +18,7 @@ class EmployeeAccountCreationInfo(ViewModelBase):
         user_id=None, company_id=None, company_user_type=None,
         first_name=None, last_name=None, email=None, employment_type=None,
         compensation_info=None, send_email=None, password=None,
-        new_employee=None, create_docs=None, doc_fields=None,
-        validation_issues=None):
+        new_employee=None, create_docs=None, doc_fields=None):
         self.user_id = user_id
         self.company_id = company_id
         self.company_user_type = company_user_type
@@ -37,4 +32,3 @@ class EmployeeAccountCreationInfo(ViewModelBase):
         self.new_employee = new_employee
         self.create_docs = create_docs
         self.doc_fields = doc_fields
-        self.validation_issues = validation_issues

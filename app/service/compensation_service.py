@@ -1,7 +1,7 @@
 from django.utils import timezone
 from app.models.employee_compensation import EmployeeCompensation
 from app.models.employee_profile import EmployeeProfile, FULL_TIME
-from app.view_models.compensation_info import CompensationInfo
+from app.dtos.compensation_info import CompensationInfo
 
 '''
 This is the service to provide compensation information to who ever needs it.

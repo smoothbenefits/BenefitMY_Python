@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from app.serializers.sys_compensation_update_reason_serializer import SysCompensationUpdateReasonSerializer
-from app.view_models.compensation_info import CompensationInfo
+from app.dtos.compensation_info import CompensationInfo
+
 
 class CompensationInfoSerializer(serializers.Serializer):
     id = serializers.CharField(required=False)
