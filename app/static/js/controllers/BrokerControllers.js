@@ -1327,7 +1327,8 @@ var addClientController = brokersControllers.controller('addClientController', [
       var apiClient = mapToAPIClient(viewClient);
       addClientRepository.save(apiClient, function(){
           $location.path('/clients');
-      }, function(){
+      }, function(error){
+          alert("Failed to add client. Please verify the data provided.")
           $scope.saveSucceeded = false;
       });
     }
@@ -1355,7 +1356,7 @@ var addClientController = brokersControllers.controller('addClientController', [
       apiAddress.street_1 = viewClient.address.street1;
       apiAddress.street_2 = viewClient.address.street2;
       apiAddress.city = viewClient.address.city;
-      apiAddress.state = viewClient.address.state;
+      apiAddress.state = viewClient.address.state.toUpperCase();
       apiAddress.zipcode = viewClient.address.zip;
       apiClient.addresses.push(apiAddress);
       return apiClient;
