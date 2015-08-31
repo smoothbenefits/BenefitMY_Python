@@ -4,8 +4,11 @@
   <div class="panel-body">
     <form name="myForm" confirm-unsaved-on-exit>
       <div class="row">
-        <div class="label label-info col-md-4">
+        <div class="label label-info col-md-4" ng-show="companyStdPlan.employeePremium">
           <span>Your premium per pay period is <b>${{companyStdPlan.employeePremium.toFixed(2)}}</b></span>
+        </div>
+        <div class="label label-warning col-md-10" ng-hide="companyStdPlan.employeePremium">
+          <span>Your premium per pay period is <b>NOT AVAILABLE</b> because your salary information is missing.</span>
         </div>
       </div>
       <div class="row">

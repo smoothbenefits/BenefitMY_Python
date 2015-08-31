@@ -527,12 +527,26 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
 
     $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
 
+    var isInteger = function(value) {
+      return _.isNumber(value) && value % 1 === 0;
+    };
+
+    $scope.isValidMultiplier = function(multiplier) {
+      if (!multiplier) {
+        // Multiplier is not a required field;
+        return true;
+      }
+
+      return isInteger(multiplier);
+    }
+
     $scope.buttonEnabled = function() {
       return $scope.newLifeInsurancePlan.name
              && _.isNumber($scope.newLifeInsurancePlan.totalCost)
              && _.isNumber($scope.newLifeInsurancePlan.employeeContribution)
              && (_.isNumber($scope.newLifeInsurancePlan.amount)
-                 || _.isNumber($scope.newLifeInsurancePlan.multiplier));
+                 || _.isNumber($scope.newLifeInsurancePlan.multiplier))
+             && isInteger($scope.newLifeInsurancePlan.multiplier);
     };
 
     // Need the user information for the current user (broker)
@@ -1327,7 +1341,8 @@ var addClientController = brokersControllers.controller('addClientController', [
       var apiClient = mapToAPIClient(viewClient);
       addClientRepository.save(apiClient, function(){
           $location.path('/clients');
-      }, function(){
+      }, function(error){
+          alert("Failed to add client. Please verify the data provided.")
           $scope.saveSucceeded = false;
       });
     }
@@ -1355,7 +1370,7 @@ var addClientController = brokersControllers.controller('addClientController', [
       apiAddress.street_1 = viewClient.address.street1;
       apiAddress.street_2 = viewClient.address.street2;
       apiAddress.city = viewClient.address.city;
-      apiAddress.state = viewClient.address.state;
+      apiAddress.state = viewClient.address.state.toUpperCase();
       apiAddress.zipcode = viewClient.address.zip;
       apiClient.addresses.push(apiAddress);
       return apiClient;

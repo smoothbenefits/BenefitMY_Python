@@ -81,7 +81,12 @@ benefitmyService.factory('StdService',
 
             domainModel.id = userCompanyPlanViewModel.userCompanyPlanId;
             domainModel.user = userCompanyPlanViewModel.planOwner;
-            domainModel.total_premium_per_month = userCompanyPlanViewModel.totalPremium.toFixed(10);
+
+            if (userCompanyPlanViewModel.totalPremium) {
+              domainModel.total_premium_per_month = userCompanyPlanViewModel.totalPremium.toFixed(10);
+            } else {
+              domainModel.total_premium_per_month = null;
+            }
 
             domainModel.company_std_insurance = mapCompanyPlanViewToDomainModel(userCompanyPlanViewModel);
 
