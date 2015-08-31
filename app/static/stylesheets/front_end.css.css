@@ -162,9 +162,15 @@
   text-align: center; }
   #header #logo-link {
     display: inline-block;
+    width: 56px;
+    height: 56px;
+    background: url("/static/images/workbenefitsme-logo-white-background.png") no-repeat;
+    background-size: 100%; }
+  #header #home-logo-link {
+    display: inline-block;
     width: 156px;
-    height: 52px;
-    background: url("/static/images/logo-white.png") no-repeat;
+    height: 156px;
+    background: url("/static/images/workbenefitsme-transparent.png") no-repeat;
     background-size: 100%; }
   #header .form-holder {
     display: none; }
@@ -201,7 +207,7 @@
         right: 0;
         padding: 6px 40px; }
         #header.fixed #logo-link {
-          background-image: url("/static/images/logo-black.png"); } }
+          background-image: url("/static/images/workbenefitsme-logo-white-background.png"); } }
     @media (min-width: 768px) and (min-width: 767px) {
       #header.fixed .form-holder {
         display: block;

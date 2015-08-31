@@ -1791,7 +1791,8 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             if(member.relationship === 'self'){
                 $scope.familyInfo.selfPerson = member;
             }
-            else if (member.relationship === 'spouse')
+            // Assume a person can only have either a spouse OR a life partner
+            else if (member.relationship === 'spouse' || member.relationship === 'life partner')
             {
                 $scope.familyInfo.spousePerson = member;
             }
