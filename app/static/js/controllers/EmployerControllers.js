@@ -311,13 +311,12 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
         $scope.parseData = function() {
             BatchAccountCreationService.parseRawData(compId, $scope.batchAddUserModel).then(function(response) {
                 // Actually parse data here, and get result
-                $scope.batchAddUserModel.parseDataResult = {
-                    data: $scope.batchAddUserModel.rawData,
-                    errors: ['omg', 'omg2'],
-                    isValid: function() {
-                        //return !this.errors || this.errors.length <= 0;
-                        return true;
-                    }
+                $scope.batchAddUserModel.parseDataResult = response;
+                $scope.batchAddUserModel.parseDataResult.hasIssues = function() {
+                    return this.issues && this.issues.length > 0;
+                };
+                $scope.batchAddUserModel.parseDataResult.hasRecords = function() {
+                    return this.output_data && this.output_data.length > 0;
                 };
 
                 $state.go('batch_add_employees.parse_result');

@@ -14,6 +14,7 @@ class AccountInfoListParseView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         raw_data = serializer.object
+        raw_data.company_id = company_id
 
         service = AccountCreationService()
         parse_result = service.parse_raw_data(raw_data)

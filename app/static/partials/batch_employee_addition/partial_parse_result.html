@@ -1,9 +1,63 @@
 <div class="form-holder">
 
-    <div>{{batchAddUserModel.parseDataResult.data}}</div>
+    <div ng-if="batchAddUserModel.parseDataResult.hasIssues()">
+        <div>There are issues with the data</div>
+        <div class="table-responsive table-holder">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Issues</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="issue in batchAddUserModel.parseDataResult.issues">
+                <td>{{issue.message}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+
+    <div ng-if="batchAddUserModel.parseDataResult.hasRecords()">
+        <div>Below are parsed account data pending saving</div>
+        <div class="table-responsive table-holder">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Employment Type</th>
+                <th>Annual Base Salary</th>
+                <th>Hourly Rate</th>
+                <th>Projected Hours/Mo</th>
+                <th>Compensation Effective Date</th>
+                <th>Send Email</th>
+                <th>Issues</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="accountResultData in batchAddUserModel.parseDataResult.output_data">
+                <td>{{accountResultData.output_data.first_name}}</td>
+                <td>{{accountResultData.output_data.last_name}}</td>
+                <td>{{accountResultData.output_data.email}}</td>
+                <td>{{accountResultData.output_data.employment_type}}</td>
+                <td>{{accountResultData.output_data.compensation_info.annual_base_salary}}</td>
+                <td>{{accountResultData.output_data.compensation_info.hourly_rate}}</td>
+                <td>{{accountResultData.output_data.compensation_info.projected_hour_per_month}}</td>
+                <td>{{accountResultData.output_data.compensation_info.effective_date}}</td>
+                <td>{{accountResultData.output_data.send_email}}</td>
+                <td>{{accountResultData.issues && accountResultData.issues.length > 0 ? accountResultData.issues[0].message : ''}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+
 
     <div class="submit-box">
-        <button ng-click="save()" class="btn green" ng-disabled="!batchAddUserModel.parseDataResult.isValid()">Save</button>
+        <button ng-click="save()" class="btn green" ng-disabled="batchAddUserModel.parseDataResult.hasIssues()">Save</button>
     </div>
 
 </div>

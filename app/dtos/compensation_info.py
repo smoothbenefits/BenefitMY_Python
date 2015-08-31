@@ -3,17 +3,6 @@ from app.serializers.sys_compensation_update_reason_serializer import SysCompens
 
 
 class CompensationInfo(object):
-    id = None
-    effective_date = None
-    annual_base_salary = None
-    hourly_rate = None
-    increase_percentage = None
-    projected_hour_per_month = None
-    created_at = None
-    updated_at = None
-    is_current = False
-    reason = None
-
     def __init__(self, id=None, effective_date=None, annual_base_salary=None,
         hourly_rate=None,increase_percentage=None,projected_hour_per_month=None,
         created_at=None,updated_at=None,is_current=None,reason=None):
@@ -40,6 +29,7 @@ class CompensationInfo(object):
             self.created_at = compensation_record.created_at
             self.updated_at = compensation_record.updated_at
             self.reason = compensation_record.reason
+            self.is_current = False
 
     def __cmp__(self, other):
         if hasattr(other, 'effective_date'):

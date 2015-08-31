@@ -1,19 +1,4 @@
 class AccountCreationData(object):
-    user_id = None
-    company_id = None
-    company_user_type = None
-    first_name = None
-    last_name = None
-    email = None
-    employment_type = None
-    compensation_info = None
-    send_email = None
-    password = None
-    new_employee = None
-    create_docs = None
-    doc_fields = None
-    annual_base_salary = None
-
     def __init__(self,
         user_id=None, company_id=None, company_user_type=None,
         first_name=None, last_name=None, email=None, employment_type=None,

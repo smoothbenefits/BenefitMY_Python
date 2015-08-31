@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from app.models.company_user import CompanyUser
@@ -5,40 +6,106 @@ from app.models.company import Company
 from app.custom_authentication import AuthUserManager
 from app.models.person import Person
 from app.models.employee_profile import FULL_TIME, PART_TIME
+from app.models.company_user import USER_TYPE_EMPLOYEE
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
 from app.dtos.issue import Issue
+from app.dtos.operation_result import OperationResult
 from app.serializers.person_serializer import PersonSimpleSerializer
 from app.serializers.employee_profile_serializer import EmployeeProfilePostSerializer
 from app.serializers.employee_compensation_serializer import EmployeeCompensationPostSerializer
+from app.serializers.dtos.account_creation_data_serializer import AccountCreationDataSerializer
 from app.service.hash_key_service import HashKeyService
-from app.dtos.operation_result import OperationResult
 
 User = get_user_model()
 
+
 class AccountCreationService(object):
+    FIELD_FIRST_NAME = 'first_name'
+    FIELD_LAST_NAME = 'last_name'
+    FIELD_EMAIL = 'email'
+    FIELD_PASSWORD = 'password'
+    FIELD_EMPLOYMENT_TYPE = 'employment_type'
+    FIELD_ANNUAL_BASE_SALARY = 'annual_base_salary'
+    FIELD_HOURLY_RATE = 'hourly_rate'
+    FIELD_PROJECTED_HOUR_PER_MONTH = 'projected_hour_per_month'
+    FIELD_EFFECTIVE_DATE = 'effective_date'
+    FIELD_RECORD_END = 'record-end'
 
     REQUIRED_RAW_DATA_FIELDS = [
-        'first_name',
-        'last_name',
-        'aaa',
-        'bbb'
+        FIELD_FIRST_NAME,
+        FIELD_LAST_NAME,
+        FIELD_EMAIL,
+        FIELD_PASSWORD,
+        FIELD_EMPLOYMENT_TYPE,
+        FIELD_ANNUAL_BASE_SALARY,
+        FIELD_HOURLY_RATE,
+        FIELD_PROJECTED_HOUR_PER_MONTH,
+        FIELD_EFFECTIVE_DATE,
+        FIELD_RECORD_END
     ]
 
     def parse_raw_data(self, batch_account_raw_data):
         result = OperationResult(batch_account_raw_data)
+        parsed_account_data_list = []
 
         # check all lines for number of fields
         # if found bad ones, send the main wrapper back without
         # construting the individual ones
         for line in batch_account_raw_data.raw_data.split('\n'):
             tokens = line.split('\t')
+
             if (len(tokens) != len(self.REQUIRED_RAW_DATA_FIELDS)):
                 result.append_issue(
-                    'The following line does not have enough information: %s' % line
+                    'The following line does not have enough number of fields: [%s]' % line
                 )
+            else:
+                # Parse the line into objects
+                # Utilize serializers to perform all the details
+                compensation_data = {
+                    'annual_base_salary': self._get_field_value(tokens, self.FIELD_ANNUAL_BASE_SALARY),
+                    'hourly_rate': self._get_field_value(tokens, self.FIELD_HOURLY_RATE),
+                    'projected_hour_per_month': self._get_field_value(tokens, self.FIELD_PROJECTED_HOUR_PER_MONTH),
+                    'effective_date': datetime.strptime(self._get_field_value(tokens, self.FIELD_EFFECTIVE_DATE), '%m-%d-%Y')
+                }
+                account_data = {
+                    'company_id': batch_account_raw_data.company_id,
+                    'first_name': self._get_field_value(tokens, self.FIELD_FIRST_NAME),
+                    'last_name': self._get_field_value(tokens, self.FIELD_LAST_NAME),
+                    'employment_type': self._get_field_value(tokens, self.FIELD_EMPLOYMENT_TYPE),
+                    'email': self._get_field_value(tokens, self.FIELD_EMAIL),
+                    'password': self._get_field_value(tokens, self.FIELD_PASSWORD),
+                    'company_user_type': USER_TYPE_EMPLOYEE,
+                    'send_email': batch_account_raw_data.send_email,
+                    'new_employee': False,
+                    'create_docs': False,
+                    'compensation_info': compensation_data,
+                    'doc_fields': []
+                }
+
+                serializer = AccountCreationDataSerializer(data=account_data)
+
+                if (not serializer.is_valid()):
+                    result.append_issue(
+                        'The line [%s] fails to parse properly. Reasons:[%s]' % line, serializer.errors
+                    )
+                else:
+                    parsed_account_data_list.append(serializer.object)
+
+        # Do batch validation,
+        #  - Collect batch level issues into the result
+        #  - include the list of validated account data as output
+        batch_validation_result = self.validate_batch(parsed_account_data_list)
+        batch_validation_result.copy_issues_to(result)
+        result.set_output_data(batch_validation_result.output_data)
 
         return result
+
+    def _get_field_value(self, field_values, field_name):
+        index = self.REQUIRED_RAW_DATA_FIELDS.index(field_name)
+        if (index < 0 or index >= len(field_values)):
+            return None
+        return field_values[index]
 
     def validate(self, account_info):
         result = OperationResult(account_info)
@@ -95,8 +162,8 @@ class AccountCreationService(object):
     def validate_batch(self, account_creation_data_list):
         result = OperationResult(account_creation_data_list)
 
-        if (account_creation_data_list is None or len(account_creation_data_list) <= 0):
-            result.append_validation_issue(
+        if (account_creation_data_list is None):
+            result.append_issue(
                 'Did not find any account info to handle'
             )
         else:
@@ -106,15 +173,18 @@ class AccountCreationService(object):
             account_validation_results = []
 
             for account_info in account_creation_data_list:
+                account_result = self.validate(account_info)
+
                 if account_info.email not in exist_emails:
                     exist_emails.append(account_info.email)
                 else:
-                    result.append_validation_issue(
+                    account_result.append_issue(
                         'The email specificed is also used on another account in this batch'
                     )
-                account_result = self.validate(account_info)
+
                 if (account_result.has_issue()):
                     has_invalid = True
+
                 account_validation_results.append(account_result)
 
             if (has_invalid):
@@ -123,7 +193,8 @@ class AccountCreationService(object):
                 )
 
             result.set_output_data(account_validation_results)
-            return result
+
+        return result
 
     def execute_creation(self, account_info, do_validation=True): 
         result = OperationResult(account_info)
@@ -191,8 +262,8 @@ class AccountCreationService(object):
             'company': account_info.company_id
         }
 
-        if (account_info.annual_base_salary is not None):
-            profile_data['annual_base_salary'] = account_info.annual_base_salary
+        if (account_info.compensation_info.annual_base_salary is not None):
+            profile_data['annual_base_salary'] = account_info.compensation_info.annual_base_salary
 
         if (account_info.employment_type is not None):
             profile_data['employment_type'] = account_info.employment_type
