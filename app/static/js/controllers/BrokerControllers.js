@@ -1,9 +1,18 @@
 'use strict';
 var brokersControllers = angular.module('benefitmyApp.brokers.controllers',[]);
 
-var clientsController = brokersControllers.controller('clientsController',
-  ['$scope', '$location', 'clientListRepository', 'currentUser',
-  function clientsController($scope, $location, clientListRepository, currentUser){
+var clientsController = brokersControllers.controller('clientsController', [
+  '$scope',
+  '$state',
+  '$location',
+  'clientListRepository',
+  'currentUser',
+  function clientsController(
+    $scope,
+    $state,
+    $location,
+    clientListRepository,
+    currentUser){
 
     $scope.addClient = function()
     {
@@ -16,6 +25,10 @@ var clientsController = brokersControllers.controller('clientsController',
 
     $scope.viewSelectedBenefits = function(clientId){
       $location.path('/broker/benefit/selected/' + clientId);
+    };
+
+    $scope.editEmployeeInfo = function(clientId) {
+      $state.go('/broker/employee_list', {client_id: clientId});
     };
 
     var getClientList = function(theUser)
@@ -45,6 +58,32 @@ var clientsController = brokersControllers.controller('clientsController',
     );
   }]
 );
+
+var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
+  '$scope',
+  '$state',
+  '$stateParams',
+  'CompanyEmployeeSummaryService',
+  function($scope,
+           $state,
+           $stateParams,
+           CompanyEmployeeSummaryService) {
+
+    var companyId = $stateParams.client_id;
+    CompanyEmployeeSummaryService.getCompanyEmployeeSummary(companyId)
+    .then(function(companyUsers) {
+      $scope.employees = companyUsers;
+    });
+
+    $scope.editPersonalInfo = function(employeeId) {
+      $state.go('broker_company_employee_personal_info', {employee_id: employeeId});
+    };
+
+    $scope.back = function() {
+      $state.go('/');
+    };
+  }
+]);
 
 var benefitsController = brokersControllers.controller(
    'benefitsController',
@@ -249,6 +288,16 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
       };
 }]);
+
+var brokerEmployeeInfoController = brokersControllers.controller('brokerEmployeeInfoController', [
+  '$scope',
+  '$location',
+  '$stateParams',
+  function($scope, $location, $stateParams) {
+    $scope.employeeId = $stateParams.employee_id;
+    $scope.returnTo = $location.path();
+  }
+]);
 
 var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEmployeeEnrollmentController', [
   '$scope',
@@ -478,12 +527,26 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
 
     $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
 
+    var isInteger = function(value) {
+      return _.isNumber(value) && value % 1 === 0;
+    };
+
+    $scope.isValidMultiplier = function(multiplier) {
+      if (!multiplier) {
+        // Multiplier is not a required field;
+        return true;
+      }
+
+      return isInteger(multiplier);
+    }
+
     $scope.buttonEnabled = function() {
       return $scope.newLifeInsurancePlan.name
              && _.isNumber($scope.newLifeInsurancePlan.totalCost)
              && _.isNumber($scope.newLifeInsurancePlan.employeeContribution)
              && (_.isNumber($scope.newLifeInsurancePlan.amount)
-                 || _.isNumber($scope.newLifeInsurancePlan.multiplier));
+                 || _.isNumber($scope.newLifeInsurancePlan.multiplier))
+             && isInteger($scope.newLifeInsurancePlan.multiplier);
     };
 
     // Need the user information for the current user (broker)
@@ -777,7 +840,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         return benefitType !== '';
       };
 
-      $scope.benefit_types = ['Medical', 'Dental', 'Vision'];
+      $scope.benefit_types = ['', 'Medical', 'Dental', 'Vision'];
 
 
       $scope.viewBenefits = function(){
@@ -1278,7 +1341,8 @@ var addClientController = brokersControllers.controller('addClientController', [
       var apiClient = mapToAPIClient(viewClient);
       addClientRepository.save(apiClient, function(){
           $location.path('/clients');
-      }, function(){
+      }, function(error){
+          alert("Failed to add client. Please verify the data provided.")
           $scope.saveSucceeded = false;
       });
     }
@@ -1306,7 +1370,7 @@ var addClientController = brokersControllers.controller('addClientController', [
       apiAddress.street_1 = viewClient.address.street1;
       apiAddress.street_2 = viewClient.address.street2;
       apiAddress.city = viewClient.address.city;
-      apiAddress.state = viewClient.address.state;
+      apiAddress.state = viewClient.address.state.toUpperCase();
       apiAddress.zipcode = viewClient.address.zip;
       apiClient.addresses.push(apiAddress);
       return apiClient;
