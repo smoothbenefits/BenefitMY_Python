@@ -66,7 +66,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
           return response;
         }, function(){
           //we need to redirect to edit profile page
-          $location.path('/settings').search({onboard:1});
+          $state.go('settings', {user_id: $scope.employee_id, onboard:1});
         });
       }
       return response;
