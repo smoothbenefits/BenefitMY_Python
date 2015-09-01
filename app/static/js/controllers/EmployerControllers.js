@@ -327,16 +327,21 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
         };
 
         $scope.save = function() {
-            $scope.batchAddUserModel.saveResult = {
-                data: 'Success',
-                errors: ['bad user'],
-                succeeded: function() {
-                    //return !this.errors || this.errors.length <= 0;
-                    return true;
-                }
-            };
+            BatchAccountCreationService.saveAllAccounts(compId, $scope.batchAddUserModel).then(function(response) {
+                // Actually parse data here, and get result
+                $scope.batchAddUserModel.saveResult = response;
+                $scope.batchAddUserModel.saveResult.hasIssues = function() {
+                    return this.issues && this.issues.length > 0;
+                };
+                $scope.batchAddUserModel.saveResult.hasRecords = function() {
+                    return this.output_data && this.output_data.length > 0;
+                };
 
-            $state.go('batch_add_employees.save_result');
+                $state.go('batch_add_employees.save_result');
+            },
+            function(error) {
+                alert('Failed to save data!');
+            });
         };
 
         $scope.backtoDashboard = function(){

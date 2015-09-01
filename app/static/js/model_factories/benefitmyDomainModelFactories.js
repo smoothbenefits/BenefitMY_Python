@@ -466,3 +466,11 @@ benefitmyDomainModelFactories.factory('BatchAccountCreationDataParseRepository',
     };
   }
 ]);
+
+benefitmyDomainModelFactories.factory('BatchAccountCreationBatchCreateRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompany:$resource(PREFIX + 'company/:company_id/batch_account_creation/batch_create/', {company_id:'@company_id'})
+    };
+  }
+]);

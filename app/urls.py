@@ -390,6 +390,10 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/batch_account_creation/parse_account_data/?$' % PREFIX,
         AccountInfoListParseView.as_view(),
         name='batch_account_creation_parse_data_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/batch_account_creation/batch_create/?$' % PREFIX,
+        BatchAccountCreationView.as_view(),
+        name='batch_account_creation_batch_create_api'),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

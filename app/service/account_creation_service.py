@@ -53,20 +53,33 @@ class AccountCreationService(object):
         # if found bad ones, send the main wrapper back without
         # construting the individual ones
         for line in batch_account_raw_data.raw_data.split('\n'):
+            if (not line.strip()):
+                continue
+
             tokens = line.split('\t')
 
             if (len(tokens) != len(self.REQUIRED_RAW_DATA_FIELDS)):
                 result.append_issue(
-                    'The following line does not have enough number of fields: [%s]' % line
+                    'The line [%s] fails to parse properly. Reason: Do not have enough number of fields' % line
                 )
             else:
+                # try parsing some data first and log errors if found
+                effective_date = None
+                try:
+                    effective_date = datetime.strptime(self._get_field_value(tokens, self.FIELD_EFFECTIVE_DATE), '%m-%d-%Y')
+                except:
+                    result.append_issue(
+                        'The line [%s] fails to parse properly. Reason: Failed to parse the given compensation effective date' % (line)
+                    )
+                    continue
+
                 # Parse the line into objects
                 # Utilize serializers to perform all the details
                 compensation_data = {
                     'annual_base_salary': self._get_field_value(tokens, self.FIELD_ANNUAL_BASE_SALARY),
                     'hourly_rate': self._get_field_value(tokens, self.FIELD_HOURLY_RATE),
                     'projected_hour_per_month': self._get_field_value(tokens, self.FIELD_PROJECTED_HOUR_PER_MONTH),
-                    'effective_date': datetime.strptime(self._get_field_value(tokens, self.FIELD_EFFECTIVE_DATE), '%m-%d-%Y')
+                    'effective_date': effective_date
                 }
                 account_data = {
                     'company_id': batch_account_raw_data.company_id,
@@ -87,7 +100,7 @@ class AccountCreationService(object):
 
                 if (not serializer.is_valid()):
                     result.append_issue(
-                        'The line [%s] fails to parse properly. Reasons:[%s]' % line, serializer.errors
+                        'The line [%s] fails to parse properly. Reasons:[%s]' % (line, serializer.errors)
                     )
                 else:
                     parsed_account_data_list.append(serializer.object)
@@ -118,6 +131,11 @@ class AccountCreationService(object):
             account_info.compensation_info is None):
             result.append_issue(
                 "Missing necessary information for account creation"
+            )
+
+        if (account_info.send_email and account_info.password):
+            result.append_issue(
+                "Password should not be specified if the system is to send registration email"
             )
 
         try:
