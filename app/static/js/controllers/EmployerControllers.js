@@ -364,6 +364,7 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
                 $scope.spinnerModalInstance = $modal.open({
                   templateUrl: '/static/partials/common/modal_progress_bar_spinner.html',
                   controller: function($scope) {},
+                  backdrop: 'static',
                   size: 'md'
                 });
             }
