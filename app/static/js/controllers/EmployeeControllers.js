@@ -66,7 +66,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
           return response;
         }, function(){
           //we need to redirect to edit profile page
-          $location.path('/settings').search({onboard:1});
+          $state.go('settings', {user_id: $scope.employee_id, onboard:1});
         });
       }
       return response;
@@ -1791,7 +1791,8 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             if(member.relationship === 'self'){
                 $scope.familyInfo.selfPerson = member;
             }
-            else if (member.relationship === 'spouse')
+            // Assume a person can only have either a spouse OR a life partner
+            else if (member.relationship === 'spouse' || member.relationship === 'life partner')
             {
                 $scope.familyInfo.spousePerson = member;
             }

@@ -16,7 +16,7 @@ benefitmyService.factory('PersonService',
               deferred.resolve(viewSelfPerson);
             }
             else{
-              deferred.reject(null);
+              deferred.reject({exists: false});
             }
           });
         return deferred.promise;
