@@ -67,6 +67,18 @@
           <span>Employment status must be selected</span>
         </div>
       </div>
+      
+      <div class="form-label">Date of Hire*</div>
+      <div class="datebox">
+        <bm-date-picker model="addUser.date_of_hire"
+          required="true"
+          name="date_of_hire"
+          fieldname="'date_of_hire'"
+          dirty="form.date_of_hire.$dirty" />
+        <div class="form-inline-error" ng-show="form.date_of_hire.$dirty && form.date_of_hire.$invalid">
+          <span ng-show="form.date_of_hire.$invalid">Please enter a valid Date</span>
+        </div>
+      </div>
 
       <div ng-if="isFullTime(addUser)">
         <div class="form-label">Annual Base Salary*</div>

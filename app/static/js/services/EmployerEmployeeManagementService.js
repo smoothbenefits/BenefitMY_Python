@@ -30,8 +30,9 @@ benefitmyService.factory('EmployerEmployeeManagementService',
         "send_email": viewModel.send_email,
         "annual_base_salary": viewModel.annual_base_salary,
         "hourly_rate": viewModel.hourly_rate,
-        "effective_date": viewModel.effective_date,
+        "effective_date": moment(viewModel.effective_date).format('YYYY-MM-DD'),
         "projected_hour_per_month": viewModel.projected_hour_per_month,
+        "start_date": moment(viewModel.date_of_hire).format('YYYY-MM-DD'),
         "fields": templateFields,
         "user": {
           "email": viewModel.email,
@@ -78,6 +79,11 @@ benefitmyService.factory('EmployerEmployeeManagementService',
       // If part time, hourly rate and projected hour per month is required
       if (newEmployee.employment_type.id === 2 &&
       (!newEmployee.hourly_rate || !newEmployee.projected_hour_per_month)) {
+        return false;
+      }
+
+      // Date of hire is a required field
+      if (!newEmployee.date_of_hire) {
         return false;
       }
 
