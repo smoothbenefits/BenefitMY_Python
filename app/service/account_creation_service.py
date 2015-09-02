@@ -138,6 +138,11 @@ class AccountCreationService(object):
                 "Password should not be specified if the system is to send registration email"
             )
 
+        if (not account_info.send_email and not account_info.password):
+            result.append_issue(
+                "Password must be specified if the system is instructed to not send registration email"
+            )
+
         try:
             Company.objects.get(pk=account_info.company_id)
         except Company.DoesNotExist:

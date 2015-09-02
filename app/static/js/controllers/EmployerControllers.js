@@ -308,16 +308,44 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
         $scope.batchAddUserModel = $scope.batchAddUserModel 
             || { sendEmail:true, rawData:''};
 
+        var wrapBatchAccountOperationResponse = function(response) {
+            var result = response;
+            result.hasIssues = function() {
+                return this.issues && this.issues.length > 0;
+            };
+            result.hasRecords = function() {
+                return this.output_data && this.output_data.length > 0;
+            };
+            result.getRecordsHaveIssues = function() {
+                var result = [];
+
+                if (!this.hasRecords()){
+                    return result;
+                }
+
+                for (var i = 0; i < this.output_data.length; i++) {
+                    var record = this.output_data[i];
+                    if (record.issues && record.issues.length > 0) {
+                        result.push(record);
+                    }
+                }
+
+                return result;
+            };
+            result.hasFailRecords = function() {
+                return this.getRecordsHaveIssues().length > 0;
+            };
+            result.allRecordsSuccessful = function() {
+                return this.hasRecords() && !this.hasFailRecords();
+            };
+
+            return result;
+        }
+
         $scope.parseData = function() {
             BatchAccountCreationService.parseRawData(compId, $scope.batchAddUserModel).then(function(response) {
                 // Actually parse data here, and get result
-                $scope.batchAddUserModel.parseDataResult = response;
-                $scope.batchAddUserModel.parseDataResult.hasIssues = function() {
-                    return this.issues && this.issues.length > 0;
-                };
-                $scope.batchAddUserModel.parseDataResult.hasRecords = function() {
-                    return this.output_data && this.output_data.length > 0;
-                };
+                $scope.batchAddUserModel.parseDataResult = wrapBatchAccountOperationResponse(response);
 
                 $state.go('batch_add_employees.parse_result');
             },
@@ -329,13 +357,7 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
         $scope.save = function() {
             BatchAccountCreationService.saveAllAccounts(compId, $scope.batchAddUserModel).then(function(response) {
                 // Actually parse data here, and get result
-                $scope.batchAddUserModel.saveResult = response;
-                $scope.batchAddUserModel.saveResult.hasIssues = function() {
-                    return this.issues && this.issues.length > 0;
-                };
-                $scope.batchAddUserModel.saveResult.hasRecords = function() {
-                    return this.output_data && this.output_data.length > 0;
-                };
+                $scope.batchAddUserModel.saveResult = wrapBatchAccountOperationResponse(response);
 
                 $state.go('batch_add_employees.save_result');
             },
@@ -346,6 +368,10 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
 
         $scope.backtoDashboard = function(){
           $state.go('/admin');
+        };
+
+        $scope.formatDateForDisplay = function(date) {
+            return moment(date).format(DATE_FORMAT_STRING);
         };
     }
 ]);
