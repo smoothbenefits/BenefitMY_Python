@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from django.http import Http404
+from django.db import transaction
 from rest_framework.response import Response
 from app.models.company_1095_c import Company1095C
 from app.serializers.company_1095_c_serializer import Company1095CSerializer, Company1095CPostSerializer
@@ -22,6 +23,7 @@ class Company1095CView(APIView):
         serialized = Company1095CSerializer(company_fields, many=True)
         return Response(serialized.data)
 
+    @transaction.atomic
     def post(self, request, pk, format=None):
         self._validate_company_id(pk)
         serialized = Company1095CPostSerializer(data=request.DATA, many=True)
