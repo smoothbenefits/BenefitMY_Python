@@ -66,7 +66,7 @@ class AccountCreationService(object):
                 # try parsing some data first and log errors if found
                 effective_date = None
                 try:
-                    effective_date = datetime.strptime(self._get_field_value(tokens, self.FIELD_EFFECTIVE_DATE), '%m-%d-%Y')
+                    effective_date = datetime.strptime(self._get_field_value(tokens, self.FIELD_EFFECTIVE_DATE), '%m/%d/%Y')
                 except:
                     result.append_issue(
                         'The line [%s] fails to parse properly. Reason: Failed to parse the given compensation effective date' % (line)
@@ -138,10 +138,15 @@ class AccountCreationService(object):
                 "Password should not be specified if the system is to send registration email"
             )
 
-        if (not account_info.send_email and not account_info.password):
-            result.append_issue(
-                "Password must be specified if the system is instructed to not send registration email"
-            )
+        if (not account_info.send_email):
+            if(not account_info.password):
+                result.append_issue(
+                    "Password must be specified if the system is instructed to not send registration email"
+                )
+            elif (len(account_info.password) < 8):
+                result.append_issue(
+                    "Password must be no shorter than 8 characters"
+                )
 
         try:
             Company.objects.get(pk=account_info.company_id)
@@ -177,6 +182,10 @@ class AccountCreationService(object):
                 result.append_issue(
                     "Compensation record info is incomplete"
                 )
+        else:
+            result.append_issue(
+                'The specified employment type [%s] is not valid.' % account_info.employment_type
+            )
 
         result.set_output_data(account_info)
 
