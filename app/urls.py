@@ -150,6 +150,7 @@ from app.views.sys_period_definition_view import SysPeriodDefinitionView
 from app.views.insurance.company_ltd_insurance_employee_premium_view import CompanyLtdInsuranceEmployeePremiumView
 from app.views.insurance.company_std_insurance_employee_premium_view import CompanyStdInsuranceEmployeePremiumView
 from app.views.company_enrollment_summary_view import CompanyEnrollmentSummaryView
+from app.views.company_1095_c_view import Company1095CView
 
 PREFIX = "api/v1"
 
@@ -383,6 +384,10 @@ urlpatterns = patterns('app.views',
         name='employee_timetracking_by_person_api'),
 
     url(r'^%s/benefit_update_reasons/?$' % PREFIX, SysBenefitUpdateReasonView.as_view(), name='sys_benefit_update_reason_api'),
+
+    url(r'^%s/companies/(?P<pk>\w+)/1095_c/?$' % PREFIX, 
+        Company1095CView.as_view(),
+        name='company_1095_c_api'),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
