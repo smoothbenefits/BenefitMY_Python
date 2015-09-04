@@ -116,9 +116,14 @@ class UsersView(APIView):
         if ('employment_type' in request.DATA):
             profile_data['employment_type'] = request.DATA['employment_type']
 
+        if ('start_date' in request.DATA):
+            profile_data['start_date'] = request.DATA['start_date']
+
         profile_serializer = EmployeeProfilePostSerializer(data=profile_data)
         if profile_serializer.is_valid():
             profile_serializer.save()
+        else:
+            return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # Now check to see send email and create documents
 
