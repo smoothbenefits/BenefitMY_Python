@@ -16,6 +16,7 @@ class AccountCreationDataSerializer(serializers.Serializer):
     compensation_info = CompensationInfoSerializer(required=False)
     send_email = serializers.BooleanField()
     password = serializers.CharField(required=False)
+    start_date = serializers.DateField()
     create_docs = serializers.BooleanField()
     doc_fields = KeyValuePairSerializer(many=True, required=False)
 

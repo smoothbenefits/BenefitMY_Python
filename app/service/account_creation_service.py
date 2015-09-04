@@ -29,7 +29,7 @@ class AccountCreationService(object):
     FIELD_ANNUAL_BASE_SALARY = 'annual_base_salary'
     FIELD_HOURLY_RATE = 'hourly_rate'
     FIELD_PROJECTED_HOUR_PER_MONTH = 'projected_hour_per_month'
-    FIELD_EFFECTIVE_DATE = 'effective_date'
+    FIELD_START_DATE = 'start_date'
     FIELD_RECORD_END = 'record-end'
 
     REQUIRED_RAW_DATA_FIELDS = [
@@ -41,7 +41,7 @@ class AccountCreationService(object):
         FIELD_ANNUAL_BASE_SALARY,
         FIELD_HOURLY_RATE,
         FIELD_PROJECTED_HOUR_PER_MONTH,
-        FIELD_EFFECTIVE_DATE,
+        FIELD_START_DATE,
         FIELD_RECORD_END
     ]
 
@@ -64,12 +64,12 @@ class AccountCreationService(object):
                 )
             else:
                 # try parsing some data first and log errors if found
-                effective_date = None
+                start_date = None
                 try:
-                    effective_date = datetime.strptime(self._get_field_value(tokens, self.FIELD_EFFECTIVE_DATE), '%m/%d/%Y')
+                    start_date = datetime.strptime(self._get_field_value(tokens, self.FIELD_START_DATE), '%m/%d/%Y')
                 except:
                     result.append_issue(
-                        'The line [%s] fails to parse properly. Reason: Failed to parse the given compensation effective date' % (line)
+                        'The line [%s] fails to parse properly. Reason: Failed to parse the given employment start date' % (line)
                     )
                     continue
 
@@ -79,7 +79,7 @@ class AccountCreationService(object):
                     'annual_base_salary': self._get_field_value(tokens, self.FIELD_ANNUAL_BASE_SALARY),
                     'hourly_rate': self._get_field_value(tokens, self.FIELD_HOURLY_RATE),
                     'projected_hour_per_month': self._get_field_value(tokens, self.FIELD_PROJECTED_HOUR_PER_MONTH),
-                    'effective_date': effective_date
+                    'effective_date': start_date
                 }
                 account_data = {
                     'company_id': batch_account_raw_data.company_id,
@@ -92,6 +92,7 @@ class AccountCreationService(object):
                     'send_email': batch_account_raw_data.send_email,
                     'new_employee': False,
                     'create_docs': False,
+                    'start_date': start_date,
                     'compensation_info': compensation_data,
                     'doc_fields': []
                 }
@@ -291,7 +292,8 @@ class AccountCreationService(object):
         person_id = key_service.decode_key(person_serializer.data['id'])
         profile_data = {
             'person': person_id,
-            'company': account_info.company_id
+            'company': account_info.company_id,
+            'start_date': account_info.start_date
         }
 
         if (account_info.compensation_info.annual_base_salary is not None):

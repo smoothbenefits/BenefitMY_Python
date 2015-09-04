@@ -28,7 +28,8 @@ benefitmyService.factory('EmployerEmployeeManagementService',
           "annual_base_salary": viewModel.annual_base_salary,
           "projected_hour_per_month": viewModel.projected_hour_per_month,
           "hourly_rate": viewModel.hourly_rate,
-          "effective_date": viewModel.effective_date,
+          // Use date of hire as compensation effective date
+          "effective_date": moment(viewModel.date_of_hire).format('YYYY-MM-DDThh:mm:ss'),
           "increase_percentage": null
         };
 
@@ -36,6 +37,7 @@ benefitmyService.factory('EmployerEmployeeManagementService',
         "company_id": companyId,
         "company_user_type": "employee",
         "new_employee": viewModel.new_employee,
+        "start_date": moment(viewModel.date_of_hire).format('YYYY-MM-DD'),
         "create_docs": viewModel.create_docs,
         "send_email": viewModel.send_email,
         "doc_fields": templateFields,
@@ -70,8 +72,8 @@ benefitmyService.factory('EmployerEmployeeManagementService',
         return false;
       }
 
-      // Effective date for compensation is required
-      if (!newEmployee.effective_date) {
+      // Date of hire is a required field
+      if (!newEmployee.date_of_hire) {
         return false;
       }
 

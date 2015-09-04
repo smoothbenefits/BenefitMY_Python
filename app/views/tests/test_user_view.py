@@ -158,6 +158,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'true',
             'employment_type': 'FullTime',
+            'start_date': '2008-03-01',
             'compensation_info': {
                 'annual_base_salary': 3000,
                 'effective_date': '2008-03-01T15:45:09Z'
@@ -192,6 +193,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'company_user_type': 'employee',
             'send_email': 'false',
             'create_docs': 'true',
+            'start_date': '2008-03-01',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -222,6 +224,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'company_user_type': 'employee',
             'send_email': 'true',
             'create_docs': 'false',
+            'start_date': '2008-03-01',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -249,6 +252,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'company_user_type': 'employee',
             'send_email': 'true',
             'create_docs': 'false',
+            'start_date': '2008-03-01',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -268,6 +272,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'company': 1,
             'send_email': 'true',
             'create_docs': 'false',
+            'start_date': '2008-03-01',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -288,6 +293,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'company_user_type': 'employee',
             'send_email': 'true',
             'create_docs': 'false',
+            'start_date': '2008-03-01',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -311,6 +317,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'company_user_type': 'employee',
             'send_email': 'true',
             'create_docs': 'true',
+            'start_date': '2008-03-01',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -335,6 +342,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'company_user_type': 'employee',
             'send_email': 'true',
             'create_docs': 'true',
+            'start_date': '2008-03-01',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -388,6 +396,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'company_user_type': 'employee',
             'send_email': 'true',
             'create_docs': 'true',
+            'start_date': '2008-03-01',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
