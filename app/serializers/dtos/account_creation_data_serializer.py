@@ -17,7 +17,7 @@ class AccountCreationDataSerializer(serializers.Serializer):
     send_email = serializers.BooleanField()
     password = serializers.CharField(required=False)
     create_docs = serializers.BooleanField()
-    doc_fields = KeyValuePairSerializer(many=True)
+    doc_fields = KeyValuePairSerializer(many=True, required=False)
 
     def restore_object(self, attrs, instance=None):
         return AccountCreationData(**attrs)

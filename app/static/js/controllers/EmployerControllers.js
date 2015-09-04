@@ -356,11 +356,8 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
             });
         };
 
-        $scope.toggleSpinnerModal = function() {
-            if ($scope.spinnerModalInstance) {
-                $scope.spinnerModalInstance.dismiss();
-                $scope.spinnerModalInstance = null;
-            } else {
+        $scope.openSpinnerModal = function() {
+            if (!$scope.spinnerModalInstance) {
                 $scope.spinnerModalInstance = $modal.open({
                   templateUrl: '/static/partials/common/modal_progress_bar_spinner.html',
                   controller: function($scope) {},
@@ -370,10 +367,17 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
             }
         };
 
+        $scope.closeSpinnerModal = function() {
+            if ($scope.spinnerModalInstance) {
+                $scope.spinnerModalInstance.dismiss();
+                $scope.spinnerModalInstance = null;
+            }
+        };
+
         $scope.parseData = function() {
-            $scope.toggleSpinnerModal();
+            $scope.openSpinnerModal();
             BatchAccountCreationService.parseRawData(compId, $scope.batchAddUserModel).then(function(response) {
-                $scope.toggleSpinnerModal();
+                $scope.closeSpinnerModal();
 
                 // Actually parse data here, and get result
                 $scope.batchAddUserModel.parseDataResult = wrapBatchAccountOperationResponse(response);
@@ -381,22 +385,22 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
                 $state.go('batch_add_employees.parse_result');
             },
             function(error) {
-                $scope.toggleSpinnerModal();
+                $scope.closeSpinnerModal();
                 alert('Failed to parse the given data!');
             });
         };
 
         $scope.save = function() {
-            $scope.toggleSpinnerModal();
+            $scope.openSpinnerModal();
             BatchAccountCreationService.saveAllAccounts(compId, $scope.batchAddUserModel).then(function(response) {
-                $scope.toggleSpinnerModal(); 
+                $scope.closeSpinnerModal(); 
                 // Actually parse data here, and get result
                 $scope.batchAddUserModel.saveResult = wrapBatchAccountOperationResponse(response);
 
                 $state.go('batch_add_employees.save_result');
             },
             function(error) {
-                $scope.toggleSpinnerModal();
+                $scope.closeSpinnerModal();
                 alert('Failed to save data!');
             });
         };
