@@ -1329,52 +1329,26 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       };
   }]);
 
-var addClientController = brokersControllers.controller('addClientController', ['$scope', '$location', 'addClientRepository', 'PeriodDefinitionRepository',
-  function addClientController($scope, $location, addClientRepository, PeriodDefinitionRepository){
+var addClientController = brokersControllers.controller('addClientController', [
+  '$scope',
+  '$location',
+  'CompanyService',
+  'PeriodDefinitionRepository',
+  function addClientController($scope, $location, CompanyService, PeriodDefinitionRepository){
+
     $scope.client = {};
-    PeriodDefinitionRepository.query()
-    .$promise.then(function(payPeriods){
+    PeriodDefinitionRepository.query().$promise.then(function(payPeriods){
       $scope.payPeriods = payPeriods;
     });
+
     $scope.createClient = function(){
-      var viewClient = $scope.client;
-      var apiClient = mapToAPIClient(viewClient);
-      addClientRepository.save(apiClient, function(){
-          $location.path('/clients');
-      }, function(error){
-          alert("Failed to add client. Please verify the data provided.")
-          $scope.saveSucceeded = false;
-      });
-    }
-    var mapToAPIClient = function(viewClient){
-      var apiClient = {};
-      apiClient.addresses = [];
-      apiClient.contacts = [];
-      apiClient.name = viewClient.company.name;
-      apiClient.ein = viewClient.company.ein;
-      apiClient.offer_of_coverage_code = viewClient.company.offer_of_coverage_code;
-      apiClient.pay_period_definition = viewClient.payPeriod.id;
-      var apiContact = {};
-      apiContact.first_name = viewClient.contact.first_name;
-      apiContact.last_name = viewClient.contact.last_name;
-      apiContact.email = viewClient.contact.email;
-      apiContact.person_type = 'primary_contact';
-      apiContact.phones = [];
-      var apiContactPhone = {};
-      apiContactPhone.phone_type = 'work';
-      apiContactPhone.number = viewClient.contact.phone;
-      apiContact.phones.push(apiContactPhone);
-      apiClient.contacts.push(apiContact);
-      var apiAddress = {};
-      apiAddress.address_type = 'main';
-      apiAddress.street_1 = viewClient.address.street1;
-      apiAddress.street_2 = viewClient.address.street2;
-      apiAddress.city = viewClient.address.city;
-      apiAddress.state = viewClient.address.state.toUpperCase();
-      apiAddress.zipcode = viewClient.address.zip;
-      apiClient.addresses.push(apiAddress);
-      return apiClient;
-    }
+      CompanyService.CreateCompany($scope.client).then(function(response) {
+        $location.path('/clients');
+      }, function(error) {
+        alert("Failed to add client. " + error);
+        $scope.saveSucceeded = false;
+      })
+    };
   }
 ]);
 
