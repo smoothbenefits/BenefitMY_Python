@@ -1,0 +1,76 @@
+<div ng-if="batchAddUserModel.saveResult.hasIssues()">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th><span>There are issues with the data</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="issue in batchAddUserModel.saveResult.issues">
+            <td>{{issue.message}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<div ng-if="batchAddUserModel.saveResult.hasFailRecords()">
+    <div class="form-label">Please review the below records that have issues detected</div>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th><span>First Name</span></th>
+            <th><span>Last Name</span></th>
+            <th><span>Issues</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="accountResultData in batchAddUserModel.saveResult.getRecordsHaveIssues()">
+            <td>{{accountResultData.input_data.first_name}}</td>
+            <td>{{accountResultData.input_data.last_name}}</td>
+            <td><span class="inline" ng-repeat="issue in accountResultData.issues"> {{$index + 1}}. {{issue.message}}; </br></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<div ng-if="batchAddUserModel.saveResult.allRecordsSuccessful()">
+    <div class="form-label">Please review all accounts that have been created</div>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th><span>First Name</span></th>
+            <th><span>Last Name</span></th>
+            <th><span>Email</span></th>
+            <th><span>Employment Type</span></th>
+            <th><span>Annual Base Salary</span></th>
+            <th><span>Hourly Rate</span></th>
+            <th><span>Projected Hours/Mo</span></th>
+            <th><span>Compensation Effective Date</span></th>
+            <th><span>Send Email</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="accountResultData in batchAddUserModel.saveResult.output_data">
+            <td>{{accountResultData.output_data.first_name}}</td>
+            <td>{{accountResultData.output_data.last_name}}</td>
+            <td>{{accountResultData.output_data.email}}</td>
+            <td>{{accountResultData.output_data.employment_type}}</td>
+            <td>{{accountResultData.output_data.compensation_info.annual_base_salary}}</td>
+            <td>{{accountResultData.output_data.compensation_info.hourly_rate}}</td>
+            <td>{{accountResultData.output_data.compensation_info.projected_hour_per_month}}</td>
+            <td>{{formatDateForDisplay(accountResultData.output_data.compensation_info.effective_date)}}</td>
+            <td>{{accountResultData.output_data.send_email}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<div class="submit-box">
+    <button ng-click="backtoDashboard()" class="btn green" ng-disabled="batchAddUserModel.saveResult.hasIssues()">Back to Dashboard</button>
+</div>

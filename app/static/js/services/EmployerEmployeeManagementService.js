@@ -22,24 +22,29 @@ benefitmyService.factory('EmployerEmployeeManagementService',
     };
 
     var mapToEmployeeDomainModel = function(companyId, viewModel, templateFields){
+      var compensation = {
+          "person": null,
+          "company": companyId,
+          "annual_base_salary": viewModel.annual_base_salary,
+          "projected_hour_per_month": viewModel.projected_hour_per_month,
+          "hourly_rate": viewModel.hourly_rate,
+          // Use date of hire as compensation effective date
+          "effective_date": moment(viewModel.date_of_hire).format('YYYY-MM-DDThh:mm:ss'),
+          "increase_percentage": null
+        };
+
       var domainModel = {
-        "company": companyId,
+        "company_id": companyId,
         "company_user_type": "employee",
         "new_employee": viewModel.new_employee,
+        "start_date": moment(viewModel.date_of_hire).format('YYYY-MM-DD'),
         "create_docs": viewModel.create_docs,
         "send_email": viewModel.send_email,
-        "annual_base_salary": viewModel.annual_base_salary,
-        "hourly_rate": viewModel.hourly_rate,
-        // Use date of hire as compensation effective date
-        "effective_date": moment(viewModel.date_of_hire).format('YYYY-MM-DDThh:mm:ss'),
-        "projected_hour_per_month": viewModel.projected_hour_per_month,
-        "start_date": moment(viewModel.date_of_hire).format('YYYY-MM-DD'),
-        "fields": templateFields,
-        "user": {
-          "email": viewModel.email,
-          "first_name": viewModel.first_name,
-          "last_name": viewModel.last_name,
-        }
+        "doc_fields": templateFields,
+        "email": viewModel.email,
+        "first_name": viewModel.first_name,
+        "last_name": viewModel.last_name,
+        "compensation_info": compensation
       };
 
       if (viewModel.employment_type.id === 1) {
@@ -50,7 +55,7 @@ benefitmyService.factory('EmployerEmployeeManagementService',
 
       // Do not set password if selected "send email"
       if (!domainModel.send_email) {
-        domainModel.user.password = viewModel.password;
+        domainModel.password = viewModel.password;
       }
       return domainModel;
     };
@@ -67,6 +72,11 @@ benefitmyService.factory('EmployerEmployeeManagementService',
         return false;
       }
 
+      // Date of hire is a required field
+      if (!newEmployee.date_of_hire) {
+        return false;
+      }
+
       // If full time, annual base salary is required
       if (newEmployee.employment_type.id === 1 && !newEmployee.annual_base_salary) {
         return false;
@@ -75,11 +85,6 @@ benefitmyService.factory('EmployerEmployeeManagementService',
       // If part time, hourly rate and projected hour per month is required
       if (newEmployee.employment_type.id === 2 &&
       (!newEmployee.hourly_rate || !newEmployee.projected_hour_per_month)) {
-        return false;
-      }
-
-      // Date of hire is a required field
-      if (!newEmployee.date_of_hire) {
         return false;
       }
 
@@ -103,24 +108,6 @@ benefitmyService.factory('EmployerEmployeeManagementService',
       // Create AuthUser and Person object for the new employee
       usersRepository.save(domainEmployeeModel).$promise
       .then(function(response) {
-        return response.person.id;
-      }).then(function(personId) {
-        var compensation = {
-          "person": personId,
-          "company": companyId,
-          "salary": domainEmployeeModel.annual_base_salary,
-          "projected_hour_per_month": domainEmployeeModel.projected_hour_per_month,
-          "hourly_rate": domainEmployeeModel.hourly_rate,
-          "effective_date": domainEmployeeModel.effective_date,
-          "increase_percentage": null,
-        };
-
-        // Add compensation information for the new employee
-        CompensationService.addCompensationByPerson(compensation, personId, companyId)
-        .then(function(response) {
-          return response;
-        });
-
         result.added = true;
         result.sentEmail = domainEmployeeModel.send_email;
         deferred.resolve(result);
