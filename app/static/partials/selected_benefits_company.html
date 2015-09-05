@@ -14,6 +14,36 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
+  <h6>Company 1095C Data</h6>
+  <div class="row">
+    <div class="well" ng-if="!Sorted1095CData">
+      You do not have Affordable Care Act Form 1095C filled for this company yet. <a ng-click="open1095CModel()">Click here</a> to add data
+    </div>
+    <div class="col-md-10">
+      <table class="table table-striped" ng-if="Sorted1095CData">
+        <thead>
+          <tr>
+            <th><span>1095C Data</span></th>
+            <th ng-repeat="item in Sorted1095CData" style="text-align:center;">{{item.period}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Offer of Coverage Code</b></td>
+            <td ng-repeat = "item in Sorted1095CData">{{item.offer_of_coverage}}</td>
+          </tr>
+          <tr>
+            <td><b>Employee Share of Lowest Cost Monthly Premium, for Self-Only Minimum Value Coverage</b></td>
+            <td ng-repeat = "item in Sorted1095CData"><span ng-if="item.employee_share">$</span>{{item.employee_share}}</td>
+          </tr>
+          <tr>
+            <td><b>Applicable Section 4980H Safe Harbor</b></td>
+            <td ng-repeat = "item in Sorted1095CData">{{item.safe_harbor}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
   <h6>Employee Benefit Enrollment Summary</h6>
   <div class="dashboard-card">
     <div class="info-row">

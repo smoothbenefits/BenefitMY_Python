@@ -240,13 +240,15 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    'companyRepository',
    'CompanyEmployeeSummaryService',
    'CompanyBenefitEnrollmentSummaryService',
+   'Company1095CService',
   function($scope,
            $location,
            $state,
            $stateParams,
            companyRepository,
            CompanyEmployeeSummaryService,
-           CompanyBenefitEnrollmentSummaryService){
+           CompanyBenefitEnrollmentSummaryService,
+           Company1095CService){
 
       var company_id = $stateParams.client_id;
       $scope.employees = [];
@@ -254,6 +256,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       CompanyBenefitEnrollmentSummaryService.getEnrollmentSummary(company_id)
       .then(function(response){
         $scope.summary = response;
+      });
+
+      Company1095CService.get1095CByCompany(company_id).then(function(dataArray){
+        $scope.Sorted1095CData = dataArray;
       });
 
       $scope.viewNotStarted = function(){
