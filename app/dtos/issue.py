@@ -1,7 +1,5 @@
 SEVERITY_ERROR = 'error'
 SEVERITY_WARNING = 'warning'
-SEVERITY_INFO = 'info'
-SEVERITY_DEBUG = 'debug'
 
 
 class Issue(object):
