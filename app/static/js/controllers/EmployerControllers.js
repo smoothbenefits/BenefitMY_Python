@@ -1097,6 +1097,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   '$location',
   '$state',
   '$stateParams',
+  '$modal',
   'companyRepository',
   'CompanyEmployeeSummaryService',
   'CompanyBenefitEnrollmentSummaryService',
@@ -1105,6 +1106,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            $location,
            $state,
            $stateParams,
+           $modal,
            companyRepository,
            CompanyEmployeeSummaryService,
            CompanyBenefitEnrollmentSummaryService,
@@ -1152,6 +1154,25 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
 
     $scope.getEmployee1095cUrl = function(employeeUserId) {
         return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
+    };
+
+    $scope.open1095CModal = function(){
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/modal_company_1095_c.html',
+        controller: 'company1095CModalController',
+        size: 'lg',
+        backdrop: 'static',
+        resolve: {
+            CompanyId: function(){return company_id},
+            Existing1095CData: function () {
+                return angular.copy($scope.Sorted1095CData);
+            }
+        }
+      });
+      modalInstance.result.then(function(saved1095CData){
+        $scope.Sorted1095CData = saved1095CData;
+      });
+      
     };
 }]);
 

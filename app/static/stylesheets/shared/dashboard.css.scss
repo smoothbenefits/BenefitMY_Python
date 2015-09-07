@@ -13,7 +13,7 @@
         right: 0;
         #logo-link {
             height: 43px;
-            width: 132px;
+            width: 43px;
         }
         .drop-holder {
             height: 43px;
@@ -566,6 +566,15 @@
                 }
                 tr:last-child td {
                     border-bottom: none !important;
+                }
+            }
+        }
+        &.horizontal{
+            td {
+                max-with:70px;
+                padding:1px;
+                input{
+                    width:50px;
                 }
             }
         }

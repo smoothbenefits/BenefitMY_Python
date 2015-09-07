@@ -237,6 +237,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    '$location',
    '$state',
    '$stateParams',
+   '$modal',
    'companyRepository',
    'CompanyEmployeeSummaryService',
    'CompanyBenefitEnrollmentSummaryService',
@@ -245,6 +246,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
            $location,
            $state,
            $stateParams,
+           $modal,
            companyRepository,
            CompanyEmployeeSummaryService,
            CompanyBenefitEnrollmentSummaryService,
@@ -292,6 +294,25 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       $scope.getEmployee1095cUrl = function(employeeUserId) {
         return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
+      };
+
+      $scope.open1095CModal = function(){
+        var modalInstance = $modal.open({
+          templateUrl: '/static/partials/modal_company_1095_c.html',
+          controller: 'company1095CModalController',
+          size: 'lg',
+          backdrop: 'static',
+          resolve: {
+              CompanyId: function(){return company_id},
+              Existing1095CData: function () {
+                  return angular.copy($scope.Sorted1095CData);
+              }
+          }
+        });
+        modalInstance.result.then(function(saved1095CData){
+          $scope.Sorted1095CData = saved1095CData;
+        });
+        
       };
 }]);
 
@@ -1371,5 +1392,42 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
                                              benefitDetailsRepository){
       $scope.clientId = parseInt($stateParams.client_id);
       $scope.benefitId = parseInt($stateParams.benefit_id);
+
+}]);
+
+var company1095CModalController = brokersControllers.controller('company1095CModalController',
+    ['$scope',
+     '$modal',
+     '$modalInstance',
+     'Company1095CService',
+     'CompanyId',
+     'Existing1095CData',
+     function company1095CModalController ($scope,
+                                           $modal,
+                                           $modalInstance,
+                                           Company1095CService,
+                                           CompanyId,
+                                           Existing1095CData){
+      $scope.Sorted1095CData = Existing1095CData;
+      $scope.companyId = CompanyId
+      if(!$scope.Sorted1095CData){
+        Company1095CService.get1095CByCompany($scope.companyId)
+        .then(function(comp1095C){
+          $scope.Sorted1095CData = comp1095C;
+        });
+      }
+
+      $scope.save = function(){
+        Company1095CService.save1095CWithCompany($scope.companyId, $scope.Sorted1095CData)
+        .then(function(savedResponse){
+          $modalInstance.close(savedResponse);
+        }, function(errorResponse){
+          alert('Saving 1095C form data failed. Error:' + errorResponse);
+        });
+      };
+
+      $scope.cancel = function(){
+        $modalInstance.dismiss("cancelled");
+      };
 
 }]);

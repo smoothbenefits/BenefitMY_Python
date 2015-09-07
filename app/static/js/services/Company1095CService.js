@@ -23,10 +23,10 @@ benefitmyService.factory('Company1095CService',
             return deferred.promise;
         };
 
-        var get1095CByCompany = function(company_id){
+        var get1095CByCompany = function(companyId){
             var deferred = $q.defer();
             get1095CPeriods().then(function(periods){
-                Company1095CDataRepository.ByCompany.query({comp_id: company_id})
+                Company1095CDataRepository.ByCompany.query({comp_id: companyId})
                 .$promise.then(function(data){
                     var sortedData = [];
                     _.each(periods, function(periodValue){
@@ -49,8 +49,34 @@ benefitmyService.factory('Company1095CService',
             return deferred.promise;
         };
 
-        var save1095CWithCompany = function(company_id, form1095CData){
+        var validate = function(form1095CData){
+            var valid = false;
+            _.each(form1095CData, function(dataItem){
+                if(!valid){
+                    valid = dataItem.offer_of_coverage && dataItem.employee_share;
+                }
+            });
+            return valid;
+        };
 
+        var save1095CWithCompany = function(companyId, form1095CData){
+            var deferred = $q.defer();
+            _.each(form1095CData, function(dataItem){
+                dataItem.company = companyId;
+                dataItem.offer_of_coverage = dataItem.offer_of_coverage.toUpperCase();
+            });
+            if(!validate(form1095CData)){
+                deferred.reject('The 1095C form data are invalid! Please try again');
+            }
+            else{
+                Company1095CDataRepository.ByCompany.save({comp_id:companyId}, form1095CData, 
+                    function(saved1095CData){
+                        deferred.resolve(saved1095CData.saved);
+                    }, function(error){
+                        deferred.reject(error);
+                });
+            }
+            return deferred.promise;
         };
 
         return{

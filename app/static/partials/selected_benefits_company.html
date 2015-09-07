@@ -14,16 +14,19 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-  <h6>Company 1095C Data</h6>
+  <h6>Company 1095C Data</h6> 
   <div class="row">
     <div class="well" ng-if="!Sorted1095CData">
-      You do not have Affordable Care Act Form 1095C filled for this company yet. <a ng-click="open1095CModel()">Click here</a> to add data
+      You do not have Affordable Care Act Form 1095C filled for this company yet. <a ng-click="open1095CModal()">Click here</a> to add data
     </div>
     <div class="col-md-10">
       <table class="table table-striped" ng-if="Sorted1095CData">
         <thead>
           <tr>
-            <th><span>1095C Data</span></th>
+            <th>
+              <span>1095C Data</span> 
+              <span><a ng-click="open1095CModal()">Modify</a></span>
+            </th>
             <th ng-repeat="item in Sorted1095CData" style="text-align:center;">{{item.period}}</th>
           </tr>
         </thead>
