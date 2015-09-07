@@ -9,13 +9,13 @@ from django.conf import settings
 from app.service.hash_key_service import HashKeyService
 
 URL = settings.SITE_URL
-SUBJECT = "Welcome to BenefitMy"
+SUBJECT = "Welcome to WorkBenefitsMe"
 CONTENT = """
 
 Hi %s,
 
 
-We, BenefitMy LLC, are partnering with your employer, %s, to welcome you.  Your HR administrator has asked us to
+We, WorkBenefitsMe, are partnering with your employer, %s, to welcome you.  Your HR administrator has asked us to
 
      * Verify your employment eligibility in the US. so that you could start to work at the right time.  Please make sure you have all the necessary documents.
      * Collect the personal info in order to setup your health benefit.
@@ -27,11 +27,11 @@ If you have any questions, feel free to drop us an email.
 
 Thanks,
 
-BenefityMy
+WorkBenefitsMe
 
-support@benefitmy.com
+support@workbenefits.me
 """
-FROM='Support@benefitmy.com'
+FROM='Support@workbenefits.me'
 
 
 def onboard_email(name, company_id, to, id):
