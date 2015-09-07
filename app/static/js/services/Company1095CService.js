@@ -8,6 +8,35 @@ benefitmyService.factory('Company1095CService',
 
         var _1095cPeriods = null;
 
+        var mapToModelObject = function(view1095CData, companyId){
+            modelObj = [];
+            _.each(view1095CData, function(dataItem){
+                if(dataItem.offer_of_coverage || dataItem.employee_share || dataItem.safe_harbor){
+                    dataItem.company = companyId;
+                    dataItem.offer_of_coverage = dataItem.offer_of_coverage.toUpperCase();
+                    modelObj.push(dataItem);
+                }
+            });
+            return modelObj;
+        };
+
+        var mapToViewModel = function(model1095CData, periods){
+            var sortedData = [];
+            _.each(periods, function(periodValue){
+                var foundItem = _.findWhere(model1095CData, {period:periodValue});
+                if(foundItem){
+                  sortedData.push(foundItem);
+                }
+                else{
+                  sortedData.push({period: periodValue,
+                                   employee_share: '',
+                                   safe_harbor:'',
+                                   offer_of_coverage: ''});
+                }
+              });
+            return sortedData;
+        };
+
         var get1095CPeriods = function(){
             var deferred = $q.defer();
             if(_1095cPeriods){
@@ -28,20 +57,8 @@ benefitmyService.factory('Company1095CService',
             get1095CPeriods().then(function(periods){
                 Company1095CDataRepository.ByCompany.query({comp_id: companyId})
                 .$promise.then(function(data){
-                    var sortedData = [];
-                    _.each(periods, function(periodValue){
-                        var foundItem = _.findWhere(data, {period:periodValue});
-                        if(foundItem){
-                          sortedData.push(foundItem);
-                        }
-                        else{
-                          sortedData.push({period: periodValue,
-                                           employee_share: '',
-                                           safe_harbor:'',
-                                           offer_of_coverage: ''});
-                        }
-                      });
-                    deferred.resolve(sortedData);
+                    viewModel = mapToViewModel(data, periods);
+                    deferred.resolve(viewModel);
                 }, function(error){
                     deferred.reject(error);
                 });
@@ -50,6 +67,10 @@ benefitmyService.factory('Company1095CService',
         };
 
         var validate = function(form1095CData){
+            if(!form1095CData)
+            {
+                return false;
+            }
             var valid = false;
             _.each(form1095CData, function(dataItem){
                 if(!valid){
@@ -61,17 +82,17 @@ benefitmyService.factory('Company1095CService',
 
         var save1095CWithCompany = function(companyId, form1095CData){
             var deferred = $q.defer();
-            _.each(form1095CData, function(dataItem){
-                dataItem.company = companyId;
-                dataItem.offer_of_coverage = dataItem.offer_of_coverage.toUpperCase();
-            });
             if(!validate(form1095CData)){
                 deferred.reject('The 1095C form data are invalid! Please try again');
             }
             else{
-                Company1095CDataRepository.ByCompany.save({comp_id:companyId}, form1095CData, 
+                modelData = mapToModelObject(form1095CData, companyId);
+                Company1095CDataRepository.ByCompany.save({comp_id:companyId}, modelData, 
                     function(saved1095CData){
-                        deferred.resolve(saved1095CData.saved);
+                        get1095CPeriods().then(function(periods){
+                            viewModel = mapToViewModel(saved1095CData.saved, periods);
+                            deferred.resolve(viewModel);
+                        });
                     }, function(error){
                         deferred.reject(error);
                 });
@@ -82,7 +103,8 @@ benefitmyService.factory('Company1095CService',
         return{
             get1095CByCompany: get1095CByCompany,
             getPeriods: get1095CPeriods,
-            save1095CWithCompany: save1095CWithCompany
+            save1095CWithCompany: save1095CWithCompany,
+            validate: validate
         };
     }
 ]);

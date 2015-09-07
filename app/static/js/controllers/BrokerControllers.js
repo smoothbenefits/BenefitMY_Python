@@ -296,7 +296,11 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
       };
 
-      $scope.open1095CModal = function(){
+      $scope.valid1095C = function(){
+        return Company1095CService.validate($scope.Sorted1095CData);
+      };
+
+      $scope.open1095CModal = function(downloadUserId){
         var modalInstance = $modal.open({
           templateUrl: '/static/partials/modal_company_1095_c.html',
           controller: 'company1095CModalController',
@@ -311,6 +315,9 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         });
         modalInstance.result.then(function(saved1095CData){
           $scope.Sorted1095CData = saved1095CData;
+          if(downloadUserId && Company1095CService.validate($scope.Sorted1095CData)){
+            window.location = CompanyEmployeeSummaryService.getEmployee1095cUrl(downloadUserId);
+          }
         });
         
       };
