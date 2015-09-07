@@ -2058,6 +2058,10 @@ var stdBenefitsSignup = employeeControllers.controller(
 
         $scope.enrollBenefits = true;
 
+        $scope.hasPremium = function(premium) {
+          return _.isNumber(premium);
+        };
+
         $scope.companyPromise.then(function(company){
             $scope.company = company;
             StdService.getStdPlansForCompany(company.id).then(function(stdPlans) {
@@ -2135,6 +2139,10 @@ var ltdBenefitsSignup = employeeControllers.controller(
         var employeeId = $scope.employeeId;
 
         $scope.enrollBenefits = true;
+
+        $scope.hasPremium = function(premium) {
+          return _.isNumber(premium);
+        };
 
         $scope.companyPromise.then(function(company){
             $scope.company = company;

@@ -1,0 +1,7 @@
+from app.serializers.dtos.operation_result_base_serializer import OperationResultBaseSerializer
+from app.serializers.dtos.account_creation_data_serializer import AccountCreationDataSerializer
+from app.serializers.dtos.account_creation_data_action_result_serializer import AccountCreationDataActionResultSerializer
+
+class BatchAccountCreationResultSerializer(OperationResultBaseSerializer):
+    input_data = AccountCreationDataSerializer(many=True)
+    output_data = AccountCreationDataActionResultSerializer(many=True)

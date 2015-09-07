@@ -8,7 +8,7 @@ from app.models.employee_compensation import EmployeeCompensation
 from app.serializers.employee_compensation_serializer import (
     EmployeeCompensationSerializer, EmployeeCompensationPostSerializer)
 from app.service.compensation_service import CompensationService
-from app.serializers.compensation_info_serializer import CompensationInfoSerializer
+from app.serializers.dtos.compensation_info_serializer import CompensationInfoSerializer
 
 
 class EmployeeCompensationView(APIView):

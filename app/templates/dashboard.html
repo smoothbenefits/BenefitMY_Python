@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <title>BenefitMy</title>
+  <title>WorkBenefitsMe</title>
   <!-- Open Sans font from Google CDN -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
   {% compressed_css "dashboard" %}
@@ -69,6 +69,7 @@
         </div>
         <div class="sub-nav collapse" id="hr-nav">
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/add/')">Add Employee</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_add/')">Batch Add Employee</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/')">View Employees</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'COBRA'})">COBRA</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/generate_template/', {type:'Employee Handbook'})">Employee Handbook</a>
