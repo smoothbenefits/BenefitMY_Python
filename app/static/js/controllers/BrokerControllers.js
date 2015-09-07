@@ -538,7 +538,7 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
       }
 
       return isInteger(multiplier);
-    }
+    };
 
     $scope.buttonEnabled = function() {
       return $scope.newLifeInsurancePlan.name
@@ -546,7 +546,7 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
              && _.isNumber($scope.newLifeInsurancePlan.employeeContribution)
              && (_.isNumber($scope.newLifeInsurancePlan.amount)
                  || _.isNumber($scope.newLifeInsurancePlan.multiplier))
-             && isInteger($scope.newLifeInsurancePlan.multiplier);
+             && $scope.isValidMultiplier($scope.newLifeInsurancePlan.multiplier);
     };
 
     // Need the user information for the current user (broker)
