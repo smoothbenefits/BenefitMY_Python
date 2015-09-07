@@ -19,7 +19,7 @@
       </div>
       <div ng-show="addError" class="form-validation-error">
         We are sorry but error happened while trying to add the employee. Please email
-        <a href="mailto:support@benefitmy.com?subject=Add%20Employee%20Error">support@benefitmy.com</a>
+        <a href="mailto:support@workbenefits.me?subject=Add%20Employee%20Error">support@workbenefits.me</a>
         with detailed steps you've performed before seeing this problem.
       </div>
       <div class="form-label">First Name*</div>
@@ -68,6 +68,18 @@
         </div>
       </div>
 
+      <div class="form-label">Date of Hire*</div>
+      <div class="datebox">
+        <bm-date-picker model="addUser.date_of_hire"
+          required="true"
+          name="date_of_hire"
+          fieldname="'date_of_hire'"
+          dirty="form.date_of_hire.$dirty" />
+        <div class="form-inline-error" ng-show="form.date_of_hire.$dirty && form.date_of_hire.$invalid">
+          <span ng-show="form.date_of_hire.$invalid">Please enter a valid Date</span>
+        </div>
+      </div>
+
       <div ng-if="isFullTime(addUser)">
         <div class="form-label">Annual Base Salary*</div>
         <div class="textbox input-group">
@@ -106,18 +118,6 @@
           <div class="form-error" ng-show="form.projected_hour_per_month.$dirty && form.projected_hour_per_month.$invalid">
             <span ng-show="form.projected_hour_per_month.$error.required">Hourly rate is required for part time employees</span>
           </div>
-        </div>
-      </div>
-
-      <div class="form-label">Compensation Effective Date*</div>
-      <div class="datebox">
-        <bm-date-picker model="addUser.effective_date"
-          required="true"
-          name="effective"
-          fieldname="'effective_date'"
-          dirty="form.effective_date.$dirty" />
-        <div class="form-inline-error" ng-show="form.effective.$dirty && form.effective.$invalid">
-          <span ng-show="form.effective.$invalid">Please enter a valid Date</span>
         </div>
       </div>
 

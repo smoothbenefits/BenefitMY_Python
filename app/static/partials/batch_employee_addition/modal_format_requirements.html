@@ -1,0 +1,89 @@
+<div class="modal-header">
+  <h4 class="modal-title">Format Requirements</h4>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-label">The batch account creation functionality requires exact conformation to the expected input format described below. </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div>
+        The input must follow the below rules:
+        <ol>
+            <li>Each line represents the complete data for one account</li>
+            <li>Each line must contain all the required fields below</li>
+            <li>The fields must be in the order listed out in the table below</li>
+            <li>The fields must be delimited with a <b>tab</b></li>
+            <li>Each line must be ended with the designated "end-record" field</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 10px;">
+    <div class="col-md-12">
+      <div class="form-label">Required Fields:</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th><span>Field</span></th>
+              <th><span>Notes</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>First Name</td>
+              <td>First name of the account holder</td>
+            </tr>
+            <tr>
+              <td>Last Name</td>
+              <td>Last name of the account holder</td>
+            </tr>
+            <tr>
+              <td>Email</td>
+              <td>Email of the account holder. Please note that this email will become the user login for the new account</td>
+            </tr>
+            <tr>
+              <td>Password</td>
+              <td>Initial password for the new account. If "Send Email" is checked to indicate the desire for the system to automatically send registrition email, then this field <b>must be</b> left blank. Otherwise, it must be specified.</td>
+            </tr>
+            <tr>
+              <td>Employment Type</td>
+              <td>The type of employment of the account holder. Must be one of the following values: <b>FullTime</b> and <b>PartTime</b>, case sensitive.</td>
+            </tr>
+            <tr>
+              <td>Annual Base Salary</td>
+              <td>The current annual base salary of the account holder. This field must present <b>if and only if</b> the employment type is "FullTime". The format should be a number <b>without</b> the dollar sign.</td>
+            </tr>
+            <tr>
+              <td>Hourly Rate</td>
+              <td>The current hourly pay rate for the account holder. This field must present <b>if and only if</b> the employment type is "PartTime". The format should be a number <b>without</b> the dollar sign.</td>
+            </tr>
+            <tr>
+              <td>Projected Working Hours per Month</td>
+              <td>The current projected working hours per month for the account holder. This field must present <b>if and only if</b> the employment type is "PartTime". The format should be a number <b>without</b> the dollar sign.</td>
+            </tr>
+            <tr>
+              <td>Employment Start Date</td>
+              <td>The date that the employment of the account holder started. Must be in the format of MM/DD/YYYY. E.g. 03/20/2006</td>
+            </tr>
+            <tr>
+              <td>End of Record Annotation Field</td>
+              <td>This is a system required field to clearly indicate the end of a record line. Please simply add a field, <b>"end-record"</b>, as the last field of every line.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="close()">Close</button>
+</div>

@@ -1,7 +1,7 @@
 from django.utils import timezone
 from app.models.employee_compensation import EmployeeCompensation
 from app.models.employee_profile import EmployeeProfile, FULL_TIME
-from app.view_models.compensation_info import CompensationInfo
+from app.dtos.compensation_info import CompensationInfo
 
 '''
 This is the service to provide compensation information to who ever needs it.
@@ -25,30 +25,44 @@ class CompensationService(object):
         except EmployeeCompensation.DoesNotExist:
             return None
 
+    def _calculate_annual_salary(self, compensation, isFulltime=True):
+        current_salary = None
+        if isFulltime:
+            current_salary = compensation.annual_base_salary
+        else:
+            if (compensation.hourly_rate and compensation.projected_hour_per_month):
+                current_salary = compensation.hourly_rate * compensation.projected_hour_per_month * 12
+
+        return current_salary
+
     def get_current_annual_salary(self):
         comps = self._get_compensation_records_order_by_effective_date(False)
         if not comps:
             raise ValueError('No Salary Records')
+
         current_salary = None
         is_fulltime = self._is_fulltime_employee()
         for comp in comps:
             if comp.effective_date < timezone.now():
-                if is_fulltime:
-                    current_salary = comp.annual_base_salary
-                else:
-                    # for part time employee, get projected annual wage
-                    if (comp.hourly_rate and comp.projected_hour_per_month):
-                        current_salary = comp.hourly_rate * comp.projected_hour_per_month * 12
+                current_salary = self._calculate_annual_salary(comp, is_fulltime)
                 break
+        # If not current active salary, use the closest future salary as current
         if not current_salary:
-            raise ValueError('No Salary Records')
+            comp = list(comps)[-1]
+            if comp:
+                current_salary = self._calculate_annual_salary(comp, is_fulltime)
+            else:
+                raise ValueError('No Salary Records')
+
         return current_salary
 
     def get_all_compensation_ordered(self):
         comps = self._get_compensation_records_order_by_effective_date()
         info_list = []
         for comp in comps:
-            info_list.append(CompensationInfo(comp))
+            comp_info = CompensationInfo()
+            comp_info.build_from_record(comp)
+            info_list.append(comp_info)
 
         base = None
         current = None
@@ -83,4 +97,3 @@ class CompensationService(object):
                 raise ValueError('Compensation record with both annual_base_salary and hourly_rate defined. This is invalid record')
             base = comp_info
         return info_list
-
