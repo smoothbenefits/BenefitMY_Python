@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from app.service.Report.pdf_form_fill_service import PDFFormFillService
 from ..report_export_view_base import ReportExportViewBase
 from app.factory.report_view_model_factory import ReportViewModelFactory
+from app.models.company_1095_c import Company1095C, PERIODS
 
 User = get_user_model()
 
@@ -47,13 +48,26 @@ class Form1095CView(ReportExportViewBase):
             'topmostSubform[0].Page1[0].EmployerIssuer[0].f1_013[0]': company_info.state,
             # Country and Zip or Foreign Postcode
             'topmostSubform[0].Page1[0].EmployerIssuer[0].f1_014[0]': company_info.get_country_and_zipcode(),
-
-            # Code Row
-            'topmostSubform[0].Page1[0].Part2Table[0].BodyRow1[0].f1_011[0]': company_info.offer_of_coverage_code,
-
-            # Premium Row
-            'topmostSubform[0].Page1[0].Part2Table[0].BodyRow2[0].f1_025[0]': self._get_minimum_monthly_employee_cost_medical(company_model),
         }
+
+        index = 0
+        for perd in PERIODS:
+            comp_1095_c_for_period = Company1095C.objects.filter(company=company_model.id, period=perd)
+            if comp_1095_c_for_period:
+                field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_0{1}[0]'.format(1, 11 + index)
+                fields[str(field_key)] = comp_1095_c_for_period[0].offer_of_coverage
+                field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_0{1}[0]'.format(2, 25 + index)
+                if index + 1 == len(PERIODS):
+                    # This is not something we can control. However, for this particular field, 
+                    # it does not follow the sequential number pattern. The number here is "300"
+                    # Hence the special case
+                    field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_300[0]'.format(2) 
+                fields[str(field_key)] = comp_1095_c_for_period[0].employee_share
+                field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_0{1}[0]'.format(3, 50 + index)
+                fields[str(field_key)] = comp_1095_c_for_period[0].safe_harbor
+            index += 1
+
+
 
         file_name_prefix = ''
         full_name = person_info.get_full_name()

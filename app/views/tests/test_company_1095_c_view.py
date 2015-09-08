@@ -54,7 +54,8 @@ class Company1095CTestCase(TestCase, ViewTestBase):
                                     content_type='application/json')
         
         self.assertEqual(response.status_code, 201)
-        result = json.loads(response.content)
+        savedResponse = json.loads(response.content)
+        result = savedResponse['saved']
         self.assertEqual(type(result), list)
         self.assertTrue(len(result) > 0)
         self.assertEqual(type(result[0]), dict)
@@ -93,7 +94,8 @@ class Company1095CTestCase(TestCase, ViewTestBase):
                                     content_type='application/json')
         
         self.assertEqual(response.status_code, 201)
-        result = json.loads(response.content)
+        savedResponse = json.loads(response.content)
+        result = savedResponse['saved']
         self.assertEqual(type(result), list)
         self.assertTrue(len(result) == 4)
         self.assertEqual(type(result[0]), dict)
@@ -135,7 +137,8 @@ class Company1095CTestCase(TestCase, ViewTestBase):
                                     content_type='application/json')
         
         self.assertEqual(response.status_code, 201)
-        result = json.loads(response.content)
+        savedResponse = json.loads(response.content)
+        result = savedResponse['saved']
         self.assertEqual(type(result), list)
         self.assertTrue(len(result) > 0)
         self.assertEqual(type(result[0]), dict)
@@ -172,7 +175,8 @@ class Company1095CTestCase(TestCase, ViewTestBase):
                                     content_type='application/json')
         
         self.assertEqual(response.status_code, 201)
-        result = json.loads(response.content)
+        savedResponse = json.loads(response.content)
+        result = savedResponse['saved']
         self.assertEqual(type(result), list)
         self.assertTrue(len(result) == 4)
         self.assertEqual(type(result[0]), dict)

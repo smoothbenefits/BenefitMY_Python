@@ -412,5 +412,10 @@
       border-bottom: 1px solid #E2E7EA !important; }
     .modal-body .table table table tr:last-child td {
       border-bottom: none !important; }
+  .modal-body .table.horizontal td {
+    max-with: 70px;
+    padding: 1px; }
+    .modal-body .table.horizontal td input {
+      width: 50px; }
 
 /*# sourceMappingURL=dashboard.css.css.map */

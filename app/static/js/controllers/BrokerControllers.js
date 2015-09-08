@@ -237,16 +237,20 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    '$location',
    '$state',
    '$stateParams',
+   '$modal',
    'companyRepository',
    'CompanyEmployeeSummaryService',
    'CompanyBenefitEnrollmentSummaryService',
+   'Company1095CService',
   function($scope,
            $location,
            $state,
            $stateParams,
+           $modal,
            companyRepository,
            CompanyEmployeeSummaryService,
-           CompanyBenefitEnrollmentSummaryService){
+           CompanyBenefitEnrollmentSummaryService,
+           Company1095CService){
 
       var company_id = $stateParams.client_id;
       $scope.employees = [];
@@ -254,6 +258,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       CompanyBenefitEnrollmentSummaryService.getEnrollmentSummary(company_id)
       .then(function(response){
         $scope.summary = response;
+      });
+
+      Company1095CService.get1095CByCompany(company_id).then(function(dataArray){
+        $scope.sorted1095CData = dataArray;
       });
 
       $scope.viewNotStarted = function(){
@@ -286,6 +294,32 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       $scope.getEmployee1095cUrl = function(employeeUserId) {
         return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
+      };
+
+      $scope.valid1095C = function(){
+        return Company1095CService.validate($scope.sorted1095CData);
+      };
+
+      $scope.open1095CModal = function(downloadUserId){
+        var modalInstance = $modal.open({
+          templateUrl: '/static/partials/modal_company_1095_c.html',
+          controller: 'company1095CModalController',
+          size: 'lg',
+          backdrop: 'static',
+          resolve: {
+              CompanyId: function(){return company_id},
+              Existing1095CData: function () {
+                  return angular.copy($scope.sorted1095CData);
+              }
+          }
+        });
+        modalInstance.result.then(function(saved1095CData){
+          $scope.sorted1095CData = saved1095CData;
+          if(downloadUserId && Company1095CService.validate($scope.sorted1095CData)){
+            window.location = CompanyEmployeeSummaryService.getEmployee1095cUrl(downloadUserId);
+          }
+        });
+        
       };
 }]);
 
