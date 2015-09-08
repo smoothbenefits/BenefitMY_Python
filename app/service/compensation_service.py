@@ -43,15 +43,11 @@ class CompensationService(object):
         current_salary = None
         is_fulltime = self._is_fulltime_employee()
         for comp in comps:
+            current_salary = self._calculate_annual_salary(comp, is_fulltime)
             if comp.effective_date < timezone.now():
-                current_salary = self._calculate_annual_salary(comp, is_fulltime)
                 break
         # If not current active salary, use the closest future salary as current
         if not current_salary:
-            comp = list(comps)[-1]
-            if comp:
-                current_salary = self._calculate_annual_salary(comp, is_fulltime)
-            else:
                 raise ValueError('No Salary Records')
 
         return current_salary
