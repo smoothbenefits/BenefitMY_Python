@@ -58,6 +58,9 @@ class Form1095CView(ReportExportViewBase):
                 fields[str(field_key)] = comp_1095_c_for_period[0].offer_of_coverage
                 field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_0{1}[0]'.format(2, 25 + index)
                 if index + 1 == len(PERIODS):
+                    # This is not something we can control. However, for this particular field, 
+                    # it does not follow the sequential number pattern. The number here is "300"
+                    # Hence the special case
                     field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_300[0]'.format(2) 
                 fields[str(field_key)] = comp_1095_c_for_period[0].employee_share
                 field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_0{1}[0]'.format(3, 50 + index)

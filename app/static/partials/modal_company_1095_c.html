@@ -9,13 +9,13 @@
             <th>
               <span>1095C Data</span> 
             </th>
-            <th ng-repeat="item in Sorted1095CData" style="text-align:center;">{{item.period}}</th>
+            <th ng-repeat="item in sorted1095CData" style="text-align:center;">{{item.period}}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><b>Offer of Coverage Code</b></td>
-            <td ng-repeat = "item in Sorted1095CData">
+            <td ng-repeat = "item in sorted1095CData">
                 <input type="text" style="text-align:center" class="input-upper" ng-model="item.offer_of_coverage"/>
             </td>
           </tr>
@@ -24,13 +24,13 @@
                 <b>Employee Share of Lowest Cost Monthly Premium, for Self-Only Minimum Value Coverage</b>
                 <span class="input-group-addon" style="width:20px;">$</span>
             </td>
-            <td ng-repeat = "item in Sorted1095CData">
+            <td ng-repeat = "item in sorted1095CData">
                 <input type="text" style="text-align:center" ng-model="item.employee_share" />
             </td>
           </tr>
           <tr>
             <td><b>Applicable Section 4980H Safe Harbor</b></td>
-            <td ng-repeat = "item in Sorted1095CData">
+            <td ng-repeat = "item in sorted1095CData">
                 <input type="text" style="text-align:center" class="input-upper" ng-model="item.safe_harbor" />
             </td>
           </tr>

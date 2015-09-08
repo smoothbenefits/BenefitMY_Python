@@ -261,7 +261,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       });
 
       Company1095CService.get1095CByCompany(company_id).then(function(dataArray){
-        $scope.Sorted1095CData = dataArray;
+        $scope.sorted1095CData = dataArray;
       });
 
       $scope.viewNotStarted = function(){
@@ -297,7 +297,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       };
 
       $scope.valid1095C = function(){
-        return Company1095CService.validate($scope.Sorted1095CData);
+        return Company1095CService.validate($scope.sorted1095CData);
       };
 
       $scope.open1095CModal = function(downloadUserId){
@@ -309,13 +309,13 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
           resolve: {
               CompanyId: function(){return company_id},
               Existing1095CData: function () {
-                  return angular.copy($scope.Sorted1095CData);
+                  return angular.copy($scope.sorted1095CData);
               }
           }
         });
         modalInstance.result.then(function(saved1095CData){
-          $scope.Sorted1095CData = saved1095CData;
-          if(downloadUserId && Company1095CService.validate($scope.Sorted1095CData)){
+          $scope.sorted1095CData = saved1095CData;
+          if(downloadUserId && Company1095CService.validate($scope.sorted1095CData)){
             window.location = CompanyEmployeeSummaryService.getEmployee1095cUrl(downloadUserId);
           }
         });
@@ -1415,17 +1415,17 @@ var company1095CModalController = brokersControllers.controller('company1095CMod
                                            Company1095CService,
                                            CompanyId,
                                            Existing1095CData){
-      $scope.Sorted1095CData = Existing1095CData;
+      $scope.sorted1095CData = Existing1095CData;
       $scope.companyId = CompanyId
-      if(!$scope.Sorted1095CData){
+      if(!$scope.sorted1095CData){
         Company1095CService.get1095CByCompany($scope.companyId)
         .then(function(comp1095C){
-          $scope.Sorted1095CData = comp1095C;
+          $scope.sorted1095CData = comp1095C;
         });
       }
 
       $scope.save = function(){
-        Company1095CService.save1095CWithCompany($scope.companyId, $scope.Sorted1095CData)
+        Company1095CService.save1095CWithCompany($scope.companyId, $scope.sorted1095CData)
         .then(function(savedResponse){
           $modalInstance.close(savedResponse);
         }, function(errorResponse){

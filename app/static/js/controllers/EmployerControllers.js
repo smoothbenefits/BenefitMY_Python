@@ -1120,7 +1120,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     });
 
     Company1095CService.get1095CByCompany(company_id).then(function(dataArray){
-      $scope.Sorted1095CData = dataArray;
+      $scope.sorted1095CData = dataArray;
     });
 
     $scope.viewNotStarted = function(){
@@ -1157,7 +1157,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     };
 
     $scope.valid1095C = function(){
-      return Company1095CService.validate($scope.Sorted1095CData);
+      return Company1095CService.validate($scope.sorted1095CData);
     };
 
     $scope.open1095CModal = function(downloadUserId){
@@ -1169,13 +1169,13 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         resolve: {
             CompanyId: function(){return company_id},
             Existing1095CData: function () {
-                return angular.copy($scope.Sorted1095CData);
+                return angular.copy($scope.sorted1095CData);
             }
         }
       });
       modalInstance.result.then(function(saved1095CData){
-        $scope.Sorted1095CData = saved1095CData;
-        if(downloadUserId && Company1095CService.validate($scope.Sorted1095CData)){
+        $scope.sorted1095CData = saved1095CData;
+        if(downloadUserId && Company1095CService.validate($scope.sorted1095CData)){
           window.location = CompanyEmployeeSummaryService.getEmployee1095cUrl(downloadUserId);
         }
       });
