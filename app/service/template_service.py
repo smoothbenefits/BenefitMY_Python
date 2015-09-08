@@ -40,8 +40,8 @@ class TemplateService(object):
         if field_values:
             for key in field_keys:
                 for value_pair in field_values:
-                    if self.dump_down_key_name(key) == self.dump_down_key_name(value_pair.key):
-                        value = value_pair.value
+                    if self.dump_down_key_name(key) == self.dump_down_key_name(value_pair['key']):
+                        value = value_pair['value']
                         break
                 content = content.replace("{{%s}}" % key, value)
         return content
