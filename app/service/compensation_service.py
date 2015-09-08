@@ -48,7 +48,7 @@ class CompensationService(object):
                 break
         # If not current active salary, use the closest future salary as current
         if not current_salary:
-                raise ValueError('No Salary Records')
+            raise ValueError('No Salary Records')
 
         return current_salary
 
