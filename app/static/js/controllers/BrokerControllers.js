@@ -282,6 +282,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         $location.path('/broker');
       };
 
+      $scope.viewEmployeeFamilyMember = function(employeeId) {
+        $state.go('broker_view_employee_family', {employeeId: employeeId});
+      };
+
       $scope.backToDashboard = function(){
         $location.path('/broker');
       };
@@ -319,7 +323,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
             window.location = CompanyEmployeeSummaryService.getEmployee1095cUrl(downloadUserId);
           }
         });
-        
+
       };
 }]);
 
@@ -499,6 +503,18 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
         $location.path('/broker/benefit/selected/' + companyId);
       };
     }]);
+
+var brokerEmployeeFamilyController = brokersControllers.controller(
+  'brokerEmployeeFamilyController',
+  ['$scope',
+   '$state',
+   '$stateParams',
+  function($scope, $state, $stateParams) {
+    $scope.employeeId = $stateParams.employeeId;
+    $scope.isOnboarding = false;
+    $scope.role = 'Broker';
+  }
+]);
 
 var brokerAddBenefits = brokersControllers.controller(
   'brokerAddBenefits',
