@@ -658,7 +658,7 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
       if(sTemplate)
       {
         var fieldList = _.uniq(sTemplate.fields, false, function(field){
-          return field.name;
+          return field.key;
         });
         return fieldList;
       }
@@ -674,7 +674,7 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
       $scope.newDoc.fields = curTemplate.fields;
       _.each($scope.newDoc.fields, function(field){
         if(!field.value){
-          var foundValue = _.findWhere($scope.newDoc.fields, {name:field.name});
+          var foundValue = _.findWhere($scope.newDoc.fields, {key:field.key});
           if(foundValue){
             field.value = foundValue.value;
           }
