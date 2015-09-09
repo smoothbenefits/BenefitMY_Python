@@ -2462,7 +2462,7 @@ var employeeFamilyController = employeeControllers.controller(
     $('body').removeClass('onboarding-page');
     $scope.employeeId = $stateParams.employeeId;
     $scope.isOnboarding = $stateParams.onboard === 'true';
-    $scope.currentRole = 'Employee';
+    $scope.role = $scope.getCurRoleString();
   }
 ]);
 

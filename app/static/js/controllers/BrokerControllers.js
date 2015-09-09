@@ -512,7 +512,7 @@ var brokerEmployeeFamilyController = brokersControllers.controller(
   function($scope, $state, $stateParams) {
     $scope.employeeId = $stateParams.employeeId;
     $scope.isOnboarding = false;
-    $scope.role = 'Broker';
+    $scope.role = $scope.getCurRoleString();;
   }
 ]);
 
