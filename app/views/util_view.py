@@ -31,7 +31,7 @@ WorkBenefitsMe
 
 support@workbenefits.me
 """
-FROM='Support@workbenefits.me'
+FROM='support@workbenefits.me'
 
 
 def onboard_email(name, company_id, to, id):
