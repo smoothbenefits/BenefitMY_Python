@@ -79,6 +79,10 @@ var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
       $state.go('broker_company_employee_personal_info', {employee_id: employeeId});
     };
 
+    $scope.viewEmployeeFamilyMember = function(employeeId) {
+      $state.go('broker_view_employee_family', {employeeId: employeeId});
+    };
+
     $scope.back = function() {
       $state.go('/');
     };
@@ -280,10 +284,6 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       $scope.back = function(){
         $location.path('/broker');
-      };
-
-      $scope.viewEmployeeFamilyMember = function(employeeId) {
-        $state.go('broker_view_employee_family', {employeeId: employeeId});
       };
 
       $scope.backToDashboard = function(){

@@ -2465,57 +2465,6 @@ var employeeFamilyController = employeeControllers.controller(
   }
 ]);
 
-var employeeFamilyMemberEditModalController = employeeControllers.controller(
-  'employeeFamilyMemberEditModalController',
-  ['$scope',
-   '$modalInstance',
-   'PersonService',
-   'person',
-   'employeeId',
-  function employeeFamilyMemberEditModalController(
-    $scope,
-    $modalInstance,
-    PersonService,
-    person,
-    employeeId){
-    $scope.person = person;
-    $scope.cancel = function(){
-      $modalInstance.dismiss();
-    };
-    $scope.save = function(){
-      PersonService.savePersonInfo(employeeId, $scope.person)
-      .then(function(successResponse){
-        alert('Save success!');
-        $modalInstance.close(successResponse);
-      }, function(errorResponse){
-          alert('Failed to save the user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
-      });
-    };
-  }
-]);
-
-var employeeFamilyMemberViewModalController = employeeControllers.controller(
-  'employeeFamilyMemberViewModalController',
-  ['$scope',
-   '$modalInstance',
-   'member',
-    function employeeFamilyMemberViewModalController(
-      $scope,
-      $modalInstance,
-      member){
-
-        $scope.member = member;
-
-        $scope.ok = function () {
-          $modalInstance.dismiss();
-        };
-
-        $scope.edit = function(){
-          $modalInstance.close();
-        };
-
-    }]);
-
 var planDetailsModalController = employeeControllers.controller('planDetailsModalController',
   ['$scope',
    '$modal',
