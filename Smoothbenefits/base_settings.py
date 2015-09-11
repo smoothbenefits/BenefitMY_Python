@@ -241,6 +241,7 @@ PIPELINE_JS = {
             'js/directives/UploadViewer.js',
             'js/directives/CustomDatePicker.js',
             'js/directives/PersonalInfoEditor.js',
+            'js/directives/CompanyInfoEditor.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',

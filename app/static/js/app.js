@@ -30,6 +30,9 @@ var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 // The URL to which logging to server side should be posted to
 var LOGGING_SERVER_URL = 'http://localhost:3999/api/bm_log'
 
+// Dummy hashed key
+var DUMMY_HASHED_KEY = 'BMHT_1_b457df460695969e8960e3f1623a3ee7/'
+
 BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs
   $resourceProvider.defaults.stripTrailingSlashes = false;
@@ -98,8 +101,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('/broker/add_client', {
                 url: '/broker/add_client',
-                templateUrl: '/static/partials/add_client.html',
-                controller: 'addClientController'
+                templateUrl: '/static/partials/add_client.html'
             }).
             state('/broker/benefits/:clientId', {
                 url: '/broker/benefits/:clientId',

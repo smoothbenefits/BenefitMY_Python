@@ -26,8 +26,7 @@ from app.views.benefit_policy_key_view import BenefitPolicyKeyView
 from app.views.benefit_type_view import BenefitTypeView
 from app.views.document_type_view import DocumentTypeView
 from app.views.company_view import (
-    CompanyView,
-    companies)
+    CompanyView)
 from app.views import dashboard_view
 
 from app.views.template_view import (
@@ -224,7 +223,6 @@ urlpatterns = patterns('app.views',
     url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
     url(r'^%s/period_definitions/?$' % PREFIX, SysPeriodDefinitionView.as_view(), name='sys_period_definition_api'),
     url(r'^%s/benefits/?$' % PREFIX, BenefitPlanCreationView.as_view(), name='benefit_post_api'),
-    url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
 

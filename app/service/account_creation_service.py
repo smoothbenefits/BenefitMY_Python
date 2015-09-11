@@ -278,7 +278,6 @@ class AccountCreationService(object):
                        'user': user.id,
                        'relationship': 'self',
                        'person_type': 'primary_contact',
-                       'company': account_info.company_id,
                        'email': user.email}
 
         person_serializer = PersonSimpleSerializer(data=person_data)

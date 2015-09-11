@@ -1329,29 +1329,6 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       };
   }]);
 
-var addClientController = brokersControllers.controller('addClientController', [
-  '$scope',
-  '$location',
-  'CompanyService',
-  'PeriodDefinitionRepository',
-  function addClientController($scope, $location, CompanyService, PeriodDefinitionRepository){
-
-    $scope.client = {};
-    PeriodDefinitionRepository.query().$promise.then(function(payPeriods){
-      $scope.payPeriods = payPeriods;
-    });
-
-    $scope.createClient = function(){
-      CompanyService.CreateCompany($scope.client).then(function(response) {
-        $location.path('/clients');
-      }, function(error) {
-        alert("Failed to add client. " + error);
-        $scope.saveSucceeded = false;
-      })
-    };
-  }
-]);
-
 var benefitInputDetailsController = brokersControllers.controller('benefitInputDetailsController',
     ['$scope',
      '$location',
