@@ -405,6 +405,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             state('employeeUploads', {
                 url:'/employee/uploads',
                 templateUrl:'/static/partials/manage_uploads.html'
+            }).
+            state('employeeSupport', {
+              url: '/employee/support',
+              templateUrl: '/static/partials/help_center/employee_help_center.html',
+              controller: 'employeeHelpCenterController'
             });
      }
  ]);
