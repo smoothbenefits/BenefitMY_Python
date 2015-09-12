@@ -194,6 +194,7 @@ urlpatterns = patterns('app.views',
         CompanyUsersBenefitPlanOptionView.as_view()),
 
     url(r'^%s/companies/(?P<pk>\w+)/?$' % PREFIX, CompanyView.as_view()),
+    url(r'^%s/companies/?$' % PREFIX, CompanyView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/?$' % PREFIX, CompanyUserView.as_view(), name='company_users_api'),
     url(r'^%s/companies/(?P<pk>\w+)/documents/?$' % PREFIX, CompanyDocumentView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/templates/?$' % PREFIX, CompanyTemplatesView.as_view()),

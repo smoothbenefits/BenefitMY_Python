@@ -35,7 +35,7 @@ class CompanyView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
-    def post(self, request, pk, format=None):
+    def post(self, request, format=None):
         # We first need to create an active user for it
         contact_size = len(request.DATA['contacts'])
         u = None

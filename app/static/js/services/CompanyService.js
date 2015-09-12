@@ -138,7 +138,7 @@ benefitmyService.factory('CompanyService',
                 deferred.reject(error);
               });
           } else {
-            companyRepository.save({clientId:DUMMY_HASHED_KEY}, domainModel).$promise
+            companyRepository.save(domainModel).$promise
               .then(function(response) {
                 deferred.resolve(response);
               }, function(error) {
