@@ -494,7 +494,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
                 insurance_total = company_plan.insurance_amount
                 if not insurance_total and company_plan.salary_multiplier:
-                    employee_profile = self._get_employee_profile_by_user_id(employee_user_id)
+                    employee_profile = self._get_employee_profile_by_user_id(employee_user_id, company_plan.company.id)
                     if employee_profile and employee_profile.annual_base_salary:
                         insurance_total = employee_profile.annual_base_salary * company_plan.salary_multiplier
                     else:
