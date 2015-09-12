@@ -24,7 +24,6 @@ benefitmyService.factory('CompanyService',
         viewModel.company.ein = convertEinToRaw(domainModel.ein);  
         viewModel.company.offer_of_coverage_code = domainModel.offer_of_coverage_code;
 
-        viewModel.payPeriod = {};
         viewModel.payPeriod = domainModel.pay_period_definition;
 
         if (domainModel.contacts && domainModel.contacts.length > 0) { 
@@ -35,6 +34,8 @@ benefitmyService.factory('CompanyService',
             viewModel.contact.last_name = domainContact.last_name;
             viewModel.contact.email = domainContact.email;
             viewModel.contact.person_type = domainContact.person_type;
+            viewModel.contact.user_id = domainContact.user;
+            viewModel.contact.relationship = domainContact.relationship;
             
             if (domainContact.phones && domainContact.phones.length > 0) {
                 var domainPhone = domainContact.phones[0];
@@ -75,6 +76,8 @@ benefitmyService.factory('CompanyService',
         apiContact.last_name = viewModel.contact.last_name;
         apiContact.email = viewModel.contact.email;
         apiContact.person_type = 'primary_contact';
+        apiContact.user = viewModel.contact.user_id;
+        apiContact.relationship = viewModel.contact.relationship;
         apiContact.phones = [];
         var apiContactPhone = {};
         apiContactPhone.phone_type = 'work';
