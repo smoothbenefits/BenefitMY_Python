@@ -12,7 +12,7 @@ benefitmyService.factory('CompanyService',
         if (!ein || ein.indexOf("-") != 2) {
             return ein;
         }
-        return ein.substring(0, 2) + rawEin.substring(3);
+        return ein.substring(0, 2) + ein.substring(3);
       };
 
       var mapToViewModel = function(domainModel) {
@@ -99,7 +99,7 @@ benefitmyService.factory('CompanyService',
         }
 
         if (ein.length != 9) {
-          return { isValid: fasle, message: "EIN should be 9 digits long." };
+          return { isValid: false, message: "EIN should be 9 digits long." };
         }
 
         return { isValid: true, message: "Passed all validations." };

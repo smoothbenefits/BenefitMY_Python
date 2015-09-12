@@ -4,41 +4,56 @@ BenefitMyApp.directive('bmCompanyInfoEditor', function() {
     '$scope',
     '$location',
     '$window',
+    '$attrs',
     'CompanyService',
     'PeriodDefinitionRepository',
-    function PersonalInfoEditorDirectiveController(
+    function CompanyInfoEditorDirectiveController(
       $scope, 
       $location,
       $window, 
+      $attrs,
       CompanyService, 
       PeriodDefinitionRepository) {
 
         $scope.client = {};
 
-        // CompanyService.getCompanyInfo(DUMMY_HASHED_KEY).then(function(response) {
-        //     $scope.client = response;
-        // });
+        if ($scope.target) {
+            CompanyService.getCompanyInfo($scope.target).then(function(response) {
+                $scope.client = response;
+            });
+        }
 
         PeriodDefinitionRepository.query().$promise.then(function(payPeriods){
           $scope.payPeriods = payPeriods;
         });
 
-        $scope.createClient = function(){
+        // Define a default behavior when no function parameter is given
+        if (!$attrs.exitView) {
+            $scope.exitView = function() {
+                $window.history.back();
+            };
+        }
+
+        $scope.saveCompanyInfo = function(){
           CompanyService.saveCompanyInfo($scope.client).then(function(response) {
             alert('Changes saved successfully');
-            $window.history.back();
+            $scope.exitView();
           }, function(error) {
             alert("Failed to add client. " + error);
           })
         };
 
+        $scope.cancel = function() {
+            $scope.exitView();
+        }
     }
   ];
 
   return {
     restrict: 'E',
     scope: {
-        target: '=?'
+        target: '=?',
+        exitView: '&'
     },
     templateUrl: '/static/partials/common/directive_company_info_edit.html',
     controller: controller

@@ -25,9 +25,10 @@ class CompanyView(APIView):
         serializer = CompanySerializer(company)
         return Response(serializer.data)
 
+    @transaction.atomic
     def put(self, request, pk, format=None):
         company = self.get_object(pk)
-        serializer = CompanyPostSerializer(data=request.DATA)
+        serializer = CompanyPostSerializer(company, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

@@ -150,8 +150,11 @@
       </div>
 
       <div class="submit-box">
-        <button ng-click="createClient()" class="btn green" ng-disabled="form.$invalid">Create Client</button>
-      </div>
+        <div class="modal-footer">
+          <div class="button-group">
+            <button class="btn green" ng-click="saveCompanyInfo()" ng-disabled="form.$invalid" style="width:30%;margin-right: 10px;">Save</button>
+            <button class="btn btn-primary" ng-click="cancel()" style="width:30%;">Cancel</button>
+          </div>
+        </div>
     </form>
   </div><!-- / .form-holder -->
-  <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>

@@ -77,7 +77,8 @@ class PersonPostSerializer(HashPkSerializerBase):
     class Meta:
 
         model = Person
-        fields = ('person_type',
+        fields = ('id',
+                  'person_type',
                   'first_name',
                   'middle_name',
                   'last_name',
