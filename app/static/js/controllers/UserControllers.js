@@ -364,5 +364,5 @@ var company1095CModalController = userControllers.controller('company1095CModalC
       $scope.cancel = function(){
         $modalInstance.dismiss("cancelled");
       };
-
-}]);
+    }
+]);
