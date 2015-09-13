@@ -124,38 +124,38 @@ class Form1095CView(ReportExportViewBase):
         period_date_map.append({'period':PERIODS[0], 'date':None})
         for x in range(1, 13):
             period_date_map.append({'period':PERIODS[x], 'date': date(FORM_YEAR, x, 1)})
-            
-        whole_year_benefit_data = None # This record down the "all 12 month" data
-        whole_year = False # This will let me know the employee is active for the whole year
-        for period_date in period_date_map:
-            benefit_data = None
-            if not period_date['date']:
-                # The statements below should only be run once at the beginning of the loop
-                whole_year_benefit_data = Company1095C.objects.filter(company=comp_id, period=period_date['period'])
-                # Check to see if the employee is active for the whole year
-                whole_year = emp_start_date <= date(FORM_YEAR, 1, 31) and emp_end_date >= date(FORM_YEAR, 12, 1)
-                if whole_year_benefit_data and whole_year:
-                    # We only fill out the "All 12 month" if employee is active for the whole year and 
-                    # the company filled data has the "All 12 month" column specified
-                    period_date['benefit_data'] = whole_year_benefit_data[0]
-                else:
-                    period_date['benefit_data'] = None
-            else:
-                if not (whole_year and whole_year_benefit_data) and \
-                    emp_end_date >= period_date['date'] and emp_start_date < self._get_next_month_start(period_date['date']):
-                    # We should not record any data, unless within this period the employee is active
-                    # Note if employee is active starting the end of the month, the employee is active in that month
-                    # if the employee is terminated at the beginning of the month, the employee is active in that month
-                    if whole_year_benefit_data:
-                        # we choose to record the "All 12 month" column data
-                        benefit_data = whole_year_benefit_data[0]
-                    else:
-                        # We record whatever the company specified
-                        benefit_data_array = Company1095C.objects.filter(company=comp_id, period=period_date['period'])
-                        if benefit_data_array:
-                            benefit_data = benefit_data_array[0]
 
-                period_date['benefit_data'] = benefit_data
+        # Start the whole year case
+        whole_year_period_date = period_date_map[0]
+        # This record down the "all 12 month" data
+        whole_year_benefit_data = Company1095C.objects.filter(company=comp_id, period=whole_year_period_date['period'])
+        # Check to see if the employee is active for the whole year
+        whole_year = emp_start_date <= date(FORM_YEAR, 1, 31) and emp_end_date >= date(FORM_YEAR, 12, 1)
+        if whole_year_benefit_data and whole_year:
+            # We only fill out the "All 12 month" if employee is active for the whole year and 
+            # the company filled data has the "All 12 month" column specified
+            whole_year_period_date['benefit_data'] = whole_year_benefit_data[0]
+        else:
+            whole_year_period_date['benefit_data'] = None
+        # End of whole year case
+        for i in range(1, 13):
+            period_date = period_date_map[i]
+            benefit_data = None
+            if not (whole_year and whole_year_benefit_data) and \
+                emp_end_date >= period_date['date'] and emp_start_date < self._get_next_month_start(period_date['date']):
+                # We should not record any data, unless within this period the employee is active
+                # Note if employee is active starting the end of the month, the employee is active in that month
+                # if the employee is terminated at the beginning of the month, the employee is active in that month
+                if whole_year_benefit_data:
+                    # we choose to record the "All 12 month" column data
+                    benefit_data = whole_year_benefit_data[0]
+                else:
+                    # We record whatever the company specified
+                    benefit_data_array = Company1095C.objects.filter(company=comp_id, period=period_date['period'])
+                    if benefit_data_array:
+                        benefit_data = benefit_data_array[0]
+
+            period_date['benefit_data'] = benefit_data
 
         return period_date_map
 
