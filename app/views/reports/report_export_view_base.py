@@ -27,11 +27,11 @@ class ReportExportViewBase(APIView):
 
     _user_employee_profile_dictionary = {}
 
-    def _get_employee_profile_by_user_id(self, user_id):
+    def _get_employee_profile_by_user_id(self, user_id, company_id):
         if user_id not in self._user_employee_profile_dictionary:
             try:
                 person = Person.objects.filter(user=user_id, relationship='self')
-                profiles = EmployeeProfile.objects.filter(person=person)
+                profiles = EmployeeProfile.objects.filter(person=person, company=company_id)
                 if profiles:
                     self._user_employee_profile_dictionary[user_id] = profiles[0]
                 else:
