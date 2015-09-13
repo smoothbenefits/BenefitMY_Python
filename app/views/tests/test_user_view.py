@@ -382,7 +382,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['family'][0]['first_name'], new_user['first_name'])
         self.assertEqual(result['family'][0]['last_name'], new_user['last_name'])
         self.assertEqual(result['family'][0]['email'], new_user['email'])
-        self.assertEqual(result['family'][0]['company'], self.normalize_key(new_user['company_id']))
+        self.assertEqual(result['family'][0]['company'], None)
         self.assertEqual(result['family'][0]['user'], created_user['id'])
 
 

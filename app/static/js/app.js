@@ -98,8 +98,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('/broker/add_client', {
                 url: '/broker/add_client',
-                templateUrl: '/static/partials/add_client.html',
-                controller: 'addClientController'
+                templateUrl: '/static/partials/add_client.html'
             }).
             state('/broker/benefits/:clientId', {
                 url: '/broker/benefits/:clientId',

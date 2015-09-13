@@ -4,13 +4,17 @@ var brokersControllers = angular.module('benefitmyApp.brokers.controllers',[]);
 var clientsController = brokersControllers.controller('clientsController', [
   '$scope',
   '$state',
+  '$stateParams',
   '$location',
+  '$modal',
   'clientListRepository',
   'currentUser',
   function clientsController(
     $scope,
     $state,
+    $stateParams,
     $location,
+    $modal,
     clientListRepository,
     currentUser){
 
@@ -47,6 +51,34 @@ var clientsController = brokersControllers.controller('clientsController', [
             $scope.clientList = clientList;
             $scope.clientCount = _.size(clientList);
           });
+    };
+
+    var reloadCurrentState = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }; 
+
+    $scope.editCompanyInfo = function(company) {
+        var modalInstance = $modal.open({
+            templateUrl: '/static/partials/company_info/modal_edit_company_info.html',
+            controller: function($scope, companyId) {
+                $scope.companyId = companyId;
+                $scope.closeModal = function() {
+                    modalInstance.dismiss();
+                    reloadCurrentState();
+                };
+            },
+            size: 'lg',
+            backdrop: 'static',
+            resolve: {
+              companyId: function() {
+                return company.id;
+              }
+            }
+        });
     };
 
     currentUser.get()
@@ -1377,29 +1409,6 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         }
       };
   }]);
-
-var addClientController = brokersControllers.controller('addClientController', [
-  '$scope',
-  '$location',
-  'CompanyService',
-  'PeriodDefinitionRepository',
-  function addClientController($scope, $location, CompanyService, PeriodDefinitionRepository){
-
-    $scope.client = {};
-    PeriodDefinitionRepository.query().$promise.then(function(payPeriods){
-      $scope.payPeriods = payPeriods;
-    });
-
-    $scope.createClient = function(){
-      CompanyService.CreateCompany($scope.client).then(function(response) {
-        $location.path('/clients');
-      }, function(error) {
-        alert("Failed to add client. " + error);
-        $scope.saveSucceeded = false;
-      })
-    };
-  }
-]);
 
 var benefitInputDetailsController = brokersControllers.controller('benefitInputDetailsController',
     ['$scope',

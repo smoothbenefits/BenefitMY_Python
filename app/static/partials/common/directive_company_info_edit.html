@@ -1,0 +1,160 @@
+<div class="form-holder">
+    <form name="form">
+      <div class="form-label">Name of Company/Organization*</div>
+      <div class="textbox">
+        <input type="text"
+        name="company_name"
+        ng-model="client.company.name"
+        ng-required="true">
+        <div class="form-error" ng-show="form.company_name.$dirty && form.company_name.$invalid">
+          <span ng-show="form.company_name.$error.required">Company name field is required</span>
+        </div>
+      </div>
+      <div class="form-label">Employer Identification Number (EIN)*</div>
+      <div class="textbox">
+        <input type="text"
+        name="ein"
+        ng-model="client.company.ein"
+        ui-mask="99-9999999"
+        ng-required="true">
+        <div class="form-error" ng-show="form.ein.$dirty && form.ein.$invalid">
+          <span ng-show="form.ein.$error.required">Employer Identification Number field is required</span>
+        </div>
+      </div>
+      <div class="form-label">Offer of Coverage Code</div>
+      <div class="textbox">
+        <input type="text"
+        name="offer_of_coverage_code"
+        ng-model="client.company.offer_of_coverage_code"
+        ng-required="false">
+      </div>
+      <div class="form-label">First Name of Contact*</div>
+      <div class="textbox">
+        <input type="text"
+        name="first_name"
+        ng-model="client.contact.first_name"
+        ng-required="true">
+        <div class="form-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
+          <span ng-show="form.first_name.$error.required">First name field is required</span>
+        </div>
+      </div>
+      <div class="form-label">Last Name of Contact*</div>
+      <div class="textbox">
+        <input type="text"
+        name="last_name"
+        ng-model="client.contact.last_name"
+        ng-required="true">
+        <div class="form-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
+          <span ng-show="form.last_name.$error.required">Last name field is required</span>
+        </div>
+      </div>
+      <div class="form-label">Email of Contact*</div>
+      <div class="textbox">
+        <input type="email"
+        name="contact_email"
+        ng-model="client.contact.email"
+        ng-required="true">
+        <div class="form-error" ng-show="form.contact_email.$dirty && form.contact_email.$invalid">
+          <span ng-show="form.contact_email.$error.required">Email field is required</span>
+          <span ng-show="form.contact_email.$error.email">This is not a valid email.</span>
+        </div>
+      </div>
+      <div class="form-label">Pay Period*</div>
+      <div class="select-box">
+        <select ng-model="client.payPeriod"
+          ng-required="true"
+          name="payPeriod"
+          ng-options="period.name for period in payPeriods track by period.id"
+          class="form-control">
+        </select>
+        <div class="form-error" ng-show="form.payPeriod.$dirty && form.payPeriod.$invalid">
+          <span ng-show="form.payPeriod.$error.required">Pay Period Selection is required</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-label">Phone number of the contact*</div>
+          <div class="textbox">
+            <input type="masked"
+            name="contact_phone"
+            ui-mask="(999) 999-9999"
+            ng-model="client.contact.phone"
+            ng-required="true"
+            class="ng-valid ng-valid-mask">
+            <div class="form-error" ng-show="form.contact_phone.$dirty && form.contact_phone.$invalid">
+              <span ng-show="form.contact_phone.$error.required">Phone field is required</span>
+              <span ng-show="form.contact_phone.$invalid">Please enter an valid phone number</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-label">Company/Organization address</div>
+      <div class="textbox">
+        <input type="text"
+        name="company_address_street1"
+        ng-model="client.address.street1"
+        ng-required="true"
+        placeholder="Street Line 1">
+        <div class="form-error" ng-show="form.company_address_street1.$dirty && form.company_address_street1.$invalid">
+          <span ng-show="form.company_address_street1.$error.required">Address field is required</span>
+        </div>
+      </div>
+      <div class="textbox">
+        <input type="text"
+        name="company_address_street2"
+        ng-model="client.address.street2"
+        ng-required="false"
+        placeholder="Street Line 2">
+      </div>
+      <div class="textbox">
+        <input type="text"
+        name="company_address_city"
+        ng-model="client.address.city"
+        ng-required="true"
+        placeholder="City">
+        <div class="form-error" ng-show="form.company_address_city.$dirty && form.company_address_city.$invalid">
+          <span ng-show="form.company_address_city.$error.required">City field is required</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="textbox">
+            <input type="masked"
+            name="company_address_state"
+            ng-model="client.address.state"
+            ng-required="true"
+            class="input-upper"
+            placeholder="State"
+            maxlength="2">
+            <div class="form-error" ng-show="form.company_address_state.$dirty && form.company_address_state.$invalid">
+              <span ng-show="form.company_address_state.$error.required">State field is required</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="textbox">
+            <input type="text"
+            name="company_address_zip"
+            ng-model="client.address.zip"
+            ng-required="true"
+            placeholder="Zip Code"
+            maxlength="5">
+            <div class="form-error" ng-show="form.company_address_zip.$dirty && form.company_address_zip.$invalid">
+              <span ng-show="form.company_address_zip.$error.required">Zip code is required</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-box">
+        <div class="modal-footer">
+          <div class="button-group">
+            <button class="btn green" ng-click="saveCompanyInfo()" ng-disabled="form.$invalid" style="width:30%;margin-right: 10px;">Save</button>
+            <button class="btn btn-primary" ng-click="cancel()" style="width:30%;">Cancel</button>
+          </div>
+        </div>
+    </form>
+  </div><!-- / .form-holder -->

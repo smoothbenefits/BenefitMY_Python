@@ -37,16 +37,12 @@ benefitmyDomainModelFactories.factory('clientListRepository',[
             {userId:'@id'})
 }]);
 
-benefitmyDomainModelFactories.factory('addClientRepository', [
-    '$resource',
-    function($resource){
-        return $resource('/api/v1/companies/', {})
-    }]);
-
 benefitmyDomainModelFactories.factory('companyRepository', [
   '$resource',
   function($resource){
-    return $resource('/api/v1/companies/:clientId', {clientId:'@id'})
+    return $resource('/api/v1/companies/:clientId', {clientId:'@id'}, {
+        'update': {method:'PUT'}
+      })
   }]);
 
 benefitmyDomainModelFactories.factory('companyEmployeeBenefits', [

@@ -45,7 +45,8 @@ class CompanyPostSerializer(HashPkSerializerBase):
     class Meta:
 
         model = Company
-        fields = ('name',
+        fields = ('id',
+                  'name',
                   'pay_period_definition',
                   'contacts',
                   'addresses',
