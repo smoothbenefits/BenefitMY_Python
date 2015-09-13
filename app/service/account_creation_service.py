@@ -294,7 +294,7 @@ class AccountCreationService(object):
             'company': account_info.company_id,
             'start_date': account_info.start_date
         }
-        if (account_info.start_date < datetime.date(datetime.now())):
+        if (account_info.start_date <= datetime.date(datetime.now())):
             profile_data['employment_status'] = EMPLYMENT_STATUS_ACTIVE
 
         if (account_info.compensation_info.annual_base_salary is not None):
