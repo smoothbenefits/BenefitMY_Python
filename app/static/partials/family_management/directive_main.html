@@ -19,7 +19,7 @@
 <div class="content-body">
   <div class="row" ng-if="!family|| !family.length">
     <div class="col-md-5"><span class="btn green" ng-click="addMember()">Add a new family member</span></div>
-    <div class="col-md-5 col-md-offset-1" ng-if="!isOnboarding"><span class="btn gray" onclick="history.back()">Cancel</span></div>
+    <div class="col-md-5 col-md-offset-1" ng-if="!isOnboarding"><span class="btn gray" onclick="history.back()">Back</span></div>
     <div class="col-md-5 col-md-offset-1" ng-if="isOnboarding"><span class="btn gray" ng-click="startModifyBenefit()">Skip this step</span></div>
   </div>
   <div class="table-responsive table-holder" ng-if="family && family.length > 0">
