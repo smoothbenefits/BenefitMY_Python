@@ -1,5 +1,5 @@
 <div class="breadcrumb">
-  <a ng-click="backToDashboard()">{{getCurRoleString()}} Dashboard</a>
+  <a ng-click="back()">{{getCurRoleString()}} Dashboard</a>
   <span>Employee List</span>
 </div>
 
@@ -23,6 +23,7 @@
           <td>{{employee.firstName}} {{employee.lastName}}</td>
           <td>
             <span class="btn inline" ng-click="editPersonalInfo(employee.userId)">Edit Personal Info</span>
+            <span class="btn inline" ng-click="viewEmployeeFamilyMember(employee.userId)">Edit Family Member</span>
           </td>
         </tr>
       </tbody>

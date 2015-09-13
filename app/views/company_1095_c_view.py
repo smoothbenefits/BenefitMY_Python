@@ -33,6 +33,6 @@ class Company1095CView(APIView):
             company_1095c_array.delete()
             # Save all the new ones
             serialized.save()
-            return Response(serialized.data, status=status.HTTP_201_CREATED)
+            return Response({'saved': serialized.data}, status=status.HTTP_201_CREATED)
         else:
             return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)

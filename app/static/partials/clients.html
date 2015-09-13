@@ -20,7 +20,7 @@
       </thead>
       <tbody>
         <tr ng-repeat="client in clientList">
-          <td>{{client.name}}</td>
+          <td><a ng-click="editCompanyInfo(client)">{{client.name}}</a></td>
           <td>
             <span class="btn inline" ng-click="viewElegibleBenefits(client.id)">View Benefit Plans</span>
             <span class="btn inline" ng-click="viewSelectedBenefits(client.id)">Employee Benefit Elections</span>

@@ -14,6 +14,40 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
+  <h6>Company 1095C Data</h6>
+  <div class="row">
+    <div class="well col-md-10" ng-if="!valid1095C()">
+      You do not have Affordable Care Act Form 1095C filled for this company yet.
+      <br /><a ng-click="open1095CModal()">Click here</a> to add data
+    </div>
+    <div class="col-md-10">
+      <table class="table table-striped" ng-if="valid1095C()">
+        <thead>
+          <tr>
+            <th>
+              <span>1095C Data</span>
+              <span><a ng-click="open1095CModal()">Modify</a></span>
+            </th>
+            <th ng-repeat="item in sorted1095CData" style="text-align:center;">{{item.period}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Offer of Coverage Code</b></td>
+            <td ng-repeat = "item in sorted1095CData">{{item.offer_of_coverage}}</td>
+          </tr>
+          <tr>
+            <td><b>Employee Share of Lowest Cost Monthly Premium, for Self-Only Minimum Value Coverage</b></td>
+            <td ng-repeat = "item in sorted1095CData"><span ng-if="item.employee_share">$</span>{{item.employee_share}}</td>
+          </tr>
+          <tr>
+            <td><b>Applicable Section 4980H Safe Harbor</b></td>
+            <td ng-repeat = "item in sorted1095CData">{{item.safe_harbor}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
   <h6>Employee Benefit Enrollment Summary</h6>
   <div class="dashboard-card">
     <div class="info-row">
@@ -59,7 +93,10 @@
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="employee-menu-{{employee.id}}">
           <li role="menuitem"><a ng-click="viewDetails(employee.id)">View Selected Benefits</a></li>
-          <li role="menuitem"><a ng-href="{{getEmployee1095cUrl(employee.id)}}">Download 1095-C</a></li>
+          <li role="menuitem">
+            <a ng-click="open1095CModal(employee.id)" ng-if="!valid1095C()">Download 1095-C</a>
+            <a ng-href="{{getEmployee1095cUrl(employee.id)}}" ng-if="valid1095C()">Download 1095-C</a>
+          </li>
         </ul>
       </span>
     </div>

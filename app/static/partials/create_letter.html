@@ -32,12 +32,12 @@
     </div>
 
     <div ng-repeat="field in getTemplateFields(selectedTemplate)">
-      <div class="form-label">{{field.name}}</div>
+      <div class="form-label">{{field.key}}</div>
       <div class="textbox">
         <input type="text"
         ng-required="true"
         ng-model="field.value"
-        name="field_{{field.name}}">
+        name="field_{{field.key}}">
       </div>
     </div>
 
