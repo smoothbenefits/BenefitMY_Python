@@ -53,12 +53,16 @@ BenefitMyApp.controller(
     '$scope',
     '$state',
     '$modal',
+    '$controller',
     'PersonService',
     function FamilyMemberManagerDirectiveController(
       $scope,
       $state,
       $modal,
+      $controller,
       PersonService) {
+
+      $controller('userController', {$scope: $scope});
 
       var selfPerson = {address: {}, phone: {}};
       $scope.family=[];

@@ -22,7 +22,6 @@ benefitmyService.factory('CompanyService',
         viewModel.company.id = domainModel.id;
         viewModel.company.name = domainModel.name;
         viewModel.company.ein = convertEinToRaw(domainModel.ein);  
-        viewModel.company.offer_of_coverage_code = domainModel.offer_of_coverage_code;
 
         viewModel.payPeriod = domainModel.pay_period_definition;
 
@@ -69,7 +68,6 @@ benefitmyService.factory('CompanyService',
         // Format EIN for company
         apiClient.ein = convertEinFromRaw(viewModel.company.ein);
 
-        apiClient.offer_of_coverage_code = viewModel.company.offer_of_coverage_code;
         apiClient.pay_period_definition = viewModel.payPeriod.id;
         var apiContact = {};
         apiContact.first_name = viewModel.contact.first_name;
