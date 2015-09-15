@@ -2482,27 +2482,14 @@ var employeeHelpCenterController = employeeControllers.controller('employeeHelpC
   ['$scope',
   '$state',
   'UserService',
-  'employerWorkerRepository',
-  function($scope, $state, UserService, employerWorkerRepository) {
+  'CompanyService',
+  function($scope, $state, UserService, CompanyService) {
     UserService.getCurUserInfo().then(function(userInfo) {
-      employerWorkerRepository.get({companyId: userInfo.currentRole.company.id})
-      .$promise.then(function(companyUser) {
-        var brokers = _.filter(companyUser.user_roles, function(user) {
-          return user.company_user_type === 'broker';
-        });
-
-        _.each(brokers, function(broker) {
-          broker.firstName = broker.user.first_name;
-          broker.lastName = broker.user.last_name;
-          broker.email = broker.user.email;
-        })
-        $scope.brokers = brokers;
+      CompanyService.getCompanyBroker(userInfo.currentRole.company.id)
+      .then(function(companyBrokers) {
+        $scope.brokers = companyBrokers;
       });
     });
-
-    $scope.sendEmail = function(email) {
-      return "mailto:" + email;
-    };
 
     $scope.backToDashboard = function() {
       $state.go('/');
