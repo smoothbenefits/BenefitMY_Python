@@ -5,7 +5,6 @@ html, body {
 body {
   height: 100vh;
   min-height: 480px;
-  overflow-x: hidden;
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #58585B; }
 

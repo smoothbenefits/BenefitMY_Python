@@ -12,7 +12,12 @@ CONTRACTOR = 'Contractor'
 INTERN = 'Intern'
 
 EMPLOYMENT_TYPES = ([(item, item) for item in [FULL_TIME, PART_TIME, CONTRACTOR, INTERN]])
-EMPLOYMENT_STATUS = ([(item, item) for item in ['Active', 'Prospective', 'Terminated', 'OnLeave']])
+
+EMPLYMENT_STATUS_ACTIVE = 'Active'
+EMPLYMENT_STATUS_PROSPECTIVE = 'Prospective'
+EMPLYMENT_STATUS_TERMINATED = 'Terminated'
+EMPLYMENT_STATUS_ONLEAVE = 'OnLeave'
+EMPLOYMENT_STATUS = ([(item, item) for item in [EMPLYMENT_STATUS_ACTIVE,EMPLYMENT_STATUS_PROSPECTIVE,EMPLYMENT_STATUS_TERMINATED,EMPLYMENT_STATUS_ONLEAVE]])
 
 @reversion.register
 class EmployeeProfile(models.Model):

@@ -329,3 +329,40 @@ var settingsController = userControllers.controller('settingsController', ['$sco
           });
       }
   }]);
+
+var company1095CModalController = userControllers.controller('company1095CModalController',
+    ['$scope',
+     '$modal',
+     '$modalInstance',
+     'Company1095CService',
+     'CompanyId',
+     'Existing1095CData',
+     function company1095CModalController ($scope,
+                                           $modal,
+                                           $modalInstance,
+                                           Company1095CService,
+                                           CompanyId,
+                                           Existing1095CData){
+      $scope.sorted1095CData = Existing1095CData;
+      $scope.companyId = CompanyId
+      if(!$scope.sorted1095CData){
+        Company1095CService.get1095CByCompany($scope.companyId)
+        .then(function(comp1095C){
+          $scope.sorted1095CData = comp1095C;
+        });
+      }
+
+      $scope.save = function(){
+        Company1095CService.save1095CWithCompany($scope.companyId, $scope.sorted1095CData)
+        .then(function(savedResponse){
+          $modalInstance.close(savedResponse);
+        }, function(errorResponse){
+          alert('Saving 1095C form data failed. Error:' + errorResponse);
+        });
+      };
+
+      $scope.cancel = function(){
+        $modalInstance.dismiss("cancelled");
+      };
+    }
+]);

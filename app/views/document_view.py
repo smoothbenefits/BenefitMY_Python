@@ -12,6 +12,7 @@ from app.models.document import Document
 from app.models.template import Template
 from app.serializers.document_serializer import (
     DocumentSerializer)
+from app.serializers.dtos.key_value_pair_serializer import KeyValuePairSerializer
 from app.service.template_service import TemplateService
 
 
@@ -111,8 +112,10 @@ def _generate_content(template_id, document_type, fields):
         content = document_type.default_content
 
     template_service = TemplateService()
-    fields_dict = [{'key':f['name'], 'value':f['value']} for f in fields]
-    return template_service.populate_content_with_field_values(content, fields_dict)
+    fields_serializer = KeyValuePairSerializer(data=fields, many=True)
+    if (not fields_serializer.is_valid()):
+        raise ValueError('The given list of document fields could not be read properly.')
+    return template_service.populate_content_with_field_values(content, fields_serializer.object)
 
 @api_view(['POST'])
 @transaction.atomic

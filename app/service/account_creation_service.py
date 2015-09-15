@@ -5,7 +5,7 @@ from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.custom_authentication import AuthUserManager
 from app.models.person import Person
-from app.models.employee_profile import FULL_TIME, PART_TIME
+from app.models.employee_profile import FULL_TIME, PART_TIME, EMPLYMENT_STATUS_ACTIVE
 from app.models.company_user import USER_TYPE_EMPLOYEE
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
@@ -278,7 +278,6 @@ class AccountCreationService(object):
                        'user': user.id,
                        'relationship': 'self',
                        'person_type': 'primary_contact',
-                       'company': account_info.company_id,
                        'email': user.email}
 
         person_serializer = PersonSimpleSerializer(data=person_data)
@@ -295,6 +294,8 @@ class AccountCreationService(object):
             'company': account_info.company_id,
             'start_date': account_info.start_date
         }
+        if (account_info.start_date <= datetime.date(datetime.now())):
+            profile_data['employment_status'] = EMPLYMENT_STATUS_ACTIVE
 
         if (account_info.compensation_info.annual_base_salary is not None):
             profile_data['annual_base_salary'] = account_info.compensation_info.annual_base_salary

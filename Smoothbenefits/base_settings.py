@@ -237,10 +237,12 @@ PIPELINE_JS = {
             'js/controllers/EmployerControllers.js',
             'js/directives/ScrollTo.js',
             'js/directives/ConfirmUnsavedOnExit.js',
+            'js/directives/FamilyMemberManager.js',
             'js/directives/UploadManager.js',
             'js/directives/UploadViewer.js',
             'js/directives/CustomDatePicker.js',
             'js/directives/PersonalInfoEditor.js',
+            'js/directives/CompanyInfoEditor.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
@@ -282,7 +284,8 @@ PIPELINE_JS = {
             'js/services/BenefitUpdateReasonService.js',
             'js/services/BenefitPolicyKeyService.js',
             'js/services/CompanyBenefitEnrollmentSummaryService.js',
-            'js/services/BatchAccountCreationService.js'
+            'js/services/BatchAccountCreationService.js',
+            'js/services/Company1095CService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }
