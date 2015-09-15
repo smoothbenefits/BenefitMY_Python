@@ -4,13 +4,17 @@ var brokersControllers = angular.module('benefitmyApp.brokers.controllers',[]);
 var clientsController = brokersControllers.controller('clientsController', [
   '$scope',
   '$state',
+  '$stateParams',
   '$location',
+  '$modal',
   'clientListRepository',
   'currentUser',
   function clientsController(
     $scope,
     $state,
+    $stateParams,
     $location,
+    $modal,
     clientListRepository,
     currentUser){
 
@@ -49,6 +53,34 @@ var clientsController = brokersControllers.controller('clientsController', [
           });
     };
 
+    var reloadCurrentState = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }; 
+
+    $scope.editCompanyInfo = function(company) {
+        var modalInstance = $modal.open({
+            templateUrl: '/static/partials/company_info/modal_edit_company_info.html',
+            controller: function($scope, companyId) {
+                $scope.companyId = companyId;
+                $scope.closeModal = function() {
+                    modalInstance.dismiss();
+                    reloadCurrentState();
+                };
+            },
+            size: 'lg',
+            backdrop: 'static',
+            resolve: {
+              companyId: function() {
+                return company.id;
+              }
+            }
+        });
+    };
+
     currentUser.get()
     .$promise.then(function(response)
          {
@@ -77,6 +109,10 @@ var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
 
     $scope.editPersonalInfo = function(employeeId) {
       $state.go('broker_company_employee_personal_info', {employee_id: employeeId});
+    };
+
+    $scope.viewEmployeeFamilyMember = function(employeeId) {
+      $state.go('broker_view_employee_family', {employeeId: employeeId});
     };
 
     $scope.back = function() {
@@ -237,16 +273,20 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    '$location',
    '$state',
    '$stateParams',
+   '$modal',
    'companyRepository',
    'CompanyEmployeeSummaryService',
    'CompanyBenefitEnrollmentSummaryService',
+   'Company1095CService',
   function($scope,
            $location,
            $state,
            $stateParams,
+           $modal,
            companyRepository,
            CompanyEmployeeSummaryService,
-           CompanyBenefitEnrollmentSummaryService){
+           CompanyBenefitEnrollmentSummaryService,
+           Company1095CService){
 
       var company_id = $stateParams.client_id;
       $scope.employees = [];
@@ -254,6 +294,10 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
       CompanyBenefitEnrollmentSummaryService.getEnrollmentSummary(company_id)
       .then(function(response){
         $scope.summary = response;
+      });
+
+      Company1095CService.get1095CByCompany(company_id).then(function(dataArray){
+        $scope.sorted1095CData = dataArray;
       });
 
       $scope.viewNotStarted = function(){
@@ -286,6 +330,32 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       $scope.getEmployee1095cUrl = function(employeeUserId) {
         return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
+      };
+
+      $scope.valid1095C = function(){
+        return Company1095CService.validate($scope.sorted1095CData);
+      };
+
+      $scope.open1095CModal = function(downloadUserId){
+        var modalInstance = $modal.open({
+          templateUrl: '/static/partials/modal_company_1095_c.html',
+          controller: 'company1095CModalController',
+          size: 'lg',
+          backdrop: 'static',
+          resolve: {
+              CompanyId: function(){return company_id},
+              Existing1095CData: function () {
+                  return angular.copy($scope.sorted1095CData);
+              }
+          }
+        });
+        modalInstance.result.then(function(saved1095CData){
+          $scope.sorted1095CData = saved1095CData;
+          if(downloadUserId && Company1095CService.validate($scope.sorted1095CData)){
+            window.location = CompanyEmployeeSummaryService.getEmployee1095cUrl(downloadUserId);
+          }
+        });
+
       };
 }]);
 
@@ -465,6 +535,17 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
         $location.path('/broker/benefit/selected/' + companyId);
       };
     }]);
+
+var brokerEmployeeFamilyController = brokersControllers.controller(
+  'brokerEmployeeFamilyController',
+  ['$scope',
+   '$state',
+   '$stateParams',
+  function($scope, $state, $stateParams) {
+    $scope.employeeId = $stateParams.employeeId;
+    $scope.isOnboarding = false;
+  }
+]);
 
 var brokerAddBenefits = brokersControllers.controller(
   'brokerAddBenefits',
@@ -1328,29 +1409,6 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         }
       };
   }]);
-
-var addClientController = brokersControllers.controller('addClientController', [
-  '$scope',
-  '$location',
-  'CompanyService',
-  'PeriodDefinitionRepository',
-  function addClientController($scope, $location, CompanyService, PeriodDefinitionRepository){
-
-    $scope.client = {};
-    PeriodDefinitionRepository.query().$promise.then(function(payPeriods){
-      $scope.payPeriods = payPeriods;
-    });
-
-    $scope.createClient = function(){
-      CompanyService.CreateCompany($scope.client).then(function(response) {
-        $location.path('/clients');
-      }, function(error) {
-        alert("Failed to add client. " + error);
-        $scope.saveSucceeded = false;
-      })
-    };
-  }
-]);
 
 var benefitInputDetailsController = brokersControllers.controller('benefitInputDetailsController',
     ['$scope',

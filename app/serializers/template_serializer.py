@@ -13,7 +13,7 @@ class TemplateSerializer(HashPkSerializerBase):
     def find_fields(self, foo):
         field_names = re.findall('{{(.*?)}}', foo.content)
         for field_name in field_names:
-            yield {'name': field_name}
+            yield {'key': field_name}
 
     company = ShallowCompanySerializer()
     document_type = DocumentTypeSerializer()

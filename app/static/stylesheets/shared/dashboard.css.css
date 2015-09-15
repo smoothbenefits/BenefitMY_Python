@@ -94,7 +94,7 @@
     padding: 10px 0; }
 #dashboard-wrapper #content-wrapper {
   padding-top: 55px;
-  padding-left: 270px;
+  padding-left: 240px;
   position: relative;
   z-index: 1; }
   #dashboard-wrapper #content-wrapper .breadcrumb {
@@ -412,5 +412,10 @@
       border-bottom: 1px solid #E2E7EA !important; }
     .modal-body .table table table tr:last-child td {
       border-bottom: none !important; }
+  .modal-body .table.horizontal td {
+    max-with: 70px;
+    padding: 1px; }
+    .modal-body .table.horizontal td input {
+      width: 50px; }
 
 /*# sourceMappingURL=dashboard.css.css.map */

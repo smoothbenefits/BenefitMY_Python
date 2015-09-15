@@ -26,8 +26,7 @@ from app.views.benefit_policy_key_view import BenefitPolicyKeyView
 from app.views.benefit_type_view import BenefitTypeView
 from app.views.document_type_view import DocumentTypeView
 from app.views.company_view import (
-    CompanyView,
-    companies)
+    CompanyView)
 from app.views import dashboard_view
 
 from app.views.template_view import (
@@ -151,6 +150,7 @@ from app.views.insurance.company_ltd_insurance_employee_premium_view import Comp
 from app.views.insurance.company_std_insurance_employee_premium_view import CompanyStdInsuranceEmployeePremiumView
 from app.views.company_enrollment_summary_view import CompanyEnrollmentSummaryView
 from app.views.company_1095_c_view import Company1095CView
+from app.views.aca_1095_c_periods_view import ACA1095CPeriodsView
 
 from app.views.batch_account_creation.batch_account_creation_view import BatchAccountCreationView
 from app.views.batch_account_creation.account_info_list_parse_view import AccountInfoListParseView
@@ -195,6 +195,7 @@ urlpatterns = patterns('app.views',
         CompanyUsersBenefitPlanOptionView.as_view()),
 
     url(r'^%s/companies/(?P<pk>\w+)/?$' % PREFIX, CompanyView.as_view()),
+    url(r'^%s/companies/?$' % PREFIX, CompanyView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/?$' % PREFIX, CompanyUserView.as_view(), name='company_users_api'),
     url(r'^%s/companies/(?P<pk>\w+)/documents/?$' % PREFIX, CompanyDocumentView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/templates/?$' % PREFIX, CompanyTemplatesView.as_view()),
@@ -224,7 +225,6 @@ urlpatterns = patterns('app.views',
     url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
     url(r'^%s/period_definitions/?$' % PREFIX, SysPeriodDefinitionView.as_view(), name='sys_period_definition_api'),
     url(r'^%s/benefits/?$' % PREFIX, BenefitPlanCreationView.as_view(), name='benefit_post_api'),
-    url(r'^%s/companies/?$' % PREFIX, companies),
     url(r'^%s/templates/?$' % PREFIX, templates),
     url(r'^%s/documents/?$' % PREFIX, documents),
 
@@ -399,6 +399,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/batch_account_creation/batch_create/?$' % PREFIX,
         BatchAccountCreationView.as_view(),
         name='batch_account_creation_batch_create_api'),
+
+    url(r'^%s/1095_c_periods/?$' % PREFIX, ACA1095CPeriodsView.as_view(), name='ACA_1095_c_periods_api'),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
