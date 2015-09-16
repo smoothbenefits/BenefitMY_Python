@@ -2477,3 +2477,22 @@ var planDetailsModalController = employeeControllers.controller('planDetailsModa
           $modalInstance.dismiss();
         };
 }]);
+
+var employeeHelpCenterController = employeeControllers.controller('employeeHelpCenterController',
+  ['$scope',
+  '$state',
+  'UserService',
+  'CompanyService',
+  function($scope, $state, UserService, CompanyService) {
+    UserService.getCurUserInfo().then(function(userInfo) {
+      CompanyService.getCompanyBroker(userInfo.currentRole.company.id)
+      .then(function(companyBrokers) {
+        $scope.brokers = companyBrokers;
+      });
+    });
+
+    $scope.backToDashboard = function() {
+      $state.go('/');
+    };
+  }
+]);
