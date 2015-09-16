@@ -483,7 +483,7 @@ benefitmyDomainModelFactories.factory('Company1095CDataRepository', ['$resource'
 benefitmyDomainModelFactories.factory('CompanyUserDetailRepository', ['$resource',
   function($resource){
     return {
-      ByCompany: $resource(PREFIX + 'company/:comp_id/:role', {comp_id:'@comp_id', role:'@role'})
+      ByCompany: $resource(PREFIX + 'company/:comp_id/role/:role', {comp_id:'@comp_id', role:'@role'})
     }
   }
 ]);
