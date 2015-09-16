@@ -30,10 +30,10 @@ class CompanyEmployeeCountView(APIView):
 
 class CompanyUserDetailView(APIView):
 
-    def get(self, request, pk, roleType, format=None):
+    def get(self, request, pk, role_type, format=None):
         try:
             companyUsers = CompanyUser.objects.filter(company=pk,
-                                                      company_user_type=roleType)
+                                                      company_user_type=role_type)
             serializer = CompanyUserDetailSerializer(companyUsers, many=True)
             return Response({'company_broker': serializer.data})
         except CompanyUser.DoesNotExist:

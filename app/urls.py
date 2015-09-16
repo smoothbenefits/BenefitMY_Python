@@ -208,7 +208,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_billing?$' % PREFIX, CompanyUsersBenefitsBillingExcelExportView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/pdf/?$' % PREFIX, CompanyUsersSummaryPdfExportView.as_view()),
-    url(r'^%s/company/(?P<pk>\w+)/(?P<roleType>\w+)/?$' % PREFIX, CompanyUserDetailView.as_view()),
+    url(r'^%s/company/(?P<pk>\w+)/(?P<role_type>\w+)/?$' % PREFIX, CompanyUserDetailView.as_view()),
 
     url(r'^%s/companies/(?P<pk>\w+)/hphc/excel/?$' % PREFIX, CompanyHphcExcelView.as_view()),
 
