@@ -1,8 +1,8 @@
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('CompanyService',
-   ['$q', 'companyRepository', 'employerWorkerRepository', 'PersonService',
-   function($q, companyRepository, employerWorkerRepository, PersonService){
+   ['$q', 'companyRepository', 'CompanyUserDetailRepository',
+   function($q, companyRepository, CompanyUserDetailRepository){
 
       var convertEinFromRaw = function(rawEin) {
         return rawEin.substring(0, 2) + '-' + rawEin.substring(2);
@@ -148,66 +148,43 @@ benefitmyService.factory('CompanyService',
         return deferred.promise;
       };
 
-      // Copied shamelessly from http://jsfiddle.net/ExpertSystem/mg2cU/
-      var asyncCall =   function(listOfPromises, onErrorCallback, finalCallback) {
+      var mapCompanyBrokerToViewModel = function(domainBroker) {
+        var viewBroker = {
+          firstName: domainBroker.user.first_name,
+          lastName: domainBroker.user.last_name,
+          email: domainBroker.user.email
+        };
 
-        listOfPromises  = listOfPromises  || [];
-        onErrorCallback = onErrorCallback || angular.noop;
-        finalCallback   = finalCallback   || angular.noop;
-
-        // Create a new list of promises
-        // that can "recover" from rejection
-        var newListOfPromises = listOfPromises.map(function (promise) {
-          return promise.catch(function (reason) {
-
-            // First call the `onErrroCallback`
-            onErrorCallback(reason);
-
-            // Change the returned value to indicate that it was rejected
-            // Based on the type of `reason` you might need to change this
-            // (e.g. if `reason` is an object, add a `rejected` property)
-            return 'rejected: ' + reason;
-          });
+        var person = _.find(domainBroker.user.family, function(member) {
+          return member.relationship === 'self';
         });
 
-        // Finally, we create a "collective" promise that calls `finalCallback` when resolved.
-        // Thanks to our modifications, it will never get rejected !
-        $q.all(newListOfPromises).then(finalCallback);
-      };
+        if (person && person.phones && person.phones.length > 0) {
+          viewBroker.phone = person.phones[0].number;
+        } else {
+          viewBroker.phone = 'Not Available';
+        }
 
-      var mapBrokerToViewModel = function(domainModel) {
-        return {
-          firstName: domainModel.first_name,
-          lastName: domainModel.last_name,
-          email: domainModel.email,
-          phone: domainModel.phone
-        };
+        return viewBroker;
       };
 
       var getCompanyBroker = function(companyId) {
         var deferred = $q.defer();
 
-        employerWorkerRepository.get({companyId: companyId}).$promise
-        .then(function(companyUser) {
-          var brokers = _.filter(companyUser.user_roles, function(user) {
-            return user.company_user_type === 'broker';
+        CompanyUserDetailRepository.ByCompany.get({comp_id: companyId, role: 'broker'})
+        .$promise.then(function(response) {
+          var brokers = [];
+
+          _.each(response.company_broker, function(broker) {
+            var viewBroker = mapCompanyBrokerToViewModel(broker);
+            brokers.push(viewBroker);
           });
 
-          var brokerPromises = [];
-          _.each(brokers, function(broker) {
-            var promise = PersonService.getSelfPersonInfo(broker.user.id);
-            brokerPromises.push(promise);
-          });
-
-          asyncCall(brokerPromises, null, function(response) {
-            var brokerPersons = [];
-            _.each(response, function(broker) {
-              brokerPersons.push(viewModel);
-            });
-
-            deferred.resolve(brokerPersons);
-          });
+          deferred.resolve(brokers);
+        }).catch(function(error) {
+          deferred.reject(error);
         });
+
         return deferred.promise;
       };
 
