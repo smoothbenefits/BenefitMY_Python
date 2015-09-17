@@ -43,6 +43,11 @@ class CompanyLtdInsurancePlan(models.Model):
                                            blank=True,
                                            null=True)
 
+    require_user_select_amount = models.BooleanField(default=False)
+
+    benefit_amount_step = models.DecimalField(max_digits=10, decimal_places=4,
+                                              blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     updated_at = models.DateTimeField(auto_now=True, null=True)
