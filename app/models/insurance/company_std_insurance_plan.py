@@ -43,7 +43,7 @@ class CompanyStdInsurancePlan(models.Model):
                                            blank=True,
                                            null=True)
 
-    require_user_select_amount = models.BooleanField(default=False)
+    user_amount_required = models.BooleanField(default=False)
 
     benefit_amount_step = models.DecimalField(max_digits=10, decimal_places=4,
                                               blank=True, null=True)

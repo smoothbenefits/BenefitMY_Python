@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='companyltdinsuranceplan',
-            name='require_user_select_amount',
+            name='user_amount_required',
             field=models.BooleanField(default=False),
             preserve_default=True,
         ),
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='companystdinsuranceplan',
-            name='require_user_select_amount',
+            name='user_amount_required',
             field=models.BooleanField(default=False),
             preserve_default=True,
         ),
