@@ -15,3 +15,6 @@ class CompanyStdAgeBasedRatePostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CompanyStdAgeBasedRate
+        fields = ('age_min',
+                  'age_max',
+                  'rate')

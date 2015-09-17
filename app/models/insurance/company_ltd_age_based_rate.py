@@ -6,7 +6,7 @@ from company_ltd_insurance_plan import CompanyLtdInsurancePlan
 @reversion.register
 class CompanyLtdAgeBasedRate(models.Model):
     company_ltd_insurance_plan = models.ForeignKey(CompanyLtdInsurancePlan,
-                                                   related_name="company_ltd_insurance_plan")
+                                                   related_name="age_based_rates")
     age_min = models.SmallIntegerField(blank=True,
                                        null=True,
                                        verbose_name="Min value of age.")
