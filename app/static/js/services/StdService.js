@@ -73,6 +73,9 @@ benefitmyService.factory('StdService',
 
             domainModel.std_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
 
+            //Here is the location to convert age_based_rates
+            domainModel.age_based_rates = [];
+
             return domainModel;
         };
 

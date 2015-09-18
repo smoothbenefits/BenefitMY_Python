@@ -21,14 +21,14 @@ class CompanyStdInsuranceEmployeePremiumViewTestCase(TestCase, ViewTestBase):
         self.assertIn('total', result)
         self.assertIn('employee', result)
 
-        self.assertEqual(result['total'], 9.23076923076923)
-        self.assertEqual(result['employee'], 4.615384615384615)
+        self.assertEqual(result['total'], 7.961538461538462)
+        self.assertEqual(result['employee'], 1.5923076923076922)
 
     def test_get_company_std_insurance_employee_premium_view_no_salary(self):
 
         response = self.client.get(reverse('user_company_std_insurance_premium_api',
                                            kwargs={'pk': self.normalize_key(1),
-                                                   'user_id': self.normalize_key(3)}))
+                                                   'user_id': self.normalize_key(1)}))
 
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)

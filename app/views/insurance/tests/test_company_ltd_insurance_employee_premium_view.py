@@ -21,8 +21,8 @@ class CompanyLtdInsuranceEmployeePremiumViewTestCase(TestCase, ViewTestBase):
         self.assertIn('total', result)
         self.assertIn('employee', result)
 
-        self.assertEqual(result['total'], 560.0)
-        self.assertEqual(result['employee'], 280.0)
+        self.assertEqual(result['total'], 241.5)
+        self.assertEqual(result['employee'], 48.3)
 
     def test_get_company_ltd_insurance_employee_premium_view_no_salary(self):
 
