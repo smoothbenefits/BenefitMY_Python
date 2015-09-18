@@ -4,7 +4,12 @@ benefitmyService.factory('LtdService',
     ['$q',
     'LtdRepository',
     'EmployeeProfileService',
-    function ($q, LtdRepository, EmployeeProfileService){
+    'AgeRangeService',
+    function ($q,
+              LtdRepository,
+              EmployeeProfileService,
+              AgeRangeService){
+        var ageRangeService = AgeRangeService(25, 70, 5, 200);
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
 
@@ -59,6 +64,18 @@ benefitmyService.factory('LtdService',
             return domainModel;
         };
 
+        var mapPlanAgeBasedRatesToDomainModal = function(ageBasedRateTable){
+            domainTable = [];
+            _.each(ageBasedRateTable, function(row){
+                domainTable.push({
+                    age_min: row.ageMin,
+                    age_max: row.ageMax,
+                    rate: row.rate
+                })
+            });
+            return domainTable;
+        };
+
         var mapCompanyPlanViewToDomainModel = function(companyPlanViewModel) {
             var domainModel = {};
 
@@ -75,7 +92,7 @@ benefitmyService.factory('LtdService',
             domainModel.ltd_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
 
             //Here is the location to convert age_based_rates
-            domainModel.age_based_rates = [];
+            domainModel.age_based_rates = mapPlanAgeBasedRatesToDomainModal(companyPlanViewModel.ageBasedRateTable);
 
             return domainModel;
         };
@@ -116,6 +133,20 @@ benefitmyService.factory('LtdService',
             });
 
             return deferred.promise;
+        };
+
+        var getBlankAgeBasedRateTableViewModel = function(){
+            var ageRangeList = ageRangeService.getAgeRangeList();
+            var rateTable = [];
+            _.each(ageRangeList, function(ageRange){
+                rateTable.push({
+                    'ageMin' : ageRange.min,
+                    'ageMax' : ageRange.max,
+                    'getAgeRangeForDisplay': function(){return ageRangeService.getAgeRangeForDisplay(this);}
+                });
+            });
+            _.sortBy(rateTable, 'ageMin');
+            return rateTable;
         };
 
         return {
@@ -276,7 +307,8 @@ benefitmyService.factory('LtdService',
                 });
 
                 return deferred.promise;
-            }
+            },
+            getBlankAgeBasedRateTableViewModel: getBlankAgeBasedRateTableViewModel
         };
     }
 ]);

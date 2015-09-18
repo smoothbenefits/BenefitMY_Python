@@ -148,7 +148,7 @@ benefitmyService.factory('StdService',
             });
             _.sortBy(rateTable, 'ageMin');
             return rateTable;
-        }
+        };
 
         return {
 
