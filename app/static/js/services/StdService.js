@@ -162,15 +162,25 @@ benefitmyService.factory('StdService',
 
             getStdPlansForCompany: getStdPlansForCompany,
 
-            getTotalPremiumForUserCompanyStdPlan: function(userId, stdPlan) {
+            getTotalPremiumForUserCompanyStdPlan: function(userId, stdPlan, amount) {
                 var deferred = $q.defer();
+
+                if (stdPlan.allowUserSelectAmount) {
+                  amount = parseInt(Math.round(amount / stdPlan.stepValue) * stdPlan.stepValue);
+                } else {
+                  amount = Number.MAX_SAFE_INTEGER;
+                }
 
                 if (!stdPlan) {
                     deferred.resolve(0);
                 } else {
-                    StdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:stdPlan.companyPlanId})
+                    StdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:stdPlan.companyPlanId, amount: amount})
                     .$promise.then(function(premiumInfo) {
-                        deferred.resolve({totalPremium:premiumInfo.total, employeePremiumPerPayPeriod: premiumInfo.employee});
+                        deferred.resolve({
+                          totalPremium:premiumInfo.total,
+                          employeePremiumPerPayPeriod: premiumInfo.employee,
+                          effectiveBenefitAmount: premiumInfo.amount
+                        });
                     }, function(error) {
                         deferred.reject(error);
                     });
@@ -248,6 +258,7 @@ benefitmyService.factory('StdService',
             },
 
             enrollStdPlanForUser: function(userId,
+                                           userSelectAmount,
                                            companyStdPlanToEnroll,
                                            payPeriod,
                                            updateReason) {
@@ -262,6 +273,7 @@ benefitmyService.factory('StdService',
 
                 var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll, payPeriod);
                 planDomainModel.company_std_insurance = planDomainModel.company_std_insurance.id;
+                planDomainModel.user_select_amount = userSelectAmount;
 
                 StdRepository.CompanyUserPlanByUser.query({userId:userId})
                 .$promise.then(function(userPlans) {

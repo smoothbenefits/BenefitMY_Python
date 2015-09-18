@@ -11,7 +11,7 @@
         <div class="label label-info col-md-8 pull-left"
           ng-show="hasPremium(companyLtdPlan.employeePremium) && showSelectAmount()">
             Your premium per pay period varies based on the benefit amount you select. </br>
-            Type in a desired benefit amount to see your premium per pay period
+            Type in a desired benefit amount to see your premium.
         </div>
         <div class="label label-warning col-md-8 pull-left"
           ng-hide="hasPremium(companyLtdPlan.employeePremium)">
@@ -34,7 +34,7 @@
       </div>
       <div class="row" style="margin-top: 10px;" ng-show="showSelectAmount()">
         <div class="col-md-4">
-          <div class="form-label">How much do you want to select for benefit amount?</div>
+          <div class="form-label">How much do you want to select for benefit amount per month?</div>
           <div class="textbox input-group">
             <span class="input-group-addon">$ </span>
             <input
