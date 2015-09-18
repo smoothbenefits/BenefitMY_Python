@@ -722,6 +722,12 @@ var brokerAddStdPlanController = brokersControllers.controller(
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
+        $scope.ageBased = false;
+        $scope.toggleAgeBased = function(){
+          $scope.ageBased = !$scope.ageBased;
+        };
+
+        $scope.newPlan.ageBasedRateTable = StdService.getBlankAgeBasedRateTableViewModel();
 
         $scope.buttonEnabled = function() {
             return $scope.newPlan.planName && _.isNumber($scope.newPlan.employerContributionPercentage);

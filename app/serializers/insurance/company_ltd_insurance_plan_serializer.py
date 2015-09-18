@@ -16,7 +16,8 @@ class CompanyLtdInsurancePlanSerializer(HashPkSerializerBase):
 
     class Meta:
         model = CompanyLtdInsurancePlan
-        fields = ('elimination_period_in_months',
+        fields = ('id',
+                  'elimination_period_in_months',
                   'duration',
                   'percentage_of_salary',
                   'max_benefit_monthly',
@@ -35,7 +36,8 @@ class CompanyLtdInsurancePlanPostSerializer(HashPkSerializerBase):
 
     class Meta:
         model = CompanyLtdInsurancePlan
-        fields = ('elimination_period_in_months',
+        fields = ('id',
+                  'elimination_period_in_months',
                   'duration',
                   'percentage_of_salary',
                   'max_benefit_monthly',
