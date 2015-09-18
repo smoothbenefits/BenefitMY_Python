@@ -91,6 +91,8 @@ benefitmyService.factory('StdService',
             domainModel.elimination_period_in_days = companyPlanViewModel.eliminationPeriodInDays;
             domainModel.paid_by = companyPlanViewModel.paidBy;
             domainModel.employer_contribution_percentage = companyPlanViewModel.employerContributionPercentage;
+            domainModel.user_amount_required = companyPlanViewModel.allowUserSelectAmount;
+            domainModel.benefit_amount_step = companyPlanViewModel.stepValue;
 
             domainModel.std_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
 

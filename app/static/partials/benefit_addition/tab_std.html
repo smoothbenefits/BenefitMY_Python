@@ -107,8 +107,47 @@
               name="rate"
               ng-model="newPlan.rate" />
             <span class="input-group-addon"> of $10 Benefit</span>
+            <div class="form-error-relative" ng-show="form.rate.$invalid">Rate is invalid</div>
           </div>
-          <div class="form-error-relative" ng-show="form.rate.$invalid">Rate is invalid</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="radio-label">
+            <label class="form-label">Can employee select benefit amount?</label>
+          </div>
+          <div class="radio-container">
+            <div class="col-md-12 col">
+              <input type="radio" name="allow-user-select-amount" ng-model="allowUserSelectAmount" value="true">
+              <b>Yes</b>, employee can select benefit amount if the amount selected is not greater than the max allowed benefit amount
+            </div>
+            <div class="col-md-12 col" style="padding-top: 10px;">
+              <input type="radio" name="allow-user-select-amount" ng-model="allowUserSelectAmount" value="false">
+              <b>No</b>, benefit amount will be calculated based on percentage of employee's salary
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 10px;" ng-show="allowUserSelectAmount">
+        <div class="col-md-8">
+          <div class="form-label">Step value for employee select benefit amount (per month)</div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$ </span>
+            <input
+            min="0"
+            type="number"
+            name="step-value"
+            ng-model="newPlan.stepValue" />
+          </div>
+          <div class="form-error-relative" ng-show="form.step-value.$invalid">Step value is invalid</div>
+        </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="submit-box" style="max-width: 200px;">
+            <a ng-click="saveNewPlan()" class="btn green" ng-disabled="!buttonEnabled()">Add</a>
+          </div>
         </div>
       </div>
     </div>
