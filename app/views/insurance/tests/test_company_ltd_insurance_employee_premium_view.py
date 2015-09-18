@@ -6,7 +6,8 @@ from app.views.tests.view_test_base import ViewTestBase
 class CompanyLtdInsuranceEmployeePremiumViewTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['23_auth_user', '24_person', 'ltd_insurance',
-    '27_compensation_update_reason', '50_employee_compensation', '49_period_definition', '10_company']
+    '27_compensation_update_reason', '50_employee_compensation', '49_period_definition', '10_company',
+    'employee_profile']
 
     def test_get_company_ltd_insurance_employee_premium_view_success(self):
         response = self.client.get(reverse('user_company_ltd_insurance_premium_api',

@@ -15,6 +15,7 @@ class CompensationService(object):
         profiles = EmployeeProfile.objects.filter(person_id=self.person_id)
         if profiles and len(profiles) > 0:
             return profiles[0].employment_type == FULL_TIME
+        return False
 
     def _get_compensation_records_order_by_effective_date(self, ascending=True):
         order = 'effective_date'
