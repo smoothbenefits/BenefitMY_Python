@@ -71,6 +71,8 @@ benefitmyService.factory('LtdService',
             domainModel.elimination_period_in_months = companyPlanViewModel.eliminationPeriodInMonths;
             domainModel.company = companyPlanViewModel.company;
             domainModel.employer_contribution_percentage = companyPlanViewModel.employerContributionPercentage;
+            domainModel.user_amount_required = companyPlanViewModel.allowUserSelectAmount;
+            domainModel.benefit_amount_step = companyPlanViewModel.stepValue;
 
             domainModel.ltd_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
 
