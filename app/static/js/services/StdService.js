@@ -28,6 +28,8 @@ benefitmyService.factory('StdService',
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
             viewModel.employerContributionPercentage = companyPlanDomainModel.employer_contribution_percentage;
+            viewModel.stepValue = companyPlanDomainModel.benefit_amount_step;
+            viewModel.allowUserSelectAmount = companyPlanDomainModel.user_amount_required;
 
             return viewModel;
         };

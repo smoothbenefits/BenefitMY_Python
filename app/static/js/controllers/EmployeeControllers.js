@@ -2144,6 +2144,28 @@ var ltdBenefitsSignup = employeeControllers.controller(
           return _.isNumber(premium);
         };
 
+        $scope.showSelectAmount = function() {
+
+          return $scope.companyLtdPlan &&
+            $scope.companyLtdPlan.allowUserSelectAmount &&
+            $scope.enrollBenefits;
+        };
+
+        $scope.calculatePremium = function(amount) {
+
+          LtdService.getEmployeePremiumForUserCompanyLtdPlan(
+            $scope.employeeId, $scope.companyLtdPlan, amount)
+          .then(function(premiumInfo) {
+            $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium;
+            $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
+            $scope.companyLtdPlan.effectiveBenefitAmount = premiumInfo.effectiveBenefitAmount;
+          }, function(error){
+            alert("Could not get premium info. Error is: " + error);
+            $scope.companyLtdPlan.totalPremium = 0;
+            $scope.companyLtdPlan.employeePremium = 0;
+          });
+        }
+
         $scope.companyPromise.then(function(company){
             $scope.company = company;
             LtdService.getLtdPlansForCompany(company.id).then(function(ltdPlans) {
@@ -2157,17 +2179,11 @@ var ltdBenefitsSignup = employeeControllers.controller(
                 return {};
             }).then(function(ltdPlan) {
 
-                LtdService.getEmployeePremiumForUserCompanyLtdPlan(
-                    $scope.employeeId,
-                    ltdPlan)
-                .then(function(premiumInfo) {
-                    $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium;
-                    $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
-                }, function(error){
-                  alert("Could not get premium info. Error is: " + error);
-                  $scope.companyLtdPlan.totalPremium = 0;
-                  $scope.companyLtdPlan.employeePremium = 0;
-                });
+              if (!$scope.companyLtdPlan) {
+                $scope.companyLtdPlan = {};
+              }
+
+              $scope.calculatePremium(null);
             });
 
         })
@@ -2178,8 +2194,8 @@ var ltdBenefitsSignup = employeeControllers.controller(
             $scope.companyLtdPlan.companyPlanId = null;
           }
 
-          LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan,
-            $scope.company.pay_period_definition, $scope.updateReason)
+          LtdService.enrollLtdPlanForUser(employeeId, $scope.selectedAmount,
+            $scope.companyLtdPlan, $scope.company.pay_period_definition, $scope.updateReason)
           .then(function() {
               var modalInstance = $scope.showSaveSuccessModal();
               modalInstance.result.then(function(){
