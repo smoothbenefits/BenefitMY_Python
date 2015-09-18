@@ -4,14 +4,23 @@
   <div class="panel-body">
     <form name="myForm" confirm-unsaved-on-exit>
       <div class="row">
-        <div class="label label-info col-md-4" ng-show="hasPremium(companyLtdPlan.employeePremium)">
+        <div class="label label-info col-md-8 pull-left"
+          ng-show="hasPremium(companyLtdPlan.employeePremium) && !showSelectAmount()">
           <span>Your premium per pay period is <b>${{companyLtdPlan.employeePremium.toFixed(2)}}</b></span>
         </div>
-        <div class="label label-warning col-md-10" ng-hide="hasPremium(companyLtdPlan.employeePremium)">
-          <span>Your premium per pay period is <b>NOT AVAILABLE</b> because your salary information is missing.</span>
+        <div class="label label-info col-md-8 pull-left"
+          ng-show="hasPremium(companyLtdPlan.employeePremium) && showSelectAmount()">
+            Your premium per pay period varies based on the benefit amount you select. </br>
+            Type in a desired benefit amount to see your premium per pay period
+        </div>
+        <div class="label label-warning col-md-8 pull-left"
+          ng-hide="hasPremium(companyLtdPlan.employeePremium)">
+          <span>
+            Your premium per pay period is <b>NOT AVAILABLE</b> because your salary information is missing.
+          </span>
         </div>
       </div>
-      <div class="row">
+      <div class="row" style="margin-top: 15px;">
         <div class="col-md-8">
           <div ng-show="!enrollBenefits" style="padding-bottom: 10px;">
             <span class="label label-danger">You have chosen to waive the LTD benefits.</span>
@@ -22,6 +31,44 @@
             name="ltd_enroll"> Yes, I want to enroll the LTD benefits provided by my employer.
           </div>
         </div>
+      </div>
+      <div class="row" style="margin-top: 10px;" ng-show="showSelectAmount()">
+        <div class="col-md-4">
+          <div class="form-label">How much do you want to select for benefit amount?</div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$ </span>
+            <input
+              type="number"
+              min="0"
+              step="companyLtdPlan.stepValue"
+              name="select-benefit-amount"
+              required="companyLtdPlan.allowUserSelectAmount"
+              ng-model="selectedAmount" />
+          </div>
+          <div class="form-error-relative" ng-show="form.select-benefit-amount.$dirty && form.select-benefit-amount.$invalid">
+            <span ng-show="form.select-benefit-amount.$error.required">Benefit amount field is required</span>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 10px;" ng-show="showSelectAmount()">
+        <button class="btn gray pull-left" ng-click="calculatePremium(selectedAmount)" style="max-width: 80px;">Calculate</button>
+      </div>
+      <div class="row" style="margin-top: 20px;" ng-show="showSelectAmount()">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th><span>Effective Benefit Amount (per Month)*</span></th>
+              <th><span>Premium Per Period</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>$ {{companyLtdPlan.effectiveBenefitAmount}}</td>
+              <td>$ {{companyLtdPlan.employeePremium}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p><b>Notes</b>: effective benefit amount may be bounded by benefit plan requirements.</p>
       </div>
     </form>
   </div>

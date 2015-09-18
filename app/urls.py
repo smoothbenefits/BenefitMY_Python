@@ -315,7 +315,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         CompanyLtdInsurancePlanView.as_view(), name='company_ltd_insurance_plan_api'),
 
-    url(r'^%s/user/(?P<user_id>\w+)/ltd_insurance/(?P<pk>\w+)/premium/?$' % PREFIX,
+    url(r'^%s/user/(?P<user_id>\w+)/amount/(?P<amount>\d+)/ltd_insurance/(?P<pk>\w+)/premium/?$' % PREFIX,
         CompanyLtdInsuranceEmployeePremiumView.as_view(), name='user_company_ltd_insurance_premium_api'),
 
     # HRA api

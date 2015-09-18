@@ -3,7 +3,7 @@ class DisabilityInsuranceService(object):
     def __init__(self, disability_plan):
         self._disability_plan = disability_plan
 
-    def get_total_premium(self, max_benefit, year_factor, annual_salary):
+    def get_effective_benefit_amount(self, max_benefit, selected_amount, year_factor, annual_salary):
         if not annual_salary:
             annual_salary = 0
         if not max_benefit:
@@ -12,8 +12,10 @@ class DisabilityInsuranceService(object):
             raise ValueError('argument year_factor is invalid')
         unit_salary = annual_salary / year_factor
         benefit_from_salary = unit_salary * self._disability_plan.percentage_of_salary / 100
-        max_benefit_amount = min(max_benefit, benefit_from_salary)
-        total_premium = float(max_benefit_amount * self._disability_plan.rate / 10)
+        return min(max_benefit, benefit_from_salary, selected_amount)
+
+    def get_total_premium(self, effective_benefit_amount):
+        total_premium = float(effective_benefit_amount * self._disability_plan.rate / 10)
         return total_premium
 
 
