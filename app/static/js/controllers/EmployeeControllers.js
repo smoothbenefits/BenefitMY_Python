@@ -1764,6 +1764,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
    'SupplementalLifeInsuranceService',
    'SupplementalLifeInsuranceConditionService',
    'PersonService',
+   'CompanyFeatureService',
     function supplementalLifeBenefitsSignup(
       $scope,
       $state,
@@ -1773,7 +1774,8 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
       $modal,
       SupplementalLifeInsuranceService,
       SupplementalLifeInsuranceConditionService,
-      PersonService){
+      PersonService,
+      CompanyFeatureService){
 
         // Inherite scope from base
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1840,6 +1842,10 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
 
                 $scope.supplementalLifeInsurancePlan.spouseUseTobacco = $scope.supplementalLifeInsurancePlan.spousePlanCondition != null
                     && $scope.supplementalLifeInsurancePlan.spousePlanCondition.name === 'Tobacco';
+            });
+
+            CompanyFeatureService.getEnabledCompanyFeatureByCompany(company.id).then(function(features) {
+                $scope.enabledFeatures = features;
             });
           });
         });
@@ -1943,11 +1949,19 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.getPremiumForDisplay = function(premium){
-          return premium.toFixed(2);
+            if (premium == null) {
+                return null;
+            }
+
+            return premium.toFixed(2);
         };
 
         var getPremiumForStore = function(premium){
-          return premium.toFixed(10);
+            if (premium == null) {
+                return null;
+            }
+
+            return premium.toFixed(10);
         };
 
         //TODO: We need to move the calculation below to service level, Not controller level
@@ -2010,6 +2024,11 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             $scope.supplementalLifeInsurancePlan.selfPremiumPerMonth = getPremiumForStore($scope.computeSelfPremium());
             $scope.supplementalLifeInsurancePlan.spousePremiumPerMonth = getPremiumForStore($scope.computeSpousePremium());
             $scope.supplementalLifeInsurancePlan.childPremiumPerMonth = getPremiumForStore($scope.computeChildPremium());
+
+            // Persists the premium for AD&D
+            $scope.supplementalLifeInsurancePlan.selfAdadPremiumPerMonth = getPremiumForStore($scope.supplementalLifeInsurancePlan.computeSelfAdadPremium());
+            $scope.supplementalLifeInsurancePlan.spouseAdadPremiumPerMonth = getPremiumForStore($scope.supplementalLifeInsurancePlan.computeSpouseAdadPremium());
+            $scope.supplementalLifeInsurancePlan.childAdadPremiumPerMonth = getPremiumForStore($scope.supplementalLifeInsurancePlan.computeChildAdadPremium());
           }
 
           SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
