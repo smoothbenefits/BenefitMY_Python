@@ -9,7 +9,7 @@ benefitmyService.factory('LtdService',
               LtdRepository,
               EmployeeProfileService,
               AgeRangeService){
-        var ageRangeService = AgeRangeService(25, 70, 5, 200);
+        var ageRangeService = AgeRangeService(20, 85, 5, 200);
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
 
