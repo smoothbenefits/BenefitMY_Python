@@ -68,11 +68,13 @@ benefitmyService.factory('StdService',
         var mapPlanAgeBasedRatesToDomainModal = function(ageBasedRateTable){
             domainTable = [];
             _.each(ageBasedRateTable, function(row){
-                domainTable.push({
-                    age_min: row.ageMin,
-                    age_max: row.ageMax,
-                    rate: row.rate
-                })
+                if(row && row.rate){
+                    domainTable.push({
+                        age_min: row.ageMin,
+                        age_max: row.ageMax,
+                        rate: row.rate
+                    });
+                }
             });
             return domainTable;
         };
