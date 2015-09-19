@@ -12,6 +12,7 @@ class CompanyLtdInsuranceEmployeePremiumViewTestCase(TestCase, ViewTestBase):
     def test_get_company_ltd_insurance_employee_premium_view_success(self):
         response = self.client.get(reverse('user_company_ltd_insurance_premium_api',
                                            kwargs={'pk': self.normalize_key(2),
+                                                   'amount': 100000,
                                                    'user_id': self.normalize_key(3)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
@@ -28,6 +29,7 @@ class CompanyLtdInsuranceEmployeePremiumViewTestCase(TestCase, ViewTestBase):
 
         response = self.client.get(reverse('user_company_ltd_insurance_premium_api',
                                            kwargs={'pk': self.normalize_key(1),
+                                                   'amount': 0,
                                                    'user_id': self.normalize_key(1)}))
 
         self.assertIsNotNone(response)
@@ -41,6 +43,7 @@ class CompanyLtdInsuranceEmployeePremiumViewTestCase(TestCase, ViewTestBase):
     def test_get_company_ltd_insurance_employee_premium_view_no_ltd_plan(self):
         response = self.client.get(reverse('user_company_ltd_insurance_premium_api',
                                    kwargs={'pk': self.normalize_key(60),
+                                           'amount': 0,
                                            'user_id': self.normalize_key(1)}))
 
         self.assertIsNotNone(response)
