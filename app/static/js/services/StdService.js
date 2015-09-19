@@ -35,6 +35,8 @@ benefitmyService.factory('StdService',
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
             viewModel.employerContributionPercentage = companyPlanDomainModel.employer_contribution_percentage;
+            viewModel.stepValue = companyPlanDomainModel.benefit_amount_step;
+            viewModel.allowUserSelectAmount = companyPlanDomainModel.user_amount_required;
 
             return viewModel;
         };
@@ -91,6 +93,8 @@ benefitmyService.factory('StdService',
             domainModel.elimination_period_in_days = companyPlanViewModel.eliminationPeriodInDays;
             domainModel.paid_by = companyPlanViewModel.paidBy;
             domainModel.employer_contribution_percentage = companyPlanViewModel.employerContributionPercentage;
+            domainModel.user_amount_required = companyPlanViewModel.allowUserSelectAmount;
+            domainModel.benefit_amount_step = companyPlanViewModel.stepValue;
 
             domainModel.std_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
 
@@ -107,7 +111,8 @@ benefitmyService.factory('StdService',
             domainModel.user = userCompanyPlanViewModel.planOwner;
 
             if (userCompanyPlanViewModel.totalPremium) {
-              domainModel.total_premium_per_month = userCompanyPlanViewModel.totalPremium.toFixed(10);
+              var totalPremium = parseFloat(userCompanyPlanViewModel.totalPremium);
+              domainModel.total_premium_per_month = totalPremium.toFixed(10);
             } else {
               domainModel.total_premium_per_month = null;
             }
@@ -158,15 +163,25 @@ benefitmyService.factory('StdService',
 
             getStdPlansForCompany: getStdPlansForCompany,
 
-            getTotalPremiumForUserCompanyStdPlan: function(userId, stdPlan) {
+            getTotalPremiumForUserCompanyStdPlan: function(userId, stdPlan, amount) {
                 var deferred = $q.defer();
+
+                if (stdPlan.allowUserSelectAmount) {
+                  amount = parseInt(Math.round(amount / stdPlan.stepValue) * stdPlan.stepValue);
+                } else {
+                  amount = null;
+                }
 
                 if (!stdPlan) {
                     deferred.resolve(0);
                 } else {
-                    StdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:stdPlan.companyPlanId})
+                    StdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:stdPlan.companyPlanId, amount: amount})
                     .$promise.then(function(premiumInfo) {
-                        deferred.resolve({totalPremium:premiumInfo.total, employeePremiumPerPayPeriod: premiumInfo.employee});
+                        deferred.resolve({
+                          totalPremium:premiumInfo.total.toFixed(2),
+                          employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
+                          effectiveBenefitAmount: premiumInfo.amount
+                        });
                     }, function(error) {
                         deferred.reject(error);
                     });
@@ -244,6 +259,7 @@ benefitmyService.factory('StdService',
             },
 
             enrollStdPlanForUser: function(userId,
+                                           userSelectAmount,
                                            companyStdPlanToEnroll,
                                            payPeriod,
                                            updateReason) {
@@ -258,6 +274,7 @@ benefitmyService.factory('StdService',
 
                 var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll, payPeriod);
                 planDomainModel.company_std_insurance = planDomainModel.company_std_insurance.id;
+                planDomainModel.user_select_amount = userSelectAmount;
 
                 StdRepository.CompanyUserPlanByUser.query({userId:userId})
                 .$promise.then(function(userPlans) {

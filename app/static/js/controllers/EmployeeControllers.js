@@ -2077,34 +2077,48 @@ var stdBenefitsSignup = employeeControllers.controller(
 
         $scope.enrollBenefits = true;
 
+        $scope.showSelectAmount = function() {
+          return $scope.companyStdPlan &&
+            $scope.companyStdPlan.allowUserSelectAmount &&
+            $scope.enrollBenefits;
+        };
+
+        $scope.calculatePremium = function(amount) {
+          StdService.getTotalPremiumForUserCompanyStdPlan(
+            $scope.employeeId, $scope.companyStdPlan, amount)
+          .then(function(premiumInfo) {
+            $scope.companyStdPlan.totalPremium = premiumInfo.totalPremium;
+            $scope.companyStdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
+            $scope.companyStdPlan.effectiveBenefitAmount = premiumInfo.effectiveBenefitAmount;
+          }, function(error){
+            alert("Could not get premium info. Error is: " + error);
+            $scope.companyStdPlan.totalPremium = 0;
+            $scope.companyStdPlan.employeePremium = 0;
+          });
+        };
+
         $scope.hasPremium = function(premium) {
-          return _.isNumber(premium);
+          var premiumNumber = parseFloat(premium);
+          return _.isNumber(premiumNumber);
         };
 
         $scope.companyPromise.then(function(company){
-            $scope.company = company;
-            StdService.getStdPlansForCompany(company.id).then(function(stdPlans) {
+          $scope.company = company;
+          StdService.getStdPlansForCompany(company.id).then(function(stdPlans) {
+            // For now, similar to basic life, simplify the problem space by
+            // taking the first available plan for the company.
+            if (stdPlans.length > 0) {
+                $scope.companyStdPlan = stdPlans[0];
+                return $scope.companyStdPlan;
+            }
+            return {};
+          }).then(function(stdPlan) {
+            if (!$scope.companyStdPlan) {
+              $scope.companyStdPlan = {};
+            }
 
-                // For now, similar to basic life, simplify the problem space by
-                // taking the first available plan for the company.
-                if (stdPlans.length > 0) {
-                    $scope.companyStdPlan = stdPlans[0];
-                    return $scope.companyStdPlan;
-                }
-                return {};
-            }).then(function(stdPlan) {
-                StdService.getTotalPremiumForUserCompanyStdPlan(
-                    $scope.employeeId,
-                    stdPlan)
-                .then(function(premiumInfo) {
-                    $scope.companyStdPlan.totalPremium = premiumInfo.totalPremium;
-                    $scope.companyStdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
-                }, function(error){
-                    alert("Could not get premium info. Error is: " + error);
-                    $scope.companyStdPlan.totalPremium = 0;
-                    $scope.companyStdPlan.employeePremium = 0;
-                });
-            });
+            $scope.calculatePremium(null);
+          });
         });
 
         $scope.save = function() {
@@ -2115,6 +2129,7 @@ var stdBenefitsSignup = employeeControllers.controller(
           }
 
           StdService.enrollStdPlanForUser(employeeId,
+                                          $scope.selectedAmount,
                                           $scope.companyStdPlan,
                                           $scope.company.pay_period_definition,
                                           $scope.updateReason)
@@ -2160,8 +2175,31 @@ var ltdBenefitsSignup = employeeControllers.controller(
         $scope.enrollBenefits = true;
 
         $scope.hasPremium = function(premium) {
-          return _.isNumber(premium);
+          var premiumNumber = parseFloat(premium);
+          return _.isNumber(premiumNumber);
         };
+
+        $scope.showSelectAmount = function() {
+
+          return $scope.companyLtdPlan &&
+            $scope.companyLtdPlan.allowUserSelectAmount &&
+            $scope.enrollBenefits;
+        };
+
+        $scope.calculatePremium = function(amount) {
+
+          LtdService.getEmployeePremiumForUserCompanyLtdPlan(
+            $scope.employeeId, $scope.companyLtdPlan, amount)
+          .then(function(premiumInfo) {
+            $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium;
+            $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
+            $scope.companyLtdPlan.effectiveBenefitAmount = premiumInfo.effectiveBenefitAmount;
+          }, function(error){
+            alert("Could not get premium info. Error is: " + error);
+            $scope.companyLtdPlan.totalPremium = 0;
+            $scope.companyLtdPlan.employeePremium = 0;
+          });
+        }
 
         $scope.companyPromise.then(function(company){
             $scope.company = company;
@@ -2176,17 +2214,11 @@ var ltdBenefitsSignup = employeeControllers.controller(
                 return {};
             }).then(function(ltdPlan) {
 
-                LtdService.getEmployeePremiumForUserCompanyLtdPlan(
-                    $scope.employeeId,
-                    ltdPlan)
-                .then(function(premiumInfo) {
-                    $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium;
-                    $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
-                }, function(error){
-                  alert("Could not get premium info. Error is: " + error);
-                  $scope.companyLtdPlan.totalPremium = 0;
-                  $scope.companyLtdPlan.employeePremium = 0;
-                });
+              if (!$scope.companyLtdPlan) {
+                $scope.companyLtdPlan = {};
+              }
+
+              $scope.calculatePremium(null);
             });
 
         })
@@ -2197,8 +2229,8 @@ var ltdBenefitsSignup = employeeControllers.controller(
             $scope.companyLtdPlan.companyPlanId = null;
           }
 
-          LtdService.enrollLtdPlanForUser(employeeId, $scope.companyLtdPlan,
-            $scope.company.pay_period_definition, $scope.updateReason)
+          LtdService.enrollLtdPlanForUser(employeeId, $scope.selectedAmount,
+            $scope.companyLtdPlan, $scope.company.pay_period_definition, $scope.updateReason)
           .then(function() {
               var modalInstance = $scope.showSaveSuccessModal();
               modalInstance.result.then(function(){

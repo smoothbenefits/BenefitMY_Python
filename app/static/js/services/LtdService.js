@@ -35,6 +35,8 @@ benefitmyService.factory('LtdService',
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
             viewModel.employerContributionPercentage = companyPlanDomainModel.employer_contribution_percentage;
+            viewModel.stepValue = companyPlanDomainModel.benefit_amount_step;
+            viewModel.allowUserSelectAmount = companyPlanDomainModel.user_amount_required;
 
             return viewModel;
         };
@@ -90,6 +92,8 @@ benefitmyService.factory('LtdService',
             domainModel.elimination_period_in_months = companyPlanViewModel.eliminationPeriodInMonths;
             domainModel.company = companyPlanViewModel.company;
             domainModel.employer_contribution_percentage = companyPlanViewModel.employerContributionPercentage;
+            domainModel.user_amount_required = companyPlanViewModel.allowUserSelectAmount;
+            domainModel.benefit_amount_step = companyPlanViewModel.stepValue;
 
             domainModel.ltd_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
 
@@ -106,7 +110,8 @@ benefitmyService.factory('LtdService',
             domainModel.user = userCompanyPlanViewModel.planOwner;
 
             if (userCompanyPlanViewModel.totalPremium) {
-              domainModel.total_premium_per_month = userCompanyPlanViewModel.totalPremium.toFixed(10);
+              var totalPremium = parseFloat(userCompanyPlanViewModel.totalPremium);
+              domainModel.total_premium_per_month = totalPremium.toFixed(10);
             } else {
               domainModel.total_premium_per_month = null;
             }
@@ -156,16 +161,25 @@ benefitmyService.factory('LtdService',
 
             getLtdPlansForCompany: getLtdPlansForCompany,
 
-            getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan) {
+            getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan, amount) {
                 var deferred = $q.defer();
+
+                if (ltdPlan.allowUserSelectAmount) {
+                  amount = parseInt(Math.round(amount / ltdPlan.stepValue) * ltdPlan.stepValue);
+                } else {
+                  amount = null;
+                }
 
                 if (!ltdPlan) {
                     deferred.resolve(0);
                 } else {
-                    LtdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:ltdPlan.companyPlanId})
+                    LtdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:ltdPlan.companyPlanId, amount: amount})
                     .$promise.then(function(premiumInfo) {
-                        deferred.resolve({totalPremium:premiumInfo.total,
-                            employeePremiumPerPayPeriod: premiumInfo.employee});
+                        deferred.resolve({
+                          totalPremium:premiumInfo.total.toFixed(2),
+                          employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
+                          effectiveBenefitAmount: premiumInfo.amount
+                        });
                     }, function(error) {
                         deferred.reject(error);
                     });
@@ -243,6 +257,7 @@ benefitmyService.factory('LtdService',
             },
 
             enrollLtdPlanForUser: function(userId,
+                                           userSelectAmount,
                                            companyLtdPlanToEnroll,
                                            payPeriod,
                                            updateReason) {
@@ -257,6 +272,7 @@ benefitmyService.factory('LtdService',
 
                 var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyLtdPlanToEnroll, payPeriod);
                 planDomainModel.company_ltd_insurance = planDomainModel.company_ltd_insurance.id;
+                planDomainModel.user_select_amount = userSelectAmount;
 
                 LtdRepository.CompanyUserPlanByUser.query({userId:userId})
                 .$promise.then(function(userPlans) {
