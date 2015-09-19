@@ -59,9 +59,9 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 viewModel.selfElectedAmount = personCompanyPlanDomainModel.self_elected_amount;
                 viewModel.spouseElectedAmount = personCompanyPlanDomainModel.spouse_elected_amount;
                 viewModel.childElectedAmount = personCompanyPlanDomainModel.child_elected_amount;
-                viewModel.selfPremiumPerMonth = (personCompanyPlanDomainModel.self_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
-                viewModel.spousePremiumPerMonth = (personCompanyPlanDomainModel.spouse_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
-                viewModel.childPremiumPerMonth = (personCompanyPlanDomainModel.child_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
+                viewModel.selfPremiumPerMonth = parseFloat(personCompanyPlanDomainModel.self_premium_per_month).toFixed(2);
+                viewModel.spousePremiumPerMonth = parseFloat(personCompanyPlanDomainModel.spouse_premium_per_month).toFixed(2);
+                viewModel.childPremiumPerMonth = parseFloat(personCompanyPlanDomainModel.child_premium_per_month).toFixed(2);
                 viewModel.selfAdadPremiumPerMonth = personCompanyPlanDomainModel.self_adad_premium_per_month != null 
                                                     ? personCompanyPlanDomainModel.self_adad_premium_per_month
                                                     : null;
