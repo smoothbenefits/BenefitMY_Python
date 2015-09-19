@@ -114,17 +114,17 @@
           </div>
           <div class="radio-container">
             <div class="col-md-12 col">
-              <input type="radio" name="allow-user-select-amount" ng-model="allowUserSelectAmount" value="true">
+              <input type="radio" name="allow-user-select-amount" ng-model="allowUserSelectAmount" ng-value="TRUE">
               <b>Yes</b>, employee can select benefit amount if the amount selected is not greater than the max allowed benefit amount
             </div>
             <div class="col-md-12 col" style="padding-top: 10px;">
-              <input type="radio" name="allow-user-select-amount" ng-model="allowUserSelectAmount" value="false">
+              <input type="radio" name="allow-user-select-amount" ng-model="allowUserSelectAmount" ng-value="FALSE">
               <b>No</b>, benefit amount will be calculated based on percentage of employee's salary
             </div>
           </div>
         </div>
       </div>
-      <div class="row" style="margin-top: 10px;" ng-show="allowUserSelectAmount === 'true'">
+      <div class="row" style="margin-top: 10px;" ng-show="allowUserSelectAmount">
         <div class="col-md-8">
           <div class="form-label">Step value for employee select benefit amount (per week)</div>
           <div class="textbox input-group">
