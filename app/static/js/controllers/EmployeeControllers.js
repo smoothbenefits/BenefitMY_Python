@@ -2064,11 +2064,6 @@ var stdBenefitsSignup = employeeControllers.controller(
             $scope.enrollBenefits;
         };
 
-        $scope.roundSelectedAmount = function(amount) {
-          var stepValue = $scope.companyStdPlan.stepValue;
-          $scope.selectedAmount = Math.round($scope.selectedAmount / stepValue) * stepValue;
-        };
-
         $scope.calculatePremium = function(amount) {
           StdService.getTotalPremiumForUserCompanyStdPlan(
             $scope.employeeId, $scope.companyStdPlan, amount)
@@ -2084,7 +2079,8 @@ var stdBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.hasPremium = function(premium) {
-          return _.isNumber(premium);
+          var premiumNumber = parseFloat(premium);
+          return _.isNumber(premiumNumber);
         };
 
         $scope.companyPromise.then(function(company){
@@ -2159,13 +2155,9 @@ var ltdBenefitsSignup = employeeControllers.controller(
 
         $scope.enrollBenefits = true;
 
-        $scope.roundSelectedAmount = function(amount) {
-          var stepValue = $scope.companyLtdPlan.stepValue;
-          $scope.selectedAmount = Math.round($scope.selectedAmount / stepValue) * stepValue;
-        };
-
         $scope.hasPremium = function(premium) {
-          return _.isNumber(premium);
+          var premiumNumber = parseFloat(premium);
+          return _.isNumber(premiumNumber);
         };
 
         $scope.showSelectAmount = function() {

@@ -88,7 +88,8 @@ benefitmyService.factory('LtdService',
             domainModel.user = userCompanyPlanViewModel.planOwner;
 
             if (userCompanyPlanViewModel.totalPremium) {
-              domainModel.total_premium_per_month = userCompanyPlanViewModel.totalPremium.toFixed(10);
+              var totalPremium = parseFloat(userCompanyPlanViewModel.totalPremium);
+              domainModel.total_premium_per_month = totalPremium.toFixed(10);
             } else {
               domainModel.total_premium_per_month = null;
             }

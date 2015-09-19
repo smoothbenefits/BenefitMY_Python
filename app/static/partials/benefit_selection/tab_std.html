@@ -42,7 +42,7 @@
               min="0"
               step="companyStdPlan.stepValue"
               name="select-benefit-amount"
-              ng-blur="roundSelectedAmount(selectedAmount)"
+              ng-blur="calculatePremium(selectedAmount)"
               required="companyStdPlan.allowUserSelectAmount"
               ng-model="selectedAmount" />
           </div>
@@ -50,9 +50,6 @@
             <span ng-show="form.select-benefit-amount.$error.required">Benefit amount field is required</span>
           </div>
         </div>
-      </div>
-      <div class="row" style="margin-top: 10px;" ng-show="showSelectAmount()">
-        <button class="btn gray pull-left" ng-click="calculatePremium(selectedAmount)" style="max-width: 80px;">Calculate</button>
       </div>
       <div class="row" style="margin-top: 20px;" ng-show="showSelectAmount()">
         <table class="table table-striped">
