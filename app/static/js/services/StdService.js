@@ -20,6 +20,19 @@ benefitmyService.factory('StdService',
             return viewModel;
         };
 
+        var mapCompanyPlanAgeBasedTableDomainToViewModel = function(ageBasedRates){
+            ageBasedRatesTable = [];
+            _.each(ageBasedRates, function(ageBasedRateItem){
+                ageBasedRatesTable.push({
+                    ageMin: ageBasedRateItem.age_min,
+                    ageMax: ageBasedRateItem.age_max,
+                    rate: Number(ageBasedRateItem.rate).toFixed(4),
+                    getAgeRangeForDisplay: function(){return ageRangeService.getAgeRangeForDisplay(this);}
+                });
+            });
+            return ageBasedRatesTable;
+        };
+
         var mapCompanyPlanDomainToViewModel = function(companyPlanDomainModel) {
             var viewModel = companyPlanDomainModel.std_insurance_plan ?
                 mapPlanDomainToViewModel(companyPlanDomainModel.std_insurance_plan) :
@@ -37,6 +50,7 @@ benefitmyService.factory('StdService',
             viewModel.employerContributionPercentage = companyPlanDomainModel.employer_contribution_percentage;
             viewModel.stepValue = companyPlanDomainModel.benefit_amount_step;
             viewModel.allowUserSelectAmount = companyPlanDomainModel.user_amount_required;
+            viewModel.ageBasedRates = mapCompanyPlanAgeBasedTableDomainToViewModel(companyPlanDomainModel.age_based_rates);
 
             return viewModel;
         };
