@@ -80,21 +80,6 @@
       </div>
       <div class="row">
         <div class="col-md-8">
-          <div class="form-label">Rate</div>
-          <div class="textbox input-group">
-            <span class="input-group-addon">$</span>
-            <input
-            min="0"
-            type="number"
-            name="rate"
-            ng-model="newPlan.rate" />
-            <span class="input-group-addon"> of $10 Benefit</span>
-          </div>
-          <div class="form-error-relative" ng-show="form.benefit_duration.$invalid">Rate is invalid</div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-8">
           <div class="form-label">Elimination Period</div>
           <div class="textbox input-group">
             <input
@@ -107,12 +92,61 @@
           <div class="form-error-relative" ng-show="form.elimination-period.$invalid">Elimination period is invalid</div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-sm-6">
-          <div class="submit-box" style="max-width: 200px;">
-            <a ng-click="saveNewPlan()" class="btn green" ng-disabled="!buttonEnabled()">Add</a>
+      <div class="row" ng-show="!ageBased">
+        <div class="col-md-8">
+          <div class="form-label" style="float:left">Rate</div>
+          <div class="form-label" style="float:right">
+            <a href="javascript:void(0);" ng-click="toggleAgeBased()">Switch to age based rates</a>
           </div>
+          <div style="clear:both;"></div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$</span>
+            <input
+              min="0"
+              type="number"
+              name="rate"
+              ng-model="newPlan.rate" />
+            <span class="input-group-addon"> of $10 Benefit</span>
+          </div>
+          <div class="form-error-relative" ng-show="form.rate.$invalid">Rate is invalid</div>
         </div>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="row" ng-show="ageBased">
+        <div class="form-label" style="float:left">Age Based Rates</div>
+        <div class="form-label" style="float:right">
+          <a href="javascript:void(0);" ng-click="toggleAgeBased()">Switch to uniformed rate</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-striped benefit-table">
+            <thead>
+              <th><div>Age</div></th>
+              <th><div>Rate</div></th>
+            </thead>
+            <tbody>
+              <tr ng-repeat="row in newPlan.ageBasedRateTable">
+                <td>{{row.getAgeRangeForDisplay()}}</td>
+                <td>
+                  <div class="textbox input-group">
+                    <span class="input-group-addon">$</span>
+                    <input
+                      min="0"
+                      type="number"
+                      placeholder="Rate"
+                      ng-model="row.rate"/>
+                    <span class="input-group-addon"> of $10 Benefit</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 text-left">
+      <div class="submit-box" style="max-width: 200px;">
+        <a ng-click="saveNewPlan()" class="btn green" ng-disabled="!buttonEnabled()">Add</a>
       </div>
     </div>
   </form>
