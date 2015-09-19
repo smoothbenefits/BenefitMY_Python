@@ -130,7 +130,7 @@ benefitmyService.factory('StdService',
                 if (stdPlan.allowUserSelectAmount) {
                   amount = parseInt(Math.round(amount / stdPlan.stepValue) * stdPlan.stepValue);
                 } else {
-                  amount = Number.MAX_SAFE_INTEGER;
+                  amount = null;
                 }
 
                 if (!stdPlan) {
@@ -139,8 +139,8 @@ benefitmyService.factory('StdService',
                     StdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:stdPlan.companyPlanId, amount: amount})
                     .$promise.then(function(premiumInfo) {
                         deferred.resolve({
-                          totalPremium:premiumInfo.total,
-                          employeePremiumPerPayPeriod: premiumInfo.employee,
+                          totalPremium:premiumInfo.total.toFixed(2),
+                          employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
                           effectiveBenefitAmount: premiumInfo.amount
                         });
                     }, function(error) {
