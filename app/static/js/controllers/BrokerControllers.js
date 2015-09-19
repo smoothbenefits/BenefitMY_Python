@@ -218,6 +218,16 @@ var benefitsController = brokersControllers.controller(
         $scope.stdPlans = plans;
       });
 
+      $scope.openStdDetailsModal = function(stdPlan){
+        $scope.stdPlanRatesToDisplay = stdPlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_addition/modal_std_age_based_rates.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+      };
+
       $scope.deleteStdPlan = function(companyStdPlanToDelete) {
         StdService.deleteCompanyStdPlan(companyStdPlanToDelete.companyPlanId).then(function() {
           $state.reload();
@@ -227,6 +237,16 @@ var benefitsController = brokersControllers.controller(
       LtdService.getLtdPlansForCompany($stateParams.clientId).then(function(plans) {
         $scope.ltdPlans = plans;
       });
+
+      $scope.openLtdDetailsModal = function(ltdPlan){
+        $scope.ltdPlanRatesToDisplay = ltdPlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_addition/modal_ltd_age_based_rates.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+      };
 
       $scope.deleteLtdPlan = function(companyLtdPlanToDelete) {
         LtdService.deleteCompanyLtdPlan(companyLtdPlanToDelete.companyPlanId).then(function() {
