@@ -42,6 +42,7 @@
               min="0"
               step="companyStdPlan.stepValue"
               name="select-benefit-amount"
+              ng-blur="roundSelectedAmount(selectedAmount)"
               required="companyStdPlan.allowUserSelectAmount"
               ng-model="selectedAmount" />
           </div>

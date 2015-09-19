@@ -719,7 +719,9 @@ var brokerAddStdPlanController = brokersControllers.controller(
         $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
         $scope.paidByParties = StdService.paidByParties;
-        $scope.allowUserSelectAmount = "false";
+        $scope.TRUE = true;
+        $scope.FALSE = false;
+        $scope.allowUserSelectAmount = false;
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
@@ -738,7 +740,7 @@ var brokerAddStdPlanController = brokersControllers.controller(
         $scope.saveNewPlan = function() {
             UserService.getCurUserInfo().then(function(userInfo){
                 $scope.newPlan.planBroker = userInfo.user.id;
-                $scope.newPlan.allowUserSelectAmount = $scope.allowUserSelectAmount === "true";
+                $scope.newPlan.allowUserSelectAmount = $scope.allowUserSelectAmount;
 
                 StdService.addPlanForCompany($scope.newPlan, clientId).then(
                     function(response) {
@@ -773,7 +775,9 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
         $scope.paidByParties = LtdService.paidByParties;
-        $scope.allowUserSelectAmount = "false";
+        $scope.TRUE = true;
+        $scope.FALSE = false;
+        $scope.allowUserSelectAmount = false;
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
@@ -792,7 +796,7 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         $scope.saveNewPlan = function() {
             UserService.getCurUserInfo().then(function(userInfo){
                 $scope.newPlan.planBroker = userInfo.user.id;
-                $scope.newPlan.allowUserSelectAmount = $scope.allowUserSelectAmount === "true";
+                $scope.newPlan.allowUserSelectAmount = $scope.allowUserSelectAmount;
 
                 LtdService.addPlanForCompany($scope.newPlan, clientId).then(
                     function(response) {

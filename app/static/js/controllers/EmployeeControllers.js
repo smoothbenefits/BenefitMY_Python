@@ -2060,8 +2060,13 @@ var stdBenefitsSignup = employeeControllers.controller(
 
         $scope.showSelectAmount = function() {
           return $scope.companyStdPlan &&
-            $scope.companyStdPlan.allowUserSelectAmount === 'true' &&
+            $scope.companyStdPlan.allowUserSelectAmount &&
             $scope.enrollBenefits;
+        };
+
+        $scope.roundSelectedAmount = function(amount) {
+          var stepValue = $scope.companyStdPlan.stepValue;
+          $scope.selectedAmount = Math.round($scope.selectedAmount / stepValue) * stepValue;
         };
 
         $scope.calculatePremium = function(amount) {
@@ -2154,6 +2159,11 @@ var ltdBenefitsSignup = employeeControllers.controller(
 
         $scope.enrollBenefits = true;
 
+        $scope.roundSelectedAmount = function(amount) {
+          var stepValue = $scope.companyLtdPlan.stepValue;
+          $scope.selectedAmount = Math.round($scope.selectedAmount / stepValue) * stepValue;
+        };
+
         $scope.hasPremium = function(premium) {
           return _.isNumber(premium);
         };
@@ -2161,7 +2171,7 @@ var ltdBenefitsSignup = employeeControllers.controller(
         $scope.showSelectAmount = function() {
 
           return $scope.companyLtdPlan &&
-            $scope.companyLtdPlan.allowUserSelectAmount === 'true' &&
+            $scope.companyLtdPlan.allowUserSelectAmount &&
             $scope.enrollBenefits;
         };
 
