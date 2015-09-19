@@ -10,6 +10,10 @@ class DisabilityInsuranceService(object):
             max_benefit = 0
         if not year_factor:
             raise ValueError('argument year_factor is invalid')
+        if not selected_amount:
+            selected_amount = sys.maxint
+        else:
+            selected_amount = int(selected_amount)
         unit_salary = annual_salary / year_factor
         benefit_from_salary = unit_salary * self._disability_plan.percentage_of_salary / 100
         return min(max_benefit, benefit_from_salary, selected_amount)

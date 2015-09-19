@@ -166,7 +166,7 @@ benefitmyService.factory('LtdService',
                 if (ltdPlan.allowUserSelectAmount) {
                   amount = parseInt(Math.round(amount / ltdPlan.stepValue) * ltdPlan.stepValue);
                 } else {
-                  amount = Number.MAX_SAFE_INTEGER;
+                  amount = null;
                 }
 
                 if (!ltdPlan) {
@@ -175,8 +175,8 @@ benefitmyService.factory('LtdService',
                     LtdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:ltdPlan.companyPlanId, amount: amount})
                     .$promise.then(function(premiumInfo) {
                         deferred.resolve({
-                          totalPremium:premiumInfo.total,
-                          employeePremiumPerPayPeriod: premiumInfo.employee,
+                          totalPremium:premiumInfo.total.toFixed(2),
+                          employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
                           effectiveBenefitAmount: premiumInfo.amount
                         });
                     }, function(error) {

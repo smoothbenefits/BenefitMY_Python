@@ -39,7 +39,7 @@ class CompanyStdInsuranceEmployeePremiumView(APIView):
             return Response({'message':'No salary info'})
         disability_service = DisabilityInsuranceService(std_plan)
         effective_benefit_amount = disability_service.get_effective_benefit_amount(
-            std_plan.max_benefit_weekly, int(amount), 52, current_salary
+            std_plan.max_benefit_weekly, amount, 52, current_salary
         )
         total_premium = disability_service.get_total_premium(effective_benefit_amount)
         employee_premium = disability_service.get_employee_premium(total_premium)

@@ -2060,7 +2060,7 @@ var stdBenefitsSignup = employeeControllers.controller(
 
         $scope.showSelectAmount = function() {
           return $scope.companyStdPlan &&
-            $scope.companyStdPlan.allowUserSelectAmount &&
+            $scope.companyStdPlan.allowUserSelectAmount === 'true' &&
             $scope.enrollBenefits;
         };
 
@@ -2068,8 +2068,8 @@ var stdBenefitsSignup = employeeControllers.controller(
           StdService.getTotalPremiumForUserCompanyStdPlan(
             $scope.employeeId, $scope.companyStdPlan, amount)
           .then(function(premiumInfo) {
-            $scope.companyStdPlan.totalPremium = premiumInfo.totalPremium.toFixed(2);
-            $scope.companyStdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod.toFixed(2);
+            $scope.companyStdPlan.totalPremium = premiumInfo.totalPremium;
+            $scope.companyStdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
             $scope.companyStdPlan.effectiveBenefitAmount = premiumInfo.effectiveBenefitAmount;
           }, function(error){
             alert("Could not get premium info. Error is: " + error);
@@ -2161,7 +2161,7 @@ var ltdBenefitsSignup = employeeControllers.controller(
         $scope.showSelectAmount = function() {
 
           return $scope.companyLtdPlan &&
-            $scope.companyLtdPlan.allowUserSelectAmount &&
+            $scope.companyLtdPlan.allowUserSelectAmount === 'true' &&
             $scope.enrollBenefits;
         };
 
@@ -2170,8 +2170,8 @@ var ltdBenefitsSignup = employeeControllers.controller(
           LtdService.getEmployeePremiumForUserCompanyLtdPlan(
             $scope.employeeId, $scope.companyLtdPlan, amount)
           .then(function(premiumInfo) {
-            $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium.toFixed(2);
-            $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod.toFixed(2);
+            $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium;
+            $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
             $scope.companyLtdPlan.effectiveBenefitAmount = premiumInfo.effectiveBenefitAmount;
           }, function(error){
             alert("Could not get premium info. Error is: " + error);
