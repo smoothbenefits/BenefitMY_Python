@@ -1764,6 +1764,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
    'SupplementalLifeInsuranceService',
    'SupplementalLifeInsuranceConditionService',
    'PersonService',
+   'CompanyFeatureService',
     function supplementalLifeBenefitsSignup(
       $scope,
       $state,
@@ -1773,7 +1774,8 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
       $modal,
       SupplementalLifeInsuranceService,
       SupplementalLifeInsuranceConditionService,
-      PersonService){
+      PersonService,
+      CompanyFeatureService){
 
         // Inherite scope from base
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1840,6 +1842,10 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
 
                 $scope.supplementalLifeInsurancePlan.spouseUseTobacco = $scope.supplementalLifeInsurancePlan.spousePlanCondition != null
                     && $scope.supplementalLifeInsurancePlan.spousePlanCondition.name === 'Tobacco';
+            });
+
+            CompanyFeatureService.getEnabledCompanyFeatureByCompany(company.id).then(function(features) {
+                $scope.enabledFeatures = features;
             });
           });
         });
@@ -1954,7 +1960,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             if (premium == null) {
                 return null;
             }
-            
+
             return premium.toFixed(10);
         };
 

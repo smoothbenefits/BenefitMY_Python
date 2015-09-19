@@ -17,6 +17,14 @@ benefitmyService.factory(
       };
 
       var getDisabledCompanyFeatureByCompany = function(companyId) {
+         return getCompanyFeatureByCompany(companyId, false);
+      };
+
+      var getEnabledCompanyFeatureByCompany = function(companyId) {
+         return getCompanyFeatureByCompany(companyId, true);
+      };
+
+      var getCompanyFeatureByCompany = function(companyId, featureStatus) {
          var deferred = $q.defer();
 
          CompanyFeatureRepository.CompanyFeatureByCompany.query({companyId: companyId}).$promise.then(function(response){
@@ -28,7 +36,7 @@ benefitmyService.factory(
 
             var hashTable = {};
             _.each(companyFeatures, function(feature) {
-               hashTable[feature.companyFeatureName] = !feature.enabled;
+               hashTable[feature.companyFeatureName] = feature.enabled == featureStatus;
             });
 
             deferred.resolve(hashTable);
@@ -40,7 +48,8 @@ benefitmyService.factory(
       };
 
       return{
-         getDisabledCompanyFeatureByCompany: getDisabledCompanyFeatureByCompany
+         getDisabledCompanyFeatureByCompany: getDisabledCompanyFeatureByCompany,
+         getEnabledCompanyFeatureByCompany: getEnabledCompanyFeatureByCompany
       };
    }
 ]);
