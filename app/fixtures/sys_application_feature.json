@@ -96,5 +96,12 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 13
+  },
+  {
+    "fields": {
+      "feature": "ADAD"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 14
   }
 ]
