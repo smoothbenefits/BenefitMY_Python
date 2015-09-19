@@ -27,6 +27,7 @@ class CompanyStdInsuranceEmployeePremiumView(APIView):
             return None
 
     def get(self, request, pk, user_id, format=None):
+        std_plan = self._get_plan(pk)
         emp_person = self._get_employee_person(user_id)
         if not emp_person:
             return Response({'message': 'No Person Found'})
@@ -36,7 +37,6 @@ class CompanyStdInsuranceEmployeePremiumView(APIView):
             current_salary = compensation_service.get_current_annual_salary()
         except ValueError:
             return Response({'message':'No salary info'})
-        std_plan = self._get_plan(pk)
         disability_service = DisabilityInsuranceService(std_plan)
         total_premium = disability_service.get_total_premium(std_plan.max_benefit_weekly,
                                                              52,
