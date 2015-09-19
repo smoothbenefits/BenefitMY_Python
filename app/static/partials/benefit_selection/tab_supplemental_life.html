@@ -55,6 +55,11 @@
               <input class="form-control" type="text" min="0" ui-number-mask="0" ng-model="supplementalLifeInsurancePlan.selfElectedAmount" />
             </div>
           </div>
+          <div class="row" style="margin-top:3px;">
+            <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
+              <input type="checkbox" ng-model="supplementalLifeInsurancePlan.enrollAdadSelf" /> Enroll AD&D 
+            </div>
+          </div>
         </div>
         <div ng-if="familyInfo.spousePerson">
           <div class="row" style="margin-top:3px;">
@@ -88,6 +93,11 @@
               <input class="form-control" type="text" min="0" ui-number-mask="0" ng-model="supplementalLifeInsurancePlan.spouseElectedAmount" />
             </div>
           </div>
+          <div class="row" style="margin-top:3px;">
+            <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
+              <input type="checkbox" ng-model="supplementalLifeInsurancePlan.enrollAdadSpouse" /> Enroll AD&D 
+            </div>
+          </div>
         </div>
         <div ng-if="familyInfo.hasChild">
           <div class="row" style="margin-top:3px;">
@@ -102,6 +112,11 @@
             <div class="col-md-2 input-group">
               <span class="input-group-addon">$</span>
               <input class="form-control" type="text" min="0" ui-number-mask="0" ng-model="supplementalLifeInsurancePlan.childElectedAmount" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:3px;">
+            <div class="col-md-offset-2 col-md-3" style="margin-top:7px;">
+              <input type="checkbox" ng-model="supplementalLifeInsurancePlan.enrollAdadChild" /> Enroll AD&D 
             </div>
           </div>
         </div>

@@ -62,10 +62,33 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 viewModel.selfPremiumPerMonth = (personCompanyPlanDomainModel.self_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
                 viewModel.spousePremiumPerMonth = (personCompanyPlanDomainModel.spouse_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
                 viewModel.childPremiumPerMonth = (personCompanyPlanDomainModel.child_premium_per_month * company.pay_period_definition.month_factor).toFixed(2);
+                viewModel.selfAdadPremiumPerMonth = personCompanyPlanDomainModel.self_adad_premium_per_month != null 
+                                                    ? personCompanyPlanDomainModel.self_adad_premium_per_month
+                                                    : null;
+                viewModel.spouseAdadPremiumPerMonth = personCompanyPlanDomainModel.spouse_adad_premium_per_month != null 
+                                                    ? personCompanyPlanDomainModel.spouse_adad_premium_per_month
+                                                    : null;
+                viewModel.childAdadPremiumPerMonth = personCompanyPlanDomainModel.child_adad_premium_per_month != null 
+                                                    ? personCompanyPlanDomainModel.child_adad_premium_per_month
+                                                    : null;
+                viewModel.enrollAdadSelf = viewModel.selfAdadPremiumPerMonth != null;                                  
+                viewModel.enrollAdadSpouse = viewModel.spouseAdadPremiumPerMonth != null;
+                viewModel.enrollAdadChild = viewModel.childAdadPremiumPerMonth != null;
             }
             viewModel.beneficiaryList = mapBeneficiaryListDomainToViewModel(personCompanyPlanDomainModel.suppl_life_insurance_beneficiary);
             viewModel.selected = personCompanyPlanDomainModel.selected;
             viewModel.waived = personCompanyPlanDomainModel.waived;
+
+            // Computation for AD&D
+            viewModel.computeSelfAdadPremium = function() {
+                return computeSelfAdadPremium(this);
+            };
+            viewModel.computeSpouseAdadPremium = function() {
+                return computeSpouseAdadPremium(this);
+            };
+            viewModel.computeChildAdadPremium = function() {
+                return computeChildAdadPremium(this);
+            };
 
             return viewModel;
         };
@@ -216,6 +239,9 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 domainModel.self_premium_per_month = personCompanyPlanViewModel.selfPremiumPerMonth;
                 domainModel.spouse_premium_per_month = personCompanyPlanViewModel.spousePremiumPerMonth;
                 domainModel.child_premium_per_month = personCompanyPlanViewModel.childPremiumPerMonth;
+                domainModel.self_adad_premium_per_month = personCompanyPlanViewModel.selfAdadPremiumPerMonth;
+                domainModel.spouse_adad_premium_per_month = personCompanyPlanViewModel.spouseAdadPremiumPerMonth;
+                domainModel.child_adad_premium_per_month = personCompanyPlanViewModel.childAdadPremiumPerMonth;
 
                 domainModel.company_supplemental_life_insurance_plan = mapCompanyPlanViewToDomainModel(personCompanyPlanViewModel);
 
@@ -472,6 +498,25 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
             return deferred.promise;
         }
+
+        var computeSelfAdadPremium = function(viewModel) {
+            if (viewModel.enrollAdadSelf) {
+                return 0;
+            }
+            return null;
+        };
+        var computeSpouseAdadPremium = function(viewModel) {
+            if (viewModel.enrollAdadSpouse) {
+                return 0;
+            }
+            return null;
+        };
+        var computeChildAdadPremium = function(viewModel) {
+            if (viewModel.enrollAdadChild) {
+                return 0;
+            }
+            return null;
+        };
 
         return {
             planBindTypes: ['self', 'spouse', 'dependent'],
