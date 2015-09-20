@@ -14,19 +14,18 @@ class DisabilityInsuranceService(object):
 
         if not born:
             raise ValueError('Could not find the birth date of the employee')
-
-        try:
-            birthday = born.replace(year=today.year)
-        except ValueError: # raised when birth date is February 29 and the current year is not a leap year
-            birthday = born.replace(year=today.year, month=born.month+1, day=1)
-        if birthday > today:
-            return today.year - born.year - 1
-        else:
-            return today.year - born.year
+            
+        age = today.year - born.year
+        if (born.month > today.month) {
+            age = age - 1
+        }
+        else if (birth.month == today.month && birth.day > today.day) {
+            age = age - 1
+        }
+        return age
 
     def get_benefit_rate_of_cost(self, person):
         age_based_rates = self._disability_plan.age_based_rates.all()
-        print type(age_based_rates)
         if not age_based_rates:
             return self._disability_plan.rate
 
