@@ -15,6 +15,7 @@ class CompensationService(object):
         profiles = EmployeeProfile.objects.filter(person_id=self.person_id)
         if profiles and len(profiles) > 0:
             return profiles[0].employment_type == FULL_TIME
+        return False
 
     def _get_compensation_records_order_by_effective_date(self, ascending=True):
         order = 'effective_date'
@@ -36,13 +37,14 @@ class CompensationService(object):
         return current_salary
 
     def get_current_annual_salary(self):
-        comps = self._get_compensation_records_order_by_effective_date(False)
+        comps = self.get_all_compensation_ordered()
         if not comps:
             raise ValueError('No Salary Records')
 
         current_salary = None
         is_fulltime = self._is_fulltime_employee()
-        for comp in comps:
+        decending_comps = comps[::-1]
+        for comp in decending_comps:
             current_salary = self._calculate_annual_salary(comp, is_fulltime)
             if comp.effective_date < timezone.now():
                 break

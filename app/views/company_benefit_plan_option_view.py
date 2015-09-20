@@ -74,7 +74,7 @@ def create_benefit_plan_option(request):
 class CompanyBenefitPlansView(APIView):
     def get_object(self, pk):
         try:
-            return CompanyBenefitPlanOption.objects.filter(company=pk)
+            return CompanyBenefitPlanOption.objects.filter(company=pk).order_by('benefit_plan')
         except CompanyBenefitPlanOption.DoesNotExist:
             raise Http404
 

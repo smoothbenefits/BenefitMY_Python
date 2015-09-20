@@ -22,6 +22,11 @@ class UserCompanyStdInsurancePlan(models.Model):
                                                    blank=True,
                                                    null=True)
 
+    user_select_amount = models.DecimalField(max_digits=20,
+                                             decimal_places=10,
+                                             blank=True,
+                                             null=True)
+
     record_reason = models.ForeignKey(SysBenefitUpdateReason,
                                       related_name="std_update_reason",
                                       blank=True,

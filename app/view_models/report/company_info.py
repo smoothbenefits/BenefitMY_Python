@@ -9,6 +9,8 @@ class CompanyInfo(object):
     contact_phone = ''
     country = 'USA'
     offer_of_coverage_code = ''
+    contact_first_name = ''
+    contact_last_name = ''
 
     def __init__(self, company_model):
         if (company_model):
@@ -28,9 +30,16 @@ class CompanyInfo(object):
             contacts = company_model.contacts.all()
             if (len(contacts) > 0):
                 contact = contacts[0]
+                self.contact_first_name = contact.first_name
+                self.contact_last_name = contact.last_name
                 phones = contact.phones.filter(phone_type='work')
                 if (len(phones) > 0):
                     self.contact_phone = phones[0].number
+
+    def get_contact_full_name(self):
+        if self.contact_first_name is not None and self.contact_last_name is not None:
+            return self.contact_first_name + ' ' + self.contact_last_name
+        return None
 
     def get_full_street_address(self):
         full_address = None

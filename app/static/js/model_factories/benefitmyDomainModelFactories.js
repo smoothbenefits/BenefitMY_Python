@@ -295,7 +295,8 @@ benefitmyDomainModelFactories.factory('StdRepository', ['$resource',
             method: 'PUT'
         }
       }),
-      CompanyPlanPremiumByUser: $resource('/api/v1/user/:userId/std_insurance/:id/premium/', {userId:'@user_id', id:'@id'}),
+      CompanyPlanPremiumByUser: $resource('/api/v1/user/:userId/amount/:amount/std_insurance/:id/premium/',
+        {userId: '@user_id', amount: '@amount', id: '@id'}),
       CompanyUserPlanByCompany: $resource('/api/v1/company_users/:companyId/std_insurance/', {companyId:'@company_id'}),
       CompanyUserPlanByUser: $resource('/api/v1/users/:userId/std_insurance/', {userId:'@user_id'}),
       CompanyUserPlanById: $resource('/api/v1/users/:id/std_insurance/', {id:'@id'}, {
@@ -322,7 +323,8 @@ benefitmyDomainModelFactories.factory('LtdRepository', ['$resource',
             method: 'PUT'
         }
       }),
-      CompanyPlanPremiumByUser: $resource('/api/v1/user/:userId/ltd_insurance/:id/premium/', {userId:'@user_id', id:'@id'}),
+      CompanyPlanPremiumByUser: $resource('/api/v1/user/:userId/amount/:amount/ltd_insurance/:id/premium/',
+        {userId:'@user_id', amount: '@amount', id:'@id'}),
       CompanyUserPlanByCompany: $resource('/api/v1/company_users/:companyId/ltd_insurance/', {companyId:'@company_id'}),
       CompanyUserPlanByUser: $resource('/api/v1/users/:userId/ltd_insurance/', {userId:'@user_id'}),
       CompanyUserPlanById: $resource('/api/v1/users/:id/ltd_insurance/', {id:'@id'}, {
@@ -476,6 +478,14 @@ benefitmyDomainModelFactories.factory('Company1095CDataRepository', ['$resource'
     return {
       ByCompany: $resource(PREFIX + 'companies/:comp_id/1095_c', {comp_id:'@comp_id'}),
       Periods: $resource(PREFIX + '1095_c_periods')
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('CompanyUserDetailRepository', ['$resource',
+  function($resource){
+    return {
+      ByCompany: $resource(PREFIX + 'company/:comp_id/role/:role', {comp_id:'@comp_id', role:'@role'})
     }
   }
 ]);
