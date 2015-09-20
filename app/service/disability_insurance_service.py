@@ -14,14 +14,12 @@ class DisabilityInsuranceService(object):
 
         if not born:
             raise ValueError('Could not find the birth date of the employee')
-            
+
         age = today.year - born.year
-        if (born.month > today.month) {
+        if (born.month > today.month):
             age = age - 1
-        }
-        else if (birth.month == today.month && birth.day > today.day) {
+        elif (born.month == today.month and born.day > today.day):
             age = age - 1
-        }
         return age
 
     def get_benefit_rate_of_cost(self, person):
