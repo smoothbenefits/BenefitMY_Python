@@ -138,14 +138,17 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
 
         col_num = self._write_field(excelSheet, 0, col_num, 'Employee Optional Life Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Employee Optional Life Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Employee Optional AD&D Enrolled')
         col_num = self._write_field(excelSheet, 0, col_num, 'Employee Optional Life Total Monthly Premium')
         col_num = self._write_field(excelSheet, 0, col_num, 'Employee Optional Life Employee Premium (Per Pay Period)')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Optional Life Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Optional Life Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Optional AD&D Enrolled')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Optional Life Total Monthly Premium')
         col_num = self._write_field(excelSheet, 0, col_num, 'Spouse Optional Life Employee Premium (Per Pay Period)')
         col_num = self._write_field(excelSheet, 0, col_num, 'Child Optional Life Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Child Optional Life Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Child Optional AD&D Enrolled')
         col_num = self._write_field(excelSheet, 0, col_num, 'Child Optional Life Total Monthly Premium')
         col_num = self._write_field(excelSheet, 0, col_num, 'Child Optional Life Employee Premium (Per Pay Period)')
         col_num = self._write_field(excelSheet, 0, col_num, 'Optional Life Total Monthly Premium')
@@ -528,18 +531,30 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                     # Employee
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.self_elected_amount)
+                    employee_enrolled_adad = 'No'
+                    if (plan.self_adad_premium_per_month is not None):
+                        employee_enrolled_adad = 'Yes'
+                    col_num = self._write_field(excelSheet, row_num, col_num, employee_enrolled_adad)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.self_premium_per_month)
                     employee_self_premium = float(plan.self_premium_per_month) * plan.company_supplemental_life_insurance_plan.company.pay_period_definition.month_factor
                     col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_self_premium))
                     # Spouse
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.spouse_elected_amount)
+                    spouse_enrolled_adad = 'No'
+                    if (plan.spouse_adad_premium_per_month is not None):
+                        spouse_enrolled_adad = 'Yes'
+                    col_num = self._write_field(excelSheet, row_num, col_num, spouse_enrolled_adad)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.spouse_premium_per_month)
                     employee_spouse_premium = float(plan.spouse_premium_per_month) * plan.company_supplemental_life_insurance_plan.company.pay_period_definition.month_factor
                     col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_spouse_premium))
                     # Child
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.child_elected_amount)
+                    child_enrolled_adad = 'No'
+                    if (plan.child_adad_premium_per_month is not None):
+                        child_enrolled_adad = 'Yes'
+                    col_num = self._write_field(excelSheet, row_num, col_num, spouse_enrolled_adad)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.child_premium_per_month)
                     employee_child_premium = float(plan.child_premium_per_month) * plan.company_supplemental_life_insurance_plan.company.pay_period_definition.month_factor
                     col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_child_premium))
@@ -550,11 +565,11 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                     col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
                     return col_num
                 else:
-                    for i in range(14):
+                    for i in range(17):
                         col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
                     col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
                     return col_num
-        return col_num + 17
+        return col_num + 20
 
     def _write_employee_fsa_info(self, employee_user_id, excelSheet, row_num, col_num):
         fsas = FSA.objects.filter(user=employee_user_id)

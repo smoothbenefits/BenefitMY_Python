@@ -1,8 +1,8 @@
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('CompanyService',
-   ['$q', 'companyRepository',
-   function($q, companyRepository){
+   ['$q', 'companyRepository', 'CompanyUserDetailRepository',
+   function($q, companyRepository, CompanyUserDetailRepository){
 
       var convertEinFromRaw = function(rawEin) {
         return rawEin.substring(0, 2) + '-' + rawEin.substring(2);
@@ -21,11 +21,11 @@ benefitmyService.factory('CompanyService',
         viewModel.company = {};
         viewModel.company.id = domainModel.id;
         viewModel.company.name = domainModel.name;
-        viewModel.company.ein = convertEinToRaw(domainModel.ein);  
+        viewModel.company.ein = convertEinToRaw(domainModel.ein);
 
         viewModel.payPeriod = domainModel.pay_period_definition;
 
-        if (domainModel.contacts && domainModel.contacts.length > 0) { 
+        if (domainModel.contacts && domainModel.contacts.length > 0) {
             var domainContact = domainModel.contacts[0];
 
             viewModel.contact = {};
@@ -35,7 +35,7 @@ benefitmyService.factory('CompanyService',
             viewModel.contact.person_type = domainContact.person_type;
             viewModel.contact.user_id = domainContact.user;
             viewModel.contact.relationship = domainContact.relationship;
-            
+
             if (domainContact.phones && domainContact.phones.length > 0) {
                 var domainPhone = domainContact.phones[0];
 
@@ -148,9 +148,50 @@ benefitmyService.factory('CompanyService',
         return deferred.promise;
       };
 
+      var mapCompanyBrokerToViewModel = function(domainBroker) {
+        var viewBroker = {
+          firstName: domainBroker.user.first_name,
+          lastName: domainBroker.user.last_name,
+          email: domainBroker.user.email
+        };
+
+        var person = _.find(domainBroker.user.family, function(member) {
+          return member.relationship === 'self';
+        });
+
+        if (person && person.phones && person.phones.length > 0) {
+          viewBroker.phone = person.phones[0].number;
+        } else {
+          viewBroker.phone = 'Not Available';
+        }
+
+        return viewBroker;
+      };
+
+      var getCompanyBroker = function(companyId) {
+        var deferred = $q.defer();
+
+        CompanyUserDetailRepository.ByCompany.get({comp_id: companyId, role: 'broker'})
+        .$promise.then(function(response) {
+          var brokers = [];
+
+          _.each(response.company_broker, function(broker) {
+            var viewBroker = mapCompanyBrokerToViewModel(broker);
+            brokers.push(viewBroker);
+          });
+
+          deferred.resolve(brokers);
+        }).catch(function(error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      };
+
       return {
          saveCompanyInfo: saveCompanyInfo,
-         getCompanyInfo: getCompanyInfo
+         getCompanyInfo: getCompanyInfo,
+         getCompanyBroker: getCompanyBroker
       };
    }
 ]);

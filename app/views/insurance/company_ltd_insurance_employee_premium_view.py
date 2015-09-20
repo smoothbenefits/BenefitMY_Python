@@ -26,7 +26,8 @@ class CompanyLtdInsuranceEmployeePremiumView(APIView):
         except Person.DoesNotExist:
             return None
 
-    def get(self, request, pk, user_id, format=None):
+    def get(self, request, pk, amount, user_id, format=None):
+        ltd_plan = self._get_plan(pk)
         emp_person = self._get_employee_person(user_id)
         if not emp_person:
             return Response({'message': 'No Person Found'})
@@ -36,10 +37,16 @@ class CompanyLtdInsuranceEmployeePremiumView(APIView):
             current_salary = compensation_service.get_current_annual_salary()
         except ValueError:
             return Response({'message':'No salary info'})
-        ltd_plan = self._get_plan(pk)
         disability_service = DisabilityInsuranceService(ltd_plan)
-        total_premium = disability_service.get_total_premium(ltd_plan.max_benefit_monthly,
-                                                             12,
-                                                             current_salary)
+        effective_benefit_amount = disability_service.get_effective_benefit_amount(
+            ltd_plan.max_benefit_monthly, amount, 12, current_salary
+        )
+        total_premium = disability_service.get_total_premium(effective_benefit_amount)
         employee_premium = disability_service.get_employee_premium(total_premium)
-        return Response({'total': total_premium, 'employee': employee_premium})
+        return Response(
+            {
+                'total': total_premium,
+                'employee': employee_premium,
+                'amount': effective_benefit_amount
+            }
+        )
