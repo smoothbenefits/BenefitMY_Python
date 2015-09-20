@@ -1,6 +1,7 @@
 # test document
 # tests can be kicked off by running "python manage.py test app/tests/"
 from django.test import TestCase
+from datetime import date
 from app.service.disability_insurance_service import DisabilityInsuranceService
 
 class MockCompanyPlan(object):
@@ -13,24 +14,47 @@ class MockCompanyPlan(object):
     employer_contribution_percentage = 29
     company = MockCompany()
 
+class MockEmployeePerson(object):
+    def __init__(self, birth_date):
+        self.birth_date = birth_date
+
+class MockAgeBasedRate(object):
+    def __init__(self, age_min, age_max, rate):
+        self.age_min = age_min
+        self.age_max = age_max
+        self.rate = rate
 
 # Create your tests here.
 class TestDisabilityInsuranceService(TestCase):
     def setUp(self):
-        plan = MockCompanyPlan()
-        self.disability_service = DisabilityInsuranceService(plan)
+        self.plan = MockCompanyPlan()
+        self.person = MockEmployeePerson(date(1990, 1, 1))
+        self.disability_service = DisabilityInsuranceService(self.plan)
+        self.rates = []
+        for i in range(10):
+            lower = i * 5 + 20
+            upper = (i + 1) * 5 + 20 - 1
+            rate = MockAgeBasedRate(lower, upper, i + 1)
+            self.rates.append(rate)
+
+        self.rates.append(MockAgeBasedRate(None, 24, 0))
+        self.rates.append(MockAgeBasedRate(70, None, 11))
+
+    def test_get_rate_succss(self):
+        rate = self.disability_service.get_benefit_rate_of_cost(self.person, self.rates)
+        self.assertEqual(2, rate)
 
     def test_get_premium_success_monthly(self):
         effective = self.disability_service.get_effective_benefit_amount(23939, None, 12, 29937)
         self.assertEqual(effective, 1247)
-        total = self.disability_service.get_total_premium(effective)
+        total = self.disability_service.get_total_premium(effective, self.plan.rate)
         employee = self.disability_service.get_employee_premium(total)
         self.assertEqual(employee, 22.13425)
 
     def test_get_premium_success_weekly(self):
         effective = self.disability_service.get_effective_benefit_amount(23939, None, 52, 29937)
         self.assertEqual(effective, 287)
-        total = self.disability_service.get_total_premium(effective)
+        total = self.disability_service.get_total_premium(effective, self.plan.rate)
         employee = self.disability_service.get_employee_premium(total)
         self.assertEqual(employee, 5.09425)
 
