@@ -14,6 +14,18 @@ class MockCompanyPlan(object):
     employer_contribution_percentage = 29
     company = MockCompany()
 
+    def set_age_based_rates(self, rates):
+        manager = MockRelationManager(rates)
+        self.age_based_rates = manager
+
+class MockRelationManager(object):
+
+    def __init__(self, rates):
+        self.rates = rates
+
+    def all(self):
+        return self.rates
+
 class MockEmployeePerson(object):
     def __init__(self, birth_date):
         self.birth_date = birth_date
@@ -29,7 +41,6 @@ class TestDisabilityInsuranceService(TestCase):
     def setUp(self):
         self.plan = MockCompanyPlan()
         self.person = MockEmployeePerson(date(1990, 1, 1))
-        self.disability_service = DisabilityInsuranceService(self.plan)
         self.rates = []
         for i in range(10):
             lower = i * 5 + 20
@@ -40,8 +51,11 @@ class TestDisabilityInsuranceService(TestCase):
         self.rates.append(MockAgeBasedRate(None, 24, 0))
         self.rates.append(MockAgeBasedRate(70, None, 11))
 
+        self.plan.set_age_based_rates(self.rates)
+        self.disability_service = DisabilityInsuranceService(self.plan)
+
     def test_get_rate_succss(self):
-        rate = self.disability_service.get_benefit_rate_of_cost(self.person, self.rates)
+        rate = self.disability_service.get_benefit_rate_of_cost(self.person)
         self.assertEqual(2, rate)
 
     def test_get_premium_success_monthly(self):

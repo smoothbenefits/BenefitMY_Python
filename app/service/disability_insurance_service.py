@@ -24,7 +24,9 @@ class DisabilityInsuranceService(object):
         else:
             return today.year - born.year
 
-    def get_benefit_rate_of_cost(self, person, age_based_rates):
+    def get_benefit_rate_of_cost(self, person):
+        age_based_rates = self._disability_plan.age_based_rates.all()
+        print type(age_based_rates)
         if not age_based_rates:
             return self._disability_plan.rate
 
