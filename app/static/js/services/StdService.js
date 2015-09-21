@@ -186,16 +186,23 @@ benefitmyService.factory('StdService',
                   amount = null;
                 }
 
+                var request = {
+                  'amount': amount,
+                  'user': userId,
+                  'companyStdPlan': stdPlan.companyPlanId
+                };
+
                 if (!stdPlan) {
                     deferred.resolve(0);
                 } else {
-                    StdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:stdPlan.companyPlanId, amount: amount})
-                    .$promise.then(function(premiumInfo) {
-                        deferred.resolve({
-                          totalPremium:premiumInfo.total.toFixed(2),
-                          employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
-                          effectiveBenefitAmount: premiumInfo.amount
-                        });
+                    StdRepository.CompanyPlanPremiumByUser.save(
+                      {userId:userId, id:stdPlan.companyPlanId}, request
+                    ).$promise.then(function(premiumInfo) {
+                      deferred.resolve({
+                        totalPremium:premiumInfo.total.toFixed(2),
+                        employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
+                        effectiveBenefitAmount: premiumInfo.amount
+                      });
                     }, function(error) {
                         deferred.reject(error);
                     });

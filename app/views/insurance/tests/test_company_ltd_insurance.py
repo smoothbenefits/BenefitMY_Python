@@ -35,13 +35,13 @@ class CompanyLtdInsuranceTestCase(TestCase, ViewTestBase):
     def test_post_company_ltd_insurance_success(self):
         std_data = {'company': self.normalize_key(3),
                     'ltd_insurance_plan': self.normalize_key(1),
-                    'elimination_period_in_months': 2, 
-                    'duration': 21, 
-                    'percentage_of_salary': '80.00', 
-                    'max_benefit_monthly': '3344.00', 
-                    'rate': '0.220000', 
-                    'age_based_rates': [], 
-                    'employer_contribution_percentage': '22.00', 
+                    'elimination_period_in_months': 2,
+                    'duration': 21,
+                    'percentage_of_salary': '80.00',
+                    'max_benefit_monthly': '3344.00',
+                    'rate': '0.220000',
+                    'age_based_rates': [],
+                    'employer_contribution_percentage': '22.00',
                     'paid_by': None}
         response = self.client.post(reverse('company_ltd_insurance_plan_api',
                                             kwargs={'pk': self.normalize_key(3)}),
@@ -74,10 +74,10 @@ class CompanyLtdInsuranceTestCase(TestCase, ViewTestBase):
     def test_post_company_ltd_insurance_age_based_rates_success(self):
         std_data = {'company': self.normalize_key(3),
                     'ltd_insurance_plan': self.normalize_key(1),
-                    'elimination_period_in_months': 3, 
-                    'duration': 90, 
-                    'percentage_of_salary': '80.00', 
-                    'max_benefit_monthly': '6677.00', 
+                    'elimination_period_in_months': 3,
+                    'duration': 90,
+                    'percentage_of_salary': '80.00',
+                    'max_benefit_monthly': '6677.00',
                     'rate': None,
                     'age_based_rates': [{
                         'age_min': 20,
@@ -91,8 +91,8 @@ class CompanyLtdInsuranceTestCase(TestCase, ViewTestBase):
                         'age_min': 40,
                         'age_max': 50,
                         'rate': '34.0000'
-                    }], 
-                    'employer_contribution_percentage': '22.00', 
+                    }],
+                    'employer_contribution_percentage': '22.00',
                     'paid_by': None}
         response = self.client.post(reverse('company_ltd_insurance_plan_api',
                                             kwargs={'pk': self.normalize_key(3)}),
@@ -121,4 +121,3 @@ class CompanyLtdInsuranceTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['max_benefit_monthly'], '6677.00')
         self.assertEqual(result['percentage_of_salary'], '80.00')
         self.assertEqual(result['employer_contribution_percentage'], '22.00')
-

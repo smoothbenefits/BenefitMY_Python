@@ -27,7 +27,7 @@ class CompanyLtdInsuranceEmployeePremiumView(APIView):
         except Person.DoesNotExist:
             return None
 
-    def get(self, request, pk, amount, user_id, format=None):
+    def post(self, request, pk, user_id, format=None):
         ltd_plan = self._get_plan(pk)
         emp_person = self._get_employee_person(user_id)
         if not emp_person:
@@ -38,6 +38,12 @@ class CompanyLtdInsuranceEmployeePremiumView(APIView):
             current_salary = compensation_service.get_current_annual_salary()
         except ValueError:
             return Response({'message':'No salary info'})
+
+        if not request.DATA['amount']:
+            amount = None
+        else:
+            amount = request.DATA['amount']
+        
         disability_service = DisabilityInsuranceService(ltd_plan)
         effective_rate = disability_service.get_benefit_rate_of_cost(emp_person)
         effective_benefit_amount = disability_service.get_effective_benefit_amount(
