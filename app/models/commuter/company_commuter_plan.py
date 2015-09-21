@@ -11,12 +11,13 @@ DEDUCTION_PERIOD_OPTIONS = ([(item, item) for item in [DEDUCTION_PERIOD_MONTHLY,
 
 @reversion.register
 class CompanyCommuterPlan(models.Model):
-    name = models.CharField(max_length=255, null=True, blank=True)
+    plan_name = models.CharField(max_length=255, null=True, blank=True)
 
     enable_transit_benefit = models.BooleanField(default=False)
     enable_parking_benefit = models.BooleanField(default=False)
 
-    employer_contribution = models.DecimalField(max_digits=20, decimal_places=10)
+    employer_transit_contribution = models.DecimalField(max_digits=20, decimal_places=10)
+    employer_parking_contribution = models.DecimalField(max_digits=20, decimal_places=10)
 
     deduction_period = models.CharField(max_length=30, choices=DEDUCTION_PERIOD_OPTIONS)
 

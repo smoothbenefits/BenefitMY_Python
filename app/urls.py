@@ -109,6 +109,13 @@ from app.views.hra.person_company_hra_plan_view import (
     PersonCompanyHraPlanView,
     PersonCompanyHraPlanByPersonView)
 
+from app.views.commuter.company_commuter_plan_view import (
+    CompanyCommuterPlanView,
+    CompanyCommuterPlanByCompanyView)
+from app.views.commuter.person_company_commuter_plan_view import (
+    PersonCompanyCommuterPlanView,
+    PersonCompanyCommuterPlanByPersonView)
+
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
@@ -333,6 +340,19 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/person/(?P<person_id>\w+)/person_company_hra_plan/?$' % PREFIX,
         PersonCompanyHraPlanByPersonView.as_view(), name='person_company_hra_plan_by_person_api'),
+
+    # Commuter api
+    url(r'^%s/company_commuter_plan/(?P<pk>\w+)/?$' % PREFIX,
+        CompanyCommuterPlanView.as_view(), name='company_commuter_plan_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/company_commuter_plan/?$' % PREFIX,
+        CompanyCommuterPlanByCompanyView.as_view(), name='company_commuter_plan_by_company_api'),
+
+    url(r'^%s/person_company_commuter_plan/(?P<pk>\w+)/?$' % PREFIX,
+        PersonCompanyCommuterPlanView.as_view(), name='person_company_commuter_plan_api'),
+
+    url(r'^%s/person/(?P<person_id>\w+)/person_company_commuter_plan/?$' % PREFIX,
+        PersonCompanyCommuterPlanByPersonView.as_view(), name='person_company_commuter_plan_by_person_api'),
 
     # util api
     url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
