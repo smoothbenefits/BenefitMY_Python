@@ -72,17 +72,6 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             viewModel.selected = personCompanyPlanDomainModel.selected;
             viewModel.waived = personCompanyPlanDomainModel.waived;
 
-            // Computation for AD&D
-            viewModel.computeSelfAdadPremium = function() {
-                return computeSelfAdadPremium(this);
-            };
-            viewModel.computeSpouseAdadPremium = function() {
-                return computeSpouseAdadPremium(this);
-            };
-            viewModel.computeChildAdadPremium = function() {
-                return computeChildAdadPremium(this);
-            };
-
             return viewModel;
         };
 
@@ -471,25 +460,6 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             });
 
             return deferred.promise;
-        }
-
-        var computeSelfAdadPremium = function(viewModel) {
-            if (viewModel.enrollAdadSelf) {
-                return 0;
-            }
-            return null;
-        };
-        var computeSpouseAdadPremium = function(viewModel) {
-            if (viewModel.enrollAdadSpouse) {
-                return 0;
-            }
-            return null;
-        };
-        var computeChildAdadPremium = function(viewModel) {
-            if (viewModel.enrollAdadChild) {
-                return 0;
-            }
-            return null;
         };
 
         return {

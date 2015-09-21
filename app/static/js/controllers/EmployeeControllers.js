@@ -2001,6 +2001,25 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             return premium;
         }
 
+        $scope.computeSelfAdadPremium = function() {
+            if ($scope.supplementalLifeInsurancePlan.enrollAdadSelf) {
+                return 0;
+            }
+            return null;
+        };
+        $scope.computeSpouseAdadPremium = function() {
+            if ($scope.supplementalLifeInsurancePlan.enrollAdadSpouse) {
+                return 0;
+            }
+            return null;
+        };
+        $scope.computeChildAdadPremium = function() {
+            if ($scope.supplementalLifeInsurancePlan.enrollAdadChild) {
+                return 0;
+            }
+            return null;
+        };
+
         $scope.save = function(){
           // Save life insurance
           if ($scope.isWaiveBenefitSelected()) {
@@ -2026,9 +2045,9 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
             $scope.supplementalLifeInsurancePlan.childPremiumPerMonth = getPremiumForStore($scope.computeChildPremium());
 
             // Persists the premium for AD&D
-            $scope.supplementalLifeInsurancePlan.selfAdadPremiumPerMonth = getPremiumForStore($scope.supplementalLifeInsurancePlan.computeSelfAdadPremium());
-            $scope.supplementalLifeInsurancePlan.spouseAdadPremiumPerMonth = getPremiumForStore($scope.supplementalLifeInsurancePlan.computeSpouseAdadPremium());
-            $scope.supplementalLifeInsurancePlan.childAdadPremiumPerMonth = getPremiumForStore($scope.supplementalLifeInsurancePlan.computeChildAdadPremium());
+            $scope.supplementalLifeInsurancePlan.selfAdadPremiumPerMonth = getPremiumForStore($scope.computeSelfAdadPremium());
+            $scope.supplementalLifeInsurancePlan.spouseAdadPremiumPerMonth = getPremiumForStore($scope.computeSpouseAdadPremium());
+            $scope.supplementalLifeInsurancePlan.childAdadPremiumPerMonth = getPremiumForStore($scope.computeChildAdadPremium());
           }
 
           SupplementalLifeInsuranceService.savePersonPlan($scope.supplementalLifeInsurancePlan, $scope.updateReason).then (
