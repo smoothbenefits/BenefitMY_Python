@@ -180,7 +180,7 @@ benefitmyService.factory('StdService',
             getTotalPremiumForUserCompanyStdPlan: function(userId, stdPlan, amount) {
                 var deferred = $q.defer();
 
-                if (stdPlan.allowUserSelectAmount) {
+                if (stdPlan.allowUserSelectAmount && amount) {
                   amount = parseInt(Math.round(amount / stdPlan.stepValue) * stdPlan.stepValue);
                 } else {
                   amount = null;

@@ -39,11 +39,11 @@ class CompanyLtdInsuranceEmployeePremiumView(APIView):
         except ValueError:
             return Response({'message':'No salary info'})
 
-        if not request.DATA['amount']:
+        if not request.DATA['amount'] and request.DATA['amount'] != 0:
             amount = None
         else:
             amount = request.DATA['amount']
-        
+
         disability_service = DisabilityInsuranceService(ltd_plan)
         effective_rate = disability_service.get_benefit_rate_of_cost(emp_person)
         effective_benefit_amount = disability_service.get_effective_benefit_amount(
