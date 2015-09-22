@@ -39,7 +39,7 @@ class CompanyStdInsuranceEmployeePremiumView(APIView):
         except ValueError:
             return Response({'message':'No salary info'})
 
-        if not request.DATA['amount']:
+        if not request.DATA['amount'] and request.DATA['amount'] != 0:
             amount = None
         else:
             amount = request.DATA['amount']

@@ -46,7 +46,7 @@ class DisabilityInsuranceService(object):
             max_benefit = 0
         if not year_factor:
             raise ValueError('argument year_factor is invalid')
-        if not selected_amount:
+        if not selected_amount and selected_amount != 0:
             selected_amount = sys.maxint
         else:
             selected_amount = int(selected_amount)
