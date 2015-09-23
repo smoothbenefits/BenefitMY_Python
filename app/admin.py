@@ -5,7 +5,9 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from app.custom_authentication import AuthUser
-from app.models import Company, CompanyUser, Person, SysPeriodDefinition
+from app.models import Company, CompanyUser, Person, SysPeriodDefinition, \
+    SysApplicationFeature, CompanyFeatures
+
 
 # Register your models here.
 class UserCreationForm(forms.ModelForm):
@@ -93,16 +95,26 @@ class PersonAdmin(admin.ModelAdmin):
         ('Company Relation', {'fields': ('company',)}),
     )
 
+class CompanyFeatureAdmin(admin.ModelAdmin):
+    list_display = ('company', 'company_feature', 'feature_status')
+    fields = ['company', 'company_feature', 'feature_status']
+
 class SysPeriodDefinitionAdmin(admin.ModelAdmin):
     list_display = ('name', 'month_factor')
     fields = ['name', 'month_factor']
+
+class SysApplicationFeatureAdmin(admin.ModelAdmin):
+    list_display = ('feature',)
+    fields = ['feature']
 
 # Now register the new UserAdmin...
 admin.site.register(AuthUser, AuthUserAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(CompanyUser, CompanyUserAdmin)
 admin.site.register(Person, PersonAdmin)
+admin.site.register(CompanyFeatures, CompanyFeatureAdmin)
 admin.site.register(SysPeriodDefinition, SysPeriodDefinitionAdmin)
+admin.site.register(SysApplicationFeature, SysApplicationFeatureAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

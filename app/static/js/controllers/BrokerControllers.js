@@ -59,7 +59,7 @@ var clientsController = brokersControllers.controller('clientsController', [
             inherit: false,
             notify: true
         });
-    }; 
+    };
 
     $scope.editCompanyInfo = function(company) {
         var modalInstance = $modal.open({
@@ -218,6 +218,16 @@ var benefitsController = brokersControllers.controller(
         $scope.stdPlans = plans;
       });
 
+      $scope.openStdDetailsModal = function(stdPlan){
+        $scope.stdPlanRatesToDisplay = stdPlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_addition/modal_std_age_based_rates.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+      };
+
       $scope.deleteStdPlan = function(companyStdPlanToDelete) {
         StdService.deleteCompanyStdPlan(companyStdPlanToDelete.companyPlanId).then(function() {
           $state.reload();
@@ -227,6 +237,16 @@ var benefitsController = brokersControllers.controller(
       LtdService.getLtdPlansForCompany($stateParams.clientId).then(function(plans) {
         $scope.ltdPlans = plans;
       });
+
+      $scope.openLtdDetailsModal = function(ltdPlan){
+        $scope.ltdPlanRatesToDisplay = ltdPlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_addition/modal_ltd_age_based_rates.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+      };
 
       $scope.deleteLtdPlan = function(companyLtdPlanToDelete) {
         LtdService.deleteCompanyLtdPlan(companyLtdPlanToDelete.companyPlanId).then(function() {
@@ -719,9 +739,24 @@ var brokerAddStdPlanController = brokersControllers.controller(
         $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
         $scope.paidByParties = StdService.paidByParties;
+        $scope.TRUE = true;
+        $scope.FALSE = false;
+        $scope.allowUserSelectAmount = false;
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
+        $scope.ageBased = false;
+        $scope.toggleAgeBased = function(){
+          $scope.ageBased = !$scope.ageBased;
+          if($scope.ageBased){
+            $scope.newPlan.rate = null;
+          }
+          else{
+            $scope.newPlan.ageBasedRateTable = StdService.getBlankAgeBasedRateTableViewModel();
+          }
+        };
+
+        $scope.newPlan.ageBasedRateTable = StdService.getBlankAgeBasedRateTableViewModel();
 
         $scope.buttonEnabled = function() {
             return $scope.newPlan.planName && _.isNumber($scope.newPlan.employerContributionPercentage);
@@ -731,6 +766,7 @@ var brokerAddStdPlanController = brokersControllers.controller(
         $scope.saveNewPlan = function() {
             UserService.getCurUserInfo().then(function(userInfo){
                 $scope.newPlan.planBroker = userInfo.user.id;
+                $scope.newPlan.allowUserSelectAmount = $scope.allowUserSelectAmount;
 
                 StdService.addPlanForCompany($scope.newPlan, clientId).then(
                     function(response) {
@@ -765,18 +801,34 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
         $scope.paidByParties = LtdService.paidByParties;
+        $scope.TRUE = true;
+        $scope.FALSE = false;
+        $scope.allowUserSelectAmount = false;
 
         var clientId = $stateParams.clientId;
         $scope.newPlan = {};
+        $scope.ageBased = false;
+        $scope.toggleAgeBased = function(){
+          $scope.ageBased = !$scope.ageBased;
+          if($scope.ageBased){
+            $scope.newPlan.rate = null;
+          }
+          else{
+            $scope.newPlan.ageBasedRateTable = LtdService.getBlankAgeBasedRateTableViewModel();
+          }
+        };
+
+        $scope.newPlan.ageBasedRateTable = LtdService.getBlankAgeBasedRateTableViewModel();
+
 
         $scope.buttonEnabled = function() {
             return $scope.newPlan.planName && _.isNumber($scope.newPlan.employerContributionPercentage);
         };
-
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
             UserService.getCurUserInfo().then(function(userInfo){
                 $scope.newPlan.planBroker = userInfo.user.id;
+                $scope.newPlan.allowUserSelectAmount = $scope.allowUserSelectAmount;
 
                 LtdService.addPlanForCompany($scope.newPlan, clientId).then(
                     function(response) {

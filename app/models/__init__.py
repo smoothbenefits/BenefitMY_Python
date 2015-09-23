@@ -63,3 +63,5 @@ from sys_suppl_life_insurance_condition import SysSupplLifeInsuranceCondition
 from sys_benefit_update_reason import SysBenefitUpdateReason
 from sys_period_definition import SysPeriodDefinition
 from company_1095_c import Company1095C
+from insurance.company_ltd_age_based_rate import CompanyLtdAgeBasedRate
+from insurance.company_std_age_based_rate import CompanyStdAgeBasedRate

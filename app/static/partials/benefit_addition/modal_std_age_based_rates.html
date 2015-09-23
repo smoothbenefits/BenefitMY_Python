@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h4 class="modal-title">Short Term Disability Age Based Rates</h4>
+</div>
+<div class="modal-body">
+  <div class="table-responsive table-holder">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Age</span></th>
+          <th><span>Rate</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in stdPlanRatesToDisplay.ageBasedRates">
+          <td>{{row.getAgeRangeForDisplay()}}</td>
+          <td>{{row.rate}} of $10 benefit</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
+</div>

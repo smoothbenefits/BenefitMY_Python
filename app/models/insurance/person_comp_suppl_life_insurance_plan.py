@@ -50,6 +50,24 @@ class PersonCompSupplLifeInsurancePlan(models.Model):
                                                   null=True,
                                                   verbose_name="calculated premium for child")
 
+    self_adad_premium_per_month = models.DecimalField(max_digits=22,
+                                                 decimal_places=10,
+                                                 blank=True,
+                                                 null=True,
+                                                 verbose_name="calculated adad premium for self")
+
+    spouse_adad_premium_per_month = models.DecimalField(max_digits=22,
+                                                   decimal_places=10,
+                                                   blank=True,
+                                                   null=True,
+                                                   verbose_name="calculated adad premium for spouse")
+
+    child_adad_premium_per_month = models.DecimalField(max_digits=22,
+                                                  decimal_places=10,
+                                                  blank=True,
+                                                  null=True,
+                                                  verbose_name="calculated adad premium for child")
+
     self_condition = models.ForeignKey(SysSupplLifeInsuranceCondition,
                                        related_name="person_comp_suppl_life_insurance_plan_self",
                                        blank=True,
