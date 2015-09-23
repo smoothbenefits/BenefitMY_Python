@@ -1,8 +1,15 @@
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('StdService',
-    ['$q', 'StdRepository', 'EmployeeProfileService',
-    function ($q, StdRepository, EmployeeProfileService){
+    ['$q',
+     'StdRepository',
+     'EmployeeProfileService',
+     'AgeRangeService',
+    function ($q,
+              StdRepository,
+              EmployeeProfileService,
+              AgeRangeService){
+        var ageRangeService = AgeRangeService(20, 85, 5, 200);
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
 
@@ -11,6 +18,19 @@ benefitmyService.factory('StdService',
             viewModel.planBroker = planDomainModel.user;
 
             return viewModel;
+        };
+
+        var mapCompanyPlanAgeBasedTableDomainToViewModel = function(ageBasedRates){
+            ageBasedRatesTable = [];
+            _.each(ageBasedRates, function(ageBasedRateItem){
+                ageBasedRatesTable.push({
+                    ageMin: ageBasedRateItem.age_min,
+                    ageMax: ageBasedRateItem.age_max,
+                    rate: Number(ageBasedRateItem.rate).toFixed(4),
+                    getAgeRangeForDisplay: function(){return ageRangeService.getAgeRangeForDisplay(this);}
+                });
+            });
+            return ageBasedRatesTable;
         };
 
         var mapCompanyPlanDomainToViewModel = function(companyPlanDomainModel) {
@@ -28,6 +48,9 @@ benefitmyService.factory('StdService',
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
             viewModel.employerContributionPercentage = companyPlanDomainModel.employer_contribution_percentage;
+            viewModel.stepValue = companyPlanDomainModel.benefit_amount_step;
+            viewModel.allowUserSelectAmount = companyPlanDomainModel.user_amount_required;
+            viewModel.ageBasedRates = mapCompanyPlanAgeBasedTableDomainToViewModel(companyPlanDomainModel.age_based_rates);
 
             return viewModel;
         };
@@ -58,6 +81,20 @@ benefitmyService.factory('StdService',
             return domainModel;
         };
 
+        var mapPlanAgeBasedRatesToDomainModal = function(ageBasedRateTable){
+            domainTable = [];
+            _.each(ageBasedRateTable, function(row){
+                if(row && row.rate){
+                    domainTable.push({
+                        age_min: row.ageMin,
+                        age_max: row.ageMax,
+                        rate: row.rate
+                    });
+                }
+            });
+            return domainTable;
+        };
+
         var mapCompanyPlanViewToDomainModel = function(companyPlanViewModel) {
             var domainModel = {};
 
@@ -70,8 +107,13 @@ benefitmyService.factory('StdService',
             domainModel.elimination_period_in_days = companyPlanViewModel.eliminationPeriodInDays;
             domainModel.paid_by = companyPlanViewModel.paidBy;
             domainModel.employer_contribution_percentage = companyPlanViewModel.employerContributionPercentage;
+            domainModel.user_amount_required = companyPlanViewModel.allowUserSelectAmount;
+            domainModel.benefit_amount_step = companyPlanViewModel.stepValue;
 
             domainModel.std_insurance_plan = mapPlanViewToDomainModel(companyPlanViewModel);
+
+            //Here is the location to convert age_based_rates
+            domainModel.age_based_rates = mapPlanAgeBasedRatesToDomainModal(companyPlanViewModel.ageBasedRateTable);
 
             return domainModel;
         };
@@ -83,7 +125,8 @@ benefitmyService.factory('StdService',
             domainModel.user = userCompanyPlanViewModel.planOwner;
 
             if (userCompanyPlanViewModel.totalPremium) {
-              domainModel.total_premium_per_month = userCompanyPlanViewModel.totalPremium.toFixed(10);
+              var totalPremium = parseFloat(userCompanyPlanViewModel.totalPremium);
+              domainModel.total_premium_per_month = totalPremium.toFixed(10);
             } else {
               domainModel.total_premium_per_month = null;
             }
@@ -114,21 +157,52 @@ benefitmyService.factory('StdService',
             return deferred.promise;
         };
 
+        var getBlankAgeBasedRateTableViewModel = function(){
+            var ageRangeList = ageRangeService.getAgeRangeList();
+            var rateTable = [];
+            _.each(ageRangeList, function(ageRange){
+                rateTable.push({
+                    'ageMin' : ageRange.min,
+                    'ageMax' : ageRange.max,
+                    'getAgeRangeForDisplay': function(){return ageRangeService.getAgeRangeForDisplay(this);}
+                });
+            });
+            _.sortBy(rateTable, 'ageMin');
+            return rateTable;
+        };
+
         return {
 
             paidByParties: ['Employee', 'Employer'],
 
             getStdPlansForCompany: getStdPlansForCompany,
 
-            getTotalPremiumForUserCompanyStdPlan: function(userId, stdPlan) {
+            getTotalPremiumForUserCompanyStdPlan: function(userId, stdPlan, amount) {
                 var deferred = $q.defer();
+
+                if (stdPlan.allowUserSelectAmount && _.isNumber(amount)) {
+                  amount = parseInt(Math.round(amount / stdPlan.stepValue) * stdPlan.stepValue);
+                } else {
+                  amount = null;
+                }
+
+                var request = {
+                  'amount': amount,
+                  'user': userId,
+                  'companyStdPlan': stdPlan.companyPlanId
+                };
 
                 if (!stdPlan) {
                     deferred.resolve(0);
                 } else {
-                    StdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:stdPlan.companyPlanId})
-                    .$promise.then(function(premiumInfo) {
-                        deferred.resolve({totalPremium:premiumInfo.total, employeePremiumPerPayPeriod: premiumInfo.employee});
+                    StdRepository.CompanyPlanPremiumByUser.save(
+                      {userId:userId, id:stdPlan.companyPlanId}, request
+                    ).$promise.then(function(premiumInfo) {
+                      deferred.resolve({
+                        totalPremium:premiumInfo.total.toFixed(2),
+                        employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
+                        effectiveBenefitAmount: premiumInfo.amount
+                      });
                     }, function(error) {
                         deferred.reject(error);
                     });
@@ -206,6 +280,7 @@ benefitmyService.factory('StdService',
             },
 
             enrollStdPlanForUser: function(userId,
+                                           userSelectAmount,
                                            companyStdPlanToEnroll,
                                            payPeriod,
                                            updateReason) {
@@ -220,6 +295,7 @@ benefitmyService.factory('StdService',
 
                 var planDomainModel = mapUserCompanyPlanViewToDomainModel(companyStdPlanToEnroll, payPeriod);
                 planDomainModel.company_std_insurance = planDomainModel.company_std_insurance.id;
+                planDomainModel.user_select_amount = userSelectAmount;
 
                 StdRepository.CompanyUserPlanByUser.query({userId:userId})
                 .$promise.then(function(userPlans) {
@@ -273,7 +349,8 @@ benefitmyService.factory('StdService',
                 });
 
                 return deferred.promise;
-            }
+            },
+            getBlankAgeBasedRateTableViewModel: getBlankAgeBasedRateTableViewModel
         };
     }
 ]);

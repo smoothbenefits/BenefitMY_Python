@@ -36,9 +36,27 @@
           <td>{{companyStdPlan.percentageOfSalary}}% of Base Salary</td>
           <td>${{companyStdPlan.maxBenefitWeekly}}/Week</td>
           <td>{{companyStdPlan.duration}} Days</td>
-          <td>${{companyStdPlan.rate}} of $10 benefit</td>
+          <td ng-if="companyStdPlan.ageBasedRates.length <= 0">${{companyStdPlan.rate}} of $10 benefit</td>
+          <td ng-if="companyStdPlan.ageBasedRates.length > 0">See below for Age Based rates</td>
           <td>{{companyStdPlan.eliminationPeriodInDays}} Days</td>
           <td>{{companyStdPlan.employerContributionPercentage}} %</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="table-responsive table-holder" ng-if="companyStdPlan.ageBasedRates.length > 0">
+    <h4>Age Based Benefit Rates</h4>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Age</span></th>
+          <th><span>Rate</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in companyStdPlan.ageBasedRates">
+          <td>{{row.getAgeRangeForDisplay()}}</td>
+          <td>{{row.rate}} of $10 benefit</td>
         </tr>
       </tbody>
     </table>

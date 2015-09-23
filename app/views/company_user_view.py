@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from app.models.person import Person
 from app.models.company_user import CompanyUser
 from app.serializers.company_user_serializer import (
-    CompanyUserSerializer)
+    CompanyUserSerializer, CompanyUserDetailSerializer)
 
 
 class CompanyUserView(APIView):
@@ -27,6 +27,17 @@ class CompanyEmployeeCountView(APIView):
         return Response({'employees_count':
             len(CompanyUser.objects.filter(company=pk,
                                        company_user_type='employee'))})
+
+class CompanyUserDetailView(APIView):
+
+    def get(self, request, pk, role_type, format=None):
+        try:
+            companyUsers = CompanyUser.objects.filter(company=pk,
+                                                      company_user_type=role_type)
+            serializer = CompanyUserDetailSerializer(companyUsers, many=True)
+            return Response({'company_broker': serializer.data})
+        except CompanyUser.DoesNotExist:
+            raise Http404
 
 class CompanyBrokerCountView(APIView):
 
