@@ -11,12 +11,6 @@ class CompensationService(object):
     def __init__(self, person_id):
         self.person_id = person_id
 
-    def _is_fulltime_employee(self):
-        profiles = EmployeeProfile.objects.filter(person_id=self.person_id)
-        if profiles and len(profiles) > 0:
-            return profiles[0].employment_type == FULL_TIME
-        return False
-
     def _get_compensation_records_order_by_effective_date(self, ascending=True):
         order = 'effective_date'
         if not ascending:
@@ -26,13 +20,12 @@ class CompensationService(object):
         except EmployeeCompensation.DoesNotExist:
             return None
 
-    def _calculate_annual_salary(self, compensation, isFulltime=True):
+    def _calculate_annual_salary(self, compensation):
         current_salary = None
-        if isFulltime:
+        if compensation.annual_base_salary:
             current_salary = compensation.annual_base_salary
-        else:
-            if (compensation.hourly_rate and compensation.projected_hour_per_month):
-                current_salary = compensation.hourly_rate * compensation.projected_hour_per_month * 12
+        elif (compensation.hourly_rate and compensation.projected_hour_per_month):
+            current_salary = compensation.hourly_rate * compensation.projected_hour_per_month * 12
 
         return current_salary
 
@@ -42,10 +35,9 @@ class CompensationService(object):
             raise ValueError('No Salary Records')
 
         current_salary = None
-        is_fulltime = self._is_fulltime_employee()
         decending_comps = comps[::-1]
         for comp in decending_comps:
-            current_salary = self._calculate_annual_salary(comp, is_fulltime)
+            current_salary = self._calculate_annual_salary(comp)
             if comp.effective_date < timezone.now():
                 break
         # If not current active salary, use the closest future salary as current

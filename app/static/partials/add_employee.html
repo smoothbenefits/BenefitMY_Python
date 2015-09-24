@@ -62,6 +62,7 @@
           ng-required="true"
           name="employment_type"
           ng-options="type.name for type in employment_types"
+          ng-change="updateSalaryType(addUser)"
           class="form-control" />
         <div class="form-error" ng-show="form.employment_status.$error.required">
           <span>Employment status must be selected</span>
@@ -80,7 +81,16 @@
         </div>
       </div>
 
-      <div ng-if="isFullTime(addUser)">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"
+          name="is_hourly_rate"
+          ng-model="isHourlyRate">
+          The new employee receives hourly rate?
+        </label>
+      </div>
+
+      <div ng-if="!isHourlyRate">
         <div class="form-label">Annual Base Salary*</div>
         <div class="textbox input-group">
           <span class="input-group-addon">$</span>
@@ -94,7 +104,7 @@
         </div>
       </div>
 
-      <div ng-if="!isFullTime(addUser)">
+      <div ng-if="isHourlyRate">
         <div class="form-label">Hourly Rate*</div>
         <div class="textbox input-group">
           <span class="input-group-addon">$</span>
