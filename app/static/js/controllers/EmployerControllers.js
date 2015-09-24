@@ -427,6 +427,7 @@ var employerBenefits = employersController.controller('employerBenefits',
   'LtdService',
   'FsaService',
   'HraService',
+  'CommuterService',
   'companyRepository',
   function ($scope,
             $location,
@@ -439,6 +440,7 @@ var employerBenefits = employersController.controller('employerBenefits',
             LtdService,
             FsaService,
             HraService,
+            CommuterService,
             companyRepository){
 
     var compId = $stateParams.company_id;
@@ -491,6 +493,10 @@ var employerBenefits = employersController.controller('employerBenefits',
 
     HraService.getPlansForCompany($stateParams.company_id).then(function(response) {
       $scope.hraPlans = response;
+    });
+
+    CommuterService.getPlansForCompany($stateParams.company_id).then(function(response) {
+      $scope.commuterPlans = response;
     });
 
     $scope.openSupplementalLifePlanDetailsModal = function(supplementalLifePlan) {

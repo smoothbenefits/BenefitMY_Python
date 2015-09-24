@@ -150,6 +150,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_hra.html',
                 controller: 'brokerAddHraPlanController'
             }).
+            state('broker_add_benefit.commuter', {
+                url: '/commuter',
+                templateUrl: '/static/partials/benefit_addition/tab_commuter.html',
+                controller: 'brokerAddCommuterPlanController'
+            }).
             state('broker_benefit_selected', {
                 url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',

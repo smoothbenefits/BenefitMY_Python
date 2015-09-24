@@ -321,5 +321,41 @@
 </table>
 </div>
 
+<!-- Commuter plans summary -->
+<div class="table-responsive table-holder" ng-if="commuterPlans && commuterPlans.length > 0">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><span>Commuter Plan Name</span></th>
+        <th><span>Document</span></th>
+        <th><span>Benefit Enablement</span></th>
+        <th><span>Employer Transit Contribution</span></th>
+        <th><span>Employer Parking Contribution</span></th>
+        <th><span>Deduction Method</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="commuterPlan in commuterPlans">
+        <td>
+          {{commuterPlan.planName}}
+          <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteCommuterPlan(commuterPlan)" href="javascript:void(0);">X</a>
+        </td>
+        <td class="upload-td">
+          <bmuploadmanager
+              upload-type="Commuter"
+              upload-mode="button"
+              feature-id="{{commuterPlan.companyPlanId}}"
+              hide-type="true">
+          </bmuploadmanager>
+        </td>
+        <td>{{commuterPlan.benefitEnablementOption.displayName}}</td>
+        <td>${{commuterPlan.employerTransitContribution}}/Month</td>
+        <td>${{commuterPlan.employerParkingContribution}}/Month</td>
+        <td>{{commuterPlan.deductionPeriod}}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 <div class="back"><a href="javascript:void(0);" ng-click="backtoDashboard()">&laquo; Back</a></div>
 </div>
