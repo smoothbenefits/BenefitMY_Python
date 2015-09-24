@@ -237,6 +237,7 @@ PIPELINE_JS = {
             'js/controllers/EmployerControllers.js',
             'js/directives/ScrollTo.js',
             'js/directives/ConfirmUnsavedOnExit.js',
+            'js/directives/ConfirmDialogOnClick.js',
             'js/directives/FamilyMemberManager.js',
             'js/directives/UploadManager.js',
             'js/directives/UploadViewer.js',

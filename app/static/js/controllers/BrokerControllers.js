@@ -181,11 +181,9 @@ var benefitsController = brokersControllers.controller(
       };
 
       $scope.deleteBenefit = function(benefit_id){
-        if(benefit_id && confirm('Delete the benefit?')){
-          benefitPlanRepository.individual.delete({id:benefit_id}, function(){
-            $state.reload();
-          });
-        }
+        benefitPlanRepository.individual.delete({id:benefit_id}, function(){
+          $state.reload();
+        });
       };
 
       $scope.deleteLifeInsurancePlan = function(companyLifeInsurancePlan) {
