@@ -192,8 +192,10 @@ var employerUser = employersController.controller('employerUser',
       $scope.updateSalaryType = function(employee) {
         if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
           $scope.isHourlyRate = false;
+          $scope.annualSalaryNotAvailable = false;
         } else {
           $scope.isHourlyRate = true;
+          $scope.annualSalaryNotAvailable = true;
         }
       };
 

@@ -77,8 +77,9 @@ benefitmyService.factory('EmployerEmployeeManagementService',
         return false;
       }
 
-      // If full time, annual base salary is required
-      if (newEmployee.employment_type.id === 1 && !newEmployee.annual_base_salary) {
+      // If full time, annual base salary or hourly rate is required
+      if (newEmployee.employment_type.id === 1 && !newEmployee.annual_base_salary
+      && (!newEmployee.hourly_rate || !newEmployee.projected_hour_per_month)) {
         return false;
       }
 
