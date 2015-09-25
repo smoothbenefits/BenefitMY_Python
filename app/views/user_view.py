@@ -58,9 +58,6 @@ class UsersView(APIView):
         result = account_service.execute_creation(account_info)
 
         if (result.has_issue()):
-
-            for issue in result.issues:
-                print issue.message
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # construct data back to consumer
