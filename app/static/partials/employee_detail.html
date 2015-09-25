@@ -169,6 +169,8 @@
             <thead>
               <tr>
                 <th><span>Annual Salary</span></th>
+                <th><span>Hourly Rate</span></th>
+                <th><span>Hours (Est.)</span></th>
                 <th><span>Increase Percentage</span></th>
                 <th><span>Effective Date</span></th>
               </tr>
@@ -176,10 +178,24 @@
             <tbody>
               <tr ng-repeat="compensation in compensations">
                 <td>
-                  <span>$ {{compensation.salary}}  </span>
-                  <span ng-show="compensation.isCurrent">
+                  <span ng-hide="compensation.salary">N/A</span>
+                  <span ng-show="compensation.salary">$ {{compensation.salary}}  </span>
+                  <span ng-show="compensation.isCurrent && compensation.salary">
                     (<i class="fa fa-asterisk"></i>)
                   <span>
+                </td>
+                <td>
+                  <span ng-hide="compensation.hourlyRate">N/A</span>
+                  <span ng-show="compensation.hourlyRate">$ {{compensation.hourlyRate}}  </span>
+                  <span ng-show="compensation.isCurrent && compensation.hourlyRate">
+                    (<i class="fa fa-asterisk"></i>)
+                  <span>
+                </td>
+                <td>
+                  <span ng-hide="compensation.projectedHourPerMonth">N/A</span>
+                  <span ng-show="compensation.projectedHourPerMonth">
+                    $ {{compensation.projectedHourPerMonth}} hrs/month
+                  </span>
                 </td>
                 <td>
                   <span ng-show="compensation.increasePercentage">
@@ -193,7 +209,7 @@
               </tr>
             </tbody>
             <tfoot>
-              <tr><td>(*) Current compensation;</td></tr>
+              <tr><td colspan="4">(*) Current compensation;</td></tr>
             </tfoot>
           </table><!-- full time employee compensation -->
           <!-- display hourly rate and projected hour per month for part time employees -->
