@@ -189,8 +189,14 @@ var employerUser = employersController.controller('employerUser',
         })
       };
 
-      $scope.isFullTime = function(employee) {
-        return EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type);
+      $scope.updateSalaryType = function(employee) {
+        if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
+          $scope.isHourlyRate = false;
+          $scope.annualSalaryNotAvailable = false;
+        } else {
+          $scope.isHourlyRate = true;
+          $scope.annualSalaryNotAvailable = true;
+        }
       };
 
       employerWorkerRepository.get({companyId:compId})
@@ -282,7 +288,7 @@ var employerUser = employersController.controller('employerUser',
   }
 ]);
 
-var batchEmployeeAdditionController = employersController.controller('batchEmployeeAdditionController', 
+var batchEmployeeAdditionController = employersController.controller('batchEmployeeAdditionController',
     ['$scope',
      '$state',
      '$stateParams',
@@ -291,7 +297,7 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
      'usersRepository',
      'emailRepository',
      'CompensationService',
-     'EmployerEmployeeManagementService', 
+     'EmployerEmployeeManagementService',
      'BatchAccountCreationService',
     function($scope,
              $state,
@@ -307,7 +313,7 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
         var compId = $stateParams.company_id;
 
         // Share scope between child states
-        $scope.batchAddUserModel = $scope.batchAddUserModel 
+        $scope.batchAddUserModel = $scope.batchAddUserModel
             || { sendEmail:true, rawData:''};
 
         var wrapBatchAccountOperationResponse = function(response) {
@@ -393,7 +399,7 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
         $scope.save = function() {
             $scope.openSpinnerModal();
             BatchAccountCreationService.saveAllAccounts(compId, $scope.batchAddUserModel).then(function(response) {
-                $scope.closeSpinnerModal(); 
+                $scope.closeSpinnerModal();
                 // Actually parse data here, and get result
                 $scope.batchAddUserModel.saveResult = wrapBatchAccountOperationResponse(response);
 
@@ -1199,7 +1205,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
           window.location = CompanyEmployeeSummaryService.getEmployee1095cUrl(downloadUserId);
         }
       });
-      
+
     };
 }]);
 
