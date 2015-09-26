@@ -58,8 +58,8 @@ benefitmyService.factory('CommuterService',
 
         var mapPersonCompanyPlanDomainToViewModel = function(personCompanyPlanDomainModel) {
             var viewModel = {};
-            viewModel.companyPlan = personCompanyPlanDomainModel.company_hra_plan ?
-                mapCompanyPlanDomainToViewModel(personCompanyPlanDomainModel.company_hra_plan) :
+            viewModel.companyPlan = personCompanyPlanDomainModel.company_commuter_plan ?
+                mapCompanyPlanDomainToViewModel(personCompanyPlanDomainModel.company_commuter_plan) :
                 {};
 
             viewModel.personCompanyPlanId = personCompanyPlanDomainModel.id;
@@ -91,10 +91,10 @@ benefitmyService.factory('CommuterService',
                 }
             }
 
-            domainModel.employer_parking_contribution = domainModel.enable_parking_benefit 
+            domainModel.employer_parking_contribution = domainModel.enable_parking_benefit && viewModel.employerParkingContribution
                                                         ? viewModel.employerParkingContribution
                                                         : 0;
-            domainModel.employer_transit_contribution = domainModel.enable_transit_benefit
+            domainModel.employer_transit_contribution = domainModel.enable_transit_benefit && viewModel.employerTransitContribution
                                                         ? viewModel.employerTransitContribution
                                                         : 0;
 
@@ -108,13 +108,13 @@ benefitmyService.factory('CommuterService',
             domainModel.person = personCompanyPlanViewModel.planOwner;
             domainModel.company_commuter_plan = mapCompanyPlanViewToDomainModel(personCompanyPlanViewModel.companyPlan);
 
-            domainModel.monthly_amount_parking = domainModel.company_commuter_plan.enable_parking_benefit
+            domainModel.monthly_amount_parking = domainModel.company_commuter_plan.enable_parking_benefit && personCompanyPlanViewModel.monthlyAmountParking
                                                  ? personCompanyPlanViewModel.monthlyAmountParking
                                                  : 0;   
-            domainModel.monthly_amount_transit_pre_tax = domainModel.company_commuter_plan.enable_transit_benefit
+            domainModel.monthly_amount_transit_pre_tax = domainModel.company_commuter_plan.enable_transit_benefit && personCompanyPlanViewModel.monthlyAmountTransitPreTax
                                                          ? personCompanyPlanViewModel.monthlyAmountTransitPreTax
                                                          : 0;
-            domainModel.monthly_amount_transit_post_tax = domainModel.company_commuter_plan.enable_transit_benefit
+            domainModel.monthly_amount_transit_post_tax = domainModel.company_commuter_plan.enable_transit_benefit && personCompanyPlanViewModel.monthlyAmountTransitPostTax
                                                           ? personCompanyPlanViewModel.monthlyAmountTransitPostTax
                                                           : 0;
 
@@ -260,11 +260,14 @@ benefitmyService.factory('CommuterService',
 
             getPersonPlanByUser: function(userId, company, getBlankPlanIfNoneFound) {
                 var deferred = $q.defer();
-                getPlansForCompany(company).then(function(plans){
-                    if(!plans || plans.length<=0){
+                getPlansForCompany(company).then(function(companyPlans){
+                    if(!companyPlans || companyPlans.length<=0){
                         deferred.resolve(undefined);
                     }
                     else{
+                        // Just like all other benefits, assuming single plan for company now
+                        var companyPlan = companyPlans[0];
+
                         PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
                             CommuterRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
                             .$promise.then(function(personPlans) {
@@ -282,6 +285,9 @@ benefitmyService.factory('CommuterService',
 
                                         // Setup person plan owner
                                         blankPersonPlan.planOwner = personInfo.id;
+
+                                        // Setup the company Plan to link
+                                        blankPersonPlan.companyPlan = companyPlan;
 
                                         deferred.resolve(blankPersonPlan);
                                     }

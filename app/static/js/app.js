@@ -327,6 +327,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_selection/tab_hra.html',
                 controller:'hraBenefitsSignup'
             }).
+            state('employee_benefit_signup.commuter', {
+                url: '/commuter',
+                templateUrl: '/static/partials/benefit_selection/tab_commuter.html',
+                controller:'commuterBenefitsSignup'
+            }).
             state('employee_benefit_signup.summary', {
                 url: '/summary',
                 templateUrl: '/static/partials/benefit_selection/tab_summary.html',

@@ -20,6 +20,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'StdService',
    'LtdService',
    'HraService',
+   'CommuterService',
    'DocumentService',
    'CompanyFeatureService',
   function ($scope,
@@ -41,6 +42,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
             StdService,
             LtdService,
             HraService,
+            CommuterService,
             DocumentService,
             CompanyFeatureService){
     $('body').removeClass('onboarding-page');
@@ -154,6 +156,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
       // HRA
       HraService.getPersonPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(response){
         $scope.hraPlan = response;
+      });
+
+      // Commuter
+      CommuterService.getPersonPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(response){
+        $scope.commuterPlan = response;
       });
 
     });
@@ -967,6 +974,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
    'LtdService',
    'FsaService',
    'HraService',
+   'CommuterService',
     function employeeBenefitsSignup(
       $scope,
       $state,
@@ -977,7 +985,8 @@ var employeeBenefitsSignup = employeeControllers.controller(
       StdService,
       LtdService,
       FsaService,
-      HraService){
+      HraService,
+      CommuterService){
 
       // Inherite scope from base
       $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -990,6 +999,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var ltdPlans;
       var fsaPlans;
       var hraPlans;
+      var commuterPlans;
       var company;
 
       var promise = $scope.companyPromise.then(function(comp){
@@ -1018,6 +1028,10 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(hraPlansResponse) {
         hraPlans = hraPlansResponse;
+        return CommuterService.getPlansForCompany(company.id);
+      })
+      .then(function(commuterPlansResponse) {
+        commuterPlans = commuterPlansResponse;
       });
 
       promise.then(function(result){
@@ -1077,8 +1091,16 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
+        if (commuterPlans.length > 0) {
+          $scope.tabs.push({
+            "id": 8,
+            "heading": "Commuter",
+            "state": "employee_benefit_signup.commuter"
+          });
+        }
+
         $scope.tabs.push({
-          "id": 8,
+          "id": 9,
           "heading": "Summary",
           "state": "employee_benefit_signup.summary"
         });
@@ -2321,6 +2343,23 @@ var hraBenefitsSignup = employeeControllers.controller(
               size: 'lg',
               scope: $scope
             });
+        };
+
+    }]);
+
+var commuterBenefitsSignup = employeeControllers.controller(
+  'commuterBenefitsSignup',
+  ['$scope',
+   '$controller',
+    function commuterBenefitsSignup(
+      $scope,
+      $controller){
+
+        // Inherite scope from base
+        $controller('benefitsSignupControllerBase', {$scope: $scope});
+
+        $scope.onSaveSuccess = function() {
+            $scope.transitionToNextTab($scope.tabs);
         };
 
     }]);

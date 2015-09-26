@@ -416,6 +416,7 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
   'StdService',
   'LtdService',
   'HraService',
+  'CommuterService',
   function($scope,
            $location,
            $state,
@@ -429,7 +430,8 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
            CompanyEmployeeSummaryService,
            StdService,
            LtdService,
-           HraService){
+           HraService,
+           CommuterService){
     var company_id = $stateParams.company_id;
     $scope.employee = {id:$stateParams.employee_id};
 
@@ -503,6 +505,11 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
         // HRA
         HraService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
           $scope.employee.hraPlan = plan;
+        });
+
+        // Commuter
+        CommuterService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
+          $scope.employee.commuterPlan = plan;
         });
 
     }, function(errorResponse){

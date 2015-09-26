@@ -1,0 +1,86 @@
+<!-- Commuter -->
+<div class="panel" ng-show="personPlan">
+  <div class="panel-head">Commuter Benefits<br/><a ng-click="openPlanDetailsModal()"><b>View Details</b></a></div>
+  <div class="panel-body">
+    <form name="myForm" confirm-unsaved-on-exit>
+        <div class="row" style="margin-top:10px;" ng-if="benenfitEnablementStatus.enableTransitBenefit">
+          <div class="col-md-8">
+            <div class="form-label">Elected Monthly Amount for Transit (Pre-Tax)</div>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px;" ng-if="benenfitEnablementStatus.enableTransitBenefit">
+            <div class="col-md-offset-2 col-md-6">
+              <div class="textbox input-group">
+                    <span class="input-group-addon">$</span>
+                    <input
+                    type="number"
+                    min="0"
+                    name="elected_transit_pre_tax"
+                    ng-model="personPlan.monthlyAmountTransitPreTax" />
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px;" ng-if="benenfitEnablementStatus.enableTransitBenefit">
+          <div class="col-md-8">
+            <div class="form-label">Elected Monthly Amount for Transit (Post-Tax)</div>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px;" ng-if="benenfitEnablementStatus.enableTransitBenefit">
+            <div class="col-md-offset-2 col-md-6">
+                <div class="textbox input-group">
+                    <span class="input-group-addon">$</span>
+                    <input
+                    type="number"
+                    min="0"
+                    name="elected_transit_post_tax"
+                    ng-model="personPlan.monthlyAmountTransitPostTax" />
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px;" ng-if="benenfitEnablementStatus.enableParkingBenefit">
+          <div class="col-md-8">
+            <div class="form-label">Elected Monthly Amount for Parking</div>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px;" ng-if="benenfitEnablementStatus.enableParkingBenefit">
+            <div class="col-md-offset-2 col-md-6">
+                <div class="textbox input-group">
+                    <span class="input-group-addon">$</span>
+                    <input
+                    type="number"
+                    min="0"
+                    name="elected_parking"
+                    ng-model="personPlan.monthlyAmountParking" />
+                </div>
+            </div>
+        </div>
+        <div class="row"  style="margin-top:10px;">
+          <div class="col-md-offset-2 col-md-6">
+            <div class="alert alert-info">
+              <ul>
+                <li ng-if="benenfitEnablementStatus.enableTransitBenefit">
+                  <small>
+                    <strong>Transit:</strong> $130 IRS pre-tax maximum
+                  </small>
+                </li>
+                <li ng-if="benenfitEnablementStatus.enableParkingBenefit">
+                  <small>
+                    <strong>Parking:</strong> $250 IRS pre-tax maximum
+                  </small>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="form-holder">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="submit-box benefit-selection-button">
+        <a ng-click="save()" class="btn green">Save Selection</a>
+      </div>
+    </div>
+  </div>
+</div>

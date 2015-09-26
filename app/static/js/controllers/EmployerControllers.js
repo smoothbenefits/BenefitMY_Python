@@ -1228,6 +1228,7 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
   'StdService',
   'LtdService',
   'HraService',
+  'CommuterService',
   function($scope,
            $location,
            $state,
@@ -1241,7 +1242,8 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
            CompanyEmployeeSummaryService,
            StdService,
            LtdService,
-           HraService){
+           HraService,
+           CommuterService){
     var company_id = $stateParams.company_id;
     $scope.employee = {id:$stateParams.employee_id};
 
@@ -1315,6 +1317,11 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
         // HRA
         HraService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
           $scope.employee.hraPlan = plan;
+        });
+
+        // Commuter
+        CommuterService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
+          $scope.employee.commuterPlan = plan;
         });
 
     }, function(errorResponse){

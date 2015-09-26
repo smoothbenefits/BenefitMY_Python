@@ -243,6 +243,7 @@ PIPELINE_JS = {
             'js/directives/CustomDatePicker.js',
             'js/directives/PersonalInfoEditor.js',
             'js/directives/CompanyInfoEditor.js',
+            'js/directives/benefit_election/CommuterElection.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
