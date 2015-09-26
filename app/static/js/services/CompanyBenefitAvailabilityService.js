@@ -6,6 +6,7 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
   function BenefitSummaryService(
     $q,
     CompanyBenefitAvailabilityRepository){
+    var FullTimeBenefitFlag
 
     var mapCompanyBenefitToViewModel = function (domainModel) {
       var viewModel = {};
@@ -27,7 +28,7 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
       var deferred = $q.defer();
 
       CompanyBenefitAvailabilityRepository.CompanyBenefitsByCompany.get({companyId: companyId})
-      .$promise.then(function(benefits) {
+      .$promise.then(function(benefits) {   
         var viewCompanyBenefits = mapCompanyBenefitToViewModel(benefits);
         deferred.resolve(viewCompanyBenefits);
       }, function(error) {
