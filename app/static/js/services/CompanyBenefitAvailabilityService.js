@@ -6,7 +6,6 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
   function BenefitSummaryService(
     $q,
     CompanyBenefitAvailabilityRepository){
-    var FullTimeBenefitFlag
 
     var mapCompanyBenefitToViewModel = function (domainModel) {
       var viewModel = {};
