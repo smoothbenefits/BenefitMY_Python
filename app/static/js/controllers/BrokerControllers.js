@@ -767,6 +767,12 @@ var brokerAddStdPlanController = brokersControllers.controller(
         $scope.ageBased = false;
         $scope.toggleAgeBased = function(){
           $scope.ageBased = !$scope.ageBased;
+          if($scope.ageBased){
+            $scope.newPlan.rate = null;
+          }
+          else{
+            $scope.newPlan.ageBasedRateTable = StdService.getBlankAgeBasedRateTableViewModel();
+          }
         };
 
         $scope.newPlan.ageBasedRateTable = StdService.getBlankAgeBasedRateTableViewModel();
@@ -823,6 +829,12 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         $scope.ageBased = false;
         $scope.toggleAgeBased = function(){
           $scope.ageBased = !$scope.ageBased;
+          if($scope.ageBased){
+            $scope.newPlan.rate = null;
+          }
+          else{
+            $scope.newPlan.ageBasedRateTable = LtdService.getBlankAgeBasedRateTableViewModel();
+          }
         };
 
         $scope.newPlan.ageBasedRateTable = LtdService.getBlankAgeBasedRateTableViewModel();

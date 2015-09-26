@@ -180,22 +180,29 @@ benefitmyService.factory('StdService',
             getTotalPremiumForUserCompanyStdPlan: function(userId, stdPlan, amount) {
                 var deferred = $q.defer();
 
-                if (stdPlan.allowUserSelectAmount) {
+                if (stdPlan.allowUserSelectAmount && _.isNumber(amount)) {
                   amount = parseInt(Math.round(amount / stdPlan.stepValue) * stdPlan.stepValue);
                 } else {
                   amount = null;
                 }
 
+                var request = {
+                  'amount': amount,
+                  'user': userId,
+                  'companyStdPlan': stdPlan.companyPlanId
+                };
+
                 if (!stdPlan) {
                     deferred.resolve(0);
                 } else {
-                    StdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:stdPlan.companyPlanId, amount: amount})
-                    .$promise.then(function(premiumInfo) {
-                        deferred.resolve({
-                          totalPremium:premiumInfo.total.toFixed(2),
-                          employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
-                          effectiveBenefitAmount: premiumInfo.amount
-                        });
+                    StdRepository.CompanyPlanPremiumByUser.save(
+                      {userId:userId, id:stdPlan.companyPlanId}, request
+                    ).$promise.then(function(premiumInfo) {
+                      deferred.resolve({
+                        totalPremium:premiumInfo.total.toFixed(2),
+                        employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
+                        effectiveBenefitAmount: premiumInfo.amount
+                      });
                     }, function(error) {
                         deferred.reject(error);
                     });

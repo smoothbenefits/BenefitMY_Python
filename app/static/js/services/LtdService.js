@@ -178,16 +178,23 @@ benefitmyService.factory('LtdService',
             getEmployeePremiumForUserCompanyLtdPlan: function(userId, ltdPlan, amount) {
                 var deferred = $q.defer();
 
-                if (ltdPlan.allowUserSelectAmount) {
+                if (ltdPlan.allowUserSelectAmount && _.isNumber(amount)) {
                   amount = parseInt(Math.round(amount / ltdPlan.stepValue) * ltdPlan.stepValue);
                 } else {
                   amount = null;
                 }
 
+                var request = {
+                  'amount': amount,
+                  'user': userId,
+                  'companyLtdPlan': ltdPlan.companyPlanId
+                };
+
                 if (!ltdPlan) {
                     deferred.resolve(0);
                 } else {
-                    LtdRepository.CompanyPlanPremiumByUser.get({userId:userId, id:ltdPlan.companyPlanId, amount: amount})
+                    LtdRepository.CompanyPlanPremiumByUser.save(
+                      {userId:userId, id:ltdPlan.companyPlanId}, request)
                     .$promise.then(function(premiumInfo) {
                         deferred.resolve({
                           totalPremium:premiumInfo.total.toFixed(2),

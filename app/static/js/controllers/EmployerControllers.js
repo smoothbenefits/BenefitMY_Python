@@ -508,6 +508,26 @@ var employerBenefits = employersController.controller('employerBenefits',
           scope: $scope
         });
     };
+
+    $scope.openStdDetailsModal = function(stdPlan){
+        $scope.stdPlanRatesToDisplay = stdPlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_addition/modal_std_age_based_rates.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+    };
+
+    $scope.openLtdDetailsModal = function(ltdPlan){
+        $scope.ltdPlanRatesToDisplay = ltdPlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_addition/modal_ltd_age_based_rates.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+    };
   }
 ]);
 

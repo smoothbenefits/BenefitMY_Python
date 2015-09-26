@@ -554,7 +554,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                     child_enrolled_adad = 'No'
                     if (plan.child_adad_premium_per_month is not None):
                         child_enrolled_adad = 'Yes'
-                    col_num = self._write_field(excelSheet, row_num, col_num, spouse_enrolled_adad)
+                    col_num = self._write_field(excelSheet, row_num, col_num, child_enrolled_adad)
                     col_num = self._write_field(excelSheet, row_num, col_num, plan.child_premium_per_month)
                     employee_child_premium = float(plan.child_premium_per_month) * plan.company_supplemental_life_insurance_plan.company.pay_period_definition.month_factor
                     col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_child_premium))
