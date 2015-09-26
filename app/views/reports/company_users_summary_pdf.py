@@ -109,6 +109,12 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         self._start_new_line()
         self._set_font(10)
 
+        #Write employment type
+        employee_profile = self._get_employee_profile_by_person(person)
+        if employee_profile:
+            self._write_line([employee_profile.employment_type])
+            self._start_new_line()
+
         # Now starts writing benefit enrollments
         self._write_employee_all_health_benefits_info(user, company_id)
         self._write_employee_basic_life_insurance_info(user, person, company_id)
@@ -234,9 +240,9 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 if (company_plan.insurance_amount):
                     coverage_amount = company_plan.insurance_amount
                 elif (company_plan.salary_multiplier):
-                    salary = self._get_salary_by_person(person_model)
-                    if (salary):
-                        coverage_amount = company_plan.salary_multiplier * salary
+                    emp_profile = self._get_employee_profile_by_person(person_model)
+                    if (emp_profile and emp_profile.annual_base_salary):
+                        coverage_amount = company_plan.salary_multiplier * emp_profile.annual_base_salary
 
                 # now compute the employee premium
                 month_factor = employee_plan.company_life_insurance.company.pay_period_definition.month_factor
@@ -441,15 +447,13 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
             user = users[0]
         return user
 
-    def _get_salary_by_person(self, person_model):
-        result = None
+    def _get_employee_profile_by_person(self, person_model):
         if (person_model):
             profiles = person_model.employee_profile_person.all()
             if (len(profiles) > 0):
-                profile = profiles[0]
-                result = profile.annual_base_salary
+                return profiles[0]
+        return None
 
-        return result
 
     def _concat_strings(self, strings, delim=' '):
         result = ''
