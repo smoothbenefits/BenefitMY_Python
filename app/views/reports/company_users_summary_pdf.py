@@ -40,6 +40,8 @@ from app.models.hra.company_hra_plan import CompanyHraPlan
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.fsa.fsa import FSA
 from app.models.fsa.company_fsa_plan import CompanyFsaPlan
+from app.models.commuter.company_commuter_plan import CompanyCommuterPlan
+from app.models.commuter.person_company_commuter_plan import PersonCompanyCommuterPlan
 from app.models.sys_benefit_update_reason import SysBenefitUpdateReason
 from app.models.document import Document
 from app.models.document_type import DocumentType
@@ -117,6 +119,7 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         self._write_employee_std_insurance_info(user, company_id)
         self._write_employee_ltd_insurance_info(user, company_id)
         self._write_employee_fsa_info(user, company_id)
+        self._write_employee_commuter_info(person, company_id)
 
         # extra space between main sections
         self._start_new_line()
@@ -395,6 +398,32 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
                 self._write_waived_plan('Flexible Spending Account')
         elif company_plans:
             self._write_not_selected_plan('Flexible Spending Account')
+
+        return
+
+    def _write_employee_commuter_info(self, person_model, company_id):
+        company_plans = CompanyCommuterPlan.objects.filter(company=company_id)
+        plan_selected = False
+        if (person_model):
+            employee_plans = PersonCompanyCommuterPlan.objects.filter(person=person_model.id)
+            if (len(employee_plans) > 0):
+                plan_selected = True
+                # Render header
+                self._write_line_uniform_width(['Commuter Plan', 'Transit/Month(Pre-Tax)','Transit/Month(Post-Tax)','Parking/Month'])
+                self._draw_line()
+
+                plan = employee_plans[0]
+                self._write_line_uniform_width([ \
+                    plan.company_commuter_plan.plan_name,
+                    self._normalize_dollar_amount(plan.monthly_amount_transit_pre_tax),
+                    self._normalize_dollar_amount(plan.monthly_amount_transit_post_tax),
+                    self._normalize_dollar_amount(plan.monthly_amount_parking)])
+
+                self._start_new_line()
+                self._start_new_line()
+
+        if not plan_selected and company_plans:
+            self._write_not_selected_plan('Commuter Plan')
 
         return
 
