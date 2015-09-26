@@ -69,6 +69,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Med PCP NO.')
         col_num = self._write_field(excelSheet, 0, col_num, 'Date of Hire')
         col_num = self._write_field(excelSheet, 0, col_num, 'Annual Salary')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Employment Type')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
         col_num = self._write_field(excelSheet, 0, col_num, 'Work Phone')
         col_num = self._write_field(excelSheet, 0, col_num, 'Home Phone')
@@ -287,11 +288,12 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                     col_num = col_num + 1
 
                 col_num = self._write_field(excelSheet, row_num, col_num, self._get_employee_current_annual_salary(person_model))
+                col_num = self._write_field(excelSheet, row_num, col_num, employee_profiles[0].employment_type)
                 return col_num
 
-            return col_num + 2
+            return col_num + 3
 
-        return col_num + 2
+        return col_num + 3
 
     def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
         if (person_model and person_model.email):

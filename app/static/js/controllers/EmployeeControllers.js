@@ -22,6 +22,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'HraService',
    'DocumentService',
    'CompanyFeatureService',
+   'EmployeeBenefitsAvailabilityService',
   function ($scope,
             $location,
             $state,
@@ -42,7 +43,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
             LtdService,
             HraService,
             DocumentService,
-            CompanyFeatureService){
+            CompanyFeatureService,
+            EmployeeBenefitsAvailabilityService){
     $('body').removeClass('onboarding-page');
     var curUserId;
     var userPromise = UserService.getCurUserInfo();
@@ -72,9 +74,15 @@ var employeeHome = employeeControllers.controller('employeeHome',
       return response;
     });
 
-
     userPromise.then(function(userInfo){
       if(userInfo && userInfo.currentRole.company.id){
+        EmployeeBenefitsAvailabilityService.getEmployeeAvailableBenefits(
+            userInfo.currentRole.company.id,
+            userInfo.user.id)
+        .then(function(availableBenefits){
+          $scope.availableBenefits = availableBenefits;
+        });
+          
         employeeBenefits.enroll().get({userId:userInfo.user.id, companyId:userInfo.currentRole.company.id})
           .$promise.then(function(response){
                        $scope.benefits = response.benefits;
@@ -967,6 +975,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
    'LtdService',
    'FsaService',
    'HraService',
+   'EmployeeBenefitsAvailabilityService',
     function employeeBenefitsSignup(
       $scope,
       $state,
@@ -977,7 +986,8 @@ var employeeBenefitsSignup = employeeControllers.controller(
       StdService,
       LtdService,
       FsaService,
-      HraService){
+      HraService,
+      EmployeeBenefitsAvailabilityService){
 
       // Inherite scope from base
       $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -994,6 +1004,15 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
       var promise = $scope.companyPromise.then(function(comp){
         company = comp;
+        EmployeeBenefitsAvailabilityService.getEmployeeAvailableBenefits(
+          comp.id,
+          employeeId)
+        .then(function(availableBenefits){
+          if(!availableBenefits){
+            alert("You do not have any benefits to enroll. Back to the dashboard page");
+            $state.go('/');
+          }
+        }); 
         return BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(comp, 'Basic');
       })
       .then(function(basicPlans) {
