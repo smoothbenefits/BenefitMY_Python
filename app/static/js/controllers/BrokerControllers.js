@@ -136,6 +136,7 @@ var benefitsController = brokersControllers.controller(
     'LtdService',
     'FsaService',
     'HraService',
+    'CommuterService',
     'companyRepository',
     function ($scope,
               $location,
@@ -150,6 +151,7 @@ var benefitsController = brokersControllers.controller(
               LtdService,
               FsaService,
               HraService,
+              CommuterService,
               companyRepository){
       $scope.role = 'Broker';
       $scope.showAddBenefitButton = true;
@@ -268,6 +270,16 @@ var benefitsController = brokersControllers.controller(
 
       $scope.deleteHraPlan = function(companyPlanToDelete) {
         HraService.deleteCompanyPlan(companyPlanToDelete.companyPlanId).then(function() {
+          $state.reload();
+        });
+      };
+
+      CommuterService.getPlansForCompany($stateParams.clientId).then(function(response) {
+        $scope.commuterPlans = response;
+      });
+
+      $scope.deleteCommuterPlan = function(companyPlanToDelete) {
+        CommuterService.deleteCompanyPlan(companyPlanToDelete.companyPlanId).then(function() {
           $state.reload();
         });
       };
@@ -402,6 +414,7 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
   'StdService',
   'LtdService',
   'HraService',
+  'CommuterService',
   function($scope,
            $location,
            $state,
@@ -415,7 +428,8 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
            CompanyEmployeeSummaryService,
            StdService,
            LtdService,
-           HraService){
+           HraService,
+           CommuterService){
     var company_id = $stateParams.company_id;
     $scope.employee = {id:$stateParams.employee_id};
 
@@ -489,6 +503,13 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
         // HRA
         HraService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
           $scope.employee.hraPlan = plan;
+        });
+
+        // Commuter
+        CommuterService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
+          $scope.employee.commuterPlan = plan;
+          $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);
+          $scope.employee.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.employee.commuterPlan);
         });
 
     }, function(errorResponse){
@@ -915,6 +936,58 @@ var brokerAddHraPlanController = brokersControllers.controller(
 
               $scope.showMessageWithOkayOnly('Failed', failureMessage);
         });
+    };
+   }
+]);
+
+var brokerAddCommuterPlanController = brokersControllers.controller(
+  'brokerAddCommuterPlanController',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$controller',
+   'CommuterService',
+   'UserService',
+   function($scope,
+            $state,
+            $stateParams,
+            $controller,
+            CommuterService,
+            UserService){
+
+    // Inherite scope from base
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
+
+    $scope.deductionPeriods = CommuterService.deductionPeriods;
+    $scope.benefitOptions = CommuterService.benefitEnablementOptions;
+
+    var clientId = $stateParams.clientId;
+
+    CommuterService.getBlankPlanForCompany(clientId).then(function(blankCompanyPlan) {
+        $scope.newPlan = blankCompanyPlan;
+    });
+
+    // Need the user information for the current user (broker)
+    $scope.addPlan = function() {
+        CommuterService.addPlanForCompany($scope.newPlan, clientId).then(
+            function() {
+              var successMessage = "The new Commuter plan has been saved successfully."
+
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            },
+            function() {
+              var failureMessage = "There was a problem saving the data. Please make sure all required fields have been filled out and try again."
+
+              $scope.showMessageWithOkayOnly('Failed', failureMessage);
+        });
+    };
+
+    $scope.benefitEnablementOptionChanged = function() {
+        var benenfitEnablementStatus = CommuterService.mapEnablementOptionToStatus($scope.newPlan.benefitEnablementOption);
+
+        if (benenfitEnablementStatus) {
+            $scope.benenfitEnablementStatus = benenfitEnablementStatus;
+        }
     };
    }
 ]);

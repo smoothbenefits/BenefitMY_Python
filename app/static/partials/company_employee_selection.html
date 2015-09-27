@@ -438,3 +438,43 @@
             </div>
           </div>
         </div>
+
+        <!-- Commuter summary table -->
+        <div class="row" ng-if="employee.commuterPlan !== undefined">
+          <div class="col-sm-2">
+            <div>Commuter Benefits</div>
+          </div>
+          <div class="col-sm-10" ng-show="employee.commuterPlan">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th><span>Plan Name</span></th>
+                    <th><span>Total Transit</span></th>
+                    <th><span>Total Parking</span></th>
+                    <th><span>Last Updated</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{employee.commuterPlan.companyPlan.planName}}</td>
+                    <td>${{employee.commuterPlan.calculatedTotalTransitAllowance}}/Month</td>
+                    <td>${{employee.commuterPlan.calculatedTotalParkingAllowance}}/Month</td>
+                    <td>{{employee.commuterPlan.lastUpdateDateTime}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-10" ng-show="!employee.commuterPlan">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <tbody>
+                  <tr>
+                    <td width="280">No active Commuter plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>

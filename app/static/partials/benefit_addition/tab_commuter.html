@@ -1,0 +1,92 @@
+<div class="benefit-form-holder">
+  <form name="form" class="dynamic-form">
+    <div class="form-holder col-md-8">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-label">Plan Name</div>
+          <div class="textbox">
+            <input type="text"
+            name="plan_name"
+            ng-model="newPlan.planName"
+            ng-required="true" />
+            <div class="form-error" ng-show="form.new_plan_name.$dirty && form.new_plan_name.$invalid">
+              <span ng-show="form.new_plan_name.$error.required">Plan name field is required</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+            <div class="form-label">Benefits Enablement</div>
+            <div class="select-box">
+                <select id="benefit_options"
+                ng-model="newPlan.benefitEnablementOption"
+                ng-required="true"
+                name="benefit_options"
+                ng-options="benefitOption.displayName for benefitOption in benefitOptions track by benefitOption.value"
+                class="form-control"
+                ng-change="benefitEnablementOptionChanged()"></select>
+                <div class="form-error" ng-show="form.benefit_options.$dirty">
+                  <span ng-show="form.benefit_options.$error.required">Benefits enablement option must be selected</span>
+                </div>
+              </div>
+        </div>
+      </div>
+      <div class="row" ng-if="benenfitEnablementStatus.enableTransitBenefit">
+        <div class="col-md-8">
+          <div class="form-label">Employer Contribution for Transit</div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$</span>
+            <input
+            type="number"
+            min="0"
+            name="transit_employer_contribution"
+            ng-model="newPlan.employerTransitContribution" />
+          </div>
+          <div class="form-error-relative" ng-show="form.transit_employer_contribution.$invalid">
+            Employer transit contribution amount is invalid
+          </div>
+        </div>
+      </div>
+      <div class="row" ng-if="benenfitEnablementStatus.enableParkingBenefit">
+        <div class="col-md-8">
+          <div class="form-label">Employer Contribution for Parking</div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$</span>
+            <input
+            type="number"
+            min="0"
+            name="parking_employer_contribution"
+            ng-model="newPlan.employerParkingContribution" />
+          </div>
+          <div class="form-error-relative" ng-show="form.parking_employer_contribution.$invalid">
+            Employer parking contribution amount is invalid
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-label">Deduction Period</div>
+          <div class="select-box">
+            <select id="deduction_period"
+            ng-model="newPlan.deductionPeriod"
+            ng-required="true"
+            name="deduction_period"
+            ng-options="deductionPeriod.value as deductionPeriod.displayName for deductionPeriod in deductionPeriods"
+            class="form-control"></select>
+            <div class="form-error" ng-show="form.deduction_period.$dirty">
+              <span ng-show="form.deduction_period.$error.required">Deduction period must be selected</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="submit-box" style="max-width: 200px;">
+            <a ng-click="addPlan()" class="btn green" ng-disabled="form.$invalid">Add</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

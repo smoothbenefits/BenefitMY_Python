@@ -333,6 +333,36 @@
 </div>
 </div><!-- / .content-body -->
 
+<!-- Commuter summary table -->
+<div class="table-responsive table-holder table" ng-if="commuterPlan !== undefined">
+  <div class="table-sub-title">Commuter Benefits</div>
+  <table class="table table-striped" ng-show="!commuterPlan">
+    <tbody>
+      <tr>
+        <td width="180">No active commuter plan</td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="table table-striped" ng-show="commuterPlan">
+    <thead>
+      <tr>
+        <th><span>Plan Name</span></th>
+        <th><span>Total Transit</span></th>
+        <th><span>Total Parking</span></th>
+        <th><span>Last Updated</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{commuterPlan.companyPlan.planName}}</td>
+        <td>${{commuterPlan.calculatedTotalTransitAllowance}}/Month</td>
+        <td>${{commuterPlan.calculatedTotalParkingAllowance}}/Month</td>
+        <td>{{commuterPlan.lastUpdateDateTime}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div><!-- / .content-body -->
+
 <div ng-hide="disabledFeatures.W4 && disabledFeatures.DD">
   <div class="content-header">
     <h1>My Payroll</h1>

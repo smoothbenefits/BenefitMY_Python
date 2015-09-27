@@ -399,6 +399,25 @@ benefitmyDomainModelFactories.factory('HraRepository', ['$resource',
   }
 ]);
 
+benefitmyDomainModelFactories.factory('CommuterRepository', ['$resource',
+  function($resource){
+    return {
+      CompanyPlanByCompany: $resource('/api/v1/company/:companyId/company_commuter_plan/', {companyId:'@company_id'}),
+      CompanyPlanById: $resource('/api/v1/company_commuter_plan/:id/', {id:'@id'}, {
+        update: {
+            method: 'PUT'
+        }
+      }),
+      CompanyPersonPlanByPerson: $resource('/api/v1/person/:personId/person_company_commuter_plan/', {personId:'@person_id'}),
+      CompanyPersonPlanById: $resource('/api/v1/person_company_commuter_plan/:id/', {id:'@id'}, {
+        update: {
+            method: 'PUT'
+        }
+      })
+    };
+  }
+]);
+
 benefitmyDomainModelFactories.factory('CompanyBenefitAvailabilityRepository', ['$resource',
   function ($resource) {
     return {
