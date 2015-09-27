@@ -80,7 +80,7 @@
             <div class="form-label">Calculated Total Monthly Benefits Allowances</div>
           </div>
         </div>
-        <div class="row" style="margin-top:3px;">
+        <div class="row" style="margin-top:3px;" ng-if="benenfitEnablementStatus.enableTransitBenefit">
           <div class="col-md-offset-2 col-md-2" style="margin-top:7px;">
             <div>Transit</div>
           </div>
@@ -88,7 +88,7 @@
             <div>${{personPlan.companyPlan.employerTransitContribution}} + ${{personPlan.monthlyAmountTransitPreTax}} + ${{personPlan.monthlyAmountTransitPostTax}} = <b>${{computeTotalMonthlyTransitAllowance()}}/Month</b></div>
           </div>
         </div>
-        <div class="row" style="margin-top:3px;">
+        <div class="row" style="margin-top:3px;" ng-if="benenfitEnablementStatus.enableParkingBenefit">
           <div class="col-md-offset-2 col-md-2" style="margin-top:7px;">
             <div>Parking</div>
           </div>

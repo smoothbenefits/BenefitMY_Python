@@ -984,11 +984,8 @@ var employeeBenefitsSignup = employeeControllers.controller(
    'LtdService',
    'FsaService',
    'HraService',
-<<<<<<< HEAD
    'CommuterService',
-=======
    'EmployeeBenefitsAvailabilityService',
->>>>>>> master
     function employeeBenefitsSignup(
       $scope,
       $state,
@@ -1000,11 +997,8 @@ var employeeBenefitsSignup = employeeControllers.controller(
       LtdService,
       FsaService,
       HraService,
-<<<<<<< HEAD
-      CommuterService){
-=======
+      CommuterService,
       EmployeeBenefitsAvailabilityService){
->>>>>>> master
 
       // Inherite scope from base
       $controller('benefitsSignupControllerBase', {$scope: $scope});
