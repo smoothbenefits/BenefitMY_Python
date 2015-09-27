@@ -14,6 +14,18 @@ benefitmyService.factory('EmployerEmployeeManagementService',
       {
         "name": "Part-time",
         "id": 2
+      },
+      {
+        "name": "Contractor",
+        "id": 3
+      },
+      {
+        "name": "Intern",
+        "id": 4
+      },
+      {
+        "name": "Per Diem",
+        "id": 5
       }
     ];
 
@@ -51,6 +63,12 @@ benefitmyService.factory('EmployerEmployeeManagementService',
         domainModel.employment_type = "FullTime";
       } else if (viewModel.employment_type.id === 2) {
         domainModel.employment_type = "PartTime";
+      } else if (viewModel.employment_type.id === 3) {
+        domainModel.employment_type = "Contractor";
+      } else if (viewModel.employment_type.id === 4) {
+        domainModel.employment_type = "Intern";
+      } else if (viewModel.employment_type.id === 5) {
+        domainModel.employment_type = "PerDiem";
       }
 
       // Do not set password if selected "send email"
