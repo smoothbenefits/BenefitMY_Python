@@ -173,13 +173,16 @@ class AccountCreationService(object):
 
         # Now validate the initial compensation record
         if (account_info.employment_type == PART_TIME):
-            if (account_info.compensation_info.hourly_rate is None or 
+            if (account_info.compensation_info.hourly_rate is None or
                 account_info.compensation_info.projected_hour_per_month is None):
                 result.append_issue(
                     "Compensation record info is incomplete"
                 )
         elif (account_info.employment_type == FULL_TIME):
-            if (account_info.compensation_info.annual_base_salary is None):
+            # Full time employee could be on hourly payroll
+            if (account_info.compensation_info.annual_base_salary is None and
+                (account_info.compensation_info.hourly_rate is None or
+                 account_info.compensation_info.projected_hour_per_month is None)):
                 result.append_issue(
                     "Compensation record info is incomplete"
                 )
@@ -229,7 +232,7 @@ class AccountCreationService(object):
 
         return result
 
-    def execute_creation(self, account_info, do_validation=True): 
+    def execute_creation(self, account_info, do_validation=True):
         result = OperationResult(account_info)
         account_result = None
 

@@ -237,6 +237,7 @@ PIPELINE_JS = {
             'js/controllers/EmployerControllers.js',
             'js/directives/ScrollTo.js',
             'js/directives/ConfirmUnsavedOnExit.js',
+            'js/directives/ConfirmDialogOnClick.js',
             'js/directives/FamilyMemberManager.js',
             'js/directives/UploadManager.js',
             'js/directives/UploadViewer.js',
@@ -288,7 +289,8 @@ PIPELINE_JS = {
             'js/services/CompanyBenefitEnrollmentSummaryService.js',
             'js/services/BatchAccountCreationService.js',
             'js/services/Company1095CService.js',
-            'js/services/AgeRangeService.js'
+            'js/services/AgeRangeService.js',
+            'js/services/EmployeeBenefitsAvailabilityService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }
