@@ -347,18 +347,16 @@
     <thead>
       <tr>
         <th><span>Plan Name</span></th>
-        <th><span>Elected Monthly Amount for Transit (PreTax)</span></th>
-        <th><span>Elected Monthly Amount for Transit (PostTax)</span></th>
-        <th><span>Elected Monthly Amount for Parking</span></th>
+        <th><span>Total Transit</span></th>
+        <th><span>Total Parking</span></th>
         <th><span>Last Updated</span></th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>{{commuterPlan.companyPlan.planName}}</td>
-        <td>${{commuterPlan.monthlyAmountTransitPreTax}}/Month</td>
-        <td>${{commuterPlan.monthlyAmountTransitPostTax}}/Month</td>
-        <td>${{commuterPlan.monthlyAmountParking}}/Month</td>
+        <td>${{commuterPlan.calculatedTotalTransitAllowance}}/Month</td>
+        <td>${{commuterPlan.calculatedTotalParkingAllowance}}/Month</td>
         <td>{{commuterPlan.lastUpdateDateTime}}</td>
       </tr>
     </tbody>

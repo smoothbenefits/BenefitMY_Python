@@ -84,6 +84,20 @@ BenefitMyApp.directive('bmCommuterElection', function() {
                 }
             );
         };
+
+        $scope.computeTotalMonthlyParkingAllowance = function() {
+            if (!$scope.personPlan) {
+                return 0;
+            }
+            return CommuterService.computeTotalMonthlyParkingAllowance($scope.personPlan);
+        };
+
+        $scope.computeTotalMonthlyTransitAllowance = function() {
+            if (!$scope.personPlan) {
+                return 0;
+            }
+            return CommuterService.computeTotalMonthlyTransitAllowance($scope.personPlan);
+        };
     }
   ];
 

@@ -510,6 +510,8 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
         // Commuter
         CommuterService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
           $scope.employee.commuterPlan = plan;
+          $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);
+          $scope.employee.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.employee.commuterPlan);
         });
 
     }, function(errorResponse){

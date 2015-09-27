@@ -143,6 +143,19 @@ benefitmyService.factory('CommuterService',
             return rawNumber != null && rawNumber != undefined ? Number(rawNumber) : null;
         };
 
+        var computeTotalMonthlyTransitAllowance = function(personPlan) {
+            return (personPlan.companyPlan.employerTransitContribution
+                + personPlan.monthlyAmountTransitPreTax
+                + personPlan.monthlyAmountTransitPostTax)
+                .toFixed(2);
+        };
+
+        var computeTotalMonthlyParkingAllowance = function(personPlan) {
+            return (personPlan.companyPlan.employerParkingContribution
+                + personPlan.monthlyAmountParking)
+                .toFixed(2);
+        };
+
         return {
 
             deductionPeriods: deductionPeriods,
@@ -152,6 +165,10 @@ benefitmyService.factory('CommuterService',
             getPlansForCompany: getPlansForCompany,
 
             mapEnablementOptionToStatus: mapEnablementOptionToStatus,
+
+            computeTotalMonthlyTransitAllowance: computeTotalMonthlyTransitAllowance,
+
+            computeTotalMonthlyParkingAllowance: computeTotalMonthlyParkingAllowance,
 
             getBlankPlanForCompany: function(companyId) {
                 var deferred = $q.defer();
