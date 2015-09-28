@@ -189,8 +189,14 @@ var employerUser = employersController.controller('employerUser',
         })
       };
 
-      $scope.isFullTime = function(employee) {
-        return EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type);
+      $scope.updateSalaryType = function(employee) {
+        if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
+          $scope.isHourlyRate = false;
+          $scope.annualSalaryNotAvailable = false;
+        } else {
+          $scope.isHourlyRate = true;
+          $scope.annualSalaryNotAvailable = true;
+        }
       };
 
       employerWorkerRepository.get({companyId:compId})
@@ -282,7 +288,7 @@ var employerUser = employersController.controller('employerUser',
   }
 ]);
 
-var batchEmployeeAdditionController = employersController.controller('batchEmployeeAdditionController', 
+var batchEmployeeAdditionController = employersController.controller('batchEmployeeAdditionController',
     ['$scope',
      '$state',
      '$stateParams',
@@ -291,7 +297,7 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
      'usersRepository',
      'emailRepository',
      'CompensationService',
-     'EmployerEmployeeManagementService', 
+     'EmployerEmployeeManagementService',
      'BatchAccountCreationService',
     function($scope,
              $state,
@@ -307,7 +313,7 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
         var compId = $stateParams.company_id;
 
         // Share scope between child states
-        $scope.batchAddUserModel = $scope.batchAddUserModel 
+        $scope.batchAddUserModel = $scope.batchAddUserModel
             || { sendEmail:true, rawData:''};
 
         var wrapBatchAccountOperationResponse = function(response) {
@@ -393,7 +399,7 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
         $scope.save = function() {
             $scope.openSpinnerModal();
             BatchAccountCreationService.saveAllAccounts(compId, $scope.batchAddUserModel).then(function(response) {
-                $scope.closeSpinnerModal(); 
+                $scope.closeSpinnerModal();
                 // Actually parse data here, and get result
                 $scope.batchAddUserModel.saveResult = wrapBatchAccountOperationResponse(response);
 
@@ -427,6 +433,7 @@ var employerBenefits = employersController.controller('employerBenefits',
   'LtdService',
   'FsaService',
   'HraService',
+  'CommuterService',
   'companyRepository',
   function ($scope,
             $location,
@@ -439,6 +446,7 @@ var employerBenefits = employersController.controller('employerBenefits',
             LtdService,
             FsaService,
             HraService,
+            CommuterService,
             companyRepository){
 
     var compId = $stateParams.company_id;
@@ -491,6 +499,10 @@ var employerBenefits = employersController.controller('employerBenefits',
 
     HraService.getPlansForCompany($stateParams.company_id).then(function(response) {
       $scope.hraPlans = response;
+    });
+
+    CommuterService.getPlansForCompany($stateParams.company_id).then(function(response) {
+      $scope.commuterPlans = response;
     });
 
     $scope.openSupplementalLifePlanDetailsModal = function(supplementalLifePlan) {
@@ -1199,7 +1211,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
           window.location = CompanyEmployeeSummaryService.getEmployee1095cUrl(downloadUserId);
         }
       });
-      
+
     };
 }]);
 
@@ -1242,6 +1254,7 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
   'StdService',
   'LtdService',
   'HraService',
+  'CommuterService',
   function($scope,
            $location,
            $state,
@@ -1255,7 +1268,8 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
            CompanyEmployeeSummaryService,
            StdService,
            LtdService,
-           HraService){
+           HraService,
+           CommuterService){
     var company_id = $stateParams.company_id;
     $scope.employee = {id:$stateParams.employee_id};
 
@@ -1329,6 +1343,13 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
         // HRA
         HraService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
           $scope.employee.hraPlan = plan;
+        });
+
+        // Commuter
+        CommuterService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
+          $scope.employee.commuterPlan = plan;
+          $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);
+          $scope.employee.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.employee.commuterPlan);
         });
 
     }, function(errorResponse){

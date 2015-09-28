@@ -1,0 +1,49 @@
+<div class="modal-header">
+  <h4 class="modal-title">Commuter Benefits Details</h4>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-label">Documents</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-1">
+      <bmuploadviewer feature-id="{{companyPlanToDisplay.companyPlanId}}" upload-type="Commuter"></bmuploadviewer>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-label">Commuter benefits details from your company</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-1">
+      <div class="table-responsive table-holder" ng-if="companyPlanToDisplay">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+                <th><span>Commuter Plan Name</span></th>
+                <th><span>Benefit Enablement</span></th>
+                <th><span>Employer Transit Contribution</span></th>
+                <th><span>Employer Parking Contribution</span></th>
+                <th><span>Deduction Method</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>{{companyPlanToDisplay.planName}}</td>
+                <td>{{companyPlanToDisplay.benefitEnablementOption.displayName}}</td>
+                <td>${{companyPlanToDisplay.employerTransitContribution}}/Month</td>
+                <td>${{companyPlanToDisplay.employerParkingContribution}}/Month</td>
+                <td>{{companyPlanToDisplay.deductionPeriod}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="closePlanDetailsModal()">Close</button>
+</div>

@@ -10,8 +10,9 @@ FULL_TIME = 'FullTime'
 PART_TIME = 'PartTime'
 CONTRACTOR = 'Contractor'
 INTERN = 'Intern'
+PER_DIEM = 'PerDiem'
 
-EMPLOYMENT_TYPES = ([(item, item) for item in [FULL_TIME, PART_TIME, CONTRACTOR, INTERN]])
+EMPLOYMENT_TYPES = ([(item, item) for item in [FULL_TIME, PART_TIME, CONTRACTOR, INTERN, PER_DIEM]])
 
 EMPLYMENT_STATUS_ACTIVE = 'Active'
 EMPLYMENT_STATUS_PROSPECTIVE = 'Prospective'

@@ -1,0 +1,33 @@
+[
+  {
+    "fields": {
+      "plan_name": "Commuter Basic",
+      "enable_transit_benefit": true,
+      "enable_parking_benefit": true,
+      "employer_transit_contribution": 50.50,
+      "employer_parking_contribution": 10.23,
+      "deduction_period": "PerPayPeriod",
+      "company": 1,
+      "created_at": "2015-09-23T14:09:38Z",
+      "updated_at": "2015-09-23T15:23:33Z"
+    },
+    "model": "app.CompanyCommuterPlan",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "plan_name": "WageWorks Commuter",
+      "enable_transit_benefit": true,
+      "enable_parking_benefit": false,
+      "employer_transit_contribution": 0.0,
+      "employer_parking_contribution": 0.0,
+      "deduction_period": "Monthly",
+      "company": 2,
+      "created_at": "2015-09-23T14:09:38Z",
+      "updated_at": "2015-09-23T15:23:33Z"
+    },
+    "model": "app.CompanyCommuterPlan",
+    "pk": 2
+  }
+]
+

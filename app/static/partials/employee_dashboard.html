@@ -2,13 +2,13 @@
   <span>Employee Dashboard</span>
 </div>
 
-<div class="content-header">
+<div class="content-header" ng-if="availableBenefits">
   <h1>My Benefits</h1>
   <span class="general-info">You have total <b>{{benefitCount}}</b> benefits</span>
   <div class="cta"><a ng-click="startModifyBenefit()" class="btn green" >Modify Benefits</a></div>
 </div><!-- / .content-header -->
 
-<div class="content-body">
+<div class="content-body" ng-if="availableBenefits">
   <div class="view-instruction">
     <p> Please use the <span class="green-link">Modify Benefits button</span> on the top right to enroll into the desired benefits provided by your Employer.</p>
     <p> Below are your <b>Benefit Selection</b> information. Please continue to scroll down to see each benefit selections you have made</p>
@@ -331,6 +331,36 @@
     </tbody>
   </table>
 </div>
+</div><!-- / .content-body -->
+
+<!-- Commuter summary table -->
+<div class="table-responsive table-holder table" ng-if="commuterPlan !== undefined">
+  <div class="table-sub-title">Commuter Benefits</div>
+  <table class="table table-striped" ng-show="!commuterPlan">
+    <tbody>
+      <tr>
+        <td width="180">No active commuter plan</td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="table table-striped" ng-show="commuterPlan">
+    <thead>
+      <tr>
+        <th><span>Plan Name</span></th>
+        <th><span>Total Transit</span></th>
+        <th><span>Total Parking</span></th>
+        <th><span>Last Updated</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{commuterPlan.companyPlan.planName}}</td>
+        <td>${{commuterPlan.calculatedTotalTransitAllowance}}/Month</td>
+        <td>${{commuterPlan.calculatedTotalParkingAllowance}}/Month</td>
+        <td>{{commuterPlan.lastUpdateDateTime}}</td>
+      </tr>
+    </tbody>
+  </table>
 </div><!-- / .content-body -->
 
 <div ng-hide="disabledFeatures.W4 && disabledFeatures.DD">

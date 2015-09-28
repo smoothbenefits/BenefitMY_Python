@@ -189,3 +189,9 @@ class PdfExportViewBase(ReportExportViewBase):
         if (text is None):
             result = ''
         return str(result)
+
+    def _normalize_dollar_amount(self, text):
+        result = text
+        if (text is not None):
+            result = "${:.2f}".format(float(text))
+        return result

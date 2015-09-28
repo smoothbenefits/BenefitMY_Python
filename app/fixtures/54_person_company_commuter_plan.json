@@ -1,0 +1,28 @@
+[
+  {
+    "fields": {
+      "monthly_amount_transit_pre_tax": 10.50,
+      "monthly_amount_transit_post_tax": 30.22,
+      "monthly_amount_parking": 50,
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company_commuter_plan": 1,
+      "person": 3
+    },
+    "model": "app.PersonCompanyCommuterPlan",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "monthly_amount_transit_pre_tax": 0,
+      "monthly_amount_transit_post_tax": 0,
+      "monthly_amount_parking": 150,
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company_commuter_plan": 1,
+      "person": 4
+    },
+    "model": "app.PersonCompanyCommuterPlan",
+    "pk": 2
+  }
+]
