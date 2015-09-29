@@ -370,7 +370,11 @@
       <tr ng-repeat="commuterPlan in commuterPlans">
         <td>
           {{commuterPlan.planName}}
-          <a class="delete-cross" ng-show="benefitDeletable" ng-click="deleteCommuterPlan(commuterPlan)" href="javascript:void(0);">X</a>
+          <a class="delete-cross"
+          ng-show="benefitDeletable"
+          ng-click="deleteCommuterPlan(commuterPlan)"
+          href="javascript:void(0);"
+          confirm="Delete the commuter plan?">X</a>
         </td>
         <td class="upload-td">
           <bmuploadmanager
