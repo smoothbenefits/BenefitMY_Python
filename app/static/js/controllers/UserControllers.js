@@ -104,6 +104,7 @@ var userController = userControllers.controller('userController',
    'CompanyEmployeeSummaryService',
    'CompanyFeatureService',
    'BrowserDetectionService',
+   'EmployeeBenefitsAvailabilityService',
   function userController($scope,
                           $http,
                           $location,
@@ -113,7 +114,8 @@ var userController = userControllers.controller('userController',
                           userLogOut,
                           CompanyEmployeeSummaryService,
                           CompanyFeatureService,
-                          BrowserDetectionService) {
+                          BrowserDetectionService,
+                          EmployeeBenefitsAvailabilityService) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var roleTypeDictionary = {
@@ -130,6 +132,12 @@ var userController = userControllers.controller('userController',
       CompanyFeatureService.getDisabledCompanyFeatureByCompany($scope.company_id).then(function(features) {
         $scope.disabledFeatures = features;
       });
+      EmployeeBenefitsAvailabilityService.getEmployeeAvailableBenefits(
+          $scope.company_id,
+          userInfo.user.id)
+      .then(function(availableBenefits){
+        $scope.availableBenefits = availableBenefits;
+      });      
     });
 
     $scope.isRoleActive = function(checkRole){

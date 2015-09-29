@@ -103,5 +103,19 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 14
+  },
+  {
+    "fields": {
+      "feature": "BenefitsForFullTimeOnly"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 15
+  },
+  {
+    "fields": {
+      "feature": "Commuter"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 16
   }
 ]
