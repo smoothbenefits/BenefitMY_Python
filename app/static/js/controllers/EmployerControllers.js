@@ -1020,7 +1020,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
 
       $scope.errorMessage = null;
       $scope.employeeProfileModel = employeeProfileModel;
-      $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern'];
+      $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern', 'PerDiem'];
       $scope.employmentStatusList = _.reject(
         _.values(EmploymentStatuses),
           function(status){
