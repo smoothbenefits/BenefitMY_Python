@@ -5,7 +5,8 @@ from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.custom_authentication import AuthUserManager
 from app.models.person import Person
-from app.models.employee_profile import FULL_TIME, PART_TIME, EMPLYMENT_STATUS_ACTIVE
+from app.models.employee_profile import FULL_TIME, PART_TIME, CONTRACTOR, \
+    INTERN, PER_DIEM, EMPLYMENT_STATUS_ACTIVE
 from app.models.company_user import USER_TYPE_EMPLOYEE
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
@@ -172,7 +173,7 @@ class AccountCreationService(object):
             )
 
         # Now validate the initial compensation record
-        if (account_info.employment_type == PART_TIME):
+        if (account_info.employment_type in [PART_TIME, CONTRACTOR, INTERN, PER_DIEM]):
             if (account_info.compensation_info.hourly_rate is None or
                 account_info.compensation_info.projected_hour_per_month is None):
                 result.append_issue(
