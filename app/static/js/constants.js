@@ -137,7 +137,14 @@ settings.constant('tabLayoutGlobalConfig', [
                 name: "fsa",
                 active: false,
                 state: "broker_add_benefit.fsa"
-            }
+            },
+            {
+                id: 8,
+                verbose_name: "Commuter",
+                name: "commuter",
+                active: false,
+                state: "broker_add_benefit.commuter"
+            },
         ]
     },
     {

@@ -26,13 +26,14 @@ class CompensationService(object):
         except EmployeeCompensation.DoesNotExist:
             return None
 
-    def _calculate_annual_salary(self, compensation, isFulltime=True):
+    def _calculate_annual_salary(self, compensation, is_fulltime=True):
         current_salary = None
-        if isFulltime:
+        if is_fulltime and compensation.annual_base_salary:
             current_salary = compensation.annual_base_salary
-        else:
-            if (compensation.hourly_rate and compensation.projected_hour_per_month):
-                current_salary = compensation.hourly_rate * compensation.projected_hour_per_month * 12
+            return current_salary
+
+        if (compensation.hourly_rate and compensation.projected_hour_per_month):
+            current_salary = compensation.hourly_rate * compensation.projected_hour_per_month * 12
 
         return current_salary
 
