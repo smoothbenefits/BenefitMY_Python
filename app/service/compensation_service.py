@@ -84,7 +84,7 @@ class CompensationService(object):
                     comp_info.increase_percentage = (comp_info.annual_base_salary - base.annual_base_salary) /base.annual_base_salary * 100
             elif comp_info.hourly_rate and not comp_info.annual_base_salary:
                 # we are in the part time employee case
-                if base:
+                if base.hourly_rate:
                     comp_info.increase_percentage = (comp_info.hourly_rate - base.hourly_rate) / base.hourly_rate * 100
             elif comp_info.increase_percentage:
                 # Calculate the actual number based on increase percentage
