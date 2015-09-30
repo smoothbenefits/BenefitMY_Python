@@ -84,7 +84,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
         .then(function(availableBenefits){
           $scope.availableBenefits = availableBenefits;
         });
-          
+
         employeeBenefits.enroll().get({userId:userInfo.user.id, companyId:userInfo.currentRole.company.id})
           .$promise.then(function(response){
                        $scope.benefits = response.benefits;
@@ -1024,7 +1024,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
             alert("You do not have any benefits to enroll. Back to the dashboard page");
             $state.go('/');
           }
-        }); 
+        });
         return BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(comp, 'Basic');
       })
       .then(function(basicPlans) {
@@ -2151,7 +2151,7 @@ var stdBenefitsSignup = employeeControllers.controller(
           .then(function(premiumInfo) {
             $scope.companyStdPlan.totalPremium = premiumInfo.totalPremium;
             $scope.companyStdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
-            $scope.companyStdPlan.effectiveBenefitAmount = premiumInfo.effectiveBenefitAmount;
+            $scope.companyStdPlan.effectiveBenefitAmount = premiumInfo.effectiveBenefitAmount.toFixed(2);
           }, function(error){
             alert("Could not get premium info. Error is: " + error);
             $scope.companyStdPlan.totalPremium = 0;
@@ -2255,7 +2255,7 @@ var ltdBenefitsSignup = employeeControllers.controller(
           .then(function(premiumInfo) {
             $scope.companyLtdPlan.totalPremium = premiumInfo.totalPremium;
             $scope.companyLtdPlan.employeePremium = premiumInfo.employeePremiumPerPayPeriod;
-            $scope.companyLtdPlan.effectiveBenefitAmount = premiumInfo.effectiveBenefitAmount;
+            $scope.companyLtdPlan.effectiveBenefitAmount = premiumInfo.effectiveBenefitAmount.toFixed(2);
           }, function(error){
             alert("Could not get premium info. Error is: " + error);
             $scope.companyLtdPlan.totalPremium = 0;
