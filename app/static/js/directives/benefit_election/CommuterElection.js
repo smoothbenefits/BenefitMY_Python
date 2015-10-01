@@ -22,15 +22,6 @@ BenefitMyApp.directive('bmCommuterElection', function() {
             CommuterService.getPersonPlanByUser(userInfo.user.id, userInfo.currentRole.company.id, true)
             .then(function(personPlan) {
                 $scope.personPlan = personPlan;
-                if (!personPlan.monthlyAmountParking) {
-                  $scope.personPlan.monthlyAmountParking = 0;
-                }
-                if (!personPlan.monthlyAmountTransitPreTax) {
-                  $scope.personPlan.monthlyAmountTransitPreTax = 0;
-                }
-                if (!personPlan.monthlyAmountTransitPostTax) {
-                  $scope.personPlan.monthlyAmountTransitPostTax = 0;
-                }
 
                 var benenfitEnablementStatus = CommuterService.mapEnablementOptionToStatus($scope.personPlan.companyPlan.benefitEnablementOption);
 
