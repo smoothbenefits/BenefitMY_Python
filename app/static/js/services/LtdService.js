@@ -199,7 +199,7 @@ benefitmyService.factory('LtdService',
                         deferred.resolve({
                           totalPremium:premiumInfo.total.toFixed(2),
                           employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
-                          effectiveBenefitAmount: premiumInfo.amount
+                          effectiveBenefitAmount: premiumInfo.amount.toFixed(2)
                         });
                     }, function(error) {
                         deferred.reject(error);
