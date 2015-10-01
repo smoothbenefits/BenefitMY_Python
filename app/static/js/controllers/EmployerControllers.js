@@ -1071,6 +1071,13 @@ var addEmployeeCompensationModalController = employersController.controller(
       var personId = employeeProfile.personId;
       var companyId = employeeProfile.companyId;
 
+      $scope.useHourlyRate = function() {
+        return !$scope.isFullTime || $scope.getHourlyPaid;
+      };
+
+      $scope.useAnnualSalary = function(){
+        return $scope.isFullTime && !$scope.getHourlyPaid;
+      };
 
       $scope.cancel = function() {
         $modalInstance.dismiss('cancel');

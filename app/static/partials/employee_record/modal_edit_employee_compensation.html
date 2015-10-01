@@ -19,7 +19,7 @@
           </label>
         </div>
       </div>
-      <div class="row" ng-if="isFullTime && !getHourlyPaid">
+      <div class="row" ng-if="useAnnualSalary()">
         <div class="col-md-4">
           <div class="form-label">Annual Base Salary</div>
           <div class="textbox input-group">
@@ -52,10 +52,10 @@
           </div>
         </div>
       </div>
-      <div class="row" ng-show="!currentSalary && isFullTime">
+      <div class="row" ng-show="!currentSalary && useAnnualSalary()">
         <div class="form-inline-error">* Salary number is required because no previous record found.</div>
       </div>
-      <div class="row" ng-if="!isFullTime || getHourlyPaid">
+      <div class="row" ng-if="useHourlyRate()">
         <div class="col-md-4">
           <div class="form-label">Hourly Rate</div>
           <div class="textbox input-group">
