@@ -1,4 +1,6 @@
 import time
+from StringIO import StringIO
+
 from django.http import HttpResponse
 from django.http import Http404
 from django.db import transaction
@@ -71,6 +73,15 @@ class CompanyUsersSummaryPdfExportView(PdfExportViewBase):
         self._save()
 
         return response
+
+    def get_employee_report(self, employee_user_id, company_id):
+        pdf_buffer = StringIO()
+        self._init_canvas(pdf_buffer)
+        self._write_employee(employee_user_id, company_id)
+        self._save()
+        pdf = pdf_buffer.getvalue()
+        pdf_buffer.close()
+        return pdf
 
     def _write_company(self, company_id):
         users_id = self._get_all_employee_user_ids_for_company(company_id)

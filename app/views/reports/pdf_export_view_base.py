@@ -23,9 +23,9 @@ class PdfExportViewBase(ReportExportViewBase):
 
     _canvas = None
 
-    def _init_canvas(self, response):
+    def _init_canvas(self, output_stream):
         if self._canvas is None:
-            self._canvas = canvas.Canvas(response, pagesize=letter)
+            self._canvas = canvas.Canvas(output_stream, pagesize=letter)
             self._width, self._height = letter
             self._write_area_width = self._width - self._page_margin_left_right * 2.0
             self._write_area_height = self._height - self._page_margin_top_bottom * 2.0
