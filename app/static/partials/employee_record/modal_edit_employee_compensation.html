@@ -8,7 +8,18 @@
   </div>
   <div class="form-holder col-md-10 col-md-offset-1">
     <form name="form">
-      <div class="row" ng-if="isFullTime">
+      <div class="col-md-12">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox"
+            name="get_hourly_paid"
+            ng-model="getHourlyPaid"
+            ng-disabled="!isFullTime">
+            The Employee receives hourly paid
+          </label>
+        </div>
+      </div>
+      <div class="row" ng-if="useAnnualSalary()">
         <div class="col-md-4">
           <div class="form-label">Annual Base Salary</div>
           <div class="textbox input-group">
@@ -41,10 +52,10 @@
           </div>
         </div>
       </div>
-      <div class="row" ng-show="!currentSalary && isFullTime">
+      <div class="row" ng-show="!currentSalary && useAnnualSalary()">
         <div class="form-inline-error">* Salary number is required because no previous record found.</div>
       </div>
-      <div class="row" ng-if="!isFullTime">
+      <div class="row" ng-if="useHourlyRate()">
         <div class="col-md-4">
           <div class="form-label">Hourly Rate</div>
           <div class="textbox input-group">
