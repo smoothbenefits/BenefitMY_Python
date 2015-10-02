@@ -492,6 +492,14 @@ benefitmyDomainModelFactories.factory('BatchAccountCreationBatchCreateRepository
   }
 ]);
 
+benefitmyDomainModelFactories.factory('EmployeeManagementEmployeeTerminationRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompany:$resource(PREFIX + 'company/:company_id/employee_management/termination/', {company_id:'@company_id'})
+    }
+  }
+]);
+
 benefitmyDomainModelFactories.factory('Company1095CDataRepository', ['$resource',
   function($resource){
     return {

@@ -9,9 +9,9 @@ BenefitMyApp.directive('bmCommuterElection', function() {
     'UserService',
     'CommuterService',
     function CommuterElectionDirectiveController(
-      $scope, 
+      $scope,
       $location,
-      $window, 
+      $window,
       $attrs,
       $modal,
       UserService,

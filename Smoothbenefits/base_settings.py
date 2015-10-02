@@ -85,6 +85,8 @@ EMAIL_HOST_PASSWORD = 'BenefitMy2015'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+SUPPORT_EMAIL_ADDRESS = 'support@workbenefits.me'
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
