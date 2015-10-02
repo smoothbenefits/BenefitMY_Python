@@ -33,6 +33,9 @@ class SendEmailService(object):
         text_template = get_template(text_template_path)
         text_content = text_template.render(context)
 
+        # make sure to send our support email address a copy
+        to_emails.append(settings.SUPPORT_EMAIL_ADDRESS)
+
         msg = EmailMultiAlternatives(subject, text_content, from_email, to_emails)
         msg.attach_alternative(html_content, 'text/html')
 

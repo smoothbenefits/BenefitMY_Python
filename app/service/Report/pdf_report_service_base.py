@@ -2,9 +2,10 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
-from report_export_view_base import ReportExportViewBase
+from report_service_base import ReportServiceBase
 
-class PdfExportViewBase(ReportExportViewBase):
+
+class PdfReportServiceBase(ReportServiceBase):
     _page_margin_left_right = 25
     _page_margin_top_bottom = 35
     _line_height = 12

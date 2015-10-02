@@ -1,4 +1,5 @@
 from datetime import datetime
+from StringIO import StringIO
 from django.contrib.auth import get_user_model
 from django import template
 from django.core.mail import send_mail
@@ -11,8 +12,8 @@ from app.models.employee_profile import (
     EMPLYMENT_STATUS_TERMINATED)
 from app.dtos.operation_result import OperationResult
 from app.service.send_email_service import SendEmailService
-
-from app.views.reports.company_users_summary_pdf import CompanyUsersSummaryPdfExportView
+from app.service.Report.company_employee_benefit_pdf_report_service import \
+    CompanyEmployeeBenefitPdfReportService
 
 User = get_user_model()
 
@@ -47,19 +48,24 @@ class EmployeeManagementService(object):
         txt_template_path = 'email/employment_termination_notification.txt'
 
         # build the list of target emails
-        # to_emails = []
-        # employer_emails = send_email_service.get_employer_emails_by_company(employee_profile_model.company.id)
-        # to_emails.extend(employer_emails)
-        # broker_emails = send_email_service.get_broker_emails_by_company(employee_profile_model.company.id)
-        # to_emails.extend(broker_emails)
-        to_emails = ['jeff.zhang.82@gmail.com', 'zhangsiy@hotmail.com']
+        to_emails = []
+        employer_emails = send_email_service.get_employer_emails_by_company(employee_profile_model.company.id)
+        to_emails.extend(employer_emails)
+        broker_emails = send_email_service.get_broker_emails_by_company(employee_profile_model.company.id)
+        to_emails.extend(broker_emails)
 
         # build the template context data
         context_data = {'employee_profile':employee_profile_model, 'site_url':settings.SITE_URL}
 
         # get PDF
-        view = CompanyUsersSummaryPdfExportView()
-        pdf = view.get_employee_report(employee_profile_model.person.user.id, employee_profile_model.company.id)
+        pdf_service = CompanyEmployeeBenefitPdfReportService()
+        pdf_buffer = StringIO()
+        pdf_service.get_employee_report(
+            employee_profile_model.person.user.id,
+            employee_profile_model.company.id,
+            pdf_buffer)
+        pdf = pdf_buffer.getvalue()
+        pdf_buffer.close()
 
         send_email_service.send_support_email(
             to_emails, subject, context_data, html_template_path, txt_template_path,
