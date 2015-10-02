@@ -1,0 +1,14 @@
+Company: {{company_users.company.name}}
+
+[Employment with the below employee has been scheduled to terminate]
+
+First Name: {{employee_profile.person.first_name}}
+Last Name: {{employee_profile.person.last_name}}
+Date of Birth: {{employee_profile.person.birth_date}}
+SSN Last 4-Digits: {{employee_profile.person.ssn|slice:"-4:"}}
+
+[Please see attached document for detailed information about the employee]
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}

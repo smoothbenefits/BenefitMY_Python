@@ -164,6 +164,8 @@ from app.views.aca_1095_c_periods_view import ACA1095CPeriodsView
 from app.views.batch_account_creation.batch_account_creation_view import BatchAccountCreationView
 from app.views.batch_account_creation.account_info_list_parse_view import AccountInfoListParseView
 
+from app.views.employee_management.employee_termination_view import EmployeeTerminationView
+
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
@@ -423,6 +425,10 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/batch_account_creation/batch_create/?$' % PREFIX,
         BatchAccountCreationView.as_view(),
         name='batch_account_creation_batch_create_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/employee_management/termination/?$' % PREFIX,
+        EmployeeTerminationView.as_view(),
+        name='employee_management_termination_api'),
 
     url(r'^%s/1095_c_periods/?$' % PREFIX, ACA1095CPeriodsView.as_view(), name='ACA_1095_c_periods_api'),
 )
