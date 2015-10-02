@@ -7,11 +7,11 @@ benefitmyService.factory('CommuterService',
     function ($q, CommuterRepository, PersonService){
 
         var deductionPeriods = [
-                {'value':'Monthly', 'displayName':'Monthly'}, 
+                {'value':'Monthly', 'displayName':'Monthly'},
                 {'value':'PerPayPeriod', 'displayName':'Per Pay Period'}];
 
         var benefitEnablementOptions = [
-                {'value':'ParkingOnly', 'displayName':'Parking Only'}, 
+                {'value':'ParkingOnly', 'displayName':'Parking Only'},
                 {'value':'TransitOnly', 'displayName':'Transit Only'},
                 {'value':'Both', 'displayName':'Both Parking and Transit'}];
 
@@ -110,7 +110,7 @@ benefitmyService.factory('CommuterService',
 
             domainModel.monthly_amount_parking = domainModel.company_commuter_plan.enable_parking_benefit && personCompanyPlanViewModel.monthlyAmountParking
                                                  ? personCompanyPlanViewModel.monthlyAmountParking
-                                                 : 0;   
+                                                 : 0;
             domainModel.monthly_amount_transit_pre_tax = domainModel.company_commuter_plan.enable_transit_benefit && personCompanyPlanViewModel.monthlyAmountTransitPreTax
                                                          ? personCompanyPlanViewModel.monthlyAmountTransitPreTax
                                                          : 0;
@@ -298,7 +298,11 @@ benefitmyService.factory('CommuterService',
                                     // blank person plan.
                                     // Or else, return null;
                                     if (getBlankPlanIfNoneFound) {
-                                        var blankPersonPlan = {};
+                                        var blankPersonPlan = {
+                                          'monthlyAmountParking': 0,
+                                          'monthlyAmountTransitPreTax': 0,
+                                          'monthlyAmountTransitPostTax': 0
+                                        };
 
                                         // Setup person plan owner
                                         blankPersonPlan.planOwner = personInfo.id;
