@@ -1,12 +1,4 @@
 class Employee1095CData(object):
-    person = ''
-    company = ''
-    offer_of_coverage = ''
-    employee_share = ''
-    effective_safe_harbor = ''
-    company_safe_harbor = ''
-    employee_safe_harbor = ''
-    period = ''
 
     def __init__(self, employee_1095c, company_1095c):
 
@@ -27,12 +19,11 @@ class Employee1095CData(object):
             self.period = employee_1095c.period
             self.employee_safe_harbor = employee_1095c.safe_harbor
 
-        self.effective_safe_harbor = self._get_effective_safe_harbor_code(self.employee_safe_harbor,
-                                                                     self.company_safe_harbor)
+        self.effective_safe_harbor = self._get_effective_safe_harbor_code()
 
-    def _get_effective_safe_harbor_code(self, employee_code, company_code):
-        if (employee_code):
-            return employee_code
-        if (company_code):
-            return company_code
+    def _get_effective_safe_harbor_code(self):
+        if (self.employee_code):
+            return self.employee_code
+        if (self.company_code):
+            return self.company_code
         return ''
