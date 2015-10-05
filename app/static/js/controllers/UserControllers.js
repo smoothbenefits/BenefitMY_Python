@@ -382,12 +382,14 @@ var employee1095CModalController = userControllers.controller('employee1095CModa
   'CompanyId',
   'Company1095CData',
   'EmployeeId',
+  'Employee1095CService',
   function($scope,
            $modal,
            $modalInstance,
            CompanyId,
            Company1095CData,
-           EmployeeId) {
+           EmployeeId,
+           Employee1095CService) {
 
     $scope.employee1095CData = [];
     _.each(Company1095CData, function(datum) {
@@ -405,6 +407,15 @@ var employee1095CModalController = userControllers.controller('employee1095CModa
         $scope.sorted1095CData = comp1095C;
       });
     }
+
+    $scope.save = function() {
+      Employee1095CService.Save1095CForEmployee(EmployeeId, CompanyId, $scope.sorted1095CData)
+      .then(function(savedResponse) {
+        $modalInstance.close(savedResponse);
+      }, function(errorResponse) {
+        alert('Saving employee safe harbor code failed. Error: ' + errorResponse);
+      });
+    };
 
     $scope.cancel = function() {
       $modalInstance.dismiss("cancelled");

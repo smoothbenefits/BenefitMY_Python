@@ -33,7 +33,7 @@ benefitmyService.factory('Employee1095CService', [
         return sortedData;
       };
 
-      var get1095CByCompany = function(companyId, personId){
+      var get1095CByPersonCompany = function(companyId, personId){
           var deferred = $q.defer();
           Company1095CService.getPeriods().then(function(periods){
             Employee1095CDataRepository.ByPersonCompany
@@ -82,10 +82,10 @@ benefitmyService.factory('Employee1095CService', [
         }
         else{
           modelData = mapToModelObject(form1095CData, personId, companyId);
-          Company1095CDataRepository.ByCompany.save({companyId: companyId, personId: personId},
+          Employee1095CDataRepository.ByPersonCompany.save({companyId: companyId, personId: personId},
             modelData,
             function(saved1095CData){
-              get1095CPeriods().then(function(periods){
+              Company1095CService.getPeriods().then(function(periods){
                 viewModel = mapToViewModel(saved1095CData.saved, periods);
                 deferred.resolve(viewModel);
               });
@@ -99,7 +99,7 @@ benefitmyService.factory('Employee1095CService', [
 
       return{
           Get1095CByPersonCompany: get1095CByPersonCompany
-          Save1095CForEmployee: save1095CWithCompany,
+          Save1095CForEmployee: save1095CForEmployee,
           Validate: validate
       };
   }
