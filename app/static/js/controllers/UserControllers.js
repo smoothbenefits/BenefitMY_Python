@@ -137,7 +137,7 @@ var userController = userControllers.controller('userController',
           userInfo.user.id)
       .then(function(availableBenefits){
         $scope.availableBenefits = availableBenefits;
-      });      
+      });
     });
 
     $scope.isRoleActive = function(checkRole){
@@ -373,4 +373,41 @@ var company1095CModalController = userControllers.controller('company1095CModalC
         $modalInstance.dismiss("cancelled");
       };
     }
+]);
+
+var employee1095CModalController = userControllers.controller('employee1095CModalController', [
+  '$scope',
+  '$modal',
+  '$modalInstance',
+  'CompanyId',
+  'Company1095CData',
+  'EmployeeId',
+  function($scope,
+           $modal,
+           $modalInstance,
+           CompanyId,
+           Company1095CData,
+           EmployeeId) {
+
+    $scope.employee1095CData = [];
+    _.each(Company1095CData, function(datum) {
+      if (!datum.safe_harbor) {
+        datum.safe_harbor = 'N/A';
+      }
+      $scope.employee1095CData.push({'period': datum.period, 'safe_harbor': ''});
+    });
+    $scope.sorted1095CData = Company1095CData;
+    $scope.employeeId = EmployeeId;
+
+    if(!$scope.sorted1095CData){
+      Company1095CService.get1095CByCompany($scope.companyId)
+      .then(function(comp1095C){
+        $scope.sorted1095CData = comp1095C;
+      });
+    }
+
+    $scope.cancel = function() {
+      $modalInstance.dismiss("cancelled");
+    };
+  }
 ]);
