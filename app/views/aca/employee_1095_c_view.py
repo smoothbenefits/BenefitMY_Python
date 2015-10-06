@@ -7,6 +7,7 @@ from app.models.aca.employee_1095_c import Employee1095C
 from app.serializers.aca.employee_1095_c_serializer import \
     Employee1095CSerializer, Employe1095CPostSerializer
 from app.models.company import Company
+from app.models.person import Person
 
 class Employee1095CView(APIView):
     def _get_objects(self, person_id, company_id):

@@ -4,8 +4,6 @@ benefitmyService.factory('Employee1095CService', [
   '$q', 'Employee1095CDataRepository', 'Company1095CService',
   function ($q, Employee1095CDataRepository, Company1095CService){
 
-      var _1095cPeriods = null;
-
       var mapToModelObject = function(view1095CData, personId, companyId){
         modelObj = [];
         _.each(view1095CData, function(dataItem){
@@ -63,11 +61,11 @@ benefitmyService.factory('Employee1095CService', [
         var anyMonthlyCode = monthlyCodes.some(item => item.safe_harbor);
         var hasAllMonthlyCodes = monthlyCodes.every(item => item.safe_harbor);
 
-        if (allYearCode && anyMonthlyCode) {
+        if (allYearCode.safe_harbor && anyMonthlyCode) {
           return 'Please enter either All 12 Months code or monthly codes.';
         }
 
-        if (!allYearCode && !hasAllMonthlyCodes) {
+        if (!allYearCode.safe_harbor && !hasAllMonthlyCodes) {
           return 'Values for all month are required, from Jan. to Dec.';
         }
 
@@ -98,7 +96,7 @@ benefitmyService.factory('Employee1095CService', [
       };
 
       return{
-          Get1095CByPersonCompany: get1095CByPersonCompany
+          Get1095CByPersonCompany: get1095CByPersonCompany,
           Save1095CForEmployee: save1095CForEmployee,
           Validate: validate
       };

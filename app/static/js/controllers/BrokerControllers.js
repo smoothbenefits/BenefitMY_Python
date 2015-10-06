@@ -304,6 +304,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    '$state',
    '$stateParams',
    '$modal',
+   '$controller',
    'companyRepository',
    'CompanyEmployeeSummaryService',
    'CompanyBenefitEnrollmentSummaryService',
@@ -313,10 +314,13 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
            $state,
            $stateParams,
            $modal,
+           $controller, 
            companyRepository,
            CompanyEmployeeSummaryService,
            CompanyBenefitEnrollmentSummaryService,
            Company1095CService){
+
+      $controller('modalMessageControllerBase', {$scope: $scope});
 
       var company_id = $stateParams.client_id;
       $scope.employees = [];

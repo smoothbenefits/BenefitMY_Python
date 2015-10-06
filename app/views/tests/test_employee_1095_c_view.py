@@ -37,12 +37,6 @@ class Company1095CTestCase(TestCase, ViewTestBase):
         self.assertEqual(type(result), list)
         self.assertTrue(len(result) == 0)
 
-    def test_get_employee_1095_c_not_exists(self):
-        response = self.client.get(reverse('employee_1095_c_api',
-                                           kwargs={'person_id': self.normalize_key(1),
-                                                   'company_id': self.normalize_key(1)}))
-        self.assertEqual(response.status_code, 404)
-
     def test_post_employee_1095_c_success(self):
         new_1095_c = [{'company': self.normalize_key(1),
                        'person': self.normalize_key(4),

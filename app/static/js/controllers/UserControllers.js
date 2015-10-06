@@ -379,6 +379,7 @@ var employee1095CModalController = userControllers.controller('employee1095CModa
   '$scope',
   '$modal',
   '$modalInstance',
+  'PersonService',
   'CompanyId',
   'Company1095CData',
   'EmployeeId',
@@ -386,30 +387,30 @@ var employee1095CModalController = userControllers.controller('employee1095CModa
   function($scope,
            $modal,
            $modalInstance,
+           PersonService,
            CompanyId,
            Company1095CData,
            EmployeeId,
            Employee1095CService) {
 
-    $scope.employee1095CData = [];
+    PersonService.getSelfPersonInfo(EmployeeId).then(function(person) {
+      Employee1095CService.Get1095CByPersonCompany(CompanyId, person.id)
+      .then(function(response) {
+        $scope.employee1095CData = response;
+      });
+    });
+
     _.each(Company1095CData, function(datum) {
       if (!datum.safe_harbor) {
         datum.safe_harbor = 'N/A';
       }
-      $scope.employee1095CData.push({'period': datum.period, 'safe_harbor': ''});
     });
+
     $scope.sorted1095CData = Company1095CData;
     $scope.employeeId = EmployeeId;
 
-    if(!$scope.sorted1095CData){
-      Company1095CService.get1095CByCompany($scope.companyId)
-      .then(function(comp1095C){
-        $scope.sorted1095CData = comp1095C;
-      });
-    }
-
     $scope.save = function() {
-      Employee1095CService.Save1095CForEmployee(EmployeeId, CompanyId, $scope.sorted1095CData)
+      Employee1095CService.Save1095CForEmployee(EmployeeId, CompanyId, $scope.employee1095CData)
       .then(function(savedResponse) {
         $modalInstance.close(savedResponse);
       }, function(errorResponse) {
