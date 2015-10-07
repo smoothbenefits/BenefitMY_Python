@@ -116,6 +116,13 @@ from app.views.commuter.person_company_commuter_plan_view import (
     PersonCompanyCommuterPlanView,
     PersonCompanyCommuterPlanByPersonView)
 
+from app.views.extra_benefits.company_extra_benefit_plan_view import (
+    CompanyExtraBenefitPlanView,
+    CompanyExtraBenefitPlanByCompanyView)
+from app.views.extra_benefits.person_company_extra_benefit_plan_view import (
+    PersonCompanyExtraBenefitPlanView,
+    PersonCompanyExtraBenefitPlanByPersonView)
+
 from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
@@ -356,6 +363,19 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/person/(?P<person_id>\w+)/person_company_commuter_plan/?$' % PREFIX,
         PersonCompanyCommuterPlanByPersonView.as_view(), name='person_company_commuter_plan_by_person_api'),
+
+    # Extra Benefits api
+    url(r'^%s/company_extra_benefit_plan/(?P<pk>\w+)/?$' % PREFIX,
+        CompanyExtraBenefitPlanView.as_view(), name='company_extra_benefit_plan_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/company_extra_benefit_plan/?$' % PREFIX,
+        CompanyExtraBenefitPlanByCompanyView.as_view(), name='company_extra_benefit_plan_by_company_api'),
+
+    url(r'^%s/person_company_extra_benefit_plan/(?P<pk>\w+)/?$' % PREFIX,
+        PersonCompanyExtraBenefitPlanView.as_view(), name='person_company_extra_benefit_plan_api'),
+
+    url(r'^%s/person/(?P<person_id>\w+)/person_company_extra_benefit_plan/?$' % PREFIX,
+        PersonCompanyExtraBenefitPlanByPersonView.as_view(), name='person_company_extra_benefit_plan_by_person_api'),
 
     # util api
     url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
