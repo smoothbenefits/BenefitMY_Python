@@ -70,6 +70,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Med PCP NO.')
         col_num = self._write_field(excelSheet, 0, col_num, 'Date of Hire')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Benefit Start Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Annual Salary')
         col_num = self._write_field(excelSheet, 0, col_num, 'Employment Type')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
@@ -293,6 +294,11 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
             if len(employee_profiles) > 0:
                 if employee_profiles[0].start_date:
                     col_num = self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(employee_profiles[0].start_date))
+                else:
+                    col_num = col_num + 1
+
+                if employee_profiles[0].benefit_start_date:
+                    col_num = self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(employee_profiles[0].benefit_start_date))
                 else:
                     col_num = col_num + 1
 

@@ -31,6 +31,7 @@ class AccountCreationService(object):
     FIELD_HOURLY_RATE = 'hourly_rate'
     FIELD_PROJECTED_HOUR_PER_MONTH = 'projected_hour_per_month'
     FIELD_START_DATE = 'start_date'
+    FIELD_BENEFIT_START_DATE = 'benefit_start_date'
     FIELD_RECORD_END = 'record-end'
 
     REQUIRED_RAW_DATA_FIELDS = [
@@ -43,6 +44,7 @@ class AccountCreationService(object):
         FIELD_HOURLY_RATE,
         FIELD_PROJECTED_HOUR_PER_MONTH,
         FIELD_START_DATE,
+        FIELD_BENEFIT_START_DATE,
         FIELD_RECORD_END
     ]
 
@@ -74,6 +76,15 @@ class AccountCreationService(object):
                     )
                     continue
 
+                benefit_start_date = None
+                try:
+                    benefit_start_date = datetime.strptime(self._get_field_value(tokens, self.FIELD_BENEFIT_START_DATE), '%m/%d/%Y')
+                except:
+                    result.append_issue(
+                        'The line [%s] fails to parse properly. Reason: Failed to parse the given benefit start date' % (line)
+                    )
+                    continue
+
                 # Parse the line into objects
                 # Utilize serializers to perform all the details
                 compensation_data = {
@@ -94,6 +105,7 @@ class AccountCreationService(object):
                     'new_employee': False,
                     'create_docs': False,
                     'start_date': start_date,
+                    'benefit_start_date': benefit_start_date,
                     'compensation_info': compensation_data,
                     'doc_fields': []
                 }
@@ -296,7 +308,8 @@ class AccountCreationService(object):
         profile_data = {
             'person': person_id,
             'company': account_info.company_id,
-            'start_date': account_info.start_date
+            'start_date': account_info.start_date,
+            'benefit_start_date': account_info.benefit_start_date
         }
         if (account_info.start_date <= datetime.date(datetime.now())):
             profile_data['employment_status'] = EMPLYMENT_STATUS_ACTIVE

@@ -67,6 +67,19 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="form-label">Benefit Start Date</div>
+        <div class="datebox">
+          <bm-date-picker model="employeeProfileModel.benefitStartDate"
+          required="true"
+          name="benefit-start-date"
+          fieldname="'benefit_start_date'"
+          dirty="form.benefit_start_date.$dirty" />
+          <div class="form-inline-error" ng-show="form.benefit-start-date.$dirty && form.benefit-start-date.$invalid">
+            <span ng-show="form.benefit-start-date.$invalid">Please enter a valid Date</span>
+          </div>
+        </div>
+      </div>
     </form>
   </div>
 </div>
