@@ -304,6 +304,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
    '$state',
    '$stateParams',
    '$modal',
+   '$controller',
    'companyRepository',
    'CompanyEmployeeSummaryService',
    'CompanyBenefitEnrollmentSummaryService',
@@ -313,10 +314,13 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
            $state,
            $stateParams,
            $modal,
+           $controller,
            companyRepository,
            CompanyEmployeeSummaryService,
            CompanyBenefitEnrollmentSummaryService,
            Company1095CService){
+
+      $controller('modalMessageControllerBase', {$scope: $scope});
 
       var company_id = $stateParams.client_id;
       $scope.employees = [];
@@ -368,7 +372,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
 
       $scope.open1095CModal = function(downloadUserId){
         var modalInstance = $modal.open({
-          templateUrl: '/static/partials/modal_company_1095_c.html',
+          templateUrl: '/static/partials/aca/modal_company_1095_c.html',
           controller: 'company1095CModalController',
           size: 'lg',
           backdrop: 'static',
@@ -385,7 +389,26 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
             window.location = CompanyEmployeeSummaryService.getEmployee1095cUrl(downloadUserId);
           }
         });
+      };
 
+      $scope.editEmployeeSafeHarborCode = function(employeeId) {
+        var modalInstance = $modal.open({
+          templateUrl: '/static/partials/aca/modal_employee_1095_c.html',
+          controller: 'employee1095CModalController',
+          size: 'lg',
+          backdrop: 'static',
+          resolve: {
+            CompanyId: function() { return company_id; },
+            EmployeeId: function() { return employeeId; },
+            Company1095CData: function() {
+              return angular.copy($scope.sorted1095CData);
+            }
+          }
+        });
+
+        modalInstance.result.then(function(saved1095CData) {
+          $scope.showMessageWithOkayOnly('Success', 'Employee safe harbor code has been saved successfully.');
+        });
       };
 }]);
 
@@ -517,7 +540,6 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
     });
   }
 ]);
-
 
 var brokerEmployeeController = brokersControllers.controller('brokerEmployeeController',
   ['$scope',

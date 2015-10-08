@@ -509,6 +509,15 @@ benefitmyDomainModelFactories.factory('Company1095CDataRepository', ['$resource'
   }
 ]);
 
+benefitmyDomainModelFactories.factory('Employee1095CDataRepository', ['$resource',
+  function($resource){
+    return {
+      ByPersonCompany: $resource(PREFIX + 'company/:companyId/person/:personId/1095_c',
+                        {companyId: '@companyId', personId: '@personId'})
+    }
+  }
+]);
+
 benefitmyDomainModelFactories.factory('CompanyUserDetailRepository', ['$resource',
   function($resource){
     return {
