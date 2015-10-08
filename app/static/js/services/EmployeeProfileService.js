@@ -67,10 +67,7 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.employment_status = employeeProfileViewModel.employmentStatus;
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
-            if(!employeeProfileViewModel.benefitStartDate){
-                domainModel.benefit_start_date = domainModel.start_date;
-            }
-            domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : null;
+            domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
 
             return domainModel;
         };
