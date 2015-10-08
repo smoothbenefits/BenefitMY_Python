@@ -47,6 +47,12 @@ benefitmyService.factory('EmployeeProfileService',
                 return this.endDate ? moment(this.endDate).format(DATE_FORMAT_STRING) : null;
             };
 
+            viewModel.benefitStartDate = employeeProfileDomainModel.benefit_start_date ? new Date(moment(employeeProfileDomainModel.benefit_start_date).format()) : null;
+
+            viewModel.benefitStartDateForDisplay = function() {
+                return this.benefitStartDate ? moment(this.benefitStartDate).format(DATE_FORMAT_STRING) : null;
+            };
+
             return viewModel;
         };
 
@@ -61,6 +67,7 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.employment_status = employeeProfileViewModel.employmentStatus;
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
+            domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
 
             return domainModel;
         };

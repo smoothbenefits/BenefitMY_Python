@@ -69,18 +69,6 @@
         </div>
       </div>
 
-      <div class="form-label">Date of Hire*</div>
-      <div class="datebox">
-        <bm-date-picker model="addUser.date_of_hire"
-          required="true"
-          name="date_of_hire"
-          fieldname="'date_of_hire'"
-          dirty="form.date_of_hire.$dirty" />
-        <div class="form-inline-error" ng-show="form.date_of_hire.$dirty && form.date_of_hire.$invalid">
-          <span ng-show="form.date_of_hire.$invalid">Please enter a valid Date</span>
-        </div>
-      </div>
-
       <div class="checkbox">
         <label>
           <input type="checkbox"
@@ -129,6 +117,30 @@
           <div class="form-error" ng-show="form.projected_hour_per_month.$dirty && form.projected_hour_per_month.$invalid">
             <span ng-show="form.projected_hour_per_month.$error.required">Hourly rate is required for part time employees</span>
           </div>
+        </div>
+      </div>
+
+      <div class="form-label">Date of Hire*</div>
+      <div class="datebox">
+        <bm-date-picker model="addUser.date_of_hire"
+          required="true"
+          name="date_of_hire"
+          fieldname="'date_of_hire'"
+          dirty="form.date_of_hire.$dirty" />
+        <div class="form-inline-error" ng-show="form.date_of_hire.$dirty && form.date_of_hire.$invalid">
+          <span ng-show="form.date_of_hire.$invalid">Please enter a valid Date</span>
+        </div>
+      </div>
+
+      <div class="form-label">Benefit Start Date*</div>
+      <div class="datebox">
+        <bm-date-picker model="addUser.benefit_start_date"
+          required="true"
+          name="benefit_start_date"
+          fieldname="'benefit_start_date'"
+          dirty="form.benefit_start_date.$dirty" />
+        <div class="form-inline-error" ng-show="form.benefit_start_date.$dirty && form.benefit_start_date.$invalid">
+          <span ng-show="form.benefit_start_date.$invalid">Please enter a valid Date</span>
         </div>
       </div>
 
