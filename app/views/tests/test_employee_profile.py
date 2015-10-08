@@ -25,6 +25,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(employee_profile['job_title'], 'Senior Software Engineer')
         self.assertEqual(employee_profile['annual_base_salary'], '140000.00')
         self.assertEqual(employee_profile['start_date'], '2010-06-01')
+        self.assertEqual(employee_profile['benefit_start_date'], '2010-06-01')
         self.assertEqual(employee_profile['end_date'], None)
         self.assertEqual(employee_profile['employment_type'], 'FullTime')
         self.assertEqual(employee_profile['employment_status'], 'Active')
@@ -42,6 +43,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(employee_profile['job_title'], 'Senior Software Engineer')
         self.assertEqual(employee_profile['annual_base_salary'], '140000.00')
         self.assertEqual(employee_profile['start_date'], '2010-06-01')
+        self.assertEqual(employee_profile['benefit_start_date'], '2010-06-01')
         self.assertEqual(employee_profile['end_date'], None)
         self.assertEqual(employee_profile['employment_type'], 'FullTime')
         self.assertEqual(employee_profile['employment_status'], 'Active')
@@ -59,6 +61,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(employee_profile['job_title'], 'Senior Software Engineer')
         self.assertEqual(employee_profile['annual_base_salary'], '140000.00')
         self.assertEqual(employee_profile['start_date'], '2010-06-01')
+        self.assertEqual(employee_profile['benefit_start_date'], '2010-06-01')
         self.assertEqual(employee_profile['end_date'], None)
         self.assertEqual(employee_profile['employment_type'], 'FullTime')
         self.assertEqual(employee_profile['employment_status'], 'Active')
@@ -113,6 +116,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "job_title": "Broker",
             "annual_base_salary": "40022.00",
             "start_date": "2008-03-01",
+            "benefit_start_date": '2008-03-22',
             "end_date": "2008-06-01",
             "employment_type": "PartTime",
             "employment_status": "Terminated"
@@ -132,6 +136,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['job_title'], "Broker")
         self.assertEqual(result['annual_base_salary'], "40022.00")
         self.assertEqual(result['start_date'], "2008-03-01")
+        self.assertEqual(result['benefit_start_date'], '2008-03-22')
         self.assertEqual(result['end_date'], "2008-06-01")
         self.assertEqual(result['employment_type'], "PartTime")
         self.assertEqual(result['employment_status'], "Terminated")
@@ -143,6 +148,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "job_title": "Broker",
             "annual_base_salary": "40022.00",
             "start_date": "2008-03-01",
+            "benefit_start_date": '2008-03-22',
             "end_date": "2008-06-01",
             "employment_type": "PartTime",
             "employment_status": "Terminated"
@@ -162,6 +168,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['job_title'], "Broker")
         self.assertEqual(result['annual_base_salary'], "40022.00")
         self.assertEqual(result['start_date'], "2008-03-01")
+        self.assertEqual(result['benefit_start_date'], '2008-03-22')
         self.assertEqual(result['end_date'], "2008-06-01")
         self.assertEqual(result['employment_type'], "PartTime")
         self.assertEqual(result['employment_status'], "Terminated")
@@ -173,6 +180,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "job_title": "Broker",
             "annual_base_salary": "40022.00",
             "start_date": "2008-03-01",
+            "benefit_start_date": '2008-03-22',
             "end_date": "2008-06-01",
             "employment_type": "PartTime",
             "employment_status": "Terminated"
@@ -192,6 +200,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "job_title": "Broker",
             "annual_base_salary": "40022.00",
             "start_date": "2008-03-01",
+            "benefit_start_date": '2008-03-22',
             "end_date": "2008-06-01",
             "employment_type": "PartTime",
             "employment_status": "Terminated"
@@ -211,6 +220,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "job_title": "Broker",
             "annual_base_salary": "40022.00",
             "start_date": "2008-03-01",
+            "benefit_start_date": '2008-03-22',
             "end_date": "2008-06-01",
             "employment_type": "PartTime",
             "employment_status": "Terminated"
@@ -232,6 +242,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "job_title": "Senior Broker",
             "annual_base_salary": "140022.00",
             "start_date": "2010-03-01",
+            "benefit_start_date": '2010-03-22',
             "end_date": None,
             "employment_type": "FullTime",
             "employment_status": "Active"
@@ -252,6 +263,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['job_title'], "Senior Broker")
         self.assertEqual(result['annual_base_salary'], "140022.00")
         self.assertEqual(result['start_date'], "2010-03-01")
+        self.assertEqual(result['benefit_start_date'], "2010-03-22")
         self.assertEqual(result['end_date'], None)
         self.assertEqual(result['employment_type'], "FullTime")
         self.assertEqual(result['employment_status'], "Active")

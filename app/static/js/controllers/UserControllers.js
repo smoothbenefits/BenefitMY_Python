@@ -137,7 +137,7 @@ var userController = userControllers.controller('userController',
           userInfo.user.id)
       .then(function(availableBenefits){
         $scope.availableBenefits = availableBenefits;
-      });      
+      });
     });
 
     $scope.isRoleActive = function(checkRole){
@@ -373,4 +373,53 @@ var company1095CModalController = userControllers.controller('company1095CModalC
         $modalInstance.dismiss("cancelled");
       };
     }
+]);
+
+var employee1095CModalController = userControllers.controller('employee1095CModalController', [
+  '$scope',
+  '$modal',
+  '$modalInstance',
+  'PersonService',
+  'CompanyId',
+  'Company1095CData',
+  'EmployeeId',
+  'Employee1095CService',
+  function($scope,
+           $modal,
+           $modalInstance,
+           PersonService,
+           CompanyId,
+           Company1095CData,
+           EmployeeId,
+           Employee1095CService) {
+
+    PersonService.getSelfPersonInfo(EmployeeId).then(function(person) {
+      Employee1095CService.Get1095CByPersonCompany(CompanyId, person.id)
+      .then(function(response) {
+        $scope.employee1095CData = response;
+      });
+    });
+
+    _.each(Company1095CData, function(datum) {
+      if (!datum.safe_harbor) {
+        datum.safe_harbor = 'N/A';
+      }
+    });
+
+    $scope.sorted1095CData = Company1095CData;
+    $scope.employeeId = EmployeeId;
+
+    $scope.save = function() {
+      Employee1095CService.Save1095CForEmployee(EmployeeId, CompanyId, $scope.employee1095CData)
+      .then(function(savedResponse) {
+        $modalInstance.close(savedResponse);
+      }, function(errorResponse) {
+        alert('Saving employee safe harbor code failed. Error: ' + errorResponse);
+      });
+    };
+
+    $scope.cancel = function() {
+      $modalInstance.dismiss("cancelled");
+    };
+  }
 ]);
