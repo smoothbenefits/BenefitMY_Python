@@ -314,7 +314,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
            $state,
            $stateParams,
            $modal,
-           $controller, 
+           $controller,
            companyRepository,
            CompanyEmployeeSummaryService,
            CompanyBenefitEnrollmentSummaryService,
@@ -407,7 +407,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         });
 
         modalInstance.result.then(function(saved1095CData) {
-          $scope.showMessageWithOkayOnly('Success', 'Employee safe harbar code has been saved successfully.');
+          $scope.showMessageWithOkayOnly('Success', 'Employee safe harbor code has been saved successfully.');
         });
       };
 }]);
