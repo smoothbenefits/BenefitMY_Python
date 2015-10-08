@@ -248,10 +248,18 @@ var employerUser = employersController.controller('employerUser',
         }
       };
 
+      $scope.syncBenefitStartDate = function(){
+        if($scope.addUser.date_of_hire){
+          $scope.addUser.benefit_start_date = moment($scope.addUser.date_of_hire).format('MM/DD/YYYY');
+        }
+      };
+
+      $scope.$watch('addUser.date_of_hire', $scope.syncBenefitStartDate);
+
       $scope.addLink = function(userType)
       {
         $location.path('/admin/'+ userType + '/add/'+compId)
-      }
+      };
 
       $scope.createUser = function(userType) {
           EmployerEmployeeManagementService.AddNewEmployee(compId, $scope.addUser, $scope.templateFields)

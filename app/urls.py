@@ -158,8 +158,9 @@ from app.views.sys_period_definition_view import SysPeriodDefinitionView
 from app.views.insurance.company_ltd_insurance_employee_premium_view import CompanyLtdInsuranceEmployeePremiumView
 from app.views.insurance.company_std_insurance_employee_premium_view import CompanyStdInsuranceEmployeePremiumView
 from app.views.company_enrollment_summary_view import CompanyEnrollmentSummaryView
-from app.views.company_1095_c_view import Company1095CView
-from app.views.aca_1095_c_periods_view import ACA1095CPeriodsView
+from app.views.aca.company_1095_c_view import Company1095CView
+from app.views.aca.employee_1095_c_view import Employee1095CView
+from app.views.aca.aca_1095_c_periods_view import ACA1095CPeriodsView
 
 from app.views.batch_account_creation.batch_account_creation_view import BatchAccountCreationView
 from app.views.batch_account_creation.account_info_list_parse_view import AccountInfoListParseView
@@ -417,6 +418,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/1095_c/?$' % PREFIX,
         Company1095CView.as_view(),
         name='company_1095_c_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/person/(?P<person_id>\w+)/1095_c/?$' % PREFIX,
+        Employee1095CView.as_view(),
+        name='employee_1095_c_api'),
 
     url(r'^%s/company/(?P<company_id>\w+)/batch_account_creation/parse_account_data/?$' % PREFIX,
         AccountInfoListParseView.as_view(),

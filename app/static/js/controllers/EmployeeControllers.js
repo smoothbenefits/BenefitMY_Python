@@ -84,7 +84,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
         .then(function(availableBenefits){
           $scope.availableBenefits = availableBenefits;
         });
-          
+
         employeeBenefits.enroll().get({userId:userInfo.user.id, companyId:userInfo.currentRole.company.id})
           .$promise.then(function(response){
                        $scope.benefits = response.benefits;
@@ -1024,7 +1024,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
             alert("You do not have any benefits to enroll. Back to the dashboard page");
             $state.go('/');
           }
-        }); 
+        });
         return BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(comp, 'Basic');
       })
       .then(function(basicPlans) {
