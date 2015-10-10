@@ -393,5 +393,47 @@
 </table>
 </div>
 
+<!-- Extra benefits summary -->
+<div class="table-responsive table-holder" ng-if="extraBenefitPlans && extraBenefitPlans.length > 0">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><span>Extra Benefits</span></th>
+        <th><span>Document</span></th>
+        <th width="200"><span>Benefit Item Name</span></th>
+        <th width="550"><span>Benefit Item Description</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="extraBenefitPlan in extraBenefitPlans">
+        <td>
+          Extra Benefits
+          <a class="delete-cross"
+          ng-show="benefitDeletable"
+          ng-click="deleteExtraBenefitPlan(extraBenefitPlan)"
+          href="javascript:void(0);"
+          confirm="Delete the extra benefits plan?">X</a>
+        </td>
+        <td class="upload-td">
+          <bmuploadmanager
+              upload-type="ExtraBenefit"
+              upload-mode="button"
+              feature-id="{{extraBenefitPlan.companyPlanId}}"
+              hide-type="true">
+          </bmuploadmanager>
+        </td>
+        <td colspan="2" style="padding: 0;">
+          <table class="table">
+            <tr ng-repeat="benefitItem in extraBenefitPlan.benefitItems">
+              <td width="200">{{benefitItem.name}}</td>
+              <td width="550">{{benefitItem.description}}</td>
+            </tr>
+          </table>
+        </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 <div class="back"><a href="javascript:void(0);" ng-click="backtoDashboard()">&laquo; Back</a></div>
 </div>

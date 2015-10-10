@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0048_employee1095c'),
+        ('app', '0049_employeeprofile_benefit_start_date'),
     ]
 
     operations = [
@@ -57,6 +57,7 @@ class Migration(migrations.Migration):
             name='PersonCompanyExtraBenefitPlanItem',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('opt_in', models.BooleanField(default=False)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('extra_benefit_item', models.ForeignKey(related_name='person_company_extra_benefit_plans', to='app.ExtraBenefitItem')),

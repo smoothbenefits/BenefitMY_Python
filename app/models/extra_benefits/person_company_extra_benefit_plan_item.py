@@ -18,5 +18,7 @@ class PersonCompanyExtraBenefitPlanItem(models.Model):
         ExtraBenefitItem,
         related_name="person_company_extra_benefit_plans")
 
+    opt_in = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
