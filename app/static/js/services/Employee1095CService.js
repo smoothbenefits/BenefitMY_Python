@@ -60,8 +60,8 @@ benefitmyService.factory('Employee1095CService', [
       var monthlyCodes = _.filter(form1095CData, function(item) {
         return item.period != 'All 12 Months';
       });
-      var anyMonthlyCode = monthlyCodes.some(item => item.safe_harbor);
-      var hasAllMonthlyCodes = monthlyCodes.every(item => item.safe_harbor);
+      var anyMonthlyCode = _.some(monthlyCodes, function(item) { return item.safe_harbor; });
+      var hasAllMonthlyCodes = _.every(monthlyCodes, function(item) { return item.safe_harbor; });
 
       if (allYearCode.safe_harbor && anyMonthlyCode) {
         return 'Please enter either All 12 Months code or monthly codes.';
