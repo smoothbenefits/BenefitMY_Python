@@ -11,6 +11,7 @@ class AccountCreationDataSerializer(serializers.Serializer):
     company_user_type = serializers.CharField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()
+    new_employee = serializers.BooleanField(default=True)
     email = serializers.EmailField()
     employment_type = serializers.CharField()
     compensation_info = CompensationInfoSerializer(required=False)
