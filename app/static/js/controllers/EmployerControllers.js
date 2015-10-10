@@ -262,12 +262,17 @@ var employerUser = employersController.controller('employerUser',
       };
 
       $scope.createUser = function(userType) {
-          EmployerEmployeeManagementService.AddNewEmployee(compId, $scope.addUser, $scope.templateFields)
-          .then(function(response) {
-            gotoUserView(userType);
-          }, function(error) {
-            alert('Failed to add a new employee.');
-          });
+        if(!$scope.addUser.send_email && 
+           !$scope.validatePassword($scope.addUser.password, $scope.addUser.password_confirm)){
+          alert('Password validation failed. Please re-enter the passwords');
+          return false;
+        };
+        EmployerEmployeeManagementService.AddNewEmployee(compId, $scope.addUser, $scope.templateFields)
+        .then(function(response) {
+          gotoUserView(userType);
+        }, function(error) {
+          alert('Failed to add a new employee.');
+        });
       };
 
       $scope.gotoEmployerDashboardLink = function(){
