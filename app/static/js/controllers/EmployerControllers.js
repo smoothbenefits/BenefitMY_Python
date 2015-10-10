@@ -262,12 +262,17 @@ var employerUser = employersController.controller('employerUser',
       };
 
       $scope.createUser = function(userType) {
-          EmployerEmployeeManagementService.AddNewEmployee(compId, $scope.addUser, $scope.templateFields)
-          .then(function(response) {
-            gotoUserView(userType);
-          }, function(error) {
-            alert('Failed to add a new employee.');
-          });
+        if(!$scope.addUser.send_email && 
+           !$scope.validatePassword($scope.addUser.password, $scope.addUser.password_confirm)){
+          alert('Password validation failed. Please re-enter the passwords');
+          return false;
+        };
+        EmployerEmployeeManagementService.AddNewEmployee(compId, $scope.addUser, $scope.templateFields)
+        .then(function(response) {
+          gotoUserView(userType);
+        }, function(error) {
+          alert('Failed to add a new employee.');
+        });
       };
 
       $scope.gotoEmployerDashboardLink = function(){
@@ -926,7 +931,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
     $scope.terminateEmployment = function(){
       var terminationData = {
         companyId: $scope.employee.employeeProfile.companyId,
-        personId: $scope.employee.employeeProfile.personId 
+        personId: $scope.employee.employeeProfile.personId
       };
       var modalInstance = $modal.open({
           templateUrl: '/static/partials/employee_record/terminate_confirmation.html',
@@ -1125,7 +1130,7 @@ var confirmTerminateEmployeeModalController = employersController.controller('co
            terminationData){
 
     $scope.terminationData = terminationData;
-    
+
     $scope.endDateRequired = function(){
       return _.isNull($scope.terminationData.endDate) || _.isUndefined($scope.terminationData.endDate);
     };
@@ -1147,6 +1152,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   '$state',
   '$stateParams',
   '$modal',
+  '$controller',
   'companyRepository',
   'CompanyEmployeeSummaryService',
   'CompanyBenefitEnrollmentSummaryService',
@@ -1156,10 +1162,14 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            $state,
            $stateParams,
            $modal,
+           $controller, 
            companyRepository,
            CompanyEmployeeSummaryService,
            CompanyBenefitEnrollmentSummaryService,
            Company1095CService){
+
+    $controller('modalMessageControllerBase', {$scope: $scope});
+
     var company_id = $stateParams.company_id;
     $scope.employees = [];
 
@@ -1229,6 +1239,26 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         }
       });
 
+    };
+
+    $scope.editEmployeeSafeHarborCode = function(employeeId) {
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/aca/modal_employee_1095_c.html',
+        controller: 'employee1095CModalController',
+        size: 'lg',
+        backdrop: 'static',
+        resolve: {
+          CompanyId: function() { return company_id; },
+          EmployeeId: function() { return employeeId; },
+          Company1095CData: function() {
+            return angular.copy($scope.sorted1095CData);
+          }
+        }
+      });
+
+      modalInstance.result.then(function(saved1095CData) {
+        $scope.showMessageWithOkayOnly('Success', 'Employee safe harbor code has been saved successfully.');
+      });
     };
 }]);
 
