@@ -22,8 +22,10 @@ class Employee1095CData(object):
         self.effective_safe_harbor = self._get_effective_safe_harbor_code()
 
     def _get_effective_safe_harbor_code(self):
-        if (self.employee_code):
-            return self.employee_code
-        if (self.company_code):
-            return self.company_code
+        if hasattr(self, 'employee_safe_harbor'):
+            print 'here'
+            return self.employee_safe_harbor
+        if hasattr(self, 'company_safe_harbor'):
+            print 'company'
+            return self.company_safe_harbor
         return ''

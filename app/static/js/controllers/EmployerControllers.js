@@ -262,7 +262,7 @@ var employerUser = employersController.controller('employerUser',
       };
 
       $scope.createUser = function(userType) {
-        if(!$scope.addUser.send_email && 
+        if(!$scope.addUser.send_email &&
            !$scope.validatePassword($scope.addUser.password, $scope.addUser.password_confirm)){
           alert('Password validation failed. Please re-enter the passwords');
           return false;
@@ -1162,7 +1162,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            $state,
            $stateParams,
            $modal,
-           $controller, 
+           $controller,
            companyRepository,
            CompanyEmployeeSummaryService,
            CompanyBenefitEnrollmentSummaryService,
@@ -1221,7 +1221,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
 
     $scope.open1095CModal = function(downloadUserId){
       var modalInstance = $modal.open({
-        templateUrl: '/static/partials/modal_company_1095_c.html',
+        templateUrl: '/static/partials/aca/modal_company_1095_c.html',
         controller: 'company1095CModalController',
         size: 'lg',
         backdrop: 'static',
