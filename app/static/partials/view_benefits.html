@@ -398,7 +398,7 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th><span>Extra Benefits</span></th>
+        <th><span>Individual Benefits</span></th>
         <th><span>Document</span></th>
         <th width="200"><span>Benefit Item Name</span></th>
         <th width="550"><span>Benefit Item Description</span></th>
@@ -407,12 +407,12 @@
     <tbody>
       <tr ng-repeat="extraBenefitPlan in extraBenefitPlans">
         <td>
-          Extra Benefits
+          Individual Benefits
           <a class="delete-cross"
           ng-show="benefitDeletable"
           ng-click="deleteExtraBenefitPlan(extraBenefitPlan)"
           href="javascript:void(0);"
-          confirm="Delete the extra benefits plan?">X</a>
+          confirm="Delete the individual benefits plan?">X</a>
         </td>
         <td class="upload-td">
           <bmuploadmanager

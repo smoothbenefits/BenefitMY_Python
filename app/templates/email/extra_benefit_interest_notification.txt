@@ -1,0 +1,21 @@
+Company: {{context_data.company.name}}
+
+[The Employee Expressed Interests in the Additional Individual Benefits Listed Below]
+
+Employee Information
+    First Name: {{context_data.person.first_name}}
+    Last Name: {{context_data.person.last_name}}
+    Date of Birth: {{context_data.person.birth_date}}
+    Email: {{context_data.person.email}}
+    {% for phone in context_data.person.phones %}
+    Phone({{phone.type}}): {{phone.number}}
+    {% endfor %}
+
+Individual Benefits Interest Selections
+    {% for plan_item in context_data.plan_items %}
+    ({{plan_item.opt_in}}) {{plan_item.item_name}}
+    {% endfor %}
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}

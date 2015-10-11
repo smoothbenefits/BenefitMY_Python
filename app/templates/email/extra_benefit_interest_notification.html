@@ -1,0 +1,43 @@
+<html>
+    <head>
+    </head>
+    <body>
+      <h3>Company: {{context_data.company.name}}</h3>
+      <h4>[The Employee Expressed Interests in the Additional Individual Benefits Listed Below]</h4>
+      <br/>
+      <div>Employee Information</div>
+      <ul>
+        <li>First Name: <b>{{context_data.person.first_name}}</b></li>
+        <li>Last Name: <b>{{context_data.person.last_name}}</b></li>
+        <li>Date of Birth: <b>{{context_data.person.birth_date}}</b></li>
+        <li>Email: <b>{{context_data.person.email}}</b></li>
+        {% for phone in context_data.person.phones %}
+        <li>Phone({{phone.type}}): {{phone.number}}<b></b></li>
+        {% endfor %}
+      </ul>
+      <br/>
+      <div>Individual Benefits Interest Selections</div>
+        <table border="1">
+          <thead>
+            <tr>
+              <th><span>Benefit Item</span></th>
+              <th><span>Employee Showed Interest</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for plan_item in context_data.plan_items %}
+            <tr>
+                <td>{{plan_item.item_name}}</td>
+                <td>{{plan_item.opt_in}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      <br/> 
+      <hr/>
+
+      <a href="{{site_url}}" style="background:#6EBE4B;color:#FFF;font-weight:700;border: 1px solid #56A245;border-radius: 0;padding: 10px 6px; width: 150px;text-align: center;box-shadow: none;text-shadow: none;
+      line-height: 15px;display: inline-block;margin-bottom: 0;vertical-align: middle;cursor: pointer;white-space: nowrap;font-size: 13px;">
+      Visit Site</a>
+    </body>
+</html>
