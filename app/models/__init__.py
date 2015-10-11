@@ -71,8 +71,3 @@ from insurance.company_std_age_based_rate import CompanyStdAgeBasedRate
 
 from aca.employee_1095_c import Employee1095C
 from aca.company_1095_c import Company1095C
-
-from extra_benefits.extra_benefit_item import ExtraBenefitItem
-from extra_benefits.company_extra_benefit_plan import CompanyExtraBenefitPlan
-from extra_benefits.person_company_extra_benefit_plan import PersonCompanyExtraBenefitPlan
-from extra_benefits.person_company_extra_benefit_plan_item import PersonCompanyExtraBenefitPlanItem

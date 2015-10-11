@@ -1,10 +1,7 @@
 class PersonInfo(object):
     first_name = ''
     last_name = ''
-    birth_date = ''
     ssn = ''
-    email = ''
-    phones = []
     address1 = ''
     address2 = ''
     city = ''
@@ -17,18 +14,6 @@ class PersonInfo(object):
             self.first_name = person_model.first_name
             self.last_name = person_model.last_name
             self.ssn = person_model.ssn
-            self.birth_date = person_model.birth_date
-
-            if (person_model.email):
-                self.email = person_model.email
-            elif (person_model.user.email):
-                self.email = person_model.user.email
-
-            self.phones = []
-            for phone in person_model.phones.all():
-                self.phones.append({
-                    'type': phone.phone_type,
-                    'number': phone.number})
 
             addresses = person_model.addresses.filter(address_type='home')
             if (len(addresses) > 0):
@@ -38,8 +23,6 @@ class PersonInfo(object):
                 self.city = address.city
                 self.state = address.state
                 self.zipcode = address.zipcode
-
-
 
     def get_full_name(self):
         if self.first_name is not None and self.last_name is not None:
