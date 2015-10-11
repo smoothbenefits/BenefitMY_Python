@@ -117,5 +117,12 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 16
+  },
+  {
+    "fields": {
+      "feature": "ExtraBenefit"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 17
   }
 ]

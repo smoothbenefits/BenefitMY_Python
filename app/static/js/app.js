@@ -155,6 +155,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_commuter.html',
                 controller: 'brokerAddCommuterPlanController'
             }).
+            state('broker_add_benefit.extra_benefit', {
+                url: '/extra_benefit',
+                templateUrl: '/static/partials/benefit_addition/tab_extra_benefit.html',
+                controller: 'brokerAddExtraBenefitPlanController'
+            }).
             state('broker_benefit_selected', {
                 url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',
@@ -330,7 +335,12 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             state('employee_benefit_signup.commuter', {
                 url: '/commuter',
                 templateUrl: '/static/partials/benefit_selection/tab_commuter.html',
-                controller:'commuterBenefitsSignup'
+                controller:'commonBenefitsSignup'
+            }).
+            state('employee_benefit_signup.extra_benefit', {
+                url: '/extra_benefit',
+                templateUrl: '/static/partials/benefit_selection/tab_extra_benefit.html',
+                controller:'commonBenefitsSignup'
             }).
             state('employee_benefit_signup.summary', {
                 url: '/summary',
