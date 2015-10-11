@@ -137,7 +137,6 @@ var benefitsController = brokersControllers.controller(
     'FsaService',
     'HraService',
     'CommuterService',
-    'ExtraBenefitService',
     'companyRepository',
     function ($scope,
               $location,
@@ -153,7 +152,6 @@ var benefitsController = brokersControllers.controller(
               FsaService,
               HraService,
               CommuterService,
-              ExtraBenefitService,
               companyRepository){
       $scope.role = 'Broker';
       $scope.showAddBenefitButton = true;
@@ -282,16 +280,6 @@ var benefitsController = brokersControllers.controller(
 
       $scope.deleteCommuterPlan = function(companyPlanToDelete) {
         CommuterService.deleteCompanyPlan(companyPlanToDelete.companyPlanId).then(function() {
-          $state.reload();
-        });
-      };
-
-      ExtraBenefitService.getPlansForCompany($stateParams.clientId).then(function(response) {
-        $scope.extraBenefitPlans = response;
-      });
-
-      $scope.deleteExtraBenefitPlan = function(companyPlanToDelete) {
-        ExtraBenefitService.deleteCompanyPlan(companyPlanToDelete.companyPlanId).then(function() {
           $state.reload();
         });
       };
@@ -1022,56 +1010,6 @@ var brokerAddCommuterPlanController = brokersControllers.controller(
         if (benenfitEnablementStatus) {
             $scope.benenfitEnablementStatus = benenfitEnablementStatus;
         }
-    };
-   }
-]);
-
-var brokerAddExtraBenefitPlanController = brokersControllers.controller(
-  'brokerAddExtraBenefitPlanController',
-  ['$scope',
-   '$state',
-   '$stateParams',
-   '$controller',
-   'ExtraBenefitService',
-   'UserService',
-   function($scope,
-            $state,
-            $stateParams,
-            $controller,
-            ExtraBenefitService,
-            UserService){
-
-    // Inherite scope from base
-    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
-
-    var clientId = $stateParams.clientId;
-
-    ExtraBenefitService.getBlankPlanForCompany(clientId).then(function(blankCompanyPlan) {
-        $scope.newPlan = blankCompanyPlan;
-    });
-
-    // Need the user information for the current user (broker)
-    $scope.addPlan = function() {
-        ExtraBenefitService.addPlanForCompany($scope.newPlan, clientId).then(
-            function() {
-              var successMessage = "The new Extra Benefits plan has been saved successfully."
-
-              $scope.showMessageWithOkayOnly('Success', successMessage);
-            },
-            function() {
-              var failureMessage = "There was a problem saving the data. Please make sure all required fields have been filled out and try again."
-
-              $scope.showMessageWithOkayOnly('Failed', failureMessage);
-        });
-    };
-
-    $scope.addBenefitItem = function() {
-        $scope.newPlan.benefitItems.push({});
-    };
-
-    $scope.deleteBenefitItem = function(benefitItem) {
-        var index = $scope.newPlan.benefitItems.indexOf(benefitItem);
-        $scope.newPlan.benefitItems.splice(index, 1);
     };
    }
 ]);

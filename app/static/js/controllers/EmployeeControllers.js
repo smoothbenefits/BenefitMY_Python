@@ -985,7 +985,6 @@ var employeeBenefitsSignup = employeeControllers.controller(
    'FsaService',
    'HraService',
    'CommuterService',
-   'ExtraBenefitService',
    'EmployeeBenefitsAvailabilityService',
     function employeeBenefitsSignup(
       $scope,
@@ -999,7 +998,6 @@ var employeeBenefitsSignup = employeeControllers.controller(
       FsaService,
       HraService,
       CommuterService,
-      ExtraBenefitService,
       EmployeeBenefitsAvailabilityService){
 
       // Inherite scope from base
@@ -1014,7 +1012,6 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var fsaPlans;
       var hraPlans;
       var commuterPlans;
-      var extraBenefitPlans;
       var company;
 
       var promise = $scope.companyPromise.then(function(comp){
@@ -1056,10 +1053,6 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(commuterPlansResponse) {
         commuterPlans = commuterPlansResponse;
-        return ExtraBenefitService.getPlansForCompany(company.id);
-      })
-      .then(function(extraBenefitPlansResponse) {
-        extraBenefitPlans = extraBenefitPlansResponse;
       });
 
       promise.then(function(result){
@@ -1127,16 +1120,8 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if (extraBenefitPlans.length > 0) {
-          $scope.tabs.push({
-            "id": 9,
-            "heading": "Extra Benefits",
-            "state": "employee_benefit_signup.extra_benefit"
-          });
-        }
-
         $scope.tabs.push({
-          "id": 10,
+          "id": 9,
           "heading": "Summary",
           "state": "employee_benefit_signup.summary"
         });
@@ -2402,11 +2387,11 @@ var hraBenefitsSignup = employeeControllers.controller(
 
     }]);
 
-var commonBenefitsSignup = employeeControllers.controller(
-  'commonBenefitsSignup',
+var commuterBenefitsSignup = employeeControllers.controller(
+  'commuterBenefitsSignup',
   ['$scope',
    '$controller',
-    function commonBenefitsSignup(
+    function commuterBenefitsSignup(
       $scope,
       $controller){
 
