@@ -3,8 +3,13 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('EmployeeProfileService',
     ['$q',
     'EmployeeProfileRepository',
+    'EmployeeManagementEmployeeTerminationRepository',
     'PersonService',
-    function ($q, EmployeeProfileRepository, PersonService){
+    function (
+        $q, 
+        EmployeeProfileRepository, 
+        EmployeeManagementEmployeeTerminationRepository,
+        PersonService){
         var isFullTimeEmploymentType = function(employeeProfile) {
           if (!employeeProfile) {
             return false;
@@ -42,6 +47,12 @@ benefitmyService.factory('EmployeeProfileService',
                 return this.endDate ? moment(this.endDate).format(DATE_FORMAT_STRING) : null;
             };
 
+            viewModel.benefitStartDate = employeeProfileDomainModel.benefit_start_date ? new Date(moment(employeeProfileDomainModel.benefit_start_date).format()) : null;
+
+            viewModel.benefitStartDateForDisplay = function() {
+                return this.benefitStartDate ? moment(this.benefitStartDate).format(DATE_FORMAT_STRING) : null;
+            };
+
             return viewModel;
         };
 
@@ -56,6 +67,17 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.employment_status = employeeProfileViewModel.employmentStatus;
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
+            domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
+
+            return domainModel;
+        };
+
+        var mapTerminationViewToDomainModel = function(terminationViewModel) {
+            var domainModel = {};
+
+            domainModel.person_id = terminationViewModel.personId;
+            domainModel.company_id = terminationViewModel.companyId;
+            domainModel.end_date = terminationViewModel.endDate ? moment(terminationViewModel.endDate).format(STORAGE_DATE_FORMAT_STRING) : null;
 
             return domainModel;
         };
@@ -134,6 +156,22 @@ benefitmyService.factory('EmployeeProfileService',
                         deferred.reject(error);
                     });
                 };
+
+                return deferred.promise;
+            }, 
+
+            terminateEmployee: function(terminationData) {
+                var domainModel = mapTerminationViewToDomainModel(terminationData);
+
+                var deferred = $q.defer();
+
+                EmployeeManagementEmployeeTerminationRepository.ByCompany.save({company_id: terminationData.companyId}, domainModel)
+                .$promise.then(function(response) {
+                    deferred.resolve(mapDomainToViewModel(response.output_data));
+                },
+                function(error){
+                    deferred.reject(error);
+                });
 
                 return deferred.promise;
             }
