@@ -248,18 +248,31 @@ var employerUser = employersController.controller('employerUser',
         }
       };
 
+      $scope.syncBenefitStartDate = function(){
+        if($scope.addUser.date_of_hire){
+          $scope.addUser.benefit_start_date = moment($scope.addUser.date_of_hire).format('MM/DD/YYYY');
+        }
+      };
+
+      $scope.$watch('addUser.date_of_hire', $scope.syncBenefitStartDate);
+
       $scope.addLink = function(userType)
       {
         $location.path('/admin/'+ userType + '/add/'+compId)
-      }
+      };
 
       $scope.createUser = function(userType) {
-          EmployerEmployeeManagementService.AddNewEmployee(compId, $scope.addUser, $scope.templateFields)
-          .then(function(response) {
-            gotoUserView(userType);
-          }, function(error) {
-            alert('Failed to add a new employee.');
-          });
+        if(!$scope.addUser.send_email &&
+           !$scope.validatePassword($scope.addUser.password, $scope.addUser.password_confirm)){
+          alert('Password validation failed. Please re-enter the passwords');
+          return false;
+        };
+        EmployerEmployeeManagementService.AddNewEmployee(compId, $scope.addUser, $scope.templateFields)
+        .then(function(response) {
+          gotoUserView(userType);
+        }, function(error) {
+          alert('Failed to add a new employee.');
+        });
       };
 
       $scope.gotoEmployerDashboardLink = function(){
@@ -904,11 +917,11 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       return _.filter(output, function(item){return item.value != null;});
     }
 
-    var saveToTerminateEmployment = function(employeeProfileToSave){
+    var saveToTerminateEmployment = function(terminationData){
 
-      EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave)
+      EmployeeProfileService.terminateEmployee(terminationData)
       .then(function(response){
-        $scope.employee.employeeProfile = employeeProfileToSave;
+        $scope.employee.employeeProfile = response;
       }, function(error){
         $scope.terminateMessage = "Error occurred during saving operation. Please verify " +
           "all the information enterred are valid. Message: " + error;
@@ -916,14 +929,18 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
     };
 
     $scope.terminateEmployment = function(){
+      var terminationData = {
+        companyId: $scope.employee.employeeProfile.companyId,
+        personId: $scope.employee.employeeProfile.personId
+      };
       var modalInstance = $modal.open({
           templateUrl: '/static/partials/employee_record/terminate_confirmation.html',
           controller: 'confirmTerminateEmployeeModalController',
           size: 'md',
           backdrop: 'static',
           resolve: {
-              employeeProfile: function () {
-                  return angular.copy($scope.employee.employeeProfile);
+              terminationData: function () {
+                  return terminationData;
               }
           }
       });
@@ -1071,6 +1088,13 @@ var addEmployeeCompensationModalController = employersController.controller(
       var personId = employeeProfile.personId;
       var companyId = employeeProfile.companyId;
 
+      $scope.useHourlyRate = function() {
+        return !$scope.isFullTime || $scope.getHourlyPaid;
+      };
+
+      $scope.useAnnualSalary = function(){
+        return $scope.isFullTime && !$scope.getHourlyPaid;
+      };
 
       $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
@@ -1100,21 +1124,19 @@ var addEmployeeCompensationModalController = employersController.controller(
 var confirmTerminateEmployeeModalController = employersController.controller('confirmTerminateEmployeeModalController',[
   '$scope',
   '$modalInstance',
-  'employeeProfile',
-  'EmploymentStatuses',
+  'terminationData',
   function($scope,
            $modalInstance,
-           employeeProfile,
-           EmploymentStatuses){
+           terminationData){
 
-    $scope.employeeProfile = employeeProfile;
+    $scope.terminationData = terminationData;
+
     $scope.endDateRequired = function(){
-      return _.isNull($scope.employeeProfile.endDate) || _.isUndefined($scope.employeeProfile.endDate);
+      return _.isNull($scope.terminationData.endDate) || _.isUndefined($scope.terminationData.endDate);
     };
 
     $scope.confirm = function(){
-      $scope.employeeProfile.employmentStatus = EmploymentStatuses.terminated;
-      $modalInstance.close($scope.employeeProfile);
+      $modalInstance.close($scope.terminationData);
     };
 
     $scope.cancel = function(){
@@ -1130,6 +1152,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
   '$state',
   '$stateParams',
   '$modal',
+  '$controller',
   'companyRepository',
   'CompanyEmployeeSummaryService',
   'CompanyBenefitEnrollmentSummaryService',
@@ -1139,10 +1162,14 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
            $state,
            $stateParams,
            $modal,
+           $controller,
            companyRepository,
            CompanyEmployeeSummaryService,
            CompanyBenefitEnrollmentSummaryService,
            Company1095CService){
+
+    $controller('modalMessageControllerBase', {$scope: $scope});
+
     var company_id = $stateParams.company_id;
     $scope.employees = [];
 
@@ -1194,7 +1221,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
 
     $scope.open1095CModal = function(downloadUserId){
       var modalInstance = $modal.open({
-        templateUrl: '/static/partials/modal_company_1095_c.html',
+        templateUrl: '/static/partials/aca/modal_company_1095_c.html',
         controller: 'company1095CModalController',
         size: 'lg',
         backdrop: 'static',
@@ -1212,6 +1239,26 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
         }
       });
 
+    };
+
+    $scope.editEmployeeSafeHarborCode = function(employeeId) {
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/aca/modal_employee_1095_c.html',
+        controller: 'employee1095CModalController',
+        size: 'lg',
+        backdrop: 'static',
+        resolve: {
+          CompanyId: function() { return company_id; },
+          EmployeeId: function() { return employeeId; },
+          Company1095CData: function() {
+            return angular.copy($scope.sorted1095CData);
+          }
+        }
+      });
+
+      modalInstance.result.then(function(saved1095CData) {
+        $scope.showMessageWithOkayOnly('Success', 'Employee safe harbor code has been saved successfully.');
+      });
     };
 }]);
 

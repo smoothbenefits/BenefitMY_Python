@@ -492,11 +492,28 @@ benefitmyDomainModelFactories.factory('BatchAccountCreationBatchCreateRepository
   }
 ]);
 
+benefitmyDomainModelFactories.factory('EmployeeManagementEmployeeTerminationRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompany:$resource(PREFIX + 'company/:company_id/employee_management/termination/', {company_id:'@company_id'})
+    }
+  }
+]);
+
 benefitmyDomainModelFactories.factory('Company1095CDataRepository', ['$resource',
   function($resource){
     return {
       ByCompany: $resource(PREFIX + 'companies/:comp_id/1095_c', {comp_id:'@comp_id'}),
       Periods: $resource(PREFIX + '1095_c_periods')
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('Employee1095CDataRepository', ['$resource',
+  function($resource){
+    return {
+      ByPersonCompany: $resource(PREFIX + 'company/:companyId/person/:personId/1095_c',
+                        {companyId: '@companyId', personId: '@personId'})
     }
   }
 ]);

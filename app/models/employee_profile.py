@@ -42,6 +42,8 @@ class EmployeeProfile(models.Model):
                                  blank=True,
                                  null=True)
 
+    benefit_start_date = models.DateField(blank=True, null=True)
+
     person = models.ForeignKey(Person,
                                default=0,
                                related_name="employee_profile_person")

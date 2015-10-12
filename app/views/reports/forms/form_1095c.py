@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from app.service.Report.pdf_form_fill_service import PDFFormFillService
 from ..report_export_view_base import ReportExportViewBase
 from app.factory.report_view_model_factory import ReportViewModelFactory
-from app.models.company_1095_c import Company1095C, PERIODS
+from app.models.aca.company_1095_c import PERIODS
 from app.models.employee_profile import EmployeeProfile
 from datetime import date, timedelta
 
@@ -16,12 +16,13 @@ FORM_YEAR = 2015
 class Form1095CView(ReportExportViewBase):
 
     def get(self, request, pk, format=None):
+        employee_user_id = pk
         model_factory = ReportViewModelFactory()
-        person_info = model_factory.get_employee_person_info(pk)
-        company_info = model_factory.get_employee_company_info(pk)
+        person_info = model_factory.get_employee_person_info(employee_user_id)
+        company_info = model_factory.get_employee_company_info(employee_user_id)
 
-        company_model = self._get_company_by_user(pk)
-        employee_profile = self._get_employee_profile_by_user_id(pk, company_model.id)
+        company_model = self._get_company_by_user(employee_user_id)
+        employee_profile = self._get_employee_profile_by_user_id(employee_user_id, company_model.id)
 
         # Populate the form fields
         fields = {
@@ -56,15 +57,20 @@ class Form1095CView(ReportExportViewBase):
 
         index = 0
         if employee_profile:
-            period_map = self._get_1095C_benefits_data(company_model.id, employee_profile.start_date, employee_profile.end_date)
+            # use employee user id and company id to retrieve employee's information for form 1095C
+            period_map = self._get_1095C_benefits_data(employee_user_id,
+                                                       company_model.id,
+                                                       employee_profile.start_date,
+                                                       employee_profile.end_date)
             map_size = len(period_map)
             for period in period_map:
                 index = self._write_field_for_benefit_data(fields, period['benefit_data'], index, map_size)
         else:
+            company_1095c_collection = model_factory.get_employee_1095_c_data(employee_user_id, company_model.id)
             for perd in PERIODS:
-                comp_1095_c_for_period = Company1095C.objects.filter(company=company_model.id, period=perd)
+                comp_1095_c_for_period = next(datum for datum in company_1095c_collection if datum.period == perd)
                 if comp_1095_c_for_period:
-                    index = self._write_field_for_benefit_data(fields, comp_1095_c_for_period[0], index, len(PERIODS))
+                    index = self._write_field_for_benefit_data(fields, comp_1095_c_for_period, index, len(PERIODS))
 
 
         file_name_prefix = ''
@@ -101,17 +107,17 @@ class Form1095CView(ReportExportViewBase):
             fields[str(field_key)] = benefit_data.offer_of_coverage
             field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_0{1}[0]'.format(2, 25 + index)
             if index + 1 == size:
-                # This is not something we can control. However, for this particular field, 
+                # This is not something we can control. However, for this particular field,
                 # it does not follow the sequential number pattern. The number here is "300"
                 # Hence the special case
-                field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_300[0]'.format(2) 
+                field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_300[0]'.format(2)
             fields[str(field_key)] = benefit_data.employee_share
             field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_0{1}[0]'.format(3, 50 + index)
-            fields[str(field_key)] = benefit_data.safe_harbor
+            fields[str(field_key)] = benefit_data.effective_safe_harbor
         index += 1
         return index
 
-    def _get_1095C_benefits_data(self, comp_id, emp_start_date, emp_end_date):
+    def _get_1095C_benefits_data(self, user_id, comp_id, emp_start_date, emp_end_date):
         # If the dates are not specified, we use really wide range defaults
         if not emp_start_date:
             emp_start_date = date(1900, 1, 1)
@@ -125,16 +131,19 @@ class Form1095CView(ReportExportViewBase):
         for x in range(1, 13):
             period_date_map.append({'period':PERIODS[x], 'date': date(FORM_YEAR, x, 1)})
 
+        model_factory = ReportViewModelFactory()
+        employee_1095c_data = model_factory.get_employee_1095_c_data(user_id, comp_id)
+
         # Start the whole year case
         whole_year_period_date = period_date_map[0]
         # This record down the "all 12 month" data
-        whole_year_benefit_data = Company1095C.objects.filter(company=comp_id, period=whole_year_period_date['period'])
+        whole_year_benefit_data = next(datum for datum in employee_1095c_data if datum.period == whole_year_period_date['period'])
         # Check to see if the employee is active for the whole year
         whole_year = emp_start_date <= date(FORM_YEAR, 1, 31) and emp_end_date >= date(FORM_YEAR, 12, 1)
         if whole_year_benefit_data and whole_year:
-            # We only fill out the "All 12 month" if employee is active for the whole year and 
+            # We only fill out the "All 12 month" if employee is active for the whole year and
             # the company filled data has the "All 12 month" column specified
-            whole_year_period_date['benefit_data'] = whole_year_benefit_data[0]
+            whole_year_period_date['benefit_data'] = whole_year_benefit_data
         else:
             whole_year_period_date['benefit_data'] = None
         # End of whole year case
@@ -148,12 +157,12 @@ class Form1095CView(ReportExportViewBase):
                 # if the employee is terminated at the beginning of the month, the employee is active in that month
                 if whole_year_benefit_data:
                     # we choose to record the "All 12 month" column data
-                    benefit_data = whole_year_benefit_data[0]
+                    benefit_data = whole_year_benefit_data
                 else:
                     # We record whatever the company specified
-                    benefit_data_array = Company1095C.objects.filter(company=comp_id, period=period_date['period'])
+                    benefit_data_array = next(datum for datum in employee_1095c_data if datum.period == period_date['period'])
                     if benefit_data_array:
-                        benefit_data = benefit_data_array[0]
+                        benefit_data = benefit_data_array
 
             period_date['benefit_data'] = benefit_data
 
@@ -164,6 +173,3 @@ class Form1095CView(ReportExportViewBase):
         next_month_date = start_date + timedelta(days=32)
         next_month_first = next_month_date.replace(day=1)
         return next_month_first
-
-                
-

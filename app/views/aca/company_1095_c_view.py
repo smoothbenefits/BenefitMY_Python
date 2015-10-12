@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from django.http import Http404
 from django.db import transaction
 from rest_framework.response import Response
-from app.models.company_1095_c import Company1095C
-from app.serializers.company_1095_c_serializer import Company1095CSerializer, Company1095CPostSerializer
+from app.models.aca.company_1095_c import Company1095C
+from app.serializers.aca.company_1095_c_serializer import Company1095CSerializer, Company1095CPostSerializer
 from app.models.company import Company
 
 class Company1095CView(APIView):

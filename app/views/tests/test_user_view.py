@@ -159,6 +159,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'create_docs': 'true',
             'employment_type': 'FullTime',
             'start_date': '2008-03-01',
+            'benefit_start_date': '2008-03-22',
             'compensation_info': {
                 'annual_base_salary': 3000,
                 'effective_date': '2008-03-01T15:45:09Z'
@@ -194,6 +195,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'false',
             'create_docs': 'true',
             'start_date': '2008-03-01',
+            'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -225,6 +227,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'false',
             'start_date': '2008-03-01',
+            'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -253,6 +256,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'false',
             'start_date': '2008-03-01',
+            'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -273,6 +277,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'false',
             'start_date': '2008-03-01',
+            'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -294,6 +299,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'false',
             'start_date': '2008-03-01',
+            'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -318,6 +324,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'true',
             'start_date': '2008-03-01',
+            'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -343,6 +350,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'true',
             'start_date': '2008-03-01',
+            'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -397,6 +405,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'send_email': 'true',
             'create_docs': 'true',
             'start_date': '2008-03-01',
+            'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
             'compensation_info': {
                 'annual_base_salary': 3000,
@@ -435,3 +444,4 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['company'], self.normalize_key(new_user['company_id']))
         self.assertIsNotNone(result['created_at'])
         self.assertIsNotNone(result['updated_at'])
+        self.assertEqual(result['benefit_start_date'], new_user['benefit_start_date'])

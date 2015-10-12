@@ -197,9 +197,9 @@ benefitmyService.factory('LtdService',
                       {userId:userId, id:ltdPlan.companyPlanId}, request)
                     .$promise.then(function(premiumInfo) {
                         deferred.resolve({
-                          totalPremium:premiumInfo.total.toFixed(2),
-                          employeePremiumPerPayPeriod: premiumInfo.employee.toFixed(2),
-                          effectiveBenefitAmount: premiumInfo.amount
+                          totalPremium: Number(premiumInfo.total).toFixed(2),
+                          employeePremiumPerPayPeriod: Number(premiumInfo.employee).toFixed(2),
+                          effectiveBenefitAmount: Number(premiumInfo.amount).toFixed(2)
                         });
                     }, function(error) {
                         deferred.reject(error);
