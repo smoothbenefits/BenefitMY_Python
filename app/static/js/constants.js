@@ -145,6 +145,13 @@ settings.constant('tabLayoutGlobalConfig', [
                 active: false,
                 state: "broker_add_benefit.commuter"
             },
+            {
+                id: 9,
+                verbose_name: "Extra Benefits",
+                name: "extra_benefit",
+                active: false,
+                state: "broker_add_benefit.extra_benefit"
+            },
         ]
     },
     {
