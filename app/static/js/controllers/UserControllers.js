@@ -410,11 +410,13 @@ var employee1095CModalController = userControllers.controller('employee1095CModa
     $scope.employeeId = EmployeeId;
 
     $scope.save = function() {
-      Employee1095CService.Save1095CForEmployee(EmployeeId, CompanyId, $scope.employee1095CData)
-      .then(function(savedResponse) {
-        $modalInstance.close(savedResponse);
-      }, function(errorResponse) {
-        alert('Saving employee safe harbor code failed. Error: ' + errorResponse);
+      PersonService.getSelfPersonInfo(EmployeeId).then(function(person) {
+        Employee1095CService.Save1095CForEmployee(person.id, CompanyId, $scope.employee1095CData)
+        .then(function(savedResponse) {
+          $modalInstance.close(savedResponse);
+        }, function(errorResponse) {
+          alert('Saving employee safe harbor code failed. Error: ' + errorResponse);
+        });
       });
     };
 
