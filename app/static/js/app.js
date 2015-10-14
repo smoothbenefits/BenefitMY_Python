@@ -247,7 +247,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller:'employerLetterTemplate'
             }).
             state('document_templates_edit', {
-                url: '/admin/docuents/template/:company_id/edit/:template_id',
+                url: '/admin/documents/template/:company_id/edit/:template_id',
                 templateUrl:'/static/partials/documents/modify_template.html',
                 controller:'employerModifyTemplate'
             }).

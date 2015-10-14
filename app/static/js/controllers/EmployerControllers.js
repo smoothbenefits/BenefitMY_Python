@@ -572,10 +572,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
     $scope.modifyExistingTemplate = function(template){
       $state.go('document_templates_edit', {company_id:$scope.companyId, template_id: template.id});
     };
-
-    $scope.addOfferTemplate = function(){
-      $state.go('document_templates_edit', {company_id:$scope.companyId});
-    };
+    
     $scope.viewDashboard = function(){
       $location.path('/admin');
     };
