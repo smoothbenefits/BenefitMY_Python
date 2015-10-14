@@ -1,0 +1,73 @@
+[
+  {
+    "fields": {
+      "company": 1,
+      "number_of_1095c": 50,
+      "authoritative_transmittal": false,
+      "member_of_aggregated_group": true,
+      "certifications_of_eligibility": "Qualifying Offer Method",
+      "created_at": "2015-04-27T04:00:00Z",
+      "updated_at": "2015-04-27T04:00:00Z"
+    },
+    "model": "app.Company1094CMemberInfo",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "company": 2,
+      "number_of_1095c": 5,
+      "authoritative_transmittal": true,
+      "member_of_aggregated_group": false,
+      "certifications_of_eligibility": "Qualifying Offer Method",
+      "created_at": "2015-09-27T04:00:00Z",
+      "updated_at": "2015-09-27T14:00:00Z"
+    },
+    "model": "app.Company1094CMemberInfo",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "company": 1,
+      "minimum_essential_coverage": true,
+      "fulltime_employee_count": 65,
+      "total_employee_count": 100,
+      "aggregated_group": true,
+      "section_4980h_transition_relief": false,
+      "period": "All 12 Months",
+      "created_at": "2015-04-27T04:00:00Z",
+      "updated_at": "2015-09-27T14:00:00Z"
+    },
+    "model": "app.Company1094CMonthlyMemberInfo",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "company": 2,
+      "minimum_essential_coverage": true,
+      "fulltime_employee_count": 65,
+      "total_employee_count": 100,
+      "aggregated_group": true,
+      "section_4980h_transition_relief": false,
+      "period": "Dec",
+      "created_at": "2015-04-27T04:00:00Z",
+      "updated_at": "2015-09-27T14:00:00Z"
+    },
+    "model": "app.Company1094CMonthlyMemberInfo",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "company": 2,
+      "minimum_essential_coverage": true,
+      "fulltime_employee_count": 65,
+      "total_employee_count": 100,
+      "aggregated_group": true,
+      "section_4980h_transition_relief": false,
+      "period": "Nov",
+      "created_at": "2015-04-27T04:00:00Z",
+      "updated_at": "2015-09-27T14:00:00Z"
+    },
+    "model": "app.Company1094CMonthlyMemberInfo",
+    "pk": 3
+  }
+]
