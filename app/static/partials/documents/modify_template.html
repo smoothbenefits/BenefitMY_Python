@@ -1,0 +1,44 @@
+<div class="breadcrumb">
+  <a ng-href="#/admin">Employer Dashboard</a>
+  <a ng-click="goBack()">View Templates</a>
+  <span>{{viewTitle}}</span>
+</div>
+<div class="content-header">
+  <h1>{{viewTitle}}</h1>
+</div><!-- / .content-header -->
+<div class="content-body">
+    <div class="form-holder">
+      <form name="form">
+        <div class="form-label">Template Name</div>
+        <div class="textbox">
+          <input type="text"
+          name="template_name"
+          ng-model="template.name"
+          ng-required="true">
+        </div>
+        <div class="textbox">
+          <textarea class="template-field"
+            rows="10"
+            ng-required="true"
+            name="template"
+            ng-model="template.content">
+          </textarea>
+        </div>
+        <div class="notes" ng-non-bindable>
+          <p><b>Please note: For dynamically changing fields to be replaced later, use double curly brackets ({{}}). </b></p>
+          <p>For example: {{salaryFigure}}, {{sign_date}}, {{Title}}</p>
+        </div>
+        <div class="submit-box">
+          <button ng-if="!templateId" ng-click="createTemplate()"
+            class="btn green"
+            ng-disabled="form.$invalid">
+            Create Template
+        </button>
+        <button ng-if="templateId" ng-click="saveTemplateChanges()" class="btn green">
+          Save Template
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="back"><a ng-click="goBack()">&laquo; Back</a></div>
+</div>
