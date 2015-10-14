@@ -168,6 +168,8 @@ from app.views.company_enrollment_summary_view import CompanyEnrollmentSummaryVi
 from app.views.aca.company_1095_c_view import Company1095CView
 from app.views.aca.employee_1095_c_view import Employee1095CView
 from app.views.aca.aca_1095_c_periods_view import ACA1095CPeriodsView
+from app.views.aca.company_1094_c_view import Company1094CView
+from app.views.aca.aca_1094_c_eligibility_certification_view import ACA1094CEligibilityCertificationView
 
 from app.views.batch_account_creation.batch_account_creation_view import BatchAccountCreationView
 from app.views.batch_account_creation.account_info_list_parse_view import AccountInfoListParseView
@@ -441,6 +443,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/person/(?P<person_id>\w+)/1095_c/?$' % PREFIX,
         Employee1095CView.as_view(),
         name='employee_1095_c_api'),
+    url(r'^%s/companies/(?P<pk>\w+)/1094_c/?$' % PREFIX,
+        Company1094CView.as_view(),
+        name='company_1094_c_api'),
 
     url(r'^%s/company/(?P<company_id>\w+)/batch_account_creation/parse_account_data/?$' % PREFIX,
         AccountInfoListParseView.as_view(),
@@ -455,6 +460,8 @@ urlpatterns = patterns('app.views',
         name='employee_management_termination_api'),
 
     url(r'^%s/1095_c_periods/?$' % PREFIX, ACA1095CPeriodsView.as_view(), name='ACA_1095_c_periods_api'),
+
+    url(r'^%s/1094_c_certificiations/?$' % PREFIX, ACA1094CEligibilityCertificationView.as_view(), name='ACA_1094_c_cert_api')
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
