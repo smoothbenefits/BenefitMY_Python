@@ -679,7 +679,7 @@ var employerCreateDocument = employersController.controller('employerCreateDocum
       $scope.newDoc.document_type = $scope.documentType;
       var postObj={company:$scope.companyId, user:employeeId, template:curTemplate.id, signature:'', document:$scope.newDoc};
       documentRepository.create.save(postObj, function(response){
-        $location.search({type:$scope.documentType}).path('/admin/view_letter/' + $scope.companyId + '/' + employeeId);
+        $location.search({type:$scope.documentType}).path('/admin/documents/view/' + $scope.companyId + '/' + employeeId);
       }, function(errResponse){
         $scope.createFailed = true;
       });
