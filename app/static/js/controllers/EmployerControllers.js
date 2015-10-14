@@ -149,7 +149,6 @@ var employerUser = employersController.controller('employerUser',
    'employerWorkerRepository',
    'usersRepository',
    'emailRepository',
-   'documentTypeService',
    'templateRepository',
    'DocumentService',
    'CompensationService',
@@ -161,7 +160,6 @@ var employerUser = employersController.controller('employerUser',
                         employerWorkerRepository,
                         usersRepository,
                         emailRepository,
-                        documentTypeService,
                         templateRepository,
                         DocumentService,
                         CompensationService,
@@ -170,7 +168,6 @@ var employerUser = employersController.controller('employerUser',
       $scope.employees=[];
       $scope.brokers = [];
       $scope.templateFields = [];
-      $scope.docTypeArray = [];
       $scope.employment_types = EmployerEmployeeManagementService.EmploymentTypes;
       $scope.addUser = {
         send_email:true,
@@ -206,9 +203,9 @@ var employerUser = employersController.controller('employerUser',
 
             // Populate document data for employees
             _.each($scope.employees, function(employee) {
-                DocumentService.getDocumentToTypeMappingForCompanyUser(employee.user.id, compId)
-                .then(function(docTypeMapModel) {
-                    employee.documentCollection = docTypeMapModel;
+                DocumentService.getDocumentsToUserEntry(employee.user.id)
+                .then(function(docEntry) {
+                    employee.docEntry = docEntry;
                 });
             });
         });
@@ -217,9 +214,6 @@ var employerUser = employersController.controller('employerUser',
         .$promise.then(function(fields){
           $scope.templateFields = fields;
         });
-      documentTypeService.getDocumentTypes(compId).then(function(response){
-        $scope.docTypeArray = response;
-      });
 
       var gotoUserView = function(userType){
         $location.path('/admin/' + userType + '/' + compId);
@@ -274,13 +268,13 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.documentLink = function(employeeId, docEntry)
       {
-        var pathKey = 'create_letter';
+        var pathKey = 'create';
         if(docEntry.hasDocument())
         {
-            pathKey='view_letter';
+            pathKey='view';
         }
 
-        $location.path('/admin/' + pathKey + '/' +compId +'/'+employeeId).search({'type': docEntry.docType.name});
+        $location.path('/admin/documents/' + pathKey + '/' +compId +'/'+employeeId);
       };
 
       $scope.viewEmployeeDetail = function(employee){
@@ -572,7 +566,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
     $scope.modifyExistingTemplate = function(template){
       $state.go('document_templates_edit', {company_id:$scope.companyId, template_id: template.id});
     };
-    
+
     $scope.viewDashboard = function(){
       $location.path('/admin');
     };
@@ -633,13 +627,13 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
 
 
 
-var employerCreateLetter = employersController.controller('employerCreateLetter',
+var employerCreateDocument = employersController.controller('employerCreateDocument',
                                                           ['$scope',
                                                           '$location',
                                                           '$stateParams',
                                                           'documentRepository',
                                                           'templateRepository',
-  function employerCreateLetter($scope,
+  function employerCreateDocument($scope,
                                 $location,
                                 $stateParams,
                                 documentRepository,
@@ -649,19 +643,9 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
     $scope.newDoc = {};
 
 
-    $scope.documentType = $stateParams.type;
-
     templateRepository.byCompany.get({companyId:$scope.companyId})
       .$promise.then(function(response){
-        $scope.templateArray = [];
-
-        _.each(response.templates, function(template){
-          if (template.document_type.name === $scope.documentType){
-            $scope.templateArray.push(template);
-          }
-        });
-
-        _.sortBy($scope.templateArray, function(template){
+        $scope.templateArray = _.sortBy(response.templates, function(template){
           return template.name;
         });
       });
@@ -702,30 +686,26 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
     }
   }]);
 
-var employerViewLetter = employersController.controller('employerViewLetter',
+var employerViewDocument = employersController.controller('employerViewDocument',
                                                           ['$scope',
                                                           '$location',
                                                           '$state',
                                                           '$stateParams',
                                                           'documentRepository',
-  function employerViewLetter($scope,
+  function employerViewDocument($scope,
                               $location,
                               $state,
                               $stateParams,
                               documentRepository){
     $scope.companyId = $stateParams.company_id;
     var employeeId = $stateParams.employee_id;
-    $scope.documentType = $stateParams.type;
     $scope.documentList = [];
     $scope.activeDocument = {};
     $scope.signaturePresent = false;
     $scope.signatureCreatedDate = moment().format(DATE_FORMAT_STRING);
 
     documentRepository.byUser.query({userId:employeeId}).$promise.then(function(response){
-      var unsortedDocumentList = _.filter(response, function(doc){
-          return doc.document_type.name === $scope.documentType
-        });
-        $scope.documentList = _.sortBy(unsortedDocumentList, function(elm){return elm.id;}).reverse();
+        $scope.documentList = _.sortBy(response, function(elm){return elm.id;}).reverse();
       });
 
     $scope.deleteExistingLetter = function(doc){
@@ -743,7 +723,6 @@ var employerViewLetter = employersController.controller('employerViewLetter',
         "user": doc.user.id,
         "signature": doc.signature,
         "document": {
-          "document_type": doc.document_type.name,
           "name": doc.name,
           "content": doc.content
         }
@@ -766,10 +745,15 @@ var employerViewLetter = employersController.controller('employerViewLetter',
         $scope.signaturePresent = true;
         $scope.signatureCreatedDate = moment(doc.signature.created_at).format(DATE_FORMAT_STRING);
       }
+      else{
+        $scope.signatureImage = null;
+        $scope.signaturePresent = false;
+        $scope.signatureCreatedDate = null;
+      }
     };
 
     $scope.createNewLetter = function(){
-      $location.search({type:$scope.documentType}).path('/admin/create_letter/'+ $scope.companyId +'/' + employeeId);
+      $location.path('/admin/documents/create/'+ $scope.companyId +'/' + employeeId);
     };
 
     $scope.viewEmployeesLink = function(){

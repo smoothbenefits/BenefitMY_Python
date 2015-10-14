@@ -6,64 +6,33 @@ benefitmyService.factory('DocumentService',
     'documentTypeService',
     function ($q, userDocument, documentTypeService) {
 
-        var constructDocumentsToTypeMap = function(docTypes, documents) {
-            var mapModel = {};
-            mapModel.entries = {};
-
-            _.each(docTypes, function(type) {
-                var entry = { 'docType':type, 'documents': [] };
-
-                // Append some utility function to the entries
-                entry.isSigned = function() {
-                    return entry.hasDocument()
-                        && entry.documents[0].signature != null;
-                };
-
-                entry.hasDocument = function() {
-                    return entry.documents != null
-                        && entry.documents.length > 0;
-                };
-
-                mapModel.entries[type.id] = entry;
-            });
-
-            _.each(documents, function(doc) {
-                mapModel.entries[doc.document_type.id].documents.push(doc);
-            });
-
-            // sort (descending) each bucket by the documents' created date
-            _.each(mapModel.entries, function(entry) {
-                entry.documents = _.sortBy(entry.documents, function(document) {
-                    if (!document.created_at) {
-                        return 1000;
-                    }
-                    var date = new Date(document.created_at);
-                    return -date;
-                });
-            });
-
-            return mapModel;
-        };
-
         return {
 
-            getDocumentToTypeMappingForCompanyUser: function(userId, companyId) {
+            getDocumentsToUserEntry: function(userId){
                 var deferred = $q.defer();
+                var docEntry = {};
+                userDocument.query({userId:userId})
+                .$promise.then(function(userDocs){
+                    docEntry.documents = userDocs;
+                    docEntry.hasDocument = function(){
+                        return _.size(this.documents) > 0;
+                    };
+                    docEntry.isAllSigned = function(){
+                        if(this.hasDocument()){
+                            var noSignature = false;
+                            _.each(this.documents, function(doc){
+                                if(!noSignature && !doc.signature){
+                                    noSignature = true;
+                                }
 
-                documentTypeService.getDocumentTypes(companyId).then(function(docTypes){
-                    userDocument.query({userId:userId})
-                    .$promise.then(function(userDocs){
-                        var mapModel = constructDocumentsToTypeMap(docTypes, userDocs);
-                        deferred.resolve(mapModel);
-                    },
-                    function(error) {
-                        deferred.reject(error);
-                    });
-                },
-                function(error) {
-                    deferred.reject(error);
+                            });
+                            return !noSignature;
+                        }
+                    };
+                    deferred.resolve(docEntry);
+                }, function(errorResponse){
+                    deferred.reject(errorResponse);
                 });
-
                 return deferred.promise;
             },
 

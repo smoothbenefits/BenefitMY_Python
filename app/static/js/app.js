@@ -256,15 +256,15 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl:'/static/partials/view_employee.html',
                 controller:'employerUser'
             }).
-            state('/admin/create_letter/:company_id/:employee_id', {
-                url: '/admin/create_letter/:company_id/:employee_id?type',
-                templateUrl:'/static/partials/create_letter.html',
-                controller:'employerCreateLetter'
+            state('/admin/documents/create/:company_id/:employee_id', {
+                url: '/admin/documents/create/:company_id/:employee_id?type',
+                templateUrl:'/static/partials/documents/create.html',
+                controller:'employerCreateDocument'
             }).
-            state('/admin/view_letter/:company_id/:employee_id', {
-                url: '/admin/view_letter/:company_id/:employee_id?type',
-                templateUrl:'/static/partials/view_letter.html',
-                controller:'employerViewLetter'
+            state('/admin/documents/view/:company_id/:employee_id', {
+                url: '/admin/documents/view/:company_id/:employee_id?type',
+                templateUrl:'/static/partials/documents/view.html',
+                controller:'employerViewDocument'
             }).
             state('/admin/view_draft/:company_id/:employee_id/:document_type_id', {
                 url: '/admin/view_draft/:company_id/:employee_id/:document_type_id',

@@ -53,10 +53,10 @@ class UserDocumentGenerator(object):
 
     def get_all_template_fields(self):
         field_keys = []
-        for d_type in DocumentType.objects.all():
-            content = self.template_service.get_most_recent_content_by_doc_type(d_type, self.company)
-            if content:
-                field_keys += self.template_service.get_field_keys_from_template_content(content)
+        all_templates = self.template_service.get_templates_by_company(self.company)
+        for template in all_templates:
+            if template.content:
+                field_keys = self.template_service.get_field_keys_from_template_content(template.content)
 
         fields = {}
         field_keys = self.template_service.dedupe_field_keys(field_keys)
