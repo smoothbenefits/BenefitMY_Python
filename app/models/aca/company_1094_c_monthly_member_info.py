@@ -9,7 +9,7 @@ PERIOD_CHOICES = ([(item, item) for item in PERIODS])
 
 @reversion.register
 class Company1094CMonthlyMemberInfo(models.Model):
-    company = models.ForeignKey(Company, related_name="company_1094C_montly")
+    company = models.ForeignKey(Company, related_name="company_1094C_monthly")
     minimum_essential_coverage = models.BooleanField(default=False)
     fulltime_employee_count = models.PositiveIntegerField(default=0)
     total_employee_count = models.PositiveIntegerField(default=0)
