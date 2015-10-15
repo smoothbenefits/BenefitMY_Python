@@ -14,7 +14,10 @@ from app.models.company import Company
 
 class Company1094CView(APIView):
     def _get_member_info(self, company_id):
-        return Company1094CMemberInfo.objects.get(company=company_id)
+        try:
+            return Company1094CMemberInfo.objects.get(company=company_id)
+        except Company1094CMemberInfo.DoesNotExist:
+            return None
 
     def _get_monthly_member_info(self, company_id):
         return Company1094CMonthlyMemberInfo.objects.filter(company=company_id)
@@ -41,14 +44,15 @@ class Company1094CView(APIView):
             serialized = Company1094CMemberInfoPostSerializer(data=request.DATA['member'])
             if serialized.is_valid():
                 existing_1094_c = self._get_member_info(pk)
-                existing_1094_c.delete()
+                if existing_1094_c:
+                    existing_1094_c.delete()
                 serialized.save()
                 saved['member'] = serialized.data
             else:
                 return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if ('monthly_info' in request.DATA):
-            serialized_monthly = Company1094CMonthlyMemberInfoPostSerializer(data=request.DATA['monthly_info'])
+            serialized_monthly = Company1094CMonthlyMemberInfoPostSerializer(data=request.DATA['monthly_info'], many=True)
             if serialized_monthly.is_valid():
                 existing_1094_c_monthly = self._get_monthly_member_info(pk)
                 existing_1094_c_monthly.delete()
