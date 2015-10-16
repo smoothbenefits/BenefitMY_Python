@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0050_companyextrabenefitplan_extrabenefititem_personcompanyextrabenefitplan_personcompanyextrabenefitplan'),
+        ('app', '0052_remove_document_document_type'),
     ]
 
     operations = [
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('period', models.CharField(default=b'All 12 Months', max_length=14, choices=[(b'All 12 Months', b'All 12 Months'), (b'Jan', b'Jan'), (b'Feb', b'Feb'), (b'Mar', b'Mar'), (b'Apr', b'Apr'), (b'May', b'May'), (b'June', b'June'), (b'July', b'July'), (b'Aug', b'Aug'), (b'Sept', b'Sept'), (b'Oct', b'Oct'), (b'Nov', b'Nov'), (b'Dec', b'Dec')])),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('company', models.ForeignKey(related_name='company_1094C_montly', to='app.Company')),
+                ('company', models.ForeignKey(related_name='company_1094C_monthly', to='app.Company')),
             ],
             options={
             },
