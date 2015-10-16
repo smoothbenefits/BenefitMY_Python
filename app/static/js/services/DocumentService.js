@@ -21,7 +21,7 @@ benefitmyService.factory('DocumentService',
                         if(this.hasDocument()){
                             var noSignature = false;
                             _.each(this.documents, function(doc){
-                                if(!noSignature && !doc.signature){
+                                if(!doc.signature){
                                     noSignature = true;
                                 }
 

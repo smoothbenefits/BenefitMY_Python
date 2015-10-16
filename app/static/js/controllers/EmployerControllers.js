@@ -8,7 +8,7 @@ var employerHome = employersController.controller('employerHome',
   'currentUser',
   'clientListRepository',
   'documentRepository',
-  'templateRepository',
+  'TemplateService',
   'benefitListRepository',
   'countRepository',
   'documentTypeService',
@@ -20,7 +20,7 @@ var employerHome = employersController.controller('employerHome',
             currentUser,
             clientListRepository,
             documentRepository,
-            templateRepository,
+            TemplateService,
             benefitListRepository,
             countRepository,
             documentTypeService,
@@ -31,12 +31,6 @@ var employerHome = employersController.controller('employerHome',
     $scope.benefitCount = 0;
     $scope.benefitEnrollCount = 0;
     $scope.templateCount = 0;
-
-    var getTemplateCount = function(company){
-      templateRepository.byCompany.get({companyId:company.id}).$promise.then(function(response){
-        $scope.templateCount = _.size(response.templates);
-      });
-    };
 
     var getWorkerCount = function(company){
       countRepository.employeeCount.get({companyId:company.id})
@@ -89,14 +83,14 @@ var employerHome = employersController.controller('employerHome',
           if(company_role.company_user_type === 'admin')
           {
             $scope.company = company_role.company;
-            documentTypeService.getDocumentTypes($scope.company).then(function(doc_types){
-              $scope.documentTypes = doc_types;
 
-              getWorkerCount($scope.company);
-              getBenefitCount($scope.company);
-              getTemplateCount($scope.company);
-              getBenefitElectionCount($scope.company);
+            getWorkerCount($scope.company);
+            getBenefitCount($scope.company);
+            TemplateService.getTemplateCount($scope.company.id)
+            .then(function(templateCount){
+              $scope.templateCount = templateCount;
             });
+            getBenefitElectionCount($scope.company);
           }
         });
     });
@@ -149,7 +143,7 @@ var employerUser = employersController.controller('employerUser',
    'employerWorkerRepository',
    'usersRepository',
    'emailRepository',
-   'templateRepository',
+   'TemplateService',
    'DocumentService',
    'CompensationService',
    'EmployerEmployeeManagementService',
@@ -160,7 +154,7 @@ var employerUser = employersController.controller('employerUser',
                         employerWorkerRepository,
                         usersRepository,
                         emailRepository,
-                        templateRepository,
+                        TemplateService,
                         DocumentService,
                         CompensationService,
                         EmployerEmployeeManagementService){
@@ -210,10 +204,10 @@ var employerUser = employersController.controller('employerUser',
             });
         });
 
-      templateRepository.getAllFields.query({id:compId})
-        .$promise.then(function(fields){
-          $scope.templateFields = fields;
-        });
+      TemplateService.getAllTemplateFields(compId)
+      .then(function(fields){
+        $scope.templateFields = fields;
+      });
 
       var gotoUserView = function(userType){
         $location.path('/admin/' + userType + '/' + compId);
@@ -550,39 +544,39 @@ var planDetailsModalController = brokersControllers.controller('planDetailsModal
 }]);
 
 var employerLetterTemplate = employersController.controller('employerLetterTemplate',
-  ['$scope', '$location', '$state', '$stateParams', 'templateRepository',
-  function employerLetterTemplate($scope, $location, $state, $stateParams, templateRepository){
+  ['$scope', '$state', '$stateParams', 'TemplateService',
+  function employerLetterTemplate($scope, $state, $stateParams, TemplateService){
     $scope.companyId = $stateParams.company_id;
     $scope.existingTemplateList = [];
 
-    templateRepository.byCompany.get({companyId:$stateParams.company_id})
-      .$promise.then(function(response){
-        $scope.existingTemplateList = _.sortBy(
-          response.templates,
+    TemplateService.getTemplates($stateParams.company_id)
+    .then(function(templates){
+      $scope.existingTemplateList = _.sortBy(
+          templates,
           function(elm){return elm.id;}
         ).reverse();
-      });
+    });
       
     $scope.modifyExistingTemplate = function(template){
       $state.go('document_templates_edit', {company_id:$scope.companyId, template_id: template.id});
     };
 
     $scope.viewDashboard = function(){
-      $location.path('/admin');
+      $state.go('/admin');
     };
   }
 ]);
 
 var employerModifyTemplate = employersController.controller('employerModifyTemplate',
-  ['$scope', '$state', '$stateParams', 'templateRepository',
-  function employerModifyTemplate($scope, $state, $stateParams, templateRepository){
+  ['$scope', '$state', '$stateParams', 'TemplateService',
+  function employerModifyTemplate($scope, $state, $stateParams, TemplateService){
     $scope.companyId = $stateParams.company_id;
     $scope.templateId = $stateParams.template_id;
     if($scope.templateId){
       $scope.viewTitle = 'View/Edit Template';
-      templateRepository.getById.get({id:$scope.templateId})
-      .$promise.then(function(templateResponse){
-        $scope.template = templateResponse.template;
+      TemplateService.getTemplateById($scope.templateId)
+      .then(function(template){
+        $scope.template = template;
       });
     }
     else{
@@ -592,28 +586,30 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
 
 
     $scope.saveTemplateChanges = function(){
-      var updateObj = {company: $scope.companyId, template: $scope.template};
-      templateRepository.update.update({id: $scope.templateId}, updateObj, function(response){
-        $scope.template = response.template;
+      $scope.template.id = $scope.templateId;
+      TemplateService.updateTemplate($scope.companyId, $scope.template)
+      .then(function(savedTemplate){
+        $scope.template = savedTemplate;
         alert('Template Saved');
-      }, function(response){
-        alert('Template save failure with reason: ' + response)
-      })
-    }
+      }, function(errorResponse){
+        alert('Template save failure with reason: ' + errorResponse);
+      });
+    };
+
     $scope.viewDashboard = function(){
       $location.path('/admin');
     };
+
     $scope.createTemplate = function(){
       if($scope.template.name && $scope.template.content)
       {
-        $scope.template.company = $scope.companyId;
-        var postObj = {company:$scope.companyId, template:$scope.template};
-        templateRepository.create.save(postObj, function(response){
-          $scope.template = response.template;
+        TemplateService.createNewTemplate($scope.companyId, $scope.template)
+        .then(function(savedTemplate){
+          $scope.template = savedTemplate;
           alert('Template "' + $scope.template.name + '" successfully created');
           $scope.goBack();
-        }, function(response){
-          alert('Template creation failure: ' + response);
+        }, function(errorResponse){
+          alert('Template creation failure: ' + errorResponse);
         });
       }
     };
@@ -632,23 +628,22 @@ var employerCreateDocument = employersController.controller('employerCreateDocum
                                                           '$location',
                                                           '$stateParams',
                                                           'documentRepository',
-                                                          'templateRepository',
+                                                          'TemplateService',
   function employerCreateDocument($scope,
                                 $location,
                                 $stateParams,
                                 documentRepository,
-                                templateRepository){
+                                TemplateService){
     $scope.companyId = $stateParams.company_id;
     var employeeId = $stateParams.employee_id;
     $scope.newDoc = {};
 
-
-    templateRepository.byCompany.get({companyId:$scope.companyId})
-      .$promise.then(function(response){
-        $scope.templateArray = _.sortBy(response.templates, function(template){
+    TemplateService.getTemplates($scope.companyId)
+    .then(function(templates){
+      $scope.templateArray = _.sortBy(templates, function(template){
           return template.name;
         });
-      });
+    });
 
     $scope.getTemplateFields = function(sTemplate){
       if(sTemplate)
