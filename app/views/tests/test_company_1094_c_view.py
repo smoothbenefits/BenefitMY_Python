@@ -41,6 +41,10 @@ class Company1094CTestCase(TestCase, ViewTestBase):
 
         result = json.loads(response.content)
         self.assertEqual(type(result), dict)
+        self.assertEqual(type(result['member']), dict)
+        self.assertEqual(result['member']['company'], None)
+        self.assertEqual(type(result['monthly_info']), list)
+        self.assertEqual(len(result['monthly_info']), 0)
 
     def test_get_company_1094_c_not_exists(self):
         response = self.client.get(reverse('company_1094_c_api',
