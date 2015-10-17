@@ -53,8 +53,7 @@ benefitmyService.factory('EmploymentProfileService',
           'passport': employee.passportId,
           'country': employee.passportCountry,
           'signature': {
-            'signature': signature,
-            'signature_type': 'work_auth'
+            'signature': signature
           }
          };
 

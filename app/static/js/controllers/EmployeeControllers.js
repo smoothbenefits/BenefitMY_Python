@@ -192,8 +192,6 @@ var viewDocument = employeeControllers.controller('viewDocument',
   function viewDocument($scope, $location, $stateParams, DocumentService, currentUser, documentRepository){
     $scope.document = {};
     var documentId = $stateParams.doc_id;
-    var signatureUpdated = false;
-    $scope.signatureCreatedDate = moment().format(DATE_FORMAT_STRING);
     var userPromise = currentUser.get().$promise
       .then(function(response){
         $scope.employee_id = response.user.id;
@@ -208,44 +206,20 @@ var viewDocument = employeeControllers.controller('viewDocument',
       $scope.document = document;
       if(document.signature && document.signature.signature)
       {
-        var signature = document.signature.signature;
-        var separator = '<?xml';
-        var sigComponents = signature.split(separator);
-        $scope.signatureImage = sigComponents[0] + encodeURIComponent(separator + sigComponents[1]);
-        $scope.signaturePresent = true;
-        $scope.signatureCreatedDate = moment(document.signature.created_at).format(DATE_FORMAT_STRING);
+        $scope.signatureId = $scope.document.signature.id;
       }
     });
 
-    var $sigdiv = $("#doc_signature");
-    if(_.isUndefined($sigdiv))
-    {
-      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
-    }
-    $sigdiv.jSignature();
-    $sigdiv.bind('change', function(e){
-     signatureUpdated = true;
-    });
-    $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset");
-      signatureUpdated = false;
-    };
-    $scope.signDocument = function(){
-      if(!signatureUpdated){
-        alert('Please sign your name on the signature pad');
-      }
-      else
-      {
-        var signatureData = $sigdiv.jSignature('getData', 'svg');
-        var signaturePayload = "data:" + signatureData[0] + ',' + signatureData[1];
-        documentRepository.sign.save({id:$scope.document.id}, {'signature':signaturePayload, 'signature_type': 'doc_sign'}, function(successResponse){
-          $scope.signatureSaved = true;
-          $scope.signatureImage = successResponse.signature.signature;
+    $scope.signDocument = function(signature){
+        DocumentService.signUserDocument($scope.document.id, signature.id)
+        .then(function(successResponse){
+            alert("The document has been signed successfully.");
+            $scope.goToDashboard();
         }, function(failureResponse){
-          $scope.signatureSaveFailed = true;
+            alert("There were problems completing the operation.");
         });
-      }
     };
+
     $scope.goToDashboard = function()
     {
       $location.path('/employee');
@@ -729,8 +703,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
         'passport': viewObject.passportId,
         'country': viewObject.passportCountry,
         'signature': {
-          'signature': signature,
-          'signature_type': 'work_auth'
+          'signature': signature
         }
       };
 
@@ -854,8 +827,8 @@ var onboardTax = employeeControllers.controller('onboardTax',
 }]);
 
 var onboardComplete = employeeControllers.controller('onboardComplete',
-  ['$scope', '$stateParams', '$location', '$state', 'employeeSignature', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, $state, employeeSignature, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', '$state', 'SignatureService', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, $state, SignatureService, EmployeePreDashboardValidationService){
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
 
@@ -894,10 +867,10 @@ var onboardComplete = employeeControllers.controller('onboardComplete',
         var signatureData = $sigdiv.jSignature('getData', 'svg');
         $scope.termSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
         var contract = {
-          'signature': $scope.termSignatureData,
-          'signature_type': 'final'
+          'userId': $scope.employeeId,
+          'signature': $scope.termSignatureData
         };
-        employeeSignature.save({userId: $scope.employeeId}, contract,
+        SignatureService.saveSignature(contract).then(
           function(){
             $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
           }, function(){
@@ -958,8 +931,7 @@ var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocum
         var signatureData = $sigdiv.jSignature('getData', 'svg');
         $scope.letterSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
         var contract = {
-          'signature': $scope.letterSignatureData,
-          'signature_type': 'doc_sign'
+          'signature': $scope.letterSignatureData
         };
         documentRepository.sign.save({id:$scope.curLetter.id}, contract,
          function(){

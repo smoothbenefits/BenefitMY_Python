@@ -149,10 +149,14 @@ benefitmyDomainModelFactories.factory('employmentAuthRepository', ['$resource',
     return $resource('/api/v1/users/:userId/employment_authorization/', {userId: '@userId'});
   }]);
 
-benefitmyDomainModelFactories.factory('employeeSignature', ['$resource',
+benefitmyDomainModelFactories.factory('SignatureRepository', ['$resource',
   function($resource){
-    return $resource('/api/v1/users/:userId/signature/', {userId: '@userId'});
-  }]);
+    return {
+      ById: $resource(PREFIX + 'signature/:signatureId/', {signatureId: '@signatureId'}),
+      ByUser: $resource(PREFIX + 'users/:userId/signature/', {userId: '@userId'})
+    }
+  }
+]);
 
 benefitmyDomainModelFactories.factory('countRepository', ['$resource',
   function($resource){

@@ -1,0 +1,45 @@
+<!-- Commuter -->
+<div class="panel">
+  <div class="panel-head">Signature<br/></div>
+  <div class="panel-body">
+    <div class="signature-display-container" ng-if="signatureAlreadySaved()">
+        <div class="signature-action-container">
+          <div class="signature-image-container">
+            <img ng-src="{{signature.signatureImage}}" alt="signature" />
+          </div>
+          <div class="text-right col-md-10" style="padding-bottom: 20px;">
+            {{signature.createdDateForDisplay}}
+          </div>
+          <div class="signature-reset col-md-6 pull-left" ng-if="!inViewMode()">
+            <button ng-click="confirmSign()" class="btn green">
+              Confirm Sign
+            </button>
+          </div>
+          <div class="signature-reset col-md-6" ng-if="!inViewMode()">
+            <b>The above signature is found on your profile. You can use the "Confirm Sign" button to apply that signature.</b>
+          </div>
+          <div style="clear:both"></div>
+        </div>
+    </div>
+    <div class="signature-container" ng-if="!inViewMode() && !signatureAlreadySaved()">
+        <div id="doc_signature" class="employee-doc-signature-pad"></div>
+        <div class="signature-action-container">
+          <div class="signature-reset col-md-6 pull-left">
+            <button ng-click="clearSignature()" class="btn">
+              Reset
+            </button>
+          </div>
+          <div class="signature-reset col-md-6 pull-right">
+            <button ng-click="confirmSign()" class="btn green">
+              Confirm Sign
+            </button>
+          </div>
+          <div style="clear:both"></div>
+          <input type="hidden" name="signatureHiddenData" value="{{signature.signatureImage}}"/>
+        </div>
+    </div>
+    <div ng-if="inViewMode() && !signatureAlreadySaved()">
+    No signature found.
+    </div>
+  </div>
+</div>

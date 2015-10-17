@@ -52,15 +52,7 @@
         ng-click="updateExistingLetter()">Update</button>
       </div>
     </div>
-    <div class="signature-display-container" ng-show="signaturePresent">
-      <div class="signature-image-container col-md-10 col-md-offset-1">
-        <img ng-src="{{signatureImage}}" alt="signature"/>
-      </div>
-      <div class="col-md-10 col-md-offset-1 text-right" style="padding-bottom: 20px;">
-        {{signatureCreatedDate}}
-      </div>
-      <div style="clear:both;"></div>
-    </div>
+    <bm-signature-picker signature-id="signatureId" view-mode></bm-signature-picker>
   </div>
 
   <div class="back pull-left"><a ng-click="viewEmployeesLink()">&laquo; Back</a></div>

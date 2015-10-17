@@ -4,7 +4,8 @@ benefitmyService.factory('DocumentService',
     ['$q',
     'userDocument',
     'documentTypeService',
-    function ($q, userDocument, documentTypeService) {
+    'documentRepository',
+    function ($q, userDocument, documentTypeService, documentRepository) {
 
         return {
 
@@ -63,6 +64,20 @@ benefitmyService.factory('DocumentService',
                 },
                 function(error) {
                     deferred.reject(error);
+                });
+
+                return deferred.promise;
+            },
+
+            signUserDocument: function(documentId, signatureId) {
+                var deferred = $q.defer();
+
+                documentRepository.sign.save({id:documentId}, { 'signature_id': signatureId })
+                .$promise.then(function(resultDoc){
+                    deferred.resolve(resultDoc);
+                },
+                function(errors) {
+                    deferred.reject(errors);
                 });
 
                 return deferred.promise;

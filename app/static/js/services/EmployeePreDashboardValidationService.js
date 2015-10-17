@@ -6,13 +6,13 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                           'currentUser',
                           'employmentAuthRepository',
                           'employeeTaxRepository',
-                          'employeeSignature',
+                          'SignatureService',
                           'PersonService',
   function(PersonService,
            currentUser,
            employmentAuthRepository,
            employeeTaxRepository,
-           employeeSignature,
+           SignatureService,
            PersonService){
 
     var getBasicInfoUrl = function(employeeId){
@@ -109,8 +109,8 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
 
     var validateEmployeeSignature = function(employeeId, succeeded, failed){
       //step 4 the signature for employee
-      employeeSignature.get({userId:employeeId})
-        .$promise.then(function(signature){
+      SignatureService.getSignatureByUser(employeeId)
+        .then(function(signature){
           if(!signature || !signature.signature || signature.signature===''){
             failed();
           }
