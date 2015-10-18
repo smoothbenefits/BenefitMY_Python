@@ -18,6 +18,9 @@ class TemplateService(object):
             return templates[0].content
         return None
 
+    def get_templates_by_company(self, company):
+        return Template.objects.filter(company=company).order_by('-id')
+
     def get_field_keys_from_template_content(self, content):
         field_keys = []
         if content:

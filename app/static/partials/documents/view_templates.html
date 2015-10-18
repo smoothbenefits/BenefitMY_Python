@@ -1,0 +1,32 @@
+<div class="breadcrumb">
+  <a ng-href="#/admin">Employer Dashboard</a>
+  <span>View Template(s)</span>
+</div>
+
+<div class="content-header">
+  <h1>View Template(s)</h1>
+  <div class="cta"><span class="btn green" ng-click="addOfferTemplate()">Add Template</span></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="table-responsive table-holder">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>{{documentType}} Template List</span></th>
+          <th><span>Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="template in existingTemplateList">
+          <td>{{template.name}}</td>
+          <td>
+            <span class="btn inline" ng-click="modifyExistingTemplate(template)">View/Edit</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="back"><a ng-click="viewDashboard()">&laquo; Back</a></div>
+
+</div><!-- / .content-body -->

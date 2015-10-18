@@ -155,6 +155,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_commuter.html',
                 controller: 'brokerAddCommuterPlanController'
             }).
+            state('broker_add_benefit.extra_benefit', {
+                url: '/extra_benefit',
+                templateUrl: '/static/partials/benefit_addition/tab_extra_benefit.html',
+                controller: 'brokerAddExtraBenefitPlanController'
+            }).
             state('broker_benefit_selected', {
                 url: '/broker/benefit/selected/:client_id',
                 templateUrl: '/static/partials/selected_benefits_company.html',
@@ -236,25 +241,30 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/batch_employee_addition/partial_save_result.html',
                 controller:'batchEmployeeAdditionController'
             }).
+            state('document_templates', {
+                url: '/admin/documents/template/:company_id',
+                templateUrl:'/static/partials/documents/view_templates.html',
+                controller:'employerLetterTemplate'
+            }).
+            state('document_templates_edit', {
+                url: '/admin/documents/template/:company_id/edit/:template_id',
+                templateUrl:'/static/partials/documents/modify_template.html',
+                controller:'employerModifyTemplate'
+            }).
             state('/admin/employee/:company_id', {
                 url: '/admin/employee/:company_id',
                 templateUrl:'/static/partials/view_employee.html',
                 controller:'employerUser'
             }).
-            state('/admin/generate_template/:company_id', {
-                url: '/admin/generate_template/:company_id?type&add',
-                templateUrl:'/static/partials/template.html',
-                controller:'employerLetterTemplate'
+            state('/admin/documents/create/:company_id/:employee_id', {
+                url: '/admin/documents/create/:company_id/:employee_id?type',
+                templateUrl:'/static/partials/documents/create.html',
+                controller:'employerCreateDocument'
             }).
-            state('/admin/create_letter/:company_id/:employee_id', {
-                url: '/admin/create_letter/:company_id/:employee_id?type',
-                templateUrl:'/static/partials/create_letter.html',
-                controller:'employerCreateLetter'
-            }).
-            state('/admin/view_letter/:company_id/:employee_id', {
-                url: '/admin/view_letter/:company_id/:employee_id?type',
-                templateUrl:'/static/partials/view_letter.html',
-                controller:'employerViewLetter'
+            state('/admin/documents/view/:company_id/:employee_id', {
+                url: '/admin/documents/view/:company_id/:employee_id?type',
+                templateUrl:'/static/partials/documents/view.html',
+                controller:'employerViewDocument'
             }).
             state('/admin/view_draft/:company_id/:employee_id/:document_type_id', {
                 url: '/admin/view_draft/:company_id/:employee_id/:document_type_id',
@@ -330,7 +340,12 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             state('employee_benefit_signup.commuter', {
                 url: '/commuter',
                 templateUrl: '/static/partials/benefit_selection/tab_commuter.html',
-                controller:'commuterBenefitsSignup'
+                controller:'commonBenefitsSignup'
+            }).
+            state('employee_benefit_signup.extra_benefit', {
+                url: '/extra_benefit',
+                templateUrl: '/static/partials/benefit_selection/tab_extra_benefit.html',
+                controller:'commonBenefitsSignup'
             }).
             state('employee_benefit_signup.summary', {
                 url: '/summary',
