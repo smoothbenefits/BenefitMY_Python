@@ -697,7 +697,6 @@ var employerViewDocument = employersController.controller('employerViewDocument'
     $scope.documentList = [];
     $scope.activeDocument = {};
     $scope.signaturePresent = false;
-    $scope.signatureCreatedDate = moment().format(DATE_FORMAT_STRING);
 
     documentRepository.byUser.query({userId:employeeId}).$promise.then(function(response){
         $scope.documentList = _.sortBy(response, function(elm){return elm.id;}).reverse();

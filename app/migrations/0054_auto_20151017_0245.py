@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0052_remove_document_document_type'),
+        ('app', '0053_company1094cmemberinfo_company1094cmonthlymemberinfo'),
     ]
 
     operations = [

@@ -200,6 +200,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/(?P<pk>\w+)/w4/?$' % PREFIX, W4View.as_view(), name='w4_api'),
     url(r'^%s/users/(?P<pk>\w+)/employment_authorization/?$' % PREFIX,
         EmploymentAuthorizationView.as_view()),
+    url(r'^%s/signature/?$' % PREFIX, SignatureView.as_view()),
     url(r'^%s/signature/(?P<pk>\w+)/?$' % PREFIX, SignatureView.as_view()),
     url(r'^%s/users/(?P<user_id>\w+)/signature/?$' % PREFIX, SignatureByUserView.as_view()),
 

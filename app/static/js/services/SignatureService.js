@@ -83,7 +83,7 @@ benefitmyService.factory('SignatureService',
                 if (domainModel.id){
                     deferred.reject('The signature exists already!');
                 } else {
-                    SignatureRepository.ByUser.save({userId:signatureToSave.userId}, domainModel)
+                    SignatureRepository.ById.save(domainModel)
                     .$promise.then(function(response) {
                         deferred.resolve(mapSignatureDomainToViewModel(response));
                     },
