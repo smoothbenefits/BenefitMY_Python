@@ -240,6 +240,10 @@ var userController = userControllers.controller('userController',
       $location.path(viewLink + $scope.company_id).search(parameter);
     };
 
+    $scope.addOfferTemplate = function(){
+      $state.go('document_templates_edit', {company_id:$scope.company_id});
+    };
+
     $scope.gotoSettings = function(){
       $state.go('settings', {user_id: $scope.curUser.id});
     };

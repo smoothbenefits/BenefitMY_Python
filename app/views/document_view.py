@@ -100,7 +100,7 @@ class UserDocumentView(APIView):
         return Response(serializer.data)
 
 
-def _generate_content(template_id, document_type, fields):
+def _generate_content(template_id, fields):
     """Generate doc content according to given template, document_type, fields
     """
     try:
@@ -108,8 +108,6 @@ def _generate_content(template_id, document_type, fields):
     except Document.DoesNotExist:
         raise Http404
     content = template.content
-    if not content:
-        content = document_type.default_content
 
     template_service = TemplateService()
     fields_serializer = KeyValuePairSerializer(data=fields, many=True)
@@ -126,17 +124,10 @@ def documents(request):
                       user_id=request.DATA['user'])
         s.save()
 
-    try:
-        d_type = DocumentType.objects.get(
-            name=request.DATA['document']['document_type'])
-    except DocumentType.DoesNotExist:
-        d_type = DocumentType(
-            name=request.DATA['document']['document_type'])
 
     if 'template' not in request.DATA:
         d = Document(company_id=request.DATA['company'],
                      user_id=request.DATA['user'],
-                     document_type=d_type,
                      name=request.DATA['document']['name'],
                      signature=s,
                      content=request.DATA['document']['content']
@@ -144,10 +135,8 @@ def documents(request):
     else:
         d = Document(company_id=request.DATA['company'],
                      user_id=request.DATA['user'],
-                     document_type=d_type,
                      name=request.DATA['document']['name'],
                      content=_generate_content(request.DATA['template'],
-                                               d_type,
                                                request.DATA['document']['fields']),
                      signature=s
                      )

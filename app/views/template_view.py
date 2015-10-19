@@ -27,14 +27,7 @@ class TemplateView(APIView):
     @transaction.atomic
     def put(self, request, pk, format=None):
         t = self.get_object(pk)
-        try:
-            d_type = DocumentType.objects.get(
-                name=request.DATA['template']['document_type'])
-        except DocumentType.DoesNotExist:
-            d_type = DocumentType(name=request.DATA['template']['document_type'])
-            d_type.save()
         t.company_id = request.DATA['company']
-        t.document_type = d_type
         t.name = request.DATA['template']['name']
         t.content = request.DATA['template']['content']
         t.save()
@@ -69,17 +62,9 @@ def templates(request):
     except Company.DoesNotExist:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    try:
-        d_type = DocumentType.objects.get(
-            name=request.DATA['template']['document_type'])
-    except DocumentType.DoesNotExist:
-        d_type = DocumentType(name=request.DATA['template']['document_type'])
-
     t = Template(name=request.DATA['template']['name'],
                  content=request.DATA['template']['content'],
-                 company=c,
-                 document_type=d_type)
-    d_type.save()
+                 company=c)
     t.save()
 
     serializer = TemplateSerializer(t)
