@@ -3,22 +3,24 @@ var employersController = angular.module('benefitmyApp.employers.controllers',[]
 var employerHome = employersController.controller('employerHome',
   ['$scope',
   '$location',
+  '$state',
   'employerRepository',
   'currentUser',
   'clientListRepository',
   'documentRepository',
-  'templateRepository',
+  'TemplateService',
   'benefitListRepository',
   'countRepository',
   'documentTypeService',
   'CompanyBenefitEnrollmentSummaryService',
   function ($scope,
             $location,
+            $state,
             employerRepository,
             currentUser,
             clientListRepository,
             documentRepository,
-            templateRepository,
+            TemplateService,
             benefitListRepository,
             countRepository,
             documentTypeService,
@@ -28,13 +30,8 @@ var employerHome = employersController.controller('employerHome',
     $scope.brokerCount = 0;
     $scope.benefitCount = 0;
     $scope.benefitEnrollCount = 0;
-    $scope.templateCountArray = [];
+    $scope.templateCount = 0;
 
-    var getTemplates = function(company){
-      templateRepository.byCompany.get({companyId:company.id}).$promise.then(function(response){
-        $scope.templateArray = response.templates;
-      });
-    }
     var getWorkerCount = function(company){
       countRepository.employeeCount.get({companyId:company.id})
         .$promise.then(function(employeeCountResponse){
@@ -62,19 +59,6 @@ var employerHome = employersController.controller('employerHome',
         });
     };
 
-    var getTemplateCount = function(company){
-      templateRepository.byCompany.get({companyId:company.id})
-        .$promise.then(function(response){
-          _.each($scope.documentTypes, function(type){
-            $scope.templateCountArray[type.name] = 0;
-          });
-
-          _.each(response.templates, function(template){
-            $scope.templateCountArray[template.document_type.name] ++;
-          });
-        });
-    };
-
     var getBenefitElectionCount = function(company){
       CompanyBenefitEnrollmentSummaryService.getEnrollmentSummary(company.id)
       .then(function(response){
@@ -99,15 +83,14 @@ var employerHome = employersController.controller('employerHome',
           if(company_role.company_user_type === 'admin')
           {
             $scope.company = company_role.company;
-            documentTypeService.getDocumentTypes($scope.company).then(function(doc_types){
-              $scope.documentTypes = doc_types;
 
-              getTemplates($scope.company);
-              getWorkerCount($scope.company);
-              getBenefitCount($scope.company);
-              getTemplateCount($scope.company);
-              getBenefitElectionCount($scope.company);
+            getWorkerCount($scope.company);
+            getBenefitCount($scope.company);
+            TemplateService.getTemplateCount($scope.company.id)
+            .then(function(templateCount){
+              $scope.templateCount = templateCount;
             });
+            getBenefitElectionCount($scope.company);
           }
         });
     });
@@ -135,12 +118,15 @@ var employerHome = employersController.controller('employerHome',
     $scope.viewEmployeeClick = function(companyId)
     {
        $location.path('/admin/employee/'+ companyId);
-    }
-
-    $scope.templateClick = function(companyId, docType)
-    {
-       $location.search({type:docType.name}).path('/admin/generate_template/'+ companyId);
     };
+
+    $scope.viewDocumentTemplate = function(companyId){
+       $state.go('document_templates', {company_id: companyId});
+    };
+
+    $scope.addDocumentTemplate = function(companyId){
+      $state.go('document_templates_edit', {company_id: companyId});
+    }
 
     $scope.viewBenefitElection = function(companyId)
     {
@@ -157,8 +143,7 @@ var employerUser = employersController.controller('employerUser',
    'employerWorkerRepository',
    'usersRepository',
    'emailRepository',
-   'documentTypeService',
-   'templateRepository',
+   'TemplateService',
    'DocumentService',
    'CompensationService',
    'EmployerEmployeeManagementService',
@@ -169,8 +154,7 @@ var employerUser = employersController.controller('employerUser',
                         employerWorkerRepository,
                         usersRepository,
                         emailRepository,
-                        documentTypeService,
-                        templateRepository,
+                        TemplateService,
                         DocumentService,
                         CompensationService,
                         EmployerEmployeeManagementService){
@@ -178,7 +162,6 @@ var employerUser = employersController.controller('employerUser',
       $scope.employees=[];
       $scope.brokers = [];
       $scope.templateFields = [];
-      $scope.docTypeArray = [];
       $scope.employment_types = EmployerEmployeeManagementService.EmploymentTypes;
       $scope.addUser = {
         send_email:true,
@@ -214,19 +197,16 @@ var employerUser = employersController.controller('employerUser',
 
             // Populate document data for employees
             _.each($scope.employees, function(employee) {
-                DocumentService.getDocumentToTypeMappingForCompanyUser(employee.user.id, compId)
-                .then(function(docTypeMapModel) {
-                    employee.documentCollection = docTypeMapModel;
+                DocumentService.getDocumentsToUserEntry(employee.user.id)
+                .then(function(docEntry) {
+                    employee.docEntry = docEntry;
                 });
             });
         });
 
-      templateRepository.getAllFields.query({id:compId})
-        .$promise.then(function(fields){
-          $scope.templateFields = fields;
-        });
-      documentTypeService.getDocumentTypes(compId).then(function(response){
-        $scope.docTypeArray = response;
+      TemplateService.getAllTemplateFields(compId)
+      .then(function(fields){
+        $scope.templateFields = fields;
       });
 
       var gotoUserView = function(userType){
@@ -282,13 +262,13 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.documentLink = function(employeeId, docEntry)
       {
-        var pathKey = 'create_letter';
+        var pathKey = 'create';
         if(docEntry.hasDocument())
         {
-            pathKey='view_letter';
+            pathKey='view';
         }
 
-        $location.path('/admin/' + pathKey + '/' +compId +'/'+employeeId).search({'type': docEntry.docType.name});
+        $location.path('/admin/documents/' + pathKey + '/' +compId +'/'+employeeId);
       };
 
       $scope.viewEmployeeDetail = function(employee){
@@ -564,140 +544,106 @@ var planDetailsModalController = brokersControllers.controller('planDetailsModal
 }]);
 
 var employerLetterTemplate = employersController.controller('employerLetterTemplate',
-  ['$scope', '$location', '$state', '$stateParams', 'templateRepository', 'documentTypeService',
-  function employerLetterTemplate($scope, $location, $state, $stateParams, templateRepository, documentTypeService){
-    $scope.documentType = $stateParams.type;
-    $scope.addMode = $stateParams.add;
+  ['$scope', '$state', '$stateParams', 'TemplateService',
+  function employerLetterTemplate($scope, $state, $stateParams, TemplateService){
     $scope.companyId = $stateParams.company_id;
-    $scope.viewTitle = 'Create ' + $scope.documentType + ' Template';
-    $scope.showEditButton = false;
     $scope.existingTemplateList = [];
 
-    $scope.isInAddMode = function(){
-      return _.isEmpty($scope.existingTemplateList) || $scope.addMode === 'true';
-    };
-
-    var updateExistingTemplateList = function(){
-      templateRepository.byCompany.get({companyId:$stateParams.company_id})
-        .$promise.then(function(response){
-          $scope.existingTemplateList = _.sortBy(
-            _.filter(response.templates,
-              function(template){
-                return template.document_type.name === $scope.documentType;
-            }),
-            function(elm){return elm.id;}
-          ).reverse();
-
-          if(!_.isEmpty($scope.existingTemplateList))
-          {
-            $scope.viewTitle = 'Manage ' + $scope.documentType + ' Template';
-          }
-          else
-          {
-            $location.search({type:$scope.documentType, add:'true'});
-          }
-        });
-      };
-
-    var updateWithExistingTemplate = function(template)
-    {
-      if(template)
-      {
-        $scope.templateId = template.id;
-        $scope.templateContent = template.content;
-        $scope.templateName = template.name;
-        $scope.showCreateButton = false;
-        $scope.showEditButton = true;
-      }
-    };
-
-    if(!$scope.addMode || $scope.addMode === 'false'){
-      updateExistingTemplateList();
-    }
-    else{
-      documentTypeService.getDocumentTypes($scope.companyId).then(function(types){
-        var docType = _.findWhere(types, {name:$scope.documentType});
-        if(docType){
-          $scope.templateContent = docType.default_content;
-        }
-      });
-    }
-
+    TemplateService.getTemplates($stateParams.company_id)
+    .then(function(templates){
+      $scope.existingTemplateList = _.sortBy(
+          templates,
+          function(elm){return elm.id;}
+        ).reverse();
+    });
+      
     $scope.modifyExistingTemplate = function(template){
-      updateWithExistingTemplate(template);
+      $state.go('document_templates_edit', {company_id:$scope.companyId, template_id: template.id});
     };
-    $scope.saveTemplateChanges = function(){
-      var template = {};
-      template.name = $scope.templateName;
-      template.content = $scope.templateContent;
-      template.document_type = $scope.documentType;
-      var updateObject = {company: $scope.companyId, template: template};
-      templateRepository.update.update({id: $scope.templateId}, updateObject, function(response){
-        updateWithExistingTemplate(response.template);
-        $location.search({add:'false', type: $scope.documentType});
-        updateExistingTemplateList();
-      }, function(response){
-        $scope.templateCreateFailed = true;
-      })
-    }
-    $scope.addOfferTemplate = function(){
-      $location.search({type:$scope.documentType, add:'true'});
-    };
+
     $scope.viewDashboard = function(){
-      $location.path('/admin');
+      $state.go('/admin');
     };
-    $scope.createTemplate = function(){
-      if($scope.templateName && $scope.templateContent)
-      {
-        var newTemplate = {};
-        newTemplate.document_type = $scope.documentType;
-        newTemplate.name = $scope.templateName;
-        newTemplate.content = $scope.templateContent;
-        var postObj = {company:$scope.companyId, template:newTemplate};
-        templateRepository.create.save(postObj, function(response){
-          updateWithExistingTemplate(response.template);
-          $scope.justCreated = true;
-          $location.search({add:'false', type:$scope.documentType})
-        }, function(response){
-          $scope.templateCreateFailed = true;
-        });
-      }
-    }
   }
 ]);
 
-var employerCreateLetter = employersController.controller('employerCreateLetter',
+var employerModifyTemplate = employersController.controller('employerModifyTemplate',
+  ['$scope', '$state', '$stateParams', 'TemplateService',
+  function employerModifyTemplate($scope, $state, $stateParams, TemplateService){
+    $scope.companyId = $stateParams.company_id;
+    $scope.templateId = $stateParams.template_id;
+    if($scope.templateId){
+      $scope.viewTitle = 'View/Edit Template';
+      TemplateService.getTemplateById($scope.templateId)
+      .then(function(template){
+        $scope.template = template;
+      });
+    }
+    else{
+      $scope.viewTitle = 'Create Template';
+      $scope.template = {};
+    };
+
+
+    $scope.saveTemplateChanges = function(){
+      $scope.template.id = $scope.templateId;
+      TemplateService.updateTemplate($scope.companyId, $scope.template)
+      .then(function(savedTemplate){
+        $scope.template = savedTemplate;
+        alert('Template Saved');
+      }, function(errorResponse){
+        alert('Template save failure with reason: ' + errorResponse);
+      });
+    };
+
+    $scope.viewDashboard = function(){
+      $location.path('/admin');
+    };
+
+    $scope.createTemplate = function(){
+      if($scope.template.name && $scope.template.content)
+      {
+        TemplateService.createNewTemplate($scope.companyId, $scope.template)
+        .then(function(savedTemplate){
+          $scope.template = savedTemplate;
+          alert('Template "' + $scope.template.name + '" successfully created');
+          $scope.goBack();
+        }, function(errorResponse){
+          alert('Template creation failure: ' + errorResponse);
+        });
+      }
+    };
+    $scope.goBack = function(){
+      $state.go('document_templates', {company_id:$scope.companyId});
+    };
+  }
+]);
+
+
+
+
+
+var employerCreateDocument = employersController.controller('employerCreateDocument',
                                                           ['$scope',
                                                           '$location',
                                                           '$stateParams',
                                                           'documentRepository',
-                                                          'templateRepository',
-  function employerCreateLetter($scope,
+                                                          'TemplateService',
+  function employerCreateDocument($scope,
                                 $location,
                                 $stateParams,
                                 documentRepository,
-                                templateRepository){
+                                TemplateService){
     $scope.companyId = $stateParams.company_id;
     var employeeId = $stateParams.employee_id;
     $scope.newDoc = {};
 
-
-    $scope.documentType = $stateParams.type;
-
-    templateRepository.byCompany.get({companyId:$scope.companyId})
-      .$promise.then(function(response){
-        $scope.templateArray = [];
-
-        _.each(response.templates, function(template){
-          if (template.document_type.name === $scope.documentType){
-            $scope.templateArray.push(template);
-          }
-        });
-
-        _.sortBy($scope.templateArray, function(template){
+    TemplateService.getTemplates($scope.companyId)
+    .then(function(templates){
+      $scope.templateArray = _.sortBy(templates, function(template){
           return template.name;
         });
-      });
+    });
 
     $scope.getTemplateFields = function(sTemplate){
       if(sTemplate)
@@ -728,37 +674,33 @@ var employerCreateLetter = employersController.controller('employerCreateLetter'
       $scope.newDoc.document_type = $scope.documentType;
       var postObj={company:$scope.companyId, user:employeeId, template:curTemplate.id, signature:'', document:$scope.newDoc};
       documentRepository.create.save(postObj, function(response){
-        $location.search({type:$scope.documentType}).path('/admin/view_letter/' + $scope.companyId + '/' + employeeId);
+        $location.search({type:$scope.documentType}).path('/admin/documents/view/' + $scope.companyId + '/' + employeeId);
       }, function(errResponse){
         $scope.createFailed = true;
       });
     }
   }]);
 
-var employerViewLetter = employersController.controller('employerViewLetter',
+var employerViewDocument = employersController.controller('employerViewDocument',
                                                           ['$scope',
                                                           '$location',
                                                           '$state',
                                                           '$stateParams',
                                                           'documentRepository',
-  function employerViewLetter($scope,
+  function employerViewDocument($scope,
                               $location,
                               $state,
                               $stateParams,
                               documentRepository){
     $scope.companyId = $stateParams.company_id;
     var employeeId = $stateParams.employee_id;
-    $scope.documentType = $stateParams.type;
     $scope.documentList = [];
     $scope.activeDocument = {};
     $scope.signaturePresent = false;
     $scope.signatureCreatedDate = moment().format(DATE_FORMAT_STRING);
 
     documentRepository.byUser.query({userId:employeeId}).$promise.then(function(response){
-      var unsortedDocumentList = _.filter(response, function(doc){
-          return doc.document_type.name === $scope.documentType
-        });
-        $scope.documentList = _.sortBy(unsortedDocumentList, function(elm){return elm.id;}).reverse();
+        $scope.documentList = _.sortBy(response, function(elm){return elm.id;}).reverse();
       });
 
     $scope.deleteExistingLetter = function(doc){
@@ -776,7 +718,6 @@ var employerViewLetter = employersController.controller('employerViewLetter',
         "user": doc.user.id,
         "signature": doc.signature,
         "document": {
-          "document_type": doc.document_type.name,
           "name": doc.name,
           "content": doc.content
         }
@@ -799,10 +740,15 @@ var employerViewLetter = employersController.controller('employerViewLetter',
         $scope.signaturePresent = true;
         $scope.signatureCreatedDate = moment(doc.signature.created_at).format(DATE_FORMAT_STRING);
       }
+      else{
+        $scope.signatureImage = null;
+        $scope.signaturePresent = false;
+        $scope.signatureCreatedDate = null;
+      }
     };
 
     $scope.createNewLetter = function(){
-      $location.search({type:$scope.documentType}).path('/admin/create_letter/'+ $scope.companyId +'/' + employeeId);
+      $location.path('/admin/documents/create/'+ $scope.companyId +'/' + employeeId);
     };
 
     $scope.viewEmployeesLink = function(){

@@ -10,7 +10,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'employeeBenefits',
    'UserService',
    'EmployeePreDashboardValidationService',
-   'EmployeeLetterSignatureValidationService',
    'FsaService',
    'BasicLifeInsuranceService',
    'SupplementalLifeInsuranceService',
@@ -33,7 +32,6 @@ var employeeHome = employeeControllers.controller('employeeHome',
             employeeBenefits,
             UserService,
             EmployeePreDashboardValidationService,
-            EmployeeLetterSignatureValidationService,
             FsaService,
             BasicLifeInsuranceService,
             SupplementalLifeInsuranceService,
@@ -55,14 +53,10 @@ var employeeHome = employeeControllers.controller('employeeHome',
       $scope.company = response.currentRole.company;
       var employeeRole = _.findWhere(response.roles, {company_user_type:'employee'});
       if(employeeRole && employeeRole.new_employee){
-        EmployeeLetterSignatureValidationService($scope.employee_id, 'Offer Letter', function(){
-          EmployeePreDashboardValidationService.onboarding($scope.employee_id, function(){
-            return response;
-          }, function(redirectUrl){
-            $location.path(redirectUrl);
-          });
-        },function(){
-          $location.path('/employee/sign_letter/' + $scope.employee_id).search({letter_type:'Offer Letter'});
+        EmployeePreDashboardValidationService.onboarding($scope.employee_id, function(){
+          return response;
+        }, function(redirectUrl){
+          $location.path(redirectUrl);
         });
       }
       else{
@@ -908,28 +902,19 @@ var onboardComplete = employeeControllers.controller('onboardComplete',
 }]);
 
 var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocument',
-  ['$scope', '$stateParams', '$location', 'documentRepository', 'EmployeeLetterSignatureValidationService',
-  function($scope, $stateParams, $location, documentRepository, EmployeeLetterSignatureValidationService){
+  ['$scope', '$stateParams', '$location', 'DocumentService', 'documentRepository',
+  function($scope, $stateParams, $location, DocumentService, documentRepository){
     $scope.employeeId = $stateParams.employee_id;
-    var letterType = $location.search().letter_type;
-    if(!letterType){
-      letterType = 'Offer Letter';
-    }
+    $scope.documentId = $stateParams.doc_id;
 
     var goToOnboarding = function(employeeId){
       $location.path('/employee/onboard/index/' + employeeId);
     };
 
-    EmployeeLetterSignatureValidationService($scope.employeeId, letterType, function(){
-      goToOnboarding($scope.employeeId);
-    }, function(){
-      $scope.displayAll = true;
-    })
-    documentRepository.byUser.query({userId:$scope.employeeId})
-      .$promise.then(function(response){
-        $scope.curLetter = _.find(response, function(letter){
-          return letter.document_type.name === letterType;
-        });
+    $scope.displayAll = true;
+    DocumentService.getUserDocumentById($scope.employeeId, $scope.documentId)
+      .then(function(doc){
+        $scope.curLetter = doc;
       });
 
     $('body').addClass('onboarding-page');
@@ -985,6 +970,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
    'FsaService',
    'HraService',
    'CommuterService',
+   'ExtraBenefitService',
    'EmployeeBenefitsAvailabilityService',
     function employeeBenefitsSignup(
       $scope,
@@ -998,6 +984,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       FsaService,
       HraService,
       CommuterService,
+      ExtraBenefitService,
       EmployeeBenefitsAvailabilityService){
 
       // Inherite scope from base
@@ -1012,6 +999,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var fsaPlans;
       var hraPlans;
       var commuterPlans;
+      var extraBenefitPlans;
       var company;
 
       var promise = $scope.companyPromise.then(function(comp){
@@ -1053,6 +1041,10 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(commuterPlansResponse) {
         commuterPlans = commuterPlansResponse;
+        return ExtraBenefitService.getPlansForCompany(company.id);
+      })
+      .then(function(extraBenefitPlansResponse) {
+        extraBenefitPlans = extraBenefitPlansResponse;
       });
 
       promise.then(function(result){
@@ -1120,8 +1112,16 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
+        if (extraBenefitPlans.length > 0) {
+          $scope.tabs.push({
+            "id": 9,
+            "heading": "Extra Benefits",
+            "state": "employee_benefit_signup.extra_benefit"
+          });
+        }
+
         $scope.tabs.push({
-          "id": 9,
+          "id": 10,
           "heading": "Summary",
           "state": "employee_benefit_signup.summary"
         });
@@ -2387,11 +2387,11 @@ var hraBenefitsSignup = employeeControllers.controller(
 
     }]);
 
-var commuterBenefitsSignup = employeeControllers.controller(
-  'commuterBenefitsSignup',
+var commonBenefitsSignup = employeeControllers.controller(
+  'commonBenefitsSignup',
   ['$scope',
    '$controller',
-    function commuterBenefitsSignup(
+    function commonBenefitsSignup(
       $scope,
       $controller){
 

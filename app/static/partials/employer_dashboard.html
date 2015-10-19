@@ -24,18 +24,17 @@
       <div class="col-xs-6"><a ng-click="viewEmployeeClick(company.id)">View</a></div>
     </div>
   </div><!-- / .dashboard-card -->
-
-  <h6>Templates</h6>
-  <div class="dashboard-card" ng-repeat="docType in documentTypes">
+  <div class="dashboard-card">
     <div class="info-row">
       <div class="col-xs-4 img-col"><span class="flaticon-rounded47"></span></div>
       <div class="col-xs-8 info-col">
-        <h3>{{templateCountArray[docType.name]}}</h3>
-        <p>{{docType.name}} Template</p>
+        <h3>{{templateCount}}</h3>
+        <p>Document Templates</p>
       </div>
     </div>
     <div class="action-row">
-      <div class="col-xs-12"><a ng-click="templateClick(company.id, docType)">Manage</a></div>
+      <div class="col-xs-6"><a ng-click="addDocumentTemplate(company.id)">Add</a></div>
+      <div class="col-xs-6"><a ng-click="viewDocumentTemplate(company.id)">View</a></div>
     </div>
   </div><!-- / .dashboard-card -->
 

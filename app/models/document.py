@@ -10,7 +10,6 @@ from signature import Signature
 class Document(models.Model):
     company = models.ForeignKey(Company)
     user = models.ForeignKey(AuthUser)
-    document_type = models.ForeignKey(DocumentType, null=True, blank=True)
     signature = models.ForeignKey(Signature, null=True, blank=True)
     name = models.CharField(max_length=255)
     edited = models.BooleanField(default=False)
