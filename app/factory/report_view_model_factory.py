@@ -2,10 +2,13 @@ from app.models.company_user import CompanyUser
 from app.models.person import Person, SELF
 from app.models.aca.employee_1095_c import Employee1095C
 from app.models.aca.company_1095_c import Company1095C, PERIODS
+from app.models.aca.company_1094_c_member_info import Company1094CMemberInfo
+from app.models.aca.company_1094_c_monthly_member_info import Company1094CMonthlyMemberInfo
 
 from app.view_models.report.person_info import PersonInfo
 from app.view_models.report.company_info import CompanyInfo
 from app.view_models.report.employee_1095_c_data import Employee1095CData
+from app.view_models.report.company_1094_c_data import Company1094CData
 
 
 class ReportViewModelFactory(object):
@@ -17,6 +20,9 @@ class ReportViewModelFactory(object):
 
     def get_employee_1095_c_data(self, employee_user_id, company_id):
         return self._get_employee_1095_c_data_collection(employee_user_id, company_id)
+
+    def get_company_1094_c_data(self, company_id):
+        return self._get_company_1094_c_data(company_id)
 
     def _get_person_by_user(self, user_id):
         person_model = None
@@ -49,3 +55,8 @@ class ReportViewModelFactory(object):
             employee_1095c_collection.append(employee_1095c_data)
 
         return employee_1095c_collection
+
+    def _get_company_1094_c_data(self, company_id):
+        member_info = Company1094CMemberInfo.objects.get(company=company_id)
+        monthly_info = Company1094CMonthlyMemberInfo.objects.filter(company=company_id)
+        return Company1094CData(member_info, monthly_info, PERIODS)

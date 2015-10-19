@@ -16,6 +16,7 @@ class Form1094CView(ReportExportViewBase):
 
         model_factory = ReportViewModelFactory()
         company_info = model_factory.get_employee_company_info(pk)
+        company_1094c = model_factory.get_company_1094_c_data(pk)
 
         # Populate the form fields
         fields = {
@@ -42,14 +43,14 @@ class Form1094CView(ReportExportViewBase):
             ##############################
 
             # Total number of 1095-C submitted
-            'topmostSubform[0].Page1[0].f1_17[0]': '200',
-            # Is authoritative transmittal 
+            'topmostSubform[0].Page1[0].f1_17[0]': company_1094c.number_of_1095c,
+            # Is authoritative transmittal
             'topmostSubform[0].Page1[0].c1_03[0]': '1',
             # Total number of 1095-C submitted for ALE member
-            'topmostSubform[0].Page1[0].f1_18[0]': '200',
+            'topmostSubform[0].Page1[0].f1_18[0]': company_1094c.number_of_1095c,
             # Is ALE Member a member of an Aggregated ALE Group
             'topmostSubform[0].Page1[0].c1_08[1]': 'No',
-            # Certifications of Eligibility 
+            # Certifications of Eligibility
             'topmostSubform[0].Page1[0].c1_06[0]': 'Yes',
 
             # ALE member info
