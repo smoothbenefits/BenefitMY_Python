@@ -20,15 +20,8 @@
         <div class="letter-container">
           <textarea rows="15" cols="80" readonly="true">{{curLetter.content}}</textarea>
         </div>
-        <div id="letter_signature" class="signature-pad"></div>
+        <bm-signature-picker user-id="employeeId" on-confirm-sign="signDocument(resultSignature)" sign-button-text="signButtonText"></bm-signature-picker>
       </div>
-    </div>
-    <div class="submit-box">
-      <div class="row">
-        <div class="col-sm-6"><button ng-click="clearSignature()" class="btn green">Reset</button></div>
-        <div class="col-sm-6"><button ng-click="submit()" class="btn green">Sign and Next</button></div>
-      </div>
-      <input type="hidden" name="signatureHiddenData" value="{{letterSignatureData}}"/>
     </div>
   </form>
   <div class="back"><a href="/">&laquo; Cancel</a></div>

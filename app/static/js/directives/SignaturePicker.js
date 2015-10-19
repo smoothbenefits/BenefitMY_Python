@@ -21,8 +21,27 @@ BenefitMyApp.directive('bmSignaturePicker', function() {
                                 ? $scope.panelHeaderText
                                 : 'Signature';
 
+        // Allow customized description header, with fallback to 
+        // a default
+        $scope.description = ('descriptionText' in $attrs) 
+                                ? $scope.descriptionText
+                                : '';
+
+        // Allow customized description header, with fallback to 
+        // a default
+        $scope.confirmSignButtonText = ('signButtonText' in $attrs) 
+                                ? $scope.signButtonText
+                                : 'Confirm Sign';
+
         // Whether user check the box to express the intect to sign
         $scope.electSign = false;
+
+        $scope.allowSign = function() {
+            if ('allowSignPredicate' in $attrs) {
+                return $scope.allowSignPredicate();
+            }
+            return true;
+        }
 
         // Are we in view only mode?
         $scope.inViewMode = function() {
@@ -78,8 +97,13 @@ BenefitMyApp.directive('bmSignaturePicker', function() {
             }, true);
         } 
 
+        // Initialize the signature pad
+        var signatureUpdated = false;
         var $sigdiv = $("#doc_signature");
         $sigdiv.jSignature();
+        $sigdiv.bind('change', function(e){
+         signatureUpdated = true;
+        });
 
         // 
         $scope.signatureExists = function() {
@@ -92,9 +116,18 @@ BenefitMyApp.directive('bmSignaturePicker', function() {
         };
 
         $scope.confirmSign = function() {
-            var signatureData = $scope.signatureExists()
-                                ? $scope.signature.signature
-                                : $sigdiv.jSignature('getData', 'svg');
+            if (!$scope.signatureExists() && !signatureUpdated) {
+                alert('Please sign your name on the signature pad');
+                return;
+            }
+
+            var signatureData = null;
+            if ($scope.signatureExists()) {
+                signatureData = $scope.signature.signature;
+            } else {
+                var imageData = $sigdiv.jSignature('getData', 'svg');
+                signatureData = "data:" + imageData[0] + ',' + imageData[1];
+            }
 
             var modelToSave = {
                 'signature': signatureData,
@@ -105,7 +138,7 @@ BenefitMyApp.directive('bmSignaturePicker', function() {
             .then(
                 function(resultSignature) {
                     $scope.signature = resultSignature;
-                    if ($scope.onConfirmSign) {
+                    if ('onConfirmSign' in $attrs) {
                         $scope.onConfirmSign({resultSignature: $scope.signature});
                     }
                 }
@@ -124,7 +157,10 @@ BenefitMyApp.directive('bmSignaturePicker', function() {
         userId: '=',
         signatureId: '=',
         viewMode: '=',
-        panelHeaderText: '=' 
+        panelHeaderText: '=',
+        descriptionText: '=',
+        signButtonText: '=',
+        allowSignPredicate: '&'
     },
     templateUrl: '/static/partials/employee_profile/directive_signature_picker.html',
     controller: controller

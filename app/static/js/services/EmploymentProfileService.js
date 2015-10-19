@@ -44,7 +44,7 @@ benefitmyService.factory('EmploymentProfileService',
         return deferred.promise;
        },
 
-       saveEmploymentAuthByUserId: function(employee, signature){
+       saveEmploymentAuthByUserId: function(employee, signatureId){
          var deferred = $q.defer();
          var contract = {
           'worker_type': employee.auth_type,
@@ -52,9 +52,7 @@ benefitmyService.factory('EmploymentProfileService',
           'i_94': employee.I94Id,
           'passport': employee.passportId,
           'country': employee.passportCountry,
-          'signature': {
-            'signature': signature
-          }
+          'signature': signatureId
          };
 
          if (employee.auth_expiration){

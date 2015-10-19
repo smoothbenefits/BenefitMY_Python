@@ -357,22 +357,6 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
       });
     });
 
-    var signatureUpdated = false;
-    var $sigdiv = $("#auth_signature");
-    if(_.isUndefined($sigdiv))
-    {
-      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
-    }
-    $sigdiv.jSignature();
-    $sigdiv.bind('change', function(e){
-     signatureUpdated = true;
-    });
-
-    $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset");
-      signatureUpdated = false;
-    };
-
     $scope.openI9File = function(){
       if($scope.employee.downloadI9){
         var link = angular.element('#i9doclink')[0];
@@ -380,30 +364,25 @@ var employeeI9Controller = employeeControllers.controller('employeeI9Controller'
       }
     };
 
-    $scope.signDocument = function(){
-      if(!signatureUpdated){
-        alert('Please sign your name on the signature pad');
-        return;
-      }
-      if(!$scope.employee.downloadI9){
-        alert('Please download the I-9 document and acknowledge you have read the entire form above.');
-        return;
-      }
-      if($scope.employee.auth_type === 'Aaw' && !$scope.employee.expiration_na
+    $scope.signButtonText = "Submit";
+
+    $scope.allowProceedWithSign = function() {
+        return $scope.employee.downloadI9;
+    };
+
+    $scope.signDocument = function(signature){
+        if($scope.employee.auth_type === 'Aaw' && !$scope.employee.expiration_na
          && !$scope.employee.auth_expiration) {
-        alert('Please provide the expiration date for your work authorization document.');
-        return;
-      }
-      else
-      {
-        var signatureData = $sigdiv.jSignature('getData', 'svg');
-        $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
-        EmploymentProfileService.saveEmploymentAuthByUserId($scope.employee, $scope.signatureImage).then(function(response){
+            alert('Please provide the expiration date for your work authorization document.');
+            return;
+        }
+
+        EmploymentProfileService.saveEmploymentAuthByUserId($scope.employee, signature.id)
+        .then(function(response){
           $state.go('employee_profile.i9');
         }, function(error){
           alert('Employment authorization has NOT been saved. Please try again later.');
         });
-      }
     };
 
     $scope.editI9 = function(){
@@ -669,13 +648,25 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', '$stateParams', '$location', '$window', 'employmentAuthRepository', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, $window, employmentAuthRepository, EmployeePreDashboardValidationService){
-    $scope.employee = {
-      auth_type: ''
-    };
+  ['$scope', 
+   '$stateParams', 
+   '$location', 
+   '$window', 
+   'EmploymentProfileService', 
+   'EmployeePreDashboardValidationService',
+  function($scope, 
+           $stateParams, 
+           $location, 
+           $window, 
+           EmploymentProfileService, 
+           EmployeePreDashboardValidationService){
     $scope.employeeId = $stateParams.employee_id;
 
+    $scope.employee = {
+      auth_type: '',
+      userId: $scope.employeeId
+    };
+    
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
@@ -689,40 +680,6 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
     });
 
     $('body').addClass('onboarding-page');
-    var mapContract = function(viewObject, signature){
-      var contract = {
-        'worker_type': viewObject.auth_type,
-        'uscis_number': viewObject.authNumber,
-        'i_94': viewObject.I94Id,
-        'passport': viewObject.passportId,
-        'country': viewObject.passportCountry,
-        'signature': {
-          'signature': signature
-        }
-      };
-
-      if (viewObject.auth_expiration){
-        contract.expiration_date = moment(viewObject.auth_expiration).format('YYYY-MM-DD');
-      }
-
-      return contract;
-    };
-
-    var signatureUpdated = false;
-    var $sigdiv = $("#auth_signature");
-    if(_.isUndefined($sigdiv))
-    {
-      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
-    }
-    $sigdiv.jSignature();
-    $sigdiv.bind('change', function(e){
-     signatureUpdated = true;
-    });
-
-    $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset");
-      signatureUpdated = false;
-    };
 
     $scope.acknowledgedI9=function(){
       $scope.employee.downloadI9 = !$scope.employee.downloadI9;
@@ -735,25 +692,25 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       }
     };
 
-    $scope.signDocument = function(redirectUrl){
-      if(!signatureUpdated){
-        alert('Please sign your name on the signature pad');
-      }
-      else if(!$scope.employee.downloadI9){
-        alert('Please download the I-9 document and acknowledge you have read the entire form above.');
-      }
-      else
-      {
-        var signatureData = $sigdiv.jSignature('getData', 'svg');
-        $scope.signatureImage = "data:" + signatureData[0] + ',' + signatureData[1];
-        var contract = mapContract($scope.employee, $scope.signatureImage);
-        employmentAuthRepository.save({userId: $scope.employeeId}, contract,
-          function(){
-            $location.path('/employee/onboard/tax/' + $scope.employeeId);
-          }, function(){
-            alert('Failed to add employment information');
-          });
-      }
+    $scope.signButtonText = "Sign and Next";
+
+    $scope.allowProceedWithSign = function() {
+        return $scope.employee.downloadI9;
+    };
+
+    $scope.signDocument = function(signature){
+        if($scope.employee.auth_type === 'Aaw' && !$scope.employee.expiration_na
+         && !$scope.employee.auth_expiration) {
+            alert('Please provide the expiration date for your work authorization document.');
+            return;
+        }
+
+        EmploymentProfileService.saveEmploymentAuthByUserId($scope.employee, signature.id)
+        .then(function(response){
+          $location.path('/employee/onboard/tax/' + $scope.employeeId);
+        }, function(error){
+          alert('Failed to add employment information');
+        });
     };
 }]);
 
@@ -821,8 +778,8 @@ var onboardTax = employeeControllers.controller('onboardTax',
 }]);
 
 var onboardComplete = employeeControllers.controller('onboardComplete',
-  ['$scope', '$stateParams', '$location', '$state', 'SignatureService', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, $state, SignatureService, EmployeePreDashboardValidationService){
+  ['$scope', '$stateParams', '$location', '$state', 'EmployeePreDashboardValidationService',
+  function($scope, $stateParams, $location, $state, EmployeePreDashboardValidationService){
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
 
@@ -839,38 +796,14 @@ var onboardComplete = employeeControllers.controller('onboardComplete',
     });
 
     $('body').addClass('onboarding-page');
-    var signatureUpdated = false;
-    var $sigdiv = $("#term_signature");
-    if(_.isUndefined($sigdiv))
-    {
-      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
-    }
-    $sigdiv.jSignature();
-    $sigdiv.bind('change', function(e){
-     signatureUpdated = true;
-    });
-    $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset");
-      signatureUpdated = false;
-    };
-    $scope.submit=function(){
-      if(!signatureUpdated){
-        alert('Please sign your name on the signature pad');
-      }
-      else{
-        var signatureData = $sigdiv.jSignature('getData', 'svg');
-        $scope.termSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
-        var contract = {
-          'userId': $scope.employeeId,
-          'signature': $scope.termSignatureData
-        };
-        SignatureService.saveSignature(contract).then(
-          function(){
-            $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
-          }, function(){
-            alert('Failed to submit signature');
-          });
-      }
+
+    $scope.signaturePanelHeaderText = "Please agree to the statement below and sign";
+    $scope.signatureDescriptionText = "I hereby acknowledge that all the information I provided before are to the best of my knowledge and all the facts I stated are true."
+                                      + " I am aware that if I provided faulty information, I would be liable to the penalties by law";
+    $scope.signButtonText = 'Sign and Next';
+
+    $scope.submit=function(signature) {
+        $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
     }
 }]);
 
@@ -891,41 +824,20 @@ var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocum
       });
 
     $('body').addClass('onboarding-page');
-    var signatureUpdated = false;
-    var $sigdiv = $('#letter_signature');
-    if(_.isUndefined($sigdiv))
-    {
-      $scope.signaturePadError = 'Fatal error: Signature pad element cannot be found!';
-    }
-    $sigdiv.jSignature();
-    $sigdiv.bind('change', function(e){
-     signatureUpdated = true;
-    });
 
-    $scope.clearSignature = function(){
-      $sigdiv.jSignature("reset");
-      signatureUpdated = false;
+    $scope.signButtonText = "Sign and Next";
+
+    $scope.allowProceedWithSign = function() {
+        return $scope.employee.downloadI9;
     };
 
-    $scope.submit = function(){
-
-      if(!signatureUpdated){
-        alert('Please sign your name on the signature pad');
-      }
-      else{
-        var signatureData = $sigdiv.jSignature('getData', 'svg');
-        $scope.letterSignatureData = "data:" + signatureData[0] + ',' + signatureData[1];
-        var contract = {
-          'signature': $scope.letterSignatureData
-        };
-        documentRepository.sign.save({id:$scope.curLetter.id}, contract,
-         function(){
-           goToOnboarding($scope.employeeId);
-         },
-         function(err){
-          alert('The signature has not been accepted. The reason is: ' + JSON.stringify(err.data));
-         });
-      }
+    $scope.signDocument = function(signature){
+        DocumentService.signUserDocument($scope.curLetter.id, signature.id)
+        .then(function(successResponse){
+            goToOnboarding($scope.employeeId);
+        }, function(failureResponse){
+            alert('The signature has not been accepted. The reason is: ' + JSON.stringify(err.data));
+        });
     };
   }]);
 

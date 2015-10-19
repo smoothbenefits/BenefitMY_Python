@@ -17,6 +17,7 @@
         </div>
     </div> 
     <div class="signature-display-container" ng-if="!inViewMode() && signatureExists()">
+        <div class="terms-container" ng-if="description">{{description}}</div>
         <div class="checkbox">
             <label>
               <input type="checkbox" ng-model="electSign">
@@ -31,15 +32,16 @@
             {{signature.createdDateForDisplay}}
           </div>
           <div class="signature-reset col-md-6 pull-left">
-            <button ng-click="confirmSign()" class="btn green">
-              Confirm Sign
+            <button ng-click="confirmSign()" class="btn green" ng-disabled="!allowSign()">
+              {{confirmSignButtonText}}
             </button>
           </div>
           <div style="clear:both"></div>
         </div>
     </div>
-    <div class="signature-container" ng-if="!inViewMode() && !signatureExists()">
-        <div id="doc_signature" class="employee-doc-signature-pad"></div>
+    <div class="signature-container" ng-show="!inViewMode() && !signatureExists()">
+        <div class="terms-container" ng-if="description">{{description}}</div>
+        <div id="doc_signature" class="employee-doc-signature-pad col-md-12"></div>
         <div class="signature-action-container">
           <div class="signature-reset col-md-6 pull-left">
             <button ng-click="clearSignature()" class="btn">
@@ -47,8 +49,8 @@
             </button>
           </div>
           <div class="signature-reset col-md-6 pull-right">
-            <button ng-click="confirmSign()" class="btn green">
-              Confirm Sign
+            <button ng-click="confirmSign()" class="btn green" ng-disabled="!allowSign()">
+              {{confirmSignButtonText}}
             </button>
           </div>
           <div style="clear:both"></div>
