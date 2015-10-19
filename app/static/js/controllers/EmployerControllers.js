@@ -1366,6 +1366,10 @@ var employerAcaReport = employersController.controller('employerAcaReport', [
       $scope.sorted1094CData = data;
     });
 
+    $scope.getCompany1094CUrl = function() {
+      return Company1094CService.GetCompany1094CUrl(companyId);
+    };
+
     $scope.edit1094CInfo = function() {
       var modalInstance = $modal.open({
         templateUrl: '/static/partials/aca/modal_company_1094_c.html',
