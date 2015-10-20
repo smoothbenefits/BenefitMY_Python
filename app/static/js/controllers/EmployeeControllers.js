@@ -715,8 +715,8 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', '$stateParams', '$location', '$window', 'employeePayrollService', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, $window, employeePayrollService, EmployeePreDashboardValidationService){
+  ['$scope', '$state', '$stateParams', '$location', '$window', 'employeePayrollService', 'EmployeePreDashboardValidationService',
+  function($scope, $state, $stateParams, $location, $window, employeePayrollService, EmployeePreDashboardValidationService){
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
 
@@ -772,39 +772,9 @@ var onboardTax = employeeControllers.controller('onboardTax',
       var empAuth = employeePayrollService.mapW4ViewToDto($scope.employee);
       employeePayrollService.saveEmployeeTaxByUserId($scope.employeeId, empAuth)
       .then(function(response){
-        $location.path('/employee/onboard/complete/'+$scope.employeeId);
+        $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
       });
     };
-}]);
-
-var onboardComplete = employeeControllers.controller('onboardComplete',
-  ['$scope', '$stateParams', '$location', '$state', 'EmployeePreDashboardValidationService',
-  function($scope, $stateParams, $location, $state, EmployeePreDashboardValidationService){
-    $scope.employee = {};
-    $scope.employeeId = $stateParams.employee_id;
-
-    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
-      $location.path('/employee');
-    },
-    function(redirectUrl){
-      if($location.path() !== redirectUrl){
-        $location.path(redirectUrl);
-      }
-      else{
-        $scope.displayAll = true;
-      }
-    });
-
-    $('body').addClass('onboarding-page');
-
-    $scope.signaturePanelHeaderText = "Please agree to the statement below and sign";
-    $scope.signatureDescriptionText = "I hereby acknowledge that all the information I provided before are to the best of my knowledge and all the facts I stated are true."
-                                      + " I am aware that if I provided faulty information, I would be liable to the penalties by law";
-    $scope.signButtonText = 'Sign and Next';
-
-    $scope.submit=function(signature) {
-        $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
-    }
 }]);
 
 var employeeAcceptDocument = employeeControllers.controller('employeeAcceptDocument',

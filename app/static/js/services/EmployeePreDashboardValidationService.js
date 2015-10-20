@@ -6,13 +6,11 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                           'currentUser',
                           'employmentAuthRepository',
                           'employeeTaxRepository',
-                          'SignatureService',
                           'PersonService',
   function(PersonService,
            currentUser,
            employmentAuthRepository,
            employeeTaxRepository,
-           SignatureService,
            PersonService){
 
     var getBasicInfoUrl = function(employeeId){
@@ -26,11 +24,6 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     var getTaxUrl = function(employeeId){
       return '/employee/onboard/tax/' + employeeId;
     };
-
-    var getSignatureUrl = function(employeeId){
-      return '/employee/onboard/complete/' + employeeId;
-    };
-
 
     var validatePersonInfo = function(person){
       //make sure we get all the basic information of this person correctly.
@@ -107,29 +100,12 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         });
     };
 
-    var validateEmployeeSignature = function(employeeId, succeeded, failed){
-      //step 4 the signature for employee
-      SignatureService.getSignatureByUser(employeeId)
-        .then(function(signature){
-          if(!signature || !signature.signature || signature.signature===''){
-            failed();
-          }
-          else{
-           succeeded();
-          }
-        });
-    };
-
     return {
         onboarding: function(employeeId, succeeded, failed){
           validateBasicInfo(employeeId, function(){
             validateEmploymentAuth(employeeId, function(){
               validateW4Info(employeeId, function(){
-                validateEmployeeSignature(employeeId,function(){
-                  succeeded();
-                }, function(){
-                  failed(getSignatureUrl(employeeId));
-                });
+                succeeded();
               },
               function(){
                 failed(getTaxUrl(employeeId));
