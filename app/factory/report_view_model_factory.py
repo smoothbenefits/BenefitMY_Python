@@ -57,6 +57,11 @@ class ReportViewModelFactory(object):
         return employee_1095c_collection
 
     def _get_company_1094_c_data(self, company_id):
-        member_info = Company1094CMemberInfo.objects.get(company=company_id)
+        member_info = None
+        try:
+            member_info = Company1094CMemberInfo.objects.get(company=company_id)
+        except Company1094CMemberInfo.DoesNotExist:
+            member_info = None
+            
         monthly_info = Company1094CMonthlyMemberInfo.objects.filter(company=company_id)
         return Company1094CData(member_info, monthly_info, PERIODS)
