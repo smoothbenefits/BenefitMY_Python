@@ -27,7 +27,7 @@ BenefitMyApp.directive('bmSignaturePicker', function() {
                                 ? $scope.descriptionText
                                 : '';
 
-        // Allow customized description header, with fallback to 
+        // Allow customized button display text, with fallback to 
         // a default
         $scope.confirmSignButtonText = ('signButtonText' in $attrs) 
                                 ? $scope.signButtonText

@@ -210,7 +210,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
             alert("The document has been signed successfully.");
             $scope.goToDashboard();
         }, function(failureResponse){
-            alert("There were problems completing the operation.");
+            alert("There was a problem saving the signature.");
         });
     };
 
