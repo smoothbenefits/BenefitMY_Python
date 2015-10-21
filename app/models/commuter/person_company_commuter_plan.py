@@ -19,7 +19,8 @@ class PersonCompanyCommuterPlan(models.Model):
 
     monthly_amount_transit_pre_tax = models.DecimalField(max_digits=20, decimal_places=10)
     monthly_amount_transit_post_tax = models.DecimalField(max_digits=20, decimal_places=10)
-    monthly_amount_parking = models.DecimalField(max_digits=20, decimal_places=10)
+    monthly_amount_parking_pre_tax = models.DecimalField(max_digits=20, decimal_places=10)
+    monthly_amount_parking_post_tax = models.DecimalField(max_digits=20, decimal_places=10)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

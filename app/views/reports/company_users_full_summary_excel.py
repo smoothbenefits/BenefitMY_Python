@@ -176,7 +176,8 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Commuter Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Transit (Pre-Tax) Amount/Month')
         col_num = self._write_field(excelSheet, 0, col_num, 'Transit (Post-Tax) Amount/Month')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Parking Amount/Month')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Parking (Pre-Tax) Amount/Month')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Parking (Post-Tax) Amount/Month')
         col_num = self._write_field(excelSheet, 0, col_num, 'Commuter Last Update Date')
 
         for i in range(0, max_dependents):
@@ -630,10 +631,11 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.company_commuter_plan.plan_name)
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.monthly_amount_transit_pre_tax)
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.monthly_amount_transit_post_tax)
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.monthly_amount_parking)
+                col_num = self._write_field(excelSheet, row_num, col_num, plan.monthly_amount_parking_pre_tax)
+                col_num = self._write_field(excelSheet, row_num, col_num, plan.monthly_amount_parking_post_tax)
                 col_num = self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(plan.updated_at))
                 return col_num
-        return col_num + 5
+        return col_num + 6
 
     def _write_employee_benefit_record_reason(self, employee_benefit_record, excelSheet, row_num, col_num):
         if (employee_benefit_record.record_reason):
