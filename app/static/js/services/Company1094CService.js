@@ -23,7 +23,7 @@ benefitmyService.factory('Company1094CService',
           }
         });
 
-        var memberInfo = angular.copy(view1094CData);
+        var memberInfo = angular.copy(view1094CData.member);
         memberInfo.company = companyId;
 
         return {member: memberInfo, monthly_info: modelMonthlyObj};

@@ -101,9 +101,10 @@ class Form1094CView(ReportExportViewBase):
             fields['topmostSubform[0].Page2[0].Table1[0].Row1[0].p2-cb1[1]'] = 'No'
 
         # full time employee count
-        fields['topmostSubform[0].Page2[0].Table1[0].Row1[0].f2_01[0]'] = all_year_data.fulltime_employee_count
-        # total employee count
         # field missing
+
+        # total employee count
+        fields['topmostSubform[0].Page2[0].Table1[0].Row1[0].f2_01[0]'] = all_year_data.total_employee_count
 
         # a member of aggregated group
         if all_year_data.aggregated_group:
@@ -114,6 +115,8 @@ class Form1094CView(ReportExportViewBase):
 
     def _write_field_for_monthly_data(self, index, fields, period_info):
         row_num = index + 1
+        # for some reason, number on the fifth row jump a number
+        padding = 1 if row_num  > 4 else 0
         # minimum essential coverage
         if period_info.minimum_essential_coverage:
             key = 'topmostSubform[0].Page2[0].Table1[0].Row{0}[0].p2-cb{0}[0]'.format(row_num)
@@ -123,14 +126,16 @@ class Form1094CView(ReportExportViewBase):
             fields[str(key)] = 'No'
 
         # full time employee count
-        number = '{0:02d}'.format(3 * row_num)
+        number = '{0:02d}'.format(3 * (row_num - 1) + padding)
         key = 'topmostSubform[0].Page2[0].Table1[0].Row{0}[0].f2_{1}[0]'.format(row_num, number)
         fields[str(key)] = period_info.fulltime_employee_count
+        print 'FILLED ' + key + ' with ' + str(period_info.fulltime_employee_count)
 
         # total employee count
-        number = '{0:02d}'.format(3 * row_num + 1)
+        number = '{0:02d}'.format(3 * (row_num - 1) + 1 + padding)
         key = 'topmostSubform[0].Page2[0].Table1[0].Row{0}[0].f2_{1}[0]'.format(row_num, number)
         fields[str(key)] = period_info.total_employee_count
+        print 'FILLED ' + key + ' with ' + str(period_info.total_employee_count)
 
         # a member of aggregated group
         if period_info.aggregated_group:
@@ -139,6 +144,7 @@ class Form1094CView(ReportExportViewBase):
             fields[str(key)] = '1'
 
         # section 4890H section indicator
-        number = '{0:02d}'.format(3 * row_num + 2)
+        number = '{0:02d}'.format(3 * (row_num - 1) + 2 + padding)
         key = 'topmostSubform[0].Page2[0].Table1[0].Row{0}[0].f2_{1}[0]'.format(row_num, number)
         fields[str(key)] = period_info.section_4980h_transition_relief
+        print 'FILLED ' + key + ' with ' + str(period_info.section_4980h_transition_relief)

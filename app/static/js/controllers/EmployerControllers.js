@@ -1386,6 +1386,7 @@ var employerAcaReport = employersController.controller('employerAcaReport', [
       });
 
       modalInstance.result.then(function(saved1094CData) {
+        $scope.sorted1094CData = saved1094CData;
         $scope.showMessageWithOkayOnly('Success', 'Company 1094C data has been saved successfully.');
       });
     };
