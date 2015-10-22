@@ -57,9 +57,9 @@ class Form1094CView(ReportExportViewBase):
 
     def _write_field_for_company_member_info(self, fields, company_1094c):
         # Total number of 1095-C submitted
-        fields['topmostSubform[0].Page1[0].f1_17[0]'] = company_1094c.number_of_1095c,
+        fields['topmostSubform[0].Page1[0].f1_17[0]'] = company_1094c.number_of_1095c
         # Total number of 1095-C submitted for ALE member
-        fields['topmostSubform[0].Page1[0].f1_18[0]'] = company_1094c.number_of_1095c,
+        fields['topmostSubform[0].Page1[0].f1_18[0]'] = company_1094c.number_of_1095c
 
         # Is authoritative transmittal
         if (company_1094c.authoritative_transmittal):
@@ -101,7 +101,7 @@ class Form1094CView(ReportExportViewBase):
             fields['topmostSubform[0].Page2[0].Table1[0].Row1[0].p2-cb1[1]'] = 'No'
 
         # full time employee count
-        # field missing
+        fields['topmostSubform[0].Page2[0].Table1[0].Row1[0].f2_300[0]'] = all_year_data.fulltime_employee_count
 
         # total employee count
         fields['topmostSubform[0].Page2[0].Table1[0].Row1[0].f2_01[0]'] = all_year_data.total_employee_count
