@@ -18,7 +18,7 @@
         </div>
         <div class="row" style="margin-top:10px;">
             <div class="col-md-10">
-                <table class="table table-striped benefit-table" id="plan_items_table">
+                <table class="table table-striped benefit-table fix-layout-table" id="plan_items_table">
                     <thead>
                       <th width="10%"><div>Interested</div></th>
                       <th width="30%"><div>Benefit Name</div></th>
@@ -29,12 +29,8 @@
                           <td>
                             <input type="checkbox" ng-model="planItem.optIn" />
                           </td>
-                          <td>
-                            {{planItem.benefitItem.name}}
-                          </td>
-                          <td>
-                            <div style="word-wrap: break-word;white-space: pre;">{{planItem.benefitItem.description}}</div>
-                          </td>
+                          <td><div>{{planItem.benefitItem.name}}</div></td>
+                          <td><div>{{planItem.benefitItem.description}}</div></td>
                       </tr>
                     </tbody>
                 </table>
