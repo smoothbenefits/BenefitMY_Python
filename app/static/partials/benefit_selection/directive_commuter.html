@@ -59,7 +59,7 @@
         </div>
         <div class="row" style="margin-top:10px;" ng-if="benenfitEnablementStatus.enableParkingBenefit">
           <div class="col-md-8">
-            <div class="form-label">Elected Monthly Amount for Parking</div>
+            <div class="form-label">Elected Monthly Amount for Parking (Pre-Tax)</div>
           </div>
         </div>
         <div class="row" style="margin-top:10px;" ng-if="benenfitEnablementStatus.enableParkingBenefit">
@@ -71,7 +71,25 @@
                     type="text" 
                     min="0" 
                     ui-number-mask
-                    ng-model="personPlan.monthlyAmountParking" />
+                    ng-model="personPlan.monthlyAmountParkingPreTax" />
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px;" ng-if="benenfitEnablementStatus.enableParkingBenefit">
+          <div class="col-md-8">
+            <div class="form-label">Elected Monthly Amount for Parking (Post-Tax)</div>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px;" ng-if="benenfitEnablementStatus.enableParkingBenefit">
+            <div class="col-md-offset-2 col-md-6">
+                <div class="textbox input-group">
+                    <span class="input-group-addon">$</span>
+                    <input 
+                    class="form-control" 
+                    type="text" 
+                    min="0" 
+                    ui-number-mask
+                    ng-model="personPlan.monthlyAmountParkingPostTax" />
                 </div>
             </div>
         </div>
@@ -93,7 +111,7 @@
             <div>Parking</div>
           </div>
           <div class="col-md-8" style="margin-top:7px;">
-            <div>${{personPlan.companyPlan.employerParkingContribution}} + ${{personPlan.monthlyAmountParking}} = <b>${{computeTotalMonthlyParkingAllowance()}}/Month</b></div>
+            <div>${{personPlan.companyPlan.employerParkingContribution}} + ${{personPlan.monthlyAmountParkingPreTax}} + ${{personPlan.monthlyAmountParkingPostTax}} = <b>${{computeTotalMonthlyParkingAllowance()}}/Month</b></div>
           </div>
         </div>
       </form>
