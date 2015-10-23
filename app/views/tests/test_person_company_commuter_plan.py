@@ -22,7 +22,8 @@ class PersonCompanyCommuterPlanTestCase(TestCase, ViewTestBase):
         self.assertEqual(result[0]['company_commuter_plan']['id'], self.normalize_key(1))
         self.assertEqual(float(result[0]['monthly_amount_transit_pre_tax']), 10.50)
         self.assertEqual(float(result[0]['monthly_amount_transit_post_tax']), 30.22)
-        self.assertEqual(float(result[0]['monthly_amount_parking']), 50)
+        self.assertEqual(float(result[0]['monthly_amount_parking_pre_tax']), 50)
+        self.assertEqual(float(result[0]['monthly_amount_parking_post_tax']), 10.11)
 
     def test_get_person_company_commuter_plan(self):
         response = self.client.get(reverse('person_company_commuter_plan_api',
@@ -36,7 +37,8 @@ class PersonCompanyCommuterPlanTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['company_commuter_plan']['id'], self.normalize_key(1))
         self.assertEqual(float(result['monthly_amount_transit_pre_tax']), 10.50)
         self.assertEqual(float(result['monthly_amount_transit_post_tax']), 30.22)
-        self.assertEqual(float(result['monthly_amount_parking']), 50)
+        self.assertEqual(float(result['monthly_amount_parking_pre_tax']), 50)
+        self.assertEqual(float(result['monthly_amount_parking_post_tax']), 10.11)
 
     def test_delete_person_company_commuter_plan(self):
         response = self.client.get(reverse('person_company_commuter_plan_api',
@@ -61,7 +63,8 @@ class PersonCompanyCommuterPlanTestCase(TestCase, ViewTestBase):
         put_data = {
           "monthly_amount_transit_pre_tax": 1,
           "monthly_amount_transit_post_tax": 2,
-          "monthly_amount_parking": 3,
+          "monthly_amount_parking_pre_tax": 3,
+          "monthly_amount_parking_post_tax": 4,
           "company_commuter_plan": self.normalize_key(2),
           "person": self.normalize_key(3)}
         response = self.client.put(reverse('person_company_commuter_plan_api',
@@ -82,7 +85,8 @@ class PersonCompanyCommuterPlanTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['company_commuter_plan']['id'], self.normalize_key(2))
         self.assertEqual(float(result['monthly_amount_transit_pre_tax']), 1)
         self.assertEqual(float(result['monthly_amount_transit_post_tax']), 2)
-        self.assertEqual(float(result['monthly_amount_parking']), 3)
+        self.assertEqual(float(result['monthly_amount_parking_pre_tax']), 3)
+        self.assertEqual(float(result['monthly_amount_parking_post_tax']), 4)
 
     def test_post_person_company_commuter_plan(self):
         post_data = {
@@ -90,7 +94,8 @@ class PersonCompanyCommuterPlanTestCase(TestCase, ViewTestBase):
           "person": 3,
           "monthly_amount_transit_pre_tax": 1,
           "monthly_amount_transit_post_tax": 2,
-          "monthly_amount_parking": 3
+          "monthly_amount_parking_pre_tax": 3,
+          "monthly_amount_parking_post_tax": 4,
         }
 
         response = self.client.post(reverse('person_company_commuter_plan_api',
@@ -120,4 +125,5 @@ class PersonCompanyCommuterPlanTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['company_commuter_plan']['id'], self.normalize_key(2))
         self.assertEqual(float(result['monthly_amount_transit_pre_tax']), 1)
         self.assertEqual(float(result['monthly_amount_transit_post_tax']), 2)
-        self.assertEqual(float(result['monthly_amount_parking']), 3)
+        self.assertEqual(float(result['monthly_amount_parking_pre_tax']), 3)
+        self.assertEqual(float(result['monthly_amount_parking_post_tax']), 4)

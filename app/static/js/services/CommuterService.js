@@ -67,7 +67,8 @@ benefitmyService.factory('CommuterService',
             viewModel.lastUpdateDateTime = moment(personCompanyPlanDomainModel.updated_at).format(DATE_FORMAT_STRING);
             viewModel.monthlyAmountTransitPreTax = convertToNumber(personCompanyPlanDomainModel.monthly_amount_transit_pre_tax);
             viewModel.monthlyAmountTransitPostTax = convertToNumber(personCompanyPlanDomainModel.monthly_amount_transit_post_tax);
-            viewModel.monthlyAmountParking = convertToNumber(personCompanyPlanDomainModel.monthly_amount_parking);
+            viewModel.monthlyAmountParkingPreTax = convertToNumber(personCompanyPlanDomainModel.monthly_amount_parking_pre_tax);
+            viewModel.monthlyAmountParkingPostTax = convertToNumber(personCompanyPlanDomainModel.monthly_amount_parking_post_tax);
 
             return viewModel;
         };
@@ -108,8 +109,11 @@ benefitmyService.factory('CommuterService',
             domainModel.person = personCompanyPlanViewModel.planOwner;
             domainModel.company_commuter_plan = mapCompanyPlanViewToDomainModel(personCompanyPlanViewModel.companyPlan);
 
-            domainModel.monthly_amount_parking = domainModel.company_commuter_plan.enable_parking_benefit && personCompanyPlanViewModel.monthlyAmountParking
-                                                 ? personCompanyPlanViewModel.monthlyAmountParking
+            domainModel.monthly_amount_parking_pre_tax = domainModel.company_commuter_plan.enable_parking_benefit && personCompanyPlanViewModel.monthlyAmountParkingPreTax
+                                                 ? personCompanyPlanViewModel.monthlyAmountParkingPreTax
+                                                 : 0;
+            domainModel.monthly_amount_parking_post_tax = domainModel.company_commuter_plan.enable_parking_benefit && personCompanyPlanViewModel.monthlyAmountParkingPostTax
+                                                 ? personCompanyPlanViewModel.monthlyAmountParkingPostTax
                                                  : 0;
             domainModel.monthly_amount_transit_pre_tax = domainModel.company_commuter_plan.enable_transit_benefit && personCompanyPlanViewModel.monthlyAmountTransitPreTax
                                                          ? personCompanyPlanViewModel.monthlyAmountTransitPreTax
@@ -152,7 +156,8 @@ benefitmyService.factory('CommuterService',
 
         var computeTotalMonthlyParkingAllowance = function(personPlan) {
             return (personPlan.companyPlan.employerParkingContribution
-                + personPlan.monthlyAmountParking)
+                + personPlan.monthlyAmountParkingPreTax
+                + personPlan.monthlyAmountParkingPostTax)
                 .toFixed(2);
         };
 
@@ -299,7 +304,8 @@ benefitmyService.factory('CommuterService',
                                     // Or else, return null;
                                     if (getBlankPlanIfNoneFound) {
                                         var blankPersonPlan = {
-                                          'monthlyAmountParking': 0,
+                                          'monthlyAmountParkingPreTax': 0,
+                                          'monthlyAmountParkingPostTax': 0,
                                           'monthlyAmountTransitPreTax': 0,
                                           'monthlyAmountTransitPostTax': 0
                                         };
