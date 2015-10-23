@@ -393,7 +393,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             if (len(employee_plans) > 0):
                 plan_selected = True
                 # Render header
-                self._write_line_uniform_width(['Commuter Plan', 'Transit/Month(Pre-Tax)', 'Transit/Month(Post-Tax)', 'Parking/Month'])
+                self._write_line_uniform_width(['Commuter Plan', 'Transit/Month(Pre-Tax)', 'Transit/Month(Post-Tax)', 'Parking/Month(Pre-Tax)', 'Parking/Month(Post-Tax)'])
                 self._draw_line()
 
                 plan = employee_plans[0]
@@ -401,7 +401,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                     plan.company_commuter_plan.plan_name,
                     self._normalize_dollar_amount(plan.monthly_amount_transit_pre_tax),
                     self._normalize_dollar_amount(plan.monthly_amount_transit_post_tax),
-                    self._normalize_dollar_amount(plan.monthly_amount_parking)])
+                    self._normalize_dollar_amount(plan.monthly_amount_parking_pre_tax),
+                    self._normalize_dollar_amount(plan.monthly_amount_parking_post_tax)])
 
                 self._start_new_line()
                 self._start_new_line()

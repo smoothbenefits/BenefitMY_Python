@@ -261,7 +261,6 @@ PIPELINE_JS = {
             'js/services/CompanyEmployeeSummaryService.js',
             'js/services/CompensationService.js',
             'js/services/DirectDepositService.js',
-            'js/services/EmployeeLetterSignatureValidationService.js',
             'js/services/FsaService.js',
             'js/services/BasicLifeInsuranceService.js',
             'js/services/benefitDisplayService.js',
