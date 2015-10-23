@@ -697,7 +697,6 @@ var employerViewDocument = employersController.controller('employerViewDocument'
     $scope.documentList = [];
     $scope.activeDocument = {};
     $scope.signaturePresent = false;
-    $scope.signatureCreatedDate = moment().format(DATE_FORMAT_STRING);
 
     documentRepository.byUser.query({userId:employeeId}).$promise.then(function(response){
         $scope.documentList = _.sortBy(response, function(elm){return elm.id;}).reverse();
@@ -736,14 +735,11 @@ var employerViewDocument = employersController.controller('employerViewDocument'
     $scope.viewExistingLetter = function(doc){
       $scope.activeDocument = doc;
       if (doc.signature && doc.signature.signature){
-        $scope.signatureImage = doc.signature.signature;
         $scope.signaturePresent = true;
-        $scope.signatureCreatedDate = moment(doc.signature.created_at).format(DATE_FORMAT_STRING);
-      }
-      else{
-        $scope.signatureImage = null;
+        $scope.signatureId = doc.signature.id;
+      } else {
         $scope.signaturePresent = false;
-        $scope.signatureCreatedDate = null;
+        $scope.signatureId = null;
       }
     };
 

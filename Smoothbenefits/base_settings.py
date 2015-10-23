@@ -248,6 +248,7 @@ PIPELINE_JS = {
             'js/directives/CompanyInfoEditor.js',
             'js/directives/benefit_election/CommuterElection.js',
             'js/directives/benefit_election/ExtraBenefitElection.js',
+            'js/directives/SignaturePicker.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
@@ -295,7 +296,8 @@ PIPELINE_JS = {
             'js/services/Employee1095CService.js', 
             'js/services/AgeRangeService.js',
             'js/services/EmployeeBenefitsAvailabilityService.js',
-            'js/services/TemplateService.js'
+            'js/services/TemplateService.js',
+            'js/services/SignatureService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }
