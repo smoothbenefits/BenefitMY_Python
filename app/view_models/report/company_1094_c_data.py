@@ -33,6 +33,9 @@ class Company1094CData(object):
 
         self.monthly_info = []
         for period in periods:
+            if not period:
+                continue
+            
             monthly_data = next((datum for datum in monthly_info if datum.period == period), None)
             monthly_view_model = Company1094CMonthlyData(monthly_data, period)
             self.monthly_info.append(monthly_view_model)
