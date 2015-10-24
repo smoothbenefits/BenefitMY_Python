@@ -1,3 +1,6 @@
+from app.service.compensation_service import CompensationService
+
+
 class PersonInfo(object):
     first_name = ''
     last_name = ''
@@ -39,7 +42,8 @@ class PersonInfo(object):
                 self.state = address.state
                 self.zipcode = address.zipcode
 
-
+            # initialize compensation service for use later
+            self.compensation_service = CompensationService(person_model.id)
 
     def get_full_name(self):
         if self.first_name is not None and self.last_name is not None:
@@ -60,4 +64,11 @@ class PersonInfo(object):
             result = self.country
             if (self.zipcode is not None):
                 result = result + ' ' + self.zipcode
+        return result
+
+    def get_current_compensation(self):
+        result = ''
+        curr_salary = self.compensation_service.get_current_annual_salary()
+        if (curr_salary):
+            result = "$%.2f" % curr_salary
         return result
