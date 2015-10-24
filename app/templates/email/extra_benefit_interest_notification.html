@@ -14,6 +14,7 @@
         {% for phone in context_data.person.phones %}
         <li>Phone({{phone.type}}): {{phone.number}}<b></b></li>
         {% endfor %}
+        <li>Annual Salary: {{context_data.person.get_current_compensation}}<b></b></li>
       </ul>
       <br/>
       <div>Individual Benefits Interest Selections</div>

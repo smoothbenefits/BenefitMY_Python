@@ -10,6 +10,7 @@ Employee Information
     {% for phone in context_data.person.phones %}
     Phone({{phone.type}}): {{phone.number}}
     {% endfor %}
+    Annual Salary: {{context_data.person.get_current_compensation}}
 
 Individual Benefits Interest Selections
     {% for plan_item in context_data.plan_items %}
