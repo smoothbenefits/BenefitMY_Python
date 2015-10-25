@@ -430,3 +430,44 @@ var employee1095CModalController = userControllers.controller('employee1095CModa
     };
   }
 ]);
+
+var Company1094CModalController = userControllers.controller('Company1094CModalController', [
+  '$scope',
+  '$modal',
+  '$modalInstance',
+  'Company1094CService',
+  'CompanyId',
+  'EligibilityCertification',
+  'Company1094CData',
+  function($scope,
+           $modal,
+           $modalInstance,
+           Company1094CService,
+           CompanyId,
+           EligibilityCertification,
+           Company1094CData) {
+
+    var personId = null;
+
+    $scope.sorted1094CData = Company1094CData;
+    $scope.certifications = EligibilityCertification;
+
+    $scope.booleans = {
+      "TRUE": true,
+      "FALSE": false
+    };
+
+    $scope.save = function() {
+      Company1094CService.Save1094CWithCompany(CompanyId, $scope.sorted1094CData)
+      .then(function(savedResponse) {
+        $modalInstance.close(savedResponse);
+      }, function(errorResponse) {
+        alert('Saving employee safe harbor code failed. Error: ' + errorResponse);
+      });
+    };
+
+    $scope.cancel = function() {
+      $modalInstance.dismiss("cancelled");
+    };
+  }
+]);

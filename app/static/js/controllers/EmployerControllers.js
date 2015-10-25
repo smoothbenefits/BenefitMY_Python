@@ -132,6 +132,10 @@ var employerHome = employersController.controller('employerHome',
     {
       $location.path('/admin/benefit/election/'+companyId);
     }
+
+    $scope.viewAcaReports = function(companyId) {
+      $state.go('aca_report', {company_id: companyId});
+    };
   }
 ]);
 
@@ -556,7 +560,7 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
           function(elm){return elm.id;}
         ).reverse();
     });
-      
+
     $scope.modifyExistingTemplate = function(template){
       $state.go('document_templates_edit', {company_id:$scope.companyId, template_id: template.id});
     };
@@ -618,10 +622,6 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
     };
   }
 ]);
-
-
-
-
 
 var employerCreateDocument = employersController.controller('employerCreateDocument',
                                                           ['$scope',
@@ -1344,5 +1344,48 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
     }, function(errorResponse){
       alert(errorResponse.content);
     });
+  }
+]);
+
+var employerAcaReport = employersController.controller('employerAcaReport', [
+  '$scope', '$state', '$stateParams', '$modal', '$controller', 'Company1094CService',
+  function($scope, $state, $stateParams, $modal, $controller, Company1094CService) {
+    $controller('modalMessageControllerBase', {$scope: $scope});
+
+    var companyId = $stateParams.company_id;
+
+    Company1094CService.Get1094CEligibilityCertification().then(function(data) {
+      $scope.eligibilityCertification = data;
+    });
+
+    Company1094CService.Get1094CByCompany(companyId).then(function(data) {
+      $scope.sorted1094CData = data;
+    });
+
+    $scope.getCompany1094CUrl = function() {
+      return Company1094CService.GetCompany1094CUrl(companyId);
+    };
+
+    $scope.edit1094CInfo = function() {
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/aca/modal_company_1094_c.html',
+        controller: 'Company1094CModalController',
+        size: 'lg',
+        backdrop: 'static',
+        resolve: {
+          CompanyId: function() { return companyId; },
+          EligibilityCertification: function() { return $scope.eligibilityCertification; },
+          Company1094CData: function() {
+            return angular.copy($scope.sorted1094CData);
+          }
+        }
+      });
+
+      modalInstance.result.then(function(saved1094CData) {
+        $scope.sorted1094CData = saved1094CData;
+        $scope.showMessageWithOkayOnly('Success', 'Company 1094C data has been saved successfully.');
+      });
+    };
+
   }
 ]);

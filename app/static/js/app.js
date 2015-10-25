@@ -200,6 +200,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employer_dashboard.html',
                 controller: 'employerHome'
             }).
+            state('aca_report', {
+              url: '/admin/reports/aca/:company_id',
+              templateUrl: '/static/partials/aca/aca_report_summary.html',
+              controller: 'employerAcaReport'
+            }).
             state('/admin/broker/add/:company_id', {
                 url: '/admin/broker/add/:company_id',
                 templateUrl:'/static/partials/add_broker.html',
