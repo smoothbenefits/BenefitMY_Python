@@ -2191,21 +2191,22 @@ var hraBenefitsSignup = employeeControllers.controller(
         $scope.enrollBenefits = true;
 
         $scope.companyPromise.then(function(company){
-            HraService.getPlansForCompany(company.id).then(function(companyPlans) {
-                if (companyPlans.length > 0) {
-                    $scope.companyPlan = companyPlans[0];
-                }
-                else
-                {
-                    throw new Error('Did not locate active company HRA plans!');
-                }
-            });
+          HraService.getPlansForCompany(company.id).then(function(companyPlans) {
+            if (companyPlans.length > 0) {
+              $scope.companyPlan = companyPlans[0];
+            }
+            else
+            {
+              throw new Error('Did not locate active company HRA plans!');
+            }
+          });
         });
 
         $scope.companyPromise.then(function(company){
           HraService.getPersonPlanByUser(employeeId, company.id, true).then(function(personPlan) {
             $scope.personPlan = personPlan;
-            if (!personPlan.companyPlanId) {
+            // If HRA has been waived, uncheck the checkbox
+            if (personPlan.personCompanyPlanId && !personPlan.companyPlanId) {
               $scope.enrollBenefits = false;
             }
           });

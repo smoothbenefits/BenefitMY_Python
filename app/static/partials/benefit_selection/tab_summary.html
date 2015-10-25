@@ -139,7 +139,7 @@
       <span class="fa fa-times-circle-o fa-2x pull-right" ng-hide="completed('hra')"></span>
     </div>
     <div class="panel-body" collapse="!hraInfoExpanded">
-      <table class="table table-striped" ng-show="completed('hra')">
+      <table class="table table-striped" ng-show="completed('hra') && !waived('hra')">
         <thead>
           <tr>
             <th><span>Plan Name</span></th>
@@ -152,6 +152,15 @@
               <div>{{enrollments['hra'].plan_name}}</div>
             </td>
             <td>{{enrollments['hra'].description}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-striped" ng-show="completed('hra') && waived('hra')">
+        <tbody>
+          <tr>
+            <td width="180">Waived HRA benefit.
+              <a ng-click="goToState('employee_benefit_signup.hra')">Enroll now</a>?
+            </td>
           </tr>
         </tbody>
       </table>
