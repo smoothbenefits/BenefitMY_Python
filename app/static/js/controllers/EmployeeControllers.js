@@ -648,17 +648,17 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', 
-   '$stateParams', 
-   '$location', 
-   '$window', 
-   'EmploymentProfileService', 
+  ['$scope',
+   '$stateParams',
+   '$location',
+   '$window',
+   'EmploymentProfileService',
    'EmployeePreDashboardValidationService',
-  function($scope, 
-           $stateParams, 
-           $location, 
-           $window, 
-           EmploymentProfileService, 
+  function($scope,
+           $stateParams,
+           $location,
+           $window,
+           EmploymentProfileService,
            EmployeePreDashboardValidationService){
     $scope.employeeId = $stateParams.employee_id;
 
@@ -666,7 +666,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       auth_type: '',
       userId: $scope.employeeId
     };
-    
+
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
@@ -2205,15 +2205,16 @@ var hraBenefitsSignup = employeeControllers.controller(
         $scope.companyPromise.then(function(company){
           HraService.getPersonPlanByUser(employeeId, company.id, true).then(function(personPlan) {
             $scope.personPlan = personPlan;
+            if (!personPlan.companyPlanId) {
+              $scope.enrollBenefits = false;
+            }
           });
         });
 
         $scope.save = function() {
             // Save plan selection
             $scope.personPlan.companyPlanId = $scope.companyPlan.companyPlanId;
-            var savePromise = $scope.enrollBenefits ?
-                HraService.savePersonPlan($scope.personPlan, $scope.updateReason) :
-                HraService.deletePlansForUser(employeeId);
+            var savePromise = HraService.savePersonPlan($scope.personPlan, $scope.updateReason, $scope.enrollBenefits);
 
             savePromise.then(
                 function() {
