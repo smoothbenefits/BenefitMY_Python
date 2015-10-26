@@ -440,8 +440,8 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
     def _write_disability_insurance_premium_info(self,
                                                  disability_service,
                                                  user_plan,
-                                                 excelSheet, 
-                                                 row_num, 
+                                                 excelSheet,
+                                                 row_num,
                                                  col_num):
         total_premium = 0
         if (user_plan.total_premium_per_month):
@@ -463,11 +463,11 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 disability_service = DisabilityInsuranceService(company_plan)
                 col_num = self._write_disability_insurance_premium_info(disability_service,
                                                                         employee_plan,
-                                                                        excelSheet, 
-                                                                        row_num, 
+                                                                        excelSheet,
+                                                                        row_num,
                                                                         col_num)
                 col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
-            
+
             else:
                 col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
                 col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
@@ -490,8 +490,8 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 disability_service = DisabilityInsuranceService(company_plan)
                 col_num = self._write_disability_insurance_premium_info(disability_service,
                                                                         employee_plan,
-                                                                        excelSheet, 
-                                                                        row_num, 
+                                                                        excelSheet,
+                                                                        row_num,
                                                                         col_num)
                 col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
             else:
@@ -616,9 +616,14 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
             employee_plans = PersonCompanyHraPlan.objects.filter(person=employee_person.id)
             if (len(employee_plans) > 0):
                 plan = employee_plans[0]
-                col_num = self._write_field(excelSheet, row_num, col_num, plan.company_hra_plan.hra_plan.name)
-                col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
-                return col_num
+                if plan.company_hra_plan:
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.company_hra_plan.hra_plan.name)
+                    col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
+                    return col_num
+                else:
+                    col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
+                    col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
+                    return col_num
         return col_num + 4
 
     def _write_employee_commuter_info(self, employee_user_id, excelSheet, row_num, col_num):

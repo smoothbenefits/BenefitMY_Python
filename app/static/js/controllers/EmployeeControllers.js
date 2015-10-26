@@ -648,17 +648,17 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 }]);
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
-  ['$scope', 
-   '$stateParams', 
-   '$location', 
-   '$window', 
-   'EmploymentProfileService', 
+  ['$scope',
+   '$stateParams',
+   '$location',
+   '$window',
+   'EmploymentProfileService',
    'EmployeePreDashboardValidationService',
-  function($scope, 
-           $stateParams, 
-           $location, 
-           $window, 
-           EmploymentProfileService, 
+  function($scope,
+           $stateParams,
+           $location,
+           $window,
+           EmploymentProfileService,
            EmployeePreDashboardValidationService){
     $scope.employeeId = $stateParams.employee_id;
 
@@ -666,7 +666,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
       auth_type: '',
       userId: $scope.employeeId
     };
-    
+
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
       $location.path('/employee');
     },
@@ -2191,29 +2191,31 @@ var hraBenefitsSignup = employeeControllers.controller(
         $scope.enrollBenefits = true;
 
         $scope.companyPromise.then(function(company){
-            HraService.getPlansForCompany(company.id).then(function(companyPlans) {
-                if (companyPlans.length > 0) {
-                    $scope.companyPlan = companyPlans[0];
-                }
-                else
-                {
-                    throw new Error('Did not locate active company HRA plans!');
-                }
-            });
+          HraService.getPlansForCompany(company.id).then(function(companyPlans) {
+            if (companyPlans.length > 0) {
+              $scope.companyPlan = companyPlans[0];
+            }
+            else
+            {
+              throw new Error('Did not locate active company HRA plans!');
+            }
+          });
         });
 
         $scope.companyPromise.then(function(company){
           HraService.getPersonPlanByUser(employeeId, company.id, true).then(function(personPlan) {
             $scope.personPlan = personPlan;
+            // If HRA has been waived, uncheck the checkbox
+            if (personPlan.personCompanyPlanId && !personPlan.companyPlanId) {
+              $scope.enrollBenefits = false;
+            }
           });
         });
 
         $scope.save = function() {
             // Save plan selection
             $scope.personPlan.companyPlanId = $scope.companyPlan.companyPlanId;
-            var savePromise = $scope.enrollBenefits ?
-                HraService.savePersonPlan($scope.personPlan, $scope.updateReason) :
-                HraService.deletePlansForUser(employeeId);
+            var savePromise = HraService.savePersonPlan($scope.personPlan, $scope.updateReason, $scope.enrollBenefits);
 
             savePromise.then(
                 function() {
