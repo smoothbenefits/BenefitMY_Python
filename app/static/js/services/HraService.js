@@ -155,31 +155,7 @@ benefitmyService.factory('HraService',
                 return deferred.promise;
             },
 
-            deletePlansForUser: function(userId, company) {
-                var requests = [];
-
-                PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
-                    HraRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
-                    .$promise.then(function(plans) {
-                        _.each(plans, function(plan) {
-                            var deferred = $q.defer();
-                            requests.push(deferred);
-
-                            HraRepository.CompanyPersonPlanById.delete({id:plan.id})
-                            .$promise.then(function(response){
-                                deferred.resolve(response);
-                            },
-                            function(error) {
-                                deferred.reject(error);
-                            })
-                        });
-                    });
-                });
-
-                return $q.all(requests);
-            },
-
-            savePersonPlan: function(personPlanToSave, updateReason) {
+            savePersonPlan: function(personPlanToSave, updateReason, enrollBenefits) {
                 // This should be take care of 2 cases
                 // - user does not have a plan. Create one for him/her
                 // - user already has a plan. Update
@@ -190,7 +166,11 @@ benefitmyService.factory('HraService',
                 var planDomainModel = mapPersonCompanyPlanViewToDomainModel(personPlanToSave);
 
                 // "Flatten out" any nested structure for the POST to work
-                planDomainModel.company_hra_plan = planDomainModel.company_hra_plan.id;
+                if (enrollBenefits) {
+                  planDomainModel.company_hra_plan = planDomainModel.company_hra_plan.id;
+                } else {
+                  planDomainModel.company_hra_plan = null;
+                }
 
                 if (planDomainModel.id){
                     HraRepository.CompanyPersonPlanById.update({id:planDomainModel.id}, planDomainModel)

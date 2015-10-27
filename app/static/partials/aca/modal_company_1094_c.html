@@ -1,0 +1,114 @@
+<div class="modal-header">
+    <h4 class="modal-title">Company 1094-C Form</h4>
+</div>
+<div class="modal-body col-md-12">
+    <h6>Please fill out the following form to create your 1094-C form</h6>
+    <div class="row">
+      <div class="form-label">Total number of Forms 1095-C filed by and/or on behalf of ALE Member</div>
+      <div class="textbox">
+        <input type="number"
+               name="number_of_1095c"
+               class="col-md-4"
+               ng-model="sorted1094CData.member.number_of_1095c"
+               ng-required="true" />
+        <div class="form-error" ng-show="form.number_of_1095c.$dirty && form.number_of_1095c.$invalid">
+          <span ng-show="form.number_of_1095c.$error.required">This number field is required</span>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="padding-top: 15px;">
+      <div class="form-label">Is ALE Member a member of an Aggregated ALE Group?</div>
+      <div class="textbox">
+        <div class="col-md-2">
+          <input type="radio"
+                 ng-model="sorted1094CData.member.member_of_aggregated_group"
+                 ng-value="booleans.TRUE"> Yes </input>
+        </div>
+        <div class="col-md-2">
+          <input type="radio"
+                 ng-model="sorted1094CData.member.member_of_aggregated_group"
+                 ng-value="booleans.FALSE"> No </input>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="padding-top: 15px;">
+      <div class="form-label">Is this the authoritative transmittal for this ALE Member?</div>
+      <div class="textbox">
+        <div class="col-md-2">
+          <input type="radio"
+                 ng-model="sorted1094CData.member.authoritative_transmittal"
+                 ng-value="booleans.TRUE"> Yes </input>
+        </div>
+        <div class="col-md-2">
+          <input type="radio"
+                 ng-model="sorted1094CData.member.authoritative_transmittal"
+                 ng-value="booleans.FALSE"> No </input>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="padding-top: 15px;">
+      <div class="form-label">Certifications of Eligibility</div>
+      <div class="textbox">
+        <select ng-model="sorted1094CData.member.certifications_of_eligibility"
+                ng-options="c for c in certifications"></select>
+      </div>
+    </div>
+    <div class="row" style="padding-top: 15px;">
+      <table class="table table-striped horizontal">
+          <thead>
+            <tr>
+              <th></th>
+              <th ng-repeat="item in sorted1094CData.monthly_info" style="text-align:center;">{{item.period}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Minimum Essential Coverage</b> (checked indicates YES)</td>
+              <td ng-repeat = "item in sorted1094CData.monthly_info">
+                <label>
+                  <input type="checkbox" ng-model="item.minimum_essential_coverage" />
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b>Aggregated Group Indicator</b>
+              </td>
+              <td ng-repeat = "item in sorted1094CData.monthly_info">
+                  <input type="checkbox"  ng-model="item.aggregated_group" />
+              </td>
+            </tr>
+            <tr>
+              <td><b> Section 4980H Transition Relief Indicator</b></td>
+              <td ng-repeat = "item in sorted1094CData.monthly_info">
+                <input type="checkbox" ng-model="item.section_4980h_transition_relief" />
+              </td>
+            </tr>
+            <tr>
+              <td><b>Full time employee count</b></td>
+              <td ng-repeat = "item in sorted1094CData.monthly_info">
+                <input type="number"
+                       min="0"
+                       style="text-align:center;"
+                       ng-model="item.fulltime_employee_count" />
+              </td>
+            </tr>
+            <tr>
+              <td><b>Total employee count</b></td>
+              <td ng-repeat = "item in sorted1094CData.monthly_info">
+                <input type="number"
+                       min="0"
+                       style="text-align:center;"
+                       ng-model="item.total_employee_count" />
+              </td>
+            </tr>
+          </tbody>
+      </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <div class="button-group">
+        <button class="btn btn-info" ng-click="save()" ng-disabled="form.$invalid" style="width:20%;">Save</button>
+        <button class="btn btn-primary" ng-click="cancel()" style="width:20%;">Cancel</button>
+    </div>
+</div>

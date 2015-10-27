@@ -48,10 +48,18 @@ benefitmyService.factory('BenefitSummaryService',
       // Map HRA plan enrollment
       if (domainModel.hra[0] != null) {
         var domainHra = domainModel.hra[0];
-        viewModel['hra'] = {
-          "plan_name": domainHra.company_hra_plan.hra_plan.name,
-          "description": domainHra.company_hra_plan.hra_plan.description
-        };
+
+        if (domainHra.company_hra_plan) {
+          viewModel['hra'] = {
+            "plan_name": domainHra.company_hra_plan.hra_plan.name,
+            "description": domainHra.company_hra_plan.hra_plan.description,
+            "status": SELECTED
+          };
+        } else {
+          viewModel['hra'] = {
+            "status": WAIVED
+          };
+        }
       }
 
       // Map basic life insurance enrollment

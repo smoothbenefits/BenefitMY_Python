@@ -12,3 +12,9 @@ class EmploymentAuthorizationSerializer(HashPkSerializerBase):
     class Meta:
 
         model = EmploymentAuthorization
+
+
+class EmploymentAuthorizationPostSerializer(serializers.ModelSerializer):
+    class Meta:
+
+        model = EmploymentAuthorization

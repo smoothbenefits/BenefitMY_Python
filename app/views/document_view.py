@@ -153,15 +153,18 @@ class DocumentSignatureView(APIView):
         except Document.DoesNotExist:
             raise Http404
 
+    def get_signature(self, signature_id):
+        try:
+            return Signature.objects.get(pk=signature_id)
+        except Signature.DoesNotExist:
+            raise Http404
+
     @transaction.atomic
     def post(self, request, pk, format=None):
 
         document = self.get_document(pk=pk)
-        s = Signature(signature=request.DATA['signature'],
-            signature_type='sign_doc',
-            user_id=document.user.id)
-        s.save()
-        document.signature = s
+        signature = self.get_signature(request.DATA['signature_id'])
+        document.signature = signature
         document.save()
         serialized = DocumentSerializer(document)
         return Response(serialized.data)

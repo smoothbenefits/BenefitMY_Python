@@ -12,6 +12,8 @@ class PersonCompanyHraPlan(models.Model):
 
     company_hra_plan = models.ForeignKey(
         CompanyHraPlan,
+        blank=True,
+        null=True,
         related_name="person_company_hra_plan")
 
     person = models.ForeignKey(
