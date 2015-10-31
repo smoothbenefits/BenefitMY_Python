@@ -89,11 +89,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._start_new_line()
         self._set_font(10)
 
-        # Write employment type
-        employee_profile = self._get_employee_profile_by_person(person)
-        if employee_profile:
-            self._write_line([employee_profile.employment_type])
-            self._start_new_line()
+        # Write employee type and address
+        self._write_employee_meta_info(person)
 
         # Now starts writing benefit enrollments
         self._write_employee_all_health_benefits_info(user, company_id)
@@ -117,6 +114,24 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._start_new_page()
 
         return
+
+    def _write_employee_meta_info(self, person):
+        # Write employment type
+        employee_profile = self._get_employee_profile_by_person(person)
+        employee_address = self._get_address_by_person(person)
+        meta_info = []
+        width_array = []
+        if employee_profile:
+            meta_info.append(employee_profile.employment_type)
+            width_array.append(0.5)
+
+        if employee_address:
+            meta_info.append("{} {}, {} {} {}".format(employee_address.street_1, employee_address.street_2, employee_address.city, employee_address.state, employee_address.zipcode))
+            width_array.append(0.5)
+
+        if meta_info:
+            self._write_line_uniform_width(meta_info, width_array)
+            self._start_new_line()
 
     def _write_not_selected_plan(self, benefit_name):
         # Render header
@@ -464,6 +479,17 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             if (len(profiles) > 0):
                 return profiles[0]
         return None
+
+    def _get_address_by_person(self, person_model):
+        if person_model:
+            addresses = person_model.addresses.all()
+            for ads in addresses:
+                if ads.address_type == 'home':
+                    return ads
+            if len(addresses) > 0:
+                return addresses[0]
+        return None
+
 
     def _concat_strings(self, strings, delim=' '):
         result = ''
