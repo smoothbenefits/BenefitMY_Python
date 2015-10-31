@@ -34,7 +34,7 @@ support@workbenefits.me
 FROM='support@workbenefits.me'
 
 
-def onboard_email(name, company_id, to, id):
+def onboard_email(name, company_id, to_emails, id):
     try:
         company = Company.objects.get(pk=company_id)
     except Company.DoesNotExist:
@@ -44,7 +44,7 @@ def onboard_email(name, company_id, to, id):
     link = "%semployee/signup/%s" % (URL, hash_key_service.encode_key(id))
 
     c = CONTENT % (name, company.name, link)
-    send_mail(SUBJECT, c, FROM, [to], fail_silently=False)
+    send_mail(SUBJECT, c, FROM, to_emails, fail_silently=False)
 
 
 @api_view(['POST'])
@@ -59,7 +59,7 @@ def send_onboard_email(request):
         try:
             onboard_email(request.DATA['name'],
                           request.DATA['company_id'],
-                          request.DATA['email'],
+                          [request.DATA['email']],
                           p.id)
             return Response(True)
         except StandardError:
