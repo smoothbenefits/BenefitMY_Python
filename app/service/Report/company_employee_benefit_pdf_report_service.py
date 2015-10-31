@@ -149,6 +149,22 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._start_new_line()
         self._start_new_line()
 
+    def _write_beneficiaries(self, plan_name, beneficiaries):
+        if not beneficiaries:
+            return
+
+        self._write_line_uniform_width([' ', '{} Beneficiaries:'.format(plan_name)], [0.1, 0.9])
+        self._start_new_line()
+        column_width_dists = [0.1, 0.1, 0.1, 0.15, 0.15, 0.15, 0.15, 0.1]
+        self._write_line_uniform_width([' ', 'Tier', 'First Name', 'Last Name', 'Relationship', 'Email', 'Phone', 'Percentage'], column_width_dists)
+        self._draw_line(56)
+        for beneficiary in beneficiaries:
+            self._write_line_uniform_width([' ', '{}'.format(beneficiary.tier), beneficiary.first_name, beneficiary.last_name, beneficiary.relationship, beneficiary.email, beneficiary.phone, beneficiary.percentage],
+                                               column_width_dists)
+
+        self._start_new_line()
+        self._start_new_line()
+
     def _write_employee_all_health_benefits_info(self, user_model, company_id):
         user_benefit_plan_options = UserCompanyBenefitPlanOption.objects.filter(user=user_model.id)
         user_benefit_waived = UserCompanyWaivedBenefit.objects.filter(user=user_model.id)
@@ -249,6 +265,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                                                column_width_dists)
                 self._start_new_line()
                 self._start_new_line()
+                beneficiaries = employee_plan.life_insurance_beneficiary.all().order_by('tier')
+                self._write_beneficiaries('Basic Life (AD&D)', beneficiaries)
             else:
                 self._write_waived_plan('Basic Life (AD&D)')
 
@@ -321,6 +339,9 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
                     self._start_new_line()
                     self._start_new_line()
+
+                    beneficiaries = plan.suppl_life_insurance_beneficiary.all().order_by('tier')
+                    self._write_beneficiaries('Suppl. Life Plan', beneficiaries)
                 else:
                     self._write_waived_plan('Supplemental Life Plan')
 
