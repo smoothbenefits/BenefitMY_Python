@@ -15,11 +15,11 @@
             </div>
             <div class="panel-body">
               <div class="radio-container">
-                <div class="col-md-6 col">
+                <div class="col-md-3 col">
                   <input type="radio" ng-model="templateType" value="Text">
                   Text
                 </div>
-                <div class="col-md-6 col">
+                <div class="col-md-3 col">
                   <input type="radio" ng-model="templateType" value="Upload">
                   Upload
                 </div>
@@ -72,8 +72,8 @@
                     max-uploads="1"
                     hide-type="true"
                     template-id="templateId"
-                    on-upload-added="onUploadAdded(uploadId)"
-                    on-upload-deleted="onUploadDeleted(uploadId)"></bmuploadmanager>
+                    on-upload-added="onUploadAdded(upload)"
+                    on-upload-deleted="onUploadDeleted(upload)"></bmuploadmanager>
                 </div>
                 <div class="submit-box">
                     <button ng-if="!templateId" ng-click="createTemplate()"

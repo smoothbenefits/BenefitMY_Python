@@ -7,7 +7,6 @@ var employerHome = employersController.controller('employerHome',
   'employerRepository',
   'currentUser',
   'clientListRepository',
-  'documentRepository',
   'TemplateService',
   'benefitListRepository',
   'countRepository',
@@ -19,7 +18,6 @@ var employerHome = employersController.controller('employerHome',
             employerRepository,
             currentUser,
             clientListRepository,
-            documentRepository,
             TemplateService,
             benefitListRepository,
             countRepository,
@@ -590,13 +588,6 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
       .then(function(template){
         $scope.template = template;
 
-        // TODO: 
-        // This should be moved into template service as the 
-        // domain to view model mapping
-        if ($scope.template && $scope.template.upload) {
-            $scope.template.upload = $scope.template.upload.id;
-        }
-
         $scope.templateType = $scope.template.upload 
                             ? templateTypes.Upload
                             : templateTypes.Text;
@@ -607,11 +598,11 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
       $scope.template = {};
     };
 
-    $scope.onUploadAdded = function(uploadId) {
-        $scope.template.upload = uploadId;
+    $scope.onUploadAdded = function(upload) {
+        $scope.template.upload = upload;
     };
 
-    $scope.onUploadDeleted = function(uploadId) {
+    $scope.onUploadDeleted = function(upload) {
         $scope.template.upload = null;
     };
 
@@ -682,12 +673,12 @@ var employerCreateDocument = employersController.controller('employerCreateDocum
                                                           ['$scope',
                                                           '$location',
                                                           '$stateParams',
-                                                          'documentRepository',
+                                                          'DocumentService',
                                                           'TemplateService',
   function employerCreateDocument($scope,
                                 $location,
                                 $stateParams,
-                                documentRepository,
+                                DocumentService,
                                 TemplateService){
     $scope.companyId = $stateParams.company_id;
     var employeeId = $stateParams.employee_id;
@@ -714,9 +705,31 @@ var employerCreateDocument = employersController.controller('employerCreateDocum
       }
     };
 
+    $scope.inTextMode = function() {
+        return $scope.selectedTemplate 
+            && $scope.selectedTemplate.contentType == TemplateService.contentTypes.text;
+    };
+
+    $scope.inUploadMode = function() {
+        return $scope.selectedTemplate 
+            && $scope.selectedTemplate.contentType == TemplateService.contentTypes.upload;
+    };
+
+    $scope.getTemplateUploadsForDisplay = function() {
+        var uploads = [];
+        if ($scope.selectedTemplate && $scope.selectedTemplate.upload) {
+            uploads.push($scope.selectedTemplate.upload);
+        }
+        
+        return uploads;
+    };
+
     $scope.doCreateLetter = function()
     {
       var curTemplate = $scope.selectedTemplate;
+      $scope.newDoc.upload = curTemplate.upload
+                            ? curTemplate.upload.id
+                            : null;
       $scope.newDoc.fields = curTemplate.fields;
       _.each($scope.newDoc.fields, function(field){
         if(!field.value){
@@ -727,8 +740,9 @@ var employerCreateDocument = employersController.controller('employerCreateDocum
         }
       });
       $scope.newDoc.document_type = $scope.documentType;
-      var postObj={company:$scope.companyId, user:employeeId, template:curTemplate.id, signature:'', document:$scope.newDoc};
-      documentRepository.create.save(postObj, function(response){
+
+      DocumentService.createDocument($scope.companyId, employeeId, curTemplate.id, '', $scope.newDoc)
+      .then(function(response){
         $location.search({type:$scope.documentType}).path('/admin/documents/view/' + $scope.companyId + '/' + employeeId);
       }, function(errResponse){
         $scope.createFailed = true;
@@ -741,24 +755,25 @@ var employerViewDocument = employersController.controller('employerViewDocument'
                                                           '$location',
                                                           '$state',
                                                           '$stateParams',
-                                                          'documentRepository',
+                                                          'DocumentService',
   function employerViewDocument($scope,
                               $location,
                               $state,
                               $stateParams,
-                              documentRepository){
+                              DocumentService){
     $scope.companyId = $stateParams.company_id;
     var employeeId = $stateParams.employee_id;
     $scope.documentList = [];
     $scope.activeDocument = {};
     $scope.signaturePresent = false;
 
-    documentRepository.byUser.query({userId:employeeId}).$promise.then(function(response){
-        $scope.documentList = _.sortBy(response, function(elm){return elm.id;}).reverse();
-      });
+    DocumentService.getAllDocumentsForUser(employeeId)
+        .then(function(response){
+            $scope.documentList = _.sortBy(response, function(elm){return elm.id;}).reverse();
+        });
 
     $scope.deleteExistingLetter = function(doc){
-      documentRepository.getById.delete({id: doc.id}).$promise
+      DocumentService.deleteDocumentById(doc.id)
         .then(function(response){
           alert("Deleted document " + doc.name);
           $state.reload();
@@ -767,17 +782,7 @@ var employerViewDocument = employersController.controller('employerViewDocument'
 
     $scope.updateExistingLetter = function(){
       var doc = $scope.activeDocument;
-      var request = {
-        "company": doc.company.id,
-        "user": doc.user.id,
-        "signature": doc.signature,
-        "document": {
-          "name": doc.name,
-          "content": doc.content
-        }
-      };
-
-      documentRepository.updateById.update({id:doc.id}, request).$promise
+      DocumentService.updateDocumentById(doc.id, doc)
         .then(function(response){
           alert("Successful update " + response.name);
         });
@@ -786,6 +791,25 @@ var employerViewDocument = employersController.controller('employerViewDocument'
     $scope.anyActiveDocument = function(){
       return typeof $scope.activeDocument.name !== 'undefined';
     }
+
+    $scope.inTextMode = function() {
+        return $scope.activeDocument 
+            && $scope.activeDocument.contentType == DocumentService.contentTypes.text;
+    };
+
+    $scope.inUploadMode = function() {
+        return $scope.activeDocument
+            && $scope.activeDocument.contentType == DocumentService.contentTypes.upload;
+    };
+
+    $scope.getDocumentUploadsForDisplay = function() {
+        var uploads = [];
+        if ($scope.activeDocument && $scope.activeDocument.upload) {
+            uploads.push($scope.activeDocument.upload);
+        }
+        
+        return uploads;
+    };
 
     $scope.viewExistingLetter = function(doc){
       $scope.activeDocument = doc;

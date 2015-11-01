@@ -35,18 +35,24 @@
       <span class="panel-title">{{activeDocument.name}}</span>
     </div>
     <div class="panel-body">
-      <textarea
-      class="col-md-12"
-      name="document_content"
-      ng-model="activeDocument.content"
-      wrap="true"
-      cols="100"
-      rows="10">{{activeDocument.content}}</textarea>
-      <div class="update-button col-md-12">
-        <button type="button"
-        ng-disabled="signaturePresent"
-        class="btn green"
-        ng-click="updateExistingLetter()">Update</button>
+      <div ng-if="inTextMode()">
+          <textarea
+          class="col-md-12"
+          name="document_content"
+          ng-model="activeDocument.content"
+          wrap="true"
+          cols="100"
+          rows="10">{{activeDocument.content}}</textarea>
+          <div class="update-button col-md-12">
+            <button type="button"
+            ng-disabled="signaturePresent"
+            class="btn green"
+            ng-click="updateExistingLetter()">Update</button>
+          </div>
+      </div>
+      <div ng-if="inUploadMode()">
+        <div class="form-label">Document File</div>
+        <bmuploadviewer view-title="" upload-list="{{getDocumentUploadsForDisplay()}}"></bmuploadviewer>
       </div>
     </div>
     <bm-signature-picker signature-id="signatureId" view-mode></bm-signature-picker>

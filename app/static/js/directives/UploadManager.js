@@ -45,7 +45,7 @@ BenefitMyApp.directive('bmuploadmanager',
                     $scope.uploadManager.uploadedFiles = _.without($scope.uploadManager.uploadedFiles, file);
                     $scope.uploadManager.deleteSuccess = true;
                     if ('onUploadDeleted' in $attrs) {
-                        $scope.onUploadDeleted({uploadId: file.id});
+                        $scope.onUploadDeleted({upload: file});
                     }
                     $timeout(function(){
                         $scope.uploadManager.deleteSuccess = false;
@@ -56,7 +56,7 @@ BenefitMyApp.directive('bmuploadmanager',
                       $scope.uploadManager.uploadedFiles = _.without($scope.uploadManager.uploadedFiles, file);
                       $scope.uploadManager.deleteSuccess = true;
                       if ('onUploadDeleted' in $attrs) {
-                        $scope.onUploadDeleted({uploadId: file.id});
+                        $scope.onUploadDeleted({upload: file});
                       }
                       $timeout(function(){
                         $scope.uploadManager.deleteSuccess = false;
@@ -75,7 +75,7 @@ BenefitMyApp.directive('bmuploadmanager',
                       $scope.uploadManager.inProgress = undefined;
                       $scope.uploadManager.uploadedFiles.unshift(fileUploaded);
                       if ('onUploadAdded' in $attrs) {
-                        $scope.onUploadAdded({uploadId: fileUploaded.id});
+                        $scope.onUploadAdded({upload: fileUploaded});
                       }
                       if($attrs.featureId){
                         UploadService.SetUploadApplicationFeature(fileUploaded.id, uploadType, $attrs.featureId)
@@ -122,9 +122,6 @@ BenefitMyApp.directive('bmuploadmanager',
                         $scope.uploadManager.uploadedFiles.push(template.upload);
                     }
                   });
-            }
-            else if ('documentId' in $attrs) {
-
             }
             else {
               UploadService.getAllUploadsByCurrentUser().then(function(resp){

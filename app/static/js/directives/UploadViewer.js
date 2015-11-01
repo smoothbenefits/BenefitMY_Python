@@ -19,7 +19,18 @@ BenefitMyApp.directive('bmuploadviewer',
               files: []
             };
 
-            if($attrs.featureId && $attrs.uploadType){
+            if ('uploadList' in $attrs) {
+                $attrs.$observe('uploadList', function(uploadList) {
+                    if ($attrs.uploadList && $attrs.uploadList.length > 0) {
+                        // Have specified upload list, then just display those
+                        $scope.uploadManager.uploadedFiles = JSON.parse($attrs.uploadList);
+                    }
+                    else {
+                        $scope.uploadManager.uploadedFiles = [];
+                    }
+                });
+            }
+            else if($attrs.featureId && $attrs.uploadType){
               $attrs.$observe('featureId', function(){
                 UploadService.getUploadsByFeature($attrs.featureId, $attrs.uploadType)
                 .then(function(resp){

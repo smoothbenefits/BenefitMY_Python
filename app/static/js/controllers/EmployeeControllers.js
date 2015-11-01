@@ -204,6 +204,25 @@ var viewDocument = employeeControllers.controller('viewDocument',
       }
     });
 
+    $scope.inTextMode = function() {
+        return $scope.document 
+            && $scope.document.contentType == DocumentService.contentTypes.text;
+    };
+
+    $scope.inUploadMode = function() {
+        return $scope.document
+            && $scope.document.contentType == DocumentService.contentTypes.upload;
+    };
+
+    $scope.getDocumentUploadsForDisplay = function() {
+        var uploads = [];
+        if ($scope.document && $scope.document.upload) {
+            uploads.push($scope.document.upload);
+        }
+        
+        return uploads;
+    };
+
     $scope.signDocument = function(signature){
         DocumentService.signUserDocument($scope.document.id, signature.id)
         .then(function(successResponse){

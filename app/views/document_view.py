@@ -131,7 +131,7 @@ def documents(request):
                      name=request.DATA['document']['name'],
                      signature=s,
                      content=request.DATA['document']['content'],
-                     upload=request.DATA['document']['upload']
+                     upload_id=request.DATA['document']['upload']
                      )
     else:
         d = Document(company_id=request.DATA['company'],
@@ -139,7 +139,7 @@ def documents(request):
                      name=request.DATA['document']['name'],
                      content=_generate_content(request.DATA['template'],
                                                request.DATA['document']['fields']),
-                     upload=request.DATA['upload'],
+                     upload_id=request.DATA['document']['upload'],
                      signature=s
                      )
 

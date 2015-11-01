@@ -13,37 +13,42 @@
   <div class="form-holder">
     <form name="form">
 
-      <div class="form-label">Document Name*</div>
-      <div class="textbox">
-        <input type="text"
-        ng-required="true"
-        ng-model="newDoc.name"
-        name="document_name">
-      </div>
+        <div class="form-label">Document Name*</div>
+        <div class="textbox">
+            <input type="text"
+            ng-required="true"
+            ng-model="newDoc.name"
+            name="document_name">
+        </div>
 
-      <div class="form-label">Select Template</div>
-      <div class="select-box">
-        <select name="templateSelect"
-        ng-required="true"
-        ng-options="template.name for template in templateArray"
-        ng-model="selectedTemplate"
-        class="form-control">
-      </select>
-    </div>
+        <div class="form-label">Select Template</div>
+        <div class="select-box">
+            <select name="templateSelect"
+            ng-required="true"
+            ng-options="template.name for template in templateArray"
+            ng-model="selectedTemplate"
+            class="form-control">
+            </select>
+        </div>
 
-    <div ng-repeat="field in getTemplateFields(selectedTemplate)">
-      <div class="form-label">{{field.key}}</div>
-      <div class="textbox">
-        <input type="text"
-        ng-required="true"
-        ng-model="field.value"
-        name="field_{{field.key}}">
-      </div>
-    </div>
+        <div ng-repeat="field in getTemplateFields(selectedTemplate)" ng-if="inTextMode()">
+            <div class="form-label">{{field.key}}</div>
+            <div class="textbox">
+                <input type="text"
+                ng-required="true"
+                ng-model="field.value"
+                name="field_{{field.key}}">
+            </div>
+        </div>
 
-    <div class="submit-box">
-      <button ng-click="doCreateLetter()" class="btn green" ng-disabled="form.$invalid">Create Letter</button>
-    </div>
+        <div ng-if="inUploadMode()">
+            <div class="form-label">Document File</div>
+            <bmuploadviewer view-title="" upload-list="{{getTemplateUploadsForDisplay()}}"></bmuploadviewer>
+        </div>
+
+        <div class="submit-box">
+            <button ng-click="doCreateLetter()" class="btn green" ng-disabled="form.$invalid">Create Letter</button>
+        </div>
 
   </form>
 </div><!-- / .form-holder -->
