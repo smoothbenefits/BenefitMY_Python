@@ -576,11 +576,30 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
   function employerModifyTemplate($scope, $state, $stateParams, TemplateService){
     $scope.companyId = $stateParams.company_id;
     $scope.templateId = $stateParams.template_id;
+    
+    var templateTypes = {
+        'Text': 'Text',
+        'Upload': 'Upload'
+    };
+
+    $scope.templateType = templateTypes.Text;
+
     if($scope.templateId){
       $scope.viewTitle = 'View/Edit Template';
       TemplateService.getTemplateById($scope.templateId)
       .then(function(template){
         $scope.template = template;
+
+        // TODO: 
+        // This should be moved into template service as the 
+        // domain to view model mapping
+        if ($scope.template && $scope.template.upload) {
+            $scope.template.upload = $scope.template.upload.id;
+        }
+
+        $scope.templateType = $scope.template.upload 
+                            ? templateTypes.Upload
+                            : templateTypes.Text;
       });
     }
     else{
@@ -588,13 +607,45 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
       $scope.template = {};
     };
 
+    $scope.onUploadAdded = function(uploadId) {
+        $scope.template.upload = uploadId;
+    };
+
+    $scope.onUploadDeleted = function(uploadId) {
+        $scope.template.upload = null;
+    };
+
+    $scope.inTextMode = function() {
+        return $scope.templateType == templateTypes.Text;
+    };
+
+    $scope.inUploadMode = function() {
+        return $scope.templateType == templateTypes.Upload;
+    };
+
+    $scope.hasCompleteData = function() {
+        return $scope.template
+            && $scope.template.name
+            && ($scope.template.upload 
+                || $scope.template.content);
+    };
+
+    var cleanTemplateForSave = function() {
+        if ($scope.inTextMode()) {
+            $scope.template.upload = null;
+        } else if ($scope.inUploadMode()) {
+            $scope.template.content = null;
+        }
+    };
 
     $scope.saveTemplateChanges = function(){
+      cleanTemplateForSave();
       $scope.template.id = $scope.templateId;
       TemplateService.updateTemplate($scope.companyId, $scope.template)
       .then(function(savedTemplate){
         $scope.template = savedTemplate;
         alert('Template Saved');
+        $scope.goBack();
       }, function(errorResponse){
         alert('Template save failure with reason: ' + errorResponse);
       });
@@ -605,8 +656,12 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
     };
 
     $scope.createTemplate = function(){
-      if($scope.template.name && $scope.template.content)
+      if($scope.template.name 
+         && ($scope.template.content
+             || $scope.template.upload))
       {
+        cleanTemplateForSave();
+        
         TemplateService.createNewTemplate($scope.companyId, $scope.template)
         .then(function(savedTemplate){
           $scope.template = savedTemplate;
