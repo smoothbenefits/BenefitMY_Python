@@ -162,9 +162,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
       // Commuter
       CommuterService.getPersonPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(response){
-        $scope.commuterPlan = response;
-        $scope.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.commuterPlan);
-        $scope.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.commuterPlan);
+        if(response){
+          $scope.commuterPlan = response;
+          $scope.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.commuterPlan);
+          $scope.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.commuterPlan);
+        }
       });
 
     });
