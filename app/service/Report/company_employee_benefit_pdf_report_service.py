@@ -149,6 +149,12 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._start_new_line()
         self._start_new_line()
 
+    def _get_beneficiary_tier(self, tier_number):
+        if tier_number == '1':
+            return 'Primary'
+        else:
+            return 'Contingent'
+
     def _write_beneficiaries(self, plan_name, beneficiaries):
         if not beneficiaries:
             return
@@ -159,7 +165,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._write_line_uniform_width([' ', 'Tier', 'First Name', 'Last Name', 'Relationship', 'Email', 'Phone', 'Percentage'], column_width_dists)
         self._draw_line(56)
         for beneficiary in beneficiaries:
-            self._write_line_uniform_width([' ', '{}'.format(beneficiary.tier), beneficiary.first_name, beneficiary.last_name, beneficiary.relationship, beneficiary.email, beneficiary.phone, beneficiary.percentage],
+            self._write_line_uniform_width([' ', '{}'.format(self._get_beneficiary_tier(beneficiary.tier)), beneficiary.first_name, beneficiary.last_name, beneficiary.relationship, beneficiary.email, beneficiary.phone, beneficiary.percentage],
                                                column_width_dists)
 
         self._start_new_line()
