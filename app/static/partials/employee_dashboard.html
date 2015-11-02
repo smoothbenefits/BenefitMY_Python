@@ -84,7 +84,7 @@
         </tr>
       </tbody>
     </table>
-    <table class="table table-striped" ng-show="hraPlan && !hraPlan.planName">
+    <table class="table table-striped" ng-show="hraPlan && hraPlan.waived">
       <thead>
         <tr>
           <th><span>HRA Election</span></th>
@@ -96,7 +96,7 @@
         </tr>
       </tbody>
     </table>
-    <table class="table table-striped" ng-show="hraPlan && hraPlan.planName">
+    <table class="table table-striped" ng-show="hraPlan && !hraPlan.waived">
       <thead>
         <tr>
           <th><span>Plan Name</span></th>

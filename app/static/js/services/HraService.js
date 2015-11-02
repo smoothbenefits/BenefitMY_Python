@@ -31,7 +31,7 @@ benefitmyService.factory('HraService',
         var mapPersonCompanyPlanDomainToViewModel = function(personCompanyPlanDomainModel) {
             var viewModel = personCompanyPlanDomainModel.company_hra_plan ?
                 mapCompanyPlanDomainToViewModel(personCompanyPlanDomainModel.company_hra_plan) :
-                {};
+                {waived:true};
 
             viewModel.personCompanyPlanId = personCompanyPlanDomainModel.id;
             viewModel.planOwner = personCompanyPlanDomainModel.person;
