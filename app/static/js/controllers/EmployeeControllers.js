@@ -1229,8 +1229,12 @@ var healthBenefitsSignup = employeeControllers.controller(
         });
 
         $scope.preSelectEmployee = function(selectedBenefitPlan) {
-          var self = _.findWhere(selectedBenefitPlan.eligibleMemberCombo.familyList, {relationship: 'self'});
-          self.selected = true;
+          if (selectedBenefitPlan && 
+              selectedBenefitPlan.eligibleMemberCombo && 
+              selectedBenefitPlan.eligibleMemberCombo.familyList){
+            var self = _.findWhere(selectedBenefitPlan.eligibleMemberCombo.familyList, {relationship: 'self'});
+            self.selected = true;
+          }
         };
 
         $scope.memberSelected = function(selectedBenefitFamily, member){
