@@ -155,7 +155,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         self._write_line_uniform_width([' ', '{} Beneficiaries:'.format(plan_name)], [0.1, 0.9])
         self._start_new_line()
-        column_width_dists = [0.1, 0.1, 0.1, 0.15, 0.15, 0.15, 0.15, 0.1]
+        column_width_dists = [0.1, 0.1, 0.1, 0.1, 0.15, 0.2, 0.15, 0.1]
         self._write_line_uniform_width([' ', 'Tier', 'First Name', 'Last Name', 'Relationship', 'Email', 'Phone', 'Percentage'], column_width_dists)
         self._draw_line(56)
         for beneficiary in beneficiaries:
@@ -265,6 +265,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                                                column_width_dists)
                 self._start_new_line()
                 self._start_new_line()
+                print employee_plan.id
                 beneficiaries = employee_plan.life_insurance_beneficiary.all().order_by('tier')
                 self._write_beneficiaries('Basic Life (AD&D)', beneficiaries)
             else:
