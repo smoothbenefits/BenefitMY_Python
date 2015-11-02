@@ -271,7 +271,6 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                                                column_width_dists)
                 self._start_new_line()
                 self._start_new_line()
-                print employee_plan.id
                 beneficiaries = employee_plan.life_insurance_beneficiary.all().order_by('tier')
                 self._write_beneficiaries('Basic Life (AD&D)', beneficiaries)
             else:
