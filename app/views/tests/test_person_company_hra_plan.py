@@ -6,7 +6,7 @@ from view_test_base import ViewTestBase
 class PersonCompanyHraPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['46_hra_plan', '47_company_hra_plan', '48_person_company_hra_plan',
-                '49_period_definition', '10_company', '24_person', '23_auth_user', 
+                '49_period_definition', '10_company', '24_person', '23_auth_user',
                 'sys_benefit_update_reason', 'sys_benefit_update_reason_category']
 
     def test_get_person_company_hra_plan_by_person(self):
@@ -108,5 +108,40 @@ class PersonCompanyHraPlanTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(result['person'], self.normalize_key(3))
         self.assertEqual(result['company_hra_plan']['id'], self.normalize_key(2))
+        self.assertEqual(result['record_reason']['id'], self.normalize_key(1))
+        self.assertIsNone(result['record_reason_note'])
+
+    def test_waive_person_company_hra_plan(self):
+        post_data = {
+          "company_hra_plan": None,
+          "person": 3,
+          "record_reason": self.normalize_key(1)
+        }
+
+        response = self.client.post(reverse('person_company_hra_plan_api',
+                                            kwargs={'pk': self.normalize_key(3)}),
+                                            data=json.dumps(post_data),
+                                            content_type='application/json')
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 201)
+
+        response = self.client.get(reverse('person_company_hra_plan_api',
+                                           kwargs={'pk': self.normalize_key(3)}))
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+
+        result = json.loads(response.content)
+        self.assertEqual(type(result), dict)
+        self.assertEqual(result['person'], self.normalize_key(3))
+
+        key = result['id']
+        response = self.client.get(reverse('person_company_hra_plan_api',
+                                           kwargs={'pk': key}))
+        result = json.loads(response.content)
+        self.assertIsNotNone(response)
+        self.assertEqual(result['person'], self.normalize_key(3))
+        self.assertEqual(result['company_hra_plan'], None)
         self.assertEqual(result['record_reason']['id'], self.normalize_key(1))
         self.assertIsNone(result['record_reason_note'])

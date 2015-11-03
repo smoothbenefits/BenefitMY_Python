@@ -6,15 +6,10 @@
     <div class="form-label">Please enter the employment end date, and confirm the termination</div>
     <form name="endDateForm">
       <div class="datebox">
-        <input type="date"
-        name="end-date"
-        ng-model="terminationData.endDate"
-        required
-        min="1900-01-01"
-        placeholder="yyyy-MM-dd" />
-        <div class="form-inline-error" ng-show="endDateForm.end-date.$dirty && endDateForm.end-date.$invalid">
-          <span ng-show="endDateForm.end-date.$invalid">Please enter a valid Date</span>
-        </div>
+        <bm-date-picker model="terminationData.endDate"
+        required="true"
+        fieldname="'end-date'"
+        dirty="endDateForm.end-date.$dirty" />
       </div>
     </form>
   </div>

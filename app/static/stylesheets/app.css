@@ -158,6 +158,13 @@ th .editable-container{
 .benefit-table th div{
     padding:10px 20px;
 }
+.benefit-table td div{
+    word-wrap: break-word;
+    white-space: pre;
+}
+.fix-layout-table{
+    table-layout: fixed;
+}
 .dynamic-form .submit-box{
     padding-top: 20px;
     max-width:200px;

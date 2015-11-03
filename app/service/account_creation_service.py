@@ -334,7 +334,7 @@ class AccountCreationService(object):
                 try:
                     onboard_email("%s %s" % (user.first_name, user.last_name),
                                   account_info.company_id,
-                                  account_info.email,
+                                  [account_info.email, settings.SUPPORT_EMAIL_ADDRESS],
                                   user.id
                                   )
                 except StandardError:

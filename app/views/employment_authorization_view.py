@@ -4,8 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from app.models.employment_authorization import EmploymentAuthorization
-from app.serializers.employment_authorization_serializer import \
-    EmploymentAuthorizationSerializer
+from app.serializers.employment_authorization_serializer import (
+    EmploymentAuthorizationSerializer,
+    EmploymentAuthorizationPostSerializer)
 
 
 class EmploymentAuthorizationView(APIView):
@@ -25,7 +26,7 @@ class EmploymentAuthorizationView(APIView):
         request.DATA['user'] = pk
         try:
             ea = EmploymentAuthorization.objects.get(user=pk)
-            serializer = EmploymentAuthorizationSerializer(ea,
+            serializer = EmploymentAuthorizationPostSerializer(ea,
                                                            data=request.DATA)
             if serializer.is_valid():
                 serializer.save()
@@ -33,7 +34,7 @@ class EmploymentAuthorizationView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except EmploymentAuthorization.DoesNotExist:
-            serializer = EmploymentAuthorizationSerializer(data=request.DATA)
+            serializer = EmploymentAuthorizationPostSerializer(data=request.DATA)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)

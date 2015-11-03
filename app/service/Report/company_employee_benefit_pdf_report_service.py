@@ -254,12 +254,15 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 self._draw_line()
 
                 plan = employee_plans[0]
-                self._write_line_uniform_width([
-                    plan.company_hra_plan.hra_plan.name,
-                    plan.company_hra_plan.hra_plan.description])
+                if plan.company_hra_plan:
+                    self._write_line_uniform_width([
+                        plan.company_hra_plan.hra_plan.name,
+                        plan.company_hra_plan.hra_plan.description])
 
-                self._start_new_line()
-                self._start_new_line()
+                    self._start_new_line()
+                    self._start_new_line()
+                else:
+                    self._write_waived_plan('HRA Plan')
 
         if not plan_selected and company_plans:
             self._write_not_selected_plan('HRA Plan')

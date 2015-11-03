@@ -30,7 +30,7 @@ class Company1094CTestCase(TestCase, ViewTestBase):
         self.assertEqual(result[0]['fulltime_employee_count'], 65)
         self.assertEqual(result[0]['total_employee_count'], 100)
         self.assertEqual(result[0]['aggregated_group'], True)
-        self.assertEqual(result[0]['section_4980h_transition_relief'], False)
+        self.assertEqual(result[0]['section_4980h_transition_relief'], '1A')
         self.assertEqual(result[0]['period'], 'All 12 Months')
 
     def test_get_company_1094_c_empty(self):
@@ -65,7 +65,7 @@ class Company1094CTestCase(TestCase, ViewTestBase):
             'fulltime_employee_count': 65,
             'total_employee_count': 100,
             'aggregated_group': True,
-            'section_4980h_transition_relief': False
+            'section_4980h_transition_relief': '1A'
           }]
         }
 
