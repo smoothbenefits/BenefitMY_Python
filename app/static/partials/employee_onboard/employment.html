@@ -2,9 +2,6 @@
   <span>Employee Onboard</span>
 </div>
 
-<script type="text/javascript" src="/static/js/flashcanvas.js"></script>
-<script src="/static/js/jSignature.min.js"></script>
-
 <div class="content-header">
   <h1>Employee Onboard</h1>
   <span class="general-info">WorkBenefitsMe works with your company to ensure all of employee information is collected from you</span>
@@ -26,10 +23,6 @@
         <a href="#/employee/onboard/tax/{{employeeId}}" class="list-group-item">
           <h4 class="list-group-item-heading">Tax information (W-4)</h4>
           <p class="list-group-item-text">Information about your W-4 and state tax withholding form</p>
-        </a>
-        <a href="#/employee/onboard/complete/{{employeeId}}" class="list-group-item">
-          <h4 class="list-group-item-heading">Term and Signature</h4>
-          <p class="list-group-item-text">Please acknowledge the information by providing us your signature</p>
         </a>
       </div>
     </div>
@@ -116,44 +109,23 @@
             <bmuploadmanager upload-type="I9"></bmuploadmanager>
           </div>
 
-          <div class="signature-container" ng-show="employee.auth_type">
-            <div class="panel">
-              <div class="panel-heading">
-                <span class="panel-title">Please sign below</span>
+          <div ng-if="employee.auth_type">
+              <div class="inner-td-div">
+                  <input type="checkbox"
+                  name="downloadI_9"
+                  id="downloadI_9"
+                  ng-model="employee.downloadI9"
+                  ng-change="openI9File()"/>
+                  <a id="i9doclink"
+                  target="_blank"
+                  href="/static/documents/i-9.pdf"
+                  ng-click="employee.downloadI9 = true">
+                  Click to download I-9 and acknowledge you have read the entire I-9 form
+                  </a>
               </div>
-              <div class="panel-body">
-                <div id="auth_signature" class="signature-pad"></div>
-              </div>
-            </div>
-            <div class="inner-td-div">
-              <input type="checkbox"
-              name="downloadI_9"
-              id="downloadI_9"
-              ng-model="employee.downloadI9"
-              ng-change="openI9File()"/>
-              <a id="i9doclink"
-              target="_blank"
-              href="/static/documents/i-9.pdf"
-              ng-click="employee.downloadI9 = true">
-              Click to download I-9 and acknowledge you have read the entire I-9 form
-            </a>
+
+              <bm-signature-picker user-id="employeeId" on-confirm-sign="signDocument(resultSignature)" sign-button-text="signButtonText" allow-sign-predicate="allowProceedWithSign()"></bm-signature-picker>
           </div>
-          <div class="submit-box">
-            <div class="row">
-              <div class="col-sm-6">
-                <button ng-click="clearSignature()" class="btn green">
-                  Reset
-                </button>
-              </div>
-              <div class="col-sm-6">
-                <button ng-click="signDocument('/employee/onboard/tax/' + employeeId)" class="btn green" ng-disabled="!employee.downloadI9">
-                  Submit and Next
-                </button>
-              </div>
-            </div>
-            <input type="hidden" name="signatureHiddenData" ng-value="{{signatureImage}}"/>
-          </div>
-        </div>
       </li>
       <li>
         <div class="textbox" style="padding-top:20px;">Additional documents (e.g. passport) may be needed to verify your employment eligibility. Please confirm with your employer.</div>

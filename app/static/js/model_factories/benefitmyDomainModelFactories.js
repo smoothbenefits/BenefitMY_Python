@@ -149,10 +149,14 @@ benefitmyDomainModelFactories.factory('employmentAuthRepository', ['$resource',
     return $resource('/api/v1/users/:userId/employment_authorization/', {userId: '@userId'});
   }]);
 
-benefitmyDomainModelFactories.factory('employeeSignature', ['$resource',
+benefitmyDomainModelFactories.factory('SignatureRepository', ['$resource',
   function($resource){
-    return $resource('/api/v1/users/:userId/signature/', {userId: '@userId'});
-  }]);
+    return {
+      ById: $resource(PREFIX + 'signature/:signatureId/', {signatureId: '@signatureId'}),
+      ByUser: $resource(PREFIX + 'users/:userId/signature/', {userId: '@userId'})
+    }
+  }
+]);
 
 benefitmyDomainModelFactories.factory('countRepository', ['$resource',
   function($resource){
@@ -524,6 +528,15 @@ benefitmyDomainModelFactories.factory('Company1095CDataRepository', ['$resource'
     return {
       ByCompany: $resource(PREFIX + 'companies/:comp_id/1095_c', {comp_id:'@comp_id'}),
       Periods: $resource(PREFIX + '1095_c_periods')
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('Company1094CDataRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'companies/:comp_id/1094_c', {comp_id: '@comp_id'}),
+      EligibilityCertification: $resource(PREFIX + '1094_c_certificiations')
     }
   }
 ]);

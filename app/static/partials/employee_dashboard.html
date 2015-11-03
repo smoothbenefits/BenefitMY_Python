@@ -73,13 +73,30 @@
   <div class="table-responsive table-holder table" ng-if="hraPlan !== undefined">
     <div class="table-sub-title">Health Reimbursement Accounts (HRA)</div>
     <table class="table table-striped" ng-show="!hraPlan">
+      <thead>
+        <tr>
+          <th><span>HRA</span></th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td width="180">No active HRA plan</td>
         </tr>
       </tbody>
     </table>
-    <table class="table table-striped" ng-show="hraPlan">
+    <table class="table table-striped" ng-show="hraPlan && hraPlan.waived">
+      <thead>
+        <tr>
+          <th><span>HRA Election</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="180">Waived HRA plan</td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table table-striped" ng-show="hraPlan && !hraPlan.waived">
       <thead>
         <tr>
           <th><span>Plan Name</span></th>
