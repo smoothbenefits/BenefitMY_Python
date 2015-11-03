@@ -249,12 +249,11 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             employee_plans = PersonCompanyHraPlan.objects.filter(person=person_model.id)
             if (len(employee_plans) > 0):
                 plan_selected = True
-                # Render header
-                self._write_line_uniform_width(['HRA Plan', 'Description'])
-                self._draw_line()
-
                 plan = employee_plans[0]
                 if plan.company_hra_plan:
+                    # Render header
+                    self._write_line_uniform_width(['HRA Plan', 'Description'])
+                    self._draw_line()
                     self._write_line_uniform_width([
                         plan.company_hra_plan.hra_plan.name,
                         plan.company_hra_plan.hra_plan.description])
