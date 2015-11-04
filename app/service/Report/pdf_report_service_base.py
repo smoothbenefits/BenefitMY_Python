@@ -167,14 +167,14 @@ class PdfReportServiceBase(ReportServiceBase):
 
         return
 
-    def _draw_line(self):
+    def _draw_line(self, starting_pos = 0):
         if self._current_X > 0:
             self._start_new_line()
 
         # Draw the line through the middle (aka at half way of the height)
         # of the current text line
         self._canvas.line(
-            self._translate_X(0), \
+            self._translate_X(starting_pos), \
             self._translate_Y(self._current_Y - self._line_height / 2), \
             self._translate_X(self._write_area_width), \
             self._translate_Y(self._current_Y \
