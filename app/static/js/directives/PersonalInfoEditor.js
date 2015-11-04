@@ -4,13 +4,11 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
     '$scope',
     '$state',
     '$window',
-    'currentUser',
     'PersonService',
     function PersonalInfoEditorDirectiveController(
       $scope,
       $state,
       $window,
-      currentUser,
       PersonService) {
 
         PersonService.getSelfPersonInfo($scope.target)
@@ -28,8 +26,8 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
           PersonService.savePersonInfo($scope.person.user, $scope.person)
           .then(function(response){
             alert('Changes saved successfully');
-            if($scope.onboard){
-              $state.go('employee_family', {employeeId: $scope.curUser.id, onboard:true});
+            if($scope.onboard && $scope.editorUserId){
+              $state.go('employee_family', {employeeId: $scope.editorUserId, onboard:true});
             } else{
               $window.history.back();
             }
@@ -47,7 +45,7 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
     scope: {
     	target: '=',
       onboard: '=?',
-    	editorUserId: '=?'
+      editorUserId: '=?'
     },
     templateUrl: '/static/partials/common/directive_personal_info_edit.html',
     controller: controller
