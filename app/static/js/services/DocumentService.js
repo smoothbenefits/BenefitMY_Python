@@ -145,6 +145,20 @@ benefitmyService.factory('DocumentService',
                 return deferred.promise;
             },
 
+            getDocumentById: function(documentId) {
+                var deferred = $q.defer();
+
+                documentRepository.getById.get({id: documentId})
+                .$promise.then(function(response){
+                    deferred.resolve(mapDocumentDomainToViewModel(response));
+                },
+                function(errors) {
+                    deferred.reject(errors);
+                });
+
+                return deferred.promise;
+            },
+
             deleteDocumentById: function(documentId) {
                 var deferred = $q.defer();
 

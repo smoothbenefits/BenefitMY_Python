@@ -43,7 +43,7 @@
 
         <div ng-if="inUploadMode()">
             <div class="form-label">Document File</div>
-            <bmuploadviewer view-title="" upload-list="{{getTemplateUploadsForDisplay()}}"></bmuploadviewer>
+            <bmdocumentuploadmanager view-only-mode="true" template-id="{{selectedTemplate && selectedTemplate.id}}"></bmdocumentuploadmanager>
         </div>
 
         <div class="submit-box">

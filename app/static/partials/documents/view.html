@@ -52,7 +52,7 @@
       </div>
       <div ng-if="inUploadMode()">
         <div class="form-label">Document File</div>
-        <bmuploadviewer view-title="" upload-list="{{getDocumentUploadsForDisplay()}}"></bmuploadviewer>
+        <bmdocumentuploadmanager view-only-mode="true" document-id="{{activeDocument && activeDocument.id}}"></bmdocumentuploadmanager>
       </div>
     </div>
     <bm-signature-picker signature-id="signatureId" view-mode></bm-signature-picker>

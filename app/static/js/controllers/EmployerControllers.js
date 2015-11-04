@@ -715,15 +715,6 @@ var employerCreateDocument = employersController.controller('employerCreateDocum
             && $scope.selectedTemplate.contentType == TemplateService.contentTypes.upload;
     };
 
-    $scope.getTemplateUploadsForDisplay = function() {
-        var uploads = [];
-        if ($scope.selectedTemplate && $scope.selectedTemplate.upload) {
-            uploads.push($scope.selectedTemplate.upload);
-        }
-        
-        return uploads;
-    };
-
     $scope.doCreateLetter = function()
     {
       var curTemplate = $scope.selectedTemplate;
@@ -800,15 +791,6 @@ var employerViewDocument = employersController.controller('employerViewDocument'
     $scope.inUploadMode = function() {
         return $scope.activeDocument
             && $scope.activeDocument.contentType == DocumentService.contentTypes.upload;
-    };
-
-    $scope.getDocumentUploadsForDisplay = function() {
-        var uploads = [];
-        if ($scope.activeDocument && $scope.activeDocument.upload) {
-            uploads.push($scope.activeDocument.upload);
-        }
-        
-        return uploads;
     };
 
     $scope.viewExistingLetter = function(doc){

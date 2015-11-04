@@ -68,12 +68,10 @@
                 </div>
                 <div class="form-label">Upload</div>
                 <div>
-                    <bmuploadmanager  
-                    max-uploads="1"
-                    hide-type="true"
-                    template-id="templateId"
+                    <bmdocumentuploadmanager
+                    template-id="{{templateId}}"
                     on-upload-added="onUploadAdded(upload)"
-                    on-upload-deleted="onUploadDeleted(upload)"></bmuploadmanager>
+                    on-upload-deleted="onUploadDeleted(upload)"></bmdocumentuploadmanager>
                 </div>
                 <div class="submit-box">
                     <button ng-if="!templateId" ng-click="createTemplate()"
