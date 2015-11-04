@@ -43,7 +43,7 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
   return {
     restrict: 'E',
     scope: {
-    	target: '=',
+      target: '=',
       onboard: '=?',
       editorUserId: '=?'
     },
