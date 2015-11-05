@@ -632,6 +632,8 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
     $scope.saveTemplateChanges = function(){
       cleanTemplateForSave();
       $scope.template.id = $scope.templateId;
+      // Formalize prefix for template names
+      $scope.template.name = "Template Of " + $scope.template.name;
       TemplateService.updateTemplate($scope.companyId, $scope.template)
       .then(function(savedTemplate){
         $scope.template = savedTemplate;
