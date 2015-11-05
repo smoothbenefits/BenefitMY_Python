@@ -311,6 +311,7 @@
       <td>{{ltdPlan.percentageOfSalary}}% of Base Salary</td>
       <td>${{ltdPlan.maxBenefitMonthly}}/Month</td>
       <td>{{ltdPlan.duration}} Months or Until Retirement Age</td>
+      <td ng-if="ltdPlan.ageBasedRates.length <= 0">${{ltdPlan.rate}} of $10 benefit</td>
       <td ng-if="ltdPlan.ageBasedRates.length > 0">
         <a href="javascript:void(0);" ng-click="openLtdDetailsModal(ltdPlan)">Age Based Rates</a>
       </td>

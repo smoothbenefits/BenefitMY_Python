@@ -162,9 +162,11 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
       // Commuter
       CommuterService.getPersonPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(response){
-        $scope.commuterPlan = response;
-        $scope.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.commuterPlan);
-        $scope.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.commuterPlan);
+        if(response){
+          $scope.commuterPlan = response;
+          $scope.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.commuterPlan);
+          $scope.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.commuterPlan);
+        }
       });
 
     });
@@ -1239,8 +1241,12 @@ var healthBenefitsSignup = employeeControllers.controller(
         });
 
         $scope.preSelectEmployee = function(selectedBenefitPlan) {
-          var self = _.findWhere(selectedBenefitPlan.eligibleMemberCombo.familyList, {relationship: 'self'});
-          self.selected = true;
+          if (selectedBenefitPlan && 
+              selectedBenefitPlan.eligibleMemberCombo && 
+              selectedBenefitPlan.eligibleMemberCombo.familyList){
+            var self = _.findWhere(selectedBenefitPlan.eligibleMemberCombo.familyList, {relationship: 'self'});
+            self.selected = true;
+          }
         };
 
         $scope.memberSelected = function(selectedBenefitFamily, member){

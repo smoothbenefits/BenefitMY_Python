@@ -14,7 +14,7 @@ class Company1094CMonthlyMemberInfo(models.Model):
     fulltime_employee_count = models.PositiveIntegerField(default=0)
     total_employee_count = models.PositiveIntegerField(default=0)
     aggregated_group = models.BooleanField(default=False)
-    section_4980h_transition_relief = models.BooleanField(default=False)
+    section_4980h_transition_relief = models.CharField(default='', max_length=2)
     period = models.CharField(choices=PERIOD_CHOICES,
                               default='All 12 Months',
                               max_length=14)
