@@ -2,6 +2,7 @@ from rest_framework import serializers
 from app.models.template import Template
 from company_serializer import ShallowCompanySerializer
 from hash_pk_serializer_base import HashPkSerializerBase
+from upload_serializer import UploadSerializer
 
 import re
 
@@ -15,7 +16,8 @@ class TemplateSerializer(HashPkSerializerBase):
             yield {'key': field_name}
 
     company = ShallowCompanySerializer()
+    upload = UploadSerializer()
 
     class Meta:
         model = Template
-        fields = ("id", "company", "name", "content", "fields")
+        fields = ("id", "company", "name", "content", "fields", "upload")

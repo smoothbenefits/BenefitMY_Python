@@ -9,36 +9,83 @@
 <div class="content-body">
     <div class="form-holder">
       <form name="form">
-        <div class="form-label">Template Name</div>
-        <div class="textbox">
-          <input type="text"
-          name="template_name"
-          ng-model="template.name"
-          ng-required="true">
-        </div>
-        <div class="textbox">
-          <textarea class="template-field"
-            rows="10"
-            ng-required="true"
-            name="template"
-            ng-model="template.content">
-          </textarea>
-        </div>
-        <div class="notes" ng-non-bindable>
-          <p><b>Please note: For dynamically changing fields to be replaced later, use double curly brackets ({{}}). </b></p>
-          <p>For example: {{salaryFigure}}, {{sign_date}}, {{Title}}</p>
-        </div>
-        <div class="submit-box">
-          <button ng-if="!templateId" ng-click="createTemplate()"
-            class="btn green"
-            ng-disabled="form.$invalid">
-            Create Template
-        </button>
-        <button ng-if="templateId" ng-click="saveTemplateChanges()" class="btn green">
-          Save Template
-        </button>
-      </div>
-    </form>
-  </div>
+          <div class="panel">
+            <div class="panel-head">
+              <span>Template Type</span>
+            </div>
+            <div class="panel-body">
+              <div class="radio-container">
+                <div class="col-md-3 col">
+                  <input type="radio" ng-model="templateType" value="Text">
+                  Text
+                </div>
+                <div class="col-md-3 col">
+                  <input type="radio" ng-model="templateType" value="Upload">
+                  Upload
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel" ng-show="inTextMode()">
+            <div class="panel-body">
+                <div class="form-label">Template Name</div>
+                <div class="textbox">
+                  <input type="text"
+                  name="template_name"
+                  ng-model="template.name">
+                </div>
+                <div class="textbox">
+                  <textarea class="template-field"
+                    rows="10"
+                    name="template"
+                    ng-model="template.content">
+                  </textarea>
+                </div>
+                <div class="notes" ng-non-bindable>
+                  <p><b>Please note: For dynamically changing fields to be replaced later, use double curly brackets ({{}}). </b></p>
+                  <p>For example: {{salaryFigure}}, {{sign_date}}, {{Title}}</p>
+                </div>
+                <div class="submit-box">
+                  <button ng-if="!templateId" ng-click="createTemplate()"
+                    class="btn green"
+                    ng-disabled="!hasCompleteData()">
+                    Create Template
+                </button>
+                <button ng-if="templateId" ng-disabled="!hasCompleteData()" ng-click="saveTemplateChanges()" class="btn green">
+                  Save Template
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="panel" ng-show="inUploadMode()">
+            <div class="panel-body">
+                <div class="form-label">Template Name</div>
+                <div class="textbox">
+                  <input type="text"
+                  name="template_name"
+                  ng-model="template.name"
+                  ng-required="true">
+                </div>
+                <div class="form-label">Upload</div>
+                <div>
+                    <bmdocumentuploadmanager
+                    template-id="{{templateId}}"
+                    on-upload-added="onUploadAdded(upload)"
+                    on-upload-deleted="onUploadDeleted(upload)"></bmdocumentuploadmanager>
+                </div>
+                <div class="submit-box">
+                    <button ng-if="!templateId" ng-click="createTemplate()"
+                        class="btn green"
+                        ng-disabled="!hasCompleteData()">
+                        Create Template
+                    </button>
+                    <button ng-if="templateId" ng-disabled="!hasCompleteData()" ng-click="saveTemplateChanges()" class="btn green">
+                      Save Template
+                    </button>
+                </div>
+            </div>
+          </div>
+      </form>
+    </div>
   <div class="back"><a ng-click="goBack()">&laquo; Back</a></div>
 </div>
