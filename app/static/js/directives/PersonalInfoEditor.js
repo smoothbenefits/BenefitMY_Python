@@ -26,8 +26,8 @@ BenefitMyApp.directive('bmPersonalInfoEditor', function() {
           PersonService.savePersonInfo($scope.person.user, $scope.person)
           .then(function(response){
             alert('Changes saved successfully');
-            if($scope.onboard && $scope.editorUserId){
-              $state.go('employee_family', {employeeId: $scope.editorUserId, onboard:true});
+            if($scope.onboard){
+              $state.go('employee_family', {employeeId: $scope.target, onboard:true});
             } else{
               $window.history.back();
             }
