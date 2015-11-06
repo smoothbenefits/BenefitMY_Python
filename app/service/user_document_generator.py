@@ -74,7 +74,6 @@ class UserDocumentGenerator(object):
             if not content:
                 # We cannot find the proper template, skip
                 continue
-            template_name = template.name.replace('Template Of ', '')
             doc_name = "{} for employee".format(template_name)
             content = self.template_service.populate_content_with_field_values(content, field_values)
             #Create a new document based on type
