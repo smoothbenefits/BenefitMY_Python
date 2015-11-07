@@ -83,4 +83,3 @@ class UserDocumentGenerator(object):
                            content=content,
                            signature=None)
             doc.save()
-            

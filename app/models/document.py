@@ -3,8 +3,9 @@ import reversion
 from django.db import models
 from app.custom_authentication import AuthUser
 from company import Company
-from document_type import DocumentType
 from signature import Signature
+from upload import Upload
+
 
 @reversion.register
 class Document(models.Model):
@@ -15,5 +16,9 @@ class Document(models.Model):
     edited = models.BooleanField(default=False)
     content = models.TextField(null=True,
                                blank=True)
+    upload = models.ForeignKey(Upload,
+                               blank=True,
+                               null=True,
+                               related_name='document_uploads')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
