@@ -2,27 +2,37 @@ var benefitmyService = angular.module('benefitmyService');
 
 
 benefitmyService.factory('EmployeePreDashboardValidationService',
-                         ['PersonService',
+                         ['$state',
+                          'PersonService',
                           'currentUser',
                           'employmentAuthRepository',
                           'employeeTaxRepository',
                           'PersonService',
-  function(PersonService,
+  function($state,
+           PersonService,
            currentUser,
            employmentAuthRepository,
            employeeTaxRepository,
            PersonService){
 
+    var getUrlFromState = function(state, employeeId) {
+        return $state.href(state, { employee_id: employeeId }).replace('#', '');
+    };
+
     var getBasicInfoUrl = function(employeeId){
-      return '/employee/onboard/index/' + employeeId;
+      return getUrlFromState('employee_onboard.basic_info', employeeId);
     };
 
     var getEmploymentAuthUrl = function(employeeId){
-      return '/employee/onboard/employment/' + employeeId;
+      return getUrlFromState('employee_onboard.employment', employeeId);
     };
 
     var getTaxUrl = function(employeeId){
-      return '/employee/onboard/tax/' + employeeId;
+      return getUrlFromState('employee_onboard.tax', employeeId);
+    };
+
+    var getDocumentUrl = function(employeeId){
+      return getUrlFromState('employee_onboard.document', employeeId);
     };
 
     var validatePersonInfo = function(person){
@@ -100,12 +110,21 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         });
     };
 
+    var validateDocuments = function(employeeId, succeeded, failed) {
+        failed();
+    };
+
     return {
         onboarding: function(employeeId, succeeded, failed){
           validateBasicInfo(employeeId, function(){
             validateEmploymentAuth(employeeId, function(){
               validateW4Info(employeeId, function(){
-                succeeded();
+                validateDocuments(employeeId, function() {
+                    succeeded();
+                },
+                function() {
+                    failed(getDocumentUrl(employeeId));
+                });
               },
               function(){
                 failed(getTaxUrl(employeeId));
