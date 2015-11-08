@@ -8,12 +8,14 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                           'employmentAuthRepository',
                           'employeeTaxRepository',
                           'PersonService',
+                          'DocumentService',
   function($state,
            PersonService,
            currentUser,
            employmentAuthRepository,
            employeeTaxRepository,
-           PersonService){
+           PersonService,
+           DocumentService){
 
     var getUrlFromState = function(state, employeeId) {
         return $state.href(state, { employee_id: employeeId }).replace('#', '');
@@ -111,7 +113,26 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     };
 
     var validateDocuments = function(employeeId, succeeded, failed) {
-        failed();
+        DocumentService.getAllDocumentsForUser(employeeId).then(
+            function(documents) {
+                if (!documents || documents.length <= 0) {
+                    // No documents assumes success
+                    succeeded();
+                } else {
+                    var notSigned = _.find(documents, function(doc) {
+                        return !doc.signature;
+                    });
+                    if (!notSigned) {
+                        succeeded();
+                    } else {
+                        failed();
+                    }
+                }
+            },
+            function(errors) {
+                failed();
+            }
+        );
     };
 
     return {
