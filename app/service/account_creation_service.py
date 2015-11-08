@@ -342,8 +342,7 @@ class AccountCreationService(object):
                         "Failed to send email to employee"
                     )
 
-            if (account_info.create_docs and
-                account_info.doc_fields is not None):
+            if (account_info.create_docs):
 
                 # Let's create the documents for this new user
                 try:
