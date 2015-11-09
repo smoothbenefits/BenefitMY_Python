@@ -1,10 +1,18 @@
 class Employee1095CData(object):
 
     def __init__(self, employee_1095c, company_1095c):
-
         if (employee_1095c and company_1095c and
             employee_1095c.period != company_1095c.period):
             raise ValueError('The period definitions provided do not match')
+
+        self.company = ''
+        self.offer_of_coverage = ''
+        self.employee_share = ''
+        self.company_safe_harbor = ''
+        self.employee_safe_harbor = ''
+        self.period = ''
+        self.person = ''
+        self.effective_safe_harbor = ''
 
         if (company_1095c):
             self.company = company_1095c.company
