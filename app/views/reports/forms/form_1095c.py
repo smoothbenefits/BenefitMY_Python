@@ -137,7 +137,7 @@ class Form1095CView(ReportExportViewBase):
         # Start the whole year case
         whole_year_period_date = period_date_map[0]
         # This record down the "all 12 month" data
-        whole_year_benefit_data = next(datum for datum in employee_1095c_data if datum.period == whole_year_period_date['period'])
+        whole_year_benefit_data = next((datum for datum in employee_1095c_data if datum.period == whole_year_period_date['period']), None)
         # Check to see if the employee is active for the whole year
         whole_year = emp_start_date <= date(FORM_YEAR, 1, 31) and emp_end_date >= date(FORM_YEAR, 12, 1)
         if whole_year_benefit_data and whole_year:

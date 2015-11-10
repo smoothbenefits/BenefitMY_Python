@@ -7,14 +7,20 @@
   <h1>{{document.name}}</h1>
 </div><!-- / .content-header -->
 <div class="content-body col-md-12">
-  <textarea name="document_content" readonly="true" wrap="true" cols="100" rows="20">
-    {{document.content}}
-  </textarea>
-</div>
-<div class="col-md-9">
-  <bm-signature-picker user-id="employee_id" signature-id="signatureId" on-confirm-sign="signDocument(resultSignature)"></bm-signature-picker>
-  <div class="back">
-    <a href="javascript:void(0);" onclick="history.back()">« Back</a>
+  <div class="col-md-9" ng-if="inTextMode()">
+      <textarea name="document_content" readonly="true" wrap="true" cols="100" rows="20">
+        {{document.content}}
+      </textarea>
+  </div>
+  <div class="col-md-9" ng-if="inUploadMode()">
+      <div class="form-label">Document File</div>
+      <bmdocumentuploadmanager view-only-mode="true" document-id="{{documentId}}"></bmdocumentuploadmanager>
+  </div>
+  <div class="col-md-9">
+      <bm-signature-picker user-id="employee_id" signature-id="signatureId" on-confirm-sign="signDocument(resultSignature)"></bm-signature-picker>
+      <div class="back">
+        <a href="javascript:void(0);" onclick="history.back()">« Back</a>
+      </div>
   </div>
 </div>
 <div class="col-md-1">

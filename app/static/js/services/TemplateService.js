@@ -4,6 +4,52 @@ benefitmyService.factory('TemplateService',
     ['$q',
     'templateRepository',
     function ($q, templateRepository) {
+        var contentTypes = {
+            text: 1,
+            upload: 2
+        };
+
+        var mapDomainToViewModel = function(domainModel) {
+            if (!domainModel) {
+                return domainModel;
+            }
+
+            var viewModel = {};
+
+            viewModel.id = domainModel.id;
+            viewModel.company = domainModel.company;
+            viewModel.name = domainModel.name;
+            viewModel.content = domainModel.content;
+            viewModel.fields = domainModel.fields;
+            viewModel.upload = domainModel.upload;
+            viewModel.contentType = viewModel.upload 
+                                    ? contentTypes.upload
+                                    : contentTypes.text;
+
+            return viewModel;
+        };
+
+        var mapViewToDomainModel = function(viewModel) {
+            if (!viewModel) {
+                return viewModel;
+            }
+
+            var domainModel = {};
+
+            domainModel.id = viewModel.id;
+            domainModel.company = viewModel.company
+                                ? viewModel.company.id
+                                : null;
+            domainModel.name = viewModel.name;
+            domainModel.content = viewModel.content;
+            domainModel.fields = viewModel.fields;
+            domainModel.upload = viewModel.upload 
+                                ? viewModel.upload.id
+                                : null;
+
+            return domainModel;
+        };
+
         var getTemplateCount = function(companyId){
             var deferred = $q.defer();
             templateRepository.byCompany.get({companyId:companyId}).$promise.then(function(response){
@@ -25,7 +71,14 @@ benefitmyService.factory('TemplateService',
             var deferred = $q.defer();
             templateRepository.byCompany.get({companyId:companyId})
             .$promise.then(function(response){
-                deferred.resolve(response.templates);
+                var templates = null;
+                if (response && response.templates) {
+                    templates = [];
+                    _.each(response.templates, function(item) {
+                        templates.push(mapDomainToViewModel(item));
+                    });
+                }
+                deferred.resolve(templates);
             });
             return deferred.promise;
         };
@@ -34,16 +87,17 @@ benefitmyService.factory('TemplateService',
             var deferred = $q.defer();
             templateRepository.getById.get({id:templateId})
             .$promise.then(function(templateResponse){
-                deferred.resolve(templateResponse.template);
+                deferred.resolve(mapDomainToViewModel(templateResponse.template));
             });
             return deferred.promise;
         };
 
         var updateTemplate = function(companyId, template){
             var deferred = $q.defer();
-            var updateObj = {company: companyId, template: template};
-            templateRepository.update.update({id: template.id}, updateObj, function(response){
-                deferred.resolve(response.template);
+            var templateDomainModel = mapViewToDomainModel(template);
+            var updateObj = {company: companyId, template: templateDomainModel};
+            templateRepository.update.update({id: templateDomainModel.id}, updateObj, function(response){
+                deferred.resolve(mapDomainToViewModel(response.template));
             }, function(errorResponse){
                 deferred.reject(errorResponse);
             });
@@ -52,10 +106,11 @@ benefitmyService.factory('TemplateService',
 
         var createNewTemplate = function(companyId, template){
             var deferred = $q.defer();
-            template.company = companyId;
-            var createObj = {company: companyId, template: template};
+            var templateDomainModel = mapViewToDomainModel(template);
+            templateDomainModel.company = companyId;
+            var createObj = {company: companyId, template: templateDomainModel};
             templateRepository.create.save(createObj, function(response){
-                deferred.resolve(response.template);
+                deferred.resolve(mapDomainToViewModel(response.template));
             }, function(errorResponse){
                 deferred.reject(errorResponse);
             });
@@ -63,6 +118,7 @@ benefitmyService.factory('TemplateService',
         };
 
         return{
+            contentTypes: contentTypes,
             getTemplateCount: getTemplateCount,
             getAllTemplateFields: getAllTemplateFields,
             getTemplates: getTemplates,

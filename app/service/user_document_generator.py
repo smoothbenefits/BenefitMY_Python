@@ -71,16 +71,24 @@ class UserDocumentGenerator(object):
         all_templates = self.template_service.get_templates_by_company(self.company)
         for template in all_templates:
             content = template.content
-            if not content:
+            upload = template.upload
+            if upload:
+                # Template with upload mode
+                content = ''
+            elif content:
+                # Template with content mode
+                content = self.template_service.populate_content_with_field_values(content, field_values)
+            else:
                 # We cannot find the proper template, skip
                 continue
+
             doc_name = "{} for employee".format(template.name)
-            content = self.template_service.populate_content_with_field_values(content, field_values)
-            #Create a new document based on type
+
+            # Create a new document based on type
             doc = Document(company_id=self.company.id,
                            user_id=self.user.id,
                            name=doc_name,
                            content=content,
+                           upload=upload,
                            signature=None)
             doc.save()
-            

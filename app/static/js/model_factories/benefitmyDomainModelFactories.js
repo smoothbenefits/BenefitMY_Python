@@ -112,11 +112,6 @@ benefitmyDomainModelFactories.factory('usersRepository', ['$resource',
   }
 ]);
 
-benefitmyDomainModelFactories.factory('userDocument', ['$resource',
-  function($resource){
-    return $resource('/api/v1/users/:userId/documents/', {userId:'@userId'});
-  }])
-
 benefitmyDomainModelFactories.factory('documentRepository', ['$resource',
   function($resource){
     return {

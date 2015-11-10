@@ -89,11 +89,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._start_new_line()
         self._set_font(10)
 
-        # Write employment type
-        employee_profile = self._get_employee_profile_by_person(person)
-        if employee_profile:
-            self._write_line([employee_profile.employment_type])
-            self._start_new_line()
+        # Write employee type and address
+        self._write_employee_meta_info(person)
 
         # Now starts writing benefit enrollments
         self._write_employee_all_health_benefits_info(user, company_id)
@@ -118,6 +115,24 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
+    def _write_employee_meta_info(self, person):
+        # Write employment type
+        employee_profile = self._get_employee_profile_by_person(person)
+        employee_address = self._get_address_by_person(person)
+        meta_info = []
+        width_array = []
+        if employee_profile:
+            meta_info.append(employee_profile.employment_type)
+            width_array.append(0.5)
+
+        if employee_address:
+            meta_info.append("{} {}, {} {} {}".format(employee_address.street_1, employee_address.street_2, employee_address.city, employee_address.state, employee_address.zipcode))
+            width_array.append(0.5)
+
+        if meta_info:
+            self._write_line_uniform_width(meta_info, width_array)
+            self._start_new_line()
+
     def _write_not_selected_plan(self, benefit_name):
         # Render header
         self._write_line_uniform_width([benefit_name])
@@ -131,6 +146,28 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._write_line_uniform_width([benefit_name])
         self._draw_line()
         self._write_line_uniform_width(['Waived'])
+        self._start_new_line()
+        self._start_new_line()
+
+    def _get_beneficiary_tier(self, tier_number):
+        if tier_number == '1':
+            return 'Primary'
+        else:
+            return 'Contingent'
+
+    def _write_beneficiaries(self, plan_name, beneficiaries):
+        if not beneficiaries:
+            return
+
+        self._write_line_uniform_width([' ', '{} Beneficiaries:'.format(plan_name)], [0.1, 0.9])
+        self._start_new_line()
+        column_width_dists = [0.1, 0.1, 0.1, 0.1, 0.15, 0.2, 0.15, 0.1]
+        self._write_line_uniform_width([' ', 'Tier', 'First Name', 'Last Name', 'Relationship', 'Email', 'Phone', 'Percentage'], column_width_dists)
+        self._draw_line(56)
+        for beneficiary in beneficiaries:
+            self._write_line_uniform_width([' ', '{}'.format(self._get_beneficiary_tier(beneficiary.tier)), beneficiary.first_name, beneficiary.last_name, beneficiary.relationship, beneficiary.email, beneficiary.phone, beneficiary.percentage],
+                                               column_width_dists)
+
         self._start_new_line()
         self._start_new_line()
 
@@ -234,6 +271,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                                                column_width_dists)
                 self._start_new_line()
                 self._start_new_line()
+                beneficiaries = employee_plan.life_insurance_beneficiary.all().order_by('tier')
+                self._write_beneficiaries('Basic Life (AD&D)', beneficiaries)
             else:
                 self._write_waived_plan('Basic Life (AD&D)')
 
@@ -249,12 +288,11 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             employee_plans = PersonCompanyHraPlan.objects.filter(person=person_model.id)
             if (len(employee_plans) > 0):
                 plan_selected = True
-                # Render header
-                self._write_line_uniform_width(['HRA Plan', 'Description'])
-                self._draw_line()
-
                 plan = employee_plans[0]
                 if plan.company_hra_plan:
+                    # Render header
+                    self._write_line_uniform_width(['HRA Plan', 'Description'])
+                    self._draw_line()
                     self._write_line_uniform_width([
                         plan.company_hra_plan.hra_plan.name,
                         plan.company_hra_plan.hra_plan.description])
@@ -306,6 +344,9 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
                     self._start_new_line()
                     self._start_new_line()
+
+                    beneficiaries = plan.suppl_life_insurance_beneficiary.all().order_by('tier')
+                    self._write_beneficiaries('Suppl. Life Plan', beneficiaries)
                 else:
                     self._write_waived_plan('Supplemental Life Plan')
 
@@ -396,7 +437,9 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             if (len(employee_plans) > 0):
                 plan_selected = True
                 # Render header
-                self._write_line_uniform_width(['Commuter Plan', 'Transit/Month(Pre-Tax)', 'Transit/Month(Post-Tax)', 'Parking/Month(Pre-Tax)', 'Parking/Month(Post-Tax)'])
+                # Split onto
+                self._write_line_uniform_width(['Commuter Plan', 'Transit/Month', 'Transit/Month', 'Parking/Month', 'Parking/Month'])
+                self._write_line_uniform_width(['', '(Pre-Tax)', '(Post-Tax)', '(Pre-Tax)', '(Post-Tax)'])
                 self._draw_line()
 
                 plan = employee_plans[0]
@@ -464,6 +507,17 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             if (len(profiles) > 0):
                 return profiles[0]
         return None
+
+    def _get_address_by_person(self, person_model):
+        if person_model:
+            addresses = person_model.addresses.all()
+            for ads in addresses:
+                if ads.address_type == 'home':
+                    return ads
+            if len(addresses) > 0:
+                return addresses[0]
+        return None
+
 
     def _concat_strings(self, strings, delim=' '):
         result = ''
