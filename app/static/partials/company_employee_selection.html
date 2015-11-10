@@ -406,7 +406,7 @@
           <div class="col-sm-2">
             <div>Health Reimbursement Accounts (HRA)</div>
           </div>
-          <div class="col-sm-10" ng-show="employee.hraPlan">
+          <div class="col-sm-10" ng-show="employee.hraPlan && !employee.hraPlan.waived">
             <div class="table-responsive table-holder">
               <table class="table table-striped">
                 <thead>
@@ -426,9 +426,30 @@
               </table>
             </div>
           </div>
+          <div class="col-sm-10" ng-show="employee.hraPlan && employee.hraPlan.waived">
+            <div class="table-responsive table-holder">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th><span>HRA</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="280">Waived HRA Plan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
           <div class="col-sm-10" ng-show="!employee.hraPlan">
             <div class="table-responsive table-holder">
               <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th><span>HRA</span></th>
+                  </tr>
+                </thead>
                 <tbody>
                   <tr>
                     <td width="280">No active HRA plan</td>

@@ -187,7 +187,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
   ['$scope', '$location', '$stateParams', 'DocumentService', 'currentUser', 'documentRepository',
   function viewDocument($scope, $location, $stateParams, DocumentService, currentUser, documentRepository){
     $scope.document = {};
-    var documentId = $stateParams.doc_id;
+    $scope.documentId = $stateParams.doc_id;
     var userPromise = currentUser.get().$promise
       .then(function(response){
         $scope.employee_id = response.user.id;
@@ -195,7 +195,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
       });
 
     var documentPromise = userPromise.then(function(userId){
-      return DocumentService.getUserDocumentById(userId, documentId);
+      return DocumentService.getUserDocumentById(userId, $scope.documentId);
     });
 
     documentPromise.then(function(document){
@@ -205,6 +205,16 @@ var viewDocument = employeeControllers.controller('viewDocument',
         $scope.signatureId = $scope.document.signature.id;
       }
     });
+
+    $scope.inTextMode = function() {
+        return $scope.document 
+            && $scope.document.contentType == DocumentService.contentTypes.text;
+    };
+
+    $scope.inUploadMode = function() {
+        return $scope.document
+            && $scope.document.contentType == DocumentService.contentTypes.upload;
+    };
 
     $scope.signDocument = function(signature){
         DocumentService.signUserDocument($scope.document.id, signature.id)
