@@ -1,1 +1,21 @@
-<div ng-repeat="document in documents">{{document.name}}</div>
+<div class="col-md-10">
+    <h4>Please Review and Sign the Documents</h4>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th><span>Documents</span></th>
+            <th><span>Yes, I have received and reviewed the document</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="document in documents">
+            <td>
+                <a ng-if="document.upload" ng-href="{{document.upload.S3}}" target="_blank">{{document.name}}</a>
+                <a ng-if="!document.upload" ng-click="showDocument(document)">{{document.name}}</a>
+            </td>
+            <td><input type="checkbox" ng-model="document.accepted"></td>
+          </tr>
+        </tbody>
+    </table>
+    <bm-signature-picker user-id="userId" on-confirm-sign="signDocuments(resultSignature)" allow-sign-predicate="allDocumentsAccepted()"></bm-signature-picker>
+</div>

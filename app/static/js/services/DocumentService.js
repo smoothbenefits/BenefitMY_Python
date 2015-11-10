@@ -145,6 +145,25 @@ benefitmyService.factory('DocumentService',
                 return deferred.promise;
             },
 
+            batchSignUserDocuments: function(documents, signatureId) {
+                var requests = [];
+
+                _.each(documents, function(document) {
+                    var deferred = $q.defer();
+                    requests.push(deferred);
+
+                    documentRepository.sign.save({id:document.id}, { 'signature_id': signatureId })
+                    .$promise.then(function(resultDoc){
+                        deferred.resolve(mapDocumentDomainToViewModel(resultDoc));
+                    },
+                    function(errors) {
+                        deferred.reject(errors);
+                    });
+                });
+
+                return $q.all(requests);
+            },
+
             getDocumentById: function(documentId) {
                 var deferred = $q.defer();
 

@@ -850,8 +850,7 @@ var onboardDocument = employeeControllers.controller('onboardDocument',
 
     $('body').addClass('onboarding-page');
 
-    $scope.submit=function(){
-      alert('Saved!!');
+    $scope.documentsSigned = function(){
       $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
     };
 }]);
