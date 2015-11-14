@@ -774,11 +774,16 @@ var employerBatchCreateDocuments = employersController.controller('employerBatch
         DocumentService.batchCreateDocuments($scope.companyId, $scope.documentsCreationData)
         .then(function(resultDocs) {
             alert('Documents have been successfully created for ' + resultDocs.length + ' employees!');
+            $scope.goBackToViewTemplates();
         }, 
         function(errors) {
             alert('There were problems creating documents. Please try again later or contact support.');
         });
-    }
+    };
+
+    $scope.goBackToViewTemplates = function(){
+      $state.go('document_templates', {company_id:$scope.companyId});
+    };
   }]);
 
 var employerViewDocument = employersController.controller('employerViewDocument',

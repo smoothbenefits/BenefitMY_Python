@@ -1,6 +1,6 @@
 <div class="breadcrumb">
   <a ng-href="#/admin">Employer Dashboard</a>
-  <a onclick="history.back()">View Templates</a>
+  <a ng-click="goBackToViewTemplates()">View Templates</a>
   <span>Create Documents</span>
 </div>
 
@@ -14,7 +14,7 @@
     <form name="form">
 
         <div class="alert alert-info">
-            <b>Please note that this will create document for all employees.</b> 
+            Please note that this will create document for <b>*ALL*</b> employees.
         </div>
 
         <div class="form-label">Document Name*</div>
@@ -31,10 +31,10 @@
         </div>
 
         <div class="submit-box">
-            <button confirm="This will create documents for all employees. Do you wish to continue?" ng-click="createDocuments()" class="btn green" ng-disabled="form.$invalid">Create Documents</button>
+            <button confirm="This will create documents for all employees. Do you wish to continue?" ng-click="createDocuments()" class="btn green" ng-disabled="form.$invalid">Create Documents for All Employees</button>
         </div>
 
   </form>
 </div><!-- / .form-holder -->
-<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+<div class="back"><a href="javascript:void(0);" ng-click="goBackToViewTemplates()">&laquo; Back</a></div>
 </div><!-- / .content-body -->
