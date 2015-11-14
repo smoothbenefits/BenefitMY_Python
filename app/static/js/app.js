@@ -266,6 +266,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl:'/static/partials/documents/create.html',
                 controller:'employerCreateDocument'
             }).
+            state('employer_batch_create_documents', {
+                url: '/admin/documents/batch_create/:company_id/:template_id',
+                templateUrl:'/static/partials/documents/batch_create_documents.html',
+                controller:'employerBatchCreateDocuments'
+            }).
             state('/admin/documents/view/:company_id/:employee_id', {
                 url: '/admin/documents/view/:company_id/:employee_id?type',
                 templateUrl:'/static/partials/documents/view.html',

@@ -6,6 +6,7 @@ from django.db import transaction
 from rest_framework import status
 import re
 
+from app.models.company_user import (CompanyUser, USER_TYPE_EMPLOYEE)
 from app.models.signature import Signature
 from app.models.document_type import DocumentType
 from app.models.document import Document
@@ -47,16 +48,51 @@ class DocumentView(APIView):
 
 
 class CompanyDocumentView(APIView):
-    def get_documents(self, pk):
+    def _get_documents(self, pk):
         try:
             return Document.objects.filter(company=pk)
         except Document.DoesNotExist:
             raise Http404
 
+    def _get_template(self, template_id):
+        try:
+            return Template.objects.get(pk=template_id)
+        except Template.DoesNotExist:
+            raise Http404
+
     def get(self, request, pk, format=None):
-        documents = self.get_documents(pk)
+        documents = self._get_documents(pk)
         serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data)
+
+    @transaction.atomic
+    def post(self, request, pk, format=None):
+        company_id = pk
+        name = request.DATA['document_name']
+        template_id = request.DATA['template_id']
+        signature = None
+        content = ''
+        template = self._get_template(template_id)
+        upload = template.upload
+
+        if (not name or not upload):
+            return Response(status.HTTP_400_BAD_REQUEST)
+
+        result_data = []
+
+        employees = CompanyUser.objects.filter(company=company_id, company_user_type=USER_TYPE_EMPLOYEE)
+        for employee in employees:
+            d = Document(company_id=company_id,
+                         user_id=employee.user.id,
+                         name=name,
+                         signature=signature,
+                         content=content,
+                         upload_id=upload.id)
+            d.save()
+            serializer = DocumentSerializer(d)
+            result_data.append(serializer.data)
+
+        return Response(result_data, status=status.HTTP_201_CREATED)
 
 
 class CompanyUserDocumentView(APIView):

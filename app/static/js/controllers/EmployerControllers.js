@@ -563,6 +563,14 @@ var employerLetterTemplate = employersController.controller('employerLetterTempl
       $state.go('document_templates_edit', {company_id:$scope.companyId, template_id: template.id});
     };
 
+    $scope.isTemplateUpload = function(template) {
+        return template.contentType == TemplateService.contentTypes.upload;
+    };
+
+    $scope.goToBatchDocumentCreationView = function(template) {
+        $state.go('employer_batch_create_documents', {company_id:$scope.companyId, template_id: template.id});
+    };
+
     $scope.viewDashboard = function(){
       $state.go('/admin');
     };
@@ -738,6 +746,38 @@ var employerCreateDocument = employersController.controller('employerCreateDocum
       }, function(errResponse){
         $scope.createFailed = true;
       });
+    }
+  }]);
+
+var employerBatchCreateDocuments = employersController.controller('employerBatchCreateDocuments',
+                                                          ['$scope',
+                                                          '$state',
+                                                          '$stateParams',
+                                                          'TemplateService',
+                                                          'DocumentService',
+  function employerBatchCreateDocuments($scope,
+                                        $state,
+                                        $stateParams,
+                                        TemplateService,
+                                        DocumentService){
+    $scope.companyId = $stateParams.company_id;
+    $scope.documentsCreationData = {};
+    
+    TemplateService.getTemplateById($stateParams.template_id).then(function(template) {
+        $scope.template = template;
+        $scope.documentsCreationData.documentName = template.name;
+        $scope.documentsCreationData.templateId = template.id;
+    });
+
+    $scope.createDocuments = function()
+    {
+        DocumentService.batchCreateDocuments($scope.companyId, $scope.documentsCreationData)
+        .then(function(resultDocs) {
+            alert('Documents have been successfully created for ' + resultDocs.length + ' employees!');
+        }, 
+        function(errors) {
+            alert('There were problems creating documents. Please try again later or contact support.');
+        });
     }
   }]);
 
