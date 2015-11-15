@@ -78,6 +78,17 @@
     </div>
   </div>
 
+  <div class="form-label">Email</div>
+  <div class="textbox">
+    <input type="email"
+      name="person_email"
+      ng-model="person.email"
+      ng-required="false">
+    <div class="form-validation-error" ng-show="form.person_email.$dirty && form.person_email.$invalid">
+      <span ng-show="form.person_email.$invalid">Please enter a valid email</span>
+    </div>
+  </div>
+
   <div class="form-label">Address</div>
   <div class="textbox">
     <input type="text"
