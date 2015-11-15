@@ -266,6 +266,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl:'/static/partials/documents/create.html',
                 controller:'employerCreateDocument'
             }).
+            state('employer_batch_create_documents', {
+                url: '/admin/documents/batch_create/:company_id/:template_id',
+                templateUrl:'/static/partials/documents/batch_create_documents.html',
+                controller:'employerBatchCreateDocuments'
+            }).
             state('/admin/documents/view/:company_id/:employee_id', {
                 url: '/admin/documents/view/:company_id/:employee_id?type',
                 templateUrl:'/static/partials/documents/view.html',
@@ -412,20 +417,30 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_onboard/employee_view_letter.html',
                 controller: 'employeeAcceptDocument'
             }).
-            state('/employee/onboard/index/:employee_id', {
-                url: '/employee/onboard/index/:employee_id',
+            state('employee_onboard', {
+                url: '/employee/onboard/:employee_id',
                 templateUrl: '/static/partials/employee_onboard/index.html',
                 controller: 'onboardIndex'
             }).
-            state('/employee/onboard/employment/:employee_id', {
-                url: '/employee/onboard/employment/:employee_id',
-                templateUrl: '/static/partials/employee_onboard/employment.html',
+            state('employee_onboard.basic_info', {
+                url: '/basic_info',
+                templateUrl: '/static/partials/employee_onboard/partial_basic_info.html',
+                controller: 'onboardBasicInfo'
+            }).
+            state('employee_onboard.employment', {
+                url: '/employment',
+                templateUrl: '/static/partials/employee_onboard/partial_employment.html',
                 controller: 'onboardEmployment'
             }).
-            state('/employee/onboard/tax/:employee_id', {
-                url: '/employee/onboard/tax/:employee_id',
-                templateUrl: '/static/partials/employee_onboard/tax.html',
+            state('employee_onboard.tax', {
+                url: '/tax',
+                templateUrl: '/static/partials/employee_onboard/partial_tax.html',
                 controller: 'onboardTax'
+            }).
+            state('employee_onboard.document', {
+                url: '/document',
+                templateUrl: '/static/partials/employee_onboard/partial_document.html',
+                controller: 'onboardDocument'
             }).
             state('employeeUploads', {
                 url:'/employee/uploads',

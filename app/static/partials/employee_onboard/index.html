@@ -1,4 +1,4 @@
-<div ng-show="displayAll">
+<div>
   <div class="breadcrumb">
     <span>Employee Onboard</span>
   </div>
@@ -10,201 +10,17 @@
   <div class="content-body">
 
     <div class="row">
-
       <div class="col-md-4">
         <div class="list-group">
-          <a ng-href="#/employee/onboard/index/{{employeeId}}" class="list-group-item active">
-            <h4 class="list-group-item-heading">Basic Information</h4>
-            <p class="list-group-item-text">Personal information</p>
-          </a>
-          <a ng-href="#/employee/onboard/employment/{{employeeId}}" class="list-group-item">
-            <h4 class="list-group-item-heading">Employment Authorization</h4>
-            <p class="list-group-item-text">Employment and proof of eligibility</p>
-          </a>
-          <a href="#/employee/onboard/tax/{{employeeId}}" class="list-group-item">
-            <h4 class="list-group-item-heading">Tax information (W-4)</h4>
-            <p class="list-group-item-text">Information about your W-4 and state tax withholding form</p>
+          <a ng-repeat="tab in section.tabs" class="list-group-item" ui-sref="{{tab.state}}" ui-sref-active="active">
+            <h4 class="list-group-item-heading">{{tab.verbose_name}}</h4>
+            <p class="list-group-item-text">{{tab.description}}</p>
           </a>
         </div>
       </div>
-
       <div class="col-md-8">
-        <div class="form-holder">
-          <form name="form">
-            <ul class="list-group"><li class="list-group-item">
-              <div class="form-label">First Name</div>
-              <div class="textbox">
-                <input type="text"
-                name="first_name"
-                ng-model="employee.first_name"
-                ng-required="true">
-                <div class="form-error" ng-show="form.first_name.$dirty && form.first_name.$invalid">
-                  <span ng-show="form.first_name.$error.required">First Name field is required</span>
-                </div>
-              </div>
-
-              <div class="form-label">Last Name</div>
-              <div class="textbox">
-                <input type="text"
-                name="last_name"
-                ng-model="employee.last_name"
-                ng-required="true">
-                <div class="form-error" ng-show="form.last_name.$dirty && form.last_name.$invalid">
-                  <span ng-show="form.last_name.$error.required">Last Name field is required</span>
-                </div>
-              </div>
-
-              <div class="form-label">Date Of Birth</div>
-              <div class="datebox">
-                <bm-date-picker model="employee.birth_date"
-                required="true"
-                fieldname="'birth_date'"
-                dirty="form.birth_date.$dirty" />
-              </div>
-
-              <div class="form-label">Gender</div>
-              <div class="select-box">
-                <select
-                class="form-control"
-                name="gender"
-                ng-model="employee.gender"
-                ng-required="true">
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-              </select>
-            </div>
-
-            <div class="form-label">Social Security Number</div>
-            <div class="textbox">
-              <input type="tel"
-              name="person_ssn"
-              ng-model="employee.ssn"
-              ng-required="true"
-              ui-mask="999-99-9999">
-              <div class="form-error" ng-show="form.person_.$dirty && form.person_ssn.$invalid">
-                <span ng-show="form.person_ssn.$error.required">SSN field is required</span>
-                <span ng-show="form.person_ssn.$invalid">Please enter a valid Social Security Number</span>
-              </div>
-            </div>
-
-            <div class="form-label">Address</div>
-            <div class="textbox">
-              <input type="text"
-              name="address_street1"
-              ng-model="employee.address.street_1"
-              ng-required="true"
-              placeholder="Street Line 1">
-            </div>
-            <div class="textbox">
-              <input type="text"
-              name="address_street2"
-              ng-model="employee.address.street_2"
-              ng-required="false"
-              placeholder="Street Line 2">
-            </div>
-
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="textbox">
-                  <input type="text"
-                  name="address_city"
-                  ng-model="employee.address.city"
-                  ng-required="true"
-                  placeholder="City">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="textbox">
-                  <input type="text"
-                  name="address_state"
-                  class="input-upper"
-                  ng-model="employee.address.state"
-                  ng-required="true"
-                  placeholder="State"
-                  maxlength="2">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="textbox">
-                  <input type="text"
-                  name="address_zip"
-                  ng-model="employee.address.zipcode"
-                  ng-required="true"
-                  placeholder="Zip Code"
-                  maxlength="5">
-                </div>
-              </div>
-            </div>
-
-            <div class="form-label">Phone Number</div>
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="textbox">
-                  <input type="tel"
-                  name="phone_number"
-                  ng-model="employee.phone.number"
-                  ng-required="true"
-                  ui-mask="(999)999-9999">
-                </div>
-              </div>
-            </div>
-          </li></ul>
-          <h2 class="sub-title">Emergency Contact</h2>
-          <ul class="list-group"><li class="list-group-item">
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="form-label">First Name</div>
-                <div class="textbox">
-                  <input type="text"
-                  name="emergency_firstname"
-                  ng-model="employee.emergency.first_name"
-                  ng-required="true" />
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-label">Last Name</div>
-                <div class="textbox">
-                  <input type="text"
-                  name="emergency_lastname"
-                  ng-model="employee.emergency.last_name"
-                  ng-required="true" />
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="form-label">Relationship</div>
-                <div class="textbox">
-                  <input type="text"
-                  name="emergency_relationship"
-                  ng-model="employee.emergency.relationship"
-                  ng-required="true" />
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-label">Phone Number</div>
-                <div class="textbox">
-                  <input tyle="tel"
-                  name="emergency_phone"
-                  ng-model="employee.emergency.phone"
-                  ng-required="true"
-                  ui-mask="(999)999-9999" />
-                </div>
-              </div>
-            </div>
-          </li></ul>
-
-          <div class="submit-box">
-            <button ng-click="addBasicInfo()" class="btn green" ng-disabled="form.$invalid">
-              Submit and Next
-            </button>
-          </div>
-
-        </form>
+        <div ui-view></div>
       </div>
-      <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Cancel</a></div>
-    </div>
-
-  </div><!-- / .row -->
-</div><!-- / .content-body -->
+    </div><!-- / .row -->
+  </div><!-- / .content-body -->
 </div>

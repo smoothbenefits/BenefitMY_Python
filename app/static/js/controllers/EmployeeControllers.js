@@ -613,12 +613,25 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$state
 
 var onboardIndex = employeeControllers.controller('onboardIndex',
   ['$scope',
+   '$state',
+   'tabLayoutGlobalConfig',
+   function ($scope,
+             $state,
+             tabLayoutGlobalConfig){
+    $scope.section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_onboard'});
+   }
+  ]);
+
+var onboardBasicInfo = employeeControllers.controller('onboardBasicInfo',
+  ['$scope',
+   '$state',
    '$stateParams',
    '$location',
    'PersonService',
    'currentUser',
    'EmployeePreDashboardValidationService',
   function($scope,
+           $state,
            $stateParams,
            $location,
            PersonService,
@@ -652,7 +665,7 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
       $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');
       PersonService.savePersonInfo($scope.employeeId, $scope.employee)
       .then(function(successResponse){
-        $location.path('/employee/onboard/employment/' + $scope.employeeId);
+        $state.go('employee_onboard.employment', { employee_id: $scope.employeeId });
       }, function(errorResponse){
           alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
       });
@@ -661,12 +674,14 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
 
 var onboardEmployment = employeeControllers.controller('onboardEmployment',
   ['$scope',
+   '$state',
    '$stateParams',
    '$location',
    '$window',
    'EmploymentProfileService',
    'EmployeePreDashboardValidationService',
   function($scope,
+           $state,
            $stateParams,
            $location,
            $window,
@@ -719,7 +734,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 
         EmploymentProfileService.saveEmploymentAuthByUserId($scope.employee, signature.id)
         .then(function(response){
-          $location.path('/employee/onboard/tax/' + $scope.employeeId);
+          $state.go('employee_onboard.tax', { employee_id: $scope.employeeId });
         }, function(error){
           alert('Failed to add employment information');
         });
@@ -727,8 +742,22 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', '$state', '$stateParams', '$location', '$window', 'employeePayrollService', 'EmployeePreDashboardValidationService',
-  function($scope, $state, $stateParams, $location, $window, employeePayrollService, EmployeePreDashboardValidationService){
+  ['$scope', 
+   '$state', 
+   '$stateParams', 
+   '$location', 
+   '$window', 
+   'employeePayrollService', 
+   'EmployeePreDashboardValidationService',
+  function(
+    $scope, 
+    $state, 
+    $stateParams, 
+    $location, 
+    $window, 
+    employeePayrollService, 
+    EmployeePreDashboardValidationService){
+
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
 
@@ -784,8 +813,45 @@ var onboardTax = employeeControllers.controller('onboardTax',
       var empAuth = employeePayrollService.mapW4ViewToDto($scope.employee);
       employeePayrollService.saveEmployeeTaxByUserId($scope.employeeId, empAuth)
       .then(function(response){
-        $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
+        $state.go('employee_onboard.document', { employee_id: $scope.employeeId });
       });
+    };
+}]);
+
+var onboardDocument = employeeControllers.controller('onboardDocument',
+  ['$scope', 
+   '$state', 
+   '$stateParams', 
+   '$location', 
+   '$window', 
+   'EmployeePreDashboardValidationService',
+  function(
+    $scope, 
+    $state, 
+    $stateParams, 
+    $location, 
+    $window, 
+    EmployeePreDashboardValidationService){
+
+    $scope.employee = {};
+    $scope.employeeId = $stateParams.employee_id;
+
+    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
+      $location.path('/employee');
+    },
+    function(redirectUrl){
+      if($location.path() !== redirectUrl){
+        $location.path(redirectUrl);
+      }
+      else{
+        $scope.displayAll = true;
+      }
+    });
+
+    $('body').addClass('onboarding-page');
+
+    $scope.documentsSigned = function(){
+      $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
     };
 }]);
 

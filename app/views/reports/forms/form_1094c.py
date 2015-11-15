@@ -17,7 +17,7 @@ class Form1094CView(ReportExportViewBase):
     def get(self, request, pk, format=None):
 
         model_factory = ReportViewModelFactory()
-        company_info = model_factory.get_employee_company_info(pk)
+        company_info = model_factory.get_company_info(pk)
         company_1094c = model_factory.get_company_1094_c_data(pk)
 
         # Populate the form fields

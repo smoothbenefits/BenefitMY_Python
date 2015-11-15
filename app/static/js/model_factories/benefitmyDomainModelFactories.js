@@ -120,7 +120,8 @@ benefitmyDomainModelFactories.factory('documentRepository', ['$resource',
       create: $resource('/api/v1/documents/', {}),
       getById: $resource('/api/v1/documents/:id', {id:'@document_id'}),
       sign: $resource('/api/v1/documents/:id/signature', {id:'@document_id'}),
-      updateById: $resource('/api/v1/documents/:id', {id: '@document_id'}, {'update': {method: 'PUT'}})
+      updateById: $resource('/api/v1/documents/:id', {id: '@document_id'}, {'update': {method: 'PUT'}}),
+      byCompany: $resource('/api/v1/companies/:companyId/documents', {companyId:'@company_id'}, {'save': {method:'POST', isArray: true}})
     };
   }
 ]);
