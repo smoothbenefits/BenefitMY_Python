@@ -22,6 +22,7 @@
           <td>{{template.name}}</td>
           <td>
             <span class="btn inline" ng-click="modifyExistingTemplate(template)">View/Edit</span>
+            <span class="btn inline" ng-if="isTemplateUpload(template)" ng-click="goToBatchDocumentCreationView(template)">Create Documents</span>
           </td>
         </tr>
       </tbody>

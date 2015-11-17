@@ -1,0 +1,106 @@
+<div class="form-holder">
+    <h4>Please provide your eligibility of employment</h4>
+    <form name="form">
+      <ul>
+      <li class="list-group-item">
+        <div class="form-label">I am</div>
+        <div class="select-box">
+          <select name="authorization_type"
+          ng-model="employee.auth_type"
+          ng-required="true"
+          class="form-control">
+              <option value="Citizen">A citizen of the United States</option>
+              <option value="Noncitizen">A noncitizen national of the United States</option>
+              <option value="PResident">A lawful permanent resident</option>
+              <option value="Aaw">An alien authorized to work</option>
+          </select>
+        </div>
+
+        <div ng-show="employee.auth_type == 'Aaw'">
+            <div class="form-label">Expiration Date</div>
+            <div class="row">
+              <div class="datebox col-md-10">
+                <bm-date-picker model="employee.birth_date"
+                required="true"
+                disabled="employee.expiration_na"
+                fieldname="'expiry'"
+                dirty="form.expiry.$dirty" />
+              </div>
+              <div class="checkbox col-md-2">
+                <label>
+                  <input type="checkbox"
+                  ng-model="employee.expiration_na"
+                  name="expirationNA" />
+                  N/A
+                </label>
+              </div>
+            </div>
+        </div>
+
+        <div ng-show="employee.auth_type == 'PResident' || employee.auth_type=='Aaw'">
+            <div class="form-label">Alien Registration Number/USCIS number</div>
+            <div class="textbox">
+              <input name="USCISNumber"
+              ng-model="employee.authNumber"
+              type="text"
+              ui-mask="999-999-999"
+              ng-required="true"/>
+            </div>
+        </div>
+
+        <div ng-show="employee.auth_type=='Aaw'">
+            <center>Or</center>
+        </div>
+
+        <div ng-show="employee.auth_type=='Aaw'">
+            <div class="form-label">Form I-94 Admission Number</div>
+            <div class="textbox">
+              <input name="I94Number"
+              ng-model="employee.I94Id"
+              type="text"/>
+            </div>
+
+            <div class="form-label">Foreign Passport Number</div>
+            <div class="textbox">
+              <input name="foreignPassportNumber"
+              ng-model="employee.passportId"
+              type="text"/>
+            </div>
+
+            <div class="form-label">Country of Issuance</div>
+            <div class="textbox">
+              <input name="foreignPassportCountry"
+              ng-model="employee.passportCountry"
+              type="text"/>
+            </div>
+        </div>
+
+        <div id="onboard_upload" class="upload-functional-container" ng-show="employee.auth_type">
+            <h4>Please upload your employment status document below. </h4>
+            <bmuploadmanager upload-type="I9"></bmuploadmanager>
+        </div>
+
+        <div ng-if="employee.auth_type">
+          <div class="inner-td-div">
+              <input type="checkbox"
+              name="downloadI_9"
+              id="downloadI_9"
+              ng-model="employee.downloadI9"
+              ng-change="openI9File()"/>
+              <a id="i9doclink"
+              target="_blank"
+              href="/static/documents/i-9.pdf"
+              ng-click="employee.downloadI9 = true">
+              Click to download I-9 and acknowledge you have read the entire I-9 form
+              </a>
+          </div>
+
+          <bm-signature-picker user-id="employeeId" on-confirm-sign="signDocument(resultSignature)" sign-button-text="signButtonText" allow-sign-predicate="allowProceedWithSign()"></bm-signature-picker>
+        </div>
+      </li>
+      <li>
+        <div class="textbox" style="padding-top:20px;">Additional documents (e.g. passport) may be needed to verify your employment eligibility. Please confirm with your employer.</div>
+      </li>
+    </ul>
+  </form>
+</div>
