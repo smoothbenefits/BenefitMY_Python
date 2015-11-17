@@ -60,6 +60,19 @@ benefitmyService.factory('DocumentService',
             return domainModel;
         };
 
+        var mapBatchDocumentCreationViewToDomainModel = function(viewModel) {
+            if (!viewModel) {
+                return viewModel;
+            }
+
+            var domainModel = {};
+
+            domainModel.document_name = viewModel.documentName;
+            domainModel.template_id = viewModel.templateId;
+
+            return domainModel;
+        };
+
         return {
             contentTypes: contentTypes,
 
@@ -145,6 +158,25 @@ benefitmyService.factory('DocumentService',
                 return deferred.promise;
             },
 
+            batchSignUserDocuments: function(documents, signatureId) {
+                var requests = [];
+
+                _.each(documents, function(document) {
+                    var deferred = $q.defer();
+                    requests.push(deferred);
+
+                    documentRepository.sign.save({id:document.id}, { 'signature_id': signatureId })
+                    .$promise.then(function(resultDoc){
+                        deferred.resolve(mapDocumentDomainToViewModel(resultDoc));
+                    },
+                    function(errors) {
+                        deferred.reject(errors);
+                    });
+                });
+
+                return $q.all(requests);
+            },
+
             getDocumentById: function(documentId) {
                 var deferred = $q.defer();
 
@@ -204,6 +236,25 @@ benefitmyService.factory('DocumentService',
      
                 documentRepository.create.save(postObj, function(resultDoc){
                     deferred.resolve(mapDocumentDomainToViewModel(resultDoc));
+                }, function(errors){
+                    deferred.reject(errors);
+                });
+
+                return deferred.promise;
+            },
+
+            batchCreateDocuments: function(companyId, batchCreateDocumentModel) {
+                var domainModel = mapBatchDocumentCreationViewToDomainModel(batchCreateDocumentModel);
+
+                var deferred = $q.defer();
+     
+                documentRepository.byCompany.save({companyId:companyId}, domainModel)
+                .$promise.then(function(resultDocs){
+                    var docs = [];
+                    _.each(resultDocs, function(resultDoc) {
+                        docs.push(mapDocumentDomainToViewModel(resultDoc));    
+                    });
+                    deferred.resolve(docs);
                 }, function(errors){
                     deferred.reject(errors);
                 });

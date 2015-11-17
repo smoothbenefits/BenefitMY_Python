@@ -1,5 +1,6 @@
 from app.models.company_user import CompanyUser
 from app.models.person import Person, SELF
+from app.models.company import Company
 from app.models.aca.employee_1095_c import Employee1095C
 from app.models.aca.company_1095_c import Company1095C, PERIODS
 from app.models.aca.company_1094_c_member_info import Company1094CMemberInfo
@@ -14,6 +15,10 @@ from app.view_models.report.company_1094_c_data import Company1094CData
 class ReportViewModelFactory(object):
     def get_employee_person_info(self, employee_user_id):
         return PersonInfo(self._get_person_by_user(employee_user_id))
+
+    def get_company_info(self, company_id):
+        company_model = Company.objects.get(pk=company_id)
+        return CompanyInfo(company_model)
 
     def get_employee_company_info(self, employee_user_id):
         return CompanyInfo(self._get_company_by_user(employee_user_id))

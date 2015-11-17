@@ -186,6 +186,44 @@ settings.constant('tabLayoutGlobalConfig', [
                 state: 'employee_payroll.direct_deposit'
             }
         ]
+    },
+    {
+        id: 4,
+        section_name: 'employee_onboard',
+        tabs: [
+            {
+                id: 1,
+                verbose_name: 'Basic Information',
+                description: 'Personal information',
+                name: 'basic_info',
+                active: true,
+                state: 'employee_onboard.basic_info'
+            },
+            {
+                id: 2,
+                verbose_name: 'Employment Authorization',
+                description: 'Employment and proof of eligibility',
+                name: 'employment',
+                active: false,
+                state: 'employee_onboard.employment'
+            },
+            {
+                id: 3,
+                verbose_name: 'Tax information (W-4)',
+                description: 'Information about your W-4 and state tax withholding form',
+                name: 'tax',
+                active: false,
+                state: 'employee_onboard.tax'
+            },
+            {
+                id: 4,
+                verbose_name: 'Employee Documents',
+                description: 'Documents required by the employer',
+                name: 'document',
+                active: false,
+                state: 'employee_onboard.document'
+            }
+        ]
     }
 ]);
 

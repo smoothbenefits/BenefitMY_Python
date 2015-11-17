@@ -1,0 +1,40 @@
+<div class="breadcrumb">
+  <a ng-href="#/admin">Employer Dashboard</a>
+  <a ng-click="goBackToViewTemplates()">View Templates</a>
+  <span>Create Documents</span>
+</div>
+
+<div class="content-header">
+  <h1>Batch Documents Creation</h1>
+  <span class="general-info">HR Documents Generation</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="form-holder">
+    <form name="form">
+
+        <div class="alert alert-info">
+            Please note that this will create document for <b>*ALL*</b> employees.
+        </div>
+
+        <div class="form-label">Document Name*</div>
+        <div class="textbox">
+            <input type="text"
+            ng-required="true"
+            ng-model="documentsCreationData.documentName"
+            name="document_name">
+        </div>
+
+        <div>
+            <div class="form-label">Document File</div>
+            <bmdocumentuploadmanager view-only-mode="true" template-id="{{template.id}}"></bmdocumentuploadmanager>
+        </div>
+
+        <div class="submit-box">
+            <button confirm="This will create documents for all employees. Do you wish to continue?" ng-click="createDocuments()" class="btn green" ng-disabled="form.$invalid">Create Documents for All Employees</button>
+        </div>
+
+  </form>
+</div><!-- / .form-holder -->
+<div class="back"><a href="javascript:void(0);" ng-click="goBackToViewTemplates()">&laquo; Back</a></div>
+</div><!-- / .content-body -->
