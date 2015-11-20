@@ -1,0 +1,9 @@
+Your Benefit Information Has Not Been Completed
+
+According to our records, your benefit profile has not been 100% completed. Please log onto our website, and complete the benefit information.
+
+Thank you and best regards.
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}
