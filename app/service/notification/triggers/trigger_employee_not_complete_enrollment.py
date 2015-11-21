@@ -17,6 +17,9 @@ class TriggerEmployeeNotCompleteEnrollment(TriggerNotCompleteEnrollmentBase):
         return len(self._cached_user_list) <= 0
 
     def _check_schedule(self, benefit_start_date):
+        if (not benefit_start_date):
+            return False
+
         date_diff = (benefit_start_date - date.today()).days
 
         # Current schedule settings:
@@ -26,7 +29,7 @@ class TriggerEmployeeNotCompleteEnrollment(TriggerNotCompleteEnrollmentBase):
         if ((date_diff >= -4 and date_diff <= 4)
             or (date_diff > 4 and date_diff % 5 == 0)):
             return True
-        return True
+        return False
 
     def _get_action_data(self):
         return {
