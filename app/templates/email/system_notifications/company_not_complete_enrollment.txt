@@ -1,11 +1,11 @@
 Company: {{context_data.company.name}}
 
-[The employees below have been notified by our system several times, but still don't have their benefit information completed. Please follow up with them directly. The system will stop sending notifications to the mentioned employees directly.]
+[The employees below have been notified by our system several times, but still don't have their benefit enrollment completed. Please follow up with them directly. The system will stop sending notifications to the mentioned employees directly.]
 
-Employees Information
+Employee(s) Information
 
 {% for user in context_data.users %}
-{{user.first_name}} {{user.last_name}} ({{user.birth_date}})
+{{user.first_name}} {{user.last_name}} ({{user.email}})
 {% endfor %}
 
 

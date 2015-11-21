@@ -42,9 +42,7 @@ class TriggerNotCompleteEnrollmentBase(TriggerBase):
                 # the action
                 continue
 
-            start_date = employee_profile.benefit_start_date
-            if (not start_date):
-                start_date = employee_profile.start_date
+            start_date = employee_profile.start_date
 
             # skip if this user's start date does not meet notification
             # schedule
@@ -67,7 +65,7 @@ class TriggerNotCompleteEnrollmentBase(TriggerBase):
     def _is_cached_data_empty(self):
         raise NotImplementedError
 
-    def _check_schedule(self, benefit_start_date):
+    def _check_schedule(self, start_date):
         raise NotImplementedError
 
     def _get_action_data(self):

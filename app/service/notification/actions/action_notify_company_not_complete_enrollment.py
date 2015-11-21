@@ -30,6 +30,8 @@ class ActionNotifyCompanyNotCompleteEnrollment(ActionBase):
 
             # build the list of target emails
             emails = send_email_service.get_employer_emails_by_company(company_id)
+            broker_emails = send_email_service.get_broker_emails_by_company(company_id)
+            emails.extend(broker_emails)
 
             # build the template context data
             context_data = {'context_data':context_data, 'site_url':settings.SITE_URL}
@@ -38,9 +40,11 @@ class ActionNotifyCompanyNotCompleteEnrollment(ActionBase):
                 emails, subject, context_data, html_template_path, txt_template_path)
 
     def _get_user_view_model_list(self, user_id_list):
+        send_email_service = SendEmailService()
         model_list = []
         for user_id in user_id_list:
             user = User.objects.get(pk=user_id)
+            email = send_email_service.get_email_address_by_user(user_id)
             person = None
             persons = Person.objects.filter(user=user.id, relationship=SELF)
             if (len(persons) > 0):
@@ -50,14 +54,14 @@ class ActionNotifyCompanyNotCompleteEnrollment(ActionBase):
                     {
                         'first_name': person.first_name,
                         'last_name': person.last_name,
-                        'birth_date': person.birth_date
+                        'email': email
                     })
             else:
                 model_list.append(
                     {
                         'first_name': user.first_name,
                         'last_name': user.last_name,
-                        'birth_date': ''
+                        'email': email
                     })
 
         return model_list

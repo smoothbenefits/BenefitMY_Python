@@ -3,15 +3,17 @@
     </head>
     <body>
       <h3>Company: {{context_data.company.name}}</h3>
-      <h4>[The employees below have been notified by our system several times, but still don't have their benefit information completed. Please follow up with them directly. The system will stop sending notifications to the mentioned employees directly.]</h4>
+      <h4>The employee(s) below have been notified by our system several times, but still don't have their benefit enrollment completed. Please follow up with them directly.</h4>
       <br/>
-      <div>Employees Information</div>
+      <h4>The system will now stop sending notifications to the mentioned employees directly.</h4>
+      <br/>
+      <div>Employee(s) Information</div>
       <table border="1">
           <thead>
             <tr>
               <th><span>First Name</span></th>
               <th><span>Last Name</span></th>
-              <th><span>Birth Date</span></th>
+              <th><span>Email</span></th>
             </tr>
           </thead>
           <tbody>
@@ -19,7 +21,7 @@
             <tr>
                 <td>{{user.first_name}}</td>
                 <td>{{user.last_name}}</td>
-                <td>{{user.birth_date}}</td>
+                <td>{{user.email}}</td>
             </tr>
             {% endfor %}
           </tbody>

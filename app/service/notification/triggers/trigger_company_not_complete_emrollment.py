@@ -18,15 +18,15 @@ class TriggerCompanyNotCompleteEnrollment(TriggerNotCompleteEnrollmentBase):
     def _is_cached_data_empty(self):
         return len(self._cached_company_user_list) <= 0
 
-    def _check_schedule(self, benefit_start_date):
-        if (not benefit_start_date):
+    def _check_schedule(self, start_date):
+        if (not start_date):
             return False
 
-        date_diff = (benefit_start_date - date.today()).days
+        date_diff = (start_date - date.today()).days
 
         # Current schedule settings:
         #  - only check and trigger this on the 5th day after
-        #    the benefit start date
+        #    the start date
         if (date_diff == -5):
             return True
         return False
