@@ -21,12 +21,10 @@ class NotificationService(object):
         self._triggers = []
 
         trig_emp_not_enroll = TriggerEmployeeNotCompleteEnrollment()
-        # trig_emp_not_enroll.append_action(ActionPrintToConsole())
         trig_emp_not_enroll.append_action(ActionNotifyEmployeeNotCompleteEnrollment())
         self._triggers.append(trig_emp_not_enroll)
 
         trig_comp_not_enroll = TriggerCompanyNotCompleteEnrollment()
-        # trig_comp_not_enroll.append_action(ActionPrintToConsole())
         trig_comp_not_enroll.append_action(ActionNotifyCompanyNotCompleteEnrollment())
         self._triggers.append(trig_comp_not_enroll)
 

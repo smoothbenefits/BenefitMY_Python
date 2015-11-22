@@ -16,7 +16,7 @@ class ActionNotifyCompanyNotCompleteEnrollment(ActionBase):
 
         send_email_service = SendEmailService()
 
-        subject = 'Notification: Employee Enrollments not Completed'
+        subject = '[Action Required] Employee Enrollments not Completed'
         html_template_path = 'email/system_notifications/company_not_complete_enrollment.html'
         txt_template_path = 'email/system_notifications/company_not_complete_enrollment.txt'
 
