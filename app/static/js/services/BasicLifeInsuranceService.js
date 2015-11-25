@@ -127,6 +127,25 @@ benefitmyService.factory('BasicLifeInsuranceService',
       return deferred.promise;
     };
 
+    var mapCompanyBasicLifePlanToDomainModel = function(useCostRate, company, basicLifePlan, companyPlan) {
+      var domainModel = {
+        "company": company.id,
+        "life_insurance_plan": basicLifePlan.id,
+        "insurance_amount": companyPlan.amount,
+        "salary_multiplier": companyPlan.multiplier,
+      };
+
+      if (useCostRate) {
+        domainModel.total_cost_rate = companyPlan.costRate;
+        domainModel.employee_contribution_percentage = companyPlan.employeeContributionPercentage;
+      } else {
+        domainModel.total_cost_per_period = companyPlan.totalCost;
+        domainModel.employee_cost_per_period = (companyPlan.employeeContribution / company.pay_period_definition.month_factor).toFixed(10)
+      }
+
+      return domainModel;
+    };
+
     return {
       saveLifeInsurancePlan: function(planToSave){
         var deferred = $q.defer();
@@ -200,17 +219,19 @@ benefitmyService.factory('BasicLifeInsuranceService',
         return deferred.promise;
       },
 
-      enrollCompanyForBasicLifeInsurancePlan: function(basicLife, companyBasicLife, company) {
+      enrollCompanyForBasicLifeInsurancePlan: function(basicLife, companyBasicLife, company, useCostRate) {
         var deferred = $q.defer();
 
-        var linkToSave = {
-          "company": company.id,
-          "life_insurance_plan": basicLife.id,
-          "insurance_amount": companyBasicLife.amount,
-          "salary_multiplier": companyBasicLife.multiplier,
-          "total_cost_per_period": companyBasicLife.totalCost,
-          "employee_cost_per_period": (companyBasicLife.employeeContribution / company.pay_period_definition.month_factor).toFixed(10)
-        };
+        var linkToSave = mapCompanyBasicLifePlanToDomainModel(useCostRate, company, basicLife, companyBasicLife);
+
+        // var linkToSave = {
+        //   "company": company.id,
+        //   "life_insurance_plan": basicLife.id,
+        //   "insurance_amount": companyBasicLife.amount,
+        //   "salary_multiplier": companyBasicLife.multiplier,
+        //   "total_cost_per_period": companyBasicLife.totalCost,
+        //   "employee_cost_per_period": (companyBasicLife.employeeContribution / company.pay_period_definition.month_factor).toFixed(10)
+        // };
 
         CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {

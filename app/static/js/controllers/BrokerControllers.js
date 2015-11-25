@@ -695,12 +695,20 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
     };
 
     $scope.buttonEnabled = function() {
+      var costElementProvided;
+      if (!$scope.useCostRate) {
+        costElementProvided = _.isNumber($scope.newLifeInsurancePlan.totalCost)
+          && _.isNumber($scope.newLifeInsurancePlan.employeeContribution);
+      } else {
+        costElementProvided = _.isNumber($scope.newLifeInsurancePlan.costRate)
+          && _.isNumber($scope.newLifeInsurancePlan.employeeContributionPercentage);
+      }
+
       return $scope.newLifeInsurancePlan.name
-             && _.isNumber($scope.newLifeInsurancePlan.totalCost)
-             && _.isNumber($scope.newLifeInsurancePlan.employeeContribution)
-             && (_.isNumber($scope.newLifeInsurancePlan.amount)
-                 || _.isNumber($scope.newLifeInsurancePlan.multiplier))
-             && $scope.isValidMultiplier($scope.newLifeInsurancePlan.multiplier);
+        && costElementProvided
+        && (_.isNumber($scope.newLifeInsurancePlan.amount)
+        || _.isNumber($scope.newLifeInsurancePlan.multiplier))
+        && $scope.isValidMultiplier($scope.newLifeInsurancePlan.multiplier);
     };
 
     // Need the user information for the current user (broker)
@@ -713,7 +721,7 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
         //  2. Broker enrolls the company for the plan
         BasicLifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan)
         .then(function(newPlan) {
-          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan, $scope.company)
+          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan, $scope.company, $scope.useCostRate)
           .then(
             function() {
               var successMessage = "The new basic life insurance plan has been saved successfully."
