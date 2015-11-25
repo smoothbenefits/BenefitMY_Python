@@ -252,6 +252,7 @@ PIPELINE_JS = {
             'js/directives/SignaturePicker.js',
             'js/directives/DocumentUploadManager.js',
             'js/directives/EmployeeDocumentViewer.js',
+            'js/directives/Edit1094c.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',

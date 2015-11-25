@@ -35,6 +35,10 @@ var clientsController = brokersControllers.controller('clientsController', [
       $state.go('/broker/employee_list', {client_id: clientId});
     };
 
+    $scope.viewACA = function(clientId){
+      $state.go('broker_company_aca_report', {company_id: clientId});
+    };
+
     var getClientList = function(theUser)
     {
         clientListRepository.get({userId:theUser.id})
@@ -1632,3 +1636,11 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
       $scope.benefitId = parseInt($stateParams.benefit_id);
 
 }]);
+
+var companyAcaReport = brokersControllers.controller('companyAcaReport', [
+  '$scope', '$stateParams', '$controller',
+  function($scope, $stateParams, $controller) {
+    $controller('modalMessageControllerBase', {$scope: $scope});
+    $scope.companyId = $stateParams.company_id;
+  }
+]);

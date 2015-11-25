@@ -173,7 +173,12 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             state('broker_company_employee_personal_info', {
                 url: '/broker/employee/:employee_id/information',
                 templateUrl: '/static/partials/employee_profile/edit_personal_info.html',
-                controller: 'brokerEmployeeInfoController',
+                controller: 'brokerEmployeeInfoController'
+            }).
+            state('broker_company_aca_report', {
+                url: '/broker/company/:company_id/aca_report',
+                templateUrl: '/static/partials/aca/aca_report_card.html',
+                controller: 'companyAcaReport'
             }).
             state('/broker/benefit/add_details/:client_id/:benefit_id', {
                 url: '/broker/benefit/add_details/:client_id/:benefit_id',
@@ -202,7 +207,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('aca_report', {
               url: '/admin/reports/aca/:company_id',
-              templateUrl: '/static/partials/aca/aca_report_summary.html',
+              templateUrl: '/static/partials/aca/aca_report_card.html',
               controller: 'employerAcaReport'
             }).
             state('/admin/broker/add/:company_id', {
