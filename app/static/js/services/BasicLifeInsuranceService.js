@@ -5,6 +5,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
    'CompanyBasicLifeInsurancePlanRepository',
    'CompanyUserBasicLifeInsurancePlanRepository',
    'PersonService',
+   'CompensationService',
    '$q',
    'EmployeeProfileService',
   function (
@@ -12,6 +13,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
       CompanyBasicLifeInsurancePlanRepository,
       CompanyUserBasicLifeInsurancePlanRepository,
       PersonService,
+      CompensationService,
       $q,
       EmployeeProfileService){
 
@@ -43,6 +45,12 @@ benefitmyService.factory('BasicLifeInsuranceService',
         deferred.reject(error);
       });
       return deferred.promise;
+    };
+
+    var getLifeInsuranceEmployeePremium = function(employeeUserId, basicLifeInsurancePlan) {
+
+      return CompanyUserBasicLifeInsurancePlanRepository.PlanPremiumByUser.post({userId: employeeUserId, planId: basicLifeInsurancePlan.id})
+      .$promise;
     };
 
     var getLifeInsurancePlansForCompany = function(company) {
@@ -196,6 +204,8 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
       getLifeInsurancePlansForCompany: getLifeInsurancePlansForCompany,
 
+      getLifeInsuranceEmployeePremium: getLifeInsuranceEmployeePremium,
+
       getLifeInsurancePlansForCompanyByType: function(company, plan_type) {
         var deferred = $q.defer();
 
@@ -223,15 +233,6 @@ benefitmyService.factory('BasicLifeInsuranceService',
         var deferred = $q.defer();
 
         var linkToSave = mapCompanyBasicLifePlanToDomainModel(useCostRate, company, basicLife, companyBasicLife);
-
-        // var linkToSave = {
-        //   "company": company.id,
-        //   "life_insurance_plan": basicLife.id,
-        //   "insurance_amount": companyBasicLife.amount,
-        //   "salary_multiplier": companyBasicLife.multiplier,
-        //   "total_cost_per_period": companyBasicLife.totalCost,
-        //   "employee_cost_per_period": (companyBasicLife.employeeContribution / company.pay_period_definition.month_factor).toFixed(10)
-        // };
 
         CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {
