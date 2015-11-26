@@ -1454,44 +1454,9 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
 ]);
 
 var employerAcaReport = employersController.controller('employerAcaReport', [
-  '$scope', '$state', '$stateParams', '$modal', '$controller', 'Company1094CService',
-  function($scope, $state, $stateParams, $modal, $controller, Company1094CService) {
+  '$scope', '$stateParams', '$controller',
+  function($scope, $stateParams, $controller) {
     $controller('modalMessageControllerBase', {$scope: $scope});
-
-    var companyId = $stateParams.company_id;
-
-    Company1094CService.Get1094CEligibilityCertification().then(function(data) {
-      $scope.eligibilityCertification = data;
-    });
-
-    Company1094CService.Get1094CByCompany(companyId).then(function(data) {
-      $scope.sorted1094CData = data;
-    });
-
-    $scope.getCompany1094CUrl = function() {
-      return Company1094CService.GetCompany1094CUrl(companyId);
-    };
-
-    $scope.edit1094CInfo = function() {
-      var modalInstance = $modal.open({
-        templateUrl: '/static/partials/aca/modal_company_1094_c.html',
-        controller: 'Company1094CModalController',
-        size: 'lg',
-        backdrop: 'static',
-        resolve: {
-          CompanyId: function() { return companyId; },
-          EligibilityCertification: function() { return $scope.eligibilityCertification; },
-          Company1094CData: function() {
-            return angular.copy($scope.sorted1094CData);
-          }
-        }
-      });
-
-      modalInstance.result.then(function(saved1094CData) {
-        $scope.sorted1094CData = saved1094CData;
-        $scope.showMessageWithOkayOnly('Success', 'Company 1094C data has been saved successfully.');
-      });
-    };
-
+    $scope.companyId = $stateParams.company_id;
   }
 ]);
