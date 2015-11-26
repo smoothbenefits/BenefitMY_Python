@@ -519,7 +519,9 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 cost = life_insurance_service.get_basic_life_insurance_cost_for_employee(employee_person.id)
                 col_num = self._write_field(excelSheet, row_num, col_num, cost.benefit_amount)
                 col_num = self._write_field(excelSheet, row_num, col_num, cost.total_cost)
-                col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(cost.employee_cost))
+                # Convert employee premium to per pay period from per month
+                employee_premium = float(cost.employee_cost) * company_plan.company.pay_period_definition.month_factor
+                col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_premium))
                 col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
                 return col_num
             else:
