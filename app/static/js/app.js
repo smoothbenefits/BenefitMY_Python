@@ -398,7 +398,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'employeeI9Controller'
             }).
             state('employee_family', {
-                url: '/employee/family/:employeeId?:onboard',
+                url: '/employee/family/:employeeId?',
                 templateUrl: '/static/partials/family_management/base.html',
                 controller: 'employeeFamilyController'
             }).

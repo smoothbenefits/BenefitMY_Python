@@ -78,7 +78,6 @@ BenefitMyApp.controller(
         });
       });
 
-      $scope.isOnboarding = $scope.onboard;
       $scope.currentRole = $scope.role;
 
       var openEditModal = function(member){
@@ -139,7 +138,6 @@ BenefitMyApp.controller(
     restrict: 'E',
     scope: {
     	employee: '=',
-      onboard: '=?',
     	editorUserId: '=?'
     },
     templateUrl: '/static/partials/family_management/directive_main.html',

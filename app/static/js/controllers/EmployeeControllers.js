@@ -851,7 +851,7 @@ var onboardDocument = employeeControllers.controller('onboardDocument',
     $('body').addClass('onboarding-page');
 
     $scope.documentsSigned = function(){
-      $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
+      $state.go('employee_family', {employeeId: $scope.employeeId});
     };
 }]);
 
@@ -2529,7 +2529,6 @@ var employeeFamilyController = employeeControllers.controller(
 
     $('body').removeClass('onboarding-page');
     $scope.employeeId = $stateParams.employeeId;
-    $scope.isOnboarding = $stateParams.onboard === 'true';
   }
 ]);
 

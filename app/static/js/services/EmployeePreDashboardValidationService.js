@@ -4,37 +4,43 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('EmployeePreDashboardValidationService',
                          ['$state',
                           'PersonService',
-                          'currentUser',
+                          'UserService',
                           'employmentAuthRepository',
                           'employeeTaxRepository',
                           'PersonService',
                           'DocumentService',
+                          'BenefitSummaryService',
   function($state,
            PersonService,
-           currentUser,
+           UserService,
            employmentAuthRepository,
            employeeTaxRepository,
            PersonService,
-           DocumentService){
+           DocumentService,
+           BenefitSummaryService){
 
-    var getUrlFromState = function(state, employeeId) {
-        return $state.href(state, { employee_id: employeeId }).replace('#', '');
+    var getUrlFromState = function(state, stateParams) {
+        return $state.href(state, stateParams).replace('#', '');
     };
 
     var getBasicInfoUrl = function(employeeId){
-      return getUrlFromState('employee_onboard.basic_info', employeeId);
+      return getUrlFromState('employee_onboard.basic_info', { employee_id: employeeId });
     };
 
     var getEmploymentAuthUrl = function(employeeId){
-      return getUrlFromState('employee_onboard.employment', employeeId);
+      return getUrlFromState('employee_onboard.employment', { employee_id: employeeId });
     };
 
     var getTaxUrl = function(employeeId){
-      return getUrlFromState('employee_onboard.tax', employeeId);
+      return getUrlFromState('employee_onboard.tax', { employee_id: employeeId });
     };
 
     var getDocumentUrl = function(employeeId){
-      return getUrlFromState('employee_onboard.document', employeeId);
+      return getUrlFromState('employee_onboard.document', { employee_id: employeeId });
+    };
+
+    var getBenefitEnrollFlowUrl = function(employeeId){
+      return getUrlFromState('employee_family', { employeeId: employeeId });
     };
 
     var validatePersonInfo = function(person){
@@ -135,13 +141,43 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         );
     };
 
+    var validateBenefitEnrollments = function(employeeId, succeeded, failed) {
+        UserService.getCurUserInfo().then(
+            function(userInfo) {
+                var company = userInfo.currentRole.company;
+
+                BenefitSummaryService.getBenefitEnrollmentByUser(employeeId, company.id).then(
+                    function(enrollmentSummary) {
+                        if (enrollmentSummary.allEnrollmentsCompleted) {
+                            succeeded();
+                        }
+                        else {
+                            failed();
+                        }
+                    },
+                    function(errors) {
+                        failed();
+                    }
+                );
+            },
+            function(errors) {
+                failed();
+            }
+        );
+    };
+
     return {
         onboarding: function(employeeId, succeeded, failed){
           validateBasicInfo(employeeId, function(){
             validateEmploymentAuth(employeeId, function(){
               validateW4Info(employeeId, function(){
                 validateDocuments(employeeId, function() {
-                    succeeded();
+                    validateBenefitEnrollments(employeeId, function() {
+                        succeeded();
+                    },
+                    function() {
+                        failed(getBenefitEnrollFlowUrl(employeeId));
+                    });
                 },
                 function() {
                     failed(getDocumentUrl(employeeId));
