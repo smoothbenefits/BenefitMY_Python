@@ -55,6 +55,7 @@ from report_export_view_base import ReportExportViewBase
 from app.service.disability_insurance_service import DisabilityInsuranceService
 
 from app.service.compensation_service import CompensationService
+from app.service.life_insurance_service import LifeInsuranceService
 
 User = get_user_model()
 
@@ -513,19 +514,12 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 company_plan = employee_plan.company_life_insurance
                 plan = company_plan.life_insurance_plan
                 col_num = self._write_field(excelSheet, row_num, col_num, plan.name)
-                insurance_total = company_plan.insurance_amount
-                if not insurance_total and company_plan.salary_multiplier:
-                    employee_profile = self._get_employee_profile_by_user_id(employee_user_id, company_plan.company.id)
-                    if employee_profile and employee_profile.annual_base_salary:
-                        insurance_total = employee_profile.annual_base_salary * company_plan.salary_multiplier
-                    else:
-                        insurance_total = 'No Salary Info'
-                col_num = self._write_field(excelSheet, row_num, col_num, insurance_total)
-                col_num = self._write_field(excelSheet, row_num, col_num, company_plan.total_cost_per_period)
-                employee_premium = 0
-                if (company_plan.employee_cost_per_period):
-                    employee_premium = float(company_plan.employee_cost_per_period) * company_plan.company.pay_period_definition.month_factor
-                col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(employee_premium))
+                life_insurance_service = LifeInsuranceService(company_plan)
+                employee_person = self._get_employee_person(employee_user_id)
+                cost = life_insurance_service.get_basic_life_insurance_cost_for_employee(employee_person.id)
+                col_num = self._write_field(excelSheet, row_num, col_num, cost.benefit_amount)
+                col_num = self._write_field(excelSheet, row_num, col_num, cost.total_cost)
+                col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(cost.employee_cost))
                 col_num = self._write_employee_benefit_record_reason(employee_plan, excelSheet, row_num, col_num)
                 return col_num
             else:
@@ -652,6 +646,15 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(employee_benefit_record.updated_at))
 
         return col_num
+
+    def _get_employee_person(self, user_id):
+        try:
+            person_list = Person.objects.filter(user=user_id, relationship='self')
+            if person_list:
+                return person_list[0]
+            return None
+        except Person.DoesNotExist:
+            return None
 
     def _get_employee_current_annual_salary(self, person_model):
         if (not person_model):
