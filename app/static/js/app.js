@@ -418,7 +418,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'employeeAcceptDocument'
             }).
             state('employee_onboard', {
-                url: '/employee/onboard/:employee_id',
+                url: '/employee/onboard/:employee_id/:new_employee',
                 templateUrl: '/static/partials/employee_onboard/index.html',
                 controller: 'onboardIndex'
             }).

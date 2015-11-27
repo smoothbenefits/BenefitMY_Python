@@ -23,20 +23,20 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         return $state.href(state, stateParams).replace('#', '');
     };
 
-    var getBasicInfoUrl = function(employeeId){
-      return getUrlFromState('employee_onboard.basic_info', { employee_id: employeeId });
+    var getBasicInfoUrl = function(employeeId, isNewEmployee){
+      return getUrlFromState('employee_onboard.basic_info', { employee_id: employeeId, new_employee: isNewEmployee });
     };
 
-    var getEmploymentAuthUrl = function(employeeId){
-      return getUrlFromState('employee_onboard.employment', { employee_id: employeeId });
+    var getEmploymentAuthUrl = function(employeeId, isNewEmployee){
+      return getUrlFromState('employee_onboard.employment', { employee_id: employeeId, new_employee: isNewEmployee });
     };
 
-    var getTaxUrl = function(employeeId){
-      return getUrlFromState('employee_onboard.tax', { employee_id: employeeId });
+    var getTaxUrl = function(employeeId, isNewEmployee){
+      return getUrlFromState('employee_onboard.tax', { employee_id: employeeId, new_employee: isNewEmployee });
     };
 
-    var getDocumentUrl = function(employeeId){
-      return getUrlFromState('employee_onboard.document', { employee_id: employeeId });
+    var getDocumentUrl = function(employeeId, isNewEmployee){
+      return getUrlFromState('employee_onboard.document', { employee_id: employeeId, new_employee: isNewEmployee });
     };
 
     var getBenefitEnrollFlowUrl = function(employeeId){
@@ -83,10 +83,15 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         });
     };
 
-    var validateEmploymentAuth = function(employeeId, succeeded, failed){
-      //step two (employment auth) validation
-      //get the sigature for employment auth document
-      employmentAuthRepository.get({userId:employeeId})
+    var validateEmploymentAuth = function(employeeId, isNewEmployee, succeeded, failed){
+      if (!isNewEmployee) {
+        // Skip I-9 validation if this is not a new employee
+        succeeded();
+      } 
+      else {
+        //step two (employment auth) validation
+        //get the sigature for employment auth document
+        employmentAuthRepository.get({userId:employeeId})
         .$promise.then(function(response){
            if(!(response && response.signature && response.signature.signature)){
             failed();
@@ -99,10 +104,16 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
             failed();
           }
         });
+      } 
     };
 
-    var validateW4Info = function(employeeId, succeeded, failed){
-      employeeTaxRepository.get({userId:employeeId})
+    var validateW4Info = function(employeeId, isNewEmployee, succeeded, failed){
+      if (!isNewEmployee) {
+        // Skip I-9 validation if this is not a new employee
+        succeeded();
+      } 
+      else {
+        employeeTaxRepository.get({userId:employeeId})
         .$promise.then(function(response){
           if(!response ||
              (_.isNumber(response.user_defined_points) && response.user_defined_points < 0) ||
@@ -116,6 +127,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         }, function(err){
           failed(err);
         });
+      }
     };
 
     var validateDocuments = function(employeeId, succeeded, failed) {
@@ -167,10 +179,10 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     };
 
     return {
-        onboarding: function(employeeId, succeeded, failed){
+        onboarding: function(employeeId, isNewEmployee, succeeded, failed){
           validateBasicInfo(employeeId, function(){
-            validateEmploymentAuth(employeeId, function(){
-              validateW4Info(employeeId, function(){
+            validateEmploymentAuth(employeeId, isNewEmployee, function(){
+              validateW4Info(employeeId, isNewEmployee, function(){
                 validateDocuments(employeeId, function() {
                     validateBenefitEnrollments(employeeId, function() {
                         succeeded();
@@ -180,18 +192,18 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                     });
                 },
                 function() {
-                    failed(getDocumentUrl(employeeId));
+                    failed(getDocumentUrl(employeeId, isNewEmployee));
                 });
               },
               function(){
-                failed(getTaxUrl(employeeId));
+                failed(getTaxUrl(employeeId, isNewEmployee));
               });
             },
             function(){
-              failed(getEmploymentAuthUrl(employeeId));
+              failed(getEmploymentAuthUrl(employeeId, isNewEmployee));
             });
           }, function(){
-            failed(getBasicInfoUrl(employeeId));
+            failed(getBasicInfoUrl(employeeId, isNewEmployee));
           });
         },
         basicInfo: function(employeeId, succeeded, failed){
