@@ -23,7 +23,7 @@ class CompanyLifeInsuranceEmployeePremiumView(APIView):
         except Person.DoesNotExist:
             return None
 
-    def post(self, request, pk, user_id, format=None):
+    def get(self, request, pk, user_id, format=None):
         company_plan = self._get_plan(pk)
         emp_person = self._get_employee_person(user_id)
         if not emp_person:

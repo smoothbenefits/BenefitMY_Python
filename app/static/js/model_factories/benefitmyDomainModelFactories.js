@@ -252,9 +252,7 @@ benefitmyDomainModelFactories.factory('CompanyUserBasicLifeInsurancePlanReposito
             method: 'PUT'
         }
       }),
-      PlanPremiumByUser: $resource('/api/v1/user/:userId/life_insurance_plan/:planId/premium/', {userId: '@userId', planId: '@planId'}, {
-        post: { method: 'POST' }
-      })
+      PlanPremiumByUser: $resource('/api/v1/user/:userId/life_insurance_plan/:planId/premium/', {userId: '@userId', planId: '@planId'})
     };
   }
 ]);

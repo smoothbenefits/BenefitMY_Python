@@ -49,7 +49,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
     var getLifeInsuranceEmployeePremium = function(employeeUserId, basicLifeInsurancePlan) {
 
-      return CompanyUserBasicLifeInsurancePlanRepository.PlanPremiumByUser.post({userId: employeeUserId, planId: basicLifeInsurancePlan.id})
+      return CompanyUserBasicLifeInsurancePlanRepository.PlanPremiumByUser.get({userId: employeeUserId, planId: basicLifeInsurancePlan.id})
       .$promise;
     };
 
