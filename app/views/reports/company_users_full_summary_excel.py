@@ -649,15 +649,6 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
 
         return col_num
 
-    def _get_employee_person(self, user_id):
-        try:
-            person_list = Person.objects.filter(user=user_id, relationship='self')
-            if person_list:
-                return person_list[0]
-            return None
-        except Person.DoesNotExist:
-            return None
-
     def _get_employee_current_annual_salary(self, person_model):
         if (not person_model):
             return None

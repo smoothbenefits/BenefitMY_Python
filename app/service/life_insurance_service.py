@@ -9,7 +9,6 @@ class LifeInsuranceService(object):
         self._life_insurance_plan = life_insurance_plan
 
     def _use_fix_benefit_cost(self):
-        print type(self._life_insurance_plan)
         if self._life_insurance_plan.total_cost_per_period and self._life_insurance_plan.employee_cost_per_period:
             return True
 
