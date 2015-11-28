@@ -616,18 +616,36 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
    '$state',
    '$stateParams',
    'tabLayoutGlobalConfig',
+   'UserService',
+   'CompanyFeatureService',
    function ($scope,
              $state,
              $stateParams,
-             tabLayoutGlobalConfig){
-    $scope.isNewEmployee = $stateParams.new_employee;
-    var section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_onboard'});
-    $scope.tabs = section.tabs;
-    if (!$scope.isNewEmployee) {
-        $scope.tabs = _.reject(section.tabs, function(tab) {
-            return tab.name == 'employment' || tab.name == 'tax';
-        });
-    }
+             tabLayoutGlobalConfig,
+             UserService,
+             CompanyFeatureService){
+    $scope.isNewEmployee = $stateParams.new_employee === 'true';
+    var disabledFeaturesPromise = UserService.getCurUserInfo().then(function(userInfo) {
+        var company = userInfo.currentRole.company;
+        return CompanyFeatureService.getDisabledCompanyFeatureByCompany(company.id);
+    });
+
+    disabledFeaturesPromise.then(function(disabledFeatures) {
+        var section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_onboard'});
+        $scope.tabs = section.tabs;
+        if (!$scope.isNewEmployee 
+            || (disabledFeatures && disabledFeatures.I9)) {
+            $scope.tabs = _.reject($scope.tabs, function(tab) {
+                return tab.name == 'employment';
+            });
+        }
+        if (!$scope.isNewEmployee 
+            || (disabledFeatures && disabledFeatures.W4)) {
+            $scope.tabs = _.reject($scope.tabs, function(tab) {
+                return tab.name == 'tax';
+            });
+        }
+    });
    }
   ]);
 
@@ -649,7 +667,7 @@ var onboardBasicInfo = employeeControllers.controller('onboardBasicInfo',
 
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
-    $scope.isNewEmployee = $stateParams.new_employee;
+    $scope.isNewEmployee = $stateParams.new_employee === 'true';
     $scope.displayAll = false;
 
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, $scope.isNewEmployee, function(){
@@ -698,7 +716,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
            EmploymentProfileService,
            EmployeePreDashboardValidationService){
     $scope.employeeId = $stateParams.employee_id;
-    $scope.isNewEmployee = $stateParams.new_employee;
+    $scope.isNewEmployee = $stateParams.new_employee === 'true';
 
     $scope.employee = {
       auth_type: '',
@@ -771,7 +789,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
 
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
-    $scope.isNewEmployee = $stateParams.new_employee;
+    $scope.isNewEmployee = $stateParams.new_employee === 'true';
 
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, $scope.isNewEmployee, function(){
       $location.path('/employee');
@@ -847,7 +865,7 @@ var onboardDocument = employeeControllers.controller('onboardDocument',
 
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
-    $scope.isNewEmployee = $stateParams.new_employee;
+    $scope.isNewEmployee = $stateParams.new_employee === 'true';
 
     EmployeePreDashboardValidationService.onboarding($scope.employeeId, $scope.isNewEmployee, function(){
       $location.path('/employee');
