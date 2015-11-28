@@ -8,6 +8,7 @@ from app.factory.report_view_model_factory import ReportViewModelFactory
 from app.models.aca.company_1095_c import PERIODS
 from app.models.employee_profile import EmployeeProfile
 from datetime import date, timedelta
+from copy import deepcopy
 
 User = get_user_model()
 FORM_YEAR = 2015
@@ -150,6 +151,10 @@ class Form1095CView(ReportExportViewBase):
         for i in range(1, 13):
             period_date = period_date_map[i]
             benefit_data = None
+            cur_period_data = None
+            if employee_1095c_data:
+                cur_period_data = next((datum for datum in employee_1095c_data if datum.period == period_date['period']), None)
+            print "{}, {}".format(whole_year, whole_year_benefit_data)
             if not (whole_year and whole_year_benefit_data) and \
                 emp_end_date >= period_date['date'] and emp_start_date < self._get_next_month_start(period_date['date']):
                 # We should not record any data, unless within this period the employee is active
@@ -157,12 +162,13 @@ class Form1095CView(ReportExportViewBase):
                 # if the employee is terminated at the beginning of the month, the employee is active in that month
                 if whole_year_benefit_data:
                     # we choose to record the "All 12 month" column data
-                    benefit_data = whole_year_benefit_data
-                else:
+                    benefit_data = deepcopy(whole_year_benefit_data)
+                    # If the overriden effective_safe_harbor is different, use the overriden one.
+                    if cur_period_data and cur_period_data.effective_safe_harbor and benefit_data.effective_safe_harbor != cur_period_data:
+                        benefit_data.effective_safe_harbor = cur_period_data.effective_safe_harbor
+                elif cur_period_data:
                     # We record whatever the company specified
-                    benefit_data_array = next(datum for datum in employee_1095c_data if datum.period == period_date['period'])
-                    if benefit_data_array:
-                        benefit_data = benefit_data_array
+                    benefit_data = cur_period_data
 
             period_date['benefit_data'] = benefit_data
 

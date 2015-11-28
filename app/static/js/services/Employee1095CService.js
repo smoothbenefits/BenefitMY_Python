@@ -61,14 +61,13 @@ benefitmyService.factory('Employee1095CService', [
         return item.period != 'All 12 Months';
       });
       var anyMonthlyCode = _.some(monthlyCodes, function(item) { return item.safe_harbor; });
-      var hasAllMonthlyCodes = _.every(monthlyCodes, function(item) { return item.safe_harbor; });
 
       if (allYearCode.safe_harbor && anyMonthlyCode) {
-        return 'Please enter either All 12 Months code or monthly codes.';
+        return 'Please enter either only All 12 Months code or monthly codes.';
       }
 
-      if (!allYearCode.safe_harbor && !hasAllMonthlyCodes) {
-        return 'Values for all month are required, from Jan. to Dec.';
+      if (!allYearCode.safe_harbor && !anyMonthlyCode) {
+        return 'Please enter a code for either All 12 Months or any monthly code';
       }
 
       return PASS_VALIDATION;
