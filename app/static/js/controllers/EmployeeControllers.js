@@ -207,7 +207,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
     });
 
     $scope.inTextMode = function() {
-        return $scope.document 
+        return $scope.document
             && $scope.document.contentType == DocumentService.contentTypes.text;
     };
 
@@ -742,20 +742,20 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', 
-   '$state', 
-   '$stateParams', 
-   '$location', 
-   '$window', 
-   'employeePayrollService', 
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$location',
+   '$window',
+   'employeePayrollService',
    'EmployeePreDashboardValidationService',
   function(
-    $scope, 
-    $state, 
-    $stateParams, 
-    $location, 
-    $window, 
-    employeePayrollService, 
+    $scope,
+    $state,
+    $stateParams,
+    $location,
+    $window,
+    employeePayrollService,
     EmployeePreDashboardValidationService){
 
     $scope.employee = {};
@@ -819,18 +819,18 @@ var onboardTax = employeeControllers.controller('onboardTax',
 }]);
 
 var onboardDocument = employeeControllers.controller('onboardDocument',
-  ['$scope', 
-   '$state', 
-   '$stateParams', 
-   '$location', 
-   '$window', 
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$location',
+   '$window',
    'EmployeePreDashboardValidationService',
   function(
-    $scope, 
-    $state, 
-    $stateParams, 
-    $location, 
-    $window, 
+    $scope,
+    $state,
+    $stateParams,
+    $location,
+    $window,
     EmployeePreDashboardValidationService){
 
     $scope.employee = {};
@@ -1307,8 +1307,8 @@ var healthBenefitsSignup = employeeControllers.controller(
         });
 
         $scope.preSelectEmployee = function(selectedBenefitPlan) {
-          if (selectedBenefitPlan && 
-              selectedBenefitPlan.eligibleMemberCombo && 
+          if (selectedBenefitPlan &&
+              selectedBenefitPlan.eligibleMemberCombo &&
               selectedBenefitPlan.eligibleMemberCombo.familyList){
             var self = _.findWhere(selectedBenefitPlan.eligibleMemberCombo.familyList, {relationship: 'self'});
             self.selected = true;
@@ -1643,9 +1643,14 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               // the basicLifeInsurancePlan rather than make the two parallel.
               $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = plans[0];
 
-              if (parseFloat($scope.basicLifeInsurancePlan.employee_cost_per_period) > 0){
-                $scope.basicLifeInsurancePlan.mandatory = false;
-              }
+              // Calculate employee premium for basic life insurance benefit
+              BasicLifeInsuranceService.getLifeInsuranceEmployeePremium(employeeId, plans[0]).then(function(premium) {
+                $scope.basicLifeInsurancePlan.employee_cost_per_period = premium.employee;
+
+                if (parseFloat($scope.basicLifeInsurancePlan.employee_cost_per_period) > 0){
+                  $scope.basicLifeInsurancePlan.mandatory = false;
+                }
+              });
             }
 
             // Get current user's basic life insurance plan situation
