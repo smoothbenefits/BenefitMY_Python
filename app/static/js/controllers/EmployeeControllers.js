@@ -693,7 +693,7 @@ var onboardBasicInfo = employeeControllers.controller('onboardBasicInfo',
       $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');
       PersonService.savePersonInfo($scope.employeeId, $scope.employee)
       .then(function(successResponse){
-        $state.go('employee_onboard.employment', { employee_id: $scope.employeeId });
+        $state.go('employee_onboard.employment', { employee_id: $scope.employeeId, new_employee: $scope.isNewEmployee });
       }, function(errorResponse){
           alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
       });
@@ -763,7 +763,7 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 
         EmploymentProfileService.saveEmploymentAuthByUserId($scope.employee, signature.id)
         .then(function(response){
-          $state.go('employee_onboard.tax', { employee_id: $scope.employeeId });
+          $state.go('employee_onboard.tax', { employee_id: $scope.employeeId, new_employee: $scope.isNewEmployee });
         }, function(error){
           alert('Failed to add employment information');
         });
@@ -843,7 +843,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
       var empAuth = employeePayrollService.mapW4ViewToDto($scope.employee);
       employeePayrollService.saveEmployeeTaxByUserId($scope.employeeId, empAuth)
       .then(function(response){
-        $state.go('employee_onboard.document', { employee_id: $scope.employeeId });
+        $state.go('employee_onboard.document', { employee_id: $scope.employeeId, new_employee: $scope.isNewEmployee });
       });
     };
 }]);
