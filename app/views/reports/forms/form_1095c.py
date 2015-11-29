@@ -114,7 +114,7 @@ class Form1095CView(ReportExportViewBase):
                 field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_300[0]'.format(2)
             fields[str(field_key)] = benefit_data.employee_share
             field_key = 'topmostSubform[0].Page1[0].Part2Table[0].BodyRow{0}[0].f1_0{1}[0]'.format(3, 50 + index)
-            fields[str(field_key)] = benefit_data.effective_safe_harbor
+            fields[str(field_key)] = benefit_data.safe_harbor
         index += 1
         return index
 
@@ -163,9 +163,6 @@ class Form1095CView(ReportExportViewBase):
                 if whole_year_benefit_data:
                     # we choose to record the "All 12 month" column data
                     benefit_data = deepcopy(whole_year_benefit_data)
-                    # If the overriden effective_safe_harbor is different, use the overriden one.
-                    if cur_period_data and cur_period_data.effective_safe_harbor and benefit_data.effective_safe_harbor != cur_period_data:
-                        benefit_data.effective_safe_harbor = cur_period_data.effective_safe_harbor
                 elif cur_period_data:
                     # We record whatever the company specified
                     benefit_data = cur_period_data

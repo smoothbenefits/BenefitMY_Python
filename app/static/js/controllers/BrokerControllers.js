@@ -407,7 +407,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         });
       };
 
-      $scope.editEmployeeSafeHarborCode = function(employeeId) {
+      $scope.editEmployee1095C = function(employeeId) {
         var modalInstance = $modal.open({
           templateUrl: '/static/partials/aca/modal_employee_1095_c.html',
           controller: 'employee1095CModalController',
@@ -423,7 +423,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         });
 
         modalInstance.result.then(function(saved1095CData) {
-          $scope.showMessageWithOkayOnly('Success', 'Employee safe harbor code has been saved successfully.');
+          $scope.showMessageWithOkayOnly('Success', 'Employee 1095C data has been saved successfully.');
         });
       };
 }]);

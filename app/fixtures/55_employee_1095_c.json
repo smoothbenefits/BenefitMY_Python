@@ -3,6 +3,8 @@
     "fields": {
       "company": 1,
       "person": 3,
+      "offer_of_coverage": "1B",
+      "employee_share": 23.00,
       "safe_harbor": "SAFE",
       "period": "All 12 Months",
       "created_at": "2015-04-27T04:00:00Z",
@@ -15,6 +17,8 @@
     "fields": {
       "company": 1,
       "person": 4,
+      "offer_of_coverage": "1C",
+      "employee_share": 43.00,
       "safe_harbor": "",
       "period": "Sept",
       "created_at": "2015-04-27T04:00:00Z",
@@ -27,6 +31,8 @@
     "fields": {
       "company": 1,
       "person": 4,
+      "offer_of_coverage": "1C",
+      "employee_share": 43.00,
       "safe_harbor": "",
       "period": "Oct",
       "created_at": "2015-04-27T04:00:00Z",
@@ -39,6 +45,8 @@
     "fields": {
       "company": 1,
       "person": 4,
+      "offer_of_coverage": "1C",
+      "employee_share": 43.00,
       "safe_harbor": "",
       "period": "Nov",
       "created_at": "2015-04-27T04:00:00Z",
@@ -51,6 +59,8 @@
     "fields": {
       "company": 1,
       "person": 4,
+      "offer_of_coverage": "1C",
+      "employee_share": 43.00,
       "safe_harbor": "",
       "period": "Dec",
       "created_at": "2015-04-27T04:00:00Z",
