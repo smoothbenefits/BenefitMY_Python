@@ -154,7 +154,6 @@ class Form1095CView(ReportExportViewBase):
             cur_period_data = None
             if employee_1095c_data:
                 cur_period_data = next((datum for datum in employee_1095c_data if datum.period == period_date['period']), None)
-            print "{}, {}".format(whole_year, whole_year_benefit_data)
             if not (whole_year and whole_year_benefit_data) and \
                 emp_end_date >= period_date['date'] and emp_start_date < self._get_next_month_start(period_date['date']):
                 # We should not record any data, unless within this period the employee is active
@@ -162,7 +161,7 @@ class Form1095CView(ReportExportViewBase):
                 # if the employee is terminated at the beginning of the month, the employee is active in that month
                 if whole_year_benefit_data:
                     # we choose to record the "All 12 month" column data
-                    benefit_data = deepcopy(whole_year_benefit_data)
+                    benefit_data = whole_year_benefit_data
                 elif cur_period_data:
                     # We record whatever the company specified
                     benefit_data = cur_period_data
