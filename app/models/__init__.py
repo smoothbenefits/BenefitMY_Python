@@ -57,6 +57,7 @@ from fsa.fsa import FSA
 from fsa.fsa_plan import FsaPlan
 
 from company_features import CompanyFeatures
+from company_group import CompanyGroup
 from upload import Upload
 from upload_audience import UploadAudience
 from upload_application_feature import UploadApplicationFeature

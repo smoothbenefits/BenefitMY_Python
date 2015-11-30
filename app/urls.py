@@ -128,6 +128,7 @@ from app.views.user_settings_view import SettingView
 
 from app.views.direct_deposit_view import DirectDepositView
 from app.views.company_features_view import CompanyFeaturesView
+from app.views.company_group_view import CompanyGroupView
 from app.views.sys_application_feature_view import SysApplicationFeatureView
 
 from app.views.fsa.fsa_view import (
@@ -256,6 +257,9 @@ urlpatterns = patterns('app.views',
 
     # Company features api
     url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
+
+    # Company groups api
+    url(r'^%s/company/<?P<company_id>\w+)/groups/?$' % PREFIX, CompanyGroupView.as_view(), name='company_group_api'),
 
     # FSA api
     url(r'^%s/brokers/(?P<pk>\w+)/fsa/?$' % PREFIX,
