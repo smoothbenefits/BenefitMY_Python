@@ -407,12 +407,6 @@ var employee1095CModalController = userControllers.controller('employee1095CModa
       });
     });
 
-    _.each(Company1095CData, function(datum) {
-      if (!datum.safe_harbor) {
-        datum.safe_harbor = 'N/A';
-      }
-    });
-
     $scope.sorted1095CData = Company1095CData;
     $scope.employeeId = EmployeeId;
 

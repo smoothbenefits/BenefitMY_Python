@@ -1,8 +1,8 @@
 <div class="modal-header">
-    <h4 class="modal-title">Emplooyee Safe Harbor Code</h4>
+    <h4 class="modal-title">Specific Employee 1095C data</h4>
 </div>
 <div class="modal-body col-md-12">
-  <h6>Please fill out the following form to specify employee safe harbor code</h6>
+  <h6>Please fill out the following form to specify employee 1095C data</h6>
   <table class="table table-striped horizontal">
     <thead>
       <tr>
@@ -13,6 +13,26 @@
       </tr>
     </thead>
     <tbody>
+    <tr>
+        <td>Employee Offer of</br>Coverage Code</td>
+        <td ng-repeat = "employeeItem in employee1095CData">
+          <input type="text" style="text-align:center" class="input-upper" ng-model="employeeItem.offer_of_coverage" />
+        </td>
+      </tr>
+      <tr>
+        <td>Company Default</br>Offer of Coverage Code</td>
+        <td style="text-align:center" ng-repeat = "item in sorted1095CData">{{item.offer_of_coverage}}</td>
+      </tr>
+      <tr>
+        <td>Employee Share</br>of Premium $</td>
+        <td ng-repeat = "employeeItem in employee1095CData">
+          <input type="number" style="text-align:center" class="input-upper" ng-model="employeeItem.employee_share" />
+        </td>
+      </tr>
+      <tr>
+        <td>Company Default</br>Employee Share of Premium $</td>
+        <td style="text-align:center" ng-repeat = "item in sorted1095CData">{{item.employee_share}}</td>
+      </tr>
       <tr>
         <td>Employee Safe</br>Harbor Code</td>
         <td ng-repeat = "employeeItem in employee1095CData">
