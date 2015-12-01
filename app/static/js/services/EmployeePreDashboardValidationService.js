@@ -25,20 +25,20 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         return $state.href(state, stateParams).replace('#', '');
     };
 
-    var getBasicInfoUrl = function(employeeId, isNewEmployee){
-      return getUrlFromState('employee_onboard.basic_info', { employee_id: employeeId, new_employee: isNewEmployee });
+    var getBasicInfoUrl = function(employeeId){
+      return getUrlFromState('employee_onboard.basic_info', { employee_id: employeeId });
     };
 
-    var getEmploymentAuthUrl = function(employeeId, isNewEmployee){
-      return getUrlFromState('employee_onboard.employment', { employee_id: employeeId, new_employee: isNewEmployee });
+    var getEmploymentAuthUrl = function(employeeId){
+      return getUrlFromState('employee_onboard.employment', { employee_id: employeeId });
     };
 
-    var getTaxUrl = function(employeeId, isNewEmployee){
-      return getUrlFromState('employee_onboard.tax', { employee_id: employeeId, new_employee: isNewEmployee });
+    var getTaxUrl = function(employeeId){
+      return getUrlFromState('employee_onboard.tax', { employee_id: employeeId });
     };
 
-    var getDocumentUrl = function(employeeId, isNewEmployee){
-      return getUrlFromState('employee_onboard.document', { employee_id: employeeId, new_employee: isNewEmployee });
+    var getDocumentUrl = function(employeeId){
+      return getUrlFromState('employee_onboard.document', { employee_id: employeeId });
     };
 
     var getBenefitEnrollFlowUrl = function(employeeId){
@@ -197,38 +197,45 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     };
 
     return {
-        onboarding: function(employeeId, isNewEmployee, succeeded, failed){
+        onboarding: function(employeeId, succeeded, failed){
           var disabledFeaturesPromise = UserService.getCurUserInfo().then(function(userInfo) {
             var company = userInfo.currentRole.company;
             return CompanyFeatureService.getDisabledCompanyFeatureByCompany(company.id);
           });
           disabledFeaturesPromise.then(
             function(disabledFeatures){
-              validateBasicInfo(employeeId, isNewEmployee, disabledFeatures, function(){
-                validateEmploymentAuth(employeeId, isNewEmployee, disabledFeatures, function(){
-                  validateW4Info(employeeId, isNewEmployee, disabledFeatures, function(){
-                    validateDocuments(employeeId, isNewEmployee, disabledFeatures, function() {
-                        validateBenefitEnrollments(employeeId, isNewEmployee, disabledFeatures, function() {
-                            succeeded();
+              UserService.isCurrentUserNewEmployee().then(
+                function(isNewEmployee) {
+                  validateBasicInfo(employeeId, isNewEmployee, disabledFeatures, function(){
+                    validateEmploymentAuth(employeeId, isNewEmployee, disabledFeatures, function(){
+                      validateW4Info(employeeId, isNewEmployee, disabledFeatures, function(){
+                        validateDocuments(employeeId, isNewEmployee, disabledFeatures, function() {
+                            validateBenefitEnrollments(employeeId, isNewEmployee, disabledFeatures, function() {
+                                succeeded();
+                            },
+                            function() {
+                                failed(getBenefitEnrollFlowUrl(employeeId));
+                            });
                         },
                         function() {
-                            failed(getBenefitEnrollFlowUrl(employeeId));
+                            failed(getDocumentUrl(employeeId, isNewEmployee));
                         });
+                      },
+                      function(){
+                        failed(getTaxUrl(employeeId, isNewEmployee));
+                      });
                     },
-                    function() {
-                        failed(getDocumentUrl(employeeId, isNewEmployee));
+                    function(){
+                      failed(getEmploymentAuthUrl(employeeId, isNewEmployee));
                     });
-                  },
-                  function(){
-                    failed(getTaxUrl(employeeId, isNewEmployee));
+                  }, function(){
+                    failed(getBasicInfoUrl(employeeId, isNewEmployee));
                   });
                 },
-                function(){
-                  failed(getEmploymentAuthUrl(employeeId, isNewEmployee));
-                });
-              }, function(){
-                failed(getBasicInfoUrl(employeeId, isNewEmployee));
-              });
+                function() {
+                    failed();
+                }
+              );
             },
             function() {
                 failed();
