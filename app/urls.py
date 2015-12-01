@@ -259,7 +259,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
 
     # Company groups api
-    url(r'^%s/company/<?P<company_id>\w+)/groups/?$' % PREFIX, CompanyGroupView.as_view(), name='company_group_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/groups/?$' % PREFIX, CompanyGroupView.as_view(), name='company_group_by_company_api'),
+
+    url(r'^%s/company_group/(?P<pk>\w+)/?$' % PREFIX, CompanyGroupView.as_view(), name='company_group_api'),
 
     # FSA api
     url(r'^%s/brokers/(?P<pk>\w+)/fsa/?$' % PREFIX,

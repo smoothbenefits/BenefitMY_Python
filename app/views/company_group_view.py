@@ -18,7 +18,7 @@ class CompanyGroupView(APIView):
 
     def get(self, request, company_id, format=None):
         group = CompanyGroup.objects.filter(company=company_id)
-        serializer = CompanyGroupSerializer(Group, many=True)
+        serializer = CompanyGroupSerializer(group, many=True)
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
@@ -30,7 +30,7 @@ class CompanyGroupView(APIView):
 
     def put(self, request, pk, format=None):
         company_group = self._get_object(pk)
-        serializer = CompanyGroupSerializer(company_group, data=request.DATA)
+        serializer = CompanyGroupPostSerializer(company_group, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

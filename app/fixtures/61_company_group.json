@@ -1,8 +1,8 @@
 [
   {
     "fields": {
-      "created_at": "2015-01-24T16:16:02.760Z",
-      "updated_at": "2015-05-04T16:56:09.765Z",
+      "created": "2015-01-24T16:16:02.760Z",
+      "updated": "2015-05-04T16:56:09.765Z",
       "company": 1,
       "name": "Management"
     },
@@ -11,8 +11,8 @@
   },
   {
     "fields": {
-      "created_at": "2015-01-24T16:16:02.760Z",
-      "updated_at": "2015-05-04T16:56:09.765Z",
+      "created": "2015-01-24T16:16:02.760Z",
+      "updated": "2015-05-04T16:56:09.765Z",
       "company": 1,
       "name": "Salary-based"
     },
@@ -21,8 +21,8 @@
   },
   {
     "fields": {
-      "created_at": "2015-01-24T16:16:02.760Z",
-      "updated_at": "2015-05-04T16:56:09.765Z",
+      "created": "2015-01-24T16:16:02.760Z",
+      "updated": "2015-05-04T16:56:09.765Z",
       "company": 1,
       "name": "Contractor"
     },
