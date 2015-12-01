@@ -1,0 +1,32 @@
+[
+  {
+    "fields": {
+      "created": "2015-01-24T16:16:02.760Z",
+      "updated": "2015-05-04T16:56:09.765Z",
+      "company": 1,
+      "name": "Management"
+    },
+    "model": "app.companygroup",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created": "2015-01-24T16:16:02.760Z",
+      "updated": "2015-05-04T16:56:09.765Z",
+      "company": 1,
+      "name": "Salary-based"
+    },
+    "model": "app.companygroup",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "created": "2015-01-24T16:16:02.760Z",
+      "updated": "2015-05-04T16:56:09.765Z",
+      "company": 1,
+      "name": "Contractor"
+    },
+    "model": "app.companygroup",
+    "pk": 3
+  }
+]
