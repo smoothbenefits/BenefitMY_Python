@@ -1,0 +1,30 @@
+<div class="content-header">
+  <h1>Groups for {{companyName}}</h1>
+  <span class="general-info">Total <b>{{groupCount}}</b> groups</span>
+  <div class="cta"><span class="btn green" ng-click="addClient()">Add new group</span></div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="table-responsive table-holder">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><span>Name</span></th>
+          <th><span>Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="group in groups">
+          <td><a ng-click="editGroupInfo(group)">{{group.name}}</a></td>
+          <td>
+            <span class="btn inline" ng-click="editGroupInfo(group)">Edit</span>
+            <span class="btn inline" ng-click="deleteGroup(group)">Delete</span>
+          </td>
+        </tr>
+        <tr>
+          <td><a type=""</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
