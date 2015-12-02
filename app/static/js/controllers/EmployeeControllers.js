@@ -52,7 +52,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
       $scope.employee_id = response.user.id;
       $scope.company = response.currentRole.company;
       var employeeRole = _.findWhere(response.roles, {company_user_type:'employee'});
-      if(employeeRole && employeeRole.new_employee){
+      if(employeeRole){
         EmployeePreDashboardValidationService.onboarding($scope.employee_id, function(){
           return response;
         }, function(redirectUrl){
@@ -614,11 +614,41 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$state
 var onboardIndex = employeeControllers.controller('onboardIndex',
   ['$scope',
    '$state',
+   '$stateParams',
    'tabLayoutGlobalConfig',
+   'UserService',
+   'CompanyFeatureService',
    function ($scope,
              $state,
-             tabLayoutGlobalConfig){
-    $scope.section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_onboard'});
+             $stateParams,
+             tabLayoutGlobalConfig,
+             UserService,
+             CompanyFeatureService){
+    var disabledFeaturesPromise = UserService.getCurUserInfo().then(function(userInfo) {
+        var company = userInfo.currentRole.company;
+        return CompanyFeatureService.getDisabledCompanyFeatureByCompany(company.id);
+    });
+
+    disabledFeaturesPromise.then(function(disabledFeatures) {
+        UserService.isCurrentUserNewEmployee().then(
+            function(isNewEmployee) {
+                var section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_onboard'});
+                $scope.tabs = section.tabs;
+                if (!isNewEmployee 
+                    || (disabledFeatures && disabledFeatures.I9)) {
+                    $scope.tabs = _.reject($scope.tabs, function(tab) {
+                        return tab.name == 'employment';
+                    });
+                }
+                if (!isNewEmployee 
+                    || (disabledFeatures && disabledFeatures.W4)) {
+                    $scope.tabs = _.reject($scope.tabs, function(tab) {
+                        return tab.name == 'tax';
+                    });
+                }
+            }
+        );
+    });
    }
   ]);
 
@@ -851,7 +881,7 @@ var onboardDocument = employeeControllers.controller('onboardDocument',
     $('body').addClass('onboarding-page');
 
     $scope.documentsSigned = function(){
-      $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
+      $state.go('employee_family', {employeeId: $scope.employeeId});
     };
 }]);
 
@@ -2534,7 +2564,6 @@ var employeeFamilyController = employeeControllers.controller(
 
     $('body').removeClass('onboarding-page');
     $scope.employeeId = $stateParams.employeeId;
-    $scope.isOnboarding = $stateParams.onboard === 'true';
   }
 ]);
 

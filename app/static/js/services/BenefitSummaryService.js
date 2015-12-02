@@ -18,6 +18,10 @@ benefitmyService.factory('BenefitSummaryService',
     var mapPersonBenefitToViewModel = function (domainModel) {
       var viewModel = {};
 
+      // Pre-flag the result to say that the enrollments are
+      // completed, and let downstream logic to say otherwise. 
+      viewModel.allEnrollmentsCompleted = true;
+
       // Map enrolled health benefits
       if (domainModel.health_benefit_enrolled[0] != null) {
         _.each(domainModel.health_benefit_enrolled, function(enrolled) {
@@ -190,6 +194,10 @@ benefitmyService.factory('BenefitSummaryService',
               personEnrollment[offeredBenefitType] = {
                 "status": NOT_SELECTED
               };
+
+              // Also flag that the person's enrollment is not complete
+              personEnrollment.allEnrollmentsCompleted = false;
+              
             } else if (!personEnrollment[offeredBenefitType].status) {
               personEnrollment[offeredBenefitType].status = SELECTED;
             }
