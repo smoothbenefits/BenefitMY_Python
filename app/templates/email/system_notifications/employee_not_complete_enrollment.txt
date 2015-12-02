@@ -1,0 +1,9 @@
+Your benefit enrollment has not been completed
+
+According to our records, your benefit enrollment has not been 100% completed. Please log onto our website, and complete your benefit enrollment.
+
+Thank you and best regards.
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}

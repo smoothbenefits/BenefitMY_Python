@@ -11,6 +11,7 @@ from app.models.company_user import CompanyUser
 from app.models.person import Person
 from app.models.phone import Phone
 from app.models.address import Address
+from app.service.send_email_service import SendEmailService
 from app.service.user_enrollment_summary_service import UserEnrollmentSummaryService
 from reversion.models import Revision
 
@@ -34,13 +35,11 @@ class DataModificationService(object):
         # Get the list of employee users made modifications in the search range
         mod_summaries = self.employee_modifications_summary(company_model.id, in_last_num_minutes)
         if (len(mod_summaries) > 0):
-            # Get the list of users (employers) to notify
-            c_users = CompanyUser.objects.filter(company=company_model.id,
-                                           company_user_type='admin')
-            for c_user in c_users:
-                email = self._get_email_address_by_user(c_user.user_id)
-                self._send_notification_email(email, [{ 'company':company_model, 'mod_summary_list':mod_summaries }])
+            email_service = SendEmailService()
 
+            emails = email_service.get_employer_emails_by_company(company_model.id)
+
+            self._send_notification_email(emails, [{ 'company':company_model, 'mod_summary_list':mod_summaries }])
 
     ''' Send email notification to all brokers.
         All clients of each broker would have the relevant notification data
@@ -69,21 +68,29 @@ class DataModificationService(object):
 
         # If there is something needs to be notified about, send the email
         if (len(company_users_collection) > 0):
-            email = self._get_email_address_by_user(broker_user_id)
-            self._send_notification_email(email, company_users_collection)
+            email_service = SendEmailService()
+            emails = [email_service.get_email_address_by_user(broker_user_id)]
+            self._send_notification_email(emails, company_users_collection)
 
     ''' Actually send the email
     '''
-    def _send_notification_email(self, to_email, company_users_collection):
+    def _send_notification_email(self, to_email_list, company_users_collection):
+        email_service = SendEmailService()
+
         # Prepare and send the email with both HTML and plain text contents
         subject = 'Users Data Change Notification'
         from_email = 'Support@benefitmy.com'
-        context = template.Context({'company_users_collection':company_users_collection, 'site_url':settings.SITE_URL})
-        html_template = get_template('email/user_data_change_notification.html')
-        html_content = html_template.render(context)
-        text_template = get_template('email/user_data_change_notification.txt')
-        text_content = text_template.render(context)
-        send_mail(subject, text_content, from_email, [to_email], fail_silently=False, html_message=html_content)
+        context_data = {'company_users_collection':company_users_collection, 'site_url':settings.SITE_URL}
+        html_template_path = 'email/user_data_change_notification.html'
+        text_template_path = 'email/user_data_change_notification.txt'
+
+        email_service.send_support_email(
+            to_email_list,
+            subject,
+            context_data,
+            html_template_path,
+            text_template_path
+        )
 
     ''' Provide summerization of employee-made modifications
         For now, this produces a list of person information about employee users that

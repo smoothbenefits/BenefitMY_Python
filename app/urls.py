@@ -128,6 +128,7 @@ from app.views.user_settings_view import SettingView
 
 from app.views.direct_deposit_view import DirectDepositView
 from app.views.company_features_view import CompanyFeaturesView
+from app.views.company_group_view import CompanyGroupView
 from app.views.sys_application_feature_view import SysApplicationFeatureView
 
 from app.views.fsa.fsa_view import (
@@ -162,6 +163,7 @@ from app.views.sys_benefit_update_reason_view import SysBenefitUpdateReasonView
 from app.views.person_enrollment_summary_view import PersonEnrollmentSummaryView
 from app.views.company_benefit_availability_view import CompanyBenefitAvailabilityView
 from app.views.sys_period_definition_view import SysPeriodDefinitionView
+from app.views.insurance.company_life_insurance_employee_premium_view import CompanyLifeInsuranceEmployeePremiumView
 from app.views.insurance.company_ltd_insurance_employee_premium_view import CompanyLtdInsuranceEmployeePremiumView
 from app.views.insurance.company_std_insurance_employee_premium_view import CompanyStdInsuranceEmployeePremiumView
 from app.views.company_enrollment_summary_view import CompanyEnrollmentSummaryView
@@ -256,6 +258,11 @@ urlpatterns = patterns('app.views',
     # Company features api
     url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
 
+    # Company groups api
+    url(r'^%s/company/(?P<company_id>\w+)/groups/?$' % PREFIX, CompanyGroupView.as_view(), name='company_group_by_company_api'),
+
+    url(r'^%s/company_group/(?P<pk>\w+)/?$' % PREFIX, CompanyGroupView.as_view(), name='company_group_api'),
+
     # FSA api
     url(r'^%s/brokers/(?P<pk>\w+)/fsa/?$' % PREFIX,
         FsaPlanView.as_view(), name='broker_fsa_api'),
@@ -284,6 +291,9 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
+
+    url(r'^%s/user/(?P<user_id>\w+)/life_insurance_plan/(?P<pk>\w+)/premium/?$' % PREFIX,
+        CompanyLifeInsuranceEmployeePremiumView.as_view(), name='user_company_life_insurance_premium_api'),
 
     # Supplemental life insurance api
     url(r'^%s/supplemental_life_condition/?$' % PREFIX,

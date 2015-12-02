@@ -54,9 +54,12 @@ class ReportViewModelFactory(object):
 
         employee_1095c_collection = []
         for period in PERIODS:
-            employee_data = next((datum for datum in employee_1095c if datum.period == period), None)
-            company_data = next((datum for datum in company_1095c if datum.period == period), None)
-            employee_1095c_data = Employee1095CData(employee_data, company_data)
+            period_data = None
+            if employee_1095c:
+                period_data = next((datum for datum in employee_1095c if datum.period == period), None)
+            else:
+                period_data = next((datum for datum in company_1095c if datum.period == period), None)
+            employee_1095c_data = Employee1095CData(period_data)
             employee_1095c_collection.append(employee_1095c_data)
 
         return employee_1095c_collection
