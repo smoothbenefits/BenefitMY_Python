@@ -554,3 +554,15 @@ benefitmyDomainModelFactories.factory('CompanyUserDetailRepository', ['$resource
     }
   }
 ]);
+
+benefitmyDomainModelFactories.factory('CompanyGroupRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'company/:companyId/groups', {companyId: '@companyId'}),
+      ById: $resource(PREFIX + 'company_group/:groupId', {groupId: '@groupId'}, {
+        update: { method: 'PUT' },
+        save: { method: 'POST' }
+      })
+    }
+  }
+]);

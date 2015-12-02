@@ -35,6 +35,10 @@ var clientsController = brokersControllers.controller('clientsController', [
       $state.go('/broker/employee_list', {client_id: clientId});
     };
 
+    $scope.manageBenefitGroup = function(clientId) {
+      $state.go('broker_company_group', {company_id: clientId});
+    };
+
     $scope.viewACA = function(clientId){
       $state.go('broker_company_aca_report', {company_id: clientId});
     };
@@ -94,6 +98,15 @@ var clientsController = brokersControllers.controller('clientsController', [
     );
   }]
 );
+
+var brokerCompanyGroup = brokersControllers.controller('CompanyBenefitGroupManagementController', [
+  '$scope', '$stateParams',
+  function($scope, $stateParams) {
+
+    var companyId = $stateParams.company_id;
+    $scope.company = companyId;
+  }
+]);
 
 var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
   '$scope',
