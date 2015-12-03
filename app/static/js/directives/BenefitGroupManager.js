@@ -3,11 +3,15 @@ BenefitMyApp.controller('CompanyGroupEditModalController', [
   function($scope, $modalInstance, CompanyBenefitGroupService, companyId, group) {
     $scope.group = group;
 
-    $scope.updateGroup = function() {
+    $scope.save = function() {
       CompanyBenefitGroupService.UpdateCompanyGroup(companyId, $scope.group)
       .then(function(response) {
         $modalInstance.close(response);
       });
+    };
+
+    $scope.cancel = function() {
+      $modalInstance.dismiss();
     };
   }
 ]).directive('bmBenefitGroupManager', function() {
@@ -29,6 +33,7 @@ BenefitMyApp.controller('CompanyGroupEditModalController', [
         $scope.deleteGroup = function(group) {
           CompanyBenefitGroupService.DeleteCompanyGroup(group).then(function(response) {
             $scope.showMessageWithOkayOnly('Success', group.name + ' has been deleted successfully');
+            $state.reload();
           }, function(error) {
             $scope.showMessageWithOkayOnly('Error', 'Error occurred when trying to delete the group');
           });

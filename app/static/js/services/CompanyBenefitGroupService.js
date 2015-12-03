@@ -6,6 +6,7 @@ benefitmyService.factory('CompanyBenefitGroupService', [
 
     var mapCompanyGroupToViewModel = function(domainModel) {
       return {
+        'id': domainModel.id,
         'name': domainModel.name,
         'updated': moment(domainModel.updated).format(DATE_FORMAT_STRING)
       };

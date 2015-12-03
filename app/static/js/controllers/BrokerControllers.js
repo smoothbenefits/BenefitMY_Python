@@ -100,13 +100,48 @@ var clientsController = brokersControllers.controller('clientsController', [
 );
 
 var brokerCompanyGroup = brokersControllers.controller('CompanyBenefitGroupManagementController', [
-  '$scope', '$stateParams',
-  function($scope, $stateParams) {
+  '$scope', '$state', '$modal', '$stateParams',
+  function($scope, $state, $modal, $stateParams) {
 
     var companyId = $stateParams.company_id;
     $scope.company = companyId;
+
+    $scope.addNewGroup = function() {
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/common/modal_company_group_edit.html',
+        controller: 'CompanyGroupAddModalController',
+        size: 'md',
+        resolve: {
+          companyId: function() {
+            return companyId;
+          }
+        }
+      });
+
+      modalInstance.result.then(function(group) {
+        $state.reload();
+      });
+    };
   }
 ]);
+
+var companyGroupAdd = brokersControllers.controller('CompanyGroupAddModalController', [
+  '$scope', '$modalInstance','CompanyBenefitGroupService', 'companyId',
+  function($scope, $modalInstance, CompanyBenefitGroupService, companyId) {
+    $scope.save = function() {
+      CompanyBenefitGroupService.AddNewCompanyGroup(companyId, $scope.group)
+      .then(function(response) {
+        $modalInstance.close(response);
+      }, function(error) {
+        $modalInstance.close(error);
+      });
+    };
+
+    $scope.cancel = function() {
+      $modalInstance.dismiss();
+    };
+  }
+])
 
 var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
   '$scope',
