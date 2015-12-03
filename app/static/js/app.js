@@ -5,6 +5,8 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ui.utils.masks',
     'ui.bootstrap',
     'angularFileUpload',
+    'angularSpinner',
+    'blockUI',
     'benefitmyDomainModelFactories',
     'benefitmyService',
     'benefitmyApp.constants',
@@ -37,6 +39,25 @@ BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourcePro
   $httpProvider.defaults.xsrfCookieName = 'csrftoken';
   $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 }]);
+
+// Config the spinner style
+BenefitMyApp.config(['usSpinnerConfigProvider', function (usSpinnerConfigProvider) {
+    usSpinnerConfigProvider.setDefaults({
+        color: '#8CC63E',
+        scale: '3'
+    });
+}]);
+
+// Config the block ui component
+BenefitMyApp.config(function(blockUIConfig) {
+
+  blockUIConfig.template = '<div class="block-ui-overlay"><span us-spinner></span></div>';
+
+  // Change the default delay before the blocking is visible
+  // Setup some delay would increase the pages' responsiveness 
+  blockUIConfig.delay = 150;
+
+});
 
 // Configure global error logging
 // - Preserves the default local logging to console
