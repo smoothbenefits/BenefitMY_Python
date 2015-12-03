@@ -24,6 +24,11 @@
   <script type="text/javascript" src='{% static 'ng-file-upload/angular-file-upload-shim.js' %}'></script>
   <script type="text/javascript" src='{% static 'ng-file-upload/angular-file-upload.js' %}'></script>
   <script type="text/javascript" src='{% static 'stacktrace-js/dist/stacktrace.js' %}'></script>
+  <script type="text/javascript" src='{% static 'spin.js/spin.js' %}'></script>
+  <script type="text/javascript" src='{% static 'angular-spinner/angular-spinner.js' %}'></script>
+  <link rel="stylesheet" href='{% static 'angular-block-ui/dist/angular-block-ui.min.css' %}'/>
+  <!-- After AngularJS -->
+  <script type="text/javascript" src='{% static 'angular-block-ui/dist/angular-block-ui.min.js' %}'></script>
   {% compressed_js "dashboard" %}
 </head>
 
@@ -168,7 +173,9 @@
 
   </div><!-- / #sidebar -->
 
-  <div id="content-wrapper"><div ui-view></div></div> <!-- / #content-wrapper -->
+  <div id="content-wrapper">
+    <div ui-view></div>
+  </div> <!-- / #content-wrapper -->
 </div> <!-- / #dashboard-wrapper -->
 <script type="text/javascript">
 if(!init)
