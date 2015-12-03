@@ -1,0 +1,20 @@
+[
+  {
+    "fields": {
+      "created": "2015-04-24T16:16:02.760Z",
+      "company_group": 1,
+      "user": 3
+    },
+    "model": "app.companygroupmember",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created": "2015-04-24T16:16:02.760Z",
+      "company_group": 1,
+      "user": 4
+    },
+    "model": "app.companygroupmember",
+    "pk": 2
+  }
+]
