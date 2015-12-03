@@ -6,7 +6,8 @@ from app.models.company_group import CompanyGroup
 from app.models.company_group_member import CompanyGroupMember 
 from app.serializers.company_group_member_serializer import (
     CompanyGroupMemberSerializer,
-    CompanyGroupMemberPostSerializer)
+    CompanyGroupMemberPostSerializer,
+    CompanyGroupWithMemberSerializer)
 
 
 class CompanyGroupMemberView(APIView):
@@ -46,9 +47,6 @@ class CompanyGroupMemberCompanyGroupView(APIView):
 
 class CompanyGroupMemberCompanyView(APIView):
     def get(self, request, pk, format=None):
-        members = []
         groups = CompanyGroup.objects.filter(company=pk)
-        for group in groups:
-            members.extend(group.company_group_member.all())
-        serializer = CompanyGroupMemberSerializer(members, many=True)
+        serializer = CompanyGroupWithMemberSerializer(groups, many=True)
         return Response(serializer.data)
