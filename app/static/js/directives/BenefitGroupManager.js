@@ -14,6 +14,22 @@ BenefitMyApp.controller('CompanyGroupEditModalController', [
       $modalInstance.dismiss();
     };
   }
+]).controller('CompanyGroupAddModalController', [
+  '$scope', '$modalInstance','CompanyBenefitGroupService', 'companyId',
+  function($scope, $modalInstance, CompanyBenefitGroupService, companyId) {
+    $scope.save = function() {
+      CompanyBenefitGroupService.AddNewCompanyGroup(companyId, $scope.group)
+      .then(function(response) {
+        $modalInstance.close(response);
+      }, function(error) {
+        $modalInstance.close(error);
+      });
+    };
+
+    $scope.cancel = function() {
+      $modalInstance.dismiss();
+    };
+  }
 ]).directive('bmBenefitGroupManager', function() {
 
   var controller = [
@@ -31,12 +47,17 @@ BenefitMyApp.controller('CompanyGroupEditModalController', [
         });
 
         $scope.deleteGroup = function(group) {
-          CompanyBenefitGroupService.DeleteCompanyGroup(group).then(function(response) {
-            $scope.showMessageWithOkayOnly('Success', group.name + ' has been deleted successfully');
-            $state.reload();
-          }, function(error) {
-            $scope.showMessageWithOkayOnly('Error', 'Error occurred when trying to delete the group');
-          });
+
+          var confirmed = confirm("Are you sure?");
+
+          if (confirmed){
+            CompanyBenefitGroupService.DeleteCompanyGroup(group).then(function(response) {
+              $scope.showMessageWithOkayOnly('Success', group.name + ' has been deleted successfully');
+              $state.reload();
+            }, function(error) {
+              $scope.showMessageWithOkayOnly('Error', 'Error occurred when trying to delete the group');
+            });
+          }
         };
 
         $scope.editGroupInfo = function(group) {
@@ -53,16 +74,19 @@ BenefitMyApp.controller('CompanyGroupEditModalController', [
               }
             }
           });
+        };
 
-          $scope.addNewGroup = function() {
-            CompanyBenefitGroupService.AddNewCompanyGroup(companyId, $scope.newGroup)
-            .then(function(response) {
-              $scope.showMessageWithOkayOnly('Success', 'New group saved successfully');
-              $state.reload();
-            }, function(error) {
-              $scope.showMessageWithOkayOnly('Error', 'Error occurred when tried to save');
-            });
-          };
+        $scope.addNewGroup = function() {
+          var modalInstance = $modal.open({
+            templateUrl: '/static/partials/common/modal_company_group_edit.html',
+            controller: 'CompanyGroupAddModalController',
+            size: 'md',
+            resolve: {
+              companyId: function() {
+                return companyId;
+              }
+            }
+          });
 
           modalInstance.result.then(function(group) {
             $state.reload();
