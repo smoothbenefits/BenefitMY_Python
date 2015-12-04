@@ -50,6 +50,8 @@ class HashPkValidationMiddleware(object):
             res = json.loads(response.content)
             self._encode_key('person', res)
             self._encode_key('company', res)
+            self._encode_key('company_group', res)
+            self._encode_key('user', res)
 
             response.content = json.dumps(res)
 
