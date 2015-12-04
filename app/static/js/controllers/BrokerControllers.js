@@ -103,8 +103,7 @@ var brokerCompanyGroup = brokersControllers.controller('CompanyBenefitGroupManag
   '$scope', '$state', '$modal', '$stateParams',
   function($scope, $state, $modal, $stateParams) {
 
-    var companyId = $stateParams.company_id;
-    $scope.company = companyId;
+    $scope.company = $stateParams.company_id;
   }
 ]);
 
