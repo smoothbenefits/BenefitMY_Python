@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created', models.DateTimeField(auto_now_add=True, null=True)),
-                ('company_group', models.ForeignKey(related_name='company_group', to='app.CompanyGroup')),
+                ('company_group', models.ForeignKey(related_name='company_group_members', to='app.CompanyGroup')),
                 ('user', models.ForeignKey(related_name='company_group_user', to=settings.AUTH_USER_MODEL)),
             ],
             options={

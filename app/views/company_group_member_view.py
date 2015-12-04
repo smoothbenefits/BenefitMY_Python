@@ -26,7 +26,7 @@ class CompanyGroupMemberView(APIView):
 
     def put(self, request, pk, format=None):
         company_group_member = self._get_object(pk)
-        serializer = CompanyGroupPostSerializer(company_group_member, data=request.DATA)
+        serializer = CompanyGroupMemberPostSerializer(company_group_member, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

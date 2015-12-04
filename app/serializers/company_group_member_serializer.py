@@ -30,7 +30,7 @@ class CompanyGroupMemberUserSerializer(HashPkSerializerBase):
 class CompanyGroupWithMemberSerializer(HashPkSerializerBase):
 
     company = ShallowCompanySerializer()
-    company_group_member = CompanyGroupMemberUserSerializer(many=True)
+    company_group_members = CompanyGroupMemberUserSerializer(many=True)
     class Meta:
         model = CompanyGroup
-        fields = ("id", "company", "name", "created", "updated", "company_group_member")
+        fields = ("id", "company", "name", "created", "updated", "company_group_members")
