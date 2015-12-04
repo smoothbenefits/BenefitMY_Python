@@ -905,7 +905,9 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
           $scope.employee.emergency_contact = selfInfo.emergency_contact;
-          $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
+          $scope.employee.gender = selfInfo.gender  
+                                    ? (selfInfo.gender === 'F' ? 'Female' : 'Male')
+                                    : undefined;
 
           // Get the employee profile info that bound to this person
           EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId)
