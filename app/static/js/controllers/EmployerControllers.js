@@ -871,6 +871,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'EmployeeProfileService',
   'EmploymentStatuses',
   'CompensationService',
+  'PersonService',
   function($scope,
            $location,
            $stateParams,
@@ -882,7 +883,8 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            employeeTaxRepository,
            EmployeeProfileService,
            EmploymentStatuses,
-           CompensationService){
+           CompensationService,
+           PersonService){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
@@ -905,7 +907,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
           $scope.employee.emergency_contact = selfInfo.emergency_contact;
-          $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
+          $scope.employee.gender = PersonService.getGenderForDisplay(selfInfo.gender);
 
           // Get the employee profile info that bound to this person
           EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId)
