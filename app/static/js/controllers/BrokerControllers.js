@@ -564,13 +564,15 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
   'peopleRepository',
   'EmployeeProfileService',
   'CompensationService',
+  'PersonService',
   function brokerEmployeeController(
     $scope,
     $location,
     $stateParams,
     peopleRepository,
     EmployeeProfileService,
-    CompensationService){
+    CompensationService,
+    PersonService){
 
       var employeeId = $stateParams.employee_id;
       var companyId = $stateParams.cid;
@@ -587,7 +589,7 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
           $scope.employee.birth_date = selfInfo.birth_date;
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
-          $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
+          $scope.employee.gender = PersonService.getGenderForDisplay(selfInfo.gender);
 
           // Get the employee profile info that bound to this person
           EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, companyId)
