@@ -11,7 +11,7 @@
         <td><a ng-click="editGroupInfo(group)">{{group.name}}</a></td>
         <td>
           <span class="btn inline" ng-click="editGroupInfo(group)">Edit</span>
-          <span class="btn inline" ng-click="deleteGroup(group)">Delete</span>
+          <span class="btn inline" ng-click="deleteGroup(group)" confirm="Are you sure?">Delete</span>
         </td>
       </tr>
     </tbody>

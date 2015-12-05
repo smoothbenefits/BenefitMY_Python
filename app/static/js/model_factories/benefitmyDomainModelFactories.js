@@ -560,8 +560,7 @@ benefitmyDomainModelFactories.factory('CompanyGroupRepository', ['$resource',
     return {
       ByCompany: $resource(PREFIX + 'company/:companyId/groups', {companyId: '@companyId'}),
       ById: $resource(PREFIX + 'company_group/:groupId', {groupId: '@groupId'}, {
-        update: { method: 'PUT' },
-        save: { method: 'POST' }
+        update: { method: 'PUT' }
       })
     }
   }

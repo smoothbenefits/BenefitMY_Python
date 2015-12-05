@@ -47,17 +47,12 @@ BenefitMyApp.controller('CompanyGroupEditModalController', [
         });
 
         $scope.deleteGroup = function(group) {
-
-          var confirmed = confirm("Are you sure?");
-
-          if (confirmed){
-            CompanyBenefitGroupService.DeleteCompanyGroup(group).then(function(response) {
-              $scope.showMessageWithOkayOnly('Success', group.name + ' has been deleted successfully');
-              $state.reload();
-            }, function(error) {
-              $scope.showMessageWithOkayOnly('Error', 'Error occurred when trying to delete the group');
-            });
-          }
+          CompanyBenefitGroupService.DeleteCompanyGroup(group).then(function(response) {
+            $scope.showMessageWithOkayOnly('Success', group.name + ' has been deleted successfully');
+            $state.reload();
+          }, function(error) {
+            $scope.showMessageWithOkayOnly('Error', 'Error occurred when trying to delete the group');
+          });
         };
 
         $scope.editGroupInfo = function(group) {
