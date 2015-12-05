@@ -43,7 +43,6 @@ BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourcePro
 // Config the spinner style
 BenefitMyApp.config(['usSpinnerConfigProvider', function (usSpinnerConfigProvider) {
     usSpinnerConfigProvider.setDefaults({
-        color: '#8CC63E',
         scale: '3'
     });
 }]);
