@@ -149,6 +149,7 @@ var employerUser = employersController.controller('employerUser',
    'DocumentService',
    'CompensationService',
    'EmployerEmployeeManagementService',
+   'CompanyBenefitGroupService',
   function employerUser($scope,
                         $state,
                         $stateParams,
@@ -159,7 +160,8 @@ var employerUser = employersController.controller('employerUser',
                         TemplateService,
                         DocumentService,
                         CompensationService,
-                        EmployerEmployeeManagementService){
+                        EmployerEmployeeManagementService,
+                        CompanyBenefitGroupService){
       var compId = $stateParams.company_id;
       $scope.employees=[];
       $scope.brokers = [];
@@ -173,6 +175,14 @@ var employerUser = employersController.controller('employerUser',
           return EmployerEmployeeManagementService.IsFullTimeEmploymentType(type);
         })
       };
+
+      CompanyBenefitGroupService.GetCompanyBenefitGroupByCompany(compId)
+      .then(function(groups) {
+        $scope.groups = groups;
+        if(groups && groups.length == 1){
+          $scope.addUser.group_id = groups[0].id;
+        }
+      });
 
       $scope.updateSalaryType = function(employee) {
         if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
@@ -279,7 +289,11 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.uploadLink = function(employeeId){
         $state.go('admin_employee_uploads', {company_id:compId, employee_id:employeeId});
-      }
+      };
+
+      $scope.addEmployeeValid = function(){
+        return $scope.form.$invalid || !$scope.groups || $scope.groups.length<=0
+      };
   }
 ]);
 

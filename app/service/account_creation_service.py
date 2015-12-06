@@ -15,6 +15,7 @@ from app.dtos.operation_result import OperationResult
 from app.serializers.person_serializer import PersonSimpleSerializer
 from app.serializers.employee_profile_serializer import EmployeeProfilePostSerializer
 from app.serializers.employee_compensation_serializer import EmployeeCompensationPostSerializer
+from app.serializers.company_group_member_serializer import CompanyGroupMemberPostSerializer
 from app.serializers.dtos.account_creation_data_serializer import AccountCreationDataSerializer
 from app.service.hash_key_service import HashKeyService
 
@@ -370,6 +371,18 @@ class AccountCreationService(object):
                 compensation_serializer.save()
             else:
                 raise Exception("Failed to create compensation record")
+
+            if account_info.group_id:
+                group_member_data = {
+                    'company_group': account_info.group_id,
+                    'user': user.id
+                }
+                company_group_member = CompanyGroupMemberPostSerializer(data=group_member_data)
+                if company_group_member.is_valid():
+                    company_group_member.save()
+                else:
+                    raise Exception("Failed to add this employee to company_group")
+
 
             account_info.user_id = user.id
 
