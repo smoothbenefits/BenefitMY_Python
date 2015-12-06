@@ -195,6 +195,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_profile/edit_personal_info.html',
                 controller: 'brokerEmployeeInfoController'
             }).
+            state('broker_company_group', {
+              url: '/broker/company/:company_id/groups',
+              templateUrl: '/static/partials/client_management/company_group.html',
+              controller: 'CompanyBenefitGroupManagementController'
+            }).
             state('broker_company_aca_report', {
                 url: '/broker/company/:company_id/aca_report',
                 templateUrl: '/static/partials/aca/aca_report_card.html',
