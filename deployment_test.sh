@@ -7,6 +7,7 @@ DB_NAME=$2
 test `git remote | grep heroku` && git remote rm heroku
 
 git remote add heroku git@heroku.com:$APP_NAME.git
+git fetch origin --unshallow
 git fetch heroku --unshallow
 MIGRATION_CHANGES=$(git diff HEAD heroku/master --name-only -- db | wc -l)
 echo "$MIGRATION_CHANGES db changes."
