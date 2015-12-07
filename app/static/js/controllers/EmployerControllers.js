@@ -199,6 +199,12 @@ var employerUser = employersController.controller('employerUser',
             _.each(response.user_roles, function(role){
               if(role.company_user_type=='employee')
               {
+                if (role.user.company_group_user.length > 0){
+                  role.company_group = role.user.company_group_user[0].company_group.name;
+                }
+                else{
+                  role.company_group = 'N/A';
+                }
                 $scope.employees.push(role);
               }
               else if(role.company_user_type=='broker')

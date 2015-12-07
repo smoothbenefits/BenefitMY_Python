@@ -3,12 +3,14 @@ from app.custom_authentication import AuthUser as User
 from app.models.person import Person
 from app.serializers.person_serializer import PersonSerializer
 from hash_pk_serializer_base import HashPkSerializerBase
+from app.serializers.company_group_member_only_group_serializer import CompanyGroupMemberOnlyGroupSerializer
 
 class UserSerializer(HashPkSerializerBase):
     """ we only use person model first/last name
     """
     first_name = serializers.SerializerMethodField('get_first_name')
     last_name = serializers.SerializerMethodField('get_last_name')
+    company_group_user = CompanyGroupMemberOnlyGroupSerializer()
 
     def _get_self_person(self, input_user):
       try:
@@ -54,7 +56,8 @@ class UserSerializer(HashPkSerializerBase):
         fields = ('id',
                   'first_name',
                   'last_name',
-                  'email')
+                  'email', 
+                  'company_group_user')
 
 
 class UserFamilySerializer(HashPkSerializerBase):
