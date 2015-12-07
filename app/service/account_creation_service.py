@@ -373,12 +373,10 @@ class AccountCreationService(object):
                 raise Exception("Failed to create compensation record")
 
             if account_info.group_id:
-                print account_info.group_id
                 group_member_data = {
                     'company_group': account_info.group_id,
                     'user': user.id
                 }
-                print group_member_data
                 company_group_member = CompanyGroupMemberPostSerializer(data=group_member_data)
                 if company_group_member.is_valid():
                     company_group_member.save()
