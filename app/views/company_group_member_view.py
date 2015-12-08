@@ -17,6 +17,11 @@ class CompanyGroupMemberView(APIView):
         except CompanyGroupMember.DoesNotExist:
             raise Http404
 
+    def get(self, request, pk, format=None):
+        group_member = self._get_object(pk)
+        serializer = CompanyGroupMemberSerializer(group_member)
+        return Response(serializer.data)
+
     def post(self, request, pk, format=None):
         serializer = CompanyGroupMemberPostSerializer(data=request.DATA)
         if serializer.is_valid():
