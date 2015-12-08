@@ -457,6 +457,10 @@ var employerBenefits = employersController.controller('employerBenefits',
         $scope.nonMedicalBenefitArray = healthBenefitToDisplay.nonMedicalBenefitArray;
         $scope.benefitCount = healthBenefitToDisplay.benefitCount;
       });
+
+      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($scope.company).then(function(response) {
+        $scope.lifeInsurancePlans = response;
+      });
     });
 
     $scope.sortBy = function(predicate){
@@ -471,10 +475,6 @@ var employerBenefits = employersController.controller('employerBenefits',
     $scope.backtoDashboard = function(){
       $location.path('/admin');
     };
-
-    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id).then(function(response) {
-      $scope.lifeInsurancePlans = response;
-    });
 
     SupplementalLifeInsuranceService.getPlansForCompany($stateParams.company_id).then(function(response) {
       $scope.supplementalLifeInsurancePlans = response;
@@ -582,7 +582,7 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
   function employerModifyTemplate($scope, $state, $stateParams, TemplateService){
     $scope.companyId = $stateParams.company_id;
     $scope.templateId = $stateParams.template_id;
-    
+
     var templateTypes = {
         'Text': 'Text',
         'Upload': 'Upload'
@@ -596,7 +596,7 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
       .then(function(template){
         $scope.template = template;
 
-        $scope.templateType = $scope.template.upload 
+        $scope.templateType = $scope.template.upload
                             ? templateTypes.Upload
                             : templateTypes.Text;
       });
@@ -625,7 +625,7 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
     $scope.hasCompleteData = function() {
         return $scope.template
             && $scope.template.name
-            && ($scope.template.upload 
+            && ($scope.template.upload
                 || $scope.template.content);
     };
 
@@ -655,12 +655,12 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
     };
 
     $scope.createTemplate = function(){
-      if($scope.template.name 
+      if($scope.template.name
          && ($scope.template.content
              || $scope.template.upload))
       {
         cleanTemplateForSave();
-        
+
         TemplateService.createNewTemplate($scope.companyId, $scope.template)
         .then(function(savedTemplate){
           $scope.template = savedTemplate;
@@ -714,12 +714,12 @@ var employerCreateDocument = employersController.controller('employerCreateDocum
     };
 
     $scope.inTextMode = function() {
-        return $scope.selectedTemplate 
+        return $scope.selectedTemplate
             && $scope.selectedTemplate.contentType == TemplateService.contentTypes.text;
     };
 
     $scope.inUploadMode = function() {
-        return $scope.selectedTemplate 
+        return $scope.selectedTemplate
             && $scope.selectedTemplate.contentType == TemplateService.contentTypes.upload;
     };
 
@@ -762,7 +762,7 @@ var employerBatchCreateDocuments = employersController.controller('employerBatch
                                         DocumentService){
     $scope.companyId = $stateParams.company_id;
     $scope.documentsCreationData = {};
-    
+
     TemplateService.getTemplateById($stateParams.template_id).then(function(template) {
         $scope.template = template;
         $scope.documentsCreationData.documentName = template.name;
@@ -775,7 +775,7 @@ var employerBatchCreateDocuments = employersController.controller('employerBatch
         .then(function(resultDocs) {
             alert('Documents have been successfully created for ' + resultDocs.length + ' employees!');
             $scope.goBackToViewTemplates();
-        }, 
+        },
         function(errors) {
             alert('There were problems creating documents. Please try again later or contact support.');
         });
@@ -829,7 +829,7 @@ var employerViewDocument = employersController.controller('employerViewDocument'
     }
 
     $scope.inTextMode = function() {
-        return $scope.activeDocument 
+        return $scope.activeDocument
             && $scope.activeDocument.contentType == DocumentService.contentTypes.text;
     };
 
