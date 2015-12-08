@@ -54,8 +54,8 @@ BenefitMyApp.config(function(blockUIConfig) {
 
   // Change the default delay before the blocking is visible
   // Setup some delay would increase the pages' responsiveness 
-  blockUIConfig.delay = 150;
-
+  blockUIConfig.delay = 250;
+  
 });
 
 // Configure global error logging
