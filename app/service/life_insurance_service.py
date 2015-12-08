@@ -31,7 +31,7 @@ class LifeInsuranceService(object):
 
     def _get_total_premium(self, effective_benefit_amount, rate, year_factor):
         # get total premium per month
-        total_premium = float(effective_benefit_amount * rate / 10 / year_factor)
+        total_premium = float(effective_benefit_amount * (rate / 10) * year_factor)
         return total_premium
 
     def _get_employee_premium(self, total_premium, employee_contribution_percentage):
@@ -63,7 +63,7 @@ class LifeInsuranceService(object):
                 benefit_amount
             )
         else:
-            total_cost = self._get_total_premium(benefit_amount, self._life_insurance_plan.total_cost_rate, 12)
+            total_cost = self._get_total_premium(benefit_amount, self._life_insurance_plan.total_cost_rate, 1.0/12)
             employee_cost = self._get_employee_premium(total_cost, self._life_insurance_plan.employee_contribution_percentage)
             cost = BasicLifeInsuranceCost(total_cost, employee_cost, benefit_amount)
         return cost
