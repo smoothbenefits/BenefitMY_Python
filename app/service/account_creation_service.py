@@ -239,8 +239,8 @@ class AccountCreationService(object):
                 'The specified employment type [%s] is not valid.' % account_info.employment_type
             )
 
-        if not account_info.group_name:
-            result.append_issue('Company group name not specified.')
+        if not account_info.group_name and not account_info.group_id:
+            result.append_issue('Company group not specified.')
 
         result.set_output_data(account_info)
 
