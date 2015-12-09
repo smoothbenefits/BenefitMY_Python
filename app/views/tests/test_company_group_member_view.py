@@ -52,8 +52,8 @@ class CompanyGroupMemberTestCase(TestCase, ViewTestBase):
             "company_group": self.normalize_key(2),
             "user": self.normalize_key(7)
         }
-        response = self.client.post(reverse('company_group_member_api',
-                                    kwargs={'pk': self.normalize_key(1)}),
+        response = self.client.post(reverse('company_group_company_group_member_api',
+                                    kwargs={'pk': self.normalize_key(2)}),
                                     data=json.dumps(post_data),
                                     content_type='application/json')
 
@@ -72,7 +72,7 @@ class CompanyGroupMemberTestCase(TestCase, ViewTestBase):
             "company_group": self.normalize_key(12),
             "user": self.normalize_key(7)
         }
-        response = self.client.post(reverse('company_group_member_api',
+        response = self.client.post(reverse('company_group_company_group_member_api',
                                     kwargs={'pk': self.normalize_key(1)}),
                                     data=json.dumps(post_data),
                                     content_type='application/json')

@@ -8,10 +8,19 @@ BenefitMyApp.controller('CompanyGroupMemberUpdateModalController', [
     });
 
     $scope.save = function() {
-      CompanyBenefitGroupService.updateCompanyGroupMembership($scope.groupMember)
-      .then(function(response) {
-        $modalInstance.close(response);
-      });
+      if($scope.groupMember.id){
+        CompanyBenefitGroupService.UpdateCompanyGroupMembership($scope.groupMember)
+        .then(function(response) {
+          $modalInstance.close(response);
+        });
+      }
+      else{
+        //We should just assign this employee to the selected group
+        CompanyBenefitGroupService.AddNewCompanyGroupMembership($scope.groupMember.user, $scope.groupMember.company_group)
+        .then(function(response){
+          $modalInstance.close(response);
+        });
+      }
     };
 
     $scope.cancel = function() {
