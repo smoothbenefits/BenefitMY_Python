@@ -301,7 +301,7 @@ var employerUser = employersController.controller('employerUser',
         $state.go('admin_employee_uploads', {company_id:$scope.compId, employee_id:employeeId});
       };
 
-      $scope.addEmployeeValid = function(){
+      $scope.addEmployeeInvalid = function(){
         return $scope.form.$invalid || !$scope.groups || $scope.groups.length<=0
       };
   }
