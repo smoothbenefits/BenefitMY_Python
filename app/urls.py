@@ -69,7 +69,11 @@ from app.views.benefit_details_view import (
 
 from app.views.insurance.company_life_insurance_plan_view import \
     CompanyLifeInsurancePlanView
-
+from app.views.insurance.company_group_basic_life_insurance_plan_view import (
+    CompanyGroupBasicLifeInsurancePlanView,
+    CompanyGroupBasicLifeInsurancePlanByCompanyGroupView,
+    CompanyGroupBasicLifeInsurancePlanByCompanyPlanView
+)
 from app.views.insurance.user_company_life_insurance_plan_view import (
     UserCompanyLifeInsuranceView,
     CompanyUsersLifeInsuranceView)
@@ -302,8 +306,16 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
         CompanyLifeInsurancePlanView.as_view(), name='company_life_insurance_plan_api'),
 
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/basic_life_insurance_plan/?$' % PREFIX,
+        CompanyGroupBasicLifeInsurancePlanByCompanyGroupView.as_view(), 
+        name='company_group_basic_life_insurance_plan_api'),
+
     url(r'^%s/user/(?P<user_id>\w+)/life_insurance_plan/(?P<pk>\w+)/premium/?$' % PREFIX,
         CompanyLifeInsuranceEmployeePremiumView.as_view(), name='user_company_life_insurance_premium_api'),
+
+    url(r'^%s/company_basic_life_insurance_plan/(?P<pk>\w+)/company_groups/?$' % PREFIX,
+        CompanyGroupBasicLifeInsurancePlanByCompanyPlanView.as_view(), 
+        name='company_group_basic_life_insurance_plan_by_company_plan_api'),
 
     # Supplemental life insurance api
     url(r'^%s/supplemental_life_condition/?$' % PREFIX,
