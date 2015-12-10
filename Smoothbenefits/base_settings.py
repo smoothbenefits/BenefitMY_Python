@@ -254,6 +254,7 @@ PIPELINE_JS = {
             'js/directives/DocumentUploadManager.js',
             'js/directives/EmployeeDocumentViewer.js',
             'js/directives/Edit1094c.js',
+            'js/directives/GroupMemberLink.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',

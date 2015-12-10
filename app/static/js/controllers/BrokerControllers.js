@@ -117,8 +117,8 @@ var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
            $stateParams,
            CompanyEmployeeSummaryService) {
 
-    var companyId = $stateParams.client_id;
-    CompanyEmployeeSummaryService.getCompanyEmployeeSummary(companyId)
+    $scope.companyId = $stateParams.client_id;
+    CompanyEmployeeSummaryService.getCompanyEmployeeSummary($scope.companyId)
     .then(function(companyUsers) {
       $scope.employees = companyUsers;
     });

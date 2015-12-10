@@ -1,8 +1,8 @@
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('CompanyBenefitGroupService', [
-  '$q', 'CompanyGroupRepository',
-  function($q, CompanyGroupRepository) {
+  '$q', 'CompanyGroupRepository', 'CompanyGroupMemberRepository',
+  function($q, CompanyGroupRepository, CompanyGroupMemberRepository) {
 
     var mapCompanyGroupToViewModel = function(domainModel) {
       return {
@@ -78,11 +78,48 @@ benefitmyService.factory('CompanyBenefitGroupService', [
       return deferred.promise;
     };
 
+    var addNewCompanyGroupMembership = function(user_id, company_group_id){
+      var deferred = $q.defer();
+      var newMembership = {
+        user: user_id,
+        company_group: company_group_id
+      };
+
+      CompanyGroupMemberRepository.ByCompanyGroup.save({groupId:company_group_id}, newMembership)
+      .$promise.then(function(response){
+          CompanyGroupMemberRepository.ById.get({groupMemberId:response.id})
+          .$promise.then(function(groupMember){
+            deferred.resolve(groupMember);
+          });
+        }, function(error){
+          deferred.reject(error);
+      });
+      return deferred.promise;
+    };
+
+    var updateCompanyGroupMembership = function(newMemberGroup){
+      var deferred = $q.defer();
+
+      CompanyGroupMemberRepository.ById.update({groupMemberId:newMemberGroup.id}, newMemberGroup)
+      .$promise.then(function(response){
+        CompanyGroupMemberRepository.ById.get({groupMemberId:response.id})
+        .$promise.then(function(groupMember){
+          deferred.resolve(groupMember);
+        });
+      }, function(error){
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    }
+
     return {
       GetCompanyBenefitGroupByCompany: getCompanyBenefitGroupByCompany,
       AddNewCompanyGroup: addNewCompanyGroup,
       UpdateCompanyGroup: updateCompanyGroup,
       DeleteCompanyGroup: deleteCompanyGroup,
+      UpdateCompanyGroupMembership: updateCompanyGroupMembership,
+      AddNewCompanyGroupMembership: addNewCompanyGroupMembership
     };
   }
 ]);
