@@ -152,7 +152,7 @@ class AccountCreationService(object):
             raise Exception("Failed to add this employee to company_group")
 
     def _get_or_create_group(self, group_name, company_id):
-        comp_group = CompanyGroup.objects.filter(company=company_id).filter(name=group_name)
+        comp_group = CompanyGroup.objects.filter(company=company_id, name=group_name)
         if not comp_group:
             # Let's create a new company_group
             new_comp_group = {
