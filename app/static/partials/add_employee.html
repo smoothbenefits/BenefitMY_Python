@@ -9,8 +9,15 @@
   <span class="general-info">Please enter your employee basic information below</span>
 </div><!-- / .content-header -->
 
+<div ng-show="groups.length <= 0" class="alert alert-danger">
+  It appears that no employee group has been setup for your company.
+  You currently cannot add employee.
+  Please contact your broker, or <a href="mailto:support@workbenefits.me?subject=Add%20Employee%20Error">support@workbenefits.me</a>
+  to resolve this issue.
+</div>
+
 <div class="content-body">
-  <div class="form-holder">
+  <div class="form-holder" ng-if="groups.length > 0">
     <form name="form">
       <div ng-show="alreadyExists" class="form-validation-error">
         The user with email "{{addUser.email}}" already exists in our system!
@@ -21,12 +28,6 @@
         We are sorry but error happened while trying to add the employee. Please email
         <a href="mailto:support@workbenefits.me?subject=Add%20Employee%20Error">support@workbenefits.me</a>
         with detailed steps you've performed before seeing this problem.
-      </div>
-      <div ng-show="groups.length <= 0" class="alert alert-danger">
-        It appears that no employee group has been setup for your company.
-        You currently cannot add employee.
-        Please contact your broker, or <a href="mailto:support@workbenefits.me?subject=Add%20Employee%20Error">support@workbenefits.me</a>
-        about this issue.
       </div>
       <div class="form-label">First Name*</div>
       <div class="textbox">
