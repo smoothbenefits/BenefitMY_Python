@@ -53,6 +53,14 @@ benefitmyService.factory('BasicLifeInsuranceService',
       .$promise;
     };
 
+    var convertNullValueToDash = function(value) {
+      if (value) {
+        return value;
+      } else {
+        return '-';
+      }
+    };
+
     var getLifeInsurancePlansForCompany = function(company) {
       var deferred = $q.defer();
       CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:company.id})
@@ -61,7 +69,21 @@ benefitmyService.factory('BasicLifeInsuranceService',
             companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
             if (companyPlan.life_insurance_plan.insurance_type.toLowerCase() === 'basic'){
               companyPlan.life_insurance_plan.display_insurance_type = 'Basic and AD&D';
-              companyPlan.employee_cost_per_period = (companyPlan.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2);
+
+              if (companyPlan.employee_cost_per_period){
+                companyPlan.employee_cost_per_period = (companyPlan.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2);
+              } else {
+                companyPlan.employee_cost_per_period = convertNullValueToDash(companyPlan.employee_cost_per_period);
+              }
+
+              if (companyPlan.total_cost_rate) {
+                companyPlan.total_cost_rate = Number(companyPlan.total_cost_rate).toFixed(4);
+              } else {
+                companyPlan.total_cost_rate = convertNullValueToDash(companyPlan.total_cost_rate);
+              }
+
+              companyPlan.total_cost_per_period = convertNullValueToDash(companyPlan.total_cost_per_period);
+              companyPlan.employee_contribution_percentage = convertNullValueToDash(companyPlan.employee_contribution_percentage);
             }
           });
           deferred.resolve(plans);

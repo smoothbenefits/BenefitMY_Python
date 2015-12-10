@@ -53,9 +53,8 @@ BenefitMyApp.config(function(blockUIConfig) {
   blockUIConfig.template = '<div class="block-ui-overlay"><span us-spinner></span></div>';
 
   // Change the default delay before the blocking is visible
-  // Setup some delay would increase the pages' responsiveness 
+  // Setup some delay would increase the pages' responsiveness
   blockUIConfig.delay = 250;
-  
 });
 
 // Configure global error logging
