@@ -35,6 +35,10 @@ var clientsController = brokersControllers.controller('clientsController', [
       $state.go('/broker/employee_list', {client_id: clientId});
     };
 
+    $scope.viewACA = function(clientId){
+      $state.go('broker_company_aca_report', {company_id: clientId});
+    };
+
     var getClientList = function(theUser)
     {
         clientListRepository.get({userId:theUser.id})
@@ -403,7 +407,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         });
       };
 
-      $scope.editEmployeeSafeHarborCode = function(employeeId) {
+      $scope.editEmployee1095C = function(employeeId) {
         var modalInstance = $modal.open({
           templateUrl: '/static/partials/aca/modal_employee_1095_c.html',
           controller: 'employee1095CModalController',
@@ -419,7 +423,7 @@ var selectedBenefitsController = brokersControllers.controller('selectedBenefits
         });
 
         modalInstance.result.then(function(saved1095CData) {
-          $scope.showMessageWithOkayOnly('Success', 'Employee safe harbor code has been saved successfully.');
+          $scope.showMessageWithOkayOnly('Success', 'Employee 1095C data has been saved successfully.');
         });
       };
 }]);
@@ -560,13 +564,15 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
   'peopleRepository',
   'EmployeeProfileService',
   'CompensationService',
+  'PersonService',
   function brokerEmployeeController(
     $scope,
     $location,
     $stateParams,
     peopleRepository,
     EmployeeProfileService,
-    CompensationService){
+    CompensationService,
+    PersonService){
 
       var employeeId = $stateParams.employee_id;
       var companyId = $stateParams.cid;
@@ -583,7 +589,7 @@ var brokerEmployeeController = brokersControllers.controller('brokerEmployeeCont
           $scope.employee.birth_date = selfInfo.birth_date;
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
-          $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
+          $scope.employee.gender = PersonService.getGenderForDisplay(selfInfo.gender);
 
           // Get the employee profile info that bound to this person
           EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, companyId)
@@ -616,7 +622,6 @@ var brokerEmployeeFamilyController = brokersControllers.controller(
    '$stateParams',
   function($scope, $state, $stateParams) {
     $scope.employeeId = $stateParams.employeeId;
-    $scope.isOnboarding = false;
   }
 ]);
 
@@ -695,12 +700,20 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
     };
 
     $scope.buttonEnabled = function() {
+      var costElementProvided;
+      if (!$scope.useCostRate) {
+        costElementProvided = _.isNumber($scope.newLifeInsurancePlan.totalCost)
+          && _.isNumber($scope.newLifeInsurancePlan.employeeContribution);
+      } else {
+        costElementProvided = _.isNumber($scope.newLifeInsurancePlan.costRate)
+          && _.isNumber($scope.newLifeInsurancePlan.employeeContributionPercentage);
+      }
+
       return $scope.newLifeInsurancePlan.name
-             && _.isNumber($scope.newLifeInsurancePlan.totalCost)
-             && _.isNumber($scope.newLifeInsurancePlan.employeeContribution)
-             && (_.isNumber($scope.newLifeInsurancePlan.amount)
-                 || _.isNumber($scope.newLifeInsurancePlan.multiplier))
-             && $scope.isValidMultiplier($scope.newLifeInsurancePlan.multiplier);
+        && costElementProvided
+        && (_.isNumber($scope.newLifeInsurancePlan.amount)
+        || _.isNumber($scope.newLifeInsurancePlan.multiplier))
+        && $scope.isValidMultiplier($scope.newLifeInsurancePlan.multiplier);
     };
 
     // Need the user information for the current user (broker)
@@ -713,7 +726,7 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
         //  2. Broker enrolls the company for the plan
         BasicLifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan)
         .then(function(newPlan) {
-          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan, $scope.company)
+          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan, $scope.company, $scope.useCostRate)
           .then(
             function() {
               var successMessage = "The new basic life insurance plan has been saved successfully."
@@ -1632,3 +1645,11 @@ var benefitInputDetailsController = brokersControllers.controller('benefitInputD
       $scope.benefitId = parseInt($stateParams.benefit_id);
 
 }]);
+
+var companyAcaReport = brokersControllers.controller('companyAcaReport', [
+  '$scope', '$stateParams', '$controller',
+  function($scope, $stateParams, $controller) {
+    $controller('modalMessageControllerBase', {$scope: $scope});
+    $scope.companyId = $stateParams.company_id;
+  }
+]);

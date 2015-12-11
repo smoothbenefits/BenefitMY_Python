@@ -19,8 +19,7 @@ benefitmyService.factory('UserService',
             return undefined;
         }
     };
-    return {
-      getCurUserInfo: function() {
+    var getCurUserInfo = function() {
         var deferred = $q.defer();
         var userInfo = {};
         currentUser.get().$promise.then(function(response){
@@ -42,7 +41,29 @@ benefitmyService.factory('UserService',
           });
         });
         return deferred.promise;
-      },
-      getCurrentRole: getCurRoleFromPath
+    };
+    var isCurrentUserNewEmployee = function() {
+        var deferred = $q.defer();
+
+        getCurUserInfo().then(
+            function(userInfo) {
+                var result = false;
+                var employeeRole = _.findWhere(userInfo.roles, {company_user_type:'employee'});
+                if(employeeRole && employeeRole.new_employee) {
+                    result = true;
+                }
+                deferred.resolve(result);
+            },
+            function(errors) {
+                deferred.reject(errors);
+            }
+        );
+
+        return deferred.promise;
+    };
+    return {
+      getCurUserInfo: getCurUserInfo,
+      getCurrentRole: getCurRoleFromPath,
+      isCurrentUserNewEmployee: isCurrentUserNewEmployee
     };
 }]);

@@ -23,7 +23,8 @@ class SendEmailService(object):
         text_template_path,
         attachment_name=None,
         attachment=None,
-        attachment_mime_type=None
+        attachment_mime_type=None,
+        include_bm_support_email_address=True
     ):
         # Prepare and send the email with both HTML and plain text contents
         from_email = settings.SUPPORT_EMAIL_ADDRESS
@@ -34,7 +35,8 @@ class SendEmailService(object):
         text_content = text_template.render(context)
 
         # make sure to send our support email address a copy
-        to_emails.append(settings.SUPPORT_EMAIL_ADDRESS)
+        if (include_bm_support_email_address):
+            to_emails.append(settings.SUPPORT_EMAIL_ADDRESS)
 
         msg = EmailMultiAlternatives(subject, text_content, from_email, to_emails)
         msg.attach_alternative(html_content, 'text/html')
@@ -57,14 +59,14 @@ class SendEmailService(object):
             company=company_id,
             company_user_type=user_type)
         for comp_user in comp_users:
-            email = self._get_email_address_by_user(comp_user.user_id)
+            email = self.get_email_address_by_user(comp_user.user_id)
             emails.append(email)
 
         return emails
 
     ''' Get the email address to use for the given user
     '''
-    def _get_email_address_by_user(self, user_id):
+    def get_email_address_by_user(self, user_id):
         user = User.objects.get(pk=user_id)
         email = user.email
         person = Person.objects.filter(user=user_id, relationship='self')

@@ -166,6 +166,8 @@
         <th><span>Document</span></th>
         <th><span>Total Cost (Monthly)</span></th>
         <th><span>Employee Contribution (per pay period)</span></th>
+        <th><span>Total Cost Rate (per $10)</span></th>
+        <th><span>Employee Contribution Percentage</span></th>
       </tr>
     </thead>
     <tbody>
@@ -190,6 +192,8 @@
       </td>
       <td>$ {{lifeInsurancePlan.total_cost_per_period}}</td>
       <td>$ {{lifeInsurancePlan.employee_cost_per_period}}</td>
+      <td>{{lifeInsurancePlan.total_cost_rate}}</td>
+      <td>{{lifeInsurancePlan.employee_contribution_percentage}} %</td>
     </tr>
   </tbody>
 </table>

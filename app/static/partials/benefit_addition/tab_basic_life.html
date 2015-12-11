@@ -14,6 +14,14 @@
         </div>
       </div>
       <div class="row">
+        <div class="checkbox">
+          <input type="checkbox"
+          name="use_cost_rate"
+          ng-model="useCostRate" />
+          The basic life insurance plan accepts a cost rate for premium calculation
+        </div>
+      </div>
+      <div class="row" ng-if="!useCostRate">
         <div class="col-md-6">
           <div class="form-label">Total Cost (Monthly) *</div>
           <div class="textbox input-group">
@@ -22,7 +30,7 @@
             min="0"
             type="number"
             name="total_cost"
-            ng-required="true"
+            ng-required="!useCostRate"
             ng-model="newLifeInsurancePlan.totalCost" />
           </div>
           <div class="form-error-relative" ng-show="form.total_cost.$dirty && form.total_cost.$invalid">
@@ -37,10 +45,43 @@
               min="0"
               type="number"
               name="employee_contribution"
-              ng-required="true"
+              ng-required="!useCostRate"
               ng-model="newLifeInsurancePlan.employeeContribution" />
             <div class="form-error-relative" ng-show="form.employee_contribution.$dirty && form.employee_contribution.$invalid">
               <span>Employee contribution field is invalid</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" ng-if="useCostRate">
+        <div class="col-md-6">
+          <div class="form-label">Cost Rate (per $10 benefits) *</div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$</span>
+            <input
+            min="0"
+            type="number"
+            name="cost_rate"
+            ng-required="useCostRate"
+            ng-model="newLifeInsurancePlan.costRate" />
+          </div>
+          <div class="form-error-relative" ng-show="form.cost_rate.$dirty && form.cost_rate.$invalid">
+            <span>Cost rate field is invalid</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-label">Employee Contribution Percentage *</div>
+          <div class="textbox input-group">
+            <input
+              min="0"
+              max="100"
+              type="number"
+              name="employee_contribution_percentage"
+              ng-required="useCostRate"
+              ng-model="newLifeInsurancePlan.employeeContributionPercentage" />
+            <span class="input-group-addon">%</span>
+            <div class="form-error-relative" ng-show="form.employee_contribution_percentage.$dirty && form.employee_contribution_percentage.$invalid">
+              <span>Employee contribution percentage field is invalid</span>
             </div>
           </div>
         </div>

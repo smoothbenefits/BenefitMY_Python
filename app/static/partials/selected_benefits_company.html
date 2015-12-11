@@ -93,7 +93,7 @@
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="employee-menu-{{employee.id}}">
           <li role="menuitem"><a ng-click="viewDetails(employee.id)">View Selected Benefits</a></li>
-          <li role="menuitem"><a ng-click="editEmployeeSafeHarborCode(employee.id)">Edit Employee Safe Harbor Code</a></li>
+          <li role="menuitem"><a ng-click="editEmployee1095C(employee.id)">Edit 1095C Data of This Employee</a></li>
           <li role="menuitem">
             <a ng-click="open1095CModal(employee.id)" ng-if="!valid1095C()">Download 1095-C</a>
             <a ng-href="{{getEmployee1095cUrl(employee.id)}}" ng-if="valid1095C()">Download 1095-C</a>

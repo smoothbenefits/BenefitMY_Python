@@ -52,7 +52,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
       $scope.employee_id = response.user.id;
       $scope.company = response.currentRole.company;
       var employeeRole = _.findWhere(response.roles, {company_user_type:'employee'});
-      if(employeeRole && employeeRole.new_employee){
+      if(employeeRole){
         EmployeePreDashboardValidationService.onboarding($scope.employee_id, function(){
           return response;
         }, function(redirectUrl){
@@ -207,7 +207,7 @@ var viewDocument = employeeControllers.controller('viewDocument',
     });
 
     $scope.inTextMode = function() {
-        return $scope.document 
+        return $scope.document
             && $scope.document.contentType == DocumentService.contentTypes.text;
     };
 
@@ -614,11 +614,41 @@ var signup = employeeControllers.controller('employeeSignup', ['$scope', '$state
 var onboardIndex = employeeControllers.controller('onboardIndex',
   ['$scope',
    '$state',
+   '$stateParams',
    'tabLayoutGlobalConfig',
+   'UserService',
+   'CompanyFeatureService',
    function ($scope,
              $state,
-             tabLayoutGlobalConfig){
-    $scope.section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_onboard'});
+             $stateParams,
+             tabLayoutGlobalConfig,
+             UserService,
+             CompanyFeatureService){
+    var disabledFeaturesPromise = UserService.getCurUserInfo().then(function(userInfo) {
+        var company = userInfo.currentRole.company;
+        return CompanyFeatureService.getDisabledCompanyFeatureByCompany(company.id);
+    });
+
+    disabledFeaturesPromise.then(function(disabledFeatures) {
+        UserService.isCurrentUserNewEmployee().then(
+            function(isNewEmployee) {
+                var section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_onboard'});
+                $scope.tabs = section.tabs;
+                if (!isNewEmployee 
+                    || (disabledFeatures && disabledFeatures.I9)) {
+                    $scope.tabs = _.reject($scope.tabs, function(tab) {
+                        return tab.name == 'employment';
+                    });
+                }
+                if (!isNewEmployee 
+                    || (disabledFeatures && disabledFeatures.W4)) {
+                    $scope.tabs = _.reject($scope.tabs, function(tab) {
+                        return tab.name == 'tax';
+                    });
+                }
+            }
+        );
+    });
    }
   ]);
 
@@ -742,20 +772,20 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 }]);
 
 var onboardTax = employeeControllers.controller('onboardTax',
-  ['$scope', 
-   '$state', 
-   '$stateParams', 
-   '$location', 
-   '$window', 
-   'employeePayrollService', 
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$location',
+   '$window',
+   'employeePayrollService',
    'EmployeePreDashboardValidationService',
   function(
-    $scope, 
-    $state, 
-    $stateParams, 
-    $location, 
-    $window, 
-    employeePayrollService, 
+    $scope,
+    $state,
+    $stateParams,
+    $location,
+    $window,
+    employeePayrollService,
     EmployeePreDashboardValidationService){
 
     $scope.employee = {};
@@ -819,18 +849,18 @@ var onboardTax = employeeControllers.controller('onboardTax',
 }]);
 
 var onboardDocument = employeeControllers.controller('onboardDocument',
-  ['$scope', 
-   '$state', 
-   '$stateParams', 
-   '$location', 
-   '$window', 
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$location',
+   '$window',
    'EmployeePreDashboardValidationService',
   function(
-    $scope, 
-    $state, 
-    $stateParams, 
-    $location, 
-    $window, 
+    $scope,
+    $state,
+    $stateParams,
+    $location,
+    $window,
     EmployeePreDashboardValidationService){
 
     $scope.employee = {};
@@ -851,7 +881,7 @@ var onboardDocument = employeeControllers.controller('onboardDocument',
     $('body').addClass('onboarding-page');
 
     $scope.documentsSigned = function(){
-      $state.go('employee_family', {employeeId: $scope.employeeId, onboard:true});
+      $state.go('employee_family', {employeeId: $scope.employeeId});
     };
 }]);
 
@@ -1307,8 +1337,8 @@ var healthBenefitsSignup = employeeControllers.controller(
         });
 
         $scope.preSelectEmployee = function(selectedBenefitPlan) {
-          if (selectedBenefitPlan && 
-              selectedBenefitPlan.eligibleMemberCombo && 
+          if (selectedBenefitPlan &&
+              selectedBenefitPlan.eligibleMemberCombo &&
               selectedBenefitPlan.eligibleMemberCombo.familyList){
             var self = _.findWhere(selectedBenefitPlan.eligibleMemberCombo.familyList, {relationship: 'self'});
             self.selected = true;
@@ -1643,9 +1673,14 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               // the basicLifeInsurancePlan rather than make the two parallel.
               $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = plans[0];
 
-              if (parseFloat($scope.basicLifeInsurancePlan.employee_cost_per_period) > 0){
-                $scope.basicLifeInsurancePlan.mandatory = false;
-              }
+              // Calculate employee premium for basic life insurance benefit
+              BasicLifeInsuranceService.getLifeInsuranceEmployeePremium(employeeId, plans[0]).then(function(premium) {
+                $scope.basicLifeInsurancePlan.employee_cost_per_period = premium.employee;
+
+                if (parseFloat($scope.basicLifeInsurancePlan.employee_cost_per_period) > 0){
+                  $scope.basicLifeInsurancePlan.mandatory = false;
+                }
+              });
             }
 
             // Get current user's basic life insurance plan situation
@@ -2529,7 +2564,6 @@ var employeeFamilyController = employeeControllers.controller(
 
     $('body').removeClass('onboarding-page');
     $scope.employeeId = $stateParams.employeeId;
-    $scope.isOnboarding = $stateParams.onboard === 'true';
   }
 ]);
 

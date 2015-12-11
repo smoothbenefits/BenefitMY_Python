@@ -110,11 +110,22 @@ benefitmyService.factory('PersonService',
         peopleRepository.ById.delete({personId:personId});
       };
 
+      var getGenderForDisplay = function(domainPersonGender) {
+        if (domainPersonGender === 'F') {
+            return 'Female';
+        } else if (domainPersonGender === 'M') {
+            return 'Male';
+        } else {
+            return undefined;
+        }
+      };
+
       return{
         getSelfPersonInfo: getSelfPersonInfo,
         savePersonInfo: savePersonInfo,
         getFamilyInfo: getFamilyInfo,
-        deletePerson: deletePerson
+        deletePerson: deletePerson,
+        getGenderForDisplay: getGenderForDisplay
       };
 
 }]);

@@ -34,6 +34,7 @@ from app.models.commuter.person_company_commuter_plan import PersonCompanyCommut
 from app.models.document import Document
 
 from app.service.disability_insurance_service import DisabilityInsuranceService
+from app.service.life_insurance_service import LifeInsuranceService
 
 User = get_user_model()
 
@@ -252,22 +253,13 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
                 company_plan = employee_plan.company_life_insurance
                 plan = company_plan.life_insurance_plan
+                life_insurance_service = LifeInsuranceService(company_plan)
+                cost = life_insurance_service.get_basic_life_insurance_cost_for_employee(person_model.id)
 
-                # compute the coverage
-                coverage_amount = ''
-                if (company_plan.insurance_amount):
-                    coverage_amount = company_plan.insurance_amount
-                elif (company_plan.salary_multiplier):
-                    emp_profile = self._get_employee_profile_by_person(person_model)
-                    if (emp_profile and emp_profile.annual_base_salary):
-                        coverage_amount = company_plan.salary_multiplier * emp_profile.annual_base_salary
-
-                # now compute the employee premium
+                # Convert employee premium to per pay period from per month
                 month_factor = employee_plan.company_life_insurance.company.pay_period_definition.month_factor
-                employee_premium = 'N/A'
-                if employee_plan.company_life_insurance.employee_cost_per_period:
-                    employee_premium = "${:.2f}".format(float(employee_plan.company_life_insurance.employee_cost_per_period) * month_factor)
-                self._write_line_uniform_width([plan.name, coverage_amount, employee_premium],
+                employee_premium = "${:.2f}".format(float(cost.employee_cost) * month_factor)
+                self._write_line_uniform_width([plan.name, cost.benefit_amount, employee_premium],
                                                column_width_dists)
                 self._start_new_line()
                 self._start_new_line()
