@@ -694,9 +694,16 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
     // Inherite scope from base
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
-    var clientId = $stateParams.clientId;
+    $scope.companyId = $stateParams.clientId;
 
-    $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
+    $scope.newLifeInsurancePlan = {
+        insurance_type: 'Basic', 
+        companyId: $scope.companyId, 
+        selectedCompanyGroups: [] 
+    };
+
+    // Label text for the company group selection widget
+    $scope.companyGroupSelectionWidgetLabel = "Select Company Benefit Groups";
 
     var isInteger = function(value) {
       return _.isNumber(value) && value % 1 === 0;
@@ -713,7 +720,7 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
 
     $scope.buttonEnabled = function() {
       var costElementProvided;
-      if (!$scope.useCostRate) {
+      if (!$scope.newLifeInsurancePlan.useCostRate) {
         costElementProvided = _.isNumber($scope.newLifeInsurancePlan.totalCost)
           && _.isNumber($scope.newLifeInsurancePlan.employeeContribution);
       } else {
@@ -725,21 +732,18 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
         && costElementProvided
         && (_.isNumber($scope.newLifeInsurancePlan.amount)
         || _.isNumber($scope.newLifeInsurancePlan.multiplier))
-        && $scope.isValidMultiplier($scope.newLifeInsurancePlan.multiplier);
+        && $scope.isValidMultiplier($scope.newLifeInsurancePlan.multiplier)
+        && $scope.newLifeInsurancePlan.selectedCompanyGroups.length > 0;
     };
 
     // Need the user information for the current user (broker)
     $scope.addLifeInsurancePlan = function() {
-      currentUser.get().$promise.then(function(response){
+      currentUser.get().$promise.then(function(response) {
         $scope.newLifeInsurancePlan.user = response.user.id;
+        $scope.newLifeInsurancePlan.company = $scope.company;
 
-        // For now, we combine the gestures of
-        //  1. Broker creates the plan
-        //  2. Broker enrolls the company for the plan
-        BasicLifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan)
-        .then(function(newPlan) {
-          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan, $scope.company, $scope.useCostRate)
-          .then(
+        BasicLifeInsuranceService.createBasicLifeInsurancePlan($scope.newLifeInsurancePlan)
+        .then(
             function() {
               var successMessage = "The new basic life insurance plan has been saved successfully."
 
@@ -750,8 +754,7 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
 
               $scope.showMessageWithOkayOnly('Failed', failureMessage);
             }
-          );
-        });
+        );
       });
     };
    }

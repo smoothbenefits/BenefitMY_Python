@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0062_companygroupmember'),
+        ('app', '0001_squashed_0062_companygroupmember'),
     ]
 
     operations = [
@@ -23,5 +23,11 @@ class Migration(migrations.Migration):
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.AlterField(
+            model_name='personcompanycommuterplan',
+            name='monthly_amount_parking_post_tax',
+            field=models.DecimalField(max_digits=20, decimal_places=10),
+            preserve_default=True,
         ),
     ]

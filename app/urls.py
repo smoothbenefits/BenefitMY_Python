@@ -313,7 +313,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/user/(?P<user_id>\w+)/life_insurance_plan/(?P<pk>\w+)/premium/?$' % PREFIX,
         CompanyLifeInsuranceEmployeePremiumView.as_view(), name='user_company_life_insurance_premium_api'),
 
-    url(r'^%s/company_basic_life_insurance_plan/(?P<pk>\w+)/company_groups/?$' % PREFIX,
+    url(r'^%s/company_basic_life_insurance_plan/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
         CompanyGroupBasicLifeInsurancePlanByCompanyPlanView.as_view(), 
         name='company_group_basic_life_insurance_plan_by_company_plan_api'),
 

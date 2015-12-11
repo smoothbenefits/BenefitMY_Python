@@ -6,6 +6,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ui.bootstrap',
     'angularFileUpload',
     'angularSpinner',
+    'isteven-multi-select',
     'blockUI',
     'benefitmyDomainModelFactories',
     'benefitmyService',

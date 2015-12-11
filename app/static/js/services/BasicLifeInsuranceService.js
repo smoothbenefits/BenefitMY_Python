@@ -4,6 +4,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
   ['BasicLifeInsurancePlanRepository',
    'CompanyBasicLifeInsurancePlanRepository',
    'CompanyUserBasicLifeInsurancePlanRepository',
+   'CompanyGroupBasicLifeInsurancePlanRepository',
    'PersonService',
    'CompensationService',
    '$q',
@@ -12,6 +13,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
       BasicLifeInsurancePlanRepository,
       CompanyBasicLifeInsurancePlanRepository,
       CompanyUserBasicLifeInsurancePlanRepository,
+      CompanyGroupBasicLifeInsurancePlanRepository,
       PersonService,
       CompensationService,
       $q,
@@ -59,6 +61,110 @@ benefitmyService.factory('BasicLifeInsuranceService',
       } else {
         return '-';
       }
+    };
+
+    var mapCreatePlanViewToPlanDomainModel = function(createPlanViewModel) {
+        var domainModel = {};
+
+        domainModel.id = createPlanViewModel.planId;
+        domainModel.name = createPlanViewModel.name;
+        domainModel.user = createPlanViewModel.user;
+        domainModel.insurance_type = 'Basic';
+
+        return domainModel;
+    };
+
+    var mapCreatePlanViewToCompanyPlanDomainModel = function(createPlanViewModel) {
+        var domainModel = {};
+
+        if (createPlanViewModel.amount){
+          domainModel.insurance_amount = createPlanViewModel.amount;
+        }
+        if (createPlanViewModel.multiplier){
+          domainModel.salary_multiplier = createPlanViewModel.multiplier;
+        }
+
+        domainModel.company = createPlanViewModel.companyId;
+        domainModel.life_insurance_plan = createPlanViewModel.planId;
+
+        if (createPlanViewModel.useCostRate) {
+            domainModel.total_cost_rate = createPlanViewModel.costRate;
+            domainModel.employee_contribution_percentage = createPlanViewModel.employeeContributionPercentage;
+        } else {
+            domainModel.total_cost_per_period = createPlanViewModel.totalCost;
+            domainModel.employee_cost_per_period = (createPlanViewModel.employeeContribution / createPlanViewModel.company.pay_period_definition.month_factor).toFixed(10)
+        }
+
+        return domainModel;
+    };
+
+    var mapCreatePlanViewToCompanyGroupPlanDomainModel = function(createPlanViewModel) {
+        var domainModel = [];
+
+        _.each(createPlanViewModel.selectedCompanyGroups, function(companyGroupModel) {
+            domainModel.push({ 
+                'company_basic_life_insurance_plan': createPlanViewModel.companyPlanId,
+                'company_group': companyGroupModel.id 
+            });
+        }); 
+
+        return domainModel;
+    };
+
+    var saveBasicLifeInsurancePlan = function(planDomainModel) {
+        var deferred = $q.defer();
+
+        if(!planDomainModel.id) {
+          // Not existing yet, POST it
+          BasicLifeInsurancePlanRepository.ById.save({id:planDomainModel.user}, planDomainModel
+            , function (successResponse) {
+                deferred.resolve(successResponse);
+              }
+            , function(errorResponse) {
+                deferred.reject(errorResponse);
+          });
+        }
+        else {
+          // Existing, PUT it
+          BasicLifeInsurancePlanRepository.ById.update({id:planDomainModel.id}, planDomainModel
+            , function (successResponse) {
+                deferred.resolve(successResponse);
+              }
+            , function(errorResponse) {
+                deferred.resolve(errorResponse);
+          });
+        }
+        return deferred.promise;
+    };
+
+    var linkBasicLifeInsurancePlanToCompany = function(companyPlanDomainModel) {
+        var deferred = $q.defer();
+
+        CompanyBasicLifeInsurancePlanRepository.ById.save({id:companyPlanDomainModel.company}, companyPlanDomainModel
+          , function (successResponse) {
+              deferred.resolve(successResponse);
+            }
+          , function(errorResponse) {
+              deferred.reject(errorResponse);
+            }
+        );
+
+        return deferred.promise;
+    };
+
+    var linkCompanyBasicLifeInsurancePlanToCompanyGroups = function(companyPlanId, companyGroupPlanDomainModel) {
+        var deferred = $q.defer();
+
+        CompanyGroupBasicLifeInsurancePlanRepository.ByCompanyPlan.update({companyPlanId:companyPlanId}, companyGroupPlanDomainModel
+          , function (successResponse) {
+              deferred.resolve(successResponse);
+            }
+          , function(errorResponse) {
+              deferred.reject(errorResponse);
+            }
+        );
+
+        return deferred.promise;
     };
 
     var getLifeInsurancePlansForCompany = function(company) {
@@ -157,56 +263,41 @@ benefitmyService.factory('BasicLifeInsuranceService',
       return deferred.promise;
     };
 
-    var mapCompanyBasicLifePlanToDomainModel = function(useCostRate, company, basicLifePlan, companyPlan) {
-      var domainModel = {
-        "company": company.id,
-        "life_insurance_plan": basicLifePlan.id,
-        "insurance_amount": companyPlan.amount,
-        "salary_multiplier": companyPlan.multiplier,
-      };
-
-      if (useCostRate) {
-        domainModel.total_cost_rate = companyPlan.costRate;
-        domainModel.employee_contribution_percentage = companyPlan.employeeContributionPercentage;
-      } else {
-        domainModel.total_cost_per_period = companyPlan.totalCost;
-        domainModel.employee_cost_per_period = (companyPlan.employeeContribution / company.pay_period_definition.month_factor).toFixed(10)
-      }
-
-      return domainModel;
-    };
-
     return {
-      saveLifeInsurancePlan: function(planToSave){
-        var deferred = $q.defer();
-        // map to API fields
-        if (planToSave.amount){
-          planToSave.insurance_amount = planToSave.amount;
-        }
-        if (planToSave.multiplier){
-          planToSave.salary_multiplier = planToSave.multiplier;
-        }
 
-        if(!planToSave.id) {
-          // Not existing yet, POST it
-          BasicLifeInsurancePlanRepository.ById.save({id:planToSave.user}, planToSave
-            , function (successResponse) {
-                deferred.resolve(successResponse);
-              }
-            , function(errorResponse) {
-                deferred.reject(errorResponse);
-          });
-        }
-        else {
-          // Existing, PUT it
-          BasicLifeInsurancePlanRepository.ById.update({id:planToSave.id}, planToSave
-            , function (successResponse) {
-                deferred.resolve(successResponse);
-              }
-            , function(errorResponse) {
-                deferred.resolve(errorResponse);
-          });
-        }
+      createBasicLifeInsurancePlan: function(createPlanViewModel) {
+        var deferred = $q.defer();
+
+        var planModel = mapCreatePlanViewToPlanDomainModel(createPlanViewModel);
+        saveBasicLifeInsurancePlan(planModel).then(
+            function(createdPlan) {
+                // Record the new plan Id
+                createPlanViewModel.planId = createdPlan.id;
+                var companyPlanModel = mapCreatePlanViewToCompanyPlanDomainModel(createPlanViewModel);
+                linkBasicLifeInsurancePlanToCompany(companyPlanModel).then(
+                    function(createdCompanyPlan) {
+                        // Record the new company Plan Id
+                        createPlanViewModel.companyPlanId = createdCompanyPlan.id;
+                        var companyGroupPlanModel = mapCreatePlanViewToCompanyGroupPlanDomainModel(createPlanViewModel);
+                        linkCompanyBasicLifeInsurancePlanToCompanyGroups(createdCompanyPlan.id, companyGroupPlanModel).then(
+                            function(createdCompanyGroupPlans) {
+                                deferred.resolve(createdCompanyGroupPlans);
+                            },
+                            function(errors) {
+                                deferred.reject(errors);
+                            }
+                        );
+                    },
+                    function(errors) {
+                        deferred.reject(errors);
+                    }
+                );
+            },
+            function(errors) {
+                deferred.reject(errors);
+            }
+        );
+
         return deferred.promise;
       },
 
@@ -247,23 +338,6 @@ benefitmyService.factory('BasicLifeInsuranceService',
           function(failedResponse) {
             deferred.reject(failedResponse);
           });
-
-        return deferred.promise;
-      },
-
-      enrollCompanyForBasicLifeInsurancePlan: function(basicLife, companyBasicLife, company, useCostRate) {
-        var deferred = $q.defer();
-
-        var linkToSave = mapCompanyBasicLifePlanToDomainModel(useCostRate, company, basicLife, companyBasicLife);
-
-        CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
-          , function (successResponse) {
-              deferred.resolve(successResponse);
-            }
-          , function(errorResponse) {
-              deferred.reject(errorResponse);
-            }
-        );
 
         return deferred.promise;
       },

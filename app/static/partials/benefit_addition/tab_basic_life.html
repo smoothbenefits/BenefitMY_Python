@@ -17,11 +17,11 @@
         <div class="checkbox">
           <input type="checkbox"
           name="use_cost_rate"
-          ng-model="useCostRate" />
+          ng-model="newLifeInsurancePlan.useCostRate" />
           The basic life insurance plan accepts a cost rate for premium calculation
         </div>
       </div>
-      <div class="row" ng-if="!useCostRate">
+      <div class="row" ng-if="!newLifeInsurancePlan.useCostRate">
         <div class="col-md-6">
           <div class="form-label">Total Cost (Monthly) *</div>
           <div class="textbox input-group">
@@ -30,7 +30,7 @@
             min="0"
             type="number"
             name="total_cost"
-            ng-required="!useCostRate"
+            ng-required="!newLifeInsurancePlan.useCostRate"
             ng-model="newLifeInsurancePlan.totalCost" />
           </div>
           <div class="form-error-relative" ng-show="form.total_cost.$dirty && form.total_cost.$invalid">
@@ -45,7 +45,7 @@
               min="0"
               type="number"
               name="employee_contribution"
-              ng-required="!useCostRate"
+              ng-required="!newLifeInsurancePlan.useCostRate"
               ng-model="newLifeInsurancePlan.employeeContribution" />
             <div class="form-error-relative" ng-show="form.employee_contribution.$dirty && form.employee_contribution.$invalid">
               <span>Employee contribution field is invalid</span>
@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <div class="row" ng-if="useCostRate">
+      <div class="row" ng-if="newLifeInsurancePlan.useCostRate">
         <div class="col-md-6">
           <div class="form-label">Cost Rate (per $10 benefits) *</div>
           <div class="textbox input-group">
@@ -62,7 +62,7 @@
             min="0"
             type="number"
             name="cost_rate"
-            ng-required="useCostRate"
+            ng-required="newLifeInsurancePlan.useCostRate"
             ng-model="newLifeInsurancePlan.costRate" />
           </div>
           <div class="form-error-relative" ng-show="form.cost_rate.$dirty && form.cost_rate.$invalid">
@@ -77,7 +77,7 @@
               max="100"
               type="number"
               name="employee_contribution_percentage"
-              ng-required="useCostRate"
+              ng-required="newLifeInsurancePlan.useCostRate"
               ng-model="newLifeInsurancePlan.employeeContributionPercentage" />
             <span class="input-group-addon">%</span>
             <div class="form-error-relative" ng-show="form.employee_contribution_percentage.$dirty && form.employee_contribution_percentage.$invalid">
@@ -121,6 +121,9 @@
             Multiplier is invalid. Make sure the number is an integer.
           </div>
         </div>
+      </div>
+      <div class="row">
+          <bm-company-group-selection company-id="companyId" show-top-separation-line label-text="companyGroupSelectionWidgetLabel"  selected-groups-model="newLifeInsurancePlan.selectedCompanyGroups"></bm-company-group-selection>
       </div>
       <div class="row">
         <div class="col-sm-6">
