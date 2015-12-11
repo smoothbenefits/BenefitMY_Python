@@ -51,6 +51,7 @@
             <th><span>Hourly Rate</span></th>
             <th><span>Projected Hours/Mo</span></th>
             <th><span>Compensation Effective Date</span></th>
+            <th><span>Company Group</span></th>
             <th><span>Send Email</span></th>
           </tr>
         </thead>
@@ -64,6 +65,7 @@
             <td>{{accountResultData.output_data.compensation_info.hourly_rate}}</td>
             <td>{{accountResultData.output_data.compensation_info.projected_hour_per_month}}</td>
             <td>{{formatDateForDisplay(accountResultData.output_data.compensation_info.effective_date)}}</td>
+            <td>{{accountResultData.output_data.group_name}}</td>
             <td>{{accountResultData.output_data.send_email}}</td>
           </tr>
         </tbody>

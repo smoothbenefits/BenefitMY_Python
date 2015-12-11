@@ -35,6 +35,10 @@ var clientsController = brokersControllers.controller('clientsController', [
       $state.go('/broker/employee_list', {client_id: clientId});
     };
 
+    $scope.manageBenefitGroup = function(clientId) {
+      $state.go('broker_company_group', {company_id: clientId});
+    };
+
     $scope.viewACA = function(clientId){
       $state.go('broker_company_aca_report', {company_id: clientId});
     };
@@ -95,6 +99,14 @@ var clientsController = brokersControllers.controller('clientsController', [
   }]
 );
 
+var brokerCompanyGroup = brokersControllers.controller('CompanyBenefitGroupManagementController', [
+  '$scope', '$state', '$modal', '$stateParams',
+  function($scope, $state, $modal, $stateParams) {
+
+    $scope.company = $stateParams.company_id;
+  }
+]);
+
 var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
   '$scope',
   '$state',
@@ -105,8 +117,8 @@ var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
            $stateParams,
            CompanyEmployeeSummaryService) {
 
-    var companyId = $stateParams.client_id;
-    CompanyEmployeeSummaryService.getCompanyEmployeeSummary(companyId)
+    $scope.companyId = $stateParams.client_id;
+    CompanyEmployeeSummaryService.getCompanyEmployeeSummary($scope.companyId)
     .then(function(companyUsers) {
       $scope.employees = companyUsers;
     });

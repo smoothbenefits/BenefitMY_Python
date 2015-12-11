@@ -149,6 +149,7 @@ var employerUser = employersController.controller('employerUser',
    'DocumentService',
    'CompensationService',
    'EmployerEmployeeManagementService',
+   'CompanyBenefitGroupService',
   function employerUser($scope,
                         $state,
                         $stateParams,
@@ -159,8 +160,9 @@ var employerUser = employersController.controller('employerUser',
                         TemplateService,
                         DocumentService,
                         CompensationService,
-                        EmployerEmployeeManagementService){
-      var compId = $stateParams.company_id;
+                        EmployerEmployeeManagementService,
+                        CompanyBenefitGroupService){
+      $scope.compId = $stateParams.company_id;
       $scope.employees=[];
       $scope.brokers = [];
       $scope.templateFields = [];
@@ -174,6 +176,14 @@ var employerUser = employersController.controller('employerUser',
         })
       };
 
+      CompanyBenefitGroupService.GetCompanyBenefitGroupByCompany($scope.compId)
+      .then(function(groups) {
+        $scope.groups = groups;
+        if(groups && groups.length == 1){
+          $scope.addUser.group_id = groups[0].id;
+        }
+      });
+
       $scope.updateSalaryType = function(employee) {
         if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
           $scope.isHourlyRate = false;
@@ -184,11 +194,21 @@ var employerUser = employersController.controller('employerUser',
         }
       };
 
-      employerWorkerRepository.get({companyId:compId})
+      employerWorkerRepository.get({companyId:$scope.compId})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
               if(role.company_user_type=='employee')
               {
+                if (role.user.company_group_user.length > 0){
+                  role.company_group_member = role.user.company_group_user[0];
+                }
+                else{
+                  role.company_group_member = {
+                    company_group:{
+                      name:'N/A'
+                    }
+                  };
+                }
                 $scope.employees.push(role);
               }
               else if(role.company_user_type=='broker')
@@ -206,13 +226,13 @@ var employerUser = employersController.controller('employerUser',
             });
         });
 
-      TemplateService.getAllTemplateFields(compId)
+      TemplateService.getAllTemplateFields($scope.compId)
       .then(function(fields){
         $scope.templateFields = fields;
       });
 
       var gotoUserView = function(userType){
-        $location.path('/admin/' + userType + '/' + compId);
+        $location.path('/admin/' + userType + '/' + $scope.compId);
       }
 
       $scope.validatePassword = function(password, passwordConfirm) {
@@ -240,7 +260,7 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.addLink = function(userType)
       {
-        $location.path('/admin/'+ userType + '/add/'+compId)
+        $location.path('/admin/'+ userType + '/add/'+$scope.compId)
       };
 
       $scope.createUser = function(userType) {
@@ -249,7 +269,7 @@ var employerUser = employersController.controller('employerUser',
           alert('Password validation failed. Please re-enter the passwords');
           return false;
         };
-        EmployerEmployeeManagementService.AddNewEmployee(compId, $scope.addUser, $scope.templateFields)
+        EmployerEmployeeManagementService.AddNewEmployee($scope.compId, $scope.addUser, $scope.templateFields)
         .then(function(response) {
           gotoUserView(userType);
         }, function(error) {
@@ -270,16 +290,20 @@ var employerUser = employersController.controller('employerUser',
             pathKey='view';
         }
 
-        $location.path('/admin/documents/' + pathKey + '/' +compId +'/'+employeeId);
+        $location.path('/admin/documents/' + pathKey + '/' + $scope.compId +'/'+employeeId);
       };
 
       $scope.viewEmployeeDetail = function(employee){
-        $location.path('/admin/employee_detail/' + compId).search({'eid': employee.user.id});
+        $location.path('/admin/employee_detail/' + $scope.compId).search({'eid': employee.user.id});
       };
 
       $scope.uploadLink = function(employeeId){
-        $state.go('admin_employee_uploads', {company_id:compId, employee_id:employeeId});
-      }
+        $state.go('admin_employee_uploads', {company_id:$scope.compId, employee_id:employeeId});
+      };
+
+      $scope.addEmployeeInvalid = function(){
+        return $scope.form.$invalid || !$scope.groups || $scope.groups.length<=0
+      };
   }
 ]);
 
@@ -457,6 +481,10 @@ var employerBenefits = employersController.controller('employerBenefits',
         $scope.nonMedicalBenefitArray = healthBenefitToDisplay.nonMedicalBenefitArray;
         $scope.benefitCount = healthBenefitToDisplay.benefitCount;
       });
+
+      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($scope.company).then(function(response) {
+        $scope.lifeInsurancePlans = response;
+      });
     });
 
     $scope.sortBy = function(predicate){
@@ -471,10 +499,6 @@ var employerBenefits = employersController.controller('employerBenefits',
     $scope.backtoDashboard = function(){
       $location.path('/admin');
     };
-
-    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id).then(function(response) {
-      $scope.lifeInsurancePlans = response;
-    });
 
     SupplementalLifeInsuranceService.getPlansForCompany($stateParams.company_id).then(function(response) {
       $scope.supplementalLifeInsurancePlans = response;
@@ -582,7 +606,7 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
   function employerModifyTemplate($scope, $state, $stateParams, TemplateService){
     $scope.companyId = $stateParams.company_id;
     $scope.templateId = $stateParams.template_id;
-    
+
     var templateTypes = {
         'Text': 'Text',
         'Upload': 'Upload'
@@ -596,7 +620,7 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
       .then(function(template){
         $scope.template = template;
 
-        $scope.templateType = $scope.template.upload 
+        $scope.templateType = $scope.template.upload
                             ? templateTypes.Upload
                             : templateTypes.Text;
       });
@@ -625,7 +649,7 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
     $scope.hasCompleteData = function() {
         return $scope.template
             && $scope.template.name
-            && ($scope.template.upload 
+            && ($scope.template.upload
                 || $scope.template.content);
     };
 
@@ -655,12 +679,12 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
     };
 
     $scope.createTemplate = function(){
-      if($scope.template.name 
+      if($scope.template.name
          && ($scope.template.content
              || $scope.template.upload))
       {
         cleanTemplateForSave();
-        
+
         TemplateService.createNewTemplate($scope.companyId, $scope.template)
         .then(function(savedTemplate){
           $scope.template = savedTemplate;
@@ -714,12 +738,12 @@ var employerCreateDocument = employersController.controller('employerCreateDocum
     };
 
     $scope.inTextMode = function() {
-        return $scope.selectedTemplate 
+        return $scope.selectedTemplate
             && $scope.selectedTemplate.contentType == TemplateService.contentTypes.text;
     };
 
     $scope.inUploadMode = function() {
-        return $scope.selectedTemplate 
+        return $scope.selectedTemplate
             && $scope.selectedTemplate.contentType == TemplateService.contentTypes.upload;
     };
 
@@ -762,7 +786,7 @@ var employerBatchCreateDocuments = employersController.controller('employerBatch
                                         DocumentService){
     $scope.companyId = $stateParams.company_id;
     $scope.documentsCreationData = {};
-    
+
     TemplateService.getTemplateById($stateParams.template_id).then(function(template) {
         $scope.template = template;
         $scope.documentsCreationData.documentName = template.name;
@@ -775,7 +799,7 @@ var employerBatchCreateDocuments = employersController.controller('employerBatch
         .then(function(resultDocs) {
             alert('Documents have been successfully created for ' + resultDocs.length + ' employees!');
             $scope.goBackToViewTemplates();
-        }, 
+        },
         function(errors) {
             alert('There were problems creating documents. Please try again later or contact support.');
         });
@@ -829,7 +853,7 @@ var employerViewDocument = employersController.controller('employerViewDocument'
     }
 
     $scope.inTextMode = function() {
-        return $scope.activeDocument 
+        return $scope.activeDocument
             && $scope.activeDocument.contentType == DocumentService.contentTypes.text;
     };
 

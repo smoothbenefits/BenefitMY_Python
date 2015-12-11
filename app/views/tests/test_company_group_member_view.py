@@ -52,8 +52,8 @@ class CompanyGroupMemberTestCase(TestCase, ViewTestBase):
             "company_group": self.normalize_key(2),
             "user": self.normalize_key(7)
         }
-        response = self.client.post(reverse('company_group_member_api',
-                                    kwargs={'pk': self.normalize_key(1)}),
+        response = self.client.post(reverse('company_group_company_group_member_api',
+                                    kwargs={'pk': self.normalize_key(2)}),
                                     data=json.dumps(post_data),
                                     content_type='application/json')
 
@@ -72,12 +72,33 @@ class CompanyGroupMemberTestCase(TestCase, ViewTestBase):
             "company_group": self.normalize_key(12),
             "user": self.normalize_key(7)
         }
-        response = self.client.post(reverse('company_group_member_api',
+        response = self.client.post(reverse('company_group_company_group_member_api',
                                     kwargs={'pk': self.normalize_key(1)}),
                                     data=json.dumps(post_data),
                                     content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
+
+
+    def test_get_company_group_member_by_id_successful(self):
+        response = self.client.get(reverse('company_group_member_api',
+                                   kwargs={'pk': self.normalize_key(2)}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertIn('id', result)
+        self.assertEqual(result['id'], self.normalize_key(2))
+        self.assertIn('user', result)
+        self.assertEqual(result['user']['id'], self.normalize_key(4))
+        self.assertIn('company_group', result)
+        self.assertEqual(result['company_group']['id'], self.normalize_key(1))
+
+    def test_get_company_group_member_by_id_non_exist(self):
+        response = self.client.get(reverse('company_group_member_api',
+                                   kwargs={'pk': self.normalize_key(12)}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 404)
+
 
     def test_put_company_group_member(self):
         put_data = {
