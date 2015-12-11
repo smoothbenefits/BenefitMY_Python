@@ -199,10 +199,12 @@ class CompanyGroupMemberTestCase(TestCase, ViewTestBase):
         self.assertEqual(group['company']['id'], self.normalize_key(1))
         self.assertEqual(group['company_group_members'], [])
 
-def test_get_company_group_member_by_company_non_exist(self):
+    def test_get_company_group_member_by_company_non_exist(self):
         response = self.client.get(reverse('company_group_member_company_api',
                                            kwargs={'pk': self.normalize_key(11)}))
         self.assertIsNotNone(response)
-        self.assertEqual(response.status_code, 404)
-
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(type(result), list)
+        self.assertEqual(0, len(result))
 
