@@ -270,3 +270,10 @@ div.submit-box.benefit-selection-button{
   padding-left: 10px;
   max-width: 200px;
 }
+.block-ui-overlay {
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    background-color: white;
+}

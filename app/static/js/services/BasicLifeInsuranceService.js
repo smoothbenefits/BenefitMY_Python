@@ -5,6 +5,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
    'CompanyBasicLifeInsurancePlanRepository',
    'CompanyUserBasicLifeInsurancePlanRepository',
    'PersonService',
+   'CompensationService',
    '$q',
    'EmployeeProfileService',
   function (
@@ -12,6 +13,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
       CompanyBasicLifeInsurancePlanRepository,
       CompanyUserBasicLifeInsurancePlanRepository,
       PersonService,
+      CompensationService,
       $q,
       EmployeeProfileService){
 
@@ -45,6 +47,20 @@ benefitmyService.factory('BasicLifeInsuranceService',
       return deferred.promise;
     };
 
+    var getLifeInsuranceEmployeePremium = function(employeeUserId, basicLifeInsurancePlan) {
+
+      return CompanyUserBasicLifeInsurancePlanRepository.PlanPremiumByUser.get({userId: employeeUserId, planId: basicLifeInsurancePlan.id})
+      .$promise;
+    };
+
+    var convertNullValueToDash = function(value) {
+      if (value) {
+        return value;
+      } else {
+        return '-';
+      }
+    };
+
     var getLifeInsurancePlansForCompany = function(company) {
       var deferred = $q.defer();
       CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:company.id})
@@ -53,7 +69,21 @@ benefitmyService.factory('BasicLifeInsuranceService',
             companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
             if (companyPlan.life_insurance_plan.insurance_type.toLowerCase() === 'basic'){
               companyPlan.life_insurance_plan.display_insurance_type = 'Basic and AD&D';
-              companyPlan.employee_cost_per_period = (companyPlan.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2);
+
+              if (companyPlan.employee_cost_per_period){
+                companyPlan.employee_cost_per_period = (companyPlan.employee_cost_per_period * company.pay_period_definition.month_factor).toFixed(2);
+              } else {
+                companyPlan.employee_cost_per_period = convertNullValueToDash(companyPlan.employee_cost_per_period);
+              }
+
+              if (companyPlan.total_cost_rate) {
+                companyPlan.total_cost_rate = Number(companyPlan.total_cost_rate).toFixed(4);
+              } else {
+                companyPlan.total_cost_rate = convertNullValueToDash(companyPlan.total_cost_rate);
+              }
+
+              companyPlan.total_cost_per_period = convertNullValueToDash(companyPlan.total_cost_per_period);
+              companyPlan.employee_contribution_percentage = convertNullValueToDash(companyPlan.employee_contribution_percentage);
             }
           });
           deferred.resolve(plans);
@@ -127,6 +157,25 @@ benefitmyService.factory('BasicLifeInsuranceService',
       return deferred.promise;
     };
 
+    var mapCompanyBasicLifePlanToDomainModel = function(useCostRate, company, basicLifePlan, companyPlan) {
+      var domainModel = {
+        "company": company.id,
+        "life_insurance_plan": basicLifePlan.id,
+        "insurance_amount": companyPlan.amount,
+        "salary_multiplier": companyPlan.multiplier,
+      };
+
+      if (useCostRate) {
+        domainModel.total_cost_rate = companyPlan.costRate;
+        domainModel.employee_contribution_percentage = companyPlan.employeeContributionPercentage;
+      } else {
+        domainModel.total_cost_per_period = companyPlan.totalCost;
+        domainModel.employee_cost_per_period = (companyPlan.employeeContribution / company.pay_period_definition.month_factor).toFixed(10)
+      }
+
+      return domainModel;
+    };
+
     return {
       saveLifeInsurancePlan: function(planToSave){
         var deferred = $q.defer();
@@ -177,6 +226,8 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
       getLifeInsurancePlansForCompany: getLifeInsurancePlansForCompany,
 
+      getLifeInsuranceEmployeePremium: getLifeInsuranceEmployeePremium,
+
       getLifeInsurancePlansForCompanyByType: function(company, plan_type) {
         var deferred = $q.defer();
 
@@ -200,17 +251,10 @@ benefitmyService.factory('BasicLifeInsuranceService',
         return deferred.promise;
       },
 
-      enrollCompanyForBasicLifeInsurancePlan: function(basicLife, companyBasicLife, company) {
+      enrollCompanyForBasicLifeInsurancePlan: function(basicLife, companyBasicLife, company, useCostRate) {
         var deferred = $q.defer();
 
-        var linkToSave = {
-          "company": company.id,
-          "life_insurance_plan": basicLife.id,
-          "insurance_amount": companyBasicLife.amount,
-          "salary_multiplier": companyBasicLife.multiplier,
-          "total_cost_per_period": companyBasicLife.totalCost,
-          "employee_cost_per_period": (companyBasicLife.employeeContribution / company.pay_period_definition.month_factor).toFixed(10)
-        };
+        var linkToSave = mapCompanyBasicLifePlanToDomainModel(useCostRate, company, basicLife, companyBasicLife);
 
         CompanyBasicLifeInsurancePlanRepository.ById.save({id:linkToSave.company}, linkToSave
           , function (successResponse) {

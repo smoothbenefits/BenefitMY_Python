@@ -19,6 +19,14 @@ class CompanyLifeInsurancePlan(models.Model):
     employee_cost_per_period = models.DecimalField(
         max_digits=20, decimal_places=10, blank=True, null=True)
 
+    # cost rate per $10 benefits
+    total_cost_rate = models.DecimalField(
+        max_digits=20, decimal_places=10, blank=True, null=True)
+
+    # employee contribution percentage, required when cost rate is provided
+    employee_contribution_percentage = models.DecimalField(
+        max_digits=10, decimal_places=4, blank=True, null=True)
+
     # for basic life insurance only
     insurance_amount = models.DecimalField(
         max_digits=20, decimal_places=2, blank=True, null=True)

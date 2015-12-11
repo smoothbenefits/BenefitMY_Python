@@ -9,7 +9,9 @@ benefitmyService.factory('Employee1095CService', [
     var mapToModelObject = function(view1095CData, personId, companyId){
       modelObj = [];
       _.each(view1095CData, function(dataItem){
-        if(dataItem.safe_harbor){
+        if(dataItem.offer_of_coverage && 
+           dataItem.safe_harbor &&
+           dataItem.employee_share){
           dataItem.company = companyId;
           dataItem.person = personId;
           modelObj.push(dataItem);
@@ -23,11 +25,14 @@ benefitmyService.factory('Employee1095CService', [
       _.each(periods, function(periodValue){
         var foundItem = _.findWhere(model1095CData, {period:periodValue});
         if(foundItem){
+          foundItem.employee_share = parseFloat(foundItem.employee_share);
           sortedData.push(foundItem);
         }
         else{
           sortedData.push({period: periodValue,
-                           safe_harbor:''});
+                           safe_harbor:'',
+                           offer_of_coverage:'',
+                           employee_share:''});
         }
       });
       return sortedData;
@@ -60,15 +65,14 @@ benefitmyService.factory('Employee1095CService', [
       var monthlyCodes = _.filter(form1095CData, function(item) {
         return item.period != 'All 12 Months';
       });
-      var anyMonthlyCode = _.some(monthlyCodes, function(item) { return item.safe_harbor; });
-      var hasAllMonthlyCodes = _.every(monthlyCodes, function(item) { return item.safe_harbor; });
+      var anyMonthlyCode = _.some(monthlyCodes, function(item) { return item.offer_of_coverage; });
 
-      if (allYearCode.safe_harbor && anyMonthlyCode) {
-        return 'Please enter either All 12 Months code or monthly codes.';
+      if (allYearCode.offer_of_coverage && anyMonthlyCode) {
+        return 'Please enter either only All 12 Months code or monthly codes.';
       }
 
-      if (!allYearCode.safe_harbor && !hasAllMonthlyCodes) {
-        return 'Values for all month are required, from Jan. to Dec.';
+      if (!allYearCode.offer_of_coverage && !anyMonthlyCode) {
+        return 'Please enter a code for either All 12 Months or any monthly code';
       }
 
       return PASS_VALIDATION;

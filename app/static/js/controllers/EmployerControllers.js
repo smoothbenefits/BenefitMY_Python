@@ -167,7 +167,7 @@ var employerUser = employersController.controller('employerUser',
       $scope.employment_types = EmployerEmployeeManagementService.EmploymentTypes;
       $scope.addUser = {
         send_email:true,
-        new_employee:true,
+        new_employee:false,
         create_docs:true,
         employment_type: _.findWhere($scope.employment_types, function(type) {
           return EmployerEmployeeManagementService.IsFullTimeEmploymentType(type);
@@ -457,6 +457,10 @@ var employerBenefits = employersController.controller('employerBenefits',
         $scope.nonMedicalBenefitArray = healthBenefitToDisplay.nonMedicalBenefitArray;
         $scope.benefitCount = healthBenefitToDisplay.benefitCount;
       });
+
+      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($scope.company).then(function(response) {
+        $scope.lifeInsurancePlans = response;
+      });
     });
 
     $scope.sortBy = function(predicate){
@@ -471,10 +475,6 @@ var employerBenefits = employersController.controller('employerBenefits',
     $scope.backtoDashboard = function(){
       $location.path('/admin');
     };
-
-    BasicLifeInsuranceService.getLifeInsurancePlansForCompany($stateParams.company_id).then(function(response) {
-      $scope.lifeInsurancePlans = response;
-    });
 
     SupplementalLifeInsuranceService.getPlansForCompany($stateParams.company_id).then(function(response) {
       $scope.supplementalLifeInsurancePlans = response;
@@ -582,7 +582,7 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
   function employerModifyTemplate($scope, $state, $stateParams, TemplateService){
     $scope.companyId = $stateParams.company_id;
     $scope.templateId = $stateParams.template_id;
-    
+
     var templateTypes = {
         'Text': 'Text',
         'Upload': 'Upload'
@@ -596,7 +596,7 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
       .then(function(template){
         $scope.template = template;
 
-        $scope.templateType = $scope.template.upload 
+        $scope.templateType = $scope.template.upload
                             ? templateTypes.Upload
                             : templateTypes.Text;
       });
@@ -625,7 +625,7 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
     $scope.hasCompleteData = function() {
         return $scope.template
             && $scope.template.name
-            && ($scope.template.upload 
+            && ($scope.template.upload
                 || $scope.template.content);
     };
 
@@ -655,12 +655,12 @@ var employerModifyTemplate = employersController.controller('employerModifyTempl
     };
 
     $scope.createTemplate = function(){
-      if($scope.template.name 
+      if($scope.template.name
          && ($scope.template.content
              || $scope.template.upload))
       {
         cleanTemplateForSave();
-        
+
         TemplateService.createNewTemplate($scope.companyId, $scope.template)
         .then(function(savedTemplate){
           $scope.template = savedTemplate;
@@ -714,12 +714,12 @@ var employerCreateDocument = employersController.controller('employerCreateDocum
     };
 
     $scope.inTextMode = function() {
-        return $scope.selectedTemplate 
+        return $scope.selectedTemplate
             && $scope.selectedTemplate.contentType == TemplateService.contentTypes.text;
     };
 
     $scope.inUploadMode = function() {
-        return $scope.selectedTemplate 
+        return $scope.selectedTemplate
             && $scope.selectedTemplate.contentType == TemplateService.contentTypes.upload;
     };
 
@@ -762,7 +762,7 @@ var employerBatchCreateDocuments = employersController.controller('employerBatch
                                         DocumentService){
     $scope.companyId = $stateParams.company_id;
     $scope.documentsCreationData = {};
-    
+
     TemplateService.getTemplateById($stateParams.template_id).then(function(template) {
         $scope.template = template;
         $scope.documentsCreationData.documentName = template.name;
@@ -775,7 +775,7 @@ var employerBatchCreateDocuments = employersController.controller('employerBatch
         .then(function(resultDocs) {
             alert('Documents have been successfully created for ' + resultDocs.length + ' employees!');
             $scope.goBackToViewTemplates();
-        }, 
+        },
         function(errors) {
             alert('There were problems creating documents. Please try again later or contact support.');
         });
@@ -829,7 +829,7 @@ var employerViewDocument = employersController.controller('employerViewDocument'
     }
 
     $scope.inTextMode = function() {
-        return $scope.activeDocument 
+        return $scope.activeDocument
             && $scope.activeDocument.contentType == DocumentService.contentTypes.text;
     };
 
@@ -871,6 +871,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'EmployeeProfileService',
   'EmploymentStatuses',
   'CompensationService',
+  'PersonService',
   function($scope,
            $location,
            $stateParams,
@@ -882,7 +883,8 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            employeeTaxRepository,
            EmployeeProfileService,
            EmploymentStatuses,
-           CompensationService){
+           CompensationService,
+           PersonService){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
@@ -905,7 +907,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
           $scope.employee.emergency_contact = selfInfo.emergency_contact;
-          $scope.employee.gender = (selfInfo.gender === 'F' ? 'Female' : 'Male');
+          $scope.employee.gender = PersonService.getGenderForDisplay(selfInfo.gender);
 
           // Get the employee profile info that bound to this person
           EmployeeProfileService.getEmployeeProfileForPersonCompany(selfInfo.id, compId)
@@ -1289,7 +1291,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
 
     };
 
-    $scope.editEmployeeSafeHarborCode = function(employeeId) {
+    $scope.editEmployee1095C = function(employeeId) {
       var modalInstance = $modal.open({
         templateUrl: '/static/partials/aca/modal_employee_1095_c.html',
         controller: 'employee1095CModalController',
@@ -1305,7 +1307,7 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
       });
 
       modalInstance.result.then(function(saved1095CData) {
-        $scope.showMessageWithOkayOnly('Success', 'Employee safe harbor code has been saved successfully.');
+        $scope.showMessageWithOkayOnly('Success', 'Employee 1095C data has been saved successfully.');
       });
     };
 }]);
@@ -1454,44 +1456,9 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
 ]);
 
 var employerAcaReport = employersController.controller('employerAcaReport', [
-  '$scope', '$state', '$stateParams', '$modal', '$controller', 'Company1094CService',
-  function($scope, $state, $stateParams, $modal, $controller, Company1094CService) {
+  '$scope', '$stateParams', '$controller',
+  function($scope, $stateParams, $controller) {
     $controller('modalMessageControllerBase', {$scope: $scope});
-
-    var companyId = $stateParams.company_id;
-
-    Company1094CService.Get1094CEligibilityCertification().then(function(data) {
-      $scope.eligibilityCertification = data;
-    });
-
-    Company1094CService.Get1094CByCompany(companyId).then(function(data) {
-      $scope.sorted1094CData = data;
-    });
-
-    $scope.getCompany1094CUrl = function() {
-      return Company1094CService.GetCompany1094CUrl(companyId);
-    };
-
-    $scope.edit1094CInfo = function() {
-      var modalInstance = $modal.open({
-        templateUrl: '/static/partials/aca/modal_company_1094_c.html',
-        controller: 'Company1094CModalController',
-        size: 'lg',
-        backdrop: 'static',
-        resolve: {
-          CompanyId: function() { return companyId; },
-          EligibilityCertification: function() { return $scope.eligibilityCertification; },
-          Company1094CData: function() {
-            return angular.copy($scope.sorted1094CData);
-          }
-        }
-      });
-
-      modalInstance.result.then(function(saved1094CData) {
-        $scope.sorted1094CData = saved1094CData;
-        $scope.showMessageWithOkayOnly('Success', 'Company 1094C data has been saved successfully.');
-      });
-    };
-
+    $scope.companyId = $stateParams.company_id;
   }
 ]);

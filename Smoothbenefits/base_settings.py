@@ -101,6 +101,7 @@ MIDDLEWARE_CLASSES = (
 
 CRON_CLASSES = [
     "app.scheduled_jobs.user_changes_notification.UserChangeNotifications",
+    "app.scheduled_jobs.system_notifications.SystemNotifications"
 ]
 
 ROOT_URLCONF = 'Smoothbenefits.urls'
@@ -251,6 +252,7 @@ PIPELINE_JS = {
             'js/directives/SignaturePicker.js',
             'js/directives/DocumentUploadManager.js',
             'js/directives/EmployeeDocumentViewer.js',
+            'js/directives/Edit1094c.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
