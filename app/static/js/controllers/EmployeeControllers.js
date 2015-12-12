@@ -975,7 +975,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
             $state.go('/');
           }
         });
-        return BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(comp, 'Basic');
+        return BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompany(comp);
       })
       .then(function(basicPlans) {
         basicLifePlans = basicPlans;
@@ -1662,7 +1662,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
         var employeeId = $scope.employeeId;
 
         $scope.companyPromise.then(function(company){
-          BasicLifeInsuranceService.getLifeInsurancePlansForCompanyByType(company, 'Basic').then(function(plans) {
+          BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompany(company).then(function(plans) {
 
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = plans[0];

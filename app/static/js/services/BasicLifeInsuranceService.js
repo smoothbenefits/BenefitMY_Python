@@ -167,10 +167,11 @@ benefitmyService.factory('BasicLifeInsuranceService',
         return deferred.promise;
     };
 
-    var getLifeInsurancePlansForCompany = function(company) {
+    var getBasicLifeInsurancePlansForCompany = function(company) {
       var deferred = $q.defer();
       CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:company.id})
         .$promise.then(function(plans) {
+          var resultPlans = [];
           _.each(plans, function(companyPlan) {
             companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
             if (companyPlan.life_insurance_plan.insurance_type.toLowerCase() === 'basic'){
@@ -190,9 +191,11 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
               companyPlan.total_cost_per_period = convertNullValueToDash(companyPlan.total_cost_per_period);
               companyPlan.employee_contribution_percentage = convertNullValueToDash(companyPlan.employee_contribution_percentage);
+            
+              resultPlans.push(companyPlan);
             }
           });
-          deferred.resolve(plans);
+          deferred.resolve(resultPlans);
         },
         function(failedResponse) {
           deferred.reject(failedResponse);
@@ -202,7 +205,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
     var getBasicLifeInsuranceEnrollmentByUser = function(userId, company) {
       var deferred = $q.defer();
-      getLifeInsurancePlansForCompany(company).then(function(plans){
+      getBasicLifeInsurancePlansForCompany(company).then(function(plans){
         if(!plans || plans.length <=0){
           deferred.resolve(undefined);
         }
@@ -301,46 +304,9 @@ benefitmyService.factory('BasicLifeInsuranceService',
         return deferred.promise;
       },
 
-      deleteLifeInsurancePlan: function(planIdToDelete, successCallBack, errorCallBack) {
-        BasicLifeInsurancePlanRepository.ById.delete({id:planIdToDelete}
-          , function (successResponse) {
-                if (successCallBack) {
-                  successCallBack(successResponse);
-                }
-              }
-            , function(errorResponse) {
-                if (errorCallBack) {
-                  errorCallBack(errorResponse);
-              }
-            });
-      },
-
-      getLifeInsurancePlansForCompany: getLifeInsurancePlansForCompany,
+      getBasicLifeInsurancePlansForCompany: getBasicLifeInsurancePlansForCompany,
 
       getLifeInsuranceEmployeePremium: getLifeInsuranceEmployeePremium,
-
-      getLifeInsurancePlansForCompanyByType: function(company, plan_type) {
-        var deferred = $q.defer();
-
-        CompanyBasicLifeInsurancePlanRepository.ByCompany.query({companyId:company.id})
-          .$promise.then(function(plans) {
-            var resultPlans = [];
-            _.each(plans, function(companyPlan) {
-              companyPlan.created_date_for_display = moment(companyPlan.created_at).format(DATE_FORMAT_STRING);
-              companyPlan.employee_cost_per_period *= company.pay_period_definition.month_factor;
-              companyPlan.employee_cost_per_period = companyPlan.employee_cost_per_period.toFixed(2);
-              if (companyPlan.life_insurance_plan.insurance_type === plan_type) {
-                resultPlans.push(companyPlan);
-              }
-            });
-            deferred.resolve(resultPlans);
-          },
-          function(failedResponse) {
-            deferred.reject(failedResponse);
-          });
-
-        return deferred.promise;
-      },
 
       deleteLifeInsurancePlanForCompany: function(companyPlanId, successCallBack, errorCallBack) {
         CompanyBasicLifeInsurancePlanRepository.ById.delete({id:companyPlanId}

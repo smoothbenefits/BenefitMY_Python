@@ -186,7 +186,7 @@ var benefitsController = brokersControllers.controller(
           $scope.benefitCount = healthBenefitToDisplay.benefitCount;
         });
 
-        BasicLifeInsuranceService.getLifeInsurancePlansForCompany($scope.company)
+        BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompany($scope.company)
         .then(function(response) {
           $scope.lifeInsurancePlans = response;
         });
