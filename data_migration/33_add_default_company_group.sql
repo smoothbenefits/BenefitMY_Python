@@ -9,7 +9,7 @@ LEFT OUTER JOIN app_companygroup cg ON c.id = cg.company_id
 WHERE cg.id IS NULL;
 
 INSERT INTO app_companygroup (company_id, name, created, updated)
-SELECT c.company_id, 'Default Group', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+SELECT c.company_id, 'Default', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
 FROM company c;
 
 INSERT INTO app_companygroupmember (user_id, company_group_id, created)
