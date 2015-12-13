@@ -963,9 +963,11 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var commuterPlans;
       var extraBenefitPlans;
       var company;
+      var userInfo;
 
       var promise = $scope.companyPromise.then(function(comp){
         company = comp;
+        userInfo = $scope.userInfo;
         EmployeeBenefitsAvailabilityService.getEmployeeAvailableBenefits(
           comp.id,
           employeeId)
@@ -975,7 +977,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
             $state.go('/');
           }
         });
-        return BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompany(comp);
+        return BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompanyGroup(company, userInfo.user.company_group_user[0].company_group.id);
       })
       .then(function(basicPlans) {
         basicLifePlans = basicPlans;
@@ -1026,7 +1028,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if(basicLifePlans.length > 0) {
+        if(basicLifePlans && basicLifePlans.length > 0) {
           $scope.tabs.push({
             "id": 3,
             "heading": "Basic Life (AD&D)",
@@ -1662,10 +1664,11 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
         var employeeId = $scope.employeeId;
 
         $scope.companyPromise.then(function(company){
-          BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompany(company).then(function(plans) {
+          BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompanyGroup(company, $scope.userInfo.user.company_group_user[0].company_group.id).then(function(plans) {
 
             if (plans.length > 0) {
-              $scope.basicLifeInsurancePlan = plans[0];
+              $scope.basicLifeInsurancePlan = {};
+              $scope.basicLifeInsurancePlan.currentUserId = employeeId;
               $scope.basicLifeInsurancePlan.selected = true;
               $scope.basicLifeInsurancePlan.mandatory = true;
               // Ideally, basicLifeInsurancePlan should be user basic life insurance plan
@@ -1684,9 +1687,31 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             }
 
             // Get current user's basic life insurance plan situation
-            BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, company).then(function(plan){
-              $scope.basicLifeInsurancePlan.life_insurance_beneficiary = plan.life_insurance_beneficiary;
-              $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = plan.life_insurance_contingent_beneficiary;
+            BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, company).then(function(userPlan){
+              if (userPlan === undefined) {
+                // TODO:
+                // The user (now) belongs to a group that does not provide 
+                // benefit. 
+                // Our current behavior is to not even show the tab when no
+                // company plan is available, so users would not even get 
+                // here (they don't see the tab, and cannot save the plan)
+                // But we might need to revisit, in general, what to do when
+                // company (group) plans removed, where users have been previously
+                // registered to.
+                alert("System found no available plans to enroll!");
+                return;
+              }  
+
+              if (userPlan.selected) {
+                $scope.basicLifeInsurancePlan.enrolled = true;
+                $scope.basicLifeInsurancePlan.id = userPlan.id;
+              } 
+              else {
+                $scope.basicLifeInsurancePlan.enrolled = false;
+              }
+
+              $scope.basicLifeInsurancePlan.life_insurance_beneficiary = userPlan.life_insurance_beneficiary;
+              $scope.basicLifeInsurancePlan.life_insurance_contingent_beneficiary = userPlan.life_insurance_contingent_beneficiary;
             }, function(error){
               $scope.error = true;
             });
@@ -1729,23 +1754,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
           // Save basic life insurance
           // TO-DO: Need to better organize the logic to save basic life insurance
           ///////////////////////////////////////////////////////////////////////////
-          BasicLifeInsuranceService.getInsurancePlanEnrollmentsByUser(employeeId, function(enrolledPlans){
-            var enrolledBasic = _.find(enrolledPlans, function(plan){
-              return plan.company_life_insurance;
-            });
-
-            if (enrolledBasic){
-              $scope.basicLifeInsurancePlan.enrolled = true;
-              $scope.basicLifeInsurancePlan.id = enrolledBasic.id;
-              $scope.basicLifeInsurancePlan.companyLifeInsurancePlan = enrolledBasic.company_life_insurance;
-            }
-            else{
-              $scope.basicLifeInsurancePlan.enrolled = false;
-            }
-
-            $scope.basicLifeInsurancePlan.currentUserId = employeeId;
-
-            BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, $scope.updateReason
+          BasicLifeInsuranceService.saveBasicLifeInsurancePlanForUser($scope.basicLifeInsurancePlan, $scope.updateReason
             , function() {
               var modalInstance = $scope.showSaveSuccessModal();
               modalInstance.result.then(function(){
@@ -1757,11 +1766,6 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
               $scope.savedSuccess = false;
               alert('Failed to save basic life insurance. Please make sure all required fields have been filled.')
             });
-
-
-          }, function(error) {
-            $scope.savedSuccess = false;
-          });
         };
 
         $scope.benefit_type = 'Basic Life Insurance';
@@ -2483,6 +2487,7 @@ var benefitsSignupControllerBase = employeeControllers.controller(
         $scope.companyPromise =  UserService.getCurUserInfo()
         .then(function(userInfo){
             $scope.company = userInfo.currentRole.company;
+            $scope.userInfo = userInfo;
             return userInfo.currentRole.company;
           });
 
