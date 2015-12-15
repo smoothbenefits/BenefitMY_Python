@@ -15,7 +15,8 @@ class CompanyEnrollmentSummaryTestCase(TestCase, ViewTestBase):
                 '41_user_company_benefit_plan_option', '42_company_fsa', '43_fsa',
                 '44_person_company_suppl_life', '45_suppl_life_beneficiary', '46_hra_plan',
                 '47_company_hra_plan', '48_person_company_hra_plan', 'company_features',
-                'life_insurance', 'ltd_insurance', 'std_insurance', 'waived_benefit']
+                'life_insurance', 'ltd_insurance', 'std_insurance', 'waived_benefit',
+                '61_company_group', '62_company_group_member','63_company_group_basic_life_insurance_plan']
 
     def test_get_company_enrollment_summary_success(self):
         response = self.client.get(reverse('company_enrollment_summary_api', kwargs={'comp_id': self.normalize_key(1)}))
