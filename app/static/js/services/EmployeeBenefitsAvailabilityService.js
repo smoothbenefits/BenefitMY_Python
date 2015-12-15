@@ -20,7 +20,7 @@ benefitmyService.factory('EmployeeBenefitsAvailabilityService',
             CompanyFeatureService.getEnabledCompanyFeatureByCompany(companyId)
             .then(function(compFeatures){  
                 if(isFullTime || !compFeatures.BenefitsForFullTimeOnly){
-                    CompanyBenefitAvailabilityService.getBenefitAvailabilityByCompany(companyId)
+                    CompanyBenefitAvailabilityService.getBenefitAvailabilityForUser(companyId, userId)
                     .then(function(companyBenefits) {
                         deferred.resolve(companyBenefits);
                     });

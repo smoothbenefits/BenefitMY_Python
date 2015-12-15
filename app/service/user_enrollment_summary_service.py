@@ -8,10 +8,13 @@ from app.models.insurance.person_comp_suppl_life_insurance_plan import \
     PersonCompSupplLifeInsurancePlan
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
+from app.models.insurance.company_group_basic_life_insurance_plan import \
+    CompanyGroupBasicLifeInsurancePlan
 from app.models.insurance.user_company_ltd_insurance_plan import \
     UserCompanyLtdInsurancePlan
 from app.models.insurance.user_company_std_insurance_plan import \
     UserCompanyStdInsurancePlan
+from app.models.company_group_member import CompanyGroupMember
 
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
 from app.models.fsa.company_fsa_plan import CompanyFsaPlan
@@ -31,6 +34,12 @@ class UserEnrollmentSummaryService(object):
         self.user_id = user_id
         self.person_id = person_id
         self.company_id = company_id
+
+        # Get the user's company group info
+        self.company_group = None
+        company_group_members = CompanyGroupMember.objects.filter(user=self.user_id)
+        if (len(company_group_members) > 0):
+            self.company_group = company_group_members[0].company_group
 
     def get_health_benefit_enrollment(self):
         if CompanyBenefitPlanOption.objects.filter(company=self.company_id).exists():
@@ -55,8 +64,12 @@ class UserEnrollmentSummaryService(object):
         else:
             return None
 
-    def get_life_insurance(self):
-        if CompanyLifeInsurancePlan.objects.filter(company=self.company_id).exists():
+    def get_basic_life_insurance(self):
+        if (not self.company_group):
+            return None
+
+        group_plans = self.company_group.basic_life_insurance_plan.all()
+        if (group_plans.exists()):
             return UserCompanyLifeInsurancePlan.objects.filter(user=self.user_id)
         else:
             return None
@@ -84,7 +97,7 @@ class UserEnrollmentSummaryService(object):
         health_waived = self.get_health_benefit_waive()
         hra_enrollment = self.get_hra_plan()
         fsa_enrollment = self.get_fsa_plan()
-        basic_life_enrollment = self.get_life_insurance()
+        basic_life_enrollment = self.get_basic_life_insurance()
         ltd_enrollment = self.get_ltd_insurance()
         std_enrollment = self.get_std_insurance()
         suppl_life_enrollment = self.get_supplimental_life_insurance()
