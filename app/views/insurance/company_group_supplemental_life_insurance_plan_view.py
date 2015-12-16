@@ -32,11 +32,12 @@ class CompanyGroupSupplementalLifeInsurancePlanByCompanyPlanView(APIView):
         except CompSupplLifeInsurancePlan.DoesNotExist:
             raise Http404
 
-    def _get_company_group_plans(self, pk):
-        return CompanyGroupSupplLifeInsurancePlan.objects.filter(company_suppl_life_insurance_plan=pk)
+    def _get_company_group_plans(self, comp_plan):
+        return CompanyGroupSupplLifeInsurancePlan.objects.filter(company_suppl_life_insurance_plan=comp_plan)
 
     def get(self, request, pk, format=None):
-        group_plans = self._get_company_group_plans(pk)
+        comp_plan = self._get_company_plan(pk)
+        group_plans = self._get_company_group_plans(comp_plan)
         serializer = CompanyGroupSupplementalLifeInsurancePlanSerializer(group_plans, many=True)
         return Response(serializer.data)
 
@@ -54,7 +55,7 @@ class CompanyGroupSupplementalLifeInsurancePlanByCompanyPlanView(APIView):
         serializer = CompanyGroupSupplementalLifeInsurancePlanPostSerializer(data=request.DATA, many=True)
         if serializer.is_valid():
             # update by delete and create
-            group_plans = self._get_company_group_plans(pk)
+            group_plans = self._get_company_group_plans(company_plan)
             for group_plan in group_plans:
                 group_plan.delete()
             serializer.save()
