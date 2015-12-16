@@ -22,7 +22,9 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
       viewModel['ltd'] = domainModel.ltd[0] != null;
       viewModel['basic_life'] = _.some(domainModel.basic_life, 
         function(plan) {
-            return plan.company_groups[0].company_group.id === companyGroupId;
+            return _.some(plan.company_groups, function(company_group) {
+                return company_group.company_group.id == companyGroupId;
+            });
         });
 
       return viewModel;
