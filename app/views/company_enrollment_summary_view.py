@@ -72,9 +72,10 @@ and (health.id is not null
             cursor.execute("""select distinct cu.user_id, p.first_name, p.last_name
 from app_companyuser as cu 
 join app_person as p on p.user_id=cu.user_id and p.relationship='self'
+join app_companygroupmember as cgm on cgm.user_id = cu.user_id
 left join app_companybenefitplanoption as comphealth on comphealth.company_id = cu.company_id
 left join app_usercompanybenefitplanoption as health on health.user_id = cu.user_id and comphealth.id = health.benefit_id
-left join app_companylifeinsuranceplan as compbasic on compbasic.company_id = cu.company_id
+left join app_companygroupbasiclifeinsuranceplan as compbasic on compbasic.company_group_id = cgm.company_group_id
 left join app_usercompanylifeinsuranceplan as basic on basic.user_id = cu.user_id
 left join app_compsuppllifeinsuranceplan as compsup on compsup.company_id = cu.company_id
 left join app_personcompsuppllifeinsuranceplan as sp on sp.person_id = p.id
@@ -88,7 +89,7 @@ left join app_companyfsaplan as compfsa on compfsa.company_id = cu.company_id
 left join app_fsa as fsa on fsa.user_id = cu.user_id
 left join app_usercompanywaivedbenefit as hwaive on hwaive.user_id = cu.user_id
 where cu.company_id = %s
-and cu.company_user_type = 'employee' 
+and cu.company_user_type = 'employee'
 and (comphealth.id is null or health.id is not null or hwaive.id is not null)
 and (compbasic.id is null or basic.id is not null)
 and (compsup.id is null or sp.id is not null)

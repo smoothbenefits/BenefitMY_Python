@@ -241,6 +241,24 @@ benefitmyDomainModelFactories.factory('CompanyBasicLifeInsurancePlanRepository',
   }
 ]);
 
+benefitmyDomainModelFactories.factory('CompanyGroupBasicLifeInsurancePlanRepository', ['$resource',
+  function ($resource){
+    return {
+      ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/basic_life_insurance_plan/', {companyGroupId:'@company_group_id'}),
+      ByCompanyPlan: $resource('/api/v1/company_basic_life_insurance_plan/:companyPlanId/company_group_plans/', {companyPlanId:'@pk'}, {
+        save: {
+            method:'POST', 
+            isArray: true
+        },
+        update: {
+            method: 'PUT',
+            isArray: true
+        }
+      })
+    };
+  }
+]);
+
 // Company life insurance plan to users link domain repo
 benefitmyDomainModelFactories.factory('CompanyUserBasicLifeInsurancePlanRepository', ['$resource',
   function ($resource){
