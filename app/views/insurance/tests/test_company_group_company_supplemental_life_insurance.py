@@ -97,11 +97,6 @@ class CompanyGroupCompanySupplementalLifeInsuranceTestCase(TestCase, ViewTestBas
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
 
-        response = self.client.get(reverse('company_group_supplemental_life_insurance_plan_by_company_plan_api',
-                                           kwargs={'pk':self.normalize_key(1)}))
-        self.assertIsNotNone(response)
-        self.assertEqual(response.status_code, 200)
-
         array = json.loads(response.content)
         self.assertEqual(type(array), list)
         self.assertEqual(len(array), 2)
@@ -150,11 +145,6 @@ class CompanyGroupCompanySupplementalLifeInsuranceTestCase(TestCase, ViewTestBas
                                     content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 201)
-
-        response = self.client.get(reverse('company_group_supplemental_life_insurance_plan_by_company_plan_api',
-                                           kwargs={'pk':self.normalize_key(2)}))
-        self.assertIsNotNone(response)
-        self.assertEqual(response.status_code, 200)
 
         array = json.loads(response.content)
         self.assertEqual(type(array), list)

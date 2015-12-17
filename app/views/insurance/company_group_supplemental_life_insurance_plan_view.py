@@ -59,7 +59,8 @@ class CompanyGroupSupplementalLifeInsurancePlanByCompanyPlanView(APIView):
             for group_plan in group_plans:
                 group_plan.delete()
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            response_serializer = CompanyGroupSupplementalLifeInsurancePlanSerializer(serializer.object, many=True)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
@@ -68,5 +69,6 @@ class CompanyGroupSupplementalLifeInsurancePlanByCompanyPlanView(APIView):
         serializer = CompanyGroupSupplementalLifeInsurancePlanPostSerializer(data=request.DATA, many=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            response_serializer = CompanyGroupSupplementalLifeInsurancePlanSerializer(serializer.object, many=True)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
