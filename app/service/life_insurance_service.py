@@ -9,13 +9,13 @@ class LifeInsuranceService(object):
         self._life_insurance_plan = life_insurance_plan
 
     def _use_fix_benefit_cost(self):
-        if self._life_insurance_plan.total_cost_per_period and self._life_insurance_plan.employee_cost_per_period:
+        if (self._life_insurance_plan.total_cost_per_period is not None) and (self._life_insurance_plan.employee_cost_per_period is not None):
             return True
 
-        if self._life_insurance_plan.total_cost_rate and self._life_insurance_plan.employee_contribution_percentage:
+        if (self._life_insurance_plan.total_cost_rate is not None) and (self._life_insurance_plan.employee_contribution_percentage is not None):
             return False
 
-        return None
+        raise ValueError('Company basic life insurance plan has incomplete cost data')
 
     def _get_effective_benefit_amount(self, insurance_amount, salary_multiplier, annual_salary):
         if insurance_amount:
@@ -45,8 +45,6 @@ class LifeInsuranceService(object):
 
     def get_basic_life_insurance_cost_for_employee(self, personId):
         fix_cost = self._use_fix_benefit_cost()
-        if fix_cost is None:
-            raise ValueError('Company basic life insurance plan has incomplete cost data')
 
         compensation_service = CompensationService(personId)
         current_salary = compensation_service.get_current_annual_salary()
