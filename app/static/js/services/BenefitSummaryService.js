@@ -178,7 +178,7 @@ benefitmyService.factory('BenefitSummaryService',
         });
         return enrolled;
       }).then(function(personEnrollment) {
-        CompanyBenefitAvailabilityService.getBenefitAvailabilityByCompany(companyId)
+        CompanyBenefitAvailabilityService.getBenefitAvailabilityForUser(companyId, userId)
         .then(function(companyBenefits) {
           // First, get all benefits that the company offers
           var companyBenefitHash = _.pairs(companyBenefits);

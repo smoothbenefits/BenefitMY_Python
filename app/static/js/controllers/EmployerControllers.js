@@ -482,7 +482,7 @@ var employerBenefits = employersController.controller('employerBenefits',
         $scope.benefitCount = healthBenefitToDisplay.benefitCount;
       });
 
-      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($scope.company).then(function(response) {
+      BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompany($scope.company).then(function(response) {
         $scope.lifeInsurancePlans = response;
       });
     });

@@ -2,7 +2,6 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from app.service.hash_key_service import HashKeyService
-from app.views.company_benefit_availability_view import CompanyBenefitAvailabilityView
 
 from app.models.person import Person
 from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption

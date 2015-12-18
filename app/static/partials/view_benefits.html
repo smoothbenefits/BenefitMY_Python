@@ -164,6 +164,7 @@
       <tr>
         <th><span>Basic Life Insurance (AD&D)</span></th>
         <th><span>Document</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Total Cost (Monthly)</span></th>
         <th><span>Employee Contribution (per pay period)</span></th>
         <th><span>Total Cost Rate (per $10)</span></th>
@@ -190,6 +191,7 @@
           hide-type="true">
         </bmuploadmanager>
       </td>
+      <td><span class="inline" ng-repeat="group in lifeInsurancePlan.company_groups">{{group.company_group.name}};</br></span></td>
       <td>$ {{lifeInsurancePlan.total_cost_per_period}}</td>
       <td>$ {{lifeInsurancePlan.employee_cost_per_period}}</td>
       <td>{{lifeInsurancePlan.total_cost_rate}}</td>

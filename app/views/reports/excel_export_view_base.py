@@ -1,6 +1,7 @@
 import xlwt
 
 from report_export_view_base import ReportExportViewBase
+from app.models.person import Person
 
 class ExcelExportViewBase(ReportExportViewBase):
 

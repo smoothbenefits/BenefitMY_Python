@@ -3,9 +3,10 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('UserService',
   ['currentUser',
    'clientListRepository',
+   'users',
    '$location',
    '$q',
-  function (currentUser, clientListRepository, $location, $q){
+  function (currentUser, clientListRepository, users, $location, $q){
     var getCurRoleFromPath = function(){
         var curPath = $location.path();
         if(curPath[0] === '/'){
@@ -61,9 +62,26 @@ benefitmyService.factory('UserService',
 
         return deferred.promise;
     };
+
+    var getUserDataByUserId = function(userId) {
+        var deferred = $q.defer();
+
+        users.get({userId:userId}).$promise.then(
+            function(userData) {
+                deferred.resolve(userData);
+            },
+            function(errors) {
+                deferred.reject(errors);
+            }
+        );
+
+        return deferred.promise;
+    };
+
     return {
       getCurUserInfo: getCurUserInfo,
       getCurrentRole: getCurRoleFromPath,
-      isCurrentUserNewEmployee: isCurrentUserNewEmployee
+      isCurrentUserNewEmployee: isCurrentUserNewEmployee,
+      getUserDataByUserId: getUserDataByUserId
     };
 }]);
