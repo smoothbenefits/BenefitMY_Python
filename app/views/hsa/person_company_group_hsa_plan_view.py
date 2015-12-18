@@ -16,7 +16,7 @@ class PersonCompanyGroupHsaPlanView(APIView):
 
     def get(self, request, person_id, format=None):
         person_hsa = self._get_object(person_id)
-        serializer = PersonCompanyGroupHsaPlanSerializer(person_hsa)
+        serializer = PersonCompanyGroupHsaPlanSerializer(person_hsa, many=True)
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):

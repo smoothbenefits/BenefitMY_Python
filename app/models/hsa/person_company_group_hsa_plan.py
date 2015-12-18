@@ -1,9 +1,9 @@
 import reversion
 
 from django.db import models
-from app.person import Person
+from app.models.person import Person
 from company_group_hsa_plan import CompanyGroupHsaPlan
-from app.sys_benefit_update_reason import SysBenefitUpdateReason
+from app.models.sys_benefit_update_reason import SysBenefitUpdateReason
 
 @reversion.register
 class PersonCompanyGroupHsaPlan(models.Model):
