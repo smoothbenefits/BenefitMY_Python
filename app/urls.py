@@ -103,6 +103,9 @@ from app.views.insurance.person_company_supplemental_life_insurance_plan_view im
 from app.views.insurance.supplemental_life_insurance_plan_view import \
     SupplementalLifeInsurancePlanView
 from app.views.sys_suppl_life_insurance_condition_view import SysSupplementalLifeInsuranceConditionView
+from app.views.insurance.company_group_supplemental_life_insurance_plan_view import (
+    CompanyGroupSupplementalLifeInsurancePlanByCompanyGroupView,
+    CompanyGroupSupplementalLifeInsurancePlanByCompanyPlanView)
 
 from app.views.hra.hra_plan_view import HraPlanView
 from app.views.hra.company_hra_plan_view import (
@@ -337,6 +340,15 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/person/(?P<person_id>\w+)/person_comp_suppl_life/?$' % PREFIX,
         PersonSupplementalLifeInsuranceByPersonView.as_view(), name='person_person_supple_life'),
+    
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/company_suppl_life/?$' % PREFIX,
+        CompanyGroupSupplementalLifeInsurancePlanByCompanyGroupView.as_view(), 
+        name='company_group_supplemental_life_insurance_plan_api'),
+
+    url(r'^%s/company_suppl_life/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupSupplementalLifeInsurancePlanByCompanyPlanView.as_view(), 
+        name='company_group_supplemental_life_insurance_plan_by_company_plan_api'),
+
 
     # STD insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/std_insurance_plan/?$' % PREFIX,
