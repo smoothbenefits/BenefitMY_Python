@@ -7,15 +7,6 @@ class TriggerEmployeeNotCompleteEnrollment(TriggerNotCompleteEnrollmentBase):
     def __init__(self):
         super(TriggerEmployeeNotCompleteEnrollment, self).__init__()
 
-    def _refresh_cached_data(self):
-        self._cached_user_list = []
-
-    def _cache_company_user(self, company_id, user_id):
-        self._cached_user_list.append(user_id)
-
-    def _is_cached_data_empty(self):
-        return len(self._cached_user_list) <= 0
-
     def _check_schedule(self, start_date):
         if (not start_date):
             return False
@@ -30,8 +21,3 @@ class TriggerEmployeeNotCompleteEnrollment(TriggerNotCompleteEnrollmentBase):
             or (date_diff > 4 and date_diff % 5 == 0)):
             return True
         return False
-
-    def _get_action_data(self):
-        return {
-            'user_id_list': self._cached_user_list
-        }
