@@ -38,20 +38,17 @@ class CompensationService(object):
         return current_salary
 
     def get_current_annual_salary(self):
+        current_salary = 0
         comps = self.get_all_compensation_ordered()
         if not comps:
-            raise ValueError('No Salary Records')
+            return current_salary
 
-        current_salary = None
         is_fulltime = self._is_fulltime_employee()
         decending_comps = comps[::-1]
         for comp in decending_comps:
             current_salary = self._calculate_annual_salary(comp, is_fulltime)
             if comp.effective_date < timezone.now():
                 break
-        # If not current active salary, use the closest future salary as current
-        if not current_salary:
-            raise ValueError('No Salary Records')
 
         return current_salary
 
