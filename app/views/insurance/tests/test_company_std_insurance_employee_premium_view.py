@@ -40,8 +40,9 @@ class CompanyStdInsuranceEmployeePremiumViewTestCase(TestCase, ViewTestBase):
 
         result = json.loads(response.content)
         self.assertEqual(type(result), dict)
-        self.assertIn('message', result)
-        self.assertEqual(result['message'], 'No salary info')
+        self.assertEqual(float(result['employee']), 0)
+        self.assertEqual(float(result['total']), 0)
+        self.assertEqual(float(result['amount']), 0)
 
     def test_get_company_std_insurance_employee_premium_view_no_ltd_plan(self):
         body = {'amount': 0}
