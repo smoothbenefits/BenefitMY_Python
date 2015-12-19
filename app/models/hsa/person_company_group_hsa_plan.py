@@ -2,7 +2,7 @@ import reversion
 
 from django.db import models
 from app.models.person import Person
-from company_group_hsa_plan import CompanyGroupHsaPlan
+from company_hsa_plan import CompanyHsaPlan
 from app.models.sys_benefit_update_reason import SysBenefitUpdateReason
 
 @reversion.register
@@ -14,12 +14,10 @@ class PersonCompanyGroupHsaPlan(models.Model):
 
     person = models.ForeignKey(Person, related_name="hsa_plan_person")
 
-    company_group_hsa_plan = models.ForeignKey(CompanyGroupHsaPlan,
-                                         related_name="company_group_hsa_plan",
+    company_hsa_plan = models.ForeignKey(CompanyHsaPlan,
+                                         related_name="company_hsa_plan",
                                          blank=True,
                                          null=True)
-
-    update_reason = models.CharField(max_length=1024, blank=True, null=True)
 
     record_reason = models.ForeignKey(SysBenefitUpdateReason,
                                       related_name="hsa_update_reason",

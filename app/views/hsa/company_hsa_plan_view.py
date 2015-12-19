@@ -15,11 +15,6 @@ class CompanyHsaPlanView(APIView):
         except CompanyHsaPlan.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        plans = CompanyHsaPlan.objects.filter(company=pk)
-        serializer = CompanyHsaPlanSerializer(plans, many=True)
-        return Response(serializer.data)
-
     def delete(self, request, pk, format=None):
         plan = self._get_object(pk)
         plan.delete()

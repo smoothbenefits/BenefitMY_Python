@@ -6,7 +6,7 @@ from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPl
 from app.serializers.hsa.person_company_group_hsa_plan_serializer import \
     (PersonCompanyGroupHsaPlanSerializer, PersonCompanyGroupHsaPlanPostSerializer)
 
-class PersonCompanyGroupHsaPlanView(APIView):
+class PersonCompanyGroupHsaPlanByPersonView(APIView):
 
     def _get_object(self, person_id):
         try:
@@ -19,12 +19,14 @@ class PersonCompanyGroupHsaPlanView(APIView):
         serializer = PersonCompanyGroupHsaPlanSerializer(person_hsa, many=True)
         return Response(serializer.data)
 
-    def post(self, request, pk, format=None):
+    def post(self, request, person_id, format=None):
         serializer = PersonCompanyGroupHsaPlanPostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PersonCompanyGroupHsaPlanView(APIView):
 
     def put(self, request, pk, format=None):
         person_hsa = self._get_object(pk)

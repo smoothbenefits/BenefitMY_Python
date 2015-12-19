@@ -152,7 +152,8 @@ from app.views.fsa.fsa_plan_view import FsaPlanView
 from app.views.hsa.company_group_hsa_plan_view import (
     CompanyGroupHsaPlanByCompanyGroupView, CompanyGroupHsaPlanByCompanyPlanView)
 from app.views.hsa.company_hsa_plan_view import CompanyHsaPlanView, CompanyHsaPlanByCompanyView
-from app.views.hsa.person_company_group_hsa_plan_view import PersonCompanyGroupHsaPlanView
+from app.views.hsa.person_company_group_hsa_plan_view import (
+    PersonCompanyGroupHsaPlanView, PersonCompanyGroupHsaPlanByPersonView)
 
 from app.views.reports.company_users_full_summary_excel import CompanyUsersFullSummaryExcelExportView
 from app.views.reports.company_users_benefits_billing_excel import CompanyUsersBenefitsBillingExcelExportView
@@ -345,13 +346,13 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/person/(?P<person_id>\w+)/person_comp_suppl_life/?$' % PREFIX,
         PersonSupplementalLifeInsuranceByPersonView.as_view(), name='person_person_supple_life'),
-    
+
     url(r'^%s/company_group/(?P<company_group_id>\w+)/company_suppl_life/?$' % PREFIX,
-        CompanyGroupSupplementalLifeInsurancePlanByCompanyGroupView.as_view(), 
+        CompanyGroupSupplementalLifeInsurancePlanByCompanyGroupView.as_view(),
         name='company_group_supplemental_life_insurance_plan_api'),
 
     url(r'^%s/company_suppl_life/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
-        CompanyGroupSupplementalLifeInsurancePlanByCompanyPlanView.as_view(), 
+        CompanyGroupSupplementalLifeInsurancePlanByCompanyPlanView.as_view(),
         name='company_group_supplemental_life_insurance_plan_by_company_plan_api'),
 
 
@@ -434,6 +435,9 @@ urlpatterns = patterns('app.views',
         CompanyHsaPlanView.as_view(), name='company_hsa_plan_api'),
 
     url(r'^%s/person/(?P<person_id>\w+)/hsa/?$' % PREFIX,
+        PersonCompanyGroupHsaPlanByPersonView.as_view(), name='person_hsa_plan_by_person_api'),
+
+    url(r'^%s/person_hsa/(?P<pk>\w+)/hsa/?$' % PREFIX,
         PersonCompanyGroupHsaPlanView.as_view(), name='person_hsa_plan_api'),
 
     url(r'^%s/company/(?P<company_id>\w+)/hsa/?$' % PREFIX,
