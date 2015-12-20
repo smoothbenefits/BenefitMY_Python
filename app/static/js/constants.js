@@ -140,13 +140,20 @@ settings.constant('tabLayoutGlobalConfig', [
             },
             {
                 id: 8,
+                verbose_name: "HSA",
+                name: "hsa",
+                active: false,
+                state: "broker_add_benefit.hsa"
+            },
+            {
+                id: 9,
                 verbose_name: "Commuter",
                 name: "commuter",
                 active: false,
                 state: "broker_add_benefit.commuter"
             },
             {
-                id: 9,
+                id: 10,
                 verbose_name: "Extra Benefits",
                 name: "extra_benefit",
                 active: false,
