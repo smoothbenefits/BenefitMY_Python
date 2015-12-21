@@ -81,6 +81,9 @@
       </div>
       <div class="row">
         <div class="form-label">Spouse Monthly Rate (per $10,000 Coverage)</div>
+        <div style = "margin-bottom:20px; width:300px;">
+          <a ng-click="copyFromEmployee()" class="btn">Copy Rates From Employee</a>
+        </div>
         <div class="table-responsive">
           <table class="table table-striped benefit-table">
             <thead>
@@ -147,7 +150,10 @@
         </div>
         <div class="form-error-relative" ng-show="form.child-rate.$invalid">Child(ren) rate is invalid</div>
       </div>
-      <div class="row" style="margin-top: 5px;">
+        <div class="row">
+          <bm-company-group-selection company-id="companyId" label-text="companyGroupSelectionWidgetLabel"  selected-groups-model="newPlan.selectedCompanyGroups"></bm-company-group-selection>
+      </div>
+      <div class="row" style="margin-top: 30px; margin-left:-15px;">
         <div class="col-md-3">
           <div style="max-width: 200px;">
             <a ng-click="addPlan()" class="btn green" ng-disabled="form.$invalid">Add</a>

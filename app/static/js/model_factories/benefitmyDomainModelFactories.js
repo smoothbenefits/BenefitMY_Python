@@ -394,6 +394,24 @@ benefitmyDomainModelFactories.factory('SupplementalLifeInsuranceRepository', ['$
   }
 ]);
 
+benefitmyDomainModelFactories.factory('CompanyGroupSupplLifeInsurancePlanRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/company_suppl_life/', {companyGroupId:'@company_group_id'}),
+      ByCompanyPlan: $resource('/api/v1/company_suppl_life/:pk/company_group_plans/', {pk:'@pk'}, {
+        save: {
+            method:'POST', 
+            isArray: true
+        },
+        update: {
+            method: 'PUT',
+            isArray: true
+        }
+      })
+    };
+  }
+]);
+
 benefitmyDomainModelFactories.factory('HraRepository', ['$resource',
   function($resource){
     return {

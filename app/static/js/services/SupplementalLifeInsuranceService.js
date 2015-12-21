@@ -6,12 +6,14 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
     'SupplementalLifeInsuranceConditionService',
     'PersonService',
     'AgeRangeService',
+    'CompanyGroupSupplLifeInsurancePlanRepository',
     function (
         $q,
         SupplementalLifeInsuranceRepository,
         SupplementalLifeInsuranceConditionService,
         PersonService,
-        AgeRangeService){
+        AgeRangeService,
+        CompanyGroupSupplLifeInsurancePlanRepository){
 
         var ageRangeService = AgeRangeService(20, 85, 5, 200);
 
@@ -34,6 +36,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             viewModel.companyPlanId = companyPlanDomainModel.id;
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
+            viewModel.companyGroups = companyPlanDomainModel.company_groups;
 
             return viewModel;
         };
@@ -462,6 +465,30 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             return deferred.promise;
         };
 
+        var mapCreatePlanViewToCompanyGroupPlanDomainModel = function(createPlanViewModel) {
+            var domainModel = [];
+            _.each(createPlanViewModel.selectedCompanyGroups, function(companyGroupModel) {
+                domainModel.push({ 
+                    'company_suppl_life_insurance_plan': createPlanViewModel.companyPlanId,
+                    'company_group': companyGroupModel.id 
+                });
+            }); 
+  
+            return domainModel;
+        };
+
+        var linkCompanySupplLifeInsurancePlanToCompanyGroups = function(compSupplPlanId, compGroupPlanModels){
+            var deferred = $q.defer();
+            CompanyGroupSupplLifeInsurancePlanRepository.ByCompanyPlan.update(
+                {pk:compSupplPlanId}, 
+                compGroupPlanModels, 
+                function (successResponse) {
+                    deferred.resolve(successResponse);
+                }
+            );
+            return deferred.promise;
+        };
+
         return {
             planBindTypes: ['self', 'spouse', 'dependent'],
 
@@ -477,7 +504,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                     // Setup a blank but structured rate table
                     blankCompanyPlan.planRates = blankRates;
                     blankCompanyPlan.useEmployeeAgeForSpouse = false;
-
+                    blankCompanyPlan.selectedCompanyGroups = [];
                     deferred.resolve(blankCompanyPlan);
                 });
 
@@ -501,8 +528,18 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                     companyPlanDomainModel.company = companyId;
 
                     SupplementalLifeInsuranceRepository.CompanyPlanById.save({id:companyId}, companyPlanDomainModel)
-                    .$promise.then(function(response) {
-                        deferred.resolve(response);
+                    .$promise.then(function(createdCompanyPlan) {
+                        //Now link the company plan with company group
+                        companyPlanToSave.companyPlanId = createdCompanyPlan.id;
+                        compGroupPlans = mapCreatePlanViewToCompanyGroupPlanDomainModel(companyPlanToSave);
+                        linkCompanySupplLifeInsurancePlanToCompanyGroups(createdCompanyPlan.id, compGroupPlans).then(
+                             function(createdCompanyGroupPlans) {
+                                 deferred.resolve(createdCompanyGroupPlans);
+                             },
+                             function(errors) {
+                                 deferred.reject(errors);
+                             }
+                         );
                     },
                     function(error){
                         deferred.reject(error);
