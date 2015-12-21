@@ -20,8 +20,26 @@ benefitmyService.factory('HsaService',
       return domainModelArray;
     };
 
-    var getCompanyHsaPlanByCompany = function(companyId) {
+    var mapCompanyHsaPlansToViewModels = function(domainModels) {
+      var companyPlans = [];
+      _.each(domainModels, function(plan) {
+        var viewModel = {
+          "hsaPlanName": plan.name,
+          "companyPlanId": plan.id,
+          "groups": plan.company_groups
+        };
+        companyPlans.push(viewModel);
+      });
 
+      return companyPlans;
+    };
+
+    var getCompanyHsaPlanByCompany = function(companyId) {
+      return HsaRepository.ByCompany.query({companyId: companyId}).$promise
+      .then(function(companyPlans) {
+        var hsaViewModels = mapCompanyHsaPlansToViewModels(companyPlans);
+        return hsaViewModels;
+      });
     };
 
     var createHsaPlanForCompany = function(companyId, newPlan) {
@@ -34,7 +52,7 @@ benefitmyService.factory('HsaService',
       }).then(function(companyPlanId) {
         // Get the company HSA plan id and assign to groups
         var domainModels = mapCompanyGroupHsaPlansToDomainModels(companyPlanId, groups);
-        return HsaRepository.ByCompanyPlan.save({planId: companyPlanId}, domainModels)
+        return HsaRepository.GroupPlanByCompanyPlan.save({planId: companyPlanId}, domainModels)
         .$promise.then(function(response) {
           return response;
         });
@@ -46,7 +64,10 @@ benefitmyService.factory('HsaService',
     };
 
     var deleteCompanyHsaPlan = function(companyPlanId) {
-
+      return HsaRepository.ByCompanyPlan.delete({planId: companyPlanId}).$promise
+      .then(function(response) {
+        return response;
+      });
     };
 
     var enrollHsaPlanForEmployee = function(employeeId, newPlan) {

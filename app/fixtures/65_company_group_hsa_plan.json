@@ -1,0 +1,32 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 1,
+      "company_hsa_plan": 1
+    },
+    "model": "app.companygrouphsaplan",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_hsa_plan": 1
+    },
+    "model": "app.companygrouphsaplan",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company": 1,
+      "name": "HSA TESTING PLAN"
+    },
+    "model": "app.companyhsaplan",
+    "pk": 1
+  }
+]

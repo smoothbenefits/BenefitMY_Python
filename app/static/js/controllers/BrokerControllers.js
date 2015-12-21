@@ -152,6 +152,7 @@ var benefitsController = brokersControllers.controller(
     'LtdService',
     'FsaService',
     'HraService',
+    'HsaService',
     'CommuterService',
     'ExtraBenefitService',
     'companyRepository',
@@ -168,6 +169,7 @@ var benefitsController = brokersControllers.controller(
               LtdService,
               FsaService,
               HraService,
+              HsaService,
               CommuterService,
               ExtraBenefitService,
               companyRepository){
@@ -288,6 +290,16 @@ var benefitsController = brokersControllers.controller(
 
       $scope.deleteHraPlan = function(companyPlanToDelete) {
         HraService.deleteCompanyPlan(companyPlanToDelete.companyPlanId).then(function() {
+          $state.reload();
+        });
+      };
+
+      HsaService.GetCompanyHsaPlanByCompany($stateParams.clientId).then(function(response) {
+        $scope.hsaPlans = response;
+      });
+
+      $scope.deleteHsaPlan = function(companyPlanToDelete) {
+        HsaService.DeleteCompanyHsaPlan(companyPlanToDelete.companyPlanId).then(function() {
           $state.reload();
         });
       };
