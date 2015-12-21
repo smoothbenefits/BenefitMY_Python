@@ -627,7 +627,16 @@ benefitmyDomainModelFactories.factory('HsaRepository', ['$resource',
       ByCompany: $resource(PREFIX + 'company/:companyId/hsa', {companyId: '@companyId'}),
       ByCompanyPlan: $resource(PREFIX + 'company/hsa/:planId', {planId: '@planId'}),
       ByCompanyGroup: $resource(PREFIX + 'company_group/:groupId/hsa', {groupId: '@groupId'}),
-      ByCompanyPlan: $resource(PREFIX + 'company_hsa_plan/:planId/company_group_plans', {planId: '@planId'}),
+      GroupPlanByCompanyPlan: $resource(PREFIX + 'company_hsa_plan/:planId/company_group_plans', {planId: '@planId'}, {
+        save: {
+            method:'POST',
+            isArray: true
+        },
+        update: {
+            method: 'PUT',
+            isArray: true
+        }
+      }),
       ByPerson: $resource(PREFIX + 'person/:personId/hsa', {personId: '@personId'}),
       ByPersonPlan: $resource(PREFIX + 'person_hsa/:personPlanId/hsa', {personPlanId: '@personPlanId'})
     };
