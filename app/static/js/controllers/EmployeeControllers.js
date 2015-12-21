@@ -634,13 +634,13 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
             function(isNewEmployee) {
                 var section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_onboard'});
                 $scope.tabs = section.tabs;
-                if (!isNewEmployee 
+                if (!isNewEmployee
                     || (disabledFeatures && disabledFeatures.I9)) {
                     $scope.tabs = _.reject($scope.tabs, function(tab) {
                         return tab.name == 'employment';
                     });
                 }
-                if (!isNewEmployee 
+                if (!isNewEmployee
                     || (disabledFeatures && disabledFeatures.W4)) {
                     $scope.tabs = _.reject($scope.tabs, function(tab) {
                         return tab.name == 'tax';
@@ -931,6 +931,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
    'LtdService',
    'FsaService',
    'HraService',
+   'HsaService',
    'CommuterService',
    'ExtraBenefitService',
    'EmployeeBenefitsAvailabilityService',
@@ -945,6 +946,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       LtdService,
       FsaService,
       HraService,
+      HsaService,
       CommuterService,
       ExtraBenefitService,
       EmployeeBenefitsAvailabilityService){
@@ -959,6 +961,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var stdPlans;
       var ltdPlans;
       var fsaPlans;
+      var hsaPlans;
       var hraPlans;
       var commuterPlans;
       var extraBenefitPlans;
@@ -1007,6 +1010,10 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(extraBenefitPlansResponse) {
         extraBenefitPlans = extraBenefitPlansResponse;
+        return HsaService.GetCompanyHsaPlanByCompany(company.id);
+      })
+      .then(function(hsaPlansResponse) {
+        hsaPlans = hsaPlansResponse;
       });
 
       promise.then(function(result){
@@ -1047,6 +1054,14 @@ var employeeBenefitsSignup = employeeControllers.controller(
             "id": 5,
             "heading": "FSA",
             "state": "employee_benefit_signup.fsa"
+          });
+        }
+
+        if (hsaPlans.length > 0) {
+          $scope.tabs.push({
+            "id": 6,
+            "heading": "HSA",
+            "state": "employee_benefit_signup.hsa"
           });
         }
 
@@ -1630,6 +1645,73 @@ var fsaBenefitsSignup = employeeControllers.controller(
         $scope.benefit_type = 'FSA'
     }]);
 
+var hsaBenefitSignup = employeeControllers.controller(
+  'hsaBenefitSignup',
+  ['$scope',
+   '$controller',
+   '$modal',
+   'HsaService',
+    function hraBenefitsSignup(
+      $scope,
+      $controller,
+      $modal,
+      HsaService){
+
+    // Inherite scope from base
+    $controller('benefitsSignupControllerBase', {$scope: $scope});
+
+    var employeeId = $scope.employeeId;
+    var groupId = $scope.userInfo.user.company_group_user[0].company_group.id;
+
+    $scope.enrollHsa = true;
+
+    HsaService.GetHsaPlanByCompanyGroup(groupId).then(function(hsaPlans) {
+      if (hsaPlans.length > 0) {
+        $scope.hsaPlan = hsaPlans[0];
+      }
+      else
+      {
+        throw new Error('Did not locate active company HSA plans!');
+      }
+    });
+
+    HsaService.GetHsaPlanEnrollmentByUser(employeeId).then(function(personPlan) {
+      $scope.hsaPlan.electedAmount = personPlan.electedAmount;
+      // If HRA has been waived, uncheck the checkbox
+      if (personPlan.personCompanyPlanId && !personPlan.companyPlanId) {
+        $scope.enrollHsa = false;
+      }
+    });
+
+    $scope.save = function() {
+        // Save plan selection
+        HraService.savePersonPlan($scope.hsaPlan, $scope.updateReason, $scope.enrollBenefits)
+        .then(
+            function() {
+                var modalInstance = $scope.showSaveSuccessModal();
+                modalInstance.result.then(function(){
+                    $scope.transitionToNextTab($scope.tabs);
+                });
+                $scope.myForm.$setPristine();
+            }
+          , function(error) {
+                alert('Failed to save your benefits election. Please try again later.');
+            }
+        );
+    };
+
+    $scope.openPlanDetailsModal = function() {
+        $scope.detailsModalCompanyPlanToDisplay = $scope.companyPlan;
+        $modal.open({
+          templateUrl: '/static/partials/benefit_selection/modal_hra_plan_details.html',
+          controller: 'planDetailsModalController',
+          size: 'lg',
+          scope: $scope
+        });
+    };
+  }
+]);
+
 var basicLifeBenefitsSignup = employeeControllers.controller(
   'basicLifeBenefitsSignup',
   ['$scope',
@@ -1688,22 +1770,22 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
             BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(employeeId, company).then(function(userPlan){
               if (userPlan === undefined) {
                 // TODO:
-                // The user (now) belongs to a group that does not provide 
-                // benefit. 
+                // The user (now) belongs to a group that does not provide
+                // benefit.
                 // Our current behavior is to not even show the tab when no
-                // company plan is available, so users would not even get 
+                // company plan is available, so users would not even get
                 // here (they don't see the tab, and cannot save the plan)
                 // But we might need to revisit, in general, what to do when
                 // company (group) plans removed, where users have been previously
                 // registered to.
                 alert("System found no available plans to enroll!");
                 return;
-              }  
+              }
 
               if (userPlan.selected) {
                 $scope.basicLifeInsurancePlan.enrolled = true;
                 $scope.basicLifeInsurancePlan.id = userPlan.id;
-              } 
+              }
               else {
                 $scope.basicLifeInsurancePlan.enrolled = false;
               }
