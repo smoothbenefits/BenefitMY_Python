@@ -357,6 +357,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_selection/tab_fsa.html',
                 controller:'fsaBenefitsSignup'
             }).
+            state('employee_benefit_signup.hsa', {
+                url: '/hsa',
+                templateUrl: '/static/partials/benefit_selection/tab_hsa.html',
+                controller: 'hsaBenefitSignup'
+            }).
             state('employee_benefit_signup.basic_life', {
                 url: '/basic_life',
                 templateUrl: '/static/partials/benefit_selection/tab_basic_life.html',

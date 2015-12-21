@@ -12,12 +12,12 @@ from app.serializers.hsa.company_group_hsa_plan_serializer import (
 class CompanyGroupHsaPlanByCompanyGroupView(APIView):
     def _get_object_by_group_id(self, group_id):
         try:
-            return CompanyGroupHsaPlan.objects.filter(group=group_id)
+            return CompanyGroupHsaPlan.objects.filter(company_group=group_id)
         except CompanyGroupHsaPlan.DoesNotExist:
             raise Http404
 
-    def get(self, request, group_id, format=None):
-        plans = self._get_object_by_group_id(group_id)
+    def get(self, request, company_group_id, format=None):
+        plans = self._get_object_by_group_id(company_group_id)
         serializer = CompanyGroupHsaPlanSerializer(plans, many=True)
         return Response(serializer.data)
 

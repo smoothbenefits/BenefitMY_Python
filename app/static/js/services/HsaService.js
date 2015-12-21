@@ -59,14 +59,32 @@ benefitmyService.factory('HsaService',
       });
     };
 
-    var updateCompanyHsaPlan = function(companyId, newPlan) {
-
-    };
-
     var deleteCompanyHsaPlan = function(companyPlanId) {
       return HsaRepository.ByCompanyPlan.delete({planId: companyPlanId}).$promise
       .then(function(response) {
         return response;
+      });
+    };
+
+    var mapPersonHsaPlanToViewModel = function(domainModel) {
+      var viewModel = angular.copy(domainModel);
+      if (domainModel && domainModel.amount_per_year) {
+        viewModel.electedAmount = parseInt(domainModel.amount_per_year);
+      } else {
+        viewModel.electedAmount = 0;
+      }
+      return viewModel;
+    }
+
+    var getHsaPlanEnrollmentByUser = function(employeeUserId) {
+      return PersonService.getSelfPersonInfo(employeeUserId).then(function(person) {
+        return person.id;
+      }).then(function(personId) {
+        return HsaRepository.ByPerson.query({personId: personId}).$promise
+        .then(function(response) {
+          var mapped = mapPersonHsaPlanToViewModel(response);
+          return mapped;
+        });
       });
     };
 
@@ -78,15 +96,31 @@ benefitmyService.factory('HsaService',
 
     };
 
-    var getHsaPlanByCompanyGroup = function(companyGroupId) {
+    var mapCompanyGroupHsaPlansToViewModels = function(domainModels) {
+      var viewModels = [];
+      _.each(domainModels, function(model) {
+        var viewModel = {
+          "hsaPlanName": model.company_hsa_plan.name,
+          "group": model.company_group
+        };
+        viewModels.push(viewModel);
+      });
+      return viewModels;
+    };
 
+    var getHsaPlanByCompanyGroup = function(companyGroupId) {
+      return HsaRepository.ByCompanyGroup.query({groupId: companyGroupId}).$promise
+      .then(function(response) {
+        var mapped = mapCompanyGroupHsaPlansToViewModels(response);
+        return mapped;
+      });
     };
 
     return {
       GetCompanyHsaPlanByCompany: getCompanyHsaPlanByCompany,
       CreateHsaPlanForCompany: createHsaPlanForCompany,
-      UpdateCompanyHsaPlan: updateCompanyHsaPlan,
       DeleteCompanyHsaPlan: deleteCompanyHsaPlan,
+      GetHsaPlanEnrollmentByUser: getHsaPlanEnrollmentByUser,
       EnrollHsaPlanForEmployee: enrollHsaPlanForEmployee,
       RemoveHsaPlanForEmployee: removeHsaPlanForEmployee,
       GetHsaPlanByCompanyGroup: getHsaPlanByCompanyGroup

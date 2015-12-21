@@ -443,7 +443,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/hsa/?$' % PREFIX,
         CompanyHsaPlanByCompanyView.as_view(), name='company_hsa_plan_company_api'),
 
-    url(r'^%s/company_group/(?P<group_id>\w+)/hsa/?$' % PREFIX,
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/hsa/?$' % PREFIX,
         CompanyGroupHsaPlanByCompanyGroupView.as_view(),
         name='company_group_hsa_plan_group_api'),
 
