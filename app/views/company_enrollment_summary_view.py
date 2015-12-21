@@ -77,7 +77,7 @@ left join app_companybenefitplanoption as comphealth on comphealth.company_id = 
 left join app_usercompanybenefitplanoption as health on health.user_id = cu.user_id and comphealth.id = health.benefit_id
 left join app_companygroupbasiclifeinsuranceplan as compbasic on compbasic.company_group_id = cgm.company_group_id
 left join app_usercompanylifeinsuranceplan as basic on basic.user_id = cu.user_id
-left join app_compsuppllifeinsuranceplan as compsup on compsup.company_id = cu.company_id
+left join app_companygroupsuppllifeinsuranceplan as compsup on compsup.company_group_id = cgm.company_group_id
 left join app_personcompsuppllifeinsuranceplan as sp on sp.person_id = p.id
 left join app_companyltdinsuranceplan as compltd on compltd.company_id = cu.company_id
 left join app_usercompanyltdinsuranceplan as ltd on ltd.user_id = cu.user_id
