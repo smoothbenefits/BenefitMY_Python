@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
-from company_group_hsa_plan_serializer import CompanyGroupHsaPlanSerializer
+from company_hsa_plan_serializer import CompanyHsaPlanSerializer
 from ..hash_pk_serializer_base import HashPkSerializerBase
 from ..custom_fields.hash_field import HashField
 from ..sys_benefit_update_reason_serializer import SysBenefitUpdateReasonSerializer
@@ -8,7 +8,7 @@ from ..sys_benefit_update_reason_serializer import SysBenefitUpdateReasonSeriali
 class PersonCompanyGroupHsaPlanSerializer(HashPkSerializerBase):
 
     person = HashField(source="person.id")
-    company_group_hsa_plan = CompanyGroupHsaPlanSerializer()
+    company_hsa_plan = CompanyHsaPlanSerializer()
     record_reason = SysBenefitUpdateReasonSerializer()
 
     class Meta:

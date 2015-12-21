@@ -1663,7 +1663,7 @@ var hsaBenefitSignup = employeeControllers.controller(
     var employeeId = $scope.employeeId;
     var groupId = $scope.userInfo.user.company_group_user[0].company_group.id;
 
-    $scope.enrollHsa = true;
+    $scope.personPlan = {"enrollHsa": true};
 
     HsaService.GetHsaPlanByCompanyGroup(groupId).then(function(hsaPlans) {
       if (hsaPlans.length > 0) {
@@ -1676,28 +1676,27 @@ var hsaBenefitSignup = employeeControllers.controller(
     });
 
     HsaService.GetHsaPlanEnrollmentByUser(employeeId).then(function(personPlan) {
-      $scope.hsaPlan.electedAmount = personPlan.electedAmount;
+      $scope.personPlan.electedAmount = personPlan.electedAmount;
       // If HRA has been waived, uncheck the checkbox
       if (personPlan.personCompanyPlanId && !personPlan.companyPlanId) {
-        $scope.enrollHsa = false;
+        $scope.personPlan.enrollHsa = false;
       }
     });
 
     $scope.save = function() {
-        // Save plan selection
-        HraService.savePersonPlan($scope.hsaPlan, $scope.updateReason, $scope.enrollBenefits)
-        .then(
-            function() {
-                var modalInstance = $scope.showSaveSuccessModal();
-                modalInstance.result.then(function(){
-                    $scope.transitionToNextTab($scope.tabs);
-                });
-                $scope.myForm.$setPristine();
-            }
-          , function(error) {
-                alert('Failed to save your benefits election. Please try again later.');
-            }
-        );
+      // Save plan selection
+      HsaService.SaveHsaPlanForEmployee(employeeId, $scope.hsaPlan, $scope.personPlan, $scope.updateReason)
+      .then(function() {
+          var modalInstance = $scope.showSaveSuccessModal();
+          modalInstance.result.then(function(){
+              $scope.transitionToNextTab($scope.tabs);
+          });
+          $scope.myForm.$setPristine();
+        }
+        , function(error) {
+          alert('Failed to save your benefits election. Please try again later.');
+        }
+      );
     };
 
     $scope.openPlanDetailsModal = function() {

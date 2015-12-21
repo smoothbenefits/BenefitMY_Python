@@ -11,13 +11,13 @@ class PersonCompanyGroupHsaPlanByPersonView(APIView):
 
     def _get_object(self, person_id):
         try:
-            return PersonCompanyGroupHsaPlan.objects.filter(person=person_id)
+            return PersonCompanyGroupHsaPlan.objects.get(person=person_id)
         except PersonCompanyGroupHsaPlan.DoesNotExist:
             raise Http404
 
     def get(self, request, person_id, format=None):
         person_hsa = self._get_object(person_id)
-        serializer = PersonCompanyGroupHsaPlanSerializer(person_hsa, many=True)
+        serializer = PersonCompanyGroupHsaPlanSerializer(person_hsa)
         return Response(serializer.data)
 
     @transaction.atomic
