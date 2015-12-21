@@ -6,17 +6,17 @@
     <form name="myForm" confirm-unsaved-on-exit>
       <div class="row">
         <div class="col-md-8">
-          <div ng-show="!enrollHsa" style="padding-bottom: 10px;">
+          <div ng-show="!personPlan.enrollHsa" style="padding-bottom: 10px;">
             <span class="label label-danger">You have chosen NOT to enroll the HSA benefits.</span>
           </div>
           <div class="check-box">
             <input type="checkbox"
-            ng-model="enrollHsa"
+            ng-model="personPlan.enrollHsa"
             name="hsa_enroll"> Yes, I want to elect Health Savings Account.
           </div>
         </div>
       </div>
-      <div ng-show="enrollHsa">
+      <div ng-show="personPlan.enrollHsa">
         <div class="row" style="margin-top:10px;">
           <div class="col-md-4">
             <div class="form-label">Elected Annual Amount</div>
@@ -28,7 +28,7 @@
           </div>
           <div class="col-md-2 input-group">
             <span class="input-group-addon">$</span>
-            <input class="form-control" type="text" min="0" max="2550" ui-number-mask="0" ng-model="hsaPlan.electedAmount" />
+            <input class="form-control" type="text" min="0" max="2550" ui-number-mask="0" ng-model="personPlan.electedAmount" />
           </div>
         </div>
         <div class="row"  style="margin-top:10px;">
@@ -52,7 +52,7 @@
                 </li>
                 <li>
                   <small>
-                    <strong>What does it mean?</strong> get more details from <a href="https://www.irs.gov/publications/p969/ar02.html">IRS</a>
+                    <strong>What does it mean?</strong>  Get more details from <a href="https://www.irs.gov/publications/p969/ar02.html">IRS</a>
                   </small>
                 </li>
               </ul>

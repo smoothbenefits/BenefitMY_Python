@@ -80,7 +80,7 @@ benefitmyService.factory('HsaService',
       return PersonService.getSelfPersonInfo(employeeUserId).then(function(person) {
         return person.id;
       }).then(function(personId) {
-        return HsaRepository.ByPerson.query({personId: personId}).$promise
+        return HsaRepository.ByPerson.get({personId: personId}).$promise
         .then(function(response) {
           var mapped = mapPersonHsaPlanToViewModel(response);
           return mapped;
@@ -88,8 +88,35 @@ benefitmyService.factory('HsaService',
       });
     };
 
-    var enrollHsaPlanForEmployee = function(employeeId, newPlan) {
+    var mapPersonHsaPlanToDomainModel = function(personId, hsaPlan, hsaEnrollment, updateReason) {
+      var domainModel = {
+        "amount_per_year": hsaEnrollment.electedAmount,
+        "person": personId,
+        "company_hsa_plan": hsaPlan.hsaPlanId,
+        "record_reason": updateReason.selectedReason.id,
+        "record_reason_note": updateReason.notes
+      };
+      return domainModel;
+    };
 
+    var saveHsaPlanForEmployee = function(employeeId, hsaPlan, hsaEnrollment, updateReason) {
+      return PersonService.getSelfPersonInfo(employeeId).then(function(person) {
+        return person.id;
+      }).then(function(personId) {
+        var mapped = mapPersonHsaPlanToDomainModel(personId, hsaPlan, hsaEnrollment, updateReason);
+
+        if (!hsaEnrollment.id) {
+          return HsaRepository.ByPerson.save({personId: personId}, mapped).$promise
+          .then(function(response) {
+            return response;
+          });
+        } else {
+          return HsaRepository.ByPersonPlan.update({personPlanId: hsaEnrollment.id}, mapped)
+          .$promise.then(function(response) {
+            return response;
+          });
+        }
+      });
     };
 
     var removeHsaPlanForEmployee = function(employeeId) {
@@ -101,6 +128,7 @@ benefitmyService.factory('HsaService',
       _.each(domainModels, function(model) {
         var viewModel = {
           "hsaPlanName": model.company_hsa_plan.name,
+          "hsaPlanId": model.company_hsa_plan.id,
           "group": model.company_group
         };
         viewModels.push(viewModel);
@@ -121,7 +149,7 @@ benefitmyService.factory('HsaService',
       CreateHsaPlanForCompany: createHsaPlanForCompany,
       DeleteCompanyHsaPlan: deleteCompanyHsaPlan,
       GetHsaPlanEnrollmentByUser: getHsaPlanEnrollmentByUser,
-      EnrollHsaPlanForEmployee: enrollHsaPlanForEmployee,
+      SaveHsaPlanForEmployee: saveHsaPlanForEmployee,
       RemoveHsaPlanForEmployee: removeHsaPlanForEmployee,
       GetHsaPlanByCompanyGroup: getHsaPlanByCompanyGroup
     };
