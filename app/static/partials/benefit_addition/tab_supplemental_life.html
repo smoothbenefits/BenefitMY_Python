@@ -27,6 +27,9 @@
       </div>
       <div class="row">
         <div class="form-label">Employee Monthly Rate (per $10,000 Coverage)</div>
+        <div style = "margin-bottom:20px; width:300px;" ng-if="!isProd">
+          <a ng-click="populateTestData()" class="btn">Populate Test Data</a>
+        </div>
         <div class="table-responsive">
           <table class="table table-striped benefit-table">
             <thead>

@@ -767,12 +767,14 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
    '$controller',
    'SupplementalLifeInsuranceService',
    'UserService',
+   'EnvironmentService',
    function($scope,
             $state,
             $stateParams,
             $controller,
             SupplementalLifeInsuranceService,
-            UserService){
+            UserService,
+            EnvironmentService){
 
     // Inherite scope from base
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
@@ -781,6 +783,10 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
 
     SupplementalLifeInsuranceService.getBlankPlanForCompany($scope.companyId).then(function(blankCompanyPlan) {
         $scope.newPlan = blankCompanyPlan;
+    });
+
+    EnvironmentService.isProd().then(function(isProdBool){
+      $scope.isProd = isProdBool;
     });
 
     $scope.copyFromEmployee = function(){
@@ -792,6 +798,16 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
       });
     };
 
+     $scope.populateTestData = function(){
+      _.each($scope.newPlan.planRates.employeeRateTable, function(rate){
+        var ageMax = rate.ageMax;
+        rate.tobaccoRate.ratePer10000 = ageMax + 2;
+        rate.nonTobaccoRate.ratePer10000 = ageMax - 12;
+        rate.benefitReductionPercentage = (200 - ageMax) / 8;
+      });
+      $scope.copyFromEmployee();
+      $scope.newPlan.planRates.childRate.ratePer10000 = 23;
+    };
 
     // Need the user information for the current user (broker)
     $scope.addPlan = function() {
