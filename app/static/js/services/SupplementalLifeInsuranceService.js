@@ -613,56 +613,59 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
             getPlanByUser: function(userId, company, getBlankPlanIfNoneFound) {
                 var deferred = $q.defer();
-                UserService.getUserDataByUserId(userId).then(
-                    function(userData) {
-                        var userCompanyGroup = null;
-                        if(userData.user.company_group_user && userData.user.company_group_user.length > 0){
-                            userCompanyGroup = userData.user.company_group_user[0].company_group.id;
+                var requiredPromises = [];
+                requiredPromises.push(UserService.getUserDataByUserId(userId));
+                requiredPromises.push(PersonService.getSelfPersonInfo(userId));
+
+                $q.all(requiredPromises).then(function(data){
+                    var userCompanyGroup = null;
+                    var personInfo = data[1];
+                    if(data[0].user.company_group_user && data[0].user.company_group_user.length > 0){
+                        userCompanyGroup = data[0].user.company_group_user[0].company_group.id;
+                    }
+                    getPlansForCompanyGroup(userCompanyGroup)
+                    .then(function(plans){
+                        if(!plans || plans.length <= 0){
+                            if(getBlankPlanIfNoneFound){
+                                deferred.resolve(getBlankUserPlan(personInfo));
+                            }
+                            else{
+                                deferred.resolve(undefined);
+                            }
                         }
-                        PersonService.getSelfPersonInfo(userId).then(function(personInfo){
-                            getPlansForCompanyGroup(userCompanyGroup).then(function(plans){
-                                if(!plans || plans.length <= 0){
-                                    if(getBlankPlanIfNoneFound){
+                        else{
+                            SupplementalLifeInsuranceRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
+                            .$promise.then(function(personPlans) {
+                                if (personPlans.length > 0) {
+                                    // Found existing person enrolled plans, for now, take the first
+                                    // one.
+                                    var personPlan = personPlans[0];
+                                    personPlan.selected = true;
+                                    personPlan.waived = !personPlan.company_supplemental_life_insurance_plan
+                                    deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0], company));
+                                } else {
+                                    // The person does not have enrolled plans yet.
+                                    // If indicated so, construct and return an structured
+                                    // blank person plan.
+                                    // Or else, return null;
+                                    if (getBlankPlanIfNoneFound) {
+
                                         deferred.resolve(getBlankUserPlan(personInfo));
                                     }
-                                    else{
-                                        deferred.resolve(undefined);
+                                    else {
+                                        deferred.resolve(null);
                                     }
                                 }
-                                else{
-                                    SupplementalLifeInsuranceRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
-                                    .$promise.then(function(personPlans) {
-                                        if (personPlans.length > 0) {
-                                            // Found existing person enrolled plans, for now, take the first
-                                            // one.
-                                            var personPlan = personPlans[0];
-                                            personPlan.selected = true;
-                                            personPlan.waived = !personPlan.company_supplemental_life_insurance_plan
-                                            deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0], company));
-                                        } else {
-                                            // The person does not have enrolled plans yet.
-                                            // If indicated so, construct and return an structured
-                                            // blank person plan.
-                                            // Or else, return null;
-                                            if (getBlankPlanIfNoneFound) {
-
-                                                deferred.resolve(getBlankUserPlan(personInfo));
-                                            }
-                                            else {
-                                                deferred.resolve(null);
-                                            }
-                                        }
-                                    },
-                                    function(error) {
-                                        deferred.reject(error);
-                                    });
-                                }
                             },
-                            function(error){
+                            function(error) {
                                 deferred.reject(error);
                             });
-                        });
+                        }
+                    },
+                    function(error){
+                        deferred.reject(error);
                     });
+                });
 
                 return deferred.promise;
             },
