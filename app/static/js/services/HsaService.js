@@ -89,14 +89,22 @@ benefitmyService.factory('HsaService',
     };
 
     var mapPersonHsaPlanToDomainModel = function(personId, hsaPlan, hsaEnrollment, updateReason) {
-      var domainModel = {
-        "amount_per_year": hsaEnrollment.electedAmount,
-        "person": personId,
-        "company_hsa_plan": hsaPlan.hsaPlanId,
-        "record_reason": updateReason.selectedReason.id,
-        "record_reason_note": updateReason.notes
-      };
-      return domainModel;
+      if (hsaEnrollment.enrollHsa) {
+        return {
+          "amount_per_year": hsaEnrollment.electedAmount,
+          "person": personId,
+          "company_hsa_plan": hsaPlan.hsaPlanId,
+          "record_reason": updateReason.selectedReason.id,
+          "record_reason_note": updateReason.notes
+        };
+      } else {
+        return {
+          "person": personId,
+          "company_hsa_plan": null,
+          "record_reason": updateReason.selectedReason.id,
+          "record_reason_note": updateReason.notes
+        };
+      }
     };
 
     var saveHsaPlanForEmployee = function(employeeId, hsaPlan, hsaEnrollment, updateReason) {
@@ -117,10 +125,6 @@ benefitmyService.factory('HsaService',
           });
         }
       });
-    };
-
-    var removeHsaPlanForEmployee = function(employeeId) {
-
     };
 
     var mapCompanyGroupHsaPlansToViewModels = function(domainModels) {
@@ -150,7 +154,6 @@ benefitmyService.factory('HsaService',
       DeleteCompanyHsaPlan: deleteCompanyHsaPlan,
       GetHsaPlanEnrollmentByUser: getHsaPlanEnrollmentByUser,
       SaveHsaPlanForEmployee: saveHsaPlanForEmployee,
-      RemoveHsaPlanForEmployee: removeHsaPlanForEmployee,
       GetHsaPlanByCompanyGroup: getHsaPlanByCompanyGroup
     };
   }

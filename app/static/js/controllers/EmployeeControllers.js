@@ -1665,8 +1665,6 @@ var hsaBenefitSignup = employeeControllers.controller(
     var employeeId = $scope.employeeId;
     var groupId = $scope.userInfo.user.company_group_user[0].company_group.id;
 
-    $scope.personPlan = {"enrollHsa": true};
-
     HsaService.GetHsaPlanByCompanyGroup(groupId).then(function(hsaPlans) {
       if (hsaPlans.length > 0) {
         $scope.hsaPlan = hsaPlans[0];
@@ -1678,10 +1676,12 @@ var hsaBenefitSignup = employeeControllers.controller(
     });
 
     HsaService.GetHsaPlanEnrollmentByUser(employeeId).then(function(personPlan) {
-      $scope.personPlan.electedAmount = personPlan.electedAmount;
+      $scope.personPlan = personPlan;
       // If HRA has been waived, uncheck the checkbox
-      if (personPlan.personCompanyPlanId && !personPlan.companyPlanId) {
+      if (personPlan.id && !personPlan.company_hsa_plan) {
         $scope.personPlan.enrollHsa = false;
+      } else {
+        $scope.personPlan.enrollHsa = true;
       }
     });
 

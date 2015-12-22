@@ -613,7 +613,9 @@ benefitmyDomainModelFactories.factory('HsaRepository', ['$resource',
         }
       }),
       ByPerson: $resource(PREFIX + 'person/:personId/hsa', {personId: '@personId'}),
-      ByPersonPlan: $resource(PREFIX + 'person_hsa/:personPlanId/hsa', {personPlanId: '@personPlanId'})
+      ByPersonPlan: $resource(PREFIX + 'person_hsa/:personPlanId/hsa', {personPlanId: '@personPlanId'}, {
+        update: { method: 'PUT' }
+      })
     };
   }
 ]);
