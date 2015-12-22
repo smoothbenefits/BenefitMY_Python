@@ -27,6 +27,13 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
             });
         });
 
+      // TODO: update this logic to use Simon's refactored function
+      viewModel['hsa'] = _.some(domainModel.hsa, function(plan) {
+        return _.some(plan.company_groups, function(group) {
+          return group.company_group.id == companyGroupId;
+        });
+      });
+
       return viewModel;
     };
 
