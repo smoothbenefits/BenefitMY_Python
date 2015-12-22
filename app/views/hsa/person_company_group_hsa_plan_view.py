@@ -30,6 +30,12 @@ class PersonCompanyGroupHsaPlanByPersonView(APIView):
 
 class PersonCompanyGroupHsaPlanView(APIView):
 
+    def _get_object(self, pk):
+        try:
+            return PersonCompanyGroupHsaPlan.objects.get(pk=pk)
+        except PersonCompanyGroupHsaPlan.DoesNotExist:
+            raise Http404
+
     @transaction.atomic
     def put(self, request, pk, format=None):
         person_hsa = self._get_object(pk)
