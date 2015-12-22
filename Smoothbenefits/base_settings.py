@@ -296,6 +296,7 @@ PIPELINE_JS = {
             'js/services/SupplementalLifeInsuranceService.js',
             'js/services/SupplementalLifeInsuranceConditionService.js',
             'js/services/HraService.js',
+            'js/services/HsaService.js',
             'js/services/CommuterService.js',
             'js/services/ExtraBenefitService.js',
             'js/services/DocumentService.js',

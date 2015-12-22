@@ -19,7 +19,7 @@ benefitmyService.factory('BenefitSummaryService',
       var viewModel = {};
 
       // Pre-flag the result to say that the enrollments are
-      // completed, and let downstream logic to say otherwise. 
+      // completed, and let downstream logic to say otherwise.
       viewModel.allEnrollmentsCompleted = true;
 
       // Map enrolled health benefits
@@ -162,6 +162,20 @@ benefitmyService.factory('BenefitSummaryService',
         }
       }
 
+      // Map HSA selection
+      if (domainModel.hsa[0] != null) {
+        var domainHsa = domainModel.hsa[0];
+        viewModel['hsa'] = {
+          "amount_per_year": domainHsa.amount_per_year,
+          "update_reason": domainHsa.update_reason
+        };
+        if (domainHsa.company_hsa_plan) {
+          viewModel['hsa'].status = SELECTED;
+        } else {
+          viewModel['hsa'].status = WAIVED;
+        }
+      }
+
       return viewModel;
     };
 
@@ -197,7 +211,7 @@ benefitmyService.factory('BenefitSummaryService',
 
               // Also flag that the person's enrollment is not complete
               personEnrollment.allEnrollmentsCompleted = false;
-              
+
             } else if (!personEnrollment[offeredBenefitType].status) {
               personEnrollment[offeredBenefitType].status = SELECTED;
             }

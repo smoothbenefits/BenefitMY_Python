@@ -20,12 +20,19 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
       viewModel['supplemental_life'] = domainModel.supplemental_life[0] != null;
       viewModel['std'] = domainModel.std[0] != null;
       viewModel['ltd'] = domainModel.ltd[0] != null;
-      viewModel['basic_life'] = _.some(domainModel.basic_life, 
+      viewModel['basic_life'] = _.some(domainModel.basic_life,
         function(plan) {
             return _.some(plan.company_groups, function(company_group) {
                 return company_group.company_group.id == companyGroupId;
             });
         });
+
+      // TODO: update this logic to use Simon's refactored function
+      viewModel['hsa'] = _.some(domainModel.hsa, function(plan) {
+        return _.some(plan.company_groups, function(group) {
+          return group.company_group.id == companyGroupId;
+        });
+      });
 
       return viewModel;
     };
@@ -36,9 +43,13 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
       UserService.getUserDataByUserId(userId).then(
         function(userData) {
           CompanyBenefitAvailabilityRepository.CompanyBenefitsByCompany.get({companyId: companyId})
-          .$promise.then(function(benefits) {   
-            var viewCompanyBenefits = mapCompanyBenefitToViewModel(benefits, userData.user.company_group_user[0].company_group.id);
-            deferred.resolve(viewCompanyBenefits);
+          .$promise.then(function(benefits) {
+            if(userData.user.company_group_user[0]) {
+              var viewCompanyBenefits = mapCompanyBenefitToViewModel(benefits, userData.user.company_group_user[0].company_group.id);
+              deferred.resolve(viewCompanyBenefits);
+            } else {
+              deferred.resolve({});
+            }
           }, function(error) {
             deferred.reject(error);
           });

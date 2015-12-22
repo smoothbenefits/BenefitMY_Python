@@ -165,6 +165,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_fsa.html',
                 controller: 'brokerAddFsaPlanController'
             }).
+            state('broker_add_benefit.hsa', {
+                url: '/hsa',
+                templateUrl: '/static/partials/benefit_addition/tab_hsa.html',
+                controller: 'brokerAddHsaPlanController'
+            }).
             state('broker_add_benefit.hra', {
                 url: '/hra',
                 templateUrl: '/static/partials/benefit_addition/tab_hra.html',
@@ -351,6 +356,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/fsa',
                 templateUrl: '/static/partials/benefit_selection/tab_fsa.html',
                 controller:'fsaBenefitsSignup'
+            }).
+            state('employee_benefit_signup.hsa', {
+                url: '/hsa',
+                templateUrl: '/static/partials/benefit_selection/tab_hsa.html',
+                controller: 'hsaBenefitSignup'
             }).
             state('employee_benefit_signup.basic_life', {
                 url: '/basic_life',

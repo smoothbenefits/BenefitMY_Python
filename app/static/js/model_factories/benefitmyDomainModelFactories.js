@@ -247,7 +247,7 @@ benefitmyDomainModelFactories.factory('CompanyGroupBasicLifeInsurancePlanReposit
       ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/basic_life_insurance_plan/', {companyGroupId:'@company_group_id'}),
       ByCompanyPlan: $resource('/api/v1/company_basic_life_insurance_plan/:companyPlanId/company_group_plans/', {companyPlanId:'@pk'}, {
         save: {
-            method:'POST', 
+            method:'POST',
             isArray: true
         },
         update: {
@@ -596,3 +596,26 @@ benefitmyDomainModelFactories.factory('CompanyGroupMemberRepository', ['$resourc
   }
 ]);
 
+benefitmyDomainModelFactories.factory('HsaRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'company/:companyId/hsa', {companyId: '@companyId'}),
+      ByCompanyPlan: $resource(PREFIX + 'company/hsa/:planId', {planId: '@planId'}),
+      ByCompanyGroup: $resource(PREFIX + 'company_group/:groupId/hsa', {groupId: '@groupId'}),
+      GroupPlanByCompanyPlan: $resource(PREFIX + 'company_hsa_plan/:planId/company_group_plans', {planId: '@planId'}, {
+        save: {
+            method:'POST',
+            isArray: true
+        },
+        update: {
+            method: 'PUT',
+            isArray: true
+        }
+      }),
+      ByPerson: $resource(PREFIX + 'person/:personId/hsa', {personId: '@personId'}),
+      ByPersonPlan: $resource(PREFIX + 'person_hsa/:personPlanId/hsa', {personPlanId: '@personPlanId'}, {
+        update: { method: 'PUT' }
+      })
+    };
+  }
+]);

@@ -1,0 +1,35 @@
+<div class="benefit-form-holder">
+  <form name="form" class="dynamic-form">
+    <div class="form-holder col-md-8">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-label">Plan Name *</div>
+          <div class="textbox">
+            <input type="text"
+            name="new_plan_name"
+            ng-model="newPlan.planName"
+            ng-required="true" />
+            <div class="form-error" ng-show="form.new_plan_name.$dirty && form.new_plan_name.$invalid">
+              <span ng-show="form.new_plan_name.$error.required">Plan name field is required</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <bm-company-group-selection company-id="newPlan.companyId"
+            show-top-separation-line label-text="companyGroupSelectionWidgetLabel"
+            selected-groups-model="newPlan.selectedCompanyGroups">
+          </bm-company-group-selection>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="submit-box" style="max-width: 200px;">
+            <a ng-click="addPlan()" class="btn green" ng-disabled="form.$invalid">Add</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
