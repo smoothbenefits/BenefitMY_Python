@@ -803,12 +803,12 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
      $scope.populateTestData = function(){
       _.each($scope.newPlan.planRates.employeeRateTable, function(rate){
         var ageMax = rate.ageMax;
-        rate.tobaccoRate.ratePer10000 = ageMax + 2;
-        rate.nonTobaccoRate.ratePer10000 = ageMax - 12;
-        rate.benefitReductionPercentage = (200 - ageMax) / 8;
+        rate.tobaccoRate.ratePer10000 = ageMax - Math.round(Math.random()*10) + 2;
+        rate.nonTobaccoRate.ratePer10000 = ageMax - Math.round(Math.random()*10) + 2;
+        rate.benefitReductionPercentage = Math.round((200 - ageMax) / (10 - Math.random() * 8));
       });
       $scope.copyFromEmployee();
-      $scope.newPlan.planRates.childRate.ratePer10000 = 23;
+      $scope.newPlan.planRates.childRate.ratePer10000 = Math.round(23 * Math.random());
     };
 
     // Need the user information for the current user (broker)
