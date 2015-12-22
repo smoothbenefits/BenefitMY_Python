@@ -45,12 +45,7 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
         function(userData) {
           CompanyBenefitAvailabilityRepository.CompanyBenefitsByCompany.get({companyId: companyId})
           .$promise.then(function(benefits) {
-            var company_group_id = null;
-            if(userData.user.company_group_user && userData.user.company_group_user.length > 0)
-            {
-              company_group_id = userData.user.company_group_user[0].company_group.id
-            }
-            var viewCompanyBenefits = mapCompanyBenefitToViewModel(benefits, company_group_id);
+            var viewCompanyBenefits = mapCompanyBenefitToViewModel(benefits, userData.companyGroupId);
             deferred.resolve(viewCompanyBenefits);
           }, function(error) {
             deferred.reject(error);

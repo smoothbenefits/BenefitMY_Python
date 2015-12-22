@@ -618,12 +618,8 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                 requiredPromises.push(PersonService.getSelfPersonInfo(userId));
 
                 $q.all(requiredPromises).then(function(data){
-                    var userCompanyGroup = null;
                     var personInfo = data[1];
-                    if(data[0].user.company_group_user && data[0].user.company_group_user.length > 0){
-                        userCompanyGroup = data[0].user.company_group_user[0].company_group.id;
-                    }
-                    getPlansForCompanyGroup(userCompanyGroup)
+                    getPlansForCompanyGroup(data[0].companyGroupId)
                     .then(function(plans){
                         if(!plans || plans.length <= 0){
                             if(getBlankPlanIfNoneFound){

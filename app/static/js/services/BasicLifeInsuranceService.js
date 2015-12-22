@@ -237,7 +237,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
 
       UserService.getUserDataByUserId(userId).then(
         function(userData) {
-            getBasicLifeInsurancePlansForCompanyGroup(company, userData.user.company_group_user[0].company_group.id).then(function(plans){
+            getBasicLifeInsurancePlansForCompanyGroup(company, userData.companyGroupId).then(function(plans){
             if(!plans || plans.length <=0){
               deferred.resolve(undefined);
             }
