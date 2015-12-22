@@ -35,6 +35,13 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
       viewModel['ltd'] = domainModel.ltd[0] != null;
       viewModel['basic_life'] = filterByCompanyGroup(domainModel.basic_life, companyGroupId);
 
+      // TODO: update this logic to use Simon's refactored function
+      viewModel['hsa'] = _.some(domainModel.hsa, function(plan) {
+        return _.some(plan.company_groups, function(group) {
+          return group.company_group.id == companyGroupId;
+        });
+      });
+
       return viewModel;
     };
 
