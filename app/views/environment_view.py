@@ -7,4 +7,4 @@ class EnvironmentView(APIView):
         if settings.IS_PRODUCTION_ENVIRONMENT:
             return Response("PROD")
         else:
-            return Response("NonProd")
+            return Response("NONPROD")
