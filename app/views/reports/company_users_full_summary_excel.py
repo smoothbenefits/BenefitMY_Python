@@ -42,6 +42,8 @@ from app.models.hra.hra_plan import HraPlan
 from app.models.hra.company_hra_plan import CompanyHraPlan
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.fsa.fsa import FSA
+from app.models.hsa.company_group_hsa_plan import CompanyGroupHsaPlan
+from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 from app.models.commuter.company_commuter_plan import CompanyCommuterPlan
 from app.models.commuter.person_company_commuter_plan import PersonCompanyCommuterPlan
 from app.models.sys_benefit_update_reason import SysBenefitUpdateReason
@@ -174,6 +176,12 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Reason Notes')
         col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Date')
 
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Plan Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Date')
+
         col_num = self._write_field(excelSheet, 0, col_num, 'Commuter Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Transit (Pre-Tax) Amount/Month')
         col_num = self._write_field(excelSheet, 0, col_num, 'Transit (Post-Tax) Amount/Month')
@@ -212,6 +220,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         start_column_num = self._write_employee_supplemental_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_fsa_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_hra_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_hsa_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_commuter_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_all_dependents_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
         return
@@ -621,6 +630,25 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                     col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
                     return col_num
         return col_num + 4
+
+    def _write_employee_hsa_info(self, employee_user_id, excelSheet, row_num, col_num):
+        employee_persons = Person.objects.filter(user=employee_user_id, relationship=SELF)
+        if (len(employee_persons) > 0):
+            employee_person = employee_persons[0]
+            employee_plans = PersonCompanyGroupHsaPlan.objects.filter(person=employee_person.id)
+            if (len(employee_plans) > 0):
+                plan = employee_plans[0]
+                if plan.company_hsa_plan:
+                    col_num = self._write_field(excelSheet, row_num, col_num, plan.company_hsa_plan.name)
+                    col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(plan.amount_per_year))
+                    col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
+                    return col_num
+                else:
+                    col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
+                    col_num = self._write_field(excelSheet, row_num, col_num, 'Waived')
+                    col_num = self._write_employee_benefit_record_reason(plan, excelSheet, row_num, col_num)
+                    return col_num
+        return col_num + 5
 
     def _write_employee_commuter_info(self, employee_user_id, excelSheet, row_num, col_num):
         employee_persons = Person.objects.filter(user=employee_user_id, relationship=SELF)

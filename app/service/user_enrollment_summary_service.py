@@ -68,9 +68,6 @@ class UserEnrollmentSummaryService(object):
         else:
             return None
 
-    def get_hsa_plan(self):
-        if
-
     def get_basic_life_insurance(self):
         if (not self.company_group):
             return None
