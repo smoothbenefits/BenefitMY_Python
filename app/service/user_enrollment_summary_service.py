@@ -3,6 +3,7 @@ from app.models.person import Person
 from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
 from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.models.fsa.fsa import FSA
+from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.insurance.person_comp_suppl_life_insurance_plan import \
     PersonCompSupplLifeInsurancePlan
@@ -18,6 +19,7 @@ from app.models.company_group_member import CompanyGroupMember
 
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
 from app.models.fsa.company_fsa_plan import CompanyFsaPlan
+from app.models.hsa.company_group_hsa_plan import CompanyGroupHsaPlan
 from app.models.hra.company_hra_plan import CompanyHraPlan
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
@@ -64,6 +66,9 @@ class UserEnrollmentSummaryService(object):
         else:
             return None
 
+    def get_hsa_plan(self):
+        if
+
     def get_basic_life_insurance(self):
         if (not self.company_group):
             return None
@@ -92,11 +97,22 @@ class UserEnrollmentSummaryService(object):
         else:
             return None
 
+    def get_hsa_plan(self):
+        if (not company_group):
+            return None
+
+        group_plans = CompanyGroupHsaPlan.objects.filter(company_group=self.company_group.id)
+        if (group_plans.exists()):
+            return PersonCompanyGroupHsaPlan.objects.filter(person=self.person_id)
+        else:
+            return None
+
     def get_enrollment_status(self):
         health_enrollment = self.get_health_benefit_enrollment()
         health_waived = self.get_health_benefit_waive()
         hra_enrollment = self.get_hra_plan()
         fsa_enrollment = self.get_fsa_plan()
+        hsa_enrollment = self.get_hsa_plan()
         basic_life_enrollment = self.get_basic_life_insurance()
         ltd_enrollment = self.get_ltd_insurance()
         std_enrollment = self.get_std_insurance()
@@ -106,6 +122,7 @@ class UserEnrollmentSummaryService(object):
            health_waived == None and \
            hra_enrollment == None and \
            fsa_enrollment == None and \
+           hsa_enrollment == None and \
            basic_life_enrollment == None and \
            suppl_life_enrollment == None and \
            ltd_enrollment == None and \
@@ -115,6 +132,7 @@ class UserEnrollmentSummaryService(object):
            not health_waived and \
            not hra_enrollment and \
            not fsa_enrollment and \
+           not hsa_enrollment and \
            not basic_life_enrollment and \
            not suppl_life_enrollment and \
            not ltd_enrollment and \
@@ -124,6 +142,7 @@ class UserEnrollmentSummaryService(object):
              (health_waived is None or len(health_waived) > 0)) and \
              (hra_enrollment is None or len(hra_enrollment) > 0) and \
              (fsa_enrollment is None or len(fsa_enrollment) > 0) and \
+             (hsa_enrollment is None or len(hsa_enrollment) > 0) and \
              (basic_life_enrollment is None or len(basic_life_enrollment) > 0) and \
              (suppl_life_enrollment is None or len(suppl_life_enrollment) > 0) and \
              (ltd_enrollment is None or len(ltd_enrollment) > 0) and \

@@ -29,6 +29,8 @@ from app.models.hra.company_hra_plan import CompanyHraPlan
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.fsa.fsa import FSA
 from app.models.fsa.company_fsa_plan import CompanyFsaPlan
+from app.models.hsa.company_group_hsa_plan import CompanyGroupHsaPlan
+from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 from app.models.commuter.company_commuter_plan import CompanyCommuterPlan
 from app.models.commuter.person_company_commuter_plan import PersonCompanyCommuterPlan
 from app.models.document import Document
@@ -101,6 +103,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._write_employee_std_insurance_info(user, company_id)
         self._write_employee_ltd_insurance_info(user, company_id)
         self._write_employee_fsa_info(user, company_id)
+        self._write_employee_hsa_info(person, company_group_id)
         self._write_employee_commuter_info(person, company_id)
 
         # extra space between main sections
@@ -418,6 +421,29 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 self._write_waived_plan('Flexible Spending Account')
         elif company_plans:
             self._write_not_selected_plan('Flexible Spending Account')
+
+        return
+
+    def _write_employee_hsa_info(self, person_model, company_group_id):
+        group_plans = CompanyGroupHsaPlan.objects.filter(company_group=company_group_id)
+        employee_plans = PersonCompanyGroupHsaPlan.objects.filter(person=person_model.id)
+        if (len(employee_plans) > 0):
+            plan = employee_plans[0]
+            if (plan.company_hsa_plan):
+                # Render header
+                self._write_line_uniform_width(['HSA Plan', 'Selected Amount Per Year'])
+                self._draw_line()
+
+                self._write_line_uniform_width([
+                    plan.company_hsa_plan.name,
+                    self._normalize_dollar_amount(plan.amount_per_year)])
+
+                self._start_new_line()
+                self._start_new_line()
+            else:
+                self._write_waived_plan('Health Savings Account')
+        elif group_plans:
+            self._write_not_selected_plan('Health Savings Account')
 
         return
 
