@@ -1067,7 +1067,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if (stdPlans.length > 0) {
           $scope.tabs.push({
-            "id": 6,
+            "id": 7,
             "heading": "STD",
             "state": "employee_benefit_signup.std"
           });
@@ -1075,7 +1075,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if (ltdPlans.length > 0) {
           $scope.tabs.push({
-            "id": 7,
+            "id": 8,
             "heading": "LTD",
             "state": "employee_benefit_signup.ltd"
           });
@@ -1083,7 +1083,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if (commuterPlans.length > 0) {
           $scope.tabs.push({
-            "id": 8,
+            "id": 9,
             "heading": "Commuter",
             "state": "employee_benefit_signup.commuter"
           });
@@ -1091,14 +1091,14 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
         if (extraBenefitPlans.length > 0) {
           $scope.tabs.push({
-            "id": 9,
+            "id": 10,
             "heading": "Extra Benefits",
             "state": "employee_benefit_signup.extra_benefit"
           });
         }
 
         $scope.tabs.push({
-          "id": 10,
+          "id": 11,
           "heading": "Summary",
           "state": "employee_benefit_signup.summary"
         });
