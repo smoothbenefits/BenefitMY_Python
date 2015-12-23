@@ -207,6 +207,7 @@
     <thead>
       <tr>
         <th><span>Supplemental Life Insurance</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Document</span></th>
       </tr>
     </thead>
@@ -221,6 +222,7 @@
              href="javascript:void(0);"
              confirm="Delete the supplemental life insurance plan?">X</a>
         </td>
+        <td><span class="inline" ng-repeat="group in supplementalLifeInsurancePlan.companyGroups">{{group.company_group.name}};</br></span></td>
         <td class="upload-td">
           <bmuploadmanager
           upload-type="OptionalLife"

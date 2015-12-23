@@ -558,9 +558,11 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
 
         // Commuter
         CommuterService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
-          $scope.employee.commuterPlan = plan;
-          $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);
-          $scope.employee.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.employee.commuterPlan);
+          if(plan){
+            $scope.employee.commuterPlan = plan;
+            $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);
+            $scope.employee.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.employee.commuterPlan);
+          }
         });
 
     }, function(errorResponse){
@@ -669,6 +671,8 @@ var brokerAddBenefitControllerBase = brokersControllers.controller(
   function($scope, $state, $stateParams, $controller, companyRepository){
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
+        // Label text for the company group selection widget
+    $scope.companyGroupSelectionWidgetLabel = "Select Company Benefit Groups";
     $scope.clientId = $stateParams.clientId;
     companyRepository.get({clientId:$scope.clientId})
     .$promise.then(function(company){
@@ -701,9 +705,6 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
         companyId: $scope.companyId, 
         selectedCompanyGroups: [] 
     };
-
-    // Label text for the company group selection widget
-    $scope.companyGroupSelectionWidgetLabel = "Select Company Benefit Groups";
 
     var isInteger = function(value) {
       return _.isNumber(value) && value % 1 === 0;
@@ -768,25 +769,51 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
    '$controller',
    'SupplementalLifeInsuranceService',
    'UserService',
+   'EnvironmentService',
    function($scope,
             $state,
             $stateParams,
             $controller,
             SupplementalLifeInsuranceService,
-            UserService){
+            UserService,
+            EnvironmentService){
 
     // Inherite scope from base
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
-    var clientId = $stateParams.clientId;
+    $scope.companyId = $stateParams.clientId;
 
-    SupplementalLifeInsuranceService.getBlankPlanForCompany(clientId).then(function(blankCompanyPlan) {
+    SupplementalLifeInsuranceService.getBlankPlanForCompany($scope.companyId).then(function(blankCompanyPlan) {
         $scope.newPlan = blankCompanyPlan;
     });
 
+    EnvironmentService.isProd().then(function(isProdBool){
+      $scope.isProd = isProdBool;
+    });
+
+    $scope.copyFromEmployee = function(){
+      _.each($scope.newPlan.planRates.spouseRateTable, function(rate){
+        var empRate = _.findWhere($scope.newPlan.planRates.employeeRateTable, {ageMin: rate.ageMin});
+        rate.tobaccoRate.ratePer10000 = empRate.tobaccoRate.ratePer10000;
+        rate.nonTobaccoRate.ratePer10000 = empRate.nonTobaccoRate.ratePer10000;
+        rate.benefitReductionPercentage = empRate.benefitReductionPercentage;
+      });
+    };
+
+     $scope.populateTestData = function(){
+      _.each($scope.newPlan.planRates.employeeRateTable, function(rate){
+        var ageMax = rate.ageMax;
+        rate.tobaccoRate.ratePer10000 = ageMax - Math.round(Math.random()*10) + 2;
+        rate.nonTobaccoRate.ratePer10000 = ageMax - Math.round(Math.random()*10) + 2;
+        rate.benefitReductionPercentage = Math.round((200 - ageMax) / (10 - Math.random() * 8));
+      });
+      $scope.copyFromEmployee();
+      $scope.newPlan.planRates.childRate.ratePer10000 = Math.round(23 * Math.random());
+    };
+
     // Need the user information for the current user (broker)
     $scope.addPlan = function() {
-        SupplementalLifeInsuranceService.addPlanForCompany($scope.newPlan, clientId).then(
+        SupplementalLifeInsuranceService.addPlanForCompany($scope.newPlan, $scope.companyId).then(
             function() {
               var successMessage = "The new supplemental life insurance plan has been saved successfully."
 

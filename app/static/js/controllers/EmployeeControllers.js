@@ -963,11 +963,9 @@ var employeeBenefitsSignup = employeeControllers.controller(
       var commuterPlans;
       var extraBenefitPlans;
       var company;
-      var userInfo;
 
       var promise = $scope.companyPromise.then(function(comp){
         company = comp;
-        userInfo = $scope.userInfo;
         EmployeeBenefitsAvailabilityService.getEmployeeAvailableBenefits(
           comp.id,
           employeeId)
@@ -977,11 +975,11 @@ var employeeBenefitsSignup = employeeControllers.controller(
             $state.go('/');
           }
         });
-        return BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompanyGroup(company, userInfo.user.company_group_user[0].company_group.id);
+        return BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompanyGroup(company, $scope.userCompanyGroupId);
       })
       .then(function(basicPlans) {
         basicLifePlans = basicPlans;
-        return SupplementalLifeInsuranceService.getPlansForCompany(company.id);
+        return SupplementalLifeInsuranceService.getPlansForCompanyGroup($scope.userCompanyGroupId);
       })
       .then(function(supplementalPlans) {
         supplementalLifePlans = supplementalPlans;
@@ -1664,7 +1662,7 @@ var basicLifeBenefitsSignup = employeeControllers.controller(
         var employeeId = $scope.employeeId;
 
         $scope.companyPromise.then(function(company){
-          BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompanyGroup(company, $scope.userInfo.user.company_group_user[0].company_group.id).then(function(plans) {
+          BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompanyGroup(company, $scope.userCompanyGroupId).then(function(plans) {
 
             if (plans.length > 0) {
               $scope.basicLifeInsurancePlan = {};
@@ -1825,7 +1823,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
         $scope.companyPlans = [ { text: '<Waive Supplemental Life Insurance>', value: null } ];
 
         $scope.companyPromise.then(function(company){
-          SupplementalLifeInsuranceService.getPlansForCompany(company.id).then(function(plans) {
+          SupplementalLifeInsuranceService.getPlansForCompanyGroup($scope.userCompanyGroupId).then(function(plans) {
 
             // Populate available company plans
             _.each(plans, function(plan) {
@@ -2488,6 +2486,10 @@ var benefitsSignupControllerBase = employeeControllers.controller(
         .then(function(userInfo){
             $scope.company = userInfo.currentRole.company;
             $scope.userInfo = userInfo;
+            $scope.userCompanyGroupId = null;
+            if (userInfo.user.company_group_user && userInfo.user.company_group_user.length > 0){
+              $scope.userCompanyGroupId = userInfo.user.company_group_user[0].company_group.id;
+            }
             return userInfo.currentRole.company;
           });
 

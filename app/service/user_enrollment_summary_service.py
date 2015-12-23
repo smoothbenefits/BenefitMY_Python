@@ -6,6 +6,8 @@ from app.models.fsa.fsa import FSA
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.insurance.person_comp_suppl_life_insurance_plan import \
     PersonCompSupplLifeInsurancePlan
+from app.models.insurance.company_group_suppl_life_insurance_plan import \
+    CompanyGroupSupplLifeInsurancePlan
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
 from app.models.insurance.company_group_basic_life_insurance_plan import \
@@ -75,7 +77,11 @@ class UserEnrollmentSummaryService(object):
             return None
 
     def get_supplimental_life_insurance(self):
-        if CompSupplLifeInsurancePlan.objects.filter(company=self.company_id).exists():
+        if (not self.company_group):
+            return None
+
+        group_plans = self.company_group.company_group_suppl_life_insurance.all()
+        if(group_plans.exists()):
             return PersonCompSupplLifeInsurancePlan.objects.filter(person=self.person_id)
         else:
             return None

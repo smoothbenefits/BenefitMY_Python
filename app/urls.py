@@ -188,6 +188,8 @@ from app.views.batch_account_creation.account_info_list_parse_view import Accoun
 
 from app.views.employee_management.employee_termination_view import EmployeeTerminationView
 
+from app.views.environment_view import EnvironmentView
+
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
@@ -506,7 +508,9 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/1095_c_periods/?$' % PREFIX, ACA1095CPeriodsView.as_view(), name='ACA_1095_c_periods_api'),
 
-    url(r'^%s/1094_c_certificiations/?$' % PREFIX, ACA1094CEligibilityCertificationView.as_view(), name='ACA_1094_c_cert_api')
+    url(r'^%s/1094_c_certificiations/?$' % PREFIX, ACA1094CEligibilityCertificationView.as_view(), name='ACA_1094_c_cert_api'),
+
+    url(r'^%s/env/?$' % PREFIX, EnvironmentView.as_view(), name="environment_api")
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

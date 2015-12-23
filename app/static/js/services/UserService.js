@@ -63,12 +63,25 @@ benefitmyService.factory('UserService',
         return deferred.promise;
     };
 
+    var mapUserToServiceModel = function(domainUser){
+      var viewUser = domainUser.user;
+      //Here we assume a user only is connected to only 1 company group, 
+      //though our data domain allows a user to be connected to multiple company group
+      viewUser.companyGroupId = null;
+      if(domainUser.user.company_group_user && domainUser.user.company_group_user.length > 0)
+      {
+        viewUser.companyGroupId = domainUser.user.company_group_user[0].company_group.id
+      }
+      return viewUser;
+    };
+
     var getUserDataByUserId = function(userId) {
         var deferred = $q.defer();
 
         users.get({userId:userId}).$promise.then(
             function(userData) {
-                deferred.resolve(userData);
+                var viewUser = mapUserToServiceModel(userData);
+                deferred.resolve(viewUser);
             },
             function(errors) {
                 deferred.reject(errors);

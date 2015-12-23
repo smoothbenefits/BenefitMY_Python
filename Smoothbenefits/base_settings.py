@@ -309,7 +309,8 @@ PIPELINE_JS = {
             'js/services/AgeRangeService.js',
             'js/services/EmployeeBenefitsAvailabilityService.js',
             'js/services/TemplateService.js',
-            'js/services/SignatureService.js'
+            'js/services/SignatureService.js',
+            'js/services/EnvironmentService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

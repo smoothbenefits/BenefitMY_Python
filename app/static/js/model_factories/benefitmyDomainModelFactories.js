@@ -2,6 +2,13 @@ var benefitmyDomainModelFactories = angular.module('benefitmyDomainModelFactorie
 
 var PREFIX = '/api/v1/';
 
+benefitmyDomainModelFactories.factory('EnvironmentRepository', [
+  '$resource',
+  function ($resource){
+    return $resource(PREFIX + 'env/', {})
+  }
+]);
+
 benefitmyDomainModelFactories.factory('currentUser', [
   '$resource',
   function ($resource){
@@ -388,6 +395,24 @@ benefitmyDomainModelFactories.factory('SupplementalLifeInsuranceRepository', ['$
       CompanyPersonPlanById: $resource('/api/v1/person_comp_suppl_life/:id/', {id:'@id'}, {
         update: {
             method: 'PUT'
+        }
+      })
+    };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('CompanyGroupSupplLifeInsurancePlanRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/company_suppl_life/', {companyGroupId:'@company_group_id'}),
+      ByCompanyPlan: $resource('/api/v1/company_suppl_life/:pk/company_group_plans/', {pk:'@pk'}, {
+        save: {
+            method:'POST', 
+            isArray: true
+        },
+        update: {
+            method: 'PUT',
+            isArray: true
         }
       })
     };
