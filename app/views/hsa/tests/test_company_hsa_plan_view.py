@@ -5,8 +5,9 @@ from app.views.tests.view_test_base import ViewTestBase
 
 class CompanyHsaPlanTestCase(TestCase, ViewTestBase):
     # your fixture files here
-    fixtures = ['65_company_group_hsa_plan', '23_auth_user', '61_company_group',
-                '49_period_definition', '10_company']
+    fixtures = ['65_hsa_plan', '23_auth_user', '61_company_group', '24_person',
+                '49_period_definition', '10_company', 'sys_benefit_update_reason',
+                'sys_benefit_update_reason_category']
 
     def test_get_company_hsa_insurance_success(self):
         response = self.client.get(reverse('company_hsa_plan_company_api',
