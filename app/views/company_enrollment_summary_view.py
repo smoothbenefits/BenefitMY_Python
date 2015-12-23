@@ -13,64 +13,68 @@ class CompanyEnrollmentSummaryView(APIView):
 
     def _retrieve_not_started_from_DB(self, company_id):
         with connection.cursor() as cursor:
-            cursor.execute("""select distinct cu.user_id, COALESCE(p.first_name, u.first_name), COALESCE(p.last_name, u.last_name) 
+            cursor.execute("""select distinct cu.user_id, COALESCE(p.first_name, u.first_name), COALESCE(p.last_name, u.last_name)
 from app_companyuser cu
 join app_authuser u on u.id = cu.user_id
 left join app_person p on p.user_id=cu.user_id and p.relationship='self'
-left join app_usercompanybenefitplanoption health on health.user_id = cu.user_id 
-left join app_usercompanylifeinsuranceplan basic on basic.user_id = cu.user_id 
-left join app_personcompsuppllifeinsuranceplan sp on sp.person_id = p.id 
-left join app_usercompanyltdinsuranceplan ltd on ltd.user_id = cu.user_id 
-left join app_usercompanystdinsuranceplan std on std.user_id=cu.user_id 
+left join app_usercompanybenefitplanoption health on health.user_id = cu.user_id
+left join app_usercompanylifeinsuranceplan basic on basic.user_id = cu.user_id
+left join app_personcompsuppllifeinsuranceplan sp on sp.person_id = p.id
+left join app_usercompanyltdinsuranceplan ltd on ltd.user_id = cu.user_id
+left join app_usercompanystdinsuranceplan std on std.user_id=cu.user_id
 left join app_usercompanywaivedbenefit hwaive on hwaive.user_id = cu.user_id
 left join app_personcompanyhraplan hra on hra.person_id = p.id
 left join app_fsa fsa on fsa.user_id = cu.user_id
+left join app_personcompanygrouphsaplan hsa on hsa.person_id = p.id
 where cu.company_id = %s
 and cu.company_user_type = 'employee'
 and (p.id is null
 or
-(health.id is null 
- and basic.id is null 
- and sp.id is null 
- and ltd.id is null 
- and std.id is null 
- and hwaive.id is null 
- and hra.id is null 
- and fsa.id is null))""", [company_id])
+(health.id is null
+ and basic.id is null
+ and sp.id is null
+ and ltd.id is null
+ and std.id is null
+ and hwaive.id is null
+ and hra.id is null
+ and fsa.id is null
+ and hsa.id is null))""", [company_id])
             rows = cursor.fetchall()
             return self._convert_db_rows_to_list(rows)
 
     def _retrieve_started_from_DB(self, company_id):
         with connection.cursor() as cursor:
-            cursor.execute("""select distinct cu.user_id, p.first_name, p.last_name 
-from app_companyuser cu 
+            cursor.execute("""select distinct cu.user_id, p.first_name, p.last_name
+from app_companyuser cu
 join app_person p on p.user_id=cu.user_id and p.relationship='self'
-left join app_usercompanybenefitplanoption health on health.user_id = cu.user_id 
-left join app_usercompanylifeinsuranceplan basic on basic.user_id = cu.user_id 
-left join app_personcompsuppllifeinsuranceplan sp on sp.person_id = p.id 
-left join app_usercompanyltdinsuranceplan ltd on ltd.user_id = cu.user_id 
-left join app_usercompanystdinsuranceplan std on std.user_id=cu.user_id 
+left join app_usercompanybenefitplanoption health on health.user_id = cu.user_id
+left join app_usercompanylifeinsuranceplan basic on basic.user_id = cu.user_id
+left join app_personcompsuppllifeinsuranceplan sp on sp.person_id = p.id
+left join app_usercompanyltdinsuranceplan ltd on ltd.user_id = cu.user_id
+left join app_usercompanystdinsuranceplan std on std.user_id=cu.user_id
 left join app_usercompanywaivedbenefit hwaive on hwaive.user_id = cu.user_id
 left join app_personcompanyhraplan hra on hra.person_id = p.id
 left join app_fsa fsa on fsa.user_id = cu.user_id
+left join app_personcompanygrouphsaplan hsa on hsa.person_id = p.id
 where cu.company_id = %s
 and cu.company_user_type = 'employee'
-and (health.id is not null 
-     or basic.id is not null 
-     or sp.id is not null 
-     or ltd.id is not null 
-     or std.id is not null 
-     or hwaive.id is not null 
-     or hra.id is not null 
-     or fsa.id is not null);""", [company_id])
+and (health.id is not null
+     or basic.id is not null
+     or sp.id is not null
+     or ltd.id is not null
+     or std.id is not null
+     or hwaive.id is not null
+     or hra.id is not null
+     or fsa.id is not null
+     or hsa.id is not null);""", [company_id])
 
             rows = cursor.fetchall()
             return self._convert_db_rows_to_list(rows)
 
-    def _retrieve_completed_from_DB(self, company_id): 
+    def _retrieve_completed_from_DB(self, company_id):
         with connection.cursor() as cursor:
             cursor.execute("""select distinct cu.user_id, p.first_name, p.last_name
-from app_companyuser as cu 
+from app_companyuser as cu
 join app_person as p on p.user_id=cu.user_id and p.relationship='self'
 join app_companygroupmember as cgm on cgm.user_id = cu.user_id
 left join app_companybenefitplanoption as comphealth on comphealth.company_id = cu.company_id
@@ -87,6 +91,8 @@ left join app_companyhraplan as comphra on comphra.company_id = cu.company_id
 left join app_personcompanyhraplan as hra on hra.person_id = p.id
 left join app_companyfsaplan as compfsa on compfsa.company_id = cu.company_id
 left join app_fsa as fsa on fsa.user_id = cu.user_id
+left join app_personcompanygrouphsaplan as hsa on hsa.person_id = p.id
+left join app_companygrouphsaplan as comphsa on comphsa.company_group_id = cgm.company_group_id
 left join app_usercompanywaivedbenefit as hwaive on hwaive.user_id = cu.user_id
 where cu.company_id = %s
 and cu.company_user_type = 'employee'
@@ -96,7 +102,8 @@ and (compsup.id is null or sp.id is not null)
 and (compltd.id is null or ltd.id is not null)
 and (compstd.id is null or std.id is not null)
 and (comphra.id is null or hra.id is not null)
-and (compfsa.id is null or fsa.id is not null);""", [company_id])
+and (compfsa.id is null or fsa.id is not null)
+and (comphsa.id is null or hsa.id is not null);""", [company_id])
             rows = cursor.fetchall()
             return self._convert_db_rows_to_list(rows)
 
