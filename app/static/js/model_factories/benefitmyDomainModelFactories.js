@@ -2,6 +2,13 @@ var benefitmyDomainModelFactories = angular.module('benefitmyDomainModelFactorie
 
 var PREFIX = '/api/v1/';
 
+benefitmyDomainModelFactories.factory('EnvironmentRepository', [
+  '$resource',
+  function ($resource){
+    return $resource(PREFIX + 'env/', {})
+  }
+]);
+
 benefitmyDomainModelFactories.factory('currentUser', [
   '$resource',
   function ($resource){

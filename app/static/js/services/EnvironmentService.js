@@ -2,20 +2,16 @@ var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('EnvironmentService',
     ['$q',
-     '$http',
-    function ($q, $http){
+     'EnvironmentRepository',
+    function ($q, EnvironmentRepository){
         return {
             isProd: function(){
-                var deferred = $q.defer();
-                $http({
-                  method: 'GET',
-                  url: '/api/v1/env'
-                }).then(function(response){
-                    deferred.resolve(response.data == 'PROD');
-                }, function(error){
-                    deferred.reject(error);
-                });
-                return deferred.promise;
+                return EnvironmentRepository.get()
+                      .$promise.then(function(response){
+                            return response.env == 'PROD';
+                      }, function(error){
+                        deferred.reject(error);
+                      });
             }
         };
     }

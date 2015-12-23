@@ -4,7 +4,7 @@ from django.conf import settings
 
 class EnvironmentView(APIView):
     def get(self, request, format=None):
+        environment = {'env': 'NONPROD'}
         if settings.IS_PRODUCTION_ENVIRONMENT:
-            return Response("PROD")
-        else:
-            return Response("NONPROD")
+            environment['env'] = 'PROD'
+        return Response(environment)
