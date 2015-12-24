@@ -60,6 +60,10 @@ from fsa.company_fsa_plan import CompanyFsaPlan
 from fsa.fsa import FSA
 from fsa.fsa_plan import FsaPlan
 
+from hsa.company_hsa_plan import CompanyHsaPlan
+from hsa.company_group_hsa_plan import CompanyGroupHsaPlan
+from hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
+
 from company_features import CompanyFeatures
 from company_group import CompanyGroup
 from company_group_member import CompanyGroupMember

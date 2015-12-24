@@ -152,6 +152,7 @@ var benefitsController = brokersControllers.controller(
     'LtdService',
     'FsaService',
     'HraService',
+    'HsaService',
     'CommuterService',
     'ExtraBenefitService',
     'companyRepository',
@@ -168,6 +169,7 @@ var benefitsController = brokersControllers.controller(
               LtdService,
               FsaService,
               HraService,
+              HsaService,
               CommuterService,
               ExtraBenefitService,
               companyRepository){
@@ -288,6 +290,16 @@ var benefitsController = brokersControllers.controller(
 
       $scope.deleteHraPlan = function(companyPlanToDelete) {
         HraService.deleteCompanyPlan(companyPlanToDelete.companyPlanId).then(function() {
+          $state.reload();
+        });
+      };
+
+      HsaService.GetCompanyHsaPlanByCompany($stateParams.clientId).then(function(response) {
+        $scope.hsaPlans = response;
+      });
+
+      $scope.deleteHsaPlan = function(companyPlanToDelete) {
+        HsaService.DeleteCompanyHsaPlan(companyPlanToDelete.companyPlanId).then(function() {
           $state.reload();
         });
       };
@@ -701,9 +713,9 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
     $scope.companyId = $stateParams.clientId;
 
     $scope.newLifeInsurancePlan = {
-        insurance_type: 'Basic', 
-        companyId: $scope.companyId, 
-        selectedCompanyGroups: [] 
+        insurance_type: 'Basic',
+        companyId: $scope.companyId,
+        selectedCompanyGroups: []
     };
 
     var isInteger = function(value) {
@@ -987,6 +999,30 @@ var brokerAddFsaPlan = brokersControllers.controller(
     };
   }]
 );
+
+var brokerAddHsaPlan = brokersControllers.controller('brokerAddHsaPlanController',
+  ['$scope', '$state', '$stateParams', '$controller', 'HsaService',
+  function($scope, $state, $stateParams, $controller, HsaService) {
+    // Inherite scope from base
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
+
+    var companyId = $stateParams.clientId;
+    $scope.newPlan = {"companyId": companyId};
+
+    // Label text for the company group selection widget
+    $scope.companyGroupSelectionWidgetLabel = "Select Company Benefit Groups";
+
+    $scope.addPlan = function() {
+      HsaService.CreateHsaPlanForCompany(companyId, $scope.newPlan).then(function(response) {
+        var successMessage = "The new HSA plan has been saved successfully";
+        $scope.showMessageWithOkayOnly('Success', successMessage);
+      }, function(error) {
+        var failureMessage = "There was a problem saving the data. Please try again.";
+        $scope.showMessageWithOkayOnly('Failed', failureMessage);
+      });
+    }
+  }
+]);
 
 var brokerAddHraPlanController = brokersControllers.controller(
   'brokerAddHraPlanController',
