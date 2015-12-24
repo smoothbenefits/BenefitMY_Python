@@ -69,9 +69,16 @@ benefitmyService.factory('HsaService',
     var mapPersonHsaPlanToViewModel = function(domainModel) {
       var viewModel = angular.copy(domainModel);
       if (domainModel && domainModel.amount_per_year) {
+        viewModel.selected = true;
+        if (!viewModel.company_hsa_plan){
+          viewModel.waived = true;
+        }
         viewModel.electedAmount = parseInt(domainModel.amount_per_year);
+        viewModel.updated_at = moment(domainModel.updated_at).format(DATE_FORMAT_STRING);
       } else {
         viewModel.electedAmount = 0;
+        viewModel.selected = false;
+        viewModel.waived = false;
       }
       return viewModel;
     }

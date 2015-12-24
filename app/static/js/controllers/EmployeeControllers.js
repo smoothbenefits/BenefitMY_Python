@@ -1049,19 +1049,19 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if (fsaPlans.length > 0) {
+        if (hsaPlans.length > 0) {
           $scope.tabs.push({
             "id": 5,
-            "heading": "FSA",
-            "state": "employee_benefit_signup.fsa"
+            "heading": "HSA",
+            "state": "employee_benefit_signup.hsa"
           });
         }
 
-        if (hsaPlans.length > 0) {
+        if (fsaPlans.length > 0) {
           $scope.tabs.push({
             "id": 6,
-            "heading": "HSA",
-            "state": "employee_benefit_signup.hsa"
+            "heading": "FSA",
+            "state": "employee_benefit_signup.fsa"
           });
         }
 
