@@ -15,7 +15,7 @@ class PersonCompanyGroupHsaPlan(models.Model):
     person = models.ForeignKey(Person, related_name="hsa_plan_person")
 
     company_hsa_plan = models.ForeignKey(CompanyHsaPlan,
-                                         related_name="company_hsa_plan",
+                                         related_name="person_hsa_selection",
                                          blank=True,
                                          null=True)
 
