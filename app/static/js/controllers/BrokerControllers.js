@@ -35,6 +35,10 @@ var clientsController = brokersControllers.controller('clientsController', [
       $state.go('/broker/employee_list', {client_id: clientId});
     };
 
+    $scope.manageBenefitGroup = function(clientId) {
+      $state.go('broker_company_group', {company_id: clientId});
+    };
+
     $scope.viewACA = function(clientId){
       $state.go('broker_company_aca_report', {company_id: clientId});
     };
@@ -95,6 +99,14 @@ var clientsController = brokersControllers.controller('clientsController', [
   }]
 );
 
+var brokerCompanyGroup = brokersControllers.controller('CompanyBenefitGroupManagementController', [
+  '$scope', '$state', '$modal', '$stateParams',
+  function($scope, $state, $modal, $stateParams) {
+
+    $scope.company = $stateParams.company_id;
+  }
+]);
+
 var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
   '$scope',
   '$state',
@@ -105,8 +117,8 @@ var brokerEmployeeEdit = brokersControllers.controller('brokerEmployeeEdit', [
            $stateParams,
            CompanyEmployeeSummaryService) {
 
-    var companyId = $stateParams.client_id;
-    CompanyEmployeeSummaryService.getCompanyEmployeeSummary(companyId)
+    $scope.companyId = $stateParams.client_id;
+    CompanyEmployeeSummaryService.getCompanyEmployeeSummary($scope.companyId)
     .then(function(companyUsers) {
       $scope.employees = companyUsers;
     });
@@ -140,6 +152,7 @@ var benefitsController = brokersControllers.controller(
     'LtdService',
     'FsaService',
     'HraService',
+    'HsaService',
     'CommuterService',
     'ExtraBenefitService',
     'companyRepository',
@@ -156,6 +169,7 @@ var benefitsController = brokersControllers.controller(
               LtdService,
               FsaService,
               HraService,
+              HsaService,
               CommuterService,
               ExtraBenefitService,
               companyRepository){
@@ -174,7 +188,7 @@ var benefitsController = brokersControllers.controller(
           $scope.benefitCount = healthBenefitToDisplay.benefitCount;
         });
 
-        BasicLifeInsuranceService.getLifeInsurancePlansForCompany($scope.company)
+        BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompany($scope.company)
         .then(function(response) {
           $scope.lifeInsurancePlans = response;
         });
@@ -276,6 +290,16 @@ var benefitsController = brokersControllers.controller(
 
       $scope.deleteHraPlan = function(companyPlanToDelete) {
         HraService.deleteCompanyPlan(companyPlanToDelete.companyPlanId).then(function() {
+          $state.reload();
+        });
+      };
+
+      HsaService.GetCompanyHsaPlanByCompany($stateParams.clientId).then(function(response) {
+        $scope.hsaPlans = response;
+      });
+
+      $scope.deleteHsaPlan = function(companyPlanToDelete) {
+        HsaService.DeleteCompanyHsaPlan(companyPlanToDelete.companyPlanId).then(function() {
           $state.reload();
         });
       };
@@ -546,9 +570,11 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
 
         // Commuter
         CommuterService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
-          $scope.employee.commuterPlan = plan;
-          $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);
-          $scope.employee.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.employee.commuterPlan);
+          if(plan){
+            $scope.employee.commuterPlan = plan;
+            $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);
+            $scope.employee.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.employee.commuterPlan);
+          }
         });
 
     }, function(errorResponse){
@@ -657,6 +683,8 @@ var brokerAddBenefitControllerBase = brokersControllers.controller(
   function($scope, $state, $stateParams, $controller, companyRepository){
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
+        // Label text for the company group selection widget
+    $scope.companyGroupSelectionWidgetLabel = "Select Company Benefit Groups";
     $scope.clientId = $stateParams.clientId;
     companyRepository.get({clientId:$scope.clientId})
     .$promise.then(function(company){
@@ -682,9 +710,13 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
     // Inherite scope from base
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
-    var clientId = $stateParams.clientId;
+    $scope.companyId = $stateParams.clientId;
 
-    $scope.newLifeInsurancePlan = {insurance_type: 'Basic', companyId: clientId};
+    $scope.newLifeInsurancePlan = {
+        insurance_type: 'Basic',
+        companyId: $scope.companyId,
+        selectedCompanyGroups: []
+    };
 
     var isInteger = function(value) {
       return _.isNumber(value) && value % 1 === 0;
@@ -701,7 +733,7 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
 
     $scope.buttonEnabled = function() {
       var costElementProvided;
-      if (!$scope.useCostRate) {
+      if (!$scope.newLifeInsurancePlan.useCostRate) {
         costElementProvided = _.isNumber($scope.newLifeInsurancePlan.totalCost)
           && _.isNumber($scope.newLifeInsurancePlan.employeeContribution);
       } else {
@@ -713,21 +745,18 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
         && costElementProvided
         && (_.isNumber($scope.newLifeInsurancePlan.amount)
         || _.isNumber($scope.newLifeInsurancePlan.multiplier))
-        && $scope.isValidMultiplier($scope.newLifeInsurancePlan.multiplier);
+        && $scope.isValidMultiplier($scope.newLifeInsurancePlan.multiplier)
+        && $scope.newLifeInsurancePlan.selectedCompanyGroups.length > 0;
     };
 
     // Need the user information for the current user (broker)
     $scope.addLifeInsurancePlan = function() {
-      currentUser.get().$promise.then(function(response){
+      currentUser.get().$promise.then(function(response) {
         $scope.newLifeInsurancePlan.user = response.user.id;
+        $scope.newLifeInsurancePlan.company = $scope.company;
 
-        // For now, we combine the gestures of
-        //  1. Broker creates the plan
-        //  2. Broker enrolls the company for the plan
-        BasicLifeInsuranceService.saveLifeInsurancePlan($scope.newLifeInsurancePlan)
-        .then(function(newPlan) {
-          BasicLifeInsuranceService.enrollCompanyForBasicLifeInsurancePlan(newPlan, $scope.newLifeInsurancePlan, $scope.company, $scope.useCostRate)
-          .then(
+        BasicLifeInsuranceService.createBasicLifeInsurancePlan($scope.newLifeInsurancePlan)
+        .then(
             function() {
               var successMessage = "The new basic life insurance plan has been saved successfully."
 
@@ -738,8 +767,7 @@ var brokerAddBasicLifeInsurance = brokersControllers.controller(
 
               $scope.showMessageWithOkayOnly('Failed', failureMessage);
             }
-          );
-        });
+        );
       });
     };
    }
@@ -753,25 +781,51 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
    '$controller',
    'SupplementalLifeInsuranceService',
    'UserService',
+   'EnvironmentService',
    function($scope,
             $state,
             $stateParams,
             $controller,
             SupplementalLifeInsuranceService,
-            UserService){
+            UserService,
+            EnvironmentService){
 
     // Inherite scope from base
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
-    var clientId = $stateParams.clientId;
+    $scope.companyId = $stateParams.clientId;
 
-    SupplementalLifeInsuranceService.getBlankPlanForCompany(clientId).then(function(blankCompanyPlan) {
+    SupplementalLifeInsuranceService.getBlankPlanForCompany($scope.companyId).then(function(blankCompanyPlan) {
         $scope.newPlan = blankCompanyPlan;
     });
 
+    EnvironmentService.isProd().then(function(isProdBool){
+      $scope.isProd = isProdBool;
+    });
+
+    $scope.copyFromEmployee = function(){
+      _.each($scope.newPlan.planRates.spouseRateTable, function(rate){
+        var empRate = _.findWhere($scope.newPlan.planRates.employeeRateTable, {ageMin: rate.ageMin});
+        rate.tobaccoRate.ratePer10000 = empRate.tobaccoRate.ratePer10000;
+        rate.nonTobaccoRate.ratePer10000 = empRate.nonTobaccoRate.ratePer10000;
+        rate.benefitReductionPercentage = empRate.benefitReductionPercentage;
+      });
+    };
+
+     $scope.populateTestData = function(){
+      _.each($scope.newPlan.planRates.employeeRateTable, function(rate){
+        var ageMax = rate.ageMax;
+        rate.tobaccoRate.ratePer10000 = ageMax - Math.round(Math.random()*10) + 2;
+        rate.nonTobaccoRate.ratePer10000 = ageMax - Math.round(Math.random()*10) + 2;
+        rate.benefitReductionPercentage = Math.round((200 - ageMax) / (10 - Math.random() * 8));
+      });
+      $scope.copyFromEmployee();
+      $scope.newPlan.planRates.childRate.ratePer10000 = Math.round(23 * Math.random());
+    };
+
     // Need the user information for the current user (broker)
     $scope.addPlan = function() {
-        SupplementalLifeInsuranceService.addPlanForCompany($scope.newPlan, clientId).then(
+        SupplementalLifeInsuranceService.addPlanForCompany($scope.newPlan, $scope.companyId).then(
             function() {
               var successMessage = "The new supplemental life insurance plan has been saved successfully."
 
@@ -945,6 +999,30 @@ var brokerAddFsaPlan = brokersControllers.controller(
     };
   }]
 );
+
+var brokerAddHsaPlan = brokersControllers.controller('brokerAddHsaPlanController',
+  ['$scope', '$state', '$stateParams', '$controller', 'HsaService',
+  function($scope, $state, $stateParams, $controller, HsaService) {
+    // Inherite scope from base
+    $controller('brokerAddBenefitControllerBase', {$scope: $scope});
+
+    var companyId = $stateParams.clientId;
+    $scope.newPlan = {"companyId": companyId};
+
+    // Label text for the company group selection widget
+    $scope.companyGroupSelectionWidgetLabel = "Select Company Benefit Groups";
+
+    $scope.addPlan = function() {
+      HsaService.CreateHsaPlanForCompany(companyId, $scope.newPlan).then(function(response) {
+        var successMessage = "The new HSA plan has been saved successfully";
+        $scope.showMessageWithOkayOnly('Success', successMessage);
+      }, function(error) {
+        var failureMessage = "There was a problem saving the data. Please try again.";
+        $scope.showMessageWithOkayOnly('Failed', failureMessage);
+      });
+    }
+  }
+]);
 
 var brokerAddHraPlanController = brokersControllers.controller(
   'brokerAddHraPlanController',

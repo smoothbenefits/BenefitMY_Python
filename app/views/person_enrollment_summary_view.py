@@ -2,13 +2,13 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from app.service.hash_key_service import HashKeyService
-from app.views.company_benefit_availability_view import CompanyBenefitAvailabilityView
 
 from app.models.person import Person
 from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
 from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.models.fsa.fsa import FSA
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
+from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 from app.models.insurance.person_comp_suppl_life_insurance_plan import \
     PersonCompSupplLifeInsurancePlan
 from app.models.insurance.user_company_life_insurance_plan import \
@@ -26,6 +26,8 @@ from app.serializers.user_company_waived_benefit_serializer import \
 from app.serializers.fsa.fsa_serializer import FsaSerializer
 from app.serializers.hra.person_company_hra_plan_serializer import \
     PersonCompanyHraPlanSerializer
+from app.serializers.hsa.person_company_group_hsa_plan_serializer import \
+    PersonCompanyGroupHsaPlanSerializer
 from app.serializers.insurance.person_company_supplemental_life_insurance_plan_serializer import \
     PersonCompanySupplementalLifeInsurancePlanSerializer
 from app.serializers.insurance.user_company_life_insurance_serializer import \
@@ -68,6 +70,11 @@ class PersonEnrollmentSummaryView(APIView):
         serializer = FsaSerializer(fsa_plan, required=False, many=True)
         return serializer.data
 
+    def get_hsa_plan(self, person_id):
+        hsa_plan = PersonCompanyGroupHsaPlan.objects.filter(person=person_id)
+        serializer = PersonCompanyGroupHsaPlanSerializer(hsa_plan, required=False, many=True)
+        return serializer.data
+
     def get_life_insurance(self, user_id):
         life_insurance = UserCompanyLifeInsurancePlan.objects.filter(user=user_id)
         serializer = UserCompanyLifeInsuranceSerializer(life_insurance, required=False, many=True)
@@ -96,6 +103,7 @@ class PersonEnrollmentSummaryView(APIView):
         health_benefit_waived = self.get_health_benefit_waive(user_id)
         hra_plan = self.get_hra_plan(person_id)
         fsa_plan = self.get_fsa_plan(user_id)
+        hsa_plan = self.get_hsa_plan(person_id)
         life_insurance = self.get_life_insurance(user_id)
         supplemental_life = self.get_supplimental_life_insurance(person_id)
         std_insurance = self.get_std_insurance(user_id)
@@ -107,6 +115,7 @@ class PersonEnrollmentSummaryView(APIView):
             "health_benefit_waived" : health_benefit_waived,
             "hra" : hra_plan,
             "fsa" : fsa_plan,
+            "hsa" : hsa_plan,
             "basic_life" : life_insurance,
             "supplemental_life" : supplemental_life,
             "std" : std_insurance,

@@ -17,12 +17,10 @@ class CompanyGroupMemberView(APIView):
         except CompanyGroupMember.DoesNotExist:
             raise Http404
 
-    def post(self, request, pk, format=None):
-        serializer = CompanyGroupMemberPostSerializer(data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, pk, format=None):
+        group_member = self._get_object(pk)
+        serializer = CompanyGroupMemberSerializer(group_member)
+        return Response(serializer.data)
 
     def put(self, request, pk, format=None):
         company_group_member = self._get_object(pk)
@@ -43,6 +41,14 @@ class CompanyGroupMemberCompanyGroupView(APIView):
         group_members = CompanyGroupMember.objects.filter(company_group=pk)
         serializer = CompanyGroupMemberSerializer(group_members, many=True)
         return Response(serializer.data)
+
+    def post(self, request, pk, format=None):
+        serializer = CompanyGroupMemberPostSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class CompanyGroupMemberCompanyView(APIView):

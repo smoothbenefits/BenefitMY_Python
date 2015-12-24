@@ -30,6 +30,8 @@ from insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from insurance.life_insurance_beneficiary import LifeInsuranceBeneficiary
 from insurance.user_company_life_insurance_plan import UserCompanyLifeInsurancePlan
 from insurance.life_insurance_plan import LifeInsurancePlan
+from insurance.company_group_basic_life_insurance_plan import \
+    CompanyGroupBasicLifeInsurancePlan
 
 from insurance.company_std_insurance_plan import CompanyStdInsurancePlan
 from insurance.user_company_std_insurance_plan import UserCompanyStdInsurancePlan
@@ -44,6 +46,7 @@ from insurance.person_comp_suppl_life_insurance_plan import PersonCompSupplLifeI
 from insurance.supplemental_life_insurance_beneficiary import SupplementalLifeInsuranceBeneficiary
 from insurance.supplemental_life_insurance_plan import SupplementalLifeInsurancePlan
 from insurance.supplemental_life_insurance_plan_rate import SupplementalLifeInsurancePlanRate
+from insurance.company_group_suppl_life_insurance_plan import CompanyGroupSupplLifeInsurancePlan
 
 from hra.hra_plan import HraPlan
 from hra.company_hra_plan import CompanyHraPlan
@@ -55,6 +58,10 @@ from commuter.person_company_commuter_plan import PersonCompanyCommuterPlan
 from fsa.company_fsa_plan import CompanyFsaPlan
 from fsa.fsa import FSA
 from fsa.fsa_plan import FsaPlan
+
+from hsa.company_hsa_plan import CompanyHsaPlan
+from hsa.company_group_hsa_plan import CompanyGroupHsaPlan
+from hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 
 from company_features import CompanyFeatures
 from company_group import CompanyGroup

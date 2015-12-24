@@ -15,7 +15,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
                 '23_auth_user',
                 '11_address',
                 '12_phone',
-                '34_company_user']
+                '34_company_user',
+                '61_company_group']
 
     def setUp(self):
         self.user_password = 'foobar'
@@ -160,6 +161,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'employment_type': 'FullTime',
             'start_date': '2008-03-01',
             'benefit_start_date': '2008-03-22',
+            'group_id': 1,
             'compensation_info': {
                 'annual_base_salary': 3000,
                 'effective_date': '2008-03-01T15:45:09Z'
@@ -178,6 +180,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertTrue('first_name' in created_user and created_user['first_name'] == new_user['first_name'])
         self.assertTrue('last_name' in created_user and created_user['last_name'] == new_user['last_name'])
         self.assertTrue('email' in created_user and created_user['email'] == new_user['email'])
+        self.assertTrue('company_group_user' in created_user and created_user['company_group_user'])
         self.assertTrue('company_role' in created_response and created_response['company_role'])
         comp_role = created_response['company_role']
         self.assertTrue('company_user_type' in comp_role and comp_role['company_user_type'] == new_user['company_user_type'])
@@ -197,6 +200,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'start_date': '2008-03-01',
             'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
+            'group_id': 1,
             'compensation_info': {
                 'annual_base_salary': 3000,
                 'effective_date': '2008-03-01T15:45:09Z'
@@ -215,6 +219,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertTrue('first_name' in created_user and created_user['first_name'] == new_user['first_name'])
         self.assertTrue('last_name' in created_user and created_user['last_name'] == new_user['last_name'])
         self.assertTrue('email' in created_user and created_user['email'] == new_user['email'])
+        self.assertTrue('company_group_user' in created_user and created_user['company_group_user'])
 
     def test_user_create_no_create_docs_success(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
@@ -229,6 +234,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'start_date': '2008-03-01',
             'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
+            'group_id': 2,
             'compensation_info': {
                 'annual_base_salary': 3000,
                 'effective_date': '2008-03-01T15:45:09Z'
@@ -244,6 +250,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertTrue('first_name' in created_user and created_user['first_name'] == new_user['first_name'])
         self.assertTrue('last_name' in created_user and created_user['last_name'] == new_user['last_name'])
         self.assertTrue('email' in created_user and created_user['email'] == new_user['email'])
+        self.assertTrue('company_group_user' in created_user and created_user['company_group_user'])
 
 
     def test_user_create_no_company(self):
@@ -352,6 +359,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'start_date': '2008-03-01',
             'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
+            'group_id': 3,
             'compensation_info': {
                 'annual_base_salary': 3000,
                 'effective_date': '2008-03-01T15:45:09Z'
@@ -368,6 +376,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
         created_user = created_response['user']
         self.assertTrue('id' in created_user and created_user['id'])
         self.assertTrue('email' in created_user and created_user['email'] == new_user['email'])
+        self.assertTrue('company_group_user' in created_user and created_user['company_group_user'])
         self.assertTrue('person' in created_response and created_response['person'])
         created_person = created_response['person']
         self.assertTrue('id' in created_person and created_person['id'])
@@ -407,6 +416,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             'start_date': '2008-03-01',
             'benefit_start_date': '2008-03-22',
             'employment_type': 'FullTime',
+            'group_id': 1,
             'compensation_info': {
                 'annual_base_salary': 3000,
                 'effective_date': '2008-03-01T15:45:09Z'
@@ -423,6 +433,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
         created_user = created_response['user']
         self.assertTrue('id' in created_user and created_user['id'])
         self.assertTrue('email' in created_user and created_user['email'] == new_user['email'])
+        self.assertTrue('company_group_user' in created_user and created_user['company_group_user'])
 
         self.assertTrue('person' in created_response and created_response['person'])
         created_person = created_response['person']

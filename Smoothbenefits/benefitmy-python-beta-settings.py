@@ -3,6 +3,9 @@ Configurations for Beta environment
 """
 from Smoothbenefits.base_settings import *
 
+# Environment Identification
+IS_PRODUCTION_ENVIRONMENT = True
+
 SITE_URL = "https://app.workbenefits.me/"
 
 # Default global figure of number of minutes notification facilities should

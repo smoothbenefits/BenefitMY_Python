@@ -149,6 +149,7 @@ var employerUser = employersController.controller('employerUser',
    'DocumentService',
    'CompensationService',
    'EmployerEmployeeManagementService',
+   'CompanyBenefitGroupService',
   function employerUser($scope,
                         $state,
                         $stateParams,
@@ -159,8 +160,9 @@ var employerUser = employersController.controller('employerUser',
                         TemplateService,
                         DocumentService,
                         CompensationService,
-                        EmployerEmployeeManagementService){
-      var compId = $stateParams.company_id;
+                        EmployerEmployeeManagementService,
+                        CompanyBenefitGroupService){
+      $scope.compId = $stateParams.company_id;
       $scope.employees=[];
       $scope.brokers = [];
       $scope.templateFields = [];
@@ -174,6 +176,14 @@ var employerUser = employersController.controller('employerUser',
         })
       };
 
+      CompanyBenefitGroupService.GetCompanyBenefitGroupByCompany($scope.compId)
+      .then(function(groups) {
+        $scope.groups = groups;
+        if(groups && groups.length == 1){
+          $scope.addUser.group_id = groups[0].id;
+        }
+      });
+
       $scope.updateSalaryType = function(employee) {
         if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
           $scope.isHourlyRate = false;
@@ -184,11 +194,21 @@ var employerUser = employersController.controller('employerUser',
         }
       };
 
-      employerWorkerRepository.get({companyId:compId})
+      employerWorkerRepository.get({companyId:$scope.compId})
         .$promise.then(function(response){
             _.each(response.user_roles, function(role){
               if(role.company_user_type=='employee')
               {
+                if (role.user.company_group_user.length > 0){
+                  role.company_group_member = role.user.company_group_user[0];
+                }
+                else{
+                  role.company_group_member = {
+                    company_group:{
+                      name:'N/A'
+                    }
+                  };
+                }
                 $scope.employees.push(role);
               }
               else if(role.company_user_type=='broker')
@@ -206,13 +226,13 @@ var employerUser = employersController.controller('employerUser',
             });
         });
 
-      TemplateService.getAllTemplateFields(compId)
+      TemplateService.getAllTemplateFields($scope.compId)
       .then(function(fields){
         $scope.templateFields = fields;
       });
 
       var gotoUserView = function(userType){
-        $location.path('/admin/' + userType + '/' + compId);
+        $location.path('/admin/' + userType + '/' + $scope.compId);
       }
 
       $scope.validatePassword = function(password, passwordConfirm) {
@@ -240,7 +260,7 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.addLink = function(userType)
       {
-        $location.path('/admin/'+ userType + '/add/'+compId)
+        $location.path('/admin/'+ userType + '/add/'+$scope.compId)
       };
 
       $scope.createUser = function(userType) {
@@ -249,7 +269,7 @@ var employerUser = employersController.controller('employerUser',
           alert('Password validation failed. Please re-enter the passwords');
           return false;
         };
-        EmployerEmployeeManagementService.AddNewEmployee(compId, $scope.addUser, $scope.templateFields)
+        EmployerEmployeeManagementService.AddNewEmployee($scope.compId, $scope.addUser, $scope.templateFields)
         .then(function(response) {
           gotoUserView(userType);
         }, function(error) {
@@ -270,16 +290,20 @@ var employerUser = employersController.controller('employerUser',
             pathKey='view';
         }
 
-        $location.path('/admin/documents/' + pathKey + '/' +compId +'/'+employeeId);
+        $location.path('/admin/documents/' + pathKey + '/' + $scope.compId +'/'+employeeId);
       };
 
       $scope.viewEmployeeDetail = function(employee){
-        $location.path('/admin/employee_detail/' + compId).search({'eid': employee.user.id});
+        $location.path('/admin/employee_detail/' + $scope.compId).search({'eid': employee.user.id});
       };
 
       $scope.uploadLink = function(employeeId){
-        $state.go('admin_employee_uploads', {company_id:compId, employee_id:employeeId});
-      }
+        $state.go('admin_employee_uploads', {company_id:$scope.compId, employee_id:employeeId});
+      };
+
+      $scope.addEmployeeInvalid = function(){
+        return $scope.form.$invalid || !$scope.groups || $scope.groups.length<=0
+      };
   }
 ]);
 
@@ -428,6 +452,7 @@ var employerBenefits = employersController.controller('employerBenefits',
   'LtdService',
   'FsaService',
   'HraService',
+  'HsaService',
   'CommuterService',
   'companyRepository',
   function ($scope,
@@ -441,6 +466,7 @@ var employerBenefits = employersController.controller('employerBenefits',
             LtdService,
             FsaService,
             HraService,
+            HsaService,
             CommuterService,
             companyRepository){
 
@@ -458,7 +484,7 @@ var employerBenefits = employersController.controller('employerBenefits',
         $scope.benefitCount = healthBenefitToDisplay.benefitCount;
       });
 
-      BasicLifeInsuranceService.getLifeInsurancePlansForCompany($scope.company).then(function(response) {
+      BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompany($scope.company).then(function(response) {
         $scope.lifeInsurancePlans = response;
       });
     });
@@ -494,6 +520,10 @@ var employerBenefits = employersController.controller('employerBenefits',
 
     HraService.getPlansForCompany($stateParams.company_id).then(function(response) {
       $scope.hraPlans = response;
+    });
+
+    HsaService.GetCompanyHsaPlanByCompany($stateParams.company_id).then(function(response) {
+      $scope.hsaPlans = response;
     });
 
     CommuterService.getPlansForCompany($stateParams.company_id).then(function(response) {
@@ -1351,6 +1381,7 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
   'StdService',
   'LtdService',
   'HraService',
+  'HsaService',
   'CommuterService',
   function($scope,
            $location,
@@ -1366,6 +1397,7 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
            StdService,
            LtdService,
            HraService,
+           HsaService,
            CommuterService){
     var company_id = $stateParams.company_id;
     $scope.employee = {id:$stateParams.employee_id};
@@ -1442,11 +1474,17 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
           $scope.employee.hraPlan = plan;
         });
 
+        HsaService.GetHsaPlanEnrollmentByUser($scope.employee.id).then(function(plan) {
+          $scope.employee.hsaElection = plan;
+        });
+
         // Commuter
         CommuterService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
-          $scope.employee.commuterPlan = plan;
-          $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);
-          $scope.employee.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.employee.commuterPlan);
+          if(plan){
+            $scope.employee.commuterPlan = plan;
+            $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);
+            $scope.employee.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.employee.commuterPlan);
+          }
         });
 
     }, function(errorResponse){
