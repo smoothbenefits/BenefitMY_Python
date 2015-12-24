@@ -218,9 +218,9 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         start_column_num = self._write_employee_ltd_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_basic_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_supplemental_life_insurance_info(employee_user_id, excelSheet, row_num, start_column_num)
+        start_column_num = self._write_employee_hsa_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_fsa_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_hra_info(employee_user_id, excelSheet, row_num, start_column_num)
-        start_column_num = self._write_employee_hsa_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_employee_commuter_info(employee_user_id, excelSheet, row_num, start_column_num)
         start_column_num = self._write_all_dependents_personal_info(employee_user_id, excelSheet, row_num, start_column_num)
         return

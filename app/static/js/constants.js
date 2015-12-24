@@ -133,17 +133,17 @@ settings.constant('tabLayoutGlobalConfig', [
             },
             {
                 id: 7,
-                verbose_name: "FSA",
-                name: "fsa",
-                active: false,
-                state: "broker_add_benefit.fsa"
-            },
-            {
-                id: 8,
                 verbose_name: "HSA",
                 name: "hsa",
                 active: false,
                 state: "broker_add_benefit.hsa"
+            },
+            {
+                id: 8,
+                verbose_name: "FSA",
+                name: "fsa",
+                active: false,
+                state: "broker_add_benefit.fsa"
             },
             {
                 id: 9,
