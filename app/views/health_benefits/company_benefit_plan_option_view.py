@@ -5,13 +5,13 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 
 from django.db import transaction
-from app.models.benefit_plan import BenefitPlan
-from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
-from app.serializers.company_benefit_plan_option_serializer import (
+from app.models.health_benefits.benefit_plan import BenefitPlan
+from app.models.health_benefits.company_benefit_plan_option import CompanyBenefitPlanOption
+from app.serializers.health_benefits.company_benefit_plan_option_serializer import (
     CompanyBenefitPlanOptionSerializer,
     CompanyBenefitPlanOptionPostSerializer,
     CompanyBenefitPlanSerializer)
-from app.serializers.benefit_plan_serializer import BenefitPlanSerializer
+from app.serializers.health_benefits.benefit_plan_serializer import BenefitPlanSerializer
 
 
 class CompanyBenefitPlanOptionView(APIView):

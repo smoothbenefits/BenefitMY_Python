@@ -10,10 +10,10 @@ from pdf_report_service_base import PdfReportServiceBase
 from app.models.company import Company
 from app.models.person import Person
 from app.models.company_group_member import CompanyGroupMember
-from app.models.user_company_benefit_plan_option import \
+from app.models.health_benefits.user_company_benefit_plan_option import \
     UserCompanyBenefitPlanOption
-from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
-from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
+from app.models.health_benefits.company_benefit_plan_option import CompanyBenefitPlanOption
+from app.models.health_benefits.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
 from app.models.insurance.company_group_basic_life_insurance_plan import CompanyGroupBasicLifeInsurancePlan

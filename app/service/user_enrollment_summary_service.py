@@ -1,7 +1,7 @@
 from django.utils import timezone
 from app.models.person import Person
-from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
-from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
+from app.models.health_benefits.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
+from app.models.health_benefits.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.models.fsa.fsa import FSA
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.insurance.person_comp_suppl_life_insurance_plan import \
@@ -18,7 +18,7 @@ from app.models.insurance.user_company_std_insurance_plan import \
     UserCompanyStdInsurancePlan
 from app.models.company_group_member import CompanyGroupMember
 
-from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
+from app.models.health_benefits.company_benefit_plan_option import CompanyBenefitPlanOption
 from app.models.fsa.company_fsa_plan import CompanyFsaPlan
 from app.models.hra.company_hra_plan import CompanyHraPlan
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan

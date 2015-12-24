@@ -15,15 +15,15 @@ from app.models.person import Person, SELF, SPOUSE, LIFE_PARTNER
 from app.models.phone import Phone
 from app.models.address import Address
 from app.models.employee_profile import EmployeeProfile
-from app.models.user_company_benefit_plan_option import \
+from app.models.health_benefits.user_company_benefit_plan_option import \
     UserCompanyBenefitPlanOption
-from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
-from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
+from app.models.health_benefits.company_benefit_plan_option import CompanyBenefitPlanOption
+from app.models.health_benefits.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
-from app.models.enrolled import Enrolled
-from app.models.benefit_plan import BenefitPlan
-from app.models.benefit_type import BenefitType
+from app.models.health_benefits.enrolled import Enrolled
+from app.models.health_benefits.benefit_plan import BenefitPlan
+from app.models.health_benefits.benefit_type import BenefitType
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from app.models.insurance.life_insurance_plan import LifeInsurancePlan
 from app.models.insurance.supplemental_life_insurance_plan import SupplementalLifeInsurancePlan

@@ -6,10 +6,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 
 
-from app.models.benefit_details import BenefitDetails
-from app.models.benefit_policy_key import BenefitPolicyKey
-from app.models.benefit_policy_type import BenefitPolicyType
-from app.serializers.benefit_details_serializer import BenefitDetailsSerializer
+from app.models.health_benefits.benefit_details import BenefitDetails
+from app.models.health_benefits.benefit_policy_key import BenefitPolicyKey
+from app.models.health_benefits.benefit_policy_type import BenefitPolicyType
+from app.serializers.health_benefits.benefit_details_serializer import BenefitDetailsSerializer
 
 
 class BenefitDetailsView(APIView):

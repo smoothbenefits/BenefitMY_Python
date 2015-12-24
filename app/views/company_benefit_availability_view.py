@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from app.models.company import Company
-from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
+from app.models.health_benefits.company_benefit_plan_option import CompanyBenefitPlanOption
 from app.models.fsa.company_fsa_plan import CompanyFsaPlan
 from app.models.hra.company_hra_plan import CompanyHraPlan
 from app.models.insurance.comp_suppl_life_insurance_plan import \
@@ -17,7 +17,7 @@ from app.models.insurance.company_std_insurance_plan import \
     CompanyStdInsurancePlan
 
 from app.serializers.company_serializer import CompanySerializer
-from app.serializers.company_benefit_plan_option_serializer import \
+from app.serializers.health_benefits.company_benefit_plan_option_serializer import \
     CompanyBenefitPlanOptionSerializer
 from app.serializers.fsa.company_fsa_plan_serializer import CompanyFsaPlanSerializer
 from app.serializers.hra.company_hra_plan_serializer import \

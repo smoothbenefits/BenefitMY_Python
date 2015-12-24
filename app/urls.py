@@ -23,8 +23,8 @@ from app.views.company_user_view import (
     BrokerCompanyCountView,
     CompanyBrokerCountView,
     CompanyUserDetailView)
-from app.views.benefit_policy_key_view import BenefitPolicyKeyView
-from app.views.benefit_type_view import BenefitTypeView
+from app.views.health_benefits.benefit_policy_key_view import BenefitPolicyKeyView
+from app.views.health_benefits.benefit_type_view import BenefitTypeView
 from app.views.document_type_view import DocumentTypeView
 from app.views.company_view import (
     CompanyView)
@@ -35,13 +35,17 @@ from app.views.template_view import (
     TemplateFieldView,
     templates)
 
-from app.views.benefit_plan_view import (
+from app.views.health_benefits.benefit_plan_view import (
     BenefitPlanView, BenefitPlanCreationView)
 
-from app.views.company_benefit_plan_option_view import (
+from app.views.health_benefits.company_benefit_plan_option_view import (
     CompanyBenefitPlanOptionView,
     CompanyBenefitPlansView,
     create_benefit_plan_option)
+from app.views.health_benefits.company_group_benefit_plan_option_view import (
+    CompanyGroupBenefitPlanOptionByCompanyGroupView,
+    CompanyGroupBenefitPlanOptionByCompanyPlanView)
+
 from app.views.document_view import (
     CompanyUserTypeDocumentView,
     CompanyUserDocumentView,
@@ -52,10 +56,10 @@ from app.views.document_view import (
     documents)
 from app.views.company_templates_view import CompanyTemplatesView
 
-from app.views.user_company_waived_benefit_view import (
+from app.views.health_benefits.user_company_waived_benefit_view import (
     UserCompanyWaivedBenefitView,
     CompanyWaivedBenefitView)
-from app.views.user_company_benefit_plan_option_view import (
+from app.views.health_benefits.user_company_benefit_plan_option_view import (
     UserCompanyBenefitPlanOptionView,
     CompanyUsersBenefitPlanOptionView)
 from app.views.user_company_roles_view import UserCompanyRolesView
@@ -63,7 +67,7 @@ from app.views.user_company_roles_view import UserCompanyRolesView
 from app.views.w4_view import W4View
 from app.views.employment_authorization_view import EmploymentAuthorizationView
 from app.views.signature_view import (SignatureByUserView, SignatureView)
-from app.views.benefit_details_view import (
+from app.views.health_benefits.benefit_details_view import (
     BenefitDetailsView,
     delete_benefit_details)
 
@@ -230,6 +234,13 @@ urlpatterns = patterns('app.views',
         CompanyBenefitPlansView.as_view(), name='company_benefit_plan_api'),
     url(r'^%s/company_users/(?P<pk>\w+)/benefits/?$' % PREFIX,
         CompanyUsersBenefitPlanOptionView.as_view()),
+
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/health_benefits/?$' % PREFIX,
+        CompanyGroupBenefitPlanOptionByCompanyGroupView.as_view(), 
+        name='company_group_benefit_plan_option_api'),
+    url(r'^%s/company_health_benefits/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupBenefitPlanOptionByCompanyPlanView.as_view(), 
+        name='company_group_benefit_plan_option_by_company_plan_api'),
 
     url(r'^%s/companies/(?P<pk>\w+)/?$' % PREFIX, CompanyView.as_view()),
     url(r'^%s/companies/?$' % PREFIX, CompanyView.as_view()),

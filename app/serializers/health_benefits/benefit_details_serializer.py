@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from app.models.benefit_details import BenefitDetails
+from app.models.health_benefits.benefit_details import BenefitDetails
 from benefit_plan_serializer import BenefitPlanSerializer
 from benefit_policy_type_serializer import BenefitPolicyTypeSerializer
 from benefit_policy_key_serializer import BenefitPolicyKeySerializer
-from hash_pk_serializer_base import HashPkSerializerBase
+from ..hash_pk_serializer_base import HashPkSerializerBase
 
 class BenefitDetailsSerializer(HashPkSerializerBase):
 
