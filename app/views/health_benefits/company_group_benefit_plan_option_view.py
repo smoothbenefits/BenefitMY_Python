@@ -34,7 +34,7 @@ class CompanyGroupBenefitPlanOptionByCompanyPlanView(APIView):
             raise Http404
 
     def _get_company_group_plans(self, comp_plan):
-        return CompanyGroupBenefitPlanOption.objects.filter(company_suppl_life_insurance_plan=comp_plan)
+        return CompanyGroupBenefitPlanOption.objects.filter(company_benefit_plan_option=comp_plan)
 
     def get(self, request, pk, format=None):
         comp_plan = self._get_company_plan(pk)
