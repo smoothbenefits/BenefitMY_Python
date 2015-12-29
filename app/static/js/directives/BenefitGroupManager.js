@@ -1,7 +1,7 @@
 BenefitMyApp.controller('CompanyGroupEditModalController', [
   '$scope', '$modalInstance', 'CompanyBenefitGroupService', 'companyId', 'group',
   function($scope, $modalInstance, CompanyBenefitGroupService, companyId, group) {
-    $scope.group = group;
+    $scope.group = angular.copy(group);
 
     $scope.save = function() {
       CompanyBenefitGroupService.UpdateCompanyGroup(companyId, $scope.group)
@@ -68,6 +68,10 @@ BenefitMyApp.controller('CompanyGroupEditModalController', [
                 return group;
               }
             }
+          });
+
+          modalInstance.result.then(function(group) {
+            $state.reload();
           });
         };
 
