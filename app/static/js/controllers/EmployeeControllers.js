@@ -1681,6 +1681,10 @@ var hsaBenefitSignup = employeeControllers.controller(
       } else {
         $scope.personPlan.enrollHsa = true;
       }
+    }, function(error) {
+      if (error.status === 404) {
+        $scope.personPlan = {"enrollHsa": false};
+      }
     });
 
     $scope.save = function() {
