@@ -302,8 +302,8 @@ var employerUser = employersController.controller('employerUser',
       };
 
       $scope.addEmployeeInvalid = function(){
-        return $scope.form.$invalid || !$scope.groups || $scope.groups.length<=0
-      };
+        return !$scope.groups || $scope.groups.length<=0;
+      }
   }
 ]);
 
