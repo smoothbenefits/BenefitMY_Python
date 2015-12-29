@@ -1179,6 +1179,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
    'currentUser',
    'BenefitPolicyKeyService',
    'benefitDisplayService',
+   'HealthBenefitsService',
     function brokerAddHealthBenefits(
       $scope,
       $location,
@@ -1189,12 +1190,13 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       BasicLifeInsuranceService,
       currentUser,
       BenefitPolicyKeyService,
-      benefitDisplayService){
+      benefitDisplayService,
+      HealthBenefitsService){
 
       // Inherite scope from base
       $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
-      var clientId = $stateParams.clientId;
+      $scope.companyId = $stateParams.clientId;
 
       // Reset/reinitialize the model in scope
       var resetModel = function(selectedBenefitType) {
@@ -1202,11 +1204,18 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             selectedBenefitType = '';
         }
 
-        $scope.benefit = {
+        var newModel = {
             mandatory_pcp: false,
             benefit_type: selectedBenefitType,
             benefit_option_types: angular.copy(benefitDisplayService.healthOptionTypes)
-          };
+        };
+
+        // maintain the list of selected company groups
+        if ($scope.benefit) {
+            newModel.selectedCompanyGroups = $scope.benefit.selectedCompanyGroups;
+        } 
+
+        $scope.benefit = newModel;
       };
       // Initialize the model in scope
       resetModel();
@@ -1223,7 +1232,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
 
 
       $scope.viewBenefits = function(){
-        $location.path('/broker/benefits/'+clientId);
+        $location.path('/broker/benefits/'+ $scope.companyId);
       };
 
       $scope.policyKeyArray = [];
@@ -1576,7 +1585,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         return true;
       };
 
-      function saveBenefitOptionPlan(objArray, index, completed, error){
+      function saveBenefitOptionPlan(objArray, index, companyGroups, completed, error){
         if(objArray.length <= index){
           //save details
           if(completed){
@@ -1585,7 +1594,22 @@ var brokerAddHealthBenefits = brokersControllers.controller(
           }
         }
         benefitPlanRepository.options.save(objArray[index], function(addedBenefit){
-          saveBenefitOptionPlan(objArray, index+1, completed, error);
+
+          // Now link the newly saved company benefit plan option to the specified
+          // company benefit groups
+          HealthBenefitsService.linkCompanyHealthBenefitPlanOptionToCompanyGroups(
+            addedBenefit.benefits.id,
+            companyGroups
+          ).then(
+            function() {
+                saveBenefitOptionPlan(objArray, index+1, companyGroups, completed, error);
+            },
+            function(errors) {
+              if(error) {
+                error(errors);
+              }
+            }
+          );
         }, function(errorResponse){
           if(error){
             error(errorResponse);
@@ -1599,7 +1623,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             alert($scope.errorString);
           }
           else{
-            $location.path('/broker/benefits/' + clientId);
+            $location.path('/broker/benefits/' + $scope.companyId);
           }
           return;
         }
@@ -1636,6 +1660,12 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         }
       }
 
+      $scope.allowSaveNewPlan = function() {
+        return !$scope.form.$invalid 
+            && $scope.benefit.selectedCompanyGroups
+            && $scope.benefit.selectedCompanyGroups.length > 0;
+      };
+
       $scope.addBenefit = function(){
 
         if(!validateBenefitFields()){
@@ -1656,7 +1686,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             _.each($scope.benefit.benefit_option_types, function(optionTypeItem){
               if(!optionTypeItem.disabled){
                 requestList.push({
-                  company: clientId,
+                  company: $scope.companyId,
                   benefit: {
                     benefit_plan_id: $scope.addedBenefitPlan.id,
                     benefit_option_type : optionTypeItem.name.replace(/\s+/g, '_').toLowerCase(),
@@ -1668,7 +1698,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
             });
 
           //save the request list to the backend.
-            saveBenefitOptionPlan(requestList, 0, function(){
+            saveBenefitOptionPlan(requestList, 0, $scope.benefit.selectedCompanyGroups, function(){
               var apiObjectArray = [];
               _.each($scope.benefitDetailArray, function(benefitTypeContent){
                 _.each(benefitTypeContent.policy_array, function(optionPair){

@@ -39,12 +39,16 @@ class CompanyBenefitPlanOptionSerializer(HashPkSerializerBase):
                   'employee_cost_per_period',
                   'benefit_option_type',
                   'company',
-                  'benefit_plan')
+                  'benefit_plan',
+                  'company_groups')
 
 
 class CompanyBenefitPlanSerializer(HashPkSerializerBase):
 
     benefit_plan = BenefitPlanSerializer()
+    company_groups = CompanyGroupBenefitPlanOptionGroupOnlySerializer(
+        source="company_group_benefit_plan_option",
+        many=True)
 
     class Meta:
 
@@ -53,4 +57,5 @@ class CompanyBenefitPlanSerializer(HashPkSerializerBase):
                   'total_cost_per_period',
                   'employee_cost_per_period',
                   'benefit_option_type',
-                  'benefit_plan')
+                  'benefit_plan',
+                  'company_groups')

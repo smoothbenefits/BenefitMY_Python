@@ -2,6 +2,8 @@ from django.utils import timezone
 from app.models.person import Person
 from app.models.health_benefits.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
 from app.models.health_benefits.user_company_waived_benefit import UserCompanyWaivedBenefit
+from app.models.health_benefits.company_group_benefit_plan_option import \
+    CompanyGroupBenefitPlanOption
 from app.models.fsa.fsa import FSA
 from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
@@ -46,13 +48,21 @@ class UserEnrollmentSummaryService(object):
             self.company_group = company_group_members[0].company_group
 
     def get_health_benefit_enrollment(self):
-        if CompanyBenefitPlanOption.objects.filter(company=self.company_id).exists():
+        if (not self.company_group):
+            return None
+
+        group_plans = self.company_group.health_benefit_plan_option.all()
+        if (group_plans.exists()):
             return UserCompanyBenefitPlanOption.objects.filter(user=self.user_id)
         else:
             return None
 
     def get_health_benefit_waive(self):
-        if CompanyBenefitPlanOption.objects.filter(company=self.company_id).exists():
+        if (not self.company_group):
+            return None
+
+        group_plans = self.company_group.health_benefit_plan_option.all()
+        if (group_plans.exists()):
             return UserCompanyWaivedBenefit.objects.filter(user=self.user_id)
         else:
             return None
