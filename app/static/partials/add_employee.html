@@ -228,7 +228,7 @@
         </div>
       </div>
       <div class="submit-box">
-        <button ng-click="createUser('employee')" class="btn green" ng-disabled="addEmployeeInvalid()">Add Employee</button>
+        <button ng-click="createUser('employee')" class="btn green" ng-disabled="form.$invalid || hasNoBenefitGroup()">Add Employee</button>
       </div>
 
     </form>
