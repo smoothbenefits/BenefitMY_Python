@@ -77,7 +77,8 @@ and (health.id is not null
 from app_companyuser as cu
 join app_person as p on p.user_id=cu.user_id and p.relationship='self'
 join app_companygroupmember as cgm on cgm.user_id = cu.user_id
-left join app_companybenefitplanoption as comphealth on comphealth.company_id = cu.company_id
+left join app_companygroupbenefitplanoption as compgrouphealth on compgrouphealth.company_group_id = cgm.company_group_id
+left join app_companybenefitplanoption as comphealth on comphealth.id = compgrouphealth.company_benefit_plan_option_id
 left join app_usercompanybenefitplanoption as health on health.user_id = cu.user_id and comphealth.id = health.benefit_id
 left join app_companygroupbasiclifeinsuranceplan as compbasic on compbasic.company_group_id = cgm.company_group_id
 left join app_usercompanylifeinsuranceplan as basic on basic.user_id = cu.user_id
