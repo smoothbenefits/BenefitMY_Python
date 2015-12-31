@@ -27,6 +27,11 @@ class SendEmailService(object):
         include_bm_support_email_address=True
     ):
         # Prepare and send the email with both HTML and plain text contents
+        
+        # Indicate, in the subject line, that the email is from non-production 
+        # environment and hence is for testing only.
+        if not settings.IS_PRODUCTION_ENVIRONMENT:
+            subject = '[For Test]' + subject
         from_email = settings.SUPPORT_EMAIL_ADDRESS
         context = template.Context(email_template_context_data)
         html_template = get_template(html_template_path)

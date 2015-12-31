@@ -15,6 +15,7 @@
       <thead>
         <tr>
           <th><span>Name</span></th>
+          <th><span>Group</span></th>
           <th><span>Actions</span></th>
         </tr>
       </thead>
@@ -26,6 +27,7 @@
         </tr>
         <tr ng-repeat="employee in employees">
           <td><a ng-click="viewEmployeeDetail(employee)">{{employee.user.first_name}} {{employee.user.last_name}}</a></td>
+          <td><bm-group-member-link company-id="compId" group-member="employee.company_group_member" user="employee.user.id"></bm-group-member-link></td>
           <td>
             <span class="btn inline" ng-if="employee.docEntry.hasDocument()" ng-click="documentLink(employee.user.id, employee.docEntry)" ng-class="{green:employee.docEntry.isAllSigned()}">View documents</span>
             <span class="btn inline" ng-if="!employee.docEntry.hasDocument()" ng-click="documentLink(employee.user.id, employee.docEntry)">Create documents</span>

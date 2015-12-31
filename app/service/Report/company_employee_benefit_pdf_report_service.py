@@ -9,15 +9,16 @@ from pdf_report_service_base import PdfReportServiceBase
 
 from app.models.company import Company
 from app.models.person import Person
+from app.models.company_group_member import CompanyGroupMember
 from app.models.user_company_benefit_plan_option import \
     UserCompanyBenefitPlanOption
 from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
 from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
-from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
+from app.models.insurance.company_group_basic_life_insurance_plan import CompanyGroupBasicLifeInsurancePlan
 from app.models.insurance.person_comp_suppl_life_insurance_plan import PersonCompSupplLifeInsurancePlan
-from app.models.insurance.comp_suppl_life_insurance_plan import CompSupplLifeInsurancePlan
+from app.models.insurance.company_group_suppl_life_insurance_plan import CompanyGroupSupplLifeInsurancePlan
 from app.models.insurance.std_insurance_plan import StdInsurancePlan
 from app.models.insurance.company_std_insurance_plan import CompanyStdInsurancePlan
 from app.models.insurance.user_company_std_insurance_plan import \
@@ -29,6 +30,8 @@ from app.models.hra.company_hra_plan import CompanyHraPlan
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.fsa.fsa import FSA
 from app.models.fsa.company_fsa_plan import CompanyFsaPlan
+from app.models.hsa.company_group_hsa_plan import CompanyGroupHsaPlan
+from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 from app.models.commuter.company_commuter_plan import CompanyCommuterPlan
 from app.models.commuter.person_company_commuter_plan import PersonCompanyCommuterPlan
 from app.models.document import Document
@@ -69,9 +72,17 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         else:
             return ''
 
+    def _get_user_company_group(self, user_id):
+        comp_group_members = CompanyGroupMember.objects.filter(user=user_id)
+        if comp_group_members:
+            return comp_group_members[0].company_group.id
+        else:
+            return None
+
     def _write_employee(self, employee_user_id, company_id):
         person = self._get_person_by_user(employee_user_id)
         user = self._get_user_by_id(employee_user_id)
+        company_group_id = self._get_user_company_group(employee_user_id)
 
         # set the common configuration on the page
         self._init_page()
@@ -95,11 +106,12 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         # Now starts writing benefit enrollments
         self._write_employee_all_health_benefits_info(user, company_id)
-        self._write_employee_basic_life_insurance_info(user, person, company_id)
+        self._write_employee_basic_life_insurance_info(user, person, company_group_id)
         self._write_employee_hra_info(person, company_id)
-        self._write_employee_supplemental_life_insurance_info(person, company_id)
+        self._write_employee_supplemental_life_insurance_info(person, company_group_id)
         self._write_employee_std_insurance_info(user, company_id)
         self._write_employee_ltd_insurance_info(user, company_id)
+        self._write_employee_hsa_info(person, company_group_id)
         self._write_employee_fsa_info(user, company_id)
         self._write_employee_commuter_info(person, company_id)
 
@@ -237,9 +249,9 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_basic_life_insurance_info(self, user_model, person_model, company_id):
+    def _write_employee_basic_life_insurance_info(self, user_model, person_model, company_group_id):
         employee_plans = UserCompanyLifeInsurancePlan.objects.filter(user=user_model.id)
-        company_plans = CompanyLifeInsurancePlan.objects.filter(company=company_id)
+        company_plans = CompanyGroupBasicLifeInsurancePlan.objects.filter(company_group=company_group_id)
 
         if (len(employee_plans) > 0):
             employee_plan = employee_plans[0]
@@ -299,9 +311,9 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_supplemental_life_insurance_info(self, person_model, company_id):
+    def _write_employee_supplemental_life_insurance_info(self, person_model, company_group_id):
         plan_selected = False
-        company_plans = CompSupplLifeInsurancePlan.objects.filter(company=company_id)
+        company_plans = CompanyGroupSupplLifeInsurancePlan.objects.filter(company_group=company_group_id)
         if (person_model):
             employee_plans = PersonCompSupplLifeInsurancePlan.objects.filter(person=person_model.id)
             if (len(employee_plans) > 0):
@@ -418,6 +430,32 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 self._write_waived_plan('Flexible Spending Account')
         elif company_plans:
             self._write_not_selected_plan('Flexible Spending Account')
+
+        return
+
+    def _write_employee_hsa_info(self, person_model, company_group_id):
+        plan_selected = False
+        group_plans = CompanyGroupHsaPlan.objects.filter(company_group=company_group_id)
+        if (person_model):
+            employee_plans = PersonCompanyGroupHsaPlan.objects.filter(person=person_model.id)
+            if (len(employee_plans) > 0):
+                plan = employee_plans[0]
+                plan_selected = True
+                if (plan.company_hsa_plan):
+                    # Render header
+                    self._write_line_uniform_width(['HSA Plan', 'Selected Amount Per Year'])
+                    self._draw_line()
+
+                    self._write_line_uniform_width([
+                        plan.company_hsa_plan.name,
+                        self._normalize_dollar_amount(plan.amount_per_year)])
+
+                    self._start_new_line()
+                    self._start_new_line()
+                else:
+                    self._write_waived_plan('Health Savings Account')
+        if not plan_selected and group_plans:
+            self._write_not_selected_plan('Health Savings Account')
 
         return
 

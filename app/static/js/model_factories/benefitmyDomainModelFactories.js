@@ -2,6 +2,13 @@ var benefitmyDomainModelFactories = angular.module('benefitmyDomainModelFactorie
 
 var PREFIX = '/api/v1/';
 
+benefitmyDomainModelFactories.factory('EnvironmentRepository', [
+  '$resource',
+  function ($resource){
+    return $resource(PREFIX + 'env/', {})
+  }
+]);
+
 benefitmyDomainModelFactories.factory('currentUser', [
   '$resource',
   function ($resource){
@@ -241,6 +248,24 @@ benefitmyDomainModelFactories.factory('CompanyBasicLifeInsurancePlanRepository',
   }
 ]);
 
+benefitmyDomainModelFactories.factory('CompanyGroupBasicLifeInsurancePlanRepository', ['$resource',
+  function ($resource){
+    return {
+      ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/basic_life_insurance_plan/', {companyGroupId:'@company_group_id'}),
+      ByCompanyPlan: $resource('/api/v1/company_basic_life_insurance_plan/:companyPlanId/company_group_plans/', {companyPlanId:'@pk'}, {
+        save: {
+            method:'POST',
+            isArray: true
+        },
+        update: {
+            method: 'PUT',
+            isArray: true
+        }
+      })
+    };
+  }
+]);
+
 // Company life insurance plan to users link domain repo
 benefitmyDomainModelFactories.factory('CompanyUserBasicLifeInsurancePlanRepository', ['$resource',
   function ($resource){
@@ -370,6 +395,24 @@ benefitmyDomainModelFactories.factory('SupplementalLifeInsuranceRepository', ['$
       CompanyPersonPlanById: $resource('/api/v1/person_comp_suppl_life/:id/', {id:'@id'}, {
         update: {
             method: 'PUT'
+        }
+      })
+    };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('CompanyGroupSupplLifeInsurancePlanRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/company_suppl_life/', {companyGroupId:'@company_group_id'}),
+      ByCompanyPlan: $resource('/api/v1/company_suppl_life/:pk/company_group_plans/', {pk:'@pk'}, {
+        save: {
+            method:'POST', 
+            isArray: true
+        },
+        update: {
+            method: 'PUT',
+            isArray: true
         }
       })
     };
@@ -552,5 +595,52 @@ benefitmyDomainModelFactories.factory('CompanyUserDetailRepository', ['$resource
     return {
       ByCompany: $resource(PREFIX + 'company/:comp_id/role/:role', {comp_id:'@comp_id', role:'@role'})
     }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('CompanyGroupRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'company/:companyId/groups', {companyId: '@companyId'}),
+      ById: $resource(PREFIX + 'company_group/:groupId', {groupId: '@groupId'}, {
+        update: { method: 'PUT' }
+      })
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('CompanyGroupMemberRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'company/:companyId/group_member', {companyId: '@companyId'}),
+      ByCompanyGroup: $resource(PREFIX + 'company_group/:groupId/members', {groupId: '@groupId'}),
+      ById: $resource(PREFIX + 'company_group_member/:groupMemberId', {groupMemberId: '@groupMemberId'}, {
+        update: { method: 'PUT' }
+      })
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('HsaRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'company/:companyId/hsa', {companyId: '@companyId'}),
+      ByCompanyPlan: $resource(PREFIX + 'company/hsa/:planId', {planId: '@planId'}),
+      ByCompanyGroup: $resource(PREFIX + 'company_group/:groupId/hsa', {groupId: '@groupId'}),
+      GroupPlanByCompanyPlan: $resource(PREFIX + 'company_hsa_plan/:planId/company_group_plans', {planId: '@planId'}, {
+        save: {
+            method:'POST',
+            isArray: true
+        },
+        update: {
+            method: 'PUT',
+            isArray: true
+        }
+      }),
+      ByPerson: $resource(PREFIX + 'person/:personId/hsa', {personId: '@personId'}),
+      ByPersonPlan: $resource(PREFIX + 'person_hsa/:personPlanId/hsa', {personPlanId: '@personPlanId'}, {
+        update: { method: 'PUT' }
+      })
+    };
   }
 ]);

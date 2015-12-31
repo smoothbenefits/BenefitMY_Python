@@ -15,6 +15,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
+# Environment Identification
+IS_PRODUCTION_ENVIRONMENT = False
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'x_qz2d46!0dmvk9(lb_c-z%r)&_jq8nl+-_fvsywp1+j+y5oj1'
 
@@ -239,6 +242,7 @@ PIPELINE_JS = {
             'js/controllers/EmployeeControllers.js',
             'js/controllers/EmployerControllers.js',
             'js/directives/ScrollTo.js',
+            'js/directives/BenefitGroupManager.js',
             'js/directives/ConfirmUnsavedOnExit.js',
             'js/directives/ConfirmDialogOnClick.js',
             'js/directives/FamilyMemberManager.js',
@@ -253,6 +257,8 @@ PIPELINE_JS = {
             'js/directives/DocumentUploadManager.js',
             'js/directives/EmployeeDocumentViewer.js',
             'js/directives/Edit1094c.js',
+            'js/directives/GroupMemberLink.js',
+            'js/directives/CompanyGroupSelection.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
@@ -276,6 +282,7 @@ PIPELINE_JS = {
             'js/services/UploadService.js',
             'js/services/BenefitSummaryService.js',
             'js/services/CompanyBenefitAvailabilityService.js',
+            'js/services/CompanyBenefitGroupService.js',
             'js/services/employeePayrollService.js',
             'js/services/EmploymentProfileService.js',
             'js/services/EmployerEmployeeManagementService.js',
@@ -289,6 +296,7 @@ PIPELINE_JS = {
             'js/services/SupplementalLifeInsuranceService.js',
             'js/services/SupplementalLifeInsuranceConditionService.js',
             'js/services/HraService.js',
+            'js/services/HsaService.js',
             'js/services/CommuterService.js',
             'js/services/ExtraBenefitService.js',
             'js/services/DocumentService.js',
@@ -302,7 +310,8 @@ PIPELINE_JS = {
             'js/services/AgeRangeService.js',
             'js/services/EmployeeBenefitsAvailabilityService.js',
             'js/services/TemplateService.js',
-            'js/services/SignatureService.js'
+            'js/services/SignatureService.js',
+            'js/services/EnvironmentService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

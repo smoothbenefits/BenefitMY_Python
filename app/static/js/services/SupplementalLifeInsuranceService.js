@@ -6,12 +6,16 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
     'SupplementalLifeInsuranceConditionService',
     'PersonService',
     'AgeRangeService',
+    'CompanyGroupSupplLifeInsurancePlanRepository',
+    'UserService',
     function (
         $q,
         SupplementalLifeInsuranceRepository,
         SupplementalLifeInsuranceConditionService,
         PersonService,
-        AgeRangeService){
+        AgeRangeService,
+        CompanyGroupSupplLifeInsurancePlanRepository,
+        UserService){
 
         var ageRangeService = AgeRangeService(20, 85, 5, 200);
 
@@ -34,6 +38,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             viewModel.companyPlanId = companyPlanDomainModel.id;
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
+            viewModel.companyGroups = companyPlanDomainModel.company_groups;
 
             return viewModel;
         };
@@ -462,10 +467,76 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
             return deferred.promise;
         };
 
+        var getPlansForCompanyGroup = function(companyGroupId) {
+            var deferred = $q.defer();
+            if(!companyGroupId){
+                deferred.resolve([]);
+            }
+            else{
+                CompanyGroupSupplLifeInsurancePlanRepository.ByCompanyGroup.query({companyGroupId:companyGroupId})
+                .$promise.then(function(companyGroupPlans) {
+                    var resultPlans = [];
+                    
+                    _.each(companyGroupPlans, function(companyGroupPlan) {
+                        var companyPlan = companyGroupPlan.company_suppl_life_insurance_plan;
+                        resultPlans.push(mapCompanyPlanDomainToViewModel(companyPlan));
+                    });
+                    
+                    deferred.resolve(resultPlans);
+                },
+                function(failedResponse) {
+                    deferred.reject(failedResponse);
+                });
+            }
+            return deferred.promise;
+        };
+
+        var mapCreatePlanViewToCompanyGroupPlanDomainModel = function(createPlanViewModel) {
+            var domainModel = [];
+            _.each(createPlanViewModel.selectedCompanyGroups, function(companyGroupModel) {
+                domainModel.push({ 
+                    'company_suppl_life_insurance_plan': createPlanViewModel.companyPlanId,
+                    'company_group': companyGroupModel.id 
+                });
+            }); 
+  
+            return domainModel;
+        };
+
+        var linkCompanySupplLifeInsurancePlanToCompanyGroups = function(compSupplPlanId, compGroupPlanModels){
+            var deferred = $q.defer();
+            CompanyGroupSupplLifeInsurancePlanRepository.ByCompanyPlan.update(
+                {pk:compSupplPlanId}, 
+                compGroupPlanModels, 
+                function (successResponse) {
+                    deferred.resolve(successResponse);
+                }
+            );
+            return deferred.promise;
+        };
+
+        var getBlankUserPlan = function(personInfo){
+            var blankPersonPlan = {};
+            // Setup person plan owner
+            blankPersonPlan.planOwner = personInfo.id;
+            // Setup a blank but structured beneficiary list
+            blankPersonPlan.beneficiaryList = mapBeneficiaryListDomainToViewModel([]);
+            // Setup default values for elected amounts
+            blankPersonPlan.selfElectedAmount = 0;
+            blankPersonPlan.spouseElectedAmount = 0;
+            blankPersonPlan.childElectedAmount = 0;
+            // Setup flag to indicate current enrollment state
+            blankPersonPlan.selected = false;
+            blankPersonPlan.waived = false;
+            return blankPersonPlan;
+        }
+
         return {
             planBindTypes: ['self', 'spouse', 'dependent'],
 
             getPlansForCompany: getPlansForCompany,
+
+            getPlansForCompanyGroup: getPlansForCompanyGroup,
 
             getBlankPlanForCompany: function(companyId) {
                 var deferred = $q.defer();
@@ -477,7 +548,7 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                     // Setup a blank but structured rate table
                     blankCompanyPlan.planRates = blankRates;
                     blankCompanyPlan.useEmployeeAgeForSpouse = false;
-
+                    blankCompanyPlan.selectedCompanyGroups = [];
                     deferred.resolve(blankCompanyPlan);
                 });
 
@@ -501,8 +572,18 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                     companyPlanDomainModel.company = companyId;
 
                     SupplementalLifeInsuranceRepository.CompanyPlanById.save({id:companyId}, companyPlanDomainModel)
-                    .$promise.then(function(response) {
-                        deferred.resolve(response);
+                    .$promise.then(function(createdCompanyPlan) {
+                        //Now link the company plan with company group
+                        companyPlanToSave.companyPlanId = createdCompanyPlan.id;
+                        compGroupPlans = mapCreatePlanViewToCompanyGroupPlanDomainModel(companyPlanToSave);
+                        linkCompanySupplLifeInsurancePlanToCompanyGroups(createdCompanyPlan.id, compGroupPlans).then(
+                             function(createdCompanyGroupPlans) {
+                                 deferred.resolve(createdCompanyGroupPlans);
+                             },
+                             function(errors) {
+                                 deferred.reject(errors);
+                             }
+                         );
                     },
                     function(error){
                         deferred.reject(error);
@@ -532,12 +613,23 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
 
             getPlanByUser: function(userId, company, getBlankPlanIfNoneFound) {
                 var deferred = $q.defer();
-                getPlansForCompany(company.id).then(function(plans){
-                    if(!plans || plans.length <= 0){
-                        deferred.resolve(undefined);
-                    }
-                    else{
-                        PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
+                var requiredPromises = [];
+                requiredPromises.push(UserService.getUserDataByUserId(userId));
+                requiredPromises.push(PersonService.getSelfPersonInfo(userId));
+
+                $q.all(requiredPromises).then(function(data){
+                    var personInfo = data[1];
+                    getPlansForCompanyGroup(data[0].companyGroupId)
+                    .then(function(plans){
+                        if(!plans || plans.length <= 0){
+                            if(getBlankPlanIfNoneFound){
+                                deferred.resolve(getBlankUserPlan(personInfo));
+                            }
+                            else{
+                                deferred.resolve(undefined);
+                            }
+                        }
+                        else{
                             SupplementalLifeInsuranceRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
                             .$promise.then(function(personPlans) {
                                 if (personPlans.length > 0) {
@@ -553,20 +645,8 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                                     // blank person plan.
                                     // Or else, return null;
                                     if (getBlankPlanIfNoneFound) {
-                                        var blankPersonPlan = {};
-                                        // Setup person plan owner
-                                        blankPersonPlan.planOwner = personInfo.id;
-                                        // Setup a blank but structured beneficiary list
-                                        blankPersonPlan.beneficiaryList = mapBeneficiaryListDomainToViewModel([]);
-                                        // Setup default values for elected amounts
-                                        blankPersonPlan.selfElectedAmount = 0;
-                                        blankPersonPlan.spouseElectedAmount = 0;
-                                        blankPersonPlan.childElectedAmount = 0;
-                                        // Setup flag to indicate current enrollment state
-                                        blankPersonPlan.selected = false;
-                                        blankPersonPlan.waived = false;
 
-                                        deferred.resolve(blankPersonPlan);
+                                        deferred.resolve(getBlankUserPlan(personInfo));
                                     }
                                     else {
                                         deferred.resolve(null);
@@ -576,11 +656,11 @@ benefitmyService.factory('SupplementalLifeInsuranceService',
                             function(error) {
                                 deferred.reject(error);
                             });
-                        },
-                        function(error){
-                            deferred.reject(error);
-                        });
-                    }
+                        }
+                    },
+                    function(error){
+                        deferred.reject(error);
+                    });
                 });
 
                 return deferred.promise;

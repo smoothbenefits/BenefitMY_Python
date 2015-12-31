@@ -6,6 +6,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'ui.bootstrap',
     'angularFileUpload',
     'angularSpinner',
+    'isteven-multi-select',
     'blockUI',
     'benefitmyDomainModelFactories',
     'benefitmyService',
@@ -53,9 +54,8 @@ BenefitMyApp.config(function(blockUIConfig) {
   blockUIConfig.template = '<div class="block-ui-overlay"><span us-spinner></span></div>';
 
   // Change the default delay before the blocking is visible
-  // Setup some delay would increase the pages' responsiveness 
+  // Setup some delay would increase the pages' responsiveness
   blockUIConfig.delay = 250;
-
 });
 
 // Configure global error logging
@@ -165,6 +165,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/benefit_addition/tab_fsa.html',
                 controller: 'brokerAddFsaPlanController'
             }).
+            state('broker_add_benefit.hsa', {
+                url: '/hsa',
+                templateUrl: '/static/partials/benefit_addition/tab_hsa.html',
+                controller: 'brokerAddHsaPlanController'
+            }).
             state('broker_add_benefit.hra', {
                 url: '/hra',
                 templateUrl: '/static/partials/benefit_addition/tab_hra.html',
@@ -194,6 +199,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/broker/employee/:employee_id/information',
                 templateUrl: '/static/partials/employee_profile/edit_personal_info.html',
                 controller: 'brokerEmployeeInfoController'
+            }).
+            state('broker_company_group', {
+              url: '/broker/company/:company_id/groups',
+              templateUrl: '/static/partials/client_management/company_group.html',
+              controller: 'CompanyBenefitGroupManagementController'
             }).
             state('broker_company_aca_report', {
                 url: '/broker/company/:company_id/aca_report',
@@ -346,6 +356,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/fsa',
                 templateUrl: '/static/partials/benefit_selection/tab_fsa.html',
                 controller:'fsaBenefitsSignup'
+            }).
+            state('employee_benefit_signup.hsa', {
+                url: '/hsa',
+                templateUrl: '/static/partials/benefit_selection/tab_hsa.html',
+                controller: 'hsaBenefitSignup'
             }).
             state('employee_benefit_signup.basic_life', {
                 url: '/basic_life',

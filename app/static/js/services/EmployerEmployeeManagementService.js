@@ -57,7 +57,8 @@ benefitmyService.factory('EmployerEmployeeManagementService',
         "email": viewModel.email,
         "first_name": viewModel.first_name,
         "last_name": viewModel.last_name,
-        "compensation_info": compensation
+        "compensation_info": compensation,
+        "group_id": viewModel.group_id
       };
 
       if (viewModel.employment_type.id === 1) {
