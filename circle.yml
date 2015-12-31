@@ -1,14 +1,5 @@
 ## configuration file for Circle continuous integration
 
-general:
-  branches:
-    only:
-      - master
-      - staging
-      - demo
-      - beta
-      - prod
-
 test:
   pre:
     - python manage.py collectstatic --noinput

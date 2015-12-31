@@ -8,6 +8,7 @@ from app.models.person import Person
 from app.models.employee_profile import FULL_TIME, PART_TIME, CONTRACTOR, \
     INTERN, PER_DIEM, EMPLYMENT_STATUS_ACTIVE
 from app.models.company_user import USER_TYPE_EMPLOYEE
+from app.models.company_group import CompanyGroup
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
 from app.dtos.issue import Issue
@@ -15,6 +16,8 @@ from app.dtos.operation_result import OperationResult
 from app.serializers.person_serializer import PersonSimpleSerializer
 from app.serializers.employee_profile_serializer import EmployeeProfilePostSerializer
 from app.serializers.employee_compensation_serializer import EmployeeCompensationPostSerializer
+from app.serializers.company_group_serializer import CompanyGroupPostSerializer
+from app.serializers.company_group_member_serializer import CompanyGroupMemberPostSerializer
 from app.serializers.dtos.account_creation_data_serializer import AccountCreationDataSerializer
 from app.service.hash_key_service import HashKeyService
 
@@ -32,6 +35,7 @@ class AccountCreationService(object):
     FIELD_PROJECTED_HOUR_PER_MONTH = 'projected_hour_per_month'
     FIELD_START_DATE = 'start_date'
     FIELD_BENEFIT_START_DATE = 'benefit_start_date'
+    FIELD_GROUP_NAME = 'group_name'
     FIELD_RECORD_END = 'record-end'
 
     REQUIRED_RAW_DATA_FIELDS = [
@@ -45,6 +49,7 @@ class AccountCreationService(object):
         FIELD_PROJECTED_HOUR_PER_MONTH,
         FIELD_START_DATE,
         FIELD_BENEFIT_START_DATE,
+        FIELD_GROUP_NAME,
         FIELD_RECORD_END
     ]
 
@@ -106,6 +111,7 @@ class AccountCreationService(object):
                     'create_docs': False,
                     'start_date': start_date,
                     'benefit_start_date': benefit_start_date,
+                    'group_name': self._get_field_value(tokens, self.FIELD_GROUP_NAME),
                     'compensation_info': compensation_data,
                     'doc_fields': []
                 }
@@ -133,6 +139,35 @@ class AccountCreationService(object):
         if (index < 0 or index >= len(field_values)):
             return None
         return field_values[index]
+
+    def _add_to_group(self, group_id, user_id):
+        group_member_data = {
+            'company_group': group_id,
+            'user': user_id
+        }
+        company_group_member = CompanyGroupMemberPostSerializer(data=group_member_data)
+        if company_group_member.is_valid():
+            company_group_member.save()
+        else:
+            raise Exception("Failed to add this employee to company_group")
+
+    def _get_or_create_group(self, group_name, company_id):
+        comp_group = CompanyGroup.objects.filter(company=company_id, name=group_name)
+        if not comp_group:
+            # Let's create a new company_group
+            new_comp_group = {
+                'company': company_id,
+                'name': group_name
+            }
+            group_serializer = CompanyGroupPostSerializer(data=new_comp_group)
+            if group_serializer.is_valid():
+                group_serializer.save()
+                hash_key_service = HashKeyService()
+                return hash_key_service.decode_key(group_serializer.data['id'])
+            else:
+                raise Exception("Group cannot be created with the name {}".format(group_name))
+        else:
+            return comp_group[0].id
 
     def validate(self, account_info):
         result = OperationResult(account_info)
@@ -203,6 +238,9 @@ class AccountCreationService(object):
             result.append_issue(
                 'The specified employment type [%s] is not valid.' % account_info.employment_type
             )
+
+        if not account_info.group_name and not account_info.group_id:
+            result.append_issue('Company group not specified.')
 
         result.set_output_data(account_info)
 
@@ -370,6 +408,16 @@ class AccountCreationService(object):
                 compensation_serializer.save()
             else:
                 raise Exception("Failed to create compensation record")
+
+            if account_info.group_id:
+                self._add_to_group(account_info.group_id, user.id)
+
+            elif account_info.group_name:
+                group_id = self._get_or_create_group(account_info.group_name, account_info.company_id)
+                if group_id:
+                    self._add_to_group(group_id, user.id)
+                else:
+                    raise Exception("Cannot get group_id from group name {}".format(account_info.group_name))
 
             account_info.user_id = user.id
 

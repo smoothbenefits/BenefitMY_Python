@@ -15,12 +15,14 @@
       <thead>
         <tr>
           <th><span>Name</span></th>
+          <th><span>Group</span></th>
           <th><span>Actions</span></th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="employee in employees | orderBy:'lastName'">
           <td>{{employee.firstName}} {{employee.lastName}}</td>
+          <td><bm-group-member-link company-id="companyId" group-member="employee.company_group_member" user="employee.userId"></bm-group-member-link></td>
           <td>
             <span class="btn inline" ng-click="editPersonalInfo(employee.userId)">Edit Personal Info</span>
             <span class="btn inline" ng-click="viewEmployeeFamilyMember(employee.userId)">Edit Family Member</span>

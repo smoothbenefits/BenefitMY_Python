@@ -41,7 +41,7 @@ benefitmyService.factory('Company1094CService',
             sortedData.push({period: periodValue,
                              aggregated_group: false,
                              minimum_essential_coverage: false,
-                             section_4980h_transition_relief: false,
+                             section_4980h_transition_relief: undefined,
                              fulltime_employee_count: undefined,
                              total_employee_count: undefined
                            });

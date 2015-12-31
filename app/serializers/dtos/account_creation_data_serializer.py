@@ -21,6 +21,8 @@ class AccountCreationDataSerializer(serializers.Serializer):
     benefit_start_date = serializers.DateField()
     create_docs = serializers.BooleanField()
     doc_fields = KeyValuePairSerializer(many=True, required=False)
+    group_id = serializers.IntegerField(required=False)
+    group_name = serializers.CharField(required=False)
 
     def restore_object(self, attrs, instance=None):
         return AccountCreationData(**attrs)

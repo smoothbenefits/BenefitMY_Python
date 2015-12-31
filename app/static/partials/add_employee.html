@@ -9,8 +9,15 @@
   <span class="general-info">Please enter your employee basic information below</span>
 </div><!-- / .content-header -->
 
+<div ng-show="groups.length <= 0" class="alert alert-danger">
+  It appears that no employee group has been setup for your company.
+  You currently cannot add employee.
+  Please contact your broker, or <a href="mailto:support@workbenefits.me?subject=Add%20Employee%20Error">support@workbenefits.me</a>
+  to resolve this issue.
+</div>
+
 <div class="content-body">
-  <div class="form-holder">
+  <div class="form-holder" ng-if="groups.length > 0">
     <form name="form">
       <div ng-show="alreadyExists" class="form-validation-error">
         The user with email "{{addUser.email}}" already exists in our system!
@@ -66,6 +73,19 @@
           class="form-control" />
         <div class="form-error" ng-show="form.employment_status.$error.required">
           <span>Employment status must be selected</span>
+        </div>
+      </div>
+
+      <div class="form-label" ng-if="groups.length > 1">The group the employee belongs to</div>
+      <div class="select-box" ng-if="groups.length > 1">
+        <select id="gp"
+          ng-model="addUser.group_id"
+          ng-required="true"
+          name="gp"
+          ng-options="g.id as g.name for g in groups"
+          class="form-control" />
+        <div class="form-error" ng-show="form.employee_email.$dirty && form.gp.$error.required">
+          <span>Must assign the employee a group</span>
         </div>
       </div>
 
@@ -208,7 +228,7 @@
         </div>
       </div>
       <div class="submit-box">
-        <button ng-click="createUser('employee')" class="btn green" ng-disabled="form.$invalid">Add Employee</button>
+        <button ng-click="createUser('employee')" class="btn green" ng-disabled="form.$invalid || hasNoBenefitGroup()">Add Employee</button>
       </div>
 
     </form>

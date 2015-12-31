@@ -57,16 +57,20 @@ class TriggerNotCompleteEnrollmentBase(TriggerBase):
         return (not self._is_cached_data_empty())
 
     def _refresh_cached_data(self):
-        raise NotImplementedError
+        self._cached_company_user_list = dict()
 
     def _cache_company_user(self, company_id, user_id):
-        raise NotImplementedError
+        if (company_id not in self._cached_company_user_list):
+            self._cached_company_user_list[company_id] = []
+        self._cached_company_user_list[company_id].append(user_id)
 
     def _is_cached_data_empty(self):
-        raise NotImplementedError
-
-    def _check_schedule(self, start_date):
-        raise NotImplementedError
+        return len(self._cached_company_user_list) <= 0
 
     def _get_action_data(self):
+        return {
+            'company_user_id_list': self._cached_company_user_list
+        }
+
+    def _check_schedule(self, start_date):
         raise NotImplementedError

@@ -7,6 +7,19 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
   'employerWorkerRepository',
   function ($q, employerWorkerRepository){
 
+    var get_company_group_member_from_user = function(user){
+      if (user.company_group_user && user.company_group_user.length > 0){
+        return user.company_group_user[0];
+      }
+      else{
+        return {
+          company_group:{
+            name:'N/A'
+          }
+        };
+      }
+    };
+
     var mapToViewEmployeeList = function(domainList) {
       var viewList = [];
 
@@ -15,7 +28,8 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
           firstName: employee.user.first_name,
           lastName: employee.user.last_name,
           userId: employee.user.id,
-          email: employee.user.email
+          email: employee.user.email,
+          company_group_member: get_company_group_member_from_user(employee.user)
         };
         viewList.push(viewModel);
       });

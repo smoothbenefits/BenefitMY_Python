@@ -164,6 +164,7 @@
       <tr>
         <th><span>Basic Life Insurance (AD&D)</span></th>
         <th><span>Document</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Total Cost (Monthly)</span></th>
         <th><span>Employee Contribution (per pay period)</span></th>
         <th><span>Total Cost Rate (per $10)</span></th>
@@ -190,6 +191,7 @@
           hide-type="true">
         </bmuploadmanager>
       </td>
+      <td><span class="inline" ng-repeat="group in lifeInsurancePlan.company_groups">{{group.company_group.name}};</br></span></td>
       <td>$ {{lifeInsurancePlan.total_cost_per_period}}</td>
       <td>$ {{lifeInsurancePlan.employee_cost_per_period}}</td>
       <td>{{lifeInsurancePlan.total_cost_rate}}</td>
@@ -205,6 +207,7 @@
     <thead>
       <tr>
         <th><span>Supplemental Life Insurance</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Document</span></th>
       </tr>
     </thead>
@@ -219,6 +222,7 @@
              href="javascript:void(0);"
              confirm="Delete the supplemental life insurance plan?">X</a>
         </td>
+        <td><span class="inline" ng-repeat="group in supplementalLifeInsurancePlan.companyGroups">{{group.company_group.name}};</br></span></td>
         <td class="upload-td">
           <bmuploadmanager
           upload-type="OptionalLife"
@@ -350,6 +354,44 @@
           upload-type="FSA"
           upload-mode="button"
           feature-id="{{fsaPlan.companyPlanId}}"
+          hide-type="true">
+        </bmuploadmanager>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- HSA plans summary -->
+<div class="table-responsive table-holder" ng-if="hsaPlans && hsaPlans.length > 0">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><span>HSA Plan Name</span></th>
+        <th><span>Benefit Group(s)</span></th>
+        <th><span>Document</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="hsaPlan in hsaPlans">
+        <td>
+          {{hsaPlan.hsaPlanName}}
+          <a class="delete-cross"
+             ng-show="benefitDeletable"
+             ng-click="deleteHsaPlan(hsaPlan)"
+             href="javascript:void(0);"
+             confirm="Delete the HSA plan?">X</a>
+        </td>
+        <td>
+          <span class="inline" ng-repeat="group in hsaPlan.groups">
+            {{group.company_group.name}};</br>
+          </span>
+        </td>
+        <td class="upload-td">
+          <bmuploadmanager
+          upload-type="HSA"
+          upload-mode="button"
+          feature-id="{{hsaPlan.companyPlanId}}"
           hide-type="true">
         </bmuploadmanager>
       </td>
