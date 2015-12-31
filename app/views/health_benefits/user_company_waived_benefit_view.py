@@ -3,8 +3,8 @@ from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import status
 
-from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
-from app.serializers.user_company_waived_benefit_serializer import (
+from app.models.health_benefits.user_company_waived_benefit import UserCompanyWaivedBenefit
+from app.serializers.health_benefits.user_company_waived_benefit_serializer import (
     UserCompanyWaivedBenefitSerializer)
 
 

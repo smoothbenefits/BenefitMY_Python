@@ -4,9 +4,9 @@ from django.http import Http404
 from rest_framework.response import Response
 
 from django.db import transaction
-from app.models.enrolled import Enrolled
-from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
-from app.serializers.user_company_benefit_plan_option_serializer import (
+from app.models.health_benefits.enrolled import Enrolled
+from app.models.health_benefits.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
+from app.serializers.health_benefits.user_company_benefit_plan_option_serializer import (
     UserCompanyBenefitPlanOptionSerializer)
 from app.models.company_user import CompanyUser
 

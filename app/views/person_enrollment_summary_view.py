@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from app.service.hash_key_service import HashKeyService
 
 from app.models.person import Person
-from app.models.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
-from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
+from app.models.health_benefits.user_company_benefit_plan_option import UserCompanyBenefitPlanOption
+from app.models.health_benefits.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.models.fsa.fsa import FSA
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
@@ -19,9 +19,9 @@ from app.models.insurance.user_company_std_insurance_plan import \
     UserCompanyStdInsurancePlan
 
 from app.serializers.person_serializer import PersonSerializer
-from app.serializers.user_company_benefit_plan_option_serializer import \
+from app.serializers.health_benefits.user_company_benefit_plan_option_serializer import \
     UserCompanyBenefitPlanOptionSerializer
-from app.serializers.user_company_waived_benefit_serializer import \
+from app.serializers.health_benefits.user_company_waived_benefit_serializer import \
     UserCompanyWaivedBenefitSerializer
 from app.serializers.fsa.fsa_serializer import FsaSerializer
 from app.serializers.hra.person_company_hra_plan_serializer import \

@@ -1,7 +1,7 @@
 import reversion
 
 from django.db import models
-from company import Company
+from ..company import Company
 from benefit_plan import BenefitPlan
 
 S = ["individual",

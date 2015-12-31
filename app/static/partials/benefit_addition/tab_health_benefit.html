@@ -121,9 +121,12 @@
             </div>
           </div>
         </div>
+        <div class="row">
+           <bm-company-group-selection company-id="companyId" label-text="companyGroupSelectionWidgetLabel" selected-groups-model="benefit.selectedCompanyGroups" show-top-separation-line></bm-company-group-selection>
+        </div>
 
         <div class="submit-box">
-          <button ng-click="addBenefit()" class="btn green" ng-disabled="form.$invalid">Add Benefit</button>
+          <button ng-click="addBenefit()" class="btn green" ng-disabled="!allowSaveNewPlan()">Add Benefit</button>
         </div>
       </div>
     </form>

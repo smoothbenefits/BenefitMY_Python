@@ -5,8 +5,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 
 from django.db import transaction
-from app.models.benefit_plan import BenefitPlan
-from app.serializers.benefit_plan_serializer import BenefitPlanSerializer, BenefitPlanPostSerializer
+from app.models.health_benefits.benefit_plan import BenefitPlan
+from app.serializers.health_benefits.benefit_plan_serializer import BenefitPlanSerializer, BenefitPlanPostSerializer
 
 TYPE = {"Medical": 1,
         "Dental": 2,

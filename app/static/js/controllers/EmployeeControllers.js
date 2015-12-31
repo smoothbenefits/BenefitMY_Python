@@ -1149,6 +1149,7 @@ var healthBenefitsSignup = employeeControllers.controller(
    'benefitDisplayService',
    'FsaService',
    'BasicLifeInsuranceService',
+   'HealthBenefitsService',
     function healthBenefitsSignup(
       $scope,
       $state,
@@ -1162,7 +1163,8 @@ var healthBenefitsSignup = employeeControllers.controller(
       PersonService,
       benefitDisplayService,
       FsaService,
-      BasicLifeInsuranceService){
+      BasicLifeInsuranceService,
+      HealthBenefitsService){
 
         // Inherite scope from base
         $controller('benefitsSignupControllerBase', {$scope: $scope});
@@ -1244,11 +1246,6 @@ var healthBenefitsSignup = employeeControllers.controller(
           });
 
           $scope.companyPromise.then(function(company){
-            benefitDisplayService.getHealthBenefitsForDisplay(company, false)
-            .then(function(healthBenefitToDisplay){
-              $scope.medicalBenefitGroup = healthBenefitToDisplay.medicalBenefitGroup;
-              $scope.nonMedicalBenefitArray = healthBenefitToDisplay.nonMedicalBenefitArray;
-            });
 
             //First get all the enrolled benefit list
             employeeBenefits.enroll().get({userId:employeeId, companyId:company.id})
@@ -1278,8 +1275,9 @@ var healthBenefitsSignup = employeeControllers.controller(
 
 
                     //Then get all the benefits associated with the company
-                    benefitListRepository.get({clientId:company.id}).$promise.then(function(response){
-                      _.each(response.benefits, function(availBenefit){
+                    HealthBenefitsService.getPlansForCompanyGroup(company.id, $scope.userCompanyGroupId)
+                    .then(function(availableBenefits){
+                      _.each(availableBenefits, function(availBenefit){
                         var benefitFamilyPlan = { 'benefit': availBenefit};
                         var selectedBenefitPlan = _.first(_.filter($scope.selectedBenefits, function(selectedBen){
                           return selectedBen.benefit.benefit_plan.id == availBenefit.benefit_plan.id;
