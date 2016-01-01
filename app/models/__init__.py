@@ -52,6 +52,7 @@ from insurance.company_group_suppl_life_insurance_plan import CompanyGroupSupplL
 from hra.hra_plan import HraPlan
 from hra.company_hra_plan import CompanyHraPlan
 from hra.person_company_hra_plan import PersonCompanyHraPlan
+from hra.company_group_hra_plan import CompanyGroupHraPlan
 
 from commuter.company_commuter_plan import CompanyCommuterPlan
 from commuter.person_company_commuter_plan import PersonCompanyCommuterPlan

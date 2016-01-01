@@ -118,6 +118,9 @@ from app.views.hra.company_hra_plan_view import (
 from app.views.hra.person_company_hra_plan_view import (
     PersonCompanyHraPlanView,
     PersonCompanyHraPlanByPersonView)
+from app.views.hra.company_group_hra_plan_view import (
+    CompanyGroupHraPlanByCompanyGroupView,
+    CompanyGroupHraPlanByCompanyPlanView)
 
 from app.views.commuter.company_commuter_plan_view import (
     CompanyCommuterPlanView,
@@ -416,6 +419,14 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/person/(?P<person_id>\w+)/person_company_hra_plan/?$' % PREFIX,
         PersonCompanyHraPlanByPersonView.as_view(), name='person_company_hra_plan_by_person_api'),
+
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/company_hra/?$' % PREFIX,
+        CompanyGroupHraPlanByCompanyGroupView.as_view(), 
+        name='company_group_hra_plan_api'),
+
+    url(r'^%s/company_hra/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupHraPlanByCompanyPlanView.as_view(), 
+        name='company_group_hra_plan_by_company_plan_api'),
 
     # Commuter api
     url(r'^%s/company_commuter_plan/(?P<pk>\w+)/?$' % PREFIX,
