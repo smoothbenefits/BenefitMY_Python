@@ -146,7 +146,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
       });
 
       // STD
-      StdService.getUserEnrolledStdPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(response){
+      StdService.getUserEnrolledStdPlanByUser(userInfo.user.id).then(function(response){
         $scope.userStdPlan = response;
       });
 

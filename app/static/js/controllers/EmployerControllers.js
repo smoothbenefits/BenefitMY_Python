@@ -1460,7 +1460,7 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
         });
 
         // STD
-        StdService.getUserEnrolledStdPlanByUser($scope.employee.id, $scope.company.id).then(function(response){
+        StdService.getUserEnrolledStdPlanByUser($scope.employee.id).then(function(response){
           $scope.employee.userStdPlan = response;
         });
 

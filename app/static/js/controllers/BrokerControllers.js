@@ -554,7 +554,7 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
         });
 
         // STD
-        StdService.getUserEnrolledStdPlanByUser($scope.employee.id, $scope.company.id).then(function(response){
+        StdService.getUserEnrolledStdPlanByUser($scope.employee.id).then(function(response){
           $scope.employee.userStdPlan = response;
         });
 
@@ -863,7 +863,7 @@ var brokerAddStdPlanController = brokersControllers.controller(
         $scope.FALSE = false;
         $scope.allowUserSelectAmount = false;
 
-        var clientId = $stateParams.clientId;
+        $scope.companyId = $stateParams.clientId;
         $scope.newPlan = {};
         $scope.ageBased = false;
         $scope.toggleAgeBased = function(){
@@ -879,7 +879,9 @@ var brokerAddStdPlanController = brokersControllers.controller(
         $scope.newPlan.ageBasedRateTable = StdService.getBlankAgeBasedRateTableViewModel();
 
         $scope.buttonEnabled = function() {
-            return $scope.newPlan.planName && _.isNumber($scope.newPlan.employerContributionPercentage);
+            return $scope.newPlan.planName &&
+              _.isNumber($scope.newPlan.employerContributionPercentage) &&
+              $scope.newPlan.selectedCompanyGroups && $scope.newPlan.selectedCompanyGroups.length > 0;
         };
 
         // Need the user information for the current user (broker)
@@ -888,7 +890,7 @@ var brokerAddStdPlanController = brokersControllers.controller(
                 $scope.newPlan.planBroker = userInfo.user.id;
                 $scope.newPlan.allowUserSelectAmount = $scope.allowUserSelectAmount;
 
-                StdService.addPlanForCompany($scope.newPlan, clientId).then(
+                StdService.addPlanForCompany($scope.newPlan, $scope.companyId).then(
                     function(response) {
                         var successMessage = "The new STD plan has been saved successfully."
                         $scope.showMessageWithOkayOnly('Success', successMessage);

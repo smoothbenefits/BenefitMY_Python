@@ -251,6 +251,7 @@
       <tr>
         <th><span>STD Plan Name</span></th>
         <th><span>Document</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Benefit Amount</span></th>
         <th><span>Max Benefit</span></th>
         <th><span>Duration</span></th>
@@ -277,6 +278,7 @@
           hide-type="true">
         </bmuploadmanager>
       </td>
+      <td><span class="inline" ng-repeat="group in stdPlan.companyGroups">{{group.company_group.name}};</br></span></td>
       <td>{{stdPlan.percentageOfSalary}}% of Base Salary</td>
       <td>${{stdPlan.maxBenefitWeekly}}/Week</td>
       <td>{{stdPlan.duration}} Days</td>

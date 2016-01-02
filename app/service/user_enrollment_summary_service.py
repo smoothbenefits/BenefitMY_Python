@@ -17,6 +17,8 @@ from app.models.insurance.company_group_basic_life_insurance_plan import \
     CompanyGroupBasicLifeInsurancePlan
 from app.models.insurance.user_company_ltd_insurance_plan import \
     UserCompanyLtdInsurancePlan
+from app.models.insurance.company_group_std_insurance_plan import \
+    CompanyGroupStdInsurancePlan
 from app.models.insurance.user_company_std_insurance_plan import \
     UserCompanyStdInsurancePlan
 from app.models.company_group_member import CompanyGroupMember
@@ -99,7 +101,10 @@ class UserEnrollmentSummaryService(object):
             return None
 
     def get_std_insurance(self):
-        if CompanyStdInsurancePlan.objects.filter(company=self.company_id).exists():
+        if not self.company_group:
+            return None
+        group_plans = self.company_group.company_std_insurance_plan.all()
+        if group_plans.exists():
             return UserCompanyStdInsurancePlan.objects.filter(user=self.user_id)
         else:
             return None

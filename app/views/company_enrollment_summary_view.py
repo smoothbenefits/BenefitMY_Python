@@ -86,7 +86,7 @@ left join app_companygroupsuppllifeinsuranceplan as compsup on compsup.company_g
 left join app_personcompsuppllifeinsuranceplan as sp on sp.person_id = p.id
 left join app_companyltdinsuranceplan as compltd on compltd.company_id = cu.company_id
 left join app_usercompanyltdinsuranceplan as ltd on ltd.user_id = cu.user_id
-left join app_companystdinsuranceplan as compstd on compstd.company_id = cu.company_id
+left join app_companygroupstdinsuranceplan as compgstd on compgstd.company_group_id = cgm.company_group_id
 left join app_usercompanystdinsuranceplan as std on std.user_id=cu.user_id
 left join app_companyhraplan as comphra on comphra.company_id = cu.company_id
 left join app_personcompanyhraplan as hra on hra.person_id = p.id
