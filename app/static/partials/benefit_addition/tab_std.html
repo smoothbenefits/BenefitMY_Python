@@ -178,6 +178,9 @@
       </div>
     </div>
     <div class="col-sm-6 text-left">
+      <div class="row">
+          <bm-company-group-selection company-id="companyId" show-top-separation-line label-text="companyGroupSelectionWidgetLabel"  selected-groups-model="newPlan.selectedCompanyGroups"></bm-company-group-selection>
+      </div>
       <div class="submit-box" style="max-width: 200px;">
         <a ng-click="saveNewPlan()" class="btn green" ng-disabled="!buttonEnabled()">Add</a>
       </div>

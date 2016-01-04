@@ -351,6 +351,24 @@ benefitmyDomainModelFactories.factory('StdRepository', ['$resource',
   }
 ]);
 
+benefitmyDomainModelFactories.factory('CompanyGroupStdInsurancePlanRepository', ['$resource',
+  function ($resource){
+    return {
+      ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/std_insurance/', {companyGroupId:'@company_group_id'}),
+      ByCompanyPlan: $resource('/api/v1/std_insurance/:pk/company_group_plans/', {pk:'@pk'}, {
+        save: {
+            method:'POST',
+            isArray: true
+        },
+        update: {
+            method: 'PUT',
+            isArray: true
+        }
+      })
+    };
+  }
+]);
+
 benefitmyDomainModelFactories.factory('LtdRepository', ['$resource',
   function($resource){
     return {
