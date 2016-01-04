@@ -146,7 +146,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
       });
 
       // STD
-      StdService.getUserEnrolledStdPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(response){
+      StdService.getUserEnrolledStdPlanByUser(userInfo.user.id).then(function(response){
         $scope.userStdPlan = response;
       });
 
@@ -986,7 +986,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(supplementalPlans) {
         supplementalLifePlans = supplementalPlans;
-        return StdService.getStdPlansForCompany(company.id);
+        return StdService.getStdPlansForCompanyGroup($scope.userCompanyGroupId);
       })
       .then(function(stdPlansResponse) {
         stdPlans = stdPlansResponse;
@@ -2222,21 +2222,23 @@ var stdBenefitsSignup = employeeControllers.controller(
 
         $scope.companyPromise.then(function(company){
           $scope.company = company;
-          StdService.getStdPlansForCompany(company.id).then(function(stdPlans) {
-            // For now, similar to basic life, simplify the problem space by
-            // taking the first available plan for the company.
-            if (stdPlans.length > 0) {
-                $scope.companyStdPlan = stdPlans[0];
-                return $scope.companyStdPlan;
-            }
-            return {};
-          }).then(function(stdPlan) {
-            if (!$scope.companyStdPlan) {
-              $scope.companyStdPlan = {};
-            }
+        });
 
-            $scope.calculatePremium(null);
-          });
+        StdService.getStdPlansForCompanyGroup($scope.userCompanyGroupId)
+        .then(function(stdPlans) {
+          // For now, similar to basic life, simplify the problem space by
+          // taking the first available plan for the company.
+          if (stdPlans.length > 0) {
+              $scope.companyStdPlan = stdPlans[0];
+              return $scope.companyStdPlan;
+          }
+          return {};
+        }).then(function(stdPlan) {
+          if (!$scope.companyStdPlan) {
+            $scope.companyStdPlan = {};
+          }
+
+          $scope.calculatePremium(null);
         });
 
         $scope.save = function() {

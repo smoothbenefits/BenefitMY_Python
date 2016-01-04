@@ -86,7 +86,7 @@ left join app_companygroupsuppllifeinsuranceplan as compsup on compsup.company_g
 left join app_personcompsuppllifeinsuranceplan as sp on sp.person_id = p.id
 left join app_companyltdinsuranceplan as compltd on compltd.company_id = cu.company_id
 left join app_usercompanyltdinsuranceplan as ltd on ltd.user_id = cu.user_id
-left join app_companystdinsuranceplan as compstd on compstd.company_id = cu.company_id
+left join app_companygroupstdinsuranceplan as compgstd on compgstd.company_group_id = cgm.company_group_id
 left join app_usercompanystdinsuranceplan as std on std.user_id=cu.user_id
 left join app_companygrouphraplan as comphra on comphra.company_group_id = cgm.company_group_id
 left join app_personcompanyhraplan as hra on hra.person_id = p.id
@@ -101,7 +101,7 @@ and (comphealth.id is null or health.id is not null or hwaive.id is not null)
 and (compbasic.id is null or basic.id is not null)
 and (compsup.id is null or sp.id is not null)
 and (compltd.id is null or ltd.id is not null)
-and (compstd.id is null or std.id is not null)
+and (compgstd.id is null or std.id is not null)
 and (comphra.id is null or hra.id is not null)
 and (compfsa.id is null or fsa.id is not null)
 and (comphsa.id is null or hsa.id is not null);""", [company_id])

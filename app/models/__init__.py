@@ -37,6 +37,7 @@ from insurance.company_group_basic_life_insurance_plan import \
 from insurance.company_std_insurance_plan import CompanyStdInsurancePlan
 from insurance.user_company_std_insurance_plan import UserCompanyStdInsurancePlan
 from insurance.std_insurance_plan import StdInsurancePlan
+from insurance.company_group_std_insurance_plan import CompanyGroupStdInsurancePlan
 
 from insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
 from insurance.user_company_ltd_insurance_plan import UserCompanyLtdInsurancePlan
