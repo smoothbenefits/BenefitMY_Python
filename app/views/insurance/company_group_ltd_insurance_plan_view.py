@@ -25,7 +25,7 @@ class CompanyGroupLtdInsurancePlanByCompanyGroupView(APIView):
 
 
 class CompanyGroupLtdInsurancePlanByCompanyPlanView(APIView):
-    # The 'pk' here is an ID for a company STD insurance plan
+    # The 'pk' here is an ID for a company LTD insurance plan
 
     def _get_company_plan(self, pk):
         try:
