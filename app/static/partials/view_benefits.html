@@ -79,6 +79,7 @@
       <thead>
         <tr>
           <th><span>Health Reimbursement Accounts (HRA)</span></th>
+          <th><span>Benefit Group(s)</span></th>
           <th><span>Description</span></th>
           <td><span>Document</span></td>
         </tr>
@@ -92,6 +93,8 @@
                ng-click="deleteHraPlan(hraPlan)"
                href="javascript:void(0);"
                confirm="Delete the HRA plan?">X</a>
+          </td>
+          <td><span class="inline" ng-repeat="group in hraPlan.companyGroups">{{group.company_group.name}};</br></span>
           </td>
           <td >
             {{hraPlan.planDescription}}

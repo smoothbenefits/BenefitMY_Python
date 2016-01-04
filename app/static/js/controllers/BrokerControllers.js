@@ -1042,15 +1042,15 @@ var brokerAddHraPlanController = brokersControllers.controller(
     // Inherite scope from base
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
-    var clientId = $stateParams.clientId;
+    $scope.companyId = $stateParams.clientId;
 
-    HraService.getBlankPlanForCompany(clientId).then(function(blankCompanyPlan) {
+    HraService.getBlankPlanForCompany($scope.companyId).then(function(blankCompanyPlan) {
         $scope.newPlan = blankCompanyPlan;
     });
 
     // Need the user information for the current user (broker)
     $scope.addPlan = function() {
-        HraService.addPlanForCompany($scope.newPlan, clientId).then(
+        HraService.addPlanForCompany($scope.newPlan, $scope.companyId).then(
             function() {
               var successMessage = "The new HRA plan has been saved successfully."
 

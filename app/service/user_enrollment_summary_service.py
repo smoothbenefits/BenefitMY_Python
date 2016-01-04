@@ -25,6 +25,7 @@ from app.models.health_benefits.company_benefit_plan_option import CompanyBenefi
 from app.models.fsa.company_fsa_plan import CompanyFsaPlan
 from app.models.hsa.company_group_hsa_plan import CompanyGroupHsaPlan
 from app.models.hra.company_hra_plan import CompanyHraPlan
+from app.models.hra.company_group_hra_plan import CompanyGroupHraPlan
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
 from app.models.insurance.company_std_insurance_plan import CompanyStdInsurancePlan
@@ -68,9 +69,14 @@ class UserEnrollmentSummaryService(object):
             return None
 
     def get_hra_plan(self):
-        if CompanyHraPlan.objects.filter(company=self.company_id).exists():
+        if (not self.company_group):
+            return None
+
+        group_plans = self.company_group.company_group_hra.all()
+        if(group_plans.exists()):
             return PersonCompanyHraPlan.objects.filter(person=self.person_id)
-        return None
+        else:
+            return None
 
     def get_fsa_plan(self):
         if CompanyFsaPlan.objects.filter(company=self.company_id).exists():
