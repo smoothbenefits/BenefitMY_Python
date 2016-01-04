@@ -12,7 +12,7 @@ class CompanyGroupHraTestCase(TestCase, ViewTestBase):
                 '61_company_group',
                 '46_hra_plan',
                 '47_company_hra_plan',
-                '67_company_group_hra_plan']
+                '68_company_group_hra_plan']
 
     def test_get_company_group_hra_plan_by_company_group_success(self):
         response = self.client.get(reverse('company_group_hra_plan_api',

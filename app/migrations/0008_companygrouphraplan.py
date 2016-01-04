@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0006_companygroupbenefitplanoption'),
+        ('app', '0007_companygroupstdinsuranceplan'),
     ]
 
     operations = [
