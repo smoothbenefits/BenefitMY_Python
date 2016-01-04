@@ -24,7 +24,7 @@ class CompanyGroupHraPlanByCompanyGroupView(APIView):
 
 
 class CompanyGroupHraPlanByCompanyPlanView(APIView):
-    # The 'pk' here is an ID for a company suppl life insurance plan
+    # The 'pk' here is an ID for a company HRA plan
 
     def _get_company_plan(self, pk):
         try:
