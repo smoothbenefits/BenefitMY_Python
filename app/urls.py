@@ -102,6 +102,10 @@ from app.views.insurance.user_company_ltd_insurance_plan_view import (
     UserCompanyLtdInsuranceView,
     CompanyUsersLtdInsuranceView)
 from app.views.insurance.ltd_insurance_plan_view import LtdInsurancePlanView
+from app.views.insurance.company_group_ltd_insurance_plan_view import (
+    CompanyGroupLtdInsurancePlanByCompanyGroupView,
+    CompanyGroupLtdInsurancePlanByCompanyPlanView
+)
 
 #Supplemental Life
 from app.views.insurance.company_supplemental_life_insurance_plan_view import (
@@ -423,6 +427,14 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/user/(?P<user_id>\w+)/ltd_insurance/(?P<pk>\w+)/premium/?$' % PREFIX,
         CompanyLtdInsuranceEmployeePremiumView.as_view(), name='user_company_ltd_insurance_premium_api'),
+
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/ltd_insurance/?$' % PREFIX,
+        CompanyGroupLtdInsurancePlanByCompanyGroupView.as_view(),
+        name='company_group_ltd_insurance_plan_api'),
+
+    url(r'^%s/ltd_insurance/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupLtdInsurancePlanByCompanyPlanView.as_view(),
+        name='company_group_ltd_insurance_plan_by_company_plan_api'),
 
     # HRA api
     url(r'^%s/hra_plan/(?P<pk>\w+)/?$' % PREFIX,
