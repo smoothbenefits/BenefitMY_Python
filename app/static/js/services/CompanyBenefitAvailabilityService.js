@@ -28,7 +28,7 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
       viewModel['medical'] = filterByCompanyGroup(domainModel.medical, companyGroupId);
       viewModel['dental'] = filterByCompanyGroup(domainModel.dental, companyGroupId);
       viewModel['vision'] = filterByCompanyGroup(domainModel.vision, companyGroupId);
-      viewModel['hra'] = domainModel.hra[0] != null;
+      viewModel['hra'] = filterByCompanyGroup(domainModel.hra, companyGroupId);
       viewModel['fsa'] = domainModel.fsa[0] != null;
       viewModel['supplemental_life'] = filterByCompanyGroup(domainModel.supplemental_life, companyGroupId);
       viewModel['std'] = filterByCompanyGroup(domainModel.std, companyGroupId)

@@ -998,7 +998,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(fsaPlansResponse) {
         fsaPlans = fsaPlansResponse;
-        return HraService.getPlansForCompany(company.id);
+        return HraService.getPlansForCompanyGroup($scope.userCompanyGroupId);
       })
       .then(function(hraPlansResponse) {
         hraPlans = hraPlansResponse;
@@ -2395,7 +2395,7 @@ var hraBenefitsSignup = employeeControllers.controller(
         $scope.enrollBenefits = true;
 
         $scope.companyPromise.then(function(company){
-          HraService.getPlansForCompany(company.id).then(function(companyPlans) {
+          HraService.getPlansForCompanyGroup($scope.userCompanyGroupId).then(function(companyPlans) {
             if (companyPlans.length > 0) {
               $scope.companyPlan = companyPlans[0];
             }

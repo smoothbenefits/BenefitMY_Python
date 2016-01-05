@@ -478,6 +478,24 @@ benefitmyDomainModelFactories.factory('HraRepository', ['$resource',
   }
 ]);
 
+benefitmyDomainModelFactories.factory('CompanyGroupHraPlanRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/company_hra/', {companyGroupId:'@company_group_id'}),
+      ByCompanyPlan: $resource('/api/v1/company_hra/:pk/company_group_plans/', {pk:'@pk'}, {
+        save: {
+            method:'POST', 
+            isArray: true
+        },
+        update: {
+            method: 'PUT',
+            isArray: true
+        }
+      })
+    };
+  }
+]);
+
 benefitmyDomainModelFactories.factory('CommuterRepository', ['$resource',
   function($resource){
     return {

@@ -26,7 +26,7 @@ from app.models.insurance.user_company_std_insurance_plan import \
 from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
 from app.models.insurance.user_company_ltd_insurance_plan import \
     UserCompanyLtdInsurancePlan
-from app.models.hra.company_hra_plan import CompanyHraPlan
+from app.models.hra.company_group_hra_plan import CompanyGroupHraPlan
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.fsa.fsa import FSA
 from app.models.fsa.company_fsa_plan import CompanyFsaPlan
@@ -107,7 +107,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         # Now starts writing benefit enrollments
         self._write_employee_all_health_benefits_info(user, company_group_id)
         self._write_employee_basic_life_insurance_info(user, person, company_group_id)
-        self._write_employee_hra_info(person, company_id)
+        self._write_employee_hra_info(person, company_group_id)
         self._write_employee_supplemental_life_insurance_info(person, company_group_id)
         self._write_employee_std_insurance_info(user, company_group_id)
         self._write_employee_ltd_insurance_info(user, company_id)
@@ -285,8 +285,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_hra_info(self, person_model, company_id):
-        company_plans = CompanyHraPlan.objects.filter(company=company_id)
+    def _write_employee_hra_info(self, person_model, company_group_id):
+        company_plans = CompanyGroupHraPlan.objects.filter(company_group=company_group_id)
         plan_selected = False
         if (person_model):
             employee_plans = PersonCompanyHraPlan.objects.filter(person=person_model.id)

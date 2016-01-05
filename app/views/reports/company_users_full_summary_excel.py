@@ -164,6 +164,12 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Optional Life Last Update Reason Notes')
         col_num = self._write_field(excelSheet, 0, col_num, 'Optional Life Last Update Date')
 
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Plan Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Date')
+
         col_num = self._write_field(excelSheet, 0, col_num, 'FSA Amount')
         col_num = self._write_field(excelSheet, 0, col_num, 'Dependent FSA Amount')
         col_num = self._write_field(excelSheet, 0, col_num, 'Pay Withhold Amount (Per Pay Period)')
@@ -175,12 +181,6 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Reason')
         col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Reason Notes')
         col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Date')
-
-        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Plan Name')
-        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Plan Amount')
-        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Reason')
-        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Reason Notes')
-        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Date')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'Commuter Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Transit (Pre-Tax) Amount/Month')
