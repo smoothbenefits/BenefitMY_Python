@@ -11,7 +11,7 @@ class CompanyGroupLtdInsuranceTestCase(TestCase, ViewTestBase):
                 '34_company_user',
                 '61_company_group',
                 'ltd_insurance',
-                '68_company_group_ltd_insurance_plan']
+                '69_company_group_ltd_insurance_plan']
 
     def test_get_company_group_ltd_by_company_group_success(self):
         response = self.client.get(reverse('company_group_ltd_insurance_plan_api',
