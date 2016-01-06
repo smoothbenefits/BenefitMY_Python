@@ -90,7 +90,7 @@ left join app_companygroupstdinsuranceplan as compgstd on compgstd.company_group
 left join app_usercompanystdinsuranceplan as std on std.user_id=cu.user_id
 left join app_companygrouphraplan as comphra on comphra.company_group_id = cgm.company_group_id
 left join app_personcompanyhraplan as hra on hra.person_id = p.id
-left join app_companyfsaplan as compfsa on compfsa.company_id = cu.company_id
+left join app_companygroupfsaplan as compfsa on compfsa.company_group_id = cgm.company_group_id
 left join app_fsa as fsa on fsa.user_id = cu.user_id
 left join app_personcompanygrouphsaplan as hsa on hsa.person_id = p.id
 left join app_companygrouphsaplan as comphsa on comphsa.company_group_id = cgm.company_group_id
