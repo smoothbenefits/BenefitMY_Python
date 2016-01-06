@@ -161,7 +161,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
       });
 
       // Commuter
-      CommuterService.getPersonPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(response){
+      CommuterService.getPersonPlanByUser(userInfo.user.id).then(function(response){
         if(response){
           $scope.commuterPlan = response;
           $scope.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.commuterPlan);
@@ -1002,7 +1002,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(hraPlansResponse) {
         hraPlans = hraPlansResponse;
-        return CommuterService.getPlansForCompany(company.id);
+        return CommuterService.getPlansForCompanyGroup($scope.userCompanyGroupId);
       })
       .then(function(commuterPlansResponse) {
         commuterPlans = commuterPlansResponse;

@@ -4,7 +4,14 @@ benefitmyService.factory('CommuterService',
     ['$q',
     'CommuterRepository',
     'PersonService',
-    function ($q, CommuterRepository, PersonService){
+    'CompanyGroupCommuterPlanRepository',
+    'UserService',
+    function (
+        $q, 
+        CommuterRepository, 
+        PersonService,
+        CompanyGroupCommuterPlanRepository,
+        UserService){
 
         var deductionPeriods = [
                 {'value':'Monthly', 'displayName':'Monthly'},
@@ -44,6 +51,7 @@ benefitmyService.factory('CommuterService',
             viewModel.deductionPeriod = companyPlanDomainModel.deduction_period;
             viewModel.createdDateForDisplay = moment(companyPlanDomainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.company = companyPlanDomainModel.company;
+            viewModel.companyGroups = companyPlanDomainModel.company_groups;
 
             if (companyPlanDomainModel.enable_transit_benefit && companyPlanDomainModel.enable_parking_benefit) {
                 viewModel.benefitEnablementOption = _.find(benefitEnablementOptions, { 'value':'Both'});
@@ -143,6 +151,57 @@ benefitmyService.factory('CommuterService',
             return deferred.promise;
         };
 
+        var getPlansForCompanyGroup = function(companyGroupId) {
+            var deferred = $q.defer();
+            if(!companyGroupId){
+                deferred.resolve([]);
+            }
+            else{
+                CompanyGroupCommuterPlanRepository.ByCompanyGroup.query({companyGroupId:companyGroupId})
+                .$promise.then(function(companyGroupPlans) {
+                    var resultPlans = [];
+                    
+                    _.each(companyGroupPlans, function(companyGroupPlan) {
+                        var companyPlan = companyGroupPlan.company_commuter_plan;
+                        resultPlans.push(mapCompanyPlanDomainToViewModel(companyPlan));
+                    });
+                    
+                    deferred.resolve(resultPlans);
+                },
+                function(failedResponse) {
+                    deferred.reject(failedResponse);
+                });
+            }
+            return deferred.promise;
+        };
+
+        var mapCreatePlanViewToCompanyGroupPlanDomainModel = function(createPlanViewModel) {
+            var domainModel = [];
+
+            _.each(createPlanViewModel.selectedCompanyGroups, function(companyGroupModel) {
+                domainModel.push({ 
+                    'company_commuter_plan': createPlanViewModel.companyPlanId,
+                    'company_group': companyGroupModel.id 
+                });
+            }); 
+  
+            return domainModel;
+        };
+
+        var linkCompanyCommuterPlanToCompanyGroups = function(companyPlanId, companyGroupPlanModels){
+            var deferred = $q.defer();
+
+            CompanyGroupCommuterPlanRepository.ByCompanyPlan.update(
+                { pk: companyPlanId }, 
+                companyGroupPlanModels, 
+                function (successResponse) {
+                    deferred.resolve(successResponse);
+                }
+            );
+
+            return deferred.promise;
+        };
+
         var convertToNumber = function(rawNumber) {
             return rawNumber != null && rawNumber != undefined ? Number(rawNumber) : null;
         };
@@ -169,6 +228,8 @@ benefitmyService.factory('CommuterService',
 
             getPlansForCompany: getPlansForCompany,
 
+            getPlansForCompanyGroup: getPlansForCompanyGroup,
+
             mapEnablementOptionToStatus: mapEnablementOptionToStatus,
 
             computeTotalMonthlyTransitAllowance: computeTotalMonthlyTransitAllowance,
@@ -182,6 +243,7 @@ benefitmyService.factory('CommuterService',
 
                 // Setup company
                 blankCompanyPlan.company = companyId;
+                blankCompanyPlan.selectedCompanyGroups = [];
 
                 deferred.resolve(blankCompanyPlan);
 
@@ -198,8 +260,18 @@ benefitmyService.factory('CommuterService',
                 companyPlanDomainModel.company = companyId;
 
                 CommuterRepository.CompanyPlanById.save({id:companyId}, companyPlanDomainModel)
-                .$promise.then(function(response) {
-                    deferred.resolve(response);
+                .$promise.then(function(createdCompanyPlan) {
+                    //Now link the company plan with company group
+                    companyPlanToSave.companyPlanId = createdCompanyPlan.id;
+                    compGroupPlans = mapCreatePlanViewToCompanyGroupPlanDomainModel(companyPlanToSave);
+                    linkCompanyCommuterPlanToCompanyGroups(createdCompanyPlan.id, compGroupPlans).then(
+                         function(createdCompanyGroupPlans) {
+                             deferred.resolve(createdCompanyGroupPlans);
+                         },
+                         function(errors) {
+                             deferred.reject(errors);
+                         }
+                     );
                 },
                 function(error){
                     deferred.reject(error);
@@ -280,59 +352,68 @@ benefitmyService.factory('CommuterService',
                 return deferred.promise;
             },
 
-            getPersonPlanByUser: function(userId, company, getBlankPlanIfNoneFound) {
+            getPersonPlanByUser: function(userId, getBlankPlanIfNoneFound) {
                 var deferred = $q.defer();
-                getPlansForCompany(company).then(function(companyPlans){
-                    if(!companyPlans || companyPlans.length<=0){
-                        deferred.resolve(undefined);
-                    }
-                    else{
-                        // Just like all other benefits, assuming single plan for company now
-                        var companyPlan = companyPlans[0];
 
-                        PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
-                            CommuterRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
-                            .$promise.then(function(personPlans) {
-                                if (personPlans.length > 0) {
-                                    // Found existing person enrolled plans, for now, take the first
-                                    // one.
-                                    deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0]));
-                                } else {
-                                    // The person does not have enrolled plans yet.
-                                    // If indicated so, construct and return an structured
-                                    // blank person plan.
-                                    // Or else, return null;
-                                    if (getBlankPlanIfNoneFound) {
-                                        var blankPersonPlan = {
-                                          'monthlyAmountParkingPreTax': 0,
-                                          'monthlyAmountParkingPostTax': 0,
-                                          'monthlyAmountTransitPreTax': 0,
-                                          'monthlyAmountTransitPostTax': 0
-                                        };
+                UserService.getUserDataByUserId(userId).then(
+                    function(userData) {
+                        getPlansForCompanyGroup(userData.companyGroupId).then(function(companyPlans){
+                            if(!companyPlans || companyPlans.length<=0){
+                                deferred.resolve(undefined);
+                            }
+                            else{
+                                // Just like all other benefits, assuming single plan for company now
+                                var companyPlan = companyPlans[0];
 
-                                        // Setup person plan owner
-                                        blankPersonPlan.planOwner = personInfo.id;
+                                PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
+                                    CommuterRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
+                                    .$promise.then(function(personPlans) {
+                                        if (personPlans.length > 0) {
+                                            // Found existing person enrolled plans, for now, take the first
+                                            // one.
+                                            deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0]));
+                                        } else {
+                                            // The person does not have enrolled plans yet.
+                                            // If indicated so, construct and return an structured
+                                            // blank person plan.
+                                            // Or else, return null;
+                                            if (getBlankPlanIfNoneFound) {
+                                                var blankPersonPlan = {
+                                                  'monthlyAmountParkingPreTax': 0,
+                                                  'monthlyAmountParkingPostTax': 0,
+                                                  'monthlyAmountTransitPreTax': 0,
+                                                  'monthlyAmountTransitPostTax': 0
+                                                };
 
-                                        // Setup the company Plan to link
-                                        blankPersonPlan.companyPlan = companyPlan;
+                                                // Setup person plan owner
+                                                blankPersonPlan.planOwner = personInfo.id;
 
-                                        deferred.resolve(blankPersonPlan);
-                                    }
-                                    else {
-                                        deferred.resolve(null);
-                                    }
-                                }
-                            },
-                            function(error) {
-                                deferred.reject(error);
-                            });
-                        },
-                        function(error){
-                            deferred.reject(error);
+                                                // Setup the company Plan to link
+                                                blankPersonPlan.companyPlan = companyPlan;
+
+                                                deferred.resolve(blankPersonPlan);
+                                            }
+                                            else {
+                                                deferred.resolve(null);
+                                            }
+                                        }
+                                    },
+                                    function(error) {
+                                        deferred.reject(error);
+                                    });
+                                },
+                                function(error){
+                                    deferred.reject(error);
+                                });
+
+                            }
                         });
-
+                    },
+                    function(errors) {
+                        deferred.reject(errors);
                     }
-                });
+                );
+
                 return deferred.promise;
             }
         };

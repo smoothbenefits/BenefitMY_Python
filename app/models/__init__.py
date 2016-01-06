@@ -57,6 +57,7 @@ from hra.person_company_hra_plan import PersonCompanyHraPlan
 from hra.company_group_hra_plan import CompanyGroupHraPlan
 
 from commuter.company_commuter_plan import CompanyCommuterPlan
+from commuter.company_group_commuter_plan import CompanyGroupCommuterPlan
 from commuter.person_company_commuter_plan import PersonCompanyCommuterPlan
 
 from fsa.company_fsa_plan import CompanyFsaPlan
