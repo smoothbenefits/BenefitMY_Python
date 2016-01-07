@@ -990,7 +990,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(stdPlansResponse) {
         stdPlans = stdPlansResponse;
-        return LtdService.getLtdPlansForCompany(company.id);
+        return LtdService.getLtdPlansForCompanyGroup($scope.userCompanyGroupId);
       })
       .then(function(ltdPlansResponse) {
         ltdPlans = ltdPlansResponse;
@@ -2323,7 +2323,8 @@ var ltdBenefitsSignup = employeeControllers.controller(
 
         $scope.companyPromise.then(function(company){
             $scope.company = company;
-            LtdService.getLtdPlansForCompany(company.id).then(function(ltdPlans) {
+            LtdService.getLtdPlansForCompanyGroup($scope.userCompanyGroupId)
+            .then(function(ltdPlans) {
 
                 // For now, similar to basic life, simplify the problem space by
                 // taking the first available plan for the company.

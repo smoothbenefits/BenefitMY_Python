@@ -927,7 +927,7 @@ var brokerAddLtdPlanController = brokersControllers.controller(
         $scope.FALSE = false;
         $scope.allowUserSelectAmount = false;
 
-        var clientId = $stateParams.clientId;
+        $scope.companyId = $stateParams.clientId;
         $scope.newPlan = {};
         $scope.ageBased = false;
         $scope.toggleAgeBased = function(){
@@ -944,7 +944,9 @@ var brokerAddLtdPlanController = brokersControllers.controller(
 
 
         $scope.buttonEnabled = function() {
-            return $scope.newPlan.planName && _.isNumber($scope.newPlan.employerContributionPercentage);
+            return $scope.newPlan.planName &&
+              _.isNumber($scope.newPlan.employerContributionPercentage) &&
+              $scope.newPlan.selectedCompanyGroups && $scope.newPlan.selectedCompanyGroups.length > 0;;
         };
         // Need the user information for the current user (broker)
         $scope.saveNewPlan = function() {
@@ -952,7 +954,7 @@ var brokerAddLtdPlanController = brokersControllers.controller(
                 $scope.newPlan.planBroker = userInfo.user.id;
                 $scope.newPlan.allowUserSelectAmount = $scope.allowUserSelectAmount;
 
-                LtdService.addPlanForCompany($scope.newPlan, clientId).then(
+                LtdService.addPlanForCompany($scope.newPlan, $scope.companyId).then(
                     function(response) {
                         var successMessage = "The new LTD plan has been saved successfully."
                         $scope.showMessageWithOkayOnly('Success', successMessage);

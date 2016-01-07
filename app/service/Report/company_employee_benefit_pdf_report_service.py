@@ -23,7 +23,7 @@ from app.models.insurance.std_insurance_plan import StdInsurancePlan
 from app.models.insurance.company_group_std_insurance_plan import CompanyGroupStdInsurancePlan
 from app.models.insurance.user_company_std_insurance_plan import \
     UserCompanyStdInsurancePlan
-from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
+from app.models.insurance.company_group_ltd_insurance_plan import CompanyGroupLtdInsurancePlan
 from app.models.insurance.user_company_ltd_insurance_plan import \
     UserCompanyLtdInsurancePlan
 from app.models.hra.company_group_hra_plan import CompanyGroupHraPlan
@@ -110,7 +110,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._write_employee_hra_info(person, company_group_id)
         self._write_employee_supplemental_life_insurance_info(person, company_group_id)
         self._write_employee_std_insurance_info(user, company_group_id)
-        self._write_employee_ltd_insurance_info(user, company_id)
+        self._write_employee_ltd_insurance_info(user, company_group_id)
         self._write_employee_hsa_info(person, company_group_id)
         self._write_employee_fsa_info(user, company_id)
         self._write_employee_commuter_info(person, company_id)
@@ -385,9 +385,9 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_ltd_insurance_info(self, user_model, company_id):
+    def _write_employee_ltd_insurance_info(self, user_model, company_group_id):
         employee_plans = UserCompanyLtdInsurancePlan.objects.filter(user=user_model.id)
-        company_plans = CompanyLtdInsurancePlan.objects.filter(company=company_id)
+        company_plans = CompanyGroupLtdInsurancePlan.objects.filter(company_group=company_group_id)
         if (len(employee_plans) > 0):
             employee_plan = employee_plans[0]
             if employee_plan.company_ltd_insurance:
