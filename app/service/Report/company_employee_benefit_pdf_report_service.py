@@ -417,7 +417,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             fsa = fsas[0]
             if (fsa.company_fsa_plan):
                 # Render header
-                self._write_line_uniform_width(['Account Type', 'Elected Annual Amount', 'Paycheck Withhold'])
+                self._write_line_uniform_width(['FSA Account Type', 'Elected Annual Amount', 'Paycheck Withhold'])
                 self._draw_line()
 
                 month_factor = fsa.company_fsa_plan.company.pay_period_definition.month_factor

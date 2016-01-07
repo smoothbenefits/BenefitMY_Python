@@ -89,7 +89,7 @@ benefitmyDomainModelFactories.factory('CompanyGroupHealthBenefitsPlanOptionRepos
       ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/health_benefits/', {companyGroupId:'@company_group_id'}),
       ByCompanyPlan: $resource('/api/v1/company_health_benefits/:companyPlanId/company_group_plans/', {companyPlanId:'@pk'}, {
         save: {
-            method:'POST', 
+            method:'POST',
             isArray: true
         },
         update: {
@@ -231,6 +231,24 @@ benefitmyDomainModelFactories.factory('FsaRepository', ['$resource',
       ById: $resource('/api/v1/company_users/:id/fsa', {id:'@id'}, {
         update: {
             method: 'PUT'
+        }
+      })
+    };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('CompanyGroupFsaPlanRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/company_fsa/', {companyGroupId:'@company_group_id'}),
+      ByCompanyPlan: $resource('/api/v1/company_fsa/:pk/company_group_plans/', {pk:'@pk'}, {
+        save: {
+          method:'POST',
+          isArray: true
+        },
+        update: {
+          method: 'PUT',
+          isArray: true
         }
       })
     };
@@ -442,7 +460,7 @@ benefitmyDomainModelFactories.factory('CompanyGroupSupplLifeInsurancePlanReposit
       ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/company_suppl_life/', {companyGroupId:'@company_group_id'}),
       ByCompanyPlan: $resource('/api/v1/company_suppl_life/:pk/company_group_plans/', {pk:'@pk'}, {
         save: {
-            method:'POST', 
+            method:'POST',
             isArray: true
         },
         update: {
@@ -484,7 +502,7 @@ benefitmyDomainModelFactories.factory('CompanyGroupHraPlanRepository', ['$resour
       ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/company_hra/', {companyGroupId:'@company_group_id'}),
       ByCompanyPlan: $resource('/api/v1/company_hra/:pk/company_group_plans/', {pk:'@pk'}, {
         save: {
-            method:'POST', 
+            method:'POST',
             isArray: true
         },
         update: {

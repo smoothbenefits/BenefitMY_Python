@@ -17,6 +17,14 @@
       </div>
 
       <div class="row">
+        <bm-company-group-selection company-id="companyId"
+                                    label-text="companyGroupSelectionWidgetLabel"
+                                    selected-groups-model="newPlan.selectedCompanyGroups"
+                                    show-top-separation-line>
+        </bm-company-group-selection>
+      </div>
+
+      <div class="row">
         <div class="col-sm-6">
           <div class="submit-box" style="max-width: 200px;">
             <a ng-click="saveNewPlan()" class="btn green" ng-disabled="!newPlan.name">Add</a>

@@ -6,10 +6,12 @@ benefitmyService.factory(
   ['FsaRepository',
    'FsaPlanRepository',
    'CompanyFsaPlanRepository',
+   'CompanyGroupFsaPlanRepository',
    '$q',
    function (FsaRepository,
              FsaPlanRepository,
              CompanyFsaPlanRepository,
+             CompanyGroupFsaPlanRepository,
              $q){
 
     var mapFsaPlanViewModelToDomainModel = function(broker, fsaPlanView) {
@@ -23,10 +25,24 @@ benefitmyService.factory(
       return {
         companyPlanId: fsaPlan.id,
         company: fsaPlan.company,
+        companyGroups: fsaPlan.company_groups,
         fsaPlanName: fsaPlan.fsa_plan.name,
         created: moment(fsaPlan.created_at).format(DATE_FORMAT_STRING),
         updated: moment(fsaPlan.updated_at).format(DATE_FORMAT_STRING)
       };
+    };
+
+    var mapCreatePlanViewToCompanyGroupPlanDomainModel = function(createPlanViewModel) {
+      var domainModel = [];
+
+      _.each(createPlanViewModel.selectedCompanyGroups, function(companyGroupModel) {
+        domainModel.push({
+          'company_fsa_plan': createPlanViewModel.companyPlanId,
+          'company_group': companyGroupModel.id
+        });
+      });
+
+      return domainModel;
     };
 
     var createFsaPlan = function(broker, fsaPlan) {
@@ -65,11 +81,56 @@ benefitmyService.factory(
 
       createFsaPlan(broker, fsaPlan).then(function(fsaPlanId){
         assignFsaPlanToCompany(company, fsaPlanId).then(function(response){
-          deferred.resolve(response);
+          // Now link the company plan to company group(s)
+          fsaPlan.companyPlanId = response.id;
+          companyGroupPlans = mapCreatePlanViewToCompanyGroupPlanDomainModel(fsaPlan);
+          linkCompanyFsaPlanToCompanyGroups(fsaPlan.companyPlanId, companyGroupPlans)
+          .then(function(createdCompanyGroupPlans) {
+            deferred.resolve(createdCompanyGroupPlans);
+          }, function(errors) {
+            deferred.reject(errors);
+          });
         });
       }).catch(function(error){
         deferred.reject(error);
       });
+
+      return deferred.promise;
+    };
+
+    var getFsaPlanForCompanyGroup = function(companyGroupId) {
+      var deferred = $q.defer();
+      if (!companyGroupId) {
+        deferred.resolve([]);
+      } else {
+        CompanyGroupFsaPlanRepository.ByCompanyGroup.query({companyGroupId:companyGroupId})
+        .$promise.then(function(companyGroupPlans) {
+            var resultPlans = [];
+
+            _.each(companyGroupPlans, function(companyGroupPlan) {
+              var companyPlan = companyGroupPlan.company_fsa_plan;
+              resultPlans.push(mapFsaDomainModelToViewModel(companyPlan));
+            });
+
+            deferred.resolve(resultPlans);
+        },
+        function(failedResponse) {
+            deferred.reject(failedResponse);
+        });
+      }
+      return deferred.promise;
+    };
+
+    var linkCompanyFsaPlanToCompanyGroups = function(companyPlanId, companyGroupPlanModels){
+      var deferred = $q.defer();
+
+      CompanyGroupFsaPlanRepository.ByCompanyPlan.update(
+        { pk: companyPlanId },
+        companyGroupPlanModels,
+        function (successResponse) {
+          deferred.resolve(successResponse);
+        }
+      );
 
       return deferred.promise;
     };
@@ -159,6 +220,8 @@ benefitmyService.factory(
       signUpCompanyForFsaPlan: signUpCompanyForFsaPlan,
 
       getFsaPlanForCompany: getFsaPlanForCompany,
+
+      getFsaPlanForCompanyGroup: getFsaPlanForCompanyGroup,
 
       deleteCompanyFsaPlan: deleteCompanyFsaPlan,
 

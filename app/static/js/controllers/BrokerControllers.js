@@ -983,14 +983,15 @@ var brokerAddFsaPlan = brokersControllers.controller(
     // Inherite scope from base
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
 
-    var clientId = $stateParams.clientId;
+    $scope.companyId = $stateParams.clientId;
     $scope.newPlan = {};
 
     $scope.saveNewPlan = function() {
       UserService.getCurUserInfo().then(function(userInfo) {
         var broker = userInfo.user.id;
 
-        FsaService.signUpCompanyForFsaPlan(broker, clientId, $scope.newPlan).then(function(response){
+        FsaService.signUpCompanyForFsaPlan(broker, $scope.companyId, $scope.newPlan)
+        .then(function(response){
           var successMessage = "The new FSA plan has been saved successfully.";
           $scope.showMessageWithOkayOnly('Success', successMessage);
         });
@@ -1215,7 +1216,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
         // maintain the list of selected company groups
         if ($scope.benefit) {
             newModel.selectedCompanyGroups = $scope.benefit.selectedCompanyGroups;
-        } 
+        }
 
         $scope.benefit = newModel;
       };
@@ -1663,7 +1664,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       }
 
       $scope.allowSaveNewPlan = function() {
-        return !$scope.form.$invalid 
+        return !$scope.form.$invalid
             && $scope.benefit.selectedCompanyGroups
             && $scope.benefit.selectedCompanyGroups.length > 0;
       };

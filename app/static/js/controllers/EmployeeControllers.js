@@ -994,7 +994,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
       })
       .then(function(ltdPlansResponse) {
         ltdPlans = ltdPlansResponse;
-        return FsaService.getFsaPlanForCompany(company.id);
+        return FsaService.getFsaPlanForCompanyGroup($scope.userCompanyGroupId);
       })
       .then(function(fsaPlansResponse) {
         fsaPlans = fsaPlansResponse;
@@ -1575,7 +1575,7 @@ var fsaBenefitsSignup = employeeControllers.controller(
         ];
 
         $scope.companyPromise.then(function(company) {
-          FsaService.getFsaPlanForCompany(company.id).then(function(fsaPlanForCompany) {
+          FsaService.getFsaPlanForCompanyGroup($scope.userCompanyGroupId).then(function(fsaPlanForCompany) {
             // Current implementation implies one company will only have one FSA plan.
             // If use case changes in the future, we need to update the employee signup flow.
             $scope.fsaPlan = fsaPlanForCompany[0];
