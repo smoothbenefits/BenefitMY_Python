@@ -986,6 +986,11 @@ var brokerAddFsaPlan = brokersControllers.controller(
     $scope.companyId = $stateParams.clientId;
     $scope.newPlan = {};
 
+    $scope.buttonDisabled = function(){
+      return !$scope.newPlan.name || !$scope.newPlan.selectedCompanyGroups
+             || !$scope.newPlan.selectedCompanyGroups.length > 0;
+    };
+
     $scope.saveNewPlan = function() {
       UserService.getCurUserInfo().then(function(userInfo) {
         var broker = userInfo.user.id;

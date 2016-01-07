@@ -7,11 +7,13 @@ benefitmyService.factory(
    'FsaPlanRepository',
    'CompanyFsaPlanRepository',
    'CompanyGroupFsaPlanRepository',
+   'UserService',
    '$q',
    function (FsaRepository,
              FsaPlanRepository,
              CompanyFsaPlanRepository,
              CompanyGroupFsaPlanRepository,
+             UserService,
              $q){
 
     var mapFsaPlanViewModelToDomainModel = function(broker, fsaPlanView) {
@@ -173,45 +175,48 @@ benefitmyService.factory(
 
     var getFsaElectionForUser = function(user_id, company) {
       var deferred = $q.defer();
-      getFsaPlanForCompany(company).then(function(plans){
-        if(!plans || plans.length<=0){
-          deferred.resolve(undefined);
-        }
-        else{
-          FsaRepository.ByUser.get({userId:user_id})
-          .$promise.then(function(existingFsa){
 
-            var userFsa = existingFsa;
-            userFsa.selected = true;
-            userFsa.last_update_date_time = moment(userFsa.updated_at).format(DATE_FORMAT_STRING);
+      UserService.getUserDataByUserId(user_id).then(function(userData){
+        getFsaPlanForCompanyGroup(userData.companyGroupId).then(function(plans){
+          if (!plans || plans.length <= 0) {
+            deferred.resolve(undefined);
+          }
+          else {
+            FsaRepository.ByUser.get({userId:user_id})
+            .$promise.then(function(existingFsa){
 
-            if (userFsa.company_fsa_plan) {
-              userFsa.primary_amount_per_year = parseFloat(userFsa.primary_amount_per_year);
-              userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
-              userFsa.waived = false;
-            } else {
-              userFsa.waived = true;
-            }
+              var userFsa = existingFsa;
+              userFsa.selected = true;
+              userFsa.last_update_date_time = moment(userFsa.updated_at).format(DATE_FORMAT_STRING);
 
-            deferred.resolve(userFsa);
-          },
-          function(failedResponse){
-            if (failedResponse.status === 404) {
-              // Didn't locate FSA record for the user, return a shell one
-              var shellFsa = {
-                user:user_id,
-                primary_amount_per_year:0,
-                dependent_amount_per_year:0,
-                selected: false,
-                waived: false
-              };
-              deferred.resolve(shellFsa);
-            }
-            else{
-              deferred.reject(failedResponse);
-            }
-          });
-        }
+              if (userFsa.company_fsa_plan) {
+                userFsa.primary_amount_per_year = parseFloat(userFsa.primary_amount_per_year);
+                userFsa.dependent_amount_per_year = parseFloat(userFsa.dependent_amount_per_year);
+                userFsa.waived = false;
+              } else {
+                userFsa.waived = true;
+              }
+
+              deferred.resolve(userFsa);
+            },
+            function(failedResponse){
+              if (failedResponse.status === 404) {
+                // Didn't locate FSA record for the user, return a shell one
+                var shellFsa = {
+                  user:user_id,
+                  primary_amount_per_year:0,
+                  dependent_amount_per_year:0,
+                  selected: false,
+                  waived: false
+                };
+                deferred.resolve(shellFsa);
+              }
+              else{
+                deferred.reject(failedResponse);
+              }
+            });
+          }
+        })
       });
       return deferred.promise;
     };
