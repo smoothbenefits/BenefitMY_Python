@@ -31,8 +31,8 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
       viewModel['hra'] = filterByCompanyGroup(domainModel.hra, companyGroupId);
       viewModel['fsa'] = filterByCompanyGroup(domainModel.fsa, companyGroupId);
       viewModel['supplemental_life'] = filterByCompanyGroup(domainModel.supplemental_life, companyGroupId);
-      viewModel['std'] = filterByCompanyGroup(domainModel.std, companyGroupId)
-      viewModel['ltd'] = domainModel.ltd[0] != null;
+      viewModel['std'] = filterByCompanyGroup(domainModel.std, companyGroupId);
+      viewModel['ltd'] = filterByCompanyGroup(domainModel.ltd, companyGroupId);
       viewModel['basic_life'] = filterByCompanyGroup(domainModel.basic_life, companyGroupId);
       viewModel['hsa'] = filterByCompanyGroup(domainModel.hsa, companyGroupId);
 
