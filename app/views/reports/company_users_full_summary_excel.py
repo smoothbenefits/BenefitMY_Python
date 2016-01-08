@@ -77,7 +77,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Benefit Start Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Annual Salary')
         col_num = self._write_field(excelSheet, 0, col_num, 'Employment Type')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Member of Group(s)')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Member of Group')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
         col_num = self._write_field(excelSheet, 0, col_num, 'Work Phone')
         col_num = self._write_field(excelSheet, 0, col_num, 'Home Phone')
