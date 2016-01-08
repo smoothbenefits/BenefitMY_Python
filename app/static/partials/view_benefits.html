@@ -349,6 +349,7 @@
     <thead>
       <tr>
         <th><span>FSA Plan Name</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Document</span></th>
       </tr>
     </thead>
@@ -361,6 +362,8 @@
              ng-click="deleteFsaPlan(fsaPlan)"
              href="javascript:void(0);"
              confirm="Delete the FSA plan?">X</a>
+        </td>
+        <td><span class="inline" ng-repeat="group in fsaPlan.companyGroups">{{group.company_group.name}};</br></span>
         </td>
         <td class="upload-td">
           <bmuploadmanager

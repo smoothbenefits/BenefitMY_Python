@@ -29,7 +29,7 @@ from app.models.insurance.user_company_ltd_insurance_plan import \
 from app.models.hra.company_group_hra_plan import CompanyGroupHraPlan
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.fsa.fsa import FSA
-from app.models.fsa.company_fsa_plan import CompanyFsaPlan
+from app.models.fsa.company_group_fsa_plan import CompanyGroupFsaPlan
 from app.models.hsa.company_group_hsa_plan import CompanyGroupHsaPlan
 from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 from app.models.commuter.company_commuter_plan import CompanyCommuterPlan
@@ -112,7 +112,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._write_employee_std_insurance_info(user, company_group_id)
         self._write_employee_ltd_insurance_info(user, company_id)
         self._write_employee_hsa_info(person, company_group_id)
-        self._write_employee_fsa_info(user, company_id)
+        self._write_employee_fsa_info(user, company_group_id)
         self._write_employee_commuter_info(person, company_id)
 
         # extra space between main sections
@@ -410,14 +410,14 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_fsa_info(self, user_model, company_id):
+    def _write_employee_fsa_info(self, user_model, company_group_id):
         fsas = FSA.objects.filter(user=user_model.id)
-        company_plans = CompanyFsaPlan.objects.filter(company=company_id)
+        company_plans = CompanyGroupFsaPlan.objects.filter(company_group=company_group_id)
         if (len(fsas) > 0):
             fsa = fsas[0]
             if (fsa.company_fsa_plan):
                 # Render header
-                self._write_line_uniform_width(['Account Type', 'Elected Annual Amount', 'Paycheck Withhold'])
+                self._write_line_uniform_width(['FSA Account Type', 'Elected Annual Amount', 'Paycheck Withhold'])
                 self._draw_line()
 
                 month_factor = fsa.company_fsa_plan.company.pay_period_definition.month_factor
