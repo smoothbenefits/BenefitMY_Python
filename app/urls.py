@@ -172,6 +172,9 @@ from app.views.fsa.company_fsa_plan_view import (
     CompanyFsaPlanView,
     CompanyFsaPlanByCompanyView)
 from app.views.fsa.fsa_plan_view import FsaPlanView
+from app.views.fsa.company_group_fsa_plan_view import (
+    CompanyGroupFsaPlanByCompanyGroupView,
+    CompanyGroupFsaPlanByCompanyPlanView)
 
 from app.views.hsa.company_group_hsa_plan_view import (
     CompanyGroupHsaPlanByCompanyGroupView, CompanyGroupHsaPlanByCompanyPlanView)
@@ -262,10 +265,10 @@ urlpatterns = patterns('app.views',
         CompanyUsersBenefitPlanOptionView.as_view()),
 
     url(r'^%s/company_group/(?P<company_group_id>\w+)/health_benefits/?$' % PREFIX,
-        CompanyGroupBenefitPlanOptionByCompanyGroupView.as_view(), 
+        CompanyGroupBenefitPlanOptionByCompanyGroupView.as_view(),
         name='company_group_benefit_plan_option_api'),
     url(r'^%s/company_health_benefits/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
-        CompanyGroupBenefitPlanOptionByCompanyPlanView.as_view(), 
+        CompanyGroupBenefitPlanOptionByCompanyPlanView.as_view(),
         name='company_group_benefit_plan_option_by_company_plan_api'),
 
     url(r'^%s/companies/(?P<pk>\w+)/?$' % PREFIX, CompanyView.as_view()),
@@ -333,6 +336,14 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/fsa/?$' % PREFIX,
         CompanyFsaPlanByCompanyView.as_view(), name='company_fsa_api'),
+
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/company_fsa/?$' % PREFIX,
+        CompanyGroupFsaPlanByCompanyGroupView.as_view(),
+        name='company_group_fsa_plan_api'),
+
+    url(r'^%s/company_fsa/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupFsaPlanByCompanyPlanView.as_view(),
+        name='company_group_fsa_plan_by_company_plan_api'),
 
     # Life insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
@@ -456,11 +467,11 @@ urlpatterns = patterns('app.views',
         PersonCompanyHraPlanByPersonView.as_view(), name='person_company_hra_plan_by_person_api'),
 
     url(r'^%s/company_group/(?P<company_group_id>\w+)/company_hra/?$' % PREFIX,
-        CompanyGroupHraPlanByCompanyGroupView.as_view(), 
+        CompanyGroupHraPlanByCompanyGroupView.as_view(),
         name='company_group_hra_plan_api'),
 
     url(r'^%s/company_hra/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
-        CompanyGroupHraPlanByCompanyPlanView.as_view(), 
+        CompanyGroupHraPlanByCompanyPlanView.as_view(),
         name='company_group_hra_plan_by_company_plan_api'),
 
     # Commuter api

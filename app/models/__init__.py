@@ -61,6 +61,7 @@ from commuter.company_group_commuter_plan import CompanyGroupCommuterPlan
 from commuter.person_company_commuter_plan import PersonCompanyCommuterPlan
 
 from fsa.company_fsa_plan import CompanyFsaPlan
+from fsa.company_group_fsa_plan import CompanyGroupFsaPlan
 from fsa.fsa import FSA
 from fsa.fsa_plan import FsaPlan
 

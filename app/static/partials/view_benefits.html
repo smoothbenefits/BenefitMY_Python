@@ -303,6 +303,7 @@
       <tr>
         <th><span>LTD Plan Name</span></th>
         <th><span>Document</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Benefit Amount</span></th>
         <th><span>Max Benefit</span></th>
         <th><span>Duration</span></th>
@@ -329,6 +330,7 @@
           hide-type="true">
         </bmuploadmanager>
       </td>
+      <td><span class="inline" ng-repeat="group in ltdPlan.companyGroups">{{group.company_group.name}};</br></span></td>
       <td>{{ltdPlan.percentageOfSalary}}% of Base Salary</td>
       <td>${{ltdPlan.maxBenefitMonthly}}/Month</td>
       <td>{{ltdPlan.duration}} Months or Until Retirement Age</td>
@@ -349,6 +351,7 @@
     <thead>
       <tr>
         <th><span>FSA Plan Name</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Document</span></th>
       </tr>
     </thead>
@@ -361,6 +364,8 @@
              ng-click="deleteFsaPlan(fsaPlan)"
              href="javascript:void(0);"
              confirm="Delete the FSA plan?">X</a>
+        </td>
+        <td><span class="inline" ng-repeat="group in fsaPlan.companyGroups">{{group.company_group.name}};</br></span>
         </td>
         <td class="upload-td">
           <bmuploadmanager
