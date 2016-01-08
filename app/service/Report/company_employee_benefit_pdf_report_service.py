@@ -10,26 +10,26 @@ from pdf_report_service_base import PdfReportServiceBase
 from app.models.company import Company
 from app.models.person import Person
 from app.models.company_group_member import CompanyGroupMember
-from app.models.user_company_benefit_plan_option import \
+from app.models.health_benefits.user_company_benefit_plan_option import \
     UserCompanyBenefitPlanOption
-from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
-from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
+from app.models.health_benefits.company_group_benefit_plan_option import CompanyGroupBenefitPlanOption
+from app.models.health_benefits.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
 from app.models.insurance.company_group_basic_life_insurance_plan import CompanyGroupBasicLifeInsurancePlan
 from app.models.insurance.person_comp_suppl_life_insurance_plan import PersonCompSupplLifeInsurancePlan
 from app.models.insurance.company_group_suppl_life_insurance_plan import CompanyGroupSupplLifeInsurancePlan
 from app.models.insurance.std_insurance_plan import StdInsurancePlan
-from app.models.insurance.company_std_insurance_plan import CompanyStdInsurancePlan
+from app.models.insurance.company_group_std_insurance_plan import CompanyGroupStdInsurancePlan
 from app.models.insurance.user_company_std_insurance_plan import \
     UserCompanyStdInsurancePlan
-from app.models.insurance.company_ltd_insurance_plan import CompanyLtdInsurancePlan
+from app.models.insurance.company_group_ltd_insurance_plan import CompanyGroupLtdInsurancePlan
 from app.models.insurance.user_company_ltd_insurance_plan import \
     UserCompanyLtdInsurancePlan
-from app.models.hra.company_hra_plan import CompanyHraPlan
+from app.models.hra.company_group_hra_plan import CompanyGroupHraPlan
 from app.models.hra.person_company_hra_plan import PersonCompanyHraPlan
 from app.models.fsa.fsa import FSA
-from app.models.fsa.company_fsa_plan import CompanyFsaPlan
+from app.models.fsa.company_group_fsa_plan import CompanyGroupFsaPlan
 from app.models.hsa.company_group_hsa_plan import CompanyGroupHsaPlan
 from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 from app.models.commuter.company_commuter_plan import CompanyCommuterPlan
@@ -105,14 +105,14 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._write_employee_meta_info(person)
 
         # Now starts writing benefit enrollments
-        self._write_employee_all_health_benefits_info(user, company_id)
+        self._write_employee_all_health_benefits_info(user, company_group_id)
         self._write_employee_basic_life_insurance_info(user, person, company_group_id)
-        self._write_employee_hra_info(person, company_id)
+        self._write_employee_hra_info(person, company_group_id)
         self._write_employee_supplemental_life_insurance_info(person, company_group_id)
-        self._write_employee_std_insurance_info(user, company_id)
-        self._write_employee_ltd_insurance_info(user, company_id)
+        self._write_employee_std_insurance_info(user, company_group_id)
+        self._write_employee_ltd_insurance_info(user, company_group_id)
         self._write_employee_hsa_info(person, company_group_id)
-        self._write_employee_fsa_info(user, company_id)
+        self._write_employee_fsa_info(user, company_group_id)
         self._write_employee_commuter_info(person, company_id)
 
         # extra space between main sections
@@ -184,10 +184,10 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._start_new_line()
         self._start_new_line()
 
-    def _write_employee_all_health_benefits_info(self, user_model, company_id):
+    def _write_employee_all_health_benefits_info(self, user_model, company_group_id):
         user_benefit_plan_options = UserCompanyBenefitPlanOption.objects.filter(user=user_model.id)
         user_benefit_waived = UserCompanyWaivedBenefit.objects.filter(user=user_model.id)
-        company_benefit_list = CompanyBenefitPlanOption.objects.filter(company=company_id)
+        company_benefit_list = CompanyGroupBenefitPlanOption.objects.filter(company_group=company_group_id)
 
         self._write_employee_health_benefit_info(user_benefit_plan_options, user_benefit_waived, company_benefit_list, 'Medical')
         self._write_employee_health_benefit_info(user_benefit_plan_options, user_benefit_waived, company_benefit_list, 'Dental')
@@ -198,7 +198,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
     def _write_employee_health_benefit_info(self, employee_health_benefit_options, employee_health_waived_benefit, company_benefit_list, benefit_type):
         user_benefit_options = employee_health_benefit_options.filter(benefit__benefit_plan__benefit_type__name = benefit_type)
         user_waived_benefit = employee_health_waived_benefit.filter(benefit_type__name = benefit_type)
-        company_plan_options = company_benefit_list.filter(benefit_plan__benefit_type__name = benefit_type)
+        company_plan_options = company_benefit_list.filter(company_benefit_plan_option__benefit_plan__benefit_type__name = benefit_type)
 
         if len(user_benefit_options) > 0:
             # column width distributions
@@ -285,8 +285,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_hra_info(self, person_model, company_id):
-        company_plans = CompanyHraPlan.objects.filter(company=company_id)
+    def _write_employee_hra_info(self, person_model, company_group_id):
+        company_plans = CompanyGroupHraPlan.objects.filter(company_group=company_group_id)
         plan_selected = False
         if (person_model):
             employee_plans = PersonCompanyHraPlan.objects.filter(person=person_model.id)
@@ -359,9 +359,9 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_std_insurance_info(self, user_model, company_id):
+    def _write_employee_std_insurance_info(self, user_model, company_group_id):
         employee_plans = UserCompanyStdInsurancePlan.objects.filter(user=user_model.id)
-        company_plans = CompanyStdInsurancePlan.objects.filter(company=company_id)
+        company_plans = CompanyGroupStdInsurancePlan.objects.filter(company_group=company_group_id)
         if (len(employee_plans) > 0):
             employee_plan = employee_plans[0]
 
@@ -385,9 +385,9 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_ltd_insurance_info(self, user_model, company_id):
+    def _write_employee_ltd_insurance_info(self, user_model, company_group_id):
         employee_plans = UserCompanyLtdInsurancePlan.objects.filter(user=user_model.id)
-        company_plans = CompanyLtdInsurancePlan.objects.filter(company=company_id)
+        company_plans = CompanyGroupLtdInsurancePlan.objects.filter(company_group=company_group_id)
         if (len(employee_plans) > 0):
             employee_plan = employee_plans[0]
             if employee_plan.company_ltd_insurance:
@@ -410,14 +410,14 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_fsa_info(self, user_model, company_id):
+    def _write_employee_fsa_info(self, user_model, company_group_id):
         fsas = FSA.objects.filter(user=user_model.id)
-        company_plans = CompanyFsaPlan.objects.filter(company=company_id)
+        company_plans = CompanyGroupFsaPlan.objects.filter(company_group=company_group_id)
         if (len(fsas) > 0):
             fsa = fsas[0]
             if (fsa.company_fsa_plan):
                 # Render header
-                self._write_line_uniform_width(['Account Type', 'Elected Annual Amount', 'Paycheck Withhold'])
+                self._write_line_uniform_width(['FSA Account Type', 'Elected Annual Amount', 'Paycheck Withhold'])
                 self._draw_line()
 
                 month_factor = fsa.company_fsa_plan.company.pay_period_definition.month_factor

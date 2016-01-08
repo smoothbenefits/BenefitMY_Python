@@ -25,14 +25,14 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
     var mapCompanyBenefitToViewModel = function (domainModel, companyGroupId) {
       var viewModel = {};
 
-      viewModel['medical'] = domainModel.medical[0] != null;
-      viewModel['dental'] = domainModel.dental[0] != null;
-      viewModel['vision'] = domainModel.vision[0] != null;
-      viewModel['hra'] = domainModel.hra[0] != null;
-      viewModel['fsa'] = domainModel.fsa[0] != null;
+      viewModel['medical'] = filterByCompanyGroup(domainModel.medical, companyGroupId);
+      viewModel['dental'] = filterByCompanyGroup(domainModel.dental, companyGroupId);
+      viewModel['vision'] = filterByCompanyGroup(domainModel.vision, companyGroupId);
+      viewModel['hra'] = filterByCompanyGroup(domainModel.hra, companyGroupId);
+      viewModel['fsa'] = filterByCompanyGroup(domainModel.fsa, companyGroupId);
       viewModel['supplemental_life'] = filterByCompanyGroup(domainModel.supplemental_life, companyGroupId);
-      viewModel['std'] = domainModel.std[0] != null;
-      viewModel['ltd'] = domainModel.ltd[0] != null;
+      viewModel['std'] = filterByCompanyGroup(domainModel.std, companyGroupId);
+      viewModel['ltd'] = filterByCompanyGroup(domainModel.ltd, companyGroupId);
       viewModel['basic_life'] = filterByCompanyGroup(domainModel.basic_life, companyGroupId);
       viewModel['hsa'] = filterByCompanyGroup(domainModel.hsa, companyGroupId);
 

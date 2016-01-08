@@ -23,8 +23,8 @@ from app.views.company_user_view import (
     BrokerCompanyCountView,
     CompanyBrokerCountView,
     CompanyUserDetailView)
-from app.views.benefit_policy_key_view import BenefitPolicyKeyView
-from app.views.benefit_type_view import BenefitTypeView
+from app.views.health_benefits.benefit_policy_key_view import BenefitPolicyKeyView
+from app.views.health_benefits.benefit_type_view import BenefitTypeView
 from app.views.document_type_view import DocumentTypeView
 from app.views.company_view import (
     CompanyView)
@@ -35,13 +35,17 @@ from app.views.template_view import (
     TemplateFieldView,
     templates)
 
-from app.views.benefit_plan_view import (
+from app.views.health_benefits.benefit_plan_view import (
     BenefitPlanView, BenefitPlanCreationView)
 
-from app.views.company_benefit_plan_option_view import (
+from app.views.health_benefits.company_benefit_plan_option_view import (
     CompanyBenefitPlanOptionView,
     CompanyBenefitPlansView,
     create_benefit_plan_option)
+from app.views.health_benefits.company_group_benefit_plan_option_view import (
+    CompanyGroupBenefitPlanOptionByCompanyGroupView,
+    CompanyGroupBenefitPlanOptionByCompanyPlanView)
+
 from app.views.document_view import (
     CompanyUserTypeDocumentView,
     CompanyUserDocumentView,
@@ -52,10 +56,10 @@ from app.views.document_view import (
     documents)
 from app.views.company_templates_view import CompanyTemplatesView
 
-from app.views.user_company_waived_benefit_view import (
+from app.views.health_benefits.user_company_waived_benefit_view import (
     UserCompanyWaivedBenefitView,
     CompanyWaivedBenefitView)
-from app.views.user_company_benefit_plan_option_view import (
+from app.views.health_benefits.user_company_benefit_plan_option_view import (
     UserCompanyBenefitPlanOptionView,
     CompanyUsersBenefitPlanOptionView)
 from app.views.user_company_roles_view import UserCompanyRolesView
@@ -63,10 +67,11 @@ from app.views.user_company_roles_view import UserCompanyRolesView
 from app.views.w4_view import W4View
 from app.views.employment_authorization_view import EmploymentAuthorizationView
 from app.views.signature_view import (SignatureByUserView, SignatureView)
-from app.views.benefit_details_view import (
+from app.views.health_benefits.benefit_details_view import (
     BenefitDetailsView,
     delete_benefit_details)
 
+#Basic Life
 from app.views.insurance.company_life_insurance_plan_view import \
     CompanyLifeInsurancePlanView
 from app.views.insurance.company_group_basic_life_insurance_plan_view import (
@@ -78,21 +83,31 @@ from app.views.insurance.user_company_life_insurance_plan_view import (
     CompanyUsersLifeInsuranceView)
 from app.views.insurance.life_insurance_plan_view import LifeInsurancePlanView
 
+#STD
 from app.views.insurance.company_std_insurance_plan_view import \
     CompanyStdInsurancePlanView
-
 from app.views.insurance.user_company_std_insurance_plan_view import (
     UserCompanyStdInsuranceView,
     CompanyUsersStdInsuranceView)
 from app.views.insurance.std_insurance_plan_view import StdInsurancePlanView
+from app.views.insurance.company_group_std_insurance_plan_view import (
+    CompanyGroupStdInsurancePlanByCompanyGroupView,
+    CompanyGroupStdInsurancePlanByCompanyPlanView
+)
 
+#LTD
 from app.views.insurance.company_ltd_insurance_plan_view import \
     CompanyLtdInsurancePlanView
 from app.views.insurance.user_company_ltd_insurance_plan_view import (
     UserCompanyLtdInsuranceView,
     CompanyUsersLtdInsuranceView)
 from app.views.insurance.ltd_insurance_plan_view import LtdInsurancePlanView
+from app.views.insurance.company_group_ltd_insurance_plan_view import (
+    CompanyGroupLtdInsurancePlanByCompanyGroupView,
+    CompanyGroupLtdInsurancePlanByCompanyPlanView
+)
 
+#Supplemental Life
 from app.views.insurance.company_supplemental_life_insurance_plan_view import (
     CompanySupplementalLifeInsurancePlanView,
     CompanySupplementalLifeInsurancePlanByCompanyView)
@@ -107,6 +122,7 @@ from app.views.insurance.company_group_supplemental_life_insurance_plan_view imp
     CompanyGroupSupplementalLifeInsurancePlanByCompanyGroupView,
     CompanyGroupSupplementalLifeInsurancePlanByCompanyPlanView)
 
+#HRA
 from app.views.hra.hra_plan_view import HraPlanView
 from app.views.hra.company_hra_plan_view import (
     CompanyHraPlanView,
@@ -114,7 +130,11 @@ from app.views.hra.company_hra_plan_view import (
 from app.views.hra.person_company_hra_plan_view import (
     PersonCompanyHraPlanView,
     PersonCompanyHraPlanByPersonView)
+from app.views.hra.company_group_hra_plan_view import (
+    CompanyGroupHraPlanByCompanyGroupView,
+    CompanyGroupHraPlanByCompanyPlanView)
 
+#Commuter
 from app.views.commuter.company_commuter_plan_view import (
     CompanyCommuterPlanView,
     CompanyCommuterPlanByCompanyView)
@@ -122,6 +142,7 @@ from app.views.commuter.person_company_commuter_plan_view import (
     PersonCompanyCommuterPlanView,
     PersonCompanyCommuterPlanByPersonView)
 
+#Extra Benefits
 from app.views.extra_benefits.company_extra_benefit_plan_view import (
     CompanyExtraBenefitPlanView,
     CompanyExtraBenefitPlanByCompanyView)
@@ -148,6 +169,9 @@ from app.views.fsa.company_fsa_plan_view import (
     CompanyFsaPlanView,
     CompanyFsaPlanByCompanyView)
 from app.views.fsa.fsa_plan_view import FsaPlanView
+from app.views.fsa.company_group_fsa_plan_view import (
+    CompanyGroupFsaPlanByCompanyGroupView,
+    CompanyGroupFsaPlanByCompanyPlanView)
 
 from app.views.hsa.company_group_hsa_plan_view import (
     CompanyGroupHsaPlanByCompanyGroupView, CompanyGroupHsaPlanByCompanyPlanView)
@@ -237,6 +261,13 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company_users/(?P<pk>\w+)/benefits/?$' % PREFIX,
         CompanyUsersBenefitPlanOptionView.as_view()),
 
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/health_benefits/?$' % PREFIX,
+        CompanyGroupBenefitPlanOptionByCompanyGroupView.as_view(),
+        name='company_group_benefit_plan_option_api'),
+    url(r'^%s/company_health_benefits/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupBenefitPlanOptionByCompanyPlanView.as_view(),
+        name='company_group_benefit_plan_option_by_company_plan_api'),
+
     url(r'^%s/companies/(?P<pk>\w+)/?$' % PREFIX, CompanyView.as_view()),
     url(r'^%s/companies/?$' % PREFIX, CompanyView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/?$' % PREFIX, CompanyUserView.as_view(), name='company_users_api'),
@@ -302,6 +333,14 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<pk>\w+)/fsa/?$' % PREFIX,
         CompanyFsaPlanByCompanyView.as_view(), name='company_fsa_api'),
+
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/company_fsa/?$' % PREFIX,
+        CompanyGroupFsaPlanByCompanyGroupView.as_view(),
+        name='company_group_fsa_plan_api'),
+
+    url(r'^%s/company_fsa/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupFsaPlanByCompanyPlanView.as_view(),
+        name='company_group_fsa_plan_by_company_plan_api'),
 
     # Life insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/life_insurance_plan/?$' % PREFIX,
@@ -374,6 +413,16 @@ urlpatterns = patterns('app.views',
     url(r'^%s/user/(?P<user_id>\w+)/std_insurance/(?P<pk>\w+)/premium/?$' % PREFIX,
         CompanyStdInsuranceEmployeePremiumView.as_view(), name='user_company_std_insurance_premium_api'),
 
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/std_insurance/?$' % PREFIX,
+        CompanyGroupStdInsurancePlanByCompanyGroupView.as_view(),
+        name='company_group_std_insurance_plan_api'),
+
+    url(r'^%s/std_insurance/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupStdInsurancePlanByCompanyPlanView.as_view(),
+        name='company_group_std_insurance_plan_by_company_plan_api'),
+
+
+
     # LTD insurance api
     url(r'^%s/brokers/(?P<pk>\w+)/ltd_insurance_plan/?$' % PREFIX,
         LtdInsurancePlanView.as_view(), name='broker_ltd_insurance_api'),
@@ -390,6 +439,14 @@ urlpatterns = patterns('app.views',
     url(r'^%s/user/(?P<user_id>\w+)/ltd_insurance/(?P<pk>\w+)/premium/?$' % PREFIX,
         CompanyLtdInsuranceEmployeePremiumView.as_view(), name='user_company_ltd_insurance_premium_api'),
 
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/ltd_insurance/?$' % PREFIX,
+        CompanyGroupLtdInsurancePlanByCompanyGroupView.as_view(),
+        name='company_group_ltd_insurance_plan_api'),
+
+    url(r'^%s/ltd_insurance/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupLtdInsurancePlanByCompanyPlanView.as_view(),
+        name='company_group_ltd_insurance_plan_by_company_plan_api'),
+
     # HRA api
     url(r'^%s/hra_plan/(?P<pk>\w+)/?$' % PREFIX,
         HraPlanView.as_view(), name='hra_plan_api'),
@@ -405,6 +462,14 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/person/(?P<person_id>\w+)/person_company_hra_plan/?$' % PREFIX,
         PersonCompanyHraPlanByPersonView.as_view(), name='person_company_hra_plan_by_person_api'),
+
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/company_hra/?$' % PREFIX,
+        CompanyGroupHraPlanByCompanyGroupView.as_view(),
+        name='company_group_hra_plan_api'),
+
+    url(r'^%s/company_hra/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupHraPlanByCompanyPlanView.as_view(),
+        name='company_group_hra_plan_by_company_plan_api'),
 
     # Commuter api
     url(r'^%s/company_commuter_plan/(?P<pk>\w+)/?$' % PREFIX,

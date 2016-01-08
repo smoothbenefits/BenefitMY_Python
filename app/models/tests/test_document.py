@@ -1,8 +1,8 @@
 # test document
 # tests can be kicked off by running "python manage.py test app/tests/"
 from django.test import TestCase
-from app.models.benefit_type import BenefitType
-from app.models.benefit_plan import BenefitPlan
+from app.models.health_benefits.benefit_type import BenefitType
+from app.models.health_benefits.benefit_plan import BenefitPlan
 
 # Create your tests here.
 class DemoTestCase(TestCase):

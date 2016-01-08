@@ -5,10 +5,14 @@ benefitmyService.factory('StdService',
      'StdRepository',
      'EmployeeProfileService',
      'AgeRangeService',
+     'UserService',
+     'CompanyGroupStdInsurancePlanRepository',
     function ($q,
               StdRepository,
               EmployeeProfileService,
-              AgeRangeService){
+              AgeRangeService,
+              UserService,
+              CompanyGroupStdInsurancePlanRepository){
         var ageRangeService = AgeRangeService(20, 85, 5, 200);
         var mapPlanDomainToViewModel = function(planDomainModel) {
             var viewModel = {};
@@ -51,6 +55,7 @@ benefitmyService.factory('StdService',
             viewModel.stepValue = companyPlanDomainModel.benefit_amount_step;
             viewModel.allowUserSelectAmount = companyPlanDomainModel.user_amount_required;
             viewModel.ageBasedRates = mapCompanyPlanAgeBasedTableDomainToViewModel(companyPlanDomainModel.age_based_rates);
+            viewModel.companyGroups = companyPlanDomainModel.company_group_std;
 
             return viewModel;
         };
@@ -171,11 +176,59 @@ benefitmyService.factory('StdService',
             return rateTable;
         };
 
+        var mapCreatePlanViewToCompanyGroupPlanDomainModel = function(createdCompanyStdPlan){
+            var domainModels = [];
+            _.each(createdCompanyStdPlan.selectedCompanyGroups, function(companyGroup){
+                domainModels.push({
+                    'company_std_insurance_plan': createdCompanyStdPlan.id,
+                    'company_group': companyGroup.id
+                });
+            });
+            return domainModels;
+        };
+
+        var linkCompanyStdInsurancePlanToCompanyGroups = function(compStdPlanId, compGroupPlanModels){
+            return CompanyGroupStdInsurancePlanRepository.ByCompanyPlan.update(
+                {pk:compStdPlanId}, 
+                compGroupPlanModels, 
+                function (successResponse) {
+                    return successResponse;
+                }
+            );
+        };
+
+        var getStdPlansForCompanyGroup = function(companyGroupId){
+            var deferred = $q.defer();
+            if(!companyGroupId){
+                deferred.resolve([]);
+            }
+            else{
+                CompanyGroupStdInsurancePlanRepository.ByCompanyGroup.query({companyGroupId:companyGroupId})
+                .$promise.then(function(companyGroupPlans) {
+                    var resultPlans = [];
+                    
+                    _.each(companyGroupPlans, function(companyGroupPlan) {
+                        var companyPlan = companyGroupPlan.company_std_insurance_plan;
+                        resultPlans.push(mapCompanyPlanDomainToViewModel(companyPlan));
+                    });
+                    
+                    deferred.resolve(resultPlans);
+                },
+                function(failedResponse) {
+                    deferred.reject(failedResponse);
+                });
+            }
+            return deferred.promise;
+        };
+
+
         return {
 
             paidByParties: ['Employee', 'Employer'],
 
             getStdPlansForCompany: getStdPlansForCompany,
+
+            getStdPlansForCompanyGroup: getStdPlansForCompanyGroup,
 
             getTotalPremiumForUserCompanyStdPlan: function(userId, stdPlan, amount) {
                 var deferred = $q.defer();
@@ -228,8 +281,13 @@ benefitmyService.factory('StdService',
                     companyPlanDomainModel.company = companyId;
 
                     StdRepository.CompanyPlanByCompany.save({companyId:companyId}, companyPlanDomainModel)
-                    .$promise.then(function(response) {
-                        deferred.resolve(response);
+                    .$promise.then(function(createdCompanyPlan) {
+                        createdCompanyPlan.selectedCompanyGroups = companyStdPlanToSave.selectedCompanyGroups;
+                        companyGroupDomainModels = mapCreatePlanViewToCompanyGroupPlanDomainModel(createdCompanyPlan);
+                        linkCompanyStdInsurancePlanToCompanyGroups(createdCompanyPlan.id, companyGroupDomainModels)
+                        .$promise.then(function(response){
+                            deferred.resolve(response);
+                        });
                     },
                     function(error){
                         deferred.reject(error);
@@ -325,27 +383,29 @@ benefitmyService.factory('StdService',
                 return deferred.promise;
             },
 
-            getUserEnrolledStdPlanByUser: function(userId, company) {
+            getUserEnrolledStdPlanByUser: function(userId) {
                 var deferred = $q.defer();
 
-                getStdPlansForCompany(company).then(function(plans){
-                    if(!plans || plans.length <= 0){
-                        deferred.resolve(undefined);
-                    }
-                    else{
-                        StdRepository.CompanyUserPlanByUser.query({userId:userId})
-                        .$promise.then(function(plans) {
+                UserService.getUserDataByUserId(userId).then(function(userData){
+                    getStdPlansForCompanyGroup(userData.companyGroupId).then(function(plans){
+                        if(!plans || plans.length <= 0){
+                            deferred.resolve(undefined);
+                        }
+                        else{
+                            StdRepository.CompanyUserPlanByUser.query({userId:userId})
+                            .$promise.then(function(plans) {
 
-                            var plan = plans.length > 0 ?
-                                mapUserCompanyPlanDomainToViewModel(plans[0]) :
-                                null;
+                                var plan = plans.length > 0 ?
+                                    mapUserCompanyPlanDomainToViewModel(plans[0]) :
+                                    null;
 
-                            deferred.resolve(plan);
-                        },
-                        function(error){
-                            deferred.reject(error);
-                        });
-                    }
+                                deferred.resolve(plan);
+                            },
+                            function(error){
+                                deferred.reject(error);
+                            });
+                        }
+                    });
                 });
 
                 return deferred.promise;
