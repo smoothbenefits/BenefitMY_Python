@@ -83,7 +83,9 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         person = self._get_person_by_user(employee_user_id)
         user = self._get_user_by_id(employee_user_id)
         company_group = self._get_user_company_group(employee_user_id)
-        company_group_id = company_group.id
+        company_group_id = None
+        if company_group:
+            company_group_id = company_group.id
 
         # set the common configuration on the page
         self._init_page()
