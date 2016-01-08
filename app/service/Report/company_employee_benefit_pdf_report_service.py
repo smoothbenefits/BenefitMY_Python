@@ -75,14 +75,15 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
     def _get_user_company_group(self, user_id):
         comp_group_members = CompanyGroupMember.objects.filter(user=user_id)
         if comp_group_members:
-            return comp_group_members[0].company_group.id
+            return comp_group_members[0].company_group
         else:
             return None
 
     def _write_employee(self, employee_user_id, company_id):
         person = self._get_person_by_user(employee_user_id)
         user = self._get_user_by_id(employee_user_id)
-        company_group_id = self._get_user_company_group(employee_user_id)
+        company_group = self._get_user_company_group(employee_user_id)
+        company_group_id = company_group.id
 
         # set the common configuration on the page
         self._init_page()
@@ -102,7 +103,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._set_font(10)
 
         # Write employee type and address
-        self._write_employee_meta_info(person)
+        self._write_employee_meta_info(person, company_group)
 
         # Now starts writing benefit enrollments
         self._write_employee_all_health_benefits_info(user, company_group_id)
@@ -128,19 +129,23 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_meta_info(self, person):
+    def _write_employee_meta_info(self, person, company_group):
         # Write employment type
         employee_profile = self._get_employee_profile_by_person(person)
         employee_address = self._get_address_by_person(person)
         meta_info = []
         width_array = []
         if employee_profile:
-            meta_info.append(employee_profile.employment_type)
-            width_array.append(0.5)
+            meta_info.append("Type: {}".format(employee_profile.employment_type))
+            width_array.append(0.3)
+
+        if company_group:
+            meta_info.append("Group: {}".format(company_group.name))
+            width_array.append(0.3)
 
         if employee_address:
             meta_info.append("{} {}, {} {} {}".format(employee_address.street_1, employee_address.street_2, employee_address.city, employee_address.state, employee_address.zipcode))
-            width_array.append(0.5)
+            width_array.append(0.4)
 
         if meta_info:
             self._write_line_uniform_width(meta_info, width_array)
