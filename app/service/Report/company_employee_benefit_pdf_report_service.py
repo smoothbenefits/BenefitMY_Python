@@ -139,18 +139,18 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         width_array = []
         if employee_profile:
             meta_info.append("Type: {}".format(employee_profile.employment_type))
-            width_array.append(0.3)
+            width_array.append(0.5)
 
         if company_group:
             meta_info.append("Group: {}".format(company_group.name))
-            width_array.append(0.3)
-
-        if employee_address:
-            meta_info.append("{} {}, {} {} {}".format(employee_address.street_1, employee_address.street_2, employee_address.city, employee_address.state, employee_address.zipcode))
-            width_array.append(0.4)
+            width_array.append(0.5)
 
         if meta_info:
             self._write_line_uniform_width(meta_info, width_array)
+
+        if employee_address:
+            address = "{} {}, {} {} {}".format(employee_address.street_1, employee_address.street_2, employee_address.city, employee_address.state, employee_address.zipcode)
+            self._write_line_uniform_width([address])
             self._start_new_line()
 
     def _write_not_selected_plan(self, benefit_name):
