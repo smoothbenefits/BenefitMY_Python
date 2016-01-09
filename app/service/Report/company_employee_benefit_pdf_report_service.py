@@ -33,6 +33,7 @@ from app.models.fsa.company_group_fsa_plan import CompanyGroupFsaPlan
 from app.models.hsa.company_group_hsa_plan import CompanyGroupHsaPlan
 from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 from app.models.commuter.company_commuter_plan import CompanyCommuterPlan
+from app.models.commuter.company_group_commuter_plan import CompanyGroupCommuterPlan
 from app.models.commuter.person_company_commuter_plan import PersonCompanyCommuterPlan
 from app.models.document import Document
 
@@ -113,7 +114,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._write_employee_ltd_insurance_info(user, company_group_id)
         self._write_employee_hsa_info(person, company_group_id)
         self._write_employee_fsa_info(user, company_group_id)
-        self._write_employee_commuter_info(person, company_id)
+        self._write_employee_commuter_info(person, company_group_id)
 
         # extra space between main sections
         self._start_new_line()
@@ -459,8 +460,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_commuter_info(self, person_model, company_id):
-        company_plans = CompanyCommuterPlan.objects.filter(company=company_id)
+    def _write_employee_commuter_info(self, person_model, company_group_id):
+        company_plans = CompanyGroupCommuterPlan.objects.filter(company_group=company_group_id)
         plan_selected = False
         if (person_model):
             employee_plans = PersonCompanyCommuterPlan.objects.filter(person=person_model.id)

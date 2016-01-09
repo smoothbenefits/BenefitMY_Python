@@ -569,7 +569,7 @@ var brokerEmployeeEnrollmentController = brokersControllers.controller('brokerEm
         });
 
         // Commuter
-        CommuterService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
+        CommuterService.getPersonPlanByUser($scope.employee.id).then(function(plan) {
           if(plan){
             $scope.employee.commuterPlan = plan;
             $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);
@@ -1096,15 +1096,15 @@ var brokerAddCommuterPlanController = brokersControllers.controller(
     $scope.deductionPeriods = CommuterService.deductionPeriods;
     $scope.benefitOptions = CommuterService.benefitEnablementOptions;
 
-    var clientId = $stateParams.clientId;
+    $scope.companyId = $stateParams.clientId;
 
-    CommuterService.getBlankPlanForCompany(clientId).then(function(blankCompanyPlan) {
+    CommuterService.getBlankPlanForCompany($scope.companyId).then(function(blankCompanyPlan) {
         $scope.newPlan = blankCompanyPlan;
     });
 
     // Need the user information for the current user (broker)
     $scope.addPlan = function() {
-        CommuterService.addPlanForCompany($scope.newPlan, clientId).then(
+        CommuterService.addPlanForCompany($scope.newPlan, $scope.companyId).then(
             function() {
               var successMessage = "The new Commuter plan has been saved successfully."
 

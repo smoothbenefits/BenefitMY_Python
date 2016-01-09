@@ -268,46 +268,55 @@ benefitmyService.factory('HraService',
 
             getPersonPlanByUser: function(userId, company, getBlankPlanIfNoneFound) {
                 var deferred = $q.defer();
-                getPlansForCompany(company).then(function(plans){
-                    if(!plans || plans.length<=0){
-                        deferred.resolve(undefined);
-                    }
-                    else{
-                        PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
-                            HraRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
-                            .$promise.then(function(personPlans) {
-                                if (personPlans.length > 0) {
-                                    // Found existing person enrolled plans, for now, take the first
-                                    // one.
-                                    deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0]));
-                                } else {
-                                    // The person does not have enrolled plans yet.
-                                    // If indicated so, construct and return an structured
-                                    // blank person plan.
-                                    // Or else, return null;
-                                    if (getBlankPlanIfNoneFound) {
-                                        var blankPersonPlan = {};
 
-                                        // Setup person plan owner
-                                        blankPersonPlan.planOwner = personInfo.id;
+                UserService.getUserDataByUserId(userId).then(
+                    function(userData) {
+                        getPlansForCompanyGroup(userData.companyGroupId).then(function(plans){
+                            if(!plans || plans.length<=0){
+                                deferred.resolve(undefined);
+                            }
+                            else{
+                                PersonService.getSelfPersonInfo(userId).then(function(personInfo) {
+                                    HraRepository.CompanyPersonPlanByPerson.query({personId:personInfo.id})
+                                    .$promise.then(function(personPlans) {
+                                        if (personPlans.length > 0) {
+                                            // Found existing person enrolled plans, for now, take the first
+                                            // one.
+                                            deferred.resolve(mapPersonCompanyPlanDomainToViewModel(personPlans[0]));
+                                        } else {
+                                            // The person does not have enrolled plans yet.
+                                            // If indicated so, construct and return an structured
+                                            // blank person plan.
+                                            // Or else, return null;
+                                            if (getBlankPlanIfNoneFound) {
+                                                var blankPersonPlan = {};
 
-                                        deferred.resolve(blankPersonPlan);
-                                    }
-                                    else {
-                                        deferred.resolve(null);
-                                    }
-                                }
-                            },
-                            function(error) {
-                                deferred.reject(error);
-                            });
-                        },
-                        function(error){
-                            deferred.reject(error);
+                                                // Setup person plan owner
+                                                blankPersonPlan.planOwner = personInfo.id;
+
+                                                deferred.resolve(blankPersonPlan);
+                                            }
+                                            else {
+                                                deferred.resolve(null);
+                                            }
+                                        }
+                                    },
+                                    function(error) {
+                                        deferred.reject(error);
+                                    });
+                                },
+                                function(error){
+                                    deferred.reject(error);
+                                });
+
+                            }
                         });
-
+                    },
+                    function(errors) {
+                        deferred.reject(errors);
                     }
-                });
+                );
+
                 return deferred.promise;
             }
         };
