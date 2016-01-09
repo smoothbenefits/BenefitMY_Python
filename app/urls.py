@@ -141,6 +141,9 @@ from app.views.commuter.company_commuter_plan_view import (
 from app.views.commuter.person_company_commuter_plan_view import (
     PersonCompanyCommuterPlanView,
     PersonCompanyCommuterPlanByPersonView)
+from app.views.commuter.company_group_commuter_plan_view import (
+    CompanyGroupCommuterPlanByCompanyGroupView,
+    CompanyGroupCommuterPlanByCompanyPlanView)
 
 #Extra Benefits
 from app.views.extra_benefits.company_extra_benefit_plan_view import (
@@ -483,6 +486,14 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/person/(?P<person_id>\w+)/person_company_commuter_plan/?$' % PREFIX,
         PersonCompanyCommuterPlanByPersonView.as_view(), name='person_company_commuter_plan_by_person_api'),
+
+    url(r'^%s/company_group/(?P<company_group_id>\w+)/company_commuter/?$' % PREFIX,
+        CompanyGroupCommuterPlanByCompanyGroupView.as_view(), 
+        name='company_group_commuter_plan_api'),
+
+    url(r'^%s/company_commuter/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
+        CompanyGroupCommuterPlanByCompanyPlanView.as_view(), 
+        name='company_group_commuter_plan_by_company_plan_api'),
 
     # Extra Benefits api
     url(r'^%s/company_extra_benefit_plan/(?P<pk>\w+)/?$' % PREFIX,

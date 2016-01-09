@@ -33,6 +33,7 @@ from app.models.fsa.company_group_fsa_plan import CompanyGroupFsaPlan
 from app.models.hsa.company_group_hsa_plan import CompanyGroupHsaPlan
 from app.models.hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 from app.models.commuter.company_commuter_plan import CompanyCommuterPlan
+from app.models.commuter.company_group_commuter_plan import CompanyGroupCommuterPlan
 from app.models.commuter.person_company_commuter_plan import PersonCompanyCommuterPlan
 from app.models.document import Document
 
@@ -75,14 +76,17 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
     def _get_user_company_group(self, user_id):
         comp_group_members = CompanyGroupMember.objects.filter(user=user_id)
         if comp_group_members:
-            return comp_group_members[0].company_group.id
+            return comp_group_members[0].company_group
         else:
             return None
 
     def _write_employee(self, employee_user_id, company_id):
         person = self._get_person_by_user(employee_user_id)
         user = self._get_user_by_id(employee_user_id)
-        company_group_id = self._get_user_company_group(employee_user_id)
+        company_group = self._get_user_company_group(employee_user_id)
+        company_group_id = None
+        if company_group:
+            company_group_id = company_group.id
 
         # set the common configuration on the page
         self._init_page()
@@ -102,7 +106,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._set_font(10)
 
         # Write employee type and address
-        self._write_employee_meta_info(person)
+        self._write_employee_meta_info(person, company_group)
 
         # Now starts writing benefit enrollments
         self._write_employee_all_health_benefits_info(user, company_group_id)
@@ -113,7 +117,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._write_employee_ltd_insurance_info(user, company_group_id)
         self._write_employee_hsa_info(person, company_group_id)
         self._write_employee_fsa_info(user, company_group_id)
-        self._write_employee_commuter_info(person, company_id)
+        self._write_employee_commuter_info(person, company_group_id)
 
         # extra space between main sections
         self._start_new_line()
@@ -128,22 +132,26 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_meta_info(self, person):
+    def _write_employee_meta_info(self, person, company_group):
         # Write employment type
         employee_profile = self._get_employee_profile_by_person(person)
         employee_address = self._get_address_by_person(person)
         meta_info = []
         width_array = []
         if employee_profile:
-            meta_info.append(employee_profile.employment_type)
+            meta_info.append("Type: {}".format(employee_profile.employment_type))
             width_array.append(0.5)
 
-        if employee_address:
-            meta_info.append("{} {}, {} {} {}".format(employee_address.street_1, employee_address.street_2, employee_address.city, employee_address.state, employee_address.zipcode))
+        if company_group:
+            meta_info.append("Group: {}".format(company_group.name))
             width_array.append(0.5)
 
         if meta_info:
             self._write_line_uniform_width(meta_info, width_array)
+
+        if employee_address:
+            address = "{} {}, {} {} {}".format(employee_address.street_1, employee_address.street_2, employee_address.city, employee_address.state, employee_address.zipcode)
+            self._write_line_uniform_width([address])
             self._start_new_line()
 
     def _write_not_selected_plan(self, benefit_name):
@@ -459,8 +467,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
         return
 
-    def _write_employee_commuter_info(self, person_model, company_id):
-        company_plans = CompanyCommuterPlan.objects.filter(company=company_id)
+    def _write_employee_commuter_info(self, person_model, company_group_id):
+        company_plans = CompanyGroupCommuterPlan.objects.filter(company_group=company_group_id)
         plan_selected = False
         if (person_model):
             employee_plans = PersonCompanyCommuterPlan.objects.filter(person=person_model.id)

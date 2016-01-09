@@ -424,6 +424,7 @@
     <thead>
       <tr>
         <th><span>Commuter Plan Name</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Document</span></th>
         <th><span>Benefit Enablement</span></th>
         <th><span>Employer Transit Contribution</span></th>
@@ -440,6 +441,8 @@
           ng-click="deleteCommuterPlan(commuterPlan)"
           href="javascript:void(0);"
           confirm="Delete the commuter plan?">X</a>
+        </td>
+        <td><span class="inline" ng-repeat="group in commuterPlan.companyGroups">{{group.company_group.name}};</br></span>
         </td>
         <td class="upload-td">
           <bmuploadmanager
