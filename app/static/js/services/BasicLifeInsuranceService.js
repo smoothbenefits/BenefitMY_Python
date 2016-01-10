@@ -116,26 +116,13 @@ benefitmyService.factory('BasicLifeInsuranceService',
     var saveBasicLifeInsurancePlan = function(planDomainModel) {
         var deferred = $q.defer();
 
-        if(!planDomainModel.id) {
-          // Not existing yet, POST it
-          BasicLifeInsurancePlanRepository.ById.save({id:planDomainModel.user}, planDomainModel
+        BasicLifeInsurancePlanRepository.ById.save({id:planDomainModel.user}, planDomainModel
             , function (successResponse) {
                 deferred.resolve(successResponse);
               }
             , function(errorResponse) {
                 deferred.reject(errorResponse);
-          });
-        }
-        else {
-          // Existing, PUT it
-          BasicLifeInsurancePlanRepository.ById.update({id:planDomainModel.id}, planDomainModel
-            , function (successResponse) {
-                deferred.resolve(successResponse);
-              }
-            , function(errorResponse) {
-                deferred.resolve(errorResponse);
-          });
-        }
+        });
         return deferred.promise;
     };
 
