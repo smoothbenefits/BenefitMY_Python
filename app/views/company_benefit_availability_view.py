@@ -16,6 +16,8 @@ from app.models.insurance.company_ltd_insurance_plan import \
     CompanyLtdInsurancePlan
 from app.models.insurance.company_std_insurance_plan import \
     CompanyStdInsurancePlan
+from app.models.commuter.company_commuter_plan import CompanyCommuterPlan
+from app.models.extra_benefits.company_extra_benefit_plan import CompanyExtraBenefitPlan
 
 from app.serializers.company_serializer import CompanySerializer
 from app.serializers.health_benefits.company_benefit_plan_option_serializer import \
@@ -33,6 +35,10 @@ from app.serializers.insurance.company_ltd_insurance_plan_serializer import \
     CompanyLtdInsurancePlanSerializer
 from app.serializers.insurance.company_std_insurance_plan_serializer import \
     CompanyStdInsurancePlanSerializer
+from app.serializers.commuter.company_commuter_plan_serializer import  \
+    CompanyCommuterPlanSerializer
+from app.serializers.extra_benefits.company_extra_benefit_plan_serializer import \
+    CompanyExtraBenefitPlanSerializer
 
 class CompanyBenefitAvailabilityView(APIView):
     """ Benefit availability for a company """
@@ -85,6 +91,16 @@ class CompanyBenefitAvailabilityView(APIView):
         serializer = CompanyLtdInsurancePlanSerializer(ltd_insurance, required=False, many=True)
         return serializer.data
 
+    def get_commuter_plan(self, company_id):
+        commuter = CompanyCommuterPlan.objects.filter(company=company_id)
+        serializer = CompanyCommuterPlanSerializer(commuter, required=False, many=True)
+        return serializer.data
+
+    def get_extra_benefit(self, company_id):
+        extra_benefit = CompanyExtraBenefitPlan.objects.filter(company=company_id)
+        serializer = CompanyExtraBenefitPlanSerializer(extra_benefit, required=False, many=True)
+        return serializer.data
+
     def get(self, request, company_id, format=None):
         company_info = self.get_company_info(company_id)
 
@@ -105,6 +121,8 @@ class CompanyBenefitAvailabilityView(APIView):
         supplemental_life = self.get_supplimental_life_insurance(company_id)
         std_insurance = self.get_std_insurance(company_id)
         ltd_insurance = self.get_ltd_insurance(company_id)
+        commuter = self.get_commuter_plan(company_id)
+        extra_benefit = self.get_extra_benefit(company_id)
 
         response = {
             "company": company_info,
@@ -117,7 +135,9 @@ class CompanyBenefitAvailabilityView(APIView):
             "basic_life": life_insurance,
             "supplemental_life": supplemental_life,
             "std": std_insurance,
-            "ltd": ltd_insurance
+            "ltd": ltd_insurance,
+            "commuter": commuter,
+            "extra": extra_benefit
         }
 
         return Response(response)

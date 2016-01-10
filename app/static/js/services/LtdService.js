@@ -55,7 +55,7 @@ benefitmyService.factory('LtdService',
             viewModel.stepValue = companyPlanDomainModel.benefit_amount_step;
             viewModel.allowUserSelectAmount = companyPlanDomainModel.user_amount_required;
             viewModel.ageBasedRates = mapCompanyPlanAgeBasedTableDomainToViewModel(companyPlanDomainModel.age_based_rates);
-            viewModel.companyGroups = companyPlanDomainModel.company_group_ltd;
+            viewModel.companyGroups = companyPlanDomainModel.company_groups;
             return viewModel;
         };
 
@@ -187,8 +187,8 @@ benefitmyService.factory('LtdService',
 
         var linkCompanyLtdInsurancePlanToCompanyGroups = function(compLtdPlanId, compGroupPlanModels){
             return CompanyGroupLtdInsurancePlanRepository.ByCompanyPlan.update(
-                {pk:compLtdPlanId}, 
-                compGroupPlanModels, 
+                {pk:compLtdPlanId},
+                compGroupPlanModels,
                 function (successResponse) {
                     return successResponse;
                 }
@@ -204,12 +204,12 @@ benefitmyService.factory('LtdService',
                 CompanyGroupLtdInsurancePlanRepository.ByCompanyGroup.query({companyGroupId:companyGroupId})
                 .$promise.then(function(companyGroupPlans) {
                     var resultPlans = [];
-                    
+
                     _.each(companyGroupPlans, function(companyGroupPlan) {
                         var companyPlan = companyGroupPlan.company_ltd_insurance_plan;
                         resultPlans.push(mapCompanyPlanDomainToViewModel(companyPlan));
                     });
-                    
+
                     deferred.resolve(resultPlans);
                 },
                 function(failedResponse) {

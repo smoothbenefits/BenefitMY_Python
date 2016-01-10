@@ -14,12 +14,13 @@ class CompanyStdInsurancePlanSerializer(HashPkSerializerBase):
     std_insurance_plan = StdInsurancePlanSerializer()
     age_based_rates = CompanyStdAgeBasedRateSerializer(many=True)
     company = HashField(source="company.id")
-    company_group_std = CompanyGroupStdInsurancePlanGroupOnlySerializer(many=True)
+    company_groups = CompanyGroupStdInsurancePlanGroupOnlySerializer(
+        source='company_group_std', many=True)
 
     class Meta:
         model = CompanyStdInsurancePlan
         fields = ('id',
-                  'company_group_std',
+                  'company_groups',
                   'elimination_period_in_days',
                   'duration',
                   'percentage_of_salary',

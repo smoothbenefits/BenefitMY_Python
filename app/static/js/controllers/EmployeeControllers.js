@@ -956,68 +956,18 @@ var employeeBenefitsSignup = employeeControllers.controller(
 
       var employeeId = $scope.employeeId;
 
-      var basicLifePlans;
-      var optionalLifePlans;
-      var stdPlans;
-      var ltdPlans;
-      var fsaPlans;
-      var hsaPlans;
-      var hraPlans;
-      var commuterPlans;
-      var extraBenefitPlans;
-      var company;
-
-      var promise = $scope.companyPromise.then(function(comp){
-        company = comp;
-        EmployeeBenefitsAvailabilityService.getEmployeeAvailableBenefits(
-          comp.id,
-          employeeId)
-        .then(function(availableBenefits){
+      $scope.companyPromise.then(function(company) {
+        return company.id;
+      }).then(function(companyId) {
+        return EmployeeBenefitsAvailabilityService.getEmployeeAvailableBenefits(companyId, employeeId)
+        .then(function(availableBenefits) {
           if(!availableBenefits){
             alert("You do not have any benefits to enroll. Back to the dashboard page");
             $state.go('/');
           }
+          return availableBenefits;
         });
-        return BasicLifeInsuranceService.getBasicLifeInsurancePlansForCompanyGroup(company, $scope.userCompanyGroupId);
-      })
-      .then(function(basicPlans) {
-        basicLifePlans = basicPlans;
-        return SupplementalLifeInsuranceService.getPlansForCompanyGroup($scope.userCompanyGroupId);
-      })
-      .then(function(supplementalPlans) {
-        supplementalLifePlans = supplementalPlans;
-        return StdService.getStdPlansForCompanyGroup($scope.userCompanyGroupId);
-      })
-      .then(function(stdPlansResponse) {
-        stdPlans = stdPlansResponse;
-        return LtdService.getLtdPlansForCompanyGroup($scope.userCompanyGroupId);
-      })
-      .then(function(ltdPlansResponse) {
-        ltdPlans = ltdPlansResponse;
-        return FsaService.getFsaPlanForCompanyGroup($scope.userCompanyGroupId);
-      })
-      .then(function(fsaPlansResponse) {
-        fsaPlans = fsaPlansResponse;
-        return HraService.getPlansForCompanyGroup($scope.userCompanyGroupId);
-      })
-      .then(function(hraPlansResponse) {
-        hraPlans = hraPlansResponse;
-        return CommuterService.getPlansForCompanyGroup($scope.userCompanyGroupId);
-      })
-      .then(function(commuterPlansResponse) {
-        commuterPlans = commuterPlansResponse;
-        return ExtraBenefitService.getPlansForCompany(company.id);
-      })
-      .then(function(extraBenefitPlansResponse) {
-        extraBenefitPlans = extraBenefitPlansResponse;
-        return HsaService.GetCompanyHsaPlanByCompany(company.id);
-      })
-      .then(function(hsaPlansResponse) {
-        hsaPlans = hsaPlansResponse;
-      });
-
-      promise.then(function(result){
-
+      }).then(function(availableBenefits) {
         $scope.tabs = [];
         $scope.tabs.push({
           "id": 1,
@@ -1025,7 +975,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           "state":"employee_benefit_signup.health"
         });
 
-        if (hraPlans.length > 0) {
+        if (availableBenefits['hra']) {
           $scope.tabs.push({
             "id": 2,
             "heading": "HRA",
@@ -1033,7 +983,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if(basicLifePlans && basicLifePlans.length > 0) {
+        if(availableBenefits['basic_life']) {
           $scope.tabs.push({
             "id": 3,
             "heading": "Basic Life (AD&D)",
@@ -1041,7 +991,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if (supplementalLifePlans.length > 0) {
+        if (availableBenefits['supplemental_life']) {
           $scope.tabs.push({
             "id": 4,
             "heading": "Suppl. Life",
@@ -1049,7 +999,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if (hsaPlans.length > 0) {
+        if (availableBenefits['hsa']) {
           $scope.tabs.push({
             "id": 5,
             "heading": "HSA",
@@ -1057,7 +1007,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if (fsaPlans.length > 0) {
+        if (availableBenefits['fsa']) {
           $scope.tabs.push({
             "id": 6,
             "heading": "FSA",
@@ -1065,7 +1015,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if (stdPlans.length > 0) {
+        if (availableBenefits['std']) {
           $scope.tabs.push({
             "id": 7,
             "heading": "STD",
@@ -1073,7 +1023,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if (ltdPlans.length > 0) {
+        if (availableBenefits['ltd']) {
           $scope.tabs.push({
             "id": 8,
             "heading": "LTD",
@@ -1081,7 +1031,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if (commuterPlans.length > 0) {
+        if (availableBenefits['commuter']) {
           $scope.tabs.push({
             "id": 9,
             "heading": "Commuter",
@@ -1089,7 +1039,7 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        if (extraBenefitPlans.length > 0) {
+        if (availableBenefits['extra']) {
           $scope.tabs.push({
             "id": 10,
             "heading": "Extra Benefits",
@@ -1107,7 +1057,6 @@ var employeeBenefitsSignup = employeeControllers.controller(
         if ($scope.tabs.length > 0) {
           $scope.tabs[0].active = true;
         }
-
       });
 
       $scope.go_to_state = function(state) {
