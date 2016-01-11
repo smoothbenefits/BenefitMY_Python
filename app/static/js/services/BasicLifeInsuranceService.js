@@ -113,7 +113,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
         return domainModel;
     };
 
-    var saveBasicLifeInsurancePlan = function(planDomainModel) {
+    var createBasicLifeInsurancePlan = function(planDomainModel) {
         var deferred = $q.defer();
 
         BasicLifeInsurancePlanRepository.ById.save({id:planDomainModel.user}, planDomainModel
@@ -296,7 +296,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
         var deferred = $q.defer();
 
         var planModel = mapCreatePlanViewToPlanDomainModel(createPlanViewModel);
-        saveBasicLifeInsurancePlan(planModel).then(
+        createBasicLifeInsurancePlan(planModel).then(
             function(createdPlan) {
                 // Record the new plan Id
                 createPlanViewModel.planId = createdPlan.id;
