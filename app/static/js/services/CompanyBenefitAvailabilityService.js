@@ -35,6 +35,8 @@ benefitmyService.factory('CompanyBenefitAvailabilityService',
       viewModel['ltd'] = filterByCompanyGroup(domainModel.ltd, companyGroupId);
       viewModel['basic_life'] = filterByCompanyGroup(domainModel.basic_life, companyGroupId);
       viewModel['hsa'] = filterByCompanyGroup(domainModel.hsa, companyGroupId);
+      viewModel['commuter'] = filterByCompanyGroup(domainModel.commuter, companyGroupId);
+      viewModel['extra'] = (domainModel.extra.length > 0);
 
       return viewModel;
     };
