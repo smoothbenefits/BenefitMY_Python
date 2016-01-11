@@ -690,6 +690,13 @@ var brokerAddBenefitControllerBase = brokersControllers.controller(
     .$promise.then(function(company){
       $scope.company = company;
     });
+
+    $scope.buttonDisabled = function(){
+      return $scope.form.$invalid || 
+        !$scope.newPlan ||
+        !$scope.newPlan.selectedCompanyGroups ||
+        $scope.newPlan.selectedCompanyGroups.length == 0;
+    };
   }]);
 
 var brokerAddBasicLifeInsurance = brokersControllers.controller(
@@ -821,11 +828,6 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
       });
       $scope.copyFromEmployee();
       $scope.newPlan.planRates.childRate.ratePer10000 = Math.round(23 * Math.random());
-    };
-
-    $scope.buttonDisabled = function(){
-      return $scope.form.$invalid || !$scope.newPlan.selectedCompanyGroups
-             || $scope.newPlan.selectedCompanyGroups.length == 0;
     };
 
     // Need the user information for the current user (broker)
@@ -993,11 +995,6 @@ var brokerAddFsaPlan = brokersControllers.controller(
     $scope.companyId = $stateParams.clientId;
     $scope.newPlan = {};
 
-    $scope.buttonDisabled = function(){
-      return !$scope.newPlan.name || !$scope.newPlan.selectedCompanyGroups
-             || $scope.newPlan.selectedCompanyGroups.length == 0;
-    };
-
     $scope.saveNewPlan = function() {
       UserService.getCurUserInfo().then(function(userInfo) {
         var broker = userInfo.user.id;
@@ -1027,9 +1024,6 @@ var brokerAddHsaPlan = brokersControllers.controller('brokerAddHsaPlanController
     // Label text for the company group selection widget
     $scope.companyGroupSelectionWidgetLabel = "Select Company Benefit Groups";
 
-    $scope.buttonDisabled = function(){
-      return $scope.form.$invalid || !$scope.newPlan.selectedCompanyGroups || $scope.newPlan.selectedCompanyGroups.length == 0;
-    };
 
     $scope.addPlan = function() {
       HsaService.CreateHsaPlanForCompany(companyId, $scope.newPlan).then(function(response) {
@@ -1067,9 +1061,6 @@ var brokerAddHraPlanController = brokersControllers.controller(
         $scope.newPlan = blankCompanyPlan;
     });
 
-    $scope.buttonDisabled = function(){
-      return $scope.form.$invalid || !$scope.newPlan.selectedCompanyGroups || $scope.newPlan.selectedCompanyGroups.length == 0;
-    };
     // Need the user information for the current user (broker)
     $scope.addPlan = function() {
         HraService.addPlanForCompany($scope.newPlan, $scope.companyId).then(
@@ -1114,9 +1105,6 @@ var brokerAddCommuterPlanController = brokersControllers.controller(
         $scope.newPlan = blankCompanyPlan;
     });
 
-    $scope.buttonDisabled = function(){
-      return $scope.form.$invalid || !$scope.newPlan.selectedCompanyGroups || $scope.newPlan.selectedCompanyGroups.length == 0;
-    };
 
     // Need the user information for the current user (broker)
     $scope.addPlan = function() {
