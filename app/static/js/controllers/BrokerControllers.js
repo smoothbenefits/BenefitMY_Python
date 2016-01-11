@@ -690,6 +690,13 @@ var brokerAddBenefitControllerBase = brokersControllers.controller(
     .$promise.then(function(company){
       $scope.company = company;
     });
+
+    $scope.buttonDisabled = function(){
+      return $scope.form.$invalid || 
+        !$scope.newPlan ||
+        !$scope.newPlan.selectedCompanyGroups ||
+        $scope.newPlan.selectedCompanyGroups.length == 0;
+    };
   }]);
 
 var brokerAddBasicLifeInsurance = brokersControllers.controller(
@@ -988,11 +995,6 @@ var brokerAddFsaPlan = brokersControllers.controller(
     $scope.companyId = $stateParams.clientId;
     $scope.newPlan = {};
 
-    $scope.buttonDisabled = function(){
-      return !$scope.newPlan.name || !$scope.newPlan.selectedCompanyGroups
-             || !$scope.newPlan.selectedCompanyGroups.length > 0;
-    };
-
     $scope.saveNewPlan = function() {
       UserService.getCurUserInfo().then(function(userInfo) {
         var broker = userInfo.user.id;
@@ -1021,6 +1023,7 @@ var brokerAddHsaPlan = brokersControllers.controller('brokerAddHsaPlanController
 
     // Label text for the company group selection widget
     $scope.companyGroupSelectionWidgetLabel = "Select Company Benefit Groups";
+
 
     $scope.addPlan = function() {
       HsaService.CreateHsaPlanForCompany(companyId, $scope.newPlan).then(function(response) {
@@ -1101,6 +1104,7 @@ var brokerAddCommuterPlanController = brokersControllers.controller(
     CommuterService.getBlankPlanForCompany($scope.companyId).then(function(blankCompanyPlan) {
         $scope.newPlan = blankCompanyPlan;
     });
+
 
     // Need the user information for the current user (broker)
     $scope.addPlan = function() {
