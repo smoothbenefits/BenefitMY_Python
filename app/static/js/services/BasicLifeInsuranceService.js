@@ -113,29 +113,16 @@ benefitmyService.factory('BasicLifeInsuranceService',
         return domainModel;
     };
 
-    var saveBasicLifeInsurancePlan = function(planDomainModel) {
+    var createBasicLifeInsurancePlan = function(planDomainModel) {
         var deferred = $q.defer();
 
-        if(!planDomainModel.id) {
-          // Not existing yet, POST it
-          BasicLifeInsurancePlanRepository.ById.save({id:planDomainModel.user}, planDomainModel
+        BasicLifeInsurancePlanRepository.ById.save({id:planDomainModel.user}, planDomainModel
             , function (successResponse) {
                 deferred.resolve(successResponse);
               }
             , function(errorResponse) {
                 deferred.reject(errorResponse);
-          });
-        }
-        else {
-          // Existing, PUT it
-          BasicLifeInsurancePlanRepository.ById.update({id:planDomainModel.id}, planDomainModel
-            , function (successResponse) {
-                deferred.resolve(successResponse);
-              }
-            , function(errorResponse) {
-                deferred.resolve(errorResponse);
-          });
-        }
+        });
         return deferred.promise;
     };
 
@@ -309,7 +296,7 @@ benefitmyService.factory('BasicLifeInsuranceService',
         var deferred = $q.defer();
 
         var planModel = mapCreatePlanViewToPlanDomainModel(createPlanViewModel);
-        saveBasicLifeInsurancePlan(planModel).then(
+        createBasicLifeInsurancePlan(planModel).then(
             function(createdPlan) {
                 // Record the new plan Id
                 createPlanViewModel.planId = createdPlan.id;
