@@ -1,7 +1,7 @@
 DO $$
 BEGIN
 
--- Find all company LTD plans that currently are 
+-- Find all company LTD plans that currently are
 -- not linked to any company groups
 DROP TABLE IF EXISTS orphan_company_plans;
 
@@ -27,4 +27,4 @@ INNER JOIN default_company_groups dcg
 ON ocp.company_id = dcg.company_id;
 
 END
-$$
+$$;

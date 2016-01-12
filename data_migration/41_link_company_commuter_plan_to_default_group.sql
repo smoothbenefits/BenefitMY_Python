@@ -1,17 +1,15 @@
 DO $$
 BEGIN
 
--- Find all company basic life plans that currently are 
+-- Find all company basic life plans that currently are
 -- not linked to any company groups
 DROP TABLE IF EXISTS orphan_company_plans;
 
 CREATE TEMP TABLE orphan_company_plans AS
-SELECT DISTINCT clip.id AS company_plan_id, clip.company_id
+SELECT DISTINCT cp.id AS company_plan_id, cp.company_id
 FROM app_companycommuterplan cp
 LEFT OUTER JOIN app_companygroupcommuterplan cgp
 ON cp.id = cgp.company_commuter_plan_id
-LEFT OUTER JOIN app_commuterplan p
-ON p.id = cp.commuter_plan_id
 WHERE cgp.company_commuter_plan_id IS NULL;
 
 -- Get company to 'Default' company group mappings
@@ -29,4 +27,4 @@ INNER JOIN default_company_groups dcg
 ON ocp.company_id = dcg.company_id;
 
 END
-$$
+$$;
