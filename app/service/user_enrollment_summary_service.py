@@ -67,7 +67,7 @@ class UserEnrollmentSummaryService(object):
         if (not self.company_group):
             return None
 
-        group_plans = self.company_group.company_group_hra.all()
+        group_plans = self.company_group.hra_plan.all()
         if(group_plans.exists()):
             return PersonCompanyHraPlan.objects.filter(person=self.person_id)
         else:
@@ -77,7 +77,7 @@ class UserEnrollmentSummaryService(object):
         if (not self.company_group):
             return None
 
-        group_plans = self.company_group.company_group_fsa.all()
+        group_plans = self.company_group.fsa_plan.all()
         if (group_plans.exists()):
             return FSA.objects.filter(user=self.user_id)
         else:
@@ -97,7 +97,7 @@ class UserEnrollmentSummaryService(object):
         if (not self.company_group):
             return None
 
-        group_plans = self.company_group.company_group_suppl_life_insurance.all()
+        group_plans = self.company_group.suppl_life_insurance_plan.all()
         if(group_plans.exists()):
             return PersonCompSupplLifeInsurancePlan.objects.filter(person=self.person_id)
         else:
@@ -122,10 +122,10 @@ class UserEnrollmentSummaryService(object):
             return None
 
     def get_hsa_plan(self):
-        if (not company_group):
+        if not self.company_group:
             return None
 
-        group_plans = CompanyGroupHsaPlan.objects.filter(company_group=self.company_group.id)
+        group_plans = self.company_group.company_hsa_plan.all()
         if (group_plans.exists()):
             return PersonCompanyGroupHsaPlan.objects.filter(person=self.person_id)
         else:
