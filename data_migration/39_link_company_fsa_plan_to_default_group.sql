@@ -6,7 +6,7 @@ BEGIN
 DROP TABLE IF EXISTS orphan_company_plans;
 
 CREATE TEMP TABLE orphan_company_plans AS
-SELECT DISTINCT clip.id AS company_plan_id, clip.company_id
+SELECT DISTINCT cp.id AS company_plan_id, cp.company_id
 FROM app_companyfsaplan cp
 LEFT OUTER JOIN app_companygroupfsaplan cgp
 ON cp.id = cgp.company_fsa_plan_id
@@ -29,4 +29,4 @@ INNER JOIN default_company_groups dcg
 ON ocp.company_id = dcg.company_id;
 
 END
-$$
+$$;

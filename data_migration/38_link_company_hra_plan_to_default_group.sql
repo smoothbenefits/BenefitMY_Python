@@ -1,12 +1,12 @@
 DO $$
 BEGIN
 
--- Find all company basic life plans that currently are 
+-- Find all company basic life plans that currently are
 -- not linked to any company groups
 DROP TABLE IF EXISTS orphan_company_plans;
 
 CREATE TEMP TABLE orphan_company_plans AS
-SELECT DISTINCT clip.id AS company_plan_id, clip.company_id
+SELECT DISTINCT cp.id AS company_plan_id, cp.company_id
 FROM app_companyhraplan cp
 LEFT OUTER JOIN app_companygrouphraplan cgp
 ON cp.id = cgp.company_hra_plan_id
