@@ -10,6 +10,7 @@ from app.view_models.report.person_info import PersonInfo
 from app.view_models.report.company_info import CompanyInfo
 from app.view_models.report.employee_1095_c_data import Employee1095CData
 from app.view_models.report.company_1094_c_data import Company1094CData
+from django.http import Http404
 
 
 class ReportViewModelFactory(object):
@@ -17,8 +18,11 @@ class ReportViewModelFactory(object):
         return PersonInfo(self._get_person_by_user(employee_user_id))
 
     def get_company_info(self, company_id):
-        company_model = Company.objects.get(pk=company_id)
-        return CompanyInfo(company_model)
+        try:
+            company_model = Company.objects.get(pk=company_id)
+            return CompanyInfo(company_model)
+        except Company.DoesNotExist:
+            raise Http404
 
     def get_employee_company_info(self, employee_user_id):
         return CompanyInfo(self._get_company_by_user(employee_user_id))

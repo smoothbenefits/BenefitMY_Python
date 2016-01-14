@@ -1,0 +1,40 @@
+import json
+from django.test import TestCase
+from django.core.urlresolvers import reverse
+from app.views.tests.view_test_base import ViewTestBase
+
+class CompanyUsersHCHPExcelTestCase(TestCase, ViewTestBase):
+    # your fixture files here
+    fixtures = ['24_person', '49_period_definition', '10_company', '23_auth_user', '13_benefit_type',
+                '17_supplemental_life_insurance_condition', '15_benefit_policy_key',
+                '16_benefit_policy_type', 'sys_application_feature',
+                '21_benefit_plan', '22_benefit_details', '26_supplemental_life_insurance',
+                '31_company_benefit_plan_option', '32_enrolled', '34_company_user',
+                '37_fsa_plan', '38_supplemental_life_rate', '39_company_supplement_life_insurance',
+                '41_user_company_benefit_plan_option', '42_company_fsa', '43_fsa',
+                '44_person_company_suppl_life', '45_suppl_life_beneficiary', '46_hra_plan',
+                '47_company_hra_plan', '48_person_company_hra_plan', 'company_features',
+                'life_insurance', 'ltd_insurance', 'std_insurance', 'waived_benefit', 'direct_deposit',
+                'user_bank_account']
+
+    def test_get_company_hchp_excel_success(self):
+        if self.client.login(username='user2@benefitmy.com', password='foobar'):
+            response = self.client.get(reverse('company_hphc_excel_api',
+                                               kwargs={'pk': self.normalize_key(1)}))
+            self.assertIsNotNone(response)
+            self.assertEqual(response.status_code, 200)
+        else:
+            self.assertFalse("login failed!")
+
+''' This comment out test case would test the permission setting of this URL. 
+    Currently, the permission setting for this view is commented out. Why?
+
+    def test_get_company_hchp_excel_non_exist(self):
+        if self.client.login(username='user2@benefitmy.com', password='foobar'):
+            response = self.client.get(reverse('company_hphc_excel_api',
+                                               kwargs={'pk': self.normalize_key(10)}))
+            self.assertIsNotNone(response)
+            self.assertEqual(response.status_code, 403)
+        else:
+            self.assertFalse("login failed!")
+'''

@@ -9,6 +9,8 @@ from app.models.aca.company_1095_c import PERIODS
 from app.models.employee_profile import EmployeeProfile
 from datetime import date, timedelta
 from copy import deepcopy
+from django.http import Http404
+
 
 User = get_user_model()
 FORM_YEAR = 2015
@@ -23,6 +25,9 @@ class Form1095CView(ReportExportViewBase):
         company_info = model_factory.get_employee_company_info(employee_user_id)
 
         company_model = self._get_company_by_user(employee_user_id)
+        if not company_model:
+            raise Http404
+
         employee_profile = self._get_employee_profile_by_user_id(employee_user_id, company_model.id)
 
         # Populate the form fields
