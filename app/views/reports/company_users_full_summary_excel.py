@@ -11,19 +11,20 @@ from django.contrib.auth import get_user_model
 import xlwt
 
 from app.models.company_user import CompanyUser
+from app.models.company_group_member import CompanyGroupMember
 from app.models.person import Person, SELF, SPOUSE, LIFE_PARTNER
 from app.models.phone import Phone
 from app.models.address import Address
 from app.models.employee_profile import EmployeeProfile
-from app.models.user_company_benefit_plan_option import \
+from app.models.health_benefits.user_company_benefit_plan_option import \
     UserCompanyBenefitPlanOption
-from app.models.company_benefit_plan_option import CompanyBenefitPlanOption
-from app.models.user_company_waived_benefit import UserCompanyWaivedBenefit
+from app.models.health_benefits.company_benefit_plan_option import CompanyBenefitPlanOption
+from app.models.health_benefits.user_company_waived_benefit import UserCompanyWaivedBenefit
 from app.models.insurance.user_company_life_insurance_plan import \
     UserCompanyLifeInsurancePlan
-from app.models.enrolled import Enrolled
-from app.models.benefit_plan import BenefitPlan
-from app.models.benefit_type import BenefitType
+from app.models.health_benefits.enrolled import Enrolled
+from app.models.health_benefits.benefit_plan import BenefitPlan
+from app.models.health_benefits.benefit_type import BenefitType
 from app.models.insurance.company_life_insurance_plan import CompanyLifeInsurancePlan
 from app.models.insurance.life_insurance_plan import LifeInsurancePlan
 from app.models.insurance.supplemental_life_insurance_plan import SupplementalLifeInsurancePlan
@@ -76,6 +77,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Benefit Start Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Annual Salary')
         col_num = self._write_field(excelSheet, 0, col_num, 'Employment Type')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Member of Group')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
         col_num = self._write_field(excelSheet, 0, col_num, 'Work Phone')
         col_num = self._write_field(excelSheet, 0, col_num, 'Home Phone')
@@ -164,6 +166,12 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Optional Life Last Update Reason Notes')
         col_num = self._write_field(excelSheet, 0, col_num, 'Optional Life Last Update Date')
 
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Plan Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Plan Amount')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Reason')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Reason Notes')
+        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Date')
+
         col_num = self._write_field(excelSheet, 0, col_num, 'FSA Amount')
         col_num = self._write_field(excelSheet, 0, col_num, 'Dependent FSA Amount')
         col_num = self._write_field(excelSheet, 0, col_num, 'Pay Withhold Amount (Per Pay Period)')
@@ -175,12 +183,6 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Reason')
         col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Reason Notes')
         col_num = self._write_field(excelSheet, 0, col_num, 'HRA Last Update Date')
-
-        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Plan Name')
-        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Plan Amount')
-        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Reason')
-        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Reason Notes')
-        col_num = self._write_field(excelSheet, 0, col_num, 'HSA Last Update Date')
 
         col_num = self._write_field(excelSheet, 0, col_num, 'Commuter Plan Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Transit (Pre-Tax) Amount/Month')
@@ -287,6 +289,9 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         if write_employee_profile:
             col_num = self._write_employee_profile_info(person_model, excelSheet, row_num, col_num)
 
+        if employee_user_id:
+            col_num = self._write_employee_group_info(employee_user_id, excelSheet, row_num, col_num)
+
         return col_num
 
     def _write_person_PCP_number(self, person_model, excelSheet, row_num, col_num):
@@ -320,6 +325,13 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
             return col_num + 3
 
         return col_num + 3
+
+    def _write_employee_group_info(self, employee_user_id, excelSheet, row_num, col_num):
+        if employee_user_id:
+            groups = CompanyGroupMember.objects.filter(user=employee_user_id)
+            groups_string = '; '.join([x.company_group.name for x in groups])
+            return self._write_field(excelSheet, row_num, col_num, groups_string)
+        return col_num + 1
 
     def _write_person_email_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
         if (person_model and person_model.email):

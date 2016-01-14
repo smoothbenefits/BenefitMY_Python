@@ -5,6 +5,7 @@ from ..hash_pk_serializer_base import HashPkSerializerBase
 from ltd_insurance_plan_serializer import (
     LtdInsurancePlanSerializer,
     LtdInsurancePlanPostSerializer)
+from company_group_ltd_insurance_plan_group_only_serializer import CompanyGroupLtdInsurancePlanGroupOnlySerializer
 from company_ltd_age_based_rate_serializer import CompanyLtdAgeBasedRateSerializer, CompanyLtdAgeBasedRatePostSerializer
 from ..custom_fields.hash_field import HashField
 
@@ -13,10 +14,13 @@ class CompanyLtdInsurancePlanSerializer(HashPkSerializerBase):
     ltd_insurance_plan = LtdInsurancePlanSerializer()
     company = HashField(source="company.id")
     age_based_rates = CompanyLtdAgeBasedRateSerializer(many=True)
+    company_groups = CompanyGroupLtdInsurancePlanGroupOnlySerializer(
+        source='company_group_ltd', many=True)
 
     class Meta:
         model = CompanyLtdInsurancePlan
         fields = ('id',
+                  'company_groups',
                   'elimination_period_in_months',
                   'duration',
                   'percentage_of_salary',

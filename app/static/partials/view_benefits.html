@@ -35,6 +35,12 @@
           </td>
         </tr>
         <tr class="title-row">
+          <td colspan="2" class="plan-row-head"><span>Benefit Group(s)</span></td>
+          <td ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" colspan="6" style="text-align:center;">
+            <span class="inline" ng-repeat="group in benefitName.companyGroups">{{group.company_group.name}};</br></span>
+          </td>
+        </tr>
+        <tr class="title-row">
           <td colspan="2" class="plan-row-head"><span>PCP Search Link</span></td>
           <td ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" colspan="6" style="text-align:center;">
             <a ng-if="benefitName.pcpLink" ng-href="{{benefitName.pcpLink}}" target="_blank">{{benefitName.pcpLink}}</a>
@@ -73,6 +79,7 @@
       <thead>
         <tr>
           <th><span>Health Reimbursement Accounts (HRA)</span></th>
+          <th><span>Benefit Group(s)</span></th>
           <th><span>Description</span></th>
           <td><span>Document</span></td>
         </tr>
@@ -86,6 +93,8 @@
                ng-click="deleteHraPlan(hraPlan)"
                href="javascript:void(0);"
                confirm="Delete the HRA plan?">X</a>
+          </td>
+          <td><span class="inline" ng-repeat="group in hraPlan.companyGroups">{{group.company_group.name}};</br></span>
           </td>
           <td >
             {{hraPlan.planDescription}}
@@ -109,6 +118,7 @@
     <thead>
       <tr>
         <th><span>{{benefitArray.type}}</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Summary Documents</span></th>
         <th width="250"><span>Types</span></th>
         <th width="180"><span>Total Premiums<br />(per month)</span></th>
@@ -126,6 +136,7 @@
              href="javascript:void(0);"
              confirm="Delete the benefit?">X</a>
         </td>
+        <td><span class="inline" ng-repeat="group in benefit.companyGroups">{{group.company_group.name}};</br></span></td>
         <td class="upload-td">
           <bmuploadmanager
           ng-if="benefitArray.type==='Dental'"
@@ -243,6 +254,7 @@
       <tr>
         <th><span>STD Plan Name</span></th>
         <th><span>Document</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Benefit Amount</span></th>
         <th><span>Max Benefit</span></th>
         <th><span>Duration</span></th>
@@ -269,6 +281,7 @@
           hide-type="true">
         </bmuploadmanager>
       </td>
+      <td><span class="inline" ng-repeat="group in stdPlan.companyGroups">{{group.company_group.name}};</br></span></td>
       <td>{{stdPlan.percentageOfSalary}}% of Base Salary</td>
       <td>${{stdPlan.maxBenefitWeekly}}/Week</td>
       <td>{{stdPlan.duration}} Days</td>
@@ -290,6 +303,7 @@
       <tr>
         <th><span>LTD Plan Name</span></th>
         <th><span>Document</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Benefit Amount</span></th>
         <th><span>Max Benefit</span></th>
         <th><span>Duration</span></th>
@@ -316,6 +330,7 @@
           hide-type="true">
         </bmuploadmanager>
       </td>
+      <td><span class="inline" ng-repeat="group in ltdPlan.companyGroups">{{group.company_group.name}};</br></span></td>
       <td>{{ltdPlan.percentageOfSalary}}% of Base Salary</td>
       <td>${{ltdPlan.maxBenefitMonthly}}/Month</td>
       <td>{{ltdPlan.duration}} Months or Until Retirement Age</td>
@@ -336,6 +351,7 @@
     <thead>
       <tr>
         <th><span>FSA Plan Name</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Document</span></th>
       </tr>
     </thead>
@@ -348,6 +364,8 @@
              ng-click="deleteFsaPlan(fsaPlan)"
              href="javascript:void(0);"
              confirm="Delete the FSA plan?">X</a>
+        </td>
+        <td><span class="inline" ng-repeat="group in fsaPlan.companyGroups">{{group.company_group.name}};</br></span>
         </td>
         <td class="upload-td">
           <bmuploadmanager
@@ -406,6 +424,7 @@
     <thead>
       <tr>
         <th><span>Commuter Plan Name</span></th>
+        <th><span>Benefit Group(s)</span></th>
         <th><span>Document</span></th>
         <th><span>Benefit Enablement</span></th>
         <th><span>Employer Transit Contribution</span></th>
@@ -422,6 +441,8 @@
           ng-click="deleteCommuterPlan(commuterPlan)"
           href="javascript:void(0);"
           confirm="Delete the commuter plan?">X</a>
+        </td>
+        <td><span class="inline" ng-repeat="group in commuterPlan.companyGroups">{{group.company_group.name}};</br></span>
         </td>
         <td class="upload-td">
           <bmuploadmanager

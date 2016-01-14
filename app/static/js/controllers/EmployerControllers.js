@@ -1460,7 +1460,7 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
         });
 
         // STD
-        StdService.getUserEnrolledStdPlanByUser($scope.employee.id, $scope.company.id).then(function(response){
+        StdService.getUserEnrolledStdPlanByUser($scope.employee.id).then(function(response){
           $scope.employee.userStdPlan = response;
         });
 
@@ -1479,7 +1479,7 @@ var employerEmployeeSelected = employersController.controller('employerEmployeeS
         });
 
         // Commuter
-        CommuterService.getPersonPlanByUser($scope.employee.id, $scope.company.id).then(function(plan) {
+        CommuterService.getPersonPlanByUser($scope.employee.id).then(function(plan) {
           if(plan){
             $scope.employee.commuterPlan = plan;
             $scope.employee.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.employee.commuterPlan);

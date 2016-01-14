@@ -1,0 +1,202 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 1
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 2
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 3
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 4
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 5
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 6
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 7
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 8
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 8
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 9
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 9
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 10
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 10
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 11
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 11
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 12
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 12
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 13
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 13
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 14
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 14
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 15
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 15
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 2,
+      "company_benefit_plan_option": 16
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 16
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 1,
+      "company_benefit_plan_option": 1
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 17
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 1,
+      "company_benefit_plan_option": 2
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 18
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 1,
+      "company_benefit_plan_option": 3
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 19
+  },
+  {
+    "fields": {
+      "created_at": "2015-04-24T16:16:02.760Z",
+      "updated_at": "2015-04-24T16:16:02.760Z",
+      "company_group": 1,
+      "company_benefit_plan_option": 4
+    },
+    "model": "app.companygroupbenefitplanoption",
+    "pk": 20
+  }
+]

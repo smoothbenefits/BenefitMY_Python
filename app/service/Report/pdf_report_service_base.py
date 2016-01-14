@@ -189,7 +189,7 @@ class PdfReportServiceBase(ReportServiceBase):
         result = text
         if (text is None):
             result = ''
-        return str(result)
+        return unicode(result)
 
     def _normalize_dollar_amount(self, text):
         result = text
