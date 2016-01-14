@@ -78,3 +78,11 @@ class SendEmailService(object):
         if (len(person) > 0 and person[0].email):
             email = person[0].email
         return email
+
+    ''' Get a basic version of email context data that contain
+        some commonly used information such as site URL
+    '''
+    def get_base_email_context_data(self):
+        return {
+            'site_url':settings.SITE_URL
+        }
