@@ -81,9 +81,12 @@
         </div>
       </div>
       <div class="row">
+        <bm-company-group-selection company-id="companyId" label-text="companyGroupSelectionWidgetLabel"  selected-groups-model="newPlan.selectedCompanyGroups" show-top-separation-line></bm-company-group-selection>
+      </div>
+      <div class="row">
         <div class="col-sm-6">
           <div class="submit-box" style="max-width: 200px;">
-            <a ng-click="addPlan()" class="btn green" ng-disabled="form.$invalid">Add</a>
+            <a ng-click="addPlan()" class="btn green" ng-disabled="buttonDisabled()">Add</a>
           </div>
         </div>
       </div>

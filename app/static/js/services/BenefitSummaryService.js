@@ -200,9 +200,17 @@ benefitmyService.factory('BenefitSummaryService',
             return keyValue[1];
           });
 
+          // These benefit types should NOT be considered
+          // when checking employee enrollment status
+          var excludedTypes = ['commuter', 'extra'];
+
           // Loop through offered benefits and fill in any unselected gap
           _.each(offeredBenefits, function(companyBenefitKeyValue) {
             var offeredBenefitType = companyBenefitKeyValue[0];
+
+            if (_.contains(excludedTypes, offeredBenefitType)) {
+              return;
+            }
 
             if (!personEnrollment[offeredBenefitType]) {
               personEnrollment[offeredBenefitType] = {

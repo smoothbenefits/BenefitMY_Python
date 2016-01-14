@@ -19,7 +19,7 @@ BenefitMyApp.directive('bmCommuterElection', function() {
 
         UserService.getCurUserInfo()
         .then(function(userInfo){
-            CommuterService.getPersonPlanByUser(userInfo.user.id, userInfo.currentRole.company.id, true)
+            CommuterService.getPersonPlanByUser(userInfo.user.id, true)
             .then(function(personPlan) {
                 $scope.personPlan = personPlan;
 
