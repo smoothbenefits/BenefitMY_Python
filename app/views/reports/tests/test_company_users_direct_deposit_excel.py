@@ -30,7 +30,7 @@ class CompanyUsersDirectDepositExcelTestCase(TestCase, ViewTestBase):
     def test_get_direct_deposit_excel_non_exist(self):
         if self.client.login(username='user2@benefitmy.com', password='foobar'):
             response = self.client.get(reverse('company_direct_deposit_excel_api',
-                                               kwargs={'pk': self.normalize_key(10)}))
+                                               kwargs={'pk': self.normalize_key(1000)}))
             self.assertIsNotNone(response)
             self.assertEqual(response.status_code, 403)
         else:

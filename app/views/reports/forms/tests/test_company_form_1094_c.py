@@ -21,7 +21,7 @@ class CompanyForm1094CTestCase(TestCase, ViewTestBase):
     def test_get_company_form_1094_c_non_exist(self):
         if self.client.login(username='user2@benefitmy.com', password='foobar'):
             response = self.client.get(reverse('company_1094_c_form_api',
-                                               kwargs={'pk': self.normalize_key(10)}))
+                                               kwargs={'pk': self.normalize_key(1000)}))
             self.assertIsNotNone(response)
             self.assertEqual(response.status_code, 404)
         else:
