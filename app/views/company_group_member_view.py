@@ -26,6 +26,7 @@ class CompanyGroupMemberView(APIView):
 
     def put(self, request, pk, format=None):
         company_group_member = self._get_object(pk)
+        original_group = company_group_member.company_group
 
         group_member_change_info = {
             'user': company_group_member.user,
@@ -39,9 +40,13 @@ class CompanyGroupMemberView(APIView):
 
             # Collect updated group information and send notfiication email
             updated_company_group_member = self._get_object(pk)
-            group_member_change_info['updated_company_group'] = updated_company_group_member.company_group
             email_service = SendEmailService()
-            email_service.send_employee_benefit_group_update_notification_email(group_member_change_info)
+            email_service.send_employee_benefit_group_update_notification_email(
+                company_group_member.user, 
+                company_group_member.company_group.company,
+                original_group,
+                updated_company_group_member.company_group
+            )
 
             return Response(serializer.data)
 

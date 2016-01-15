@@ -85,12 +85,19 @@ class SendEmailService(object):
     ''' Get a basic version of email context data that contain
         some commonly used information such as site URL
     '''
-    def get_base_email_context_data(self):
+    def _get_base_email_context_data(self):
         return {
             'site_url':settings.SITE_URL
         }
 
-    def send_employee_benefit_group_update_notification_email(self, group_member_change_info):
+    def send_employee_benefit_group_update_notification_email(self, user, company, original_group, updated_group):
+
+        group_member_change_info = {
+            'user': user,
+            'company': company,
+            'original_company_group': original_group,
+            'updated_company_group': updated_group
+        }
 
         subject = 'Employee Benefit Group Change Notification'
         html_template_path = 'email/employee_benefit_group_change_notification.html'
@@ -107,7 +114,7 @@ class SendEmailService(object):
             group_member_change_info['person'] = group_member_change_info['user']
 
         # build the template context data
-        context_data = self.get_base_email_context_data()
+        context_data = self._get_base_email_context_data()
         context_data['group_member_change_info'] = group_member_change_info
 
         # get PDF
