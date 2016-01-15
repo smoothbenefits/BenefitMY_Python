@@ -56,7 +56,7 @@ class UserSerializer(HashPkSerializerBase):
         fields = ('id',
                   'first_name',
                   'last_name',
-                  'email', 
+                  'email',
                   'company_group_user')
 
 

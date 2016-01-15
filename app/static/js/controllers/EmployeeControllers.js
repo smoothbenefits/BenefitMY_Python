@@ -77,6 +77,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
             userInfo.user.id)
         .then(function(availableBenefits){
           $scope.availableBenefits = availableBenefits;
+          $scope.hasBenefits = _.some($scope.availableBenefits, function(availability) {
+            return availability;
+          });
         });
 
         employeeBenefits.enroll().get({userId:userInfo.user.id, companyId:userInfo.currentRole.company.id})

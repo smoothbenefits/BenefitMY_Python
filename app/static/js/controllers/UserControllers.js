@@ -137,6 +137,9 @@ var userController = userControllers.controller('userController',
           userInfo.user.id)
       .then(function(availableBenefits){
         $scope.availableBenefits = availableBenefits;
+        $scope.hasBenefits = _.some($scope.availableBenefits, function(availability){
+          return availability;
+        });
       });
     });
 

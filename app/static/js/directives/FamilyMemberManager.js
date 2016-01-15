@@ -55,12 +55,14 @@ BenefitMyApp.controller(
     '$modal',
     '$controller',
     'PersonService',
+    'EmployeeBenefitsAvailabilityService',
     function FamilyMemberManagerDirectiveController(
       $scope,
       $state,
       $modal,
       $controller,
-      PersonService) {
+      PersonService,
+      EmployeeBenefitsAvailabilityService) {
 
       $controller('userController', {$scope: $scope});
 
