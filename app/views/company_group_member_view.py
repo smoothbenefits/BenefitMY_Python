@@ -4,10 +4,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from app.models.company_group import CompanyGroup
 from app.models.company_group_member import CompanyGroupMember 
+from app.models.person import Person
 from app.serializers.company_group_member_serializer import (
     CompanyGroupMemberSerializer,
     CompanyGroupMemberPostSerializer,
     CompanyGroupWithMemberSerializer)
+from app.service.send_email_service import SendEmailService
 
 
 class CompanyGroupMemberView(APIView):
@@ -24,10 +26,30 @@ class CompanyGroupMemberView(APIView):
 
     def put(self, request, pk, format=None):
         company_group_member = self._get_object(pk)
+        original_group = company_group_member.company_group
+
+        group_member_change_info = {
+            'user': company_group_member.user,
+            'company': company_group_member.company_group.company,
+            'original_company_group': company_group_member.company_group
+        }
+
         serializer = CompanyGroupMemberPostSerializer(company_group_member, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
+
+            # Collect updated group information and send notfiication email
+            updated_company_group_member = self._get_object(pk)
+            email_service = SendEmailService()
+            email_service.send_employee_benefit_group_update_notification_email(
+                company_group_member.user, 
+                company_group_member.company_group.company,
+                original_group,
+                updated_company_group_member.company_group
+            )
+
             return Response(serializer.data)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
