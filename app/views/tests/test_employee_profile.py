@@ -97,8 +97,8 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
 
     def test_get_employee_profile_exist_person_company_non_exist_profile(self):
         response = self.client.get(reverse('employee_profile_by_person_company_api',
-                                           kwargs={'person_id': self.normalize_key(4),
-                                                    'company_id': self.normalize_key(1)}))
+                                           kwargs={'person_id': self.normalize_key(6),
+                                                    'company_id': self.normalize_key(3)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 404)
 
@@ -130,7 +130,6 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.content)
         self.assertIn('id', result)
-        self.assertEqual(result['id'], self.normalize_key(2))
         self.assertEqual(result['person'], 1)
         self.assertEqual(result['company'], 1)
         self.assertEqual(result['job_title'], "Broker")
@@ -162,7 +161,6 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.content)
         self.assertIn('id', result)
-        self.assertEqual(result['id'], self.normalize_key(2))
         self.assertEqual(result['person'], 3)
         self.assertEqual(result['company'], 2)
         self.assertEqual(result['job_title'], "Broker")
