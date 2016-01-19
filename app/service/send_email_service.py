@@ -1,4 +1,5 @@
 from datetime import datetime
+from StringIO import StringIO
 from django.contrib.auth import get_user_model
 from django import template
 from django.core.mail import send_mail, EmailMultiAlternatives
@@ -6,8 +7,10 @@ from django.conf import settings
 from django.template.loader import get_template
 from django.contrib.auth import get_user_model
 
-from app.models.person import Person
+from app.models.person import (Person, SELF)
 from app.models.company_user import CompanyUser, USER_TYPE_ADMIN, USER_TYPE_BROKER
+from app.service.Report.company_employee_benefit_pdf_report_service import \
+    CompanyEmployeeBenefitPdfReportService
 
 User = get_user_model()
 
@@ -78,3 +81,54 @@ class SendEmailService(object):
         if (len(person) > 0 and person[0].email):
             email = person[0].email
         return email
+
+    ''' Get a basic version of email context data that contain
+        some commonly used information such as site URL
+    '''
+    def _get_base_email_context_data(self):
+        return {
+            'site_url':settings.SITE_URL
+        }
+
+    def send_employee_benefit_group_update_notification_email(self, user, company, original_group, updated_group):
+
+        group_member_change_info = {
+            'user': user,
+            'company': company,
+            'original_company_group': original_group,
+            'updated_company_group': updated_group
+        }
+
+        subject = 'Employee Benefit Group Change Notification'
+        html_template_path = 'email/employee_benefit_group_change_notification.html'
+        txt_template_path = 'email/employee_benefit_group_change_notification.txt'
+
+        # build the list of target emails
+        to_emails = self.get_broker_emails_by_company(group_member_change_info['company'].id)
+
+        # get person data from user
+        group_member_change_info['person'] = group_member_change_info['user'].family.filter(relationship=SELF).first()
+        if (not group_member_change_info['person']):
+            # Use the user information if the account does not have person profile
+            # setup
+            group_member_change_info['person'] = group_member_change_info['user']
+
+        # build the template context data
+        context_data = self._get_base_email_context_data()
+        context_data['group_member_change_info'] = group_member_change_info
+
+        # get PDF
+        pdf_service = CompanyEmployeeBenefitPdfReportService()
+        pdf_buffer = StringIO()
+        pdf_service.get_employee_report(
+            group_member_change_info['user'].id,
+            group_member_change_info['company'].id,
+            pdf_buffer)
+        pdf = pdf_buffer.getvalue()
+        pdf_buffer.close()
+
+        self.send_support_email(
+            to_emails, subject, context_data, html_template_path, txt_template_path,
+            attachment_name='employee_details.pdf', attachment=pdf, attachment_mime_type='application/pdf')
+
+        return
