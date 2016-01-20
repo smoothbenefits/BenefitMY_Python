@@ -31,7 +31,8 @@ class EmployeeProfileView(APIView):
         serializer = EmployeeProfilePostSerializer(employee_profile, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            response_serializer = EmployeeProfileSerializer(serializer.object)
+            return Response(response_serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, pk, format=None):

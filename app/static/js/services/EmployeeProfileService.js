@@ -17,6 +17,8 @@ benefitmyService.factory('EmployeeProfileService',
           return employeeProfile.employmentType === 'FullTime';
         };
 
+        var _cachedEmployeeProfiles = [];
+
         var mapDomainToViewModel = function(employeeProfileDomainModel) {
             var viewModel = {};
 
@@ -83,15 +85,25 @@ benefitmyService.factory('EmployeeProfileService',
             return domainModel;
         };
 
-        var getEmployeeProfilesByCompany = function(compId){
-            return EmployeeProfileRepository.ByCompany.query({companyId:compId}).$promise.then(function(profiles){
-                return profiles;
+        var initializeCompanyEmployees = function(compId){
+            return EmployeeProfileRepository.ByCompany.query({companyId:compId})
+            .$promise.then(function(profiles){
+                _cachedEmployeeProfiles = profiles;
+                return _cachedEmployeeProfiles;
+            });
+        };
+
+        var searchEmployees = function(term){
+            return _.filter(_cachedEmployeeProfiles, function(employee){
+              var fullName = employee.first_name + ' ' + employee.last_name;
+              return fullName.toLowerCase().indexOf(term) > -1;
             });
         };
 
         return {
             isFullTimeEmploymentType: isFullTimeEmploymentType,
-            getEmployeeProfilesByCompany: getEmployeeProfilesByCompany,
+            initializeCompanyEmployees: initializeCompanyEmployees,
+            searchEmployees: searchEmployees,
 
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();
@@ -148,6 +160,7 @@ benefitmyService.factory('EmployeeProfileService',
                     EmployeeProfileRepository.ById.update({id:domainModel.id}, domainModel)
                     .$promise.then(function(response) {
                         deferred.resolve(mapDomainToViewModel(response));
+                        initializeCompanyEmployees(domainModel.company);
                     },
                     function(error){
                         deferred.reject(error);
@@ -159,6 +172,7 @@ benefitmyService.factory('EmployeeProfileService',
                     EmployeeProfileRepository.ById.save({id:domainModel.person}, domainModel)
                     .$promise.then(function(response) {
                         deferred.resolve(mapDomainToViewModel(response));
+                        initializeCompanyEmployees(domainModel.company);
                     },
                     function(error){
                         deferred.reject(error);

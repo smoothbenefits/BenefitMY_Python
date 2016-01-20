@@ -36,7 +36,7 @@ class AccountCreationService(object):
     FIELD_START_DATE = 'start_date'
     FIELD_BENEFIT_START_DATE = 'benefit_start_date'
     FIELD_GROUP_NAME = 'group_name'
-    Field_MANAGER = 'manager'
+    FIELD_MANAGER = 'manager'
     FIELD_RECORD_END = 'record-end'
 
     REQUIRED_RAW_DATA_FIELDS = [

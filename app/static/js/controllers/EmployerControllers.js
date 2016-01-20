@@ -227,12 +227,7 @@ var employerUser = employersController.controller('employerUser',
                 });
             });
         });
-
-      EmployeeProfileService.getEmployeeProfilesByCompany($scope.compId)
-      .then(function(profiles){
-        $scope.employeeProfiles = profiles;
-      })
-
+      EmployeeProfileService.initializeCompanyEmployees($scope.compId);
       TemplateService.getAllTemplateFields($scope.compId)
       .then(function(fields){
         $scope.templateFields = fields;
@@ -270,12 +265,7 @@ var employerUser = employersController.controller('employerUser',
         $location.path('/admin/'+ userType + '/add/'+$scope.compId)
       };
 
-      $scope.getEmployees = function(term){
-        return _.filter($scope.employeeProfiles, function(employee){
-          var fullName = employee.first_name + ' ' + employee.last_name;
-          return fullName.toLowerCase().indexOf(term) > -1;
-        });
-      };
+      $scope.getEmployees = EmployeeProfileService.searchEmployees;
 
       $scope.createUser = function(userType) {
         if(!$scope.addUser.send_email &&
@@ -1144,21 +1134,13 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
           }
         );
 
-      EmployeeProfileService.getEmployeeProfilesByCompany(companyId)
-      .then(function(profiles){
-        $scope.employeeProfiles = profiles;
-      })
+      EmployeeProfileService.initializeCompanyEmployees(companyId);
 
       $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
       };
 
-      $scope.getEmployees = function(term){
-        return _.filter($scope.employeeProfiles, function(employee){
-          var fullName = employee.first_name + ' ' + employee.last_name;
-          return fullName.toLowerCase().indexOf(term) > -1;
-        });
-      };
+      $scope.getEmployees = EmployeeProfileService.searchEmployees;
 
       $scope.save = function(employeeProfileToSave) {
         EmployeeProfileService.saveEmployeeProfile(employeeProfileToSave)
