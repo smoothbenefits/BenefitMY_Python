@@ -27,7 +27,7 @@ benefitmyService.factory('EmployeeProfileService',
             viewModel.personId = employeeProfileDomainModel.person;
             viewModel.companyId = employeeProfileDomainModel.company;
             viewModel.lastUpdateDateTime = moment(employeeProfileDomainModel.updated_at).format(DATE_FORMAT_STRING);
-
+            viewModel.manager = employeeProfileDomainModel.manager;
             // TODO:
             // The below logic is quite cumbersome, but just to get the view model
             // working with angular's "date" input type...
@@ -68,6 +68,7 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
             domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
+            domainModel.manager = employeeProfileViewModel.manager.id;
 
             return domainModel;
         };
@@ -82,8 +83,15 @@ benefitmyService.factory('EmployeeProfileService',
             return domainModel;
         };
 
+        var getEmployeeProfilesByCompany = function(compId){
+            return EmployeeProfileRepository.ByCompany.query({companyId:compId}).$promise.then(function(profiles){
+                return profiles;
+            });
+        };
+
         return {
             isFullTimeEmploymentType: isFullTimeEmploymentType,
+            getEmployeeProfilesByCompany: getEmployeeProfilesByCompany,
 
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();

@@ -42,6 +42,18 @@
         </div>
       </div>
       <div class="row">
+        <div class="form-label">Manager</div>
+        <div class="textbox">
+          <input type="text" 
+            ng-model="employeeProfileModel.manager"
+            placeholder="Start typing the name of an employee..." 
+            ng-required="false"
+            name="employeeProfileModel.manager"
+            typeahead="manager as manager.first_name + ' ' + manager.last_name for manager in getEmployees($viewValue)"
+            class="form-control"></select>
+        </div>
+      </div>
+      <div class="row">
         <div class="form-label">Employment Start Date</div>
         <div class="datebox">
           <bm-date-picker model="employeeProfileModel.startDate"

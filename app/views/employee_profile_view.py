@@ -5,8 +5,9 @@ from rest_framework import status
 
 from app.models.employee_profile import EmployeeProfile
 from app.serializers.employee_profile_serializer import (
-    EmployeeProfileSerializer, EmployeeProfilePostSerializer)
+    EmployeeProfileSerializer, EmployeeProfilePostSerializer, EmployeeProfileWithNameSerializer)
 from app.models.person import Person
+from django.db.models import Q
 
 class EmployeeProfileView(APIView):
     def _get_object(self, pk):
@@ -64,3 +65,11 @@ class EmployeeProfileByCompanyUserView(APIView):
         employee_profile = self._get_object(company_id, user_id)
         serializer = EmployeeProfileSerializer(employee_profile)
         return Response(serializer.data)
+
+
+class EmployeeProfilesByCompanyView(APIView):
+    def get(self, request, company_id, format=None):
+        employee_profiles = EmployeeProfile.objects.filter(company=company_id)
+        serializer = EmployeeProfileWithNameSerializer(employee_profiles, many=True)
+        return Response(serializer.data)
+            

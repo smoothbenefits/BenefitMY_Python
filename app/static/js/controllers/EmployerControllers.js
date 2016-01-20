@@ -150,6 +150,7 @@ var employerUser = employersController.controller('employerUser',
    'CompensationService',
    'EmployerEmployeeManagementService',
    'CompanyBenefitGroupService',
+   'EmployeeProfileService',
   function employerUser($scope,
                         $state,
                         $stateParams,
@@ -161,7 +162,8 @@ var employerUser = employersController.controller('employerUser',
                         DocumentService,
                         CompensationService,
                         EmployerEmployeeManagementService,
-                        CompanyBenefitGroupService){
+                        CompanyBenefitGroupService,
+                        EmployeeProfileService){
       $scope.compId = $stateParams.company_id;
       $scope.employees=[];
       $scope.brokers = [];
@@ -226,6 +228,11 @@ var employerUser = employersController.controller('employerUser',
             });
         });
 
+      EmployeeProfileService.getEmployeeProfilesByCompany($scope.compId)
+      .then(function(profiles){
+        $scope.employeeProfiles = profiles;
+      })
+
       TemplateService.getAllTemplateFields($scope.compId)
       .then(function(fields){
         $scope.templateFields = fields;
@@ -261,6 +268,13 @@ var employerUser = employersController.controller('employerUser',
       $scope.addLink = function(userType)
       {
         $location.path('/admin/'+ userType + '/add/'+$scope.compId)
+      };
+
+      $scope.getEmployees = function(term){
+        return _.filter($scope.employeeProfiles, function(employee){
+          var fullName = employee.first_name + ' ' + employee.last_name;
+          return fullName.toLowerCase().indexOf(term) > -1;
+        });
       };
 
       $scope.createUser = function(userType) {
@@ -1043,6 +1057,9 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
             resolve: {
                 employeeProfileModel: function () {
                     return modelCopy;
+                },
+                companyId: function(){
+                  return compId;
                 }
             }
         });
@@ -1107,12 +1124,14 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
    '$modalInstance',
    'EmployeeProfileService',
    'employeeProfileModel',
+   'companyId',
    'EmploymentStatuses',
     function($scope,
              $modal,
              $modalInstance,
              EmployeeProfileService,
              employeeProfileModel,
+             companyId,
              EmploymentStatuses){
 
       $scope.errorMessage = null;
@@ -1125,8 +1144,20 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
           }
         );
 
+      EmployeeProfileService.getEmployeeProfilesByCompany(companyId)
+      .then(function(profiles){
+        $scope.employeeProfiles = profiles;
+      })
+
       $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
+      };
+
+      $scope.getEmployees = function(term){
+        return _.filter($scope.employeeProfiles, function(employee){
+          var fullName = employee.first_name + ' ' + employee.last_name;
+          return fullName.toLowerCase().indexOf(term) > -1;
+        });
       };
 
       $scope.save = function(employeeProfileToSave) {

@@ -36,6 +36,7 @@ class AccountCreationService(object):
     FIELD_START_DATE = 'start_date'
     FIELD_BENEFIT_START_DATE = 'benefit_start_date'
     FIELD_GROUP_NAME = 'group_name'
+    Field_MANAGER = 'manager'
     FIELD_RECORD_END = 'record-end'
 
     REQUIRED_RAW_DATA_FIELDS = [
@@ -357,6 +358,9 @@ class AccountCreationService(object):
 
         if (account_info.employment_type is not None):
             profile_data['employment_type'] = account_info.employment_type
+
+        if (account_info.manager_id is not None):
+            profile_data['manager'] = account_info.manager_id
 
         profile_serializer = EmployeeProfilePostSerializer(data=profile_data)
 
