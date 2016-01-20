@@ -6,6 +6,9 @@ from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://staging.workbenefits.me/"
 
+# Logging Configurations
+LOGENTRIES_TOKEN = '6fe1fb59-38a8-4b16-9448-d7bb1392ecec'
+
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications
 DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES = 1440 # 24 hours

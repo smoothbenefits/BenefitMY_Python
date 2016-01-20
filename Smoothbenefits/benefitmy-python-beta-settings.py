@@ -8,6 +8,9 @@ IS_PRODUCTION_ENVIRONMENT = True
 
 SITE_URL = "https://app.workbenefits.me/"
 
+# Logging Configurations
+LOGENTRIES_TOKEN = '11a32264-c904-4765-96c0-fe6e7fbdb09c'
+
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications
 DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES = 1440 # 24 hours
