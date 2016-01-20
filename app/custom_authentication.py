@@ -21,7 +21,7 @@ class AuthUserManager(BaseUserManager):
 
         user.set_password(password)
         user.save(using=self._db)
-        log.info("User account {} crated.".format(email))
+        log.info("User account {} created.".format(email))
         return user
 
     def create_superuser(self, email, password):

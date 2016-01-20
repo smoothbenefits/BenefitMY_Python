@@ -1,12 +1,36 @@
 """
 Configurations for local environment
 """
+import logging
+from logentries import LogentriesHandler
 from Smoothbenefits.base_settings import *
 
 SITE_URL = "https://localhost:8000/"
 
 # Logging Configurations
-LOGENTRIES_TOKEN = '980781a6-72cf-4dd7-b6ae-57fc3e7d7262'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters':{
+        'key-value-pair': {
+            'format': 'TIME: %(asctime)s; LEVEL: %(levelname)s; MESSAGE: %(message)s; '
+        },
+    },
+    'handlers': {
+        'logentries_handler': {
+            'token': '980781a6-72cf-4dd7-b6ae-57fc3e7d7262',
+            'class': 'logentries.LogentriesHandler',
+            'formatter': 'key-value-pair'
+        },
+    },
+    'loggers': {
+        'logentries': {
+            'handlers': ['logentries_handler'],
+            'level': 'INFO',
+            'propagate':True,
+        },
+    },
+}
 
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications
