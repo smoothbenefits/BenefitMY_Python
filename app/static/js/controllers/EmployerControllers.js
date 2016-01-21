@@ -267,6 +267,14 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.getEmployees = EmployeeProfileService.searchEmployees;
 
+      $scope.managerInvalid = function(manager){
+        return !_.isEmpty(manager) && _.isString(manager);
+      };
+
+      $scope.createUserInvalid = function(){
+        return $scope.hasNoBenefitGroup() || $scope.managerInvalid($scope.addUser.managerSelected);
+      };
+
       $scope.createUser = function(userType) {
         if(!$scope.addUser.send_email &&
            !$scope.validatePassword($scope.addUser.password, $scope.addUser.password_confirm)){
@@ -1033,6 +1041,13 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       });
     };
 
+    $scope.getManagerName = function(profile){
+      if(profile && profile.manager){
+        return profile.manager.first_name + ' ' + profile.manager.last_name;
+      }
+      return '';
+    };
+
     $scope.editEmployeeProfile = function(){
         if (!$scope.employee.employeeProfile){
             return;
@@ -1151,6 +1166,14 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
             "all the information enterred are valid. Message: " + error;
         });
       };
+
+      $scope.managerInvalid = function(manager){
+        return !_.isEmpty(manager) && _.isString(manager);
+      };
+
+      $scope.invalidToSave = function(){
+        return $scope.form.$invalid || $scope.managerInvalid($scope.employeeProfileModel.manager);
+      }
 
       $scope.updateEndDate = function(){
         $scope.employeeProfileModel.endDate = null;

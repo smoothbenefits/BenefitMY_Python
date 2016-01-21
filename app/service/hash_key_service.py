@@ -47,10 +47,8 @@ class HashKeyService(object):
 			return None
 
 	def is_encoded(self, value):
-		if re.match(self.HASH_TOKEN_REGEX_PATTERN, str(value)):
-			return True
 		try:
-			decoded = decode_key(value)
+			decoded = self.decode_key(value)
 			return decoded != value
 		except:
 			return False

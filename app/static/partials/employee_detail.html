@@ -122,12 +122,12 @@
               </div>
               <div style="clear:both"></div>
             </li>
-            <li class="list-group-item" ng-if="employee.employeeProfile.manager">
+            <li class="list-group-item">
               <h4 class="col-md-5">
                 Manager
               </h4>
               <div class="col-md-7">
-                {{employee.employeeProfile.manager.first_name + ' ' + employee.employeeProfile.manager.last_name}}
+                {{getManagerName(employee.employeeProfile)}}
               </div>
               <div style="clear:both"></div>
             </li>
