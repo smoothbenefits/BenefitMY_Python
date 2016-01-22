@@ -13,7 +13,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters':{
         'key-value-pair': {
-            'format': 'TIME: %(asctime)s; LEVEL: %(levelname)s; MESSAGE: %(message)s; '
+            'format': 'ID: %(cid)s; TIME: %(asctime)s; LEVEL: %(levelname)s; MESSAGE: %(message)s;'
         },
     },
     'handlers': {
@@ -23,11 +23,17 @@ LOGGING = {
             'formatter': 'key-value-pair'
         },
     },
+    'filters': {
+        'correlation': {
+            (): 'cid.log.CidContextFilter'
+        },
+    },
     'loggers': {
         'logentries': {
             'handlers': ['logentries_handler'],
             'level': 'INFO',
             'propagate':True,
+            'filters': ['correlation']
         },
     },
 }

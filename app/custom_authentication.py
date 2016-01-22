@@ -3,9 +3,7 @@ from django.core.validators import EmailValidator
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
-from app.service.monitoring.logging_service import LoggingService
 
-log = LoggingService()
 class AuthUserManager(BaseUserManager):
 
     def create_user(self, email, password=None):
@@ -21,7 +19,6 @@ class AuthUserManager(BaseUserManager):
 
         user.set_password(password)
         user.save(using=self._db)
-        log.info("User account {} created.".format(email))
         return user
 
     def create_superuser(self, email, password):

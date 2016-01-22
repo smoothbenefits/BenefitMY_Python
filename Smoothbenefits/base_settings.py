@@ -55,7 +55,10 @@ INSTALLED_APPS = (
     'app',
     'reversion',
     'django_cron',
+    'cid',
 )
+
+CID_GENERATE = True
 
 PDFTK_BIN = './.apt/usr/bin/pdftk'
 
@@ -98,7 +101,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cid.middleware.CidMiddleware',
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
+    'app.middlewares.logging_middleware.LoggingMiddleware',
     'reversion.middleware.RevisionMiddleware',
 )
 
