@@ -77,6 +77,10 @@ benefitmyService.factory('EmployerEmployeeManagementService',
       if (!domainModel.send_email) {
         domainModel.password = viewModel.password;
       }
+
+      if (viewModel.managerSelected && viewModel.managerSelected.id){
+        domainModel.manager_id = viewModel.managerSelected.id
+      }
       return domainModel;
     };
 

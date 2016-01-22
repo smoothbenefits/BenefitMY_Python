@@ -1,3 +1,4 @@
+import re
 from hashlib import md5
 from django.conf import settings
 
@@ -47,7 +48,7 @@ class HashKeyService(object):
 
 	def is_encoded(self, value):
 		try:
-			decoded = decode_key(value)
+			decoded = self.decode_key(value)
 			return decoded != value
 		except:
 			return False

@@ -442,7 +442,8 @@ benefitmyDomainModelFactories.factory('EmployeeProfileRepository', ['$resource',
         update: {
             method: 'PUT'
         }
-      })
+      }),
+      ByCompany: $resource('/api/v1/company/:companyId/employee_profiles', {companyId: '@companyId'})
     };
   }
 ]);

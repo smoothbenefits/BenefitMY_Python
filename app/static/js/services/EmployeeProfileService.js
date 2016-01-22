@@ -17,6 +17,8 @@ benefitmyService.factory('EmployeeProfileService',
           return employeeProfile.employmentType === 'FullTime';
         };
 
+        var _cachedEmployeeProfiles = [];
+
         var mapDomainToViewModel = function(employeeProfileDomainModel) {
             var viewModel = {};
 
@@ -27,7 +29,7 @@ benefitmyService.factory('EmployeeProfileService',
             viewModel.personId = employeeProfileDomainModel.person;
             viewModel.companyId = employeeProfileDomainModel.company;
             viewModel.lastUpdateDateTime = moment(employeeProfileDomainModel.updated_at).format(DATE_FORMAT_STRING);
-
+            viewModel.manager = employeeProfileDomainModel.manager;
             // TODO:
             // The below logic is quite cumbersome, but just to get the view model
             // working with angular's "date" input type...
@@ -68,6 +70,7 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
             domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
+            domainModel.manager = employeeProfileViewModel.manager.id;
 
             return domainModel;
         };
@@ -82,8 +85,25 @@ benefitmyService.factory('EmployeeProfileService',
             return domainModel;
         };
 
+        var initializeCompanyEmployees = function(compId){
+            return EmployeeProfileRepository.ByCompany.query({companyId:compId})
+            .$promise.then(function(profiles){
+                _cachedEmployeeProfiles = profiles;
+                return _cachedEmployeeProfiles;
+            });
+        };
+
+        var searchEmployees = function(term){
+            return _.filter(_cachedEmployeeProfiles, function(employee){
+              var fullName = employee.first_name + ' ' + employee.last_name;
+              return fullName.toLowerCase().indexOf(term) > -1;
+            });
+        };
+
         return {
             isFullTimeEmploymentType: isFullTimeEmploymentType,
+            initializeCompanyEmployees: initializeCompanyEmployees,
+            searchEmployees: searchEmployees,
 
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();
@@ -140,6 +160,7 @@ benefitmyService.factory('EmployeeProfileService',
                     EmployeeProfileRepository.ById.update({id:domainModel.id}, domainModel)
                     .$promise.then(function(response) {
                         deferred.resolve(mapDomainToViewModel(response));
+                        initializeCompanyEmployees(domainModel.company);
                     },
                     function(error){
                         deferred.reject(error);
@@ -151,6 +172,7 @@ benefitmyService.factory('EmployeeProfileService',
                     EmployeeProfileRepository.ById.save({id:domainModel.person}, domainModel)
                     .$promise.then(function(response) {
                         deferred.resolve(mapDomainToViewModel(response));
+                        initializeCompanyEmployees(domainModel.company);
                     },
                     function(error){
                         deferred.reject(error);
