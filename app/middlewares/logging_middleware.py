@@ -12,9 +12,7 @@ class LoggingMiddleware(object):
         '''
         Log JSON requests
         '''
-        if ((request.method == 'PUT' or request.method == 'GET'
-        or request.method == 'POST' or request.method == 'DELETE')
-        and (request.META.get('CONTENT_TYPE').find('application/json') >= 0)):
+        if (self._eligible_for_logging(request)):
             self.log.info(request)
 
         return None
@@ -23,9 +21,7 @@ class LoggingMiddleware(object):
         '''
         Log response of JSON requests
         '''
-        if ((request.method == 'PUT' or request.method == 'GET'
-        or request.method == 'POST' or request.method == 'DELETE')
-        and (request.META.get('CONTENT_TYPE').find('application/json') >= 0)):
+        if (self._eligible_for_logging(request)):
             self.log.info(response)
 
         return response
@@ -37,3 +33,13 @@ class LoggingMiddleware(object):
         self.log.error(exception)
 
         return None
+
+    def _eligible_for_logging(self, request):
+        if not request.META.get('CONTENT_TYPE'):
+            return False
+
+        if request.META.get('CONTENT_TYPE').find('application/json') < 0:
+            return False
+
+        return (request.method == 'PUT' or request.method == 'GET'
+            or request.method == 'POST' or request.method == 'DELETE')
