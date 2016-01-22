@@ -26,3 +26,11 @@ class EmployeeProfileSerializer(HashPkSerializerBase):
 class EmployeeProfilePostSerializer(HashPkSerializerBase):
     class Meta:
         model = EmployeeProfile
+
+
+class EmployeeProfileWithNameSerializer(HashPkSerializerBase):
+    first_name = serializers.CharField(source="person.first_name", required=False)
+    last_name = serializers.CharField(source="person.last_name", required=False)
+    manager = ManagerSerializer(required=False)
+    class Meta:
+        model = EmployeeProfile
