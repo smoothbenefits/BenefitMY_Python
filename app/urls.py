@@ -224,6 +224,8 @@ from app.views.employee_management.employee_termination_view import EmployeeTerm
 
 from app.views.environment_view import EnvironmentView
 
+from app.views.logging_service_view import LoggingServiceView
+
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
@@ -489,11 +491,11 @@ urlpatterns = patterns('app.views',
         PersonCompanyCommuterPlanByPersonView.as_view(), name='person_company_commuter_plan_by_person_api'),
 
     url(r'^%s/company_group/(?P<company_group_id>\w+)/company_commuter/?$' % PREFIX,
-        CompanyGroupCommuterPlanByCompanyGroupView.as_view(), 
+        CompanyGroupCommuterPlanByCompanyGroupView.as_view(),
         name='company_group_commuter_plan_api'),
 
     url(r'^%s/company_commuter/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
-        CompanyGroupCommuterPlanByCompanyPlanView.as_view(), 
+        CompanyGroupCommuterPlanByCompanyPlanView.as_view(),
         name='company_group_commuter_plan_by_company_plan_api'),
 
     # Extra Benefits api
@@ -617,7 +619,10 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/1094_c_certificiations/?$' % PREFIX, ACA1094CEligibilityCertificationView.as_view(), name='ACA_1094_c_cert_api'),
 
-    url(r'^%s/env/?$' % PREFIX, EnvironmentView.as_view(), name="environment_api")
+    url(r'^%s/env/?$' % PREFIX, EnvironmentView.as_view(), name="environment_api"),
+
+    # Logging
+    url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api")
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
