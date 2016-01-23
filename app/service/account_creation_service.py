@@ -4,15 +4,18 @@ from django.conf import settings
 from app.models.company_user import CompanyUser
 from app.models.company import Company
 from app.custom_authentication import AuthUserManager
-from app.models.person import Person
+from app.models.person import (Person, SELF)
 from app.models.employee_profile import FULL_TIME, PART_TIME, CONTRACTOR, \
     INTERN, PER_DIEM, EMPLYMENT_STATUS_ACTIVE
 from app.models.company_user import USER_TYPE_EMPLOYEE
 from app.models.company_group import CompanyGroup
+from app.models.employee_profile import EmployeeProfile
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
+from app.service.employee_structure_service import EmployeeStructureService
 from app.dtos.issue import Issue
 from app.dtos.operation_result import OperationResult
+from app.dtos.employee_manager_assignment_data import EmployeeManagerAssignmentData
 from app.serializers.person_serializer import PersonSimpleSerializer
 from app.serializers.employee_profile_serializer import EmployeeProfilePostSerializer
 from app.serializers.employee_compensation_serializer import EmployeeCompensationPostSerializer
@@ -36,7 +39,8 @@ class AccountCreationService(object):
     FIELD_START_DATE = 'start_date'
     FIELD_BENEFIT_START_DATE = 'benefit_start_date'
     FIELD_GROUP_NAME = 'group_name'
-    FIELD_MANAGER = 'manager'
+    FIELD_MANAGER_FIRST_NAME = 'manager_first_name'
+    FIELD_MANAGER_LAST_NAME = 'manager_last_name'
     FIELD_RECORD_END = 'record-end'
 
     REQUIRED_RAW_DATA_FIELDS = [
@@ -51,6 +55,8 @@ class AccountCreationService(object):
         FIELD_START_DATE,
         FIELD_BENEFIT_START_DATE,
         FIELD_GROUP_NAME,
+        FIELD_MANAGER_FIRST_NAME,
+        FIELD_MANAGER_LAST_NAME,
         FIELD_RECORD_END
     ]
 
@@ -99,6 +105,7 @@ class AccountCreationService(object):
                     'projected_hour_per_month': self._get_field_value(tokens, self.FIELD_PROJECTED_HOUR_PER_MONTH),
                     'effective_date': start_date
                 }
+
                 account_data = {
                     'company_id': batch_account_raw_data.company_id,
                     'first_name': self._get_field_value(tokens, self.FIELD_FIRST_NAME),
@@ -114,6 +121,8 @@ class AccountCreationService(object):
                     'benefit_start_date': benefit_start_date,
                     'group_name': self._get_field_value(tokens, self.FIELD_GROUP_NAME),
                     'compensation_info': compensation_data,
+                    'manager_first_name': self._get_field_value(tokens, self.FIELD_MANAGER_FIRST_NAME),
+                    'manager_last_name': self._get_field_value(tokens, self.FIELD_MANAGER_LAST_NAME),
                     'doc_fields': []
                 }
 
@@ -173,12 +182,12 @@ class AccountCreationService(object):
     def validate(self, account_info):
         result = OperationResult(account_info)
 
-        if (account_info is None or
-            account_info.company_id is None or
-            account_info.company_user_type is None or
-            account_info.first_name is None or
-            account_info.last_name is None or
-            account_info.compensation_info is None):
+        if (not account_info or
+            not account_info.company_id or
+            not account_info.company_user_type or
+            not account_info.first_name or
+            not account_info.last_name or
+            not account_info.compensation_info):
             result.append_issue(
                 "Missing necessary information for account creation"
             )
@@ -215,23 +224,23 @@ class AccountCreationService(object):
                     "Specified email has already been used"
                 )
 
-        if (not account_info.send_email and account_info.password is None):
+        if (not account_info.send_email and not account_info.password):
             result.append_issue(
                 "Missing initial password for the new account"
             )
 
         # Now validate the initial compensation record
         if (account_info.employment_type in [PART_TIME, CONTRACTOR, INTERN, PER_DIEM]):
-            if (account_info.compensation_info.hourly_rate is None or
-                account_info.compensation_info.projected_hour_per_month is None):
+            if (not account_info.compensation_info.hourly_rate or
+                not account_info.compensation_info.projected_hour_per_month):
                 result.append_issue(
                     "Compensation record info is incomplete"
                 )
         elif (account_info.employment_type == FULL_TIME):
             # Full time employee could be on hourly payroll
-            if (account_info.compensation_info.annual_base_salary is None and
-                (account_info.compensation_info.hourly_rate is None or
-                 account_info.compensation_info.projected_hour_per_month is None)):
+            if (not account_info.compensation_info.annual_base_salary and
+                (not account_info.compensation_info.hourly_rate or
+                 not account_info.compensation_info.projected_hour_per_month)):
                 result.append_issue(
                     "Compensation record info is incomplete"
                 )
@@ -243,6 +252,13 @@ class AccountCreationService(object):
         if not account_info.group_name and not account_info.group_id:
             result.append_issue('Company group not specified.')
 
+        # if manager profile id is provided, validate its existence
+        if (account_info.manager_id):
+            try:
+                EmployeeProfile.objects.get(pk=account_info.manager_id)
+            except EmployeeProfile.DoesNotExist:
+                result.append_issue('Could not find employee profile based on the manager info provided.')
+
         result.set_output_data(account_info)
 
         return result
@@ -250,7 +266,7 @@ class AccountCreationService(object):
     def validate_batch(self, account_creation_data_list):
         result = OperationResult(account_creation_data_list)
 
-        if (account_creation_data_list is None):
+        if (not account_creation_data_list):
             result.append_issue(
                 'Did not find any account info to handle'
             )
@@ -259,6 +275,12 @@ class AccountCreationService(object):
             exist_emails = []
             has_invalid = False
             account_validation_results = []
+
+            # Collect all new account employee names
+            employee_names = []
+            for account_info in account_creation_data_list:
+                full_name = account_info.first_name + account_info.last_name
+                employee_names.append(full_name)
 
             for account_info in account_creation_data_list:
                 account_result = self.validate(account_info)
@@ -269,6 +291,17 @@ class AccountCreationService(object):
                     account_result.append_issue(
                         'The email specificed is also used on another account in this batch'
                     )
+                    
+                # Check whether the account has manager info specified
+                # and if so, check the validity of the manager info
+                if (account_info.manager_first_name 
+                    and account_info.manager_last_name):
+                    manager_full_name = account_info.manager_first_name + account_info.manager_last_name
+                    if (manager_full_name not in employee_names):
+                        # the specified manager name does not match any of the employees
+                        account_result.append_issue(
+                            'Could not locate an employee based on the manager information'
+                        )
 
                 if (account_result.has_issue()):
                     has_invalid = True
@@ -331,7 +364,7 @@ class AccountCreationService(object):
         person_data = {'first_name': account_info.first_name,
                        'last_name': account_info.last_name,
                        'user': user.id,
-                       'relationship': 'self',
+                       'relationship': SELF,
                        'person_type': 'primary_contact',
                        'email': user.email}
 
@@ -356,10 +389,10 @@ class AccountCreationService(object):
         if (account_info.compensation_info.annual_base_salary is not None):
             profile_data['annual_base_salary'] = account_info.compensation_info.annual_base_salary
 
-        if (account_info.employment_type is not None):
+        if (account_info.employment_type):
             profile_data['employment_type'] = account_info.employment_type
 
-        if (account_info.manager_id is not None):
+        if (account_info.manager_id):
             profile_data['manager'] = account_info.manager_id
 
         profile_serializer = EmployeeProfilePostSerializer(data=profile_data)
@@ -436,9 +469,34 @@ class AccountCreationService(object):
 
         account_results = []
 
+        # Create all employee accounts
         for account_info in account_creation_data_list:
             account_result = self.execute_creation(account_info, False)
             account_results.append(account_result)
+
+        # Now that all accounts are created, start all manager assignments
+        # Composes the list of manager assignment data and pass the job
+        # to the corresponding service
+        manager_assignments = []
+        for account_result in account_results:
+            account_info = account_result.output_data
+            person_id = Person.objects.get(
+                user=account_info.user_id,
+                relationship=SELF).id
+            if (account_info.manager_id or
+                (account_info.manager_first_name and
+                 account_info.manager_last_name)):
+                manager_assignment = EmployeeManagerAssignmentData(
+                    person_id,
+                    account_info.company_id,
+                    account_info.manager_id,
+                    account_info.manager_first_name,
+                    account_info.manager_last_name
+                )
+                manager_assignments.append(manager_assignment)
+
+        manager_service = EmployeeStructureService()
+        manager_service.batch_manager_assignments(manager_assignments)
 
         result.set_output_data(account_results)
         return result
