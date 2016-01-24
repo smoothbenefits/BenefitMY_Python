@@ -11,7 +11,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters':{
         'key-value-pair': {
-            'format': 'ID: %(cid)s; TIME: %(asctime)s; LEVEL: %(levelname)s; MESSAGE: %(message)s;'
+            'format': 'ID: %(cid)s; TIME: %(asctime)s; LEVEL: %(levelname)s; MESSAGE: %(message)s; PROCESS: %(process)s; THREAD: %(thread)s'
         },
     },
     'handlers': {
