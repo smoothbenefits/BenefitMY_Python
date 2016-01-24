@@ -10,8 +10,7 @@ class LoggingServiceView(APIView):
     def post(self, request, level, format=None):
         if any(level.lower() in l for l in LEVELS):
             log = LoggingService()
-            print request
-            data = request.DATA['data']
+            data = request.DATA
             if data:
                 log.error(data)
             return Response(status=status.HTTP_201_CREATED)

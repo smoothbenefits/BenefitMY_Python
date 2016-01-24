@@ -13,7 +13,9 @@ class LoggingMiddleware(object):
         Log JSON requests
         '''
         if (self._eligible_for_logging(request)):
-            self.log.info(request)
+            # remove request body for security reasons
+            record = self._map_request_for_logging(request)
+            self.log.info(record)
 
         return None
 
@@ -43,3 +45,13 @@ class LoggingMiddleware(object):
 
         return (request.method == 'PUT' or request.method == 'GET'
             or request.method == 'POST' or request.method == 'DELETE')
+
+    def _map_request_for_logging(self, request):
+        record = {
+            'path': request.path,
+            'path_info': request.path_info,
+            'method': request.method,
+            'query_string': request.META['QUERY_STRING'],
+            'correlation_id': request.correlation_id
+        }
+        return json.dumps(record)
