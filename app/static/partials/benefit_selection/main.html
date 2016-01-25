@@ -25,11 +25,12 @@
   </div>
   <div class="panel panel-default">
     <div class="panel-body">
-      <tabset type="pills">
+      <span ng-hide="hasBenefits">No benefits avaiable for selection now. Go to <a ng-href="#/employee">dashboard</a>?</span>
+      <tabset type="pills" ng-if="hasBenefits">
         <tab ng-repeat="tab in tabs | orderBy:'id'" heading="{{tab.heading}}" active="tab.active" select="go_to_state(tab.state)"/>
       </tabset>
 
-      <div ui-view></div>
+      <div ui-view ng-if="hasBenefits"></div>
     </div>
   </div>
 </div>

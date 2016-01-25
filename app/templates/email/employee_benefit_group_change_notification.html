@@ -1,0 +1,24 @@
+<html>
+    <head>
+    </head>
+    <body>
+      <h3>Company: {{group_member_change_info.company.name}}</h3>
+      <h4>[The benefit group membership for the below employee has changed.]</h4>
+      <br/>
+      <ul>
+        <li>First Name: <b>{{group_member_change_info.person.first_name}}</b></li>
+        <li>Last Name: <b>{{group_member_change_info.person.last_name}}</b></li>
+        <li>Date of Birth: <b>{{group_member_change_info.person.birth_date}}</b></li>
+        <li>SSN Last 4-Digits: <b>{{group_member_change_info.person.ssn|slice:"-4:"}}</b></li>
+        <li>Original Group: <b>{{group_member_change_info.original_company_group.name}}</b></li>
+        <li>New Group: <b>{{group_member_change_info.updated_company_group.name}}</b></li>
+      </ul>
+      <br/>
+      <h4>[Please see attached document for detailed information about the employee]</h4>
+      <hr/>
+
+      <a href="{{site_url}}" style="background:#6EBE4B;color:#FFF;font-weight:700;border: 1px solid #56A245;border-radius: 0;padding: 10px 6px; width: 150px;text-align: center;box-shadow: none;text-shadow: none;
+      line-height: 15px;display: inline-block;margin-bottom: 0;vertical-align: middle;cursor: pointer;white-space: nowrap;font-size: 13px;">
+      Visit Site</a>
+    </body>
+</html>

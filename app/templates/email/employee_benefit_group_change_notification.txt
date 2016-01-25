@@ -1,0 +1,16 @@
+Company: {{group_member_change_info.company.name}}
+
+[The benefit group membership for the below employee has changed.]
+
+First Name: {{group_member_change_info.person.first_name}}
+Last Name: {{group_member_change_info.person.last_name}}
+Date of Birth: {{group_member_change_info.person.birth_date}}
+SSN Last 4-Digits: {{group_member_change_info.person.ssn|slice:"-4:"}}
+Original Group: {{group_member_change_info.original_company_group.name}}
+New Group: {{group_member_change_info.updated_company_group.name}}
+
+[Please see attached document for detailed information about the employee]
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}
