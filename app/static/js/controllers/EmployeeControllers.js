@@ -77,6 +77,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
             userInfo.user.id)
         .then(function(availableBenefits){
           $scope.availableBenefits = availableBenefits;
+          $scope.hasBenefits = _.some($scope.availableBenefits, function(availability) {
+            return availability;
+          });
         });
 
         employeeBenefits.enroll().get({userId:userInfo.user.id, companyId:userInfo.currentRole.company.id})
@@ -969,11 +972,14 @@ var employeeBenefitsSignup = employeeControllers.controller(
         });
       }).then(function(availableBenefits) {
         $scope.tabs = [];
-        $scope.tabs.push({
-          "id": 1,
-          "heading": "Health Benefits",
-          "state":"employee_benefit_signup.health"
-        });
+
+        if (availableBenefits['medical'] || availableBenefits['dental'] || availableBenefits['vision']){
+          $scope.tabs.push({
+            "id": 1,
+            "heading": "Health Benefits",
+            "state":"employee_benefit_signup.health"
+          });
+        }
 
         if (availableBenefits['hra']) {
           $scope.tabs.push({
@@ -1047,15 +1053,19 @@ var employeeBenefitsSignup = employeeControllers.controller(
           });
         }
 
-        $scope.tabs.push({
-          "id": 11,
-          "heading": "Summary",
-          "state": "employee_benefit_signup.summary"
-        });
+        // Summary tab not needed when no benefits available
+        if ($scope.tabs.length > 0) {
+          $scope.tabs.push({
+            "id": 11,
+            "heading": "Summary",
+            "state": "employee_benefit_signup.summary"
+          });
+        }
 
         // Always default to set the first tab be active.
         if ($scope.tabs.length > 0) {
           $scope.tabs[0].active = true;
+          $scope.hasBenefits = true;
         }
       });
 
