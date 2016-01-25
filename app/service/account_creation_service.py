@@ -12,10 +12,11 @@ from app.models.company_group import CompanyGroup
 from app.models.employee_profile import EmployeeProfile
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
-from app.service.employee_structure_service import EmployeeStructureService
+from app.service.employee_organization_service import EmployeeOrganizationService
 from app.dtos.issue import Issue
 from app.dtos.operation_result import OperationResult
-from app.dtos.employee_manager_assignment_data import EmployeeManagerAssignmentData
+from app.dtos.employee_organization.employee_organization_setup_data \
+    import EmployeeOrganizationSetupData
 from app.serializers.person_serializer import PersonSimpleSerializer
 from app.serializers.employee_profile_serializer import EmployeeProfilePostSerializer
 from app.serializers.employee_compensation_serializer import EmployeeCompensationPostSerializer
@@ -474,29 +475,26 @@ class AccountCreationService(object):
             account_result = self.execute_creation(account_info, False)
             account_results.append(account_result)
 
-        # Now that all accounts are created, start all manager assignments
-        # Composes the list of manager assignment data and pass the job
-        # to the corresponding service
-        manager_assignments = []
+        # Now that all accounts are created, start the organization
+        # setup for all employees in batch mode using the corresponding
+        # service
+        org_data_list = []
         for account_result in account_results:
             account_info = account_result.output_data
             person_id = Person.objects.get(
                 user=account_info.user_id,
                 relationship=SELF).id
-            if (account_info.manager_id or
-                (account_info.manager_first_name and
-                 account_info.manager_last_name)):
-                manager_assignment = EmployeeManagerAssignmentData(
-                    person_id,
-                    account_info.company_id,
-                    account_info.manager_id,
-                    account_info.manager_first_name,
-                    account_info.manager_last_name
-                )
-                manager_assignments.append(manager_assignment)
+            org_data = EmployeeOrganizationSetupData(
+                employee_person_id=person_id,
+                company_id=account_info.company_id,
+                manager_profile_id=account_info.manager_id,
+                manager_first_name=account_info.manager_first_name,
+                manager_last_name=account_info.manager_last_name
+            )
+            org_data_list.append(org_data)
 
-        manager_service = EmployeeStructureService()
-        manager_service.batch_manager_assignments(manager_assignments)
+        manager_service = EmployeeOrganizationService()
+        manager_service.batch_execute_employee_organization_setup(org_data_list)
 
         result.set_output_data(account_results)
         return result

@@ -1,0 +1,11 @@
+from app.serializers.dtos.operation_result_base_serializer \
+    import OperationResultBaseSerializer
+from app.serializers.employee_organization.batch_employee_organization_import_raw_data_serializer \
+    import BatchEmployeeOrganizationImportRawDataSerializer
+from app.serializers.employee_organization.employee_organization_setup_data_action_result_serializer \
+    import EmployeeOrganizationSetupDataActionResultSerializer
+
+
+class BatchEmployeeOrganizationImportRawDataParseResultSerializer(OperationResultBaseSerializer):
+    input_data = BatchEmployeeOrganizationImportRawDataSerializer()
+    output_data = EmployeeOrganizationSetupDataActionResultSerializer(many=True)
