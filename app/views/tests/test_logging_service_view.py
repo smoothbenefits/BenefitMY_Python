@@ -24,8 +24,6 @@ class LoggingServiceTests(TestCase, ViewTestBase):
                                             content_type='application/json')
 
         self.assertIsNotNone(response)
-
-        print response
         self.assertEqual(response.status_code, 201)
 
     def test_post_log_record_with_wrong_level(self):

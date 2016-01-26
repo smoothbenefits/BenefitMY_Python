@@ -7,35 +7,7 @@ from Smoothbenefits.base_settings import *
 SITE_URL = "http://staging.workbenefits.me/"
 
 # Logging Configurations
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters':{
-        'key-value-pair': {
-            'format': 'ID: %(cid)s; TIME: %(asctime)s; LEVEL: %(levelname)s; MESSAGE: %(message)s; PROCESS: %(process)s; THREAD: %(thread)s'
-        },
-    },
-    'handlers': {
-        'logentries_handler': {
-            'token': '6fe1fb59-38a8-4b16-9448-d7bb1392ecec',
-            'class': 'logentries.LogentriesHandler',
-            'formatter': 'key-value-pair'
-        },
-    },
-    'filters': {
-        'correlation': {
-            (): 'cid.log.CidContextFilter'
-        },
-    },
-    'loggers': {
-        'logentries': {
-            'handlers': ['logentries_handler'],
-            'level': 'INFO',
-            'propagate':True,
-            'filters': ['correlation']
-        },
-    },
-}
+LOGGING['handlers']['logentries_handler']['token'] = '6fe1fb59-38a8-4b16-9448-d7bb1392ecec'
 
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications

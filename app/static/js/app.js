@@ -31,7 +31,7 @@ var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 
 // The URL to which logging to server side should be posted to
-var LOGGING_SERVER_URL = 'http://localhost:8000/api/v1/log/level/error'
+var LOGGING_SERVER_URL = '/api/v1/log/level/error'
 
 BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs

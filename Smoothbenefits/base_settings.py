@@ -133,6 +133,35 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Logging settings
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters':{
+        'key-value-pair': {
+            'format': 'ID: %(cid)s; TIME: %(asctime)s; LEVEL: %(levelname)s; MESSAGE: %(message)s; PROCESS: %(process)s; THREAD: %(thread)s'
+        },
+    },
+    'handlers': {
+        'logentries_handler': {
+            'class': 'logentries.LogentriesHandler',
+            'formatter': 'key-value-pair'
+        },
+    },
+    'filters': {
+        'correlation': {
+            (): 'cid.log.CidContextFilter'
+        },
+    },
+    'loggers': {
+        'logentries': {
+            'handlers': ['logentries_handler'],
+            'level': 'INFO',
+            'propagate':True,
+            'filters': ['correlation']
+        },
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
