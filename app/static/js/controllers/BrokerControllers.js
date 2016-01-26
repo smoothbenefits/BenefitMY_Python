@@ -20,7 +20,6 @@ var clientsController = brokersControllers.controller('clientsController', [
 
     $scope.addClient = function()
     {
-      $scope.error(stats);
       $location.path('/broker/add_client');
     };
 
