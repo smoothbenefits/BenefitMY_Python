@@ -126,6 +126,9 @@ class EmployeeOrganizationService(object):
         employee_profile.manager = manager_profile
         employee_profile.save()
 
+        result.set_output_data(organization_setup_data)
+        return result
+
     def batch_validate_employee_organization_setup_data(self, organization_setup_data_list):
         result = OperationResult(organization_setup_data_list)
 

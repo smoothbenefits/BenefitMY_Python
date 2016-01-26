@@ -663,6 +663,22 @@ benefitmyDomainModelFactories.factory('BatchAccountCreationBatchCreateRepository
   }
 ]);
 
+benefitmyDomainModelFactories.factory('BatchEmployeeOrganizationImportDataParseRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompany:$resource(PREFIX + 'company/:company_id/batch_employee_organization_import/parse_organization_data/', {company_id:'@company_id'})
+    };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('BatchEmployeeOrganizationImportRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompany:$resource(PREFIX + 'company/:company_id/batch_employee_organization_import/batch_import/', {company_id:'@company_id'})
+    }
+  }
+]);
+
 benefitmyDomainModelFactories.factory('EmployeeManagementEmployeeTerminationRepository', ['$resource',
   function($resource){
     return{

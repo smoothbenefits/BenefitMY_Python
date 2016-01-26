@@ -281,6 +281,27 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/batch_employee_addition/partial_save_result.html',
                 controller:'batchEmployeeAdditionController'
             }).
+            state('batch_employee_organization_import', {
+                url: '/admin/employee/batch_organization_import/:company_id',
+                templateUrl:'/static/partials/batch_employee_organization/main.html',
+                abstract: true,
+                controller:'batchEmployeeOrganizationImportController'
+            }).
+            state('batch_employee_organization_import.input', {
+                url: '',
+                templateUrl: '/static/partials/batch_employee_organization/partial_input.html',
+                controller:'batchEmployeeOrganizationImportController'
+            }).
+            state('batch_employee_organization_import.parse_result', {
+                url: '/parse_result',
+                templateUrl: '/static/partials/batch_employee_organization/partial_parse_result.html',
+                controller:'batchEmployeeOrganizationImportController'
+            }).
+            state('batch_employee_organization_import.save_result', {
+                url: '/save_result',
+                templateUrl: '/static/partials/batch_employee_organization/partial_save_result.html',
+                controller:'batchEmployeeOrganizationImportController'
+            }).
             state('document_templates', {
                 url: '/admin/documents/template/:company_id',
                 templateUrl:'/static/partials/documents/view_templates.html',
