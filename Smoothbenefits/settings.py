@@ -1,11 +1,14 @@
 """
 Configurations for local environment
 """
+import logging
+from logentries import LogentriesHandler
 from Smoothbenefits.base_settings import *
 
 SITE_URL = "https://localhost:8000/"
 
-LOGGING_SERVER_URL = "http://localhost:3999/api/bm_log"
+# Logging Configurations
+LOGGING['handlers']['logentries_handler']['token'] = '980781a6-72cf-4dd7-b6ae-57fc3e7d7262'
 
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications

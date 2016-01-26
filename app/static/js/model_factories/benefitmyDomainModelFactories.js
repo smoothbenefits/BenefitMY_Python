@@ -558,7 +558,7 @@ benefitmyDomainModelFactories.factory('CompanyGroupCommuterPlanRepository', ['$r
       ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/company_commuter/', {companyGroupId:'@company_group_id'}),
       ByCompanyPlan: $resource('/api/v1/company_commuter/:pk/company_group_plans/', {pk:'@pk'}, {
         save: {
-            method:'POST', 
+            method:'POST',
             isArray: true
         },
         update: {

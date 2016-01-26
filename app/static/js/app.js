@@ -31,7 +31,7 @@ var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 
 // The URL to which logging to server side should be posted to
-var LOGGING_SERVER_URL = 'http://localhost:3999/api/bm_log'
+var LOGGING_SERVER_URL = '/api/v1/log/level/error'
 
 BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs
@@ -63,31 +63,36 @@ BenefitMyApp.config(function(blockUIConfig) {
 // - Add logging to server
 BenefitMyApp.config(function ($provide) {
   $provide.decorator("$exceptionHandler",
-    ['$delegate', '$window', '$log', 'BrowserDetectionService',
-    function($delegate, $window, $log, BrowserDetectionService) {
+    ['$delegate', '$window', '$log', '$injector', 'BrowserDetectionService',
+    function($delegate, $window, $log, $injector, BrowserDetectionService) {
     return function (exception, cause) {
         // now try to log the error to the server side.
         try {
-            var errorMessage = exception.toString();
-
             // use our traceService to generate a stack trace
             var stackTrace = printStackTrace({e: exception});
+            var errorMessage = exception.toString();
 
-            // use AJAX (in this example jQuery) and NOT
-            // an angular service such as $http
-            $.ajax({
-                type: "POST",
-                url: LOGGING_SERVER_URL,
-                contentType: "application/json",
-                data: angular.toJson({
-                    url: $window.location.href,
-                    message: errorMessage,
-                    browser: BrowserDetectionService.getCurrentBrowser(),
-                    type: "exception",
-                    stackTrace: stackTrace.join('\n\n')}) })
-            .fail(function(jqXHR, textStatus, errorThrown) {
-                $log.warn("Error server-side logging failed");
-                $log.log(errorThrown);
+            var $http = $injector.get("$http");
+
+            var request = {
+              method: 'POST',
+              url: LOGGING_SERVER_URL,
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              data: angular.toJson({
+                  url: $window.location.href,
+                  message: errorMessage,
+                  browser: BrowserDetectionService.getCurrentBrowser(),
+                  type: "exception",
+                  stackTrace: stackTrace.join('\n\n')
+                })
+            };
+
+            // Use $http to get CSRF token
+            $http(request).then(function(){}, function(error) {
+              $log.warn("Error server-side logging failed");
+              $log.log(error);
             });
         } catch (loggingError) {
             $log.warn("Error server-side logging failed");

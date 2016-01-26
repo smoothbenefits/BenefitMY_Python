@@ -692,7 +692,7 @@ var brokerAddBenefitControllerBase = brokersControllers.controller(
     });
 
     $scope.buttonDisabled = function(){
-      return $scope.form.$invalid || 
+      return $scope.form.$invalid ||
         !$scope.newPlan ||
         !$scope.newPlan.selectedCompanyGroups ||
         $scope.newPlan.selectedCompanyGroups.length == 0;
