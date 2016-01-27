@@ -221,7 +221,7 @@ benefitmyService.factory('benefitDisplayService',
       return nonMedicalCount + medicalCount;
     };
 
-    var getHealthBenefitsForDisplay = function(company, showEmployeePremium){
+    var getHealthBenefitsForDisplay = function(company, showEmployeePremium, filterByGroupId){
         var healthBenefitToDisplay = {
           medicalBenefitGroup:{},
           nonMedicalBenefitArray: [],
@@ -234,12 +234,20 @@ benefitmyService.factory('benefitDisplayService',
             benefitListRepository.get({clientId:company.id})
             .$promise.then(function(response){
                 _.each(response.benefits, function(benefitOption){
-                    if(benefitOption.benefit_plan.benefit_type.name === 'Medical'){
-                      healthBenefitToDisplay.medicalBenefitGroup.groupTitle = benefitOption.benefit_plan.benefit_type.name;
-                      populateMedicalArray(medicalArray, benefitOption, company);
-                    }
-                    else{
-                      insertIntoBenefitArray(healthBenefitToDisplay.nonMedicalBenefitArray, benefitOption, company);
+                    // Whether the option is available
+                    var availableToDisplay = !filterByGroupId 
+                        || _.some(benefitOption.company_groups, function(company_group){
+                                  return company_group.company_group.id == filterByGroupId;
+                                }); 
+
+                    if (availableToDisplay) {
+                        if(benefitOption.benefit_plan.benefit_type.name === 'Medical'){
+                          healthBenefitToDisplay.medicalBenefitGroup.groupTitle = benefitOption.benefit_plan.benefit_type.name;
+                          populateMedicalArray(medicalArray, benefitOption, company);
+                        }
+                        else{
+                          insertIntoBenefitArray(healthBenefitToDisplay.nonMedicalBenefitArray, benefitOption, company);
+                        }
                     }
                 });
                 if(medicalArray.length > 0){
