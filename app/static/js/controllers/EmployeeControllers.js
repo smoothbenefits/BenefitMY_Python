@@ -1305,6 +1305,12 @@ var healthBenefitsSignup = employeeControllers.controller(
                     });
                   });
             });
+
+            benefitDisplayService.getHealthBenefitsForDisplay(company, false)
+            .then(function(response) {
+              $scope.medicalBenefitGroup = response.medicalBenefitGroup;
+              $scope.nonMedicalBenefitArray = response.nonMedicalBenefitArray;
+            });
           });
         });
 
@@ -2627,9 +2633,9 @@ var planDetailsModalController = employeeControllers.controller('planDetailsModa
     $scope,
     $modal,
     $modalInstance){
-        $scope.closePlanDetailsModal = function() {
-          $modalInstance.dismiss();
-        };
+      $scope.closePlanDetailsModal = function() {
+        $modalInstance.dismiss();
+      };
 }]);
 
 var employeeHelpCenterController = employeeControllers.controller('employeeHelpCenterController',
