@@ -3,7 +3,7 @@ Configurations for local environment
 """
 from Smoothbenefits.base_settings import *
 
-SITE_URL = "https://localhost:8000/"
+SITE_URL = "http://localhost:8000/"
 
 LOGGING_SERVER_URL = "http://localhost:3999/api/bm_log"
 

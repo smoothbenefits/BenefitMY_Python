@@ -223,6 +223,7 @@ from app.views.batch_account_creation.account_info_list_parse_view import Accoun
 from app.views.employee_management.employee_termination_view import EmployeeTerminationView
 
 from app.views.environment_view import EnvironmentView
+from app.views.user_data_change_email_view import UserDataChangeEmailView
 
 PREFIX = "api/v1"
 
@@ -532,6 +533,9 @@ urlpatterns = patterns('app.views',
 
     # util api
     url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
+
+    # UserData Change Email api
+    url(r'^%s/user_data_email/?$' % PREFIX, UserDataChangeEmailView.as_view()),
 
     # Reporting API
     url(r'^%s/person/(?P<person_id>\w+)/benefits/?$' % PREFIX,
