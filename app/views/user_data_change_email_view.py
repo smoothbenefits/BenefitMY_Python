@@ -11,7 +11,7 @@ class UserDataChangeEmailView(APIView):
         emails = request.GET.get('emails', None)
         if not emails:
             raise Http404
-        target_emails = emails.split(';')
+        target_emails = emails.split(',')
         mod_service = DataModificationService()
         mod_service.employee_modifications_notify_specific_target(hours_back*60, target_emails)
         return Response('OK')
