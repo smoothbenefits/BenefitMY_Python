@@ -1206,6 +1206,13 @@ var healthBenefitsSignup = employeeControllers.controller(
 
           $scope.companyPromise.then(function(company){
 
+            benefitDisplayService.getHealthBenefitsForDisplay(company, false, $scope.userCompanyGroupId)
+            .then(function(healthBenefitToDisplay){
+              $scope.medicalBenefitGroup = healthBenefitToDisplay.medicalBenefitGroup;
+              $scope.nonMedicalBenefitArray = healthBenefitToDisplay.nonMedicalBenefitArray;
+              $scope.benefitCount = healthBenefitToDisplay.benefitCount;
+            });
+
             //First get all the enrolled benefit list
             employeeBenefits.enroll().get({userId:employeeId, companyId:company.id})
               .$promise.then(function(response){
