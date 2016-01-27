@@ -19,6 +19,13 @@ class EmployeeOrganizationSetupData(object):
         self.manager_first_name = manager_first_name
         self.manager_last_name = manager_last_name
 
+        if (self.manager_profile_id
+            or self.manager_first_name
+            or self.manager_last_name):
+            self.has_manager_info_specified = True
+        else:
+            self.has_manager_info_specified = False
+
         # Revalidate the person_id
         employee_person = self.get_employee_person()
         if (employee_person):
@@ -31,13 +38,6 @@ class EmployeeOrganizationSetupData(object):
             self.manager_profile_id = manager_profile.id
         else:
             self.manager_profile_id = None
-
-    def has_manager_info_specified(self):
-        if (self.manager_profile_id
-            or self.manager_first_name
-            or self.manager_last_name):
-            return True
-        return False
 
     def get_employee_person(self):
         employee_profile = self.get_employee_profile()

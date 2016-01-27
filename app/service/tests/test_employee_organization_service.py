@@ -79,7 +79,7 @@ class TestEmployeeOrganizationService(TestCase):
             manager_last_name=manager_last_name
         )
 
-        result = service.execute_employee_organization_setup(data)
+        result = service.validate_employee_organization_setup_data(data)
 
         self.assertTrue(result.has_issue())
 
@@ -100,7 +100,7 @@ class TestEmployeeOrganizationService(TestCase):
             manager_last_name=manager_last_name
         )
 
-        result = service.execute_employee_organization_setup(data)
+        result = service.validate_employee_organization_setup_data(data)
 
         self.assertTrue(result.has_issue())
 
@@ -121,7 +121,7 @@ class TestEmployeeOrganizationService(TestCase):
             manager_last_name=manager_last_name
         )
 
-        result = service.execute_employee_organization_setup(data)
+        result = service.validate_employee_organization_setup_data(data)
 
         self.assertTrue(result.has_issue())
 
@@ -142,6 +142,6 @@ class TestEmployeeOrganizationService(TestCase):
             manager_last_name=manager_last_name
         )
 
-        result = service.execute_employee_organization_setup(data)
+        result = service.validate_employee_organization_setup_data(data)
 
         self.assertTrue(result.has_issue())

@@ -105,7 +105,7 @@ class EmployeeOrganizationService(object):
 
         # Do validation first, and short circuit if failed
         if (do_validation):
-            result = self._validate_employee_organization_setup_data(organization_setup_data)
+            result = self.validate_employee_organization_setup_data(organization_setup_data)
         else:
             # directly construct the result, skipping validation
             result = OperationResult(organization_setup_data)
@@ -141,7 +141,7 @@ class EmployeeOrganizationService(object):
             validation_results = []
 
             for data in organization_setup_data_list:
-                validate_result = self._validate_employee_organization_setup_data(data)
+                validate_result = self.validate_employee_organization_setup_data(data)
                 if (validate_result.has_issue()):
                     has_invalid = True   
 
@@ -156,7 +156,7 @@ class EmployeeOrganizationService(object):
 
         return result
 
-    def _validate_employee_organization_setup_data(self, organization_setup_data):
+    def validate_employee_organization_setup_data(self, organization_setup_data):
         result = OperationResult(organization_setup_data)
         result.set_output_data(organization_setup_data)
 
@@ -176,7 +176,7 @@ class EmployeeOrganizationService(object):
         # we infer as to not-setup or remove manager for the employee
         # But it is invalid that the manager info is specified but failed
         # to resolve to a valid employee profile
-        if (organization_setup_data.has_manager_info_specified() 
+        if (organization_setup_data.has_manager_info_specified 
             and not organization_setup_data.manager_profile_id):
             result.append_issue(
                 "Could not locate manager's employee profile based on info provided"
