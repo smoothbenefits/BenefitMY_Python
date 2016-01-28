@@ -7,7 +7,6 @@ from action_base import ActionBase
 
 User = get_user_model()
 
-
 class ActionNotifyEmployeeNotCompleteEnrollment(ActionBase):
     def execute(self, action_data):
         if (not action_data
@@ -21,9 +20,13 @@ class ActionNotifyEmployeeNotCompleteEnrollment(ActionBase):
         txt_template_path = 'email/system_notifications/employee_not_complete_enrollment.txt'
 
         for company_id in action_data['company_user_id_list']:
+
+            self.log.debug("Company " + company_id)
             user_id_list = action_data['company_user_id_list'][company_id]
 
             for user_id in user_id_list:
+
+                self.log.debug("User " + user_id)
                 context_data = { 'company': Company.objects.get(pk=company_id) }
 
                 # build the list of target emails
@@ -35,6 +38,11 @@ class ActionNotifyEmployeeNotCompleteEnrollment(ActionBase):
 
                 send_email_service.send_support_email(
                     emails, subject, context_data, html_template_path, txt_template_path)
+
+                self.log.info("Action {} ran to completion for user {}".format(self.__class__.__name__, user_id))
+
+        self.log.info("Action {} ran to completion.".format(self.__class__.__name__))
+
 
     def _get_site_URL(self, user_id):
         user = User.objects.get(pk=user_id)
