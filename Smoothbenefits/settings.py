@@ -5,7 +5,7 @@ import logging
 from logentries import LogentriesHandler
 from Smoothbenefits.base_settings import *
 
-SITE_URL = "https://localhost:8000/"
+SITE_URL = "http://localhost:8000/"
 
 # Logging Configurations
 LOGGING['handlers']['logentries_handler']['token'] = '980781a6-72cf-4dd7-b6ae-57fc3e7d7262'
