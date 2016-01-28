@@ -29,6 +29,8 @@ class LoggingService(object):
     def debug(self, message):
         caller = self._caller_name()
         formatted = self._format(message, caller)
+        # For debug info, print to console as well
+        print formatted
         self.log.debug(formatted)
 
     def _format(self, message, caller):
