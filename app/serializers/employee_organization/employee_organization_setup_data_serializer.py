@@ -5,6 +5,10 @@ from app.serializers.person_serializer import PersonSimpleSerializer
 from app.serializers.employee_profile_serializer import ManagerSerializer
 
 
+''' Deserialize data corresponding to one complete data object
+    expected to carry out a unit the employee organization setup
+    operation. 
+'''
 class EmployeeOrganizationSetupDataPostSerializer(serializers.Serializer):
     employee_person_id = serializers.IntegerField(required=False)
     employee_first_name = serializers.CharField(required=False)
@@ -18,6 +22,9 @@ class EmployeeOrganizationSetupDataPostSerializer(serializers.Serializer):
         return EmployeeOrganizationSetupData(**attrs)
 
 
+''' Serailize out data object that holds the data expected to carry
+    out a unit the employee organization setup operation.
+'''
 class EmployeeOrganizationSetupDataSerializer(serializers.Serializer):
     employee_person_id = serializers.IntegerField(required=False)
     employee_first_name = serializers.CharField(required=False)
