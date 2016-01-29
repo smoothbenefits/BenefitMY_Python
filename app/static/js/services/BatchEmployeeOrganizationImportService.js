@@ -32,29 +32,13 @@ benefitmyService.factory(
         var parseRawData = function(companyId, batchDataModel) {
             var model = mapParseDataViewToDomainModel(batchDataModel);
 
-            var deferred = $q.defer();
-
-            BatchEmployeeOrganizationImportDataParseRepository.ByCompany.save({company_id: companyId}, model).$promise.then(function(response){
-                deferred.resolve(response);
-            }, function(error) {
-                deferred.reject(error);
-            });
-
-            return deferred.promise;
+            return BatchEmployeeOrganizationImportDataParseRepository.ByCompany.save({company_id: companyId}, model).$promise;
         };
 
         var saveAll = function(companyId, batchDataModel) {
             var model = mapBatchSaveViewToDomainModel(batchDataModel);
 
-            var deferred = $q.defer();
-
-            BatchEmployeeOrganizationImportRepository.ByCompany.save({company_id: companyId}, model).$promise.then(function(response){
-                deferred.resolve(response);
-            }, function(error) {
-                deferred.reject(error);
-            });
-
-            return deferred.promise;
+            return BatchEmployeeOrganizationImportRepository.ByCompany.save({company_id: companyId}, model).$promise;
         };
 
         return{
