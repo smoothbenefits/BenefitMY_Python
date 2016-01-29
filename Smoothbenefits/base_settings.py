@@ -313,7 +313,8 @@ PIPELINE_JS = {
             'js/services/EmployeeBenefitsAvailabilityService.js',
             'js/services/TemplateService.js',
             'js/services/SignatureService.js',
-            'js/services/EnvironmentService.js'
+            'js/services/EnvironmentService.js',
+            'js/services/CommonUIWidgetService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

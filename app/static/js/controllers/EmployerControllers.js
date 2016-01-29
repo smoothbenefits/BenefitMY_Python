@@ -330,6 +330,7 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
      'CompensationService',
      'EmployerEmployeeManagementService',
      'BatchAccountCreationService',
+     'CommonUIWidgetService',
     function($scope,
              $state,
              $stateParams,
@@ -339,7 +340,8 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
              emailRepository,
              CompensationService,
              EmployerEmployeeManagementService,
-             BatchAccountCreationService){
+             BatchAccountCreationService,
+             CommonUIWidgetService){
 
         var compId = $stateParams.company_id;
 
@@ -393,28 +395,10 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
             });
         };
 
-        $scope.openSpinnerModal = function() {
-            if (!$scope.spinnerModalInstance) {
-                $scope.spinnerModalInstance = $modal.open({
-                  templateUrl: '/static/partials/common/modal_progress_bar_spinner.html',
-                  controller: function($scope) {},
-                  backdrop: 'static',
-                  size: 'md'
-                });
-            }
-        };
-
-        $scope.closeSpinnerModal = function() {
-            if ($scope.spinnerModalInstance) {
-                $scope.spinnerModalInstance.dismiss();
-                $scope.spinnerModalInstance = null;
-            }
-        };
-
         $scope.parseData = function() {
-            $scope.openSpinnerModal();
+            CommonUIWidgetService.openProgressBarSpinnerModal();
             BatchAccountCreationService.parseRawData(compId, $scope.batchAddUserModel).then(function(response) {
-                $scope.closeSpinnerModal();
+                CommonUIWidgetService.closeProgressBarSpinnerModal();
 
                 // Actually parse data here, and get result
                 $scope.batchAddUserModel.parseDataResult = wrapBatchAccountOperationResponse(response);
@@ -422,22 +406,22 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
                 $state.go('batch_add_employees.parse_result');
             },
             function(error) {
-                $scope.closeSpinnerModal();
+                CommonUIWidgetService.closeProgressBarSpinnerModal();
                 alert('Failed to parse the given data!');
             });
         };
 
         $scope.save = function() {
-            $scope.openSpinnerModal();
+            CommonUIWidgetService.openProgressBarSpinnerModal();
             BatchAccountCreationService.saveAllAccounts(compId, $scope.batchAddUserModel).then(function(response) {
-                $scope.closeSpinnerModal();
+                CommonUIWidgetService.closeProgressBarSpinnerModal();
                 // Actually parse data here, and get result
                 $scope.batchAddUserModel.saveResult = wrapBatchAccountOperationResponse(response);
 
                 $state.go('batch_add_employees.save_result');
             },
             function(error) {
-                $scope.closeSpinnerModal();
+                CommonUIWidgetService.closeProgressBarSpinnerModal();
                 alert('Failed to save data!');
             });
         };
@@ -459,12 +443,14 @@ var batchEmployeeOrganizationImportController = employersController.controller('
      '$modal',
      'usersRepository',
      'BatchEmployeeOrganizationImportService',
+     'CommonUIWidgetService',
     function($scope,
              $state,
              $stateParams,
              $modal,
              usersRepository,
-             BatchEmployeeOrganizationImportService){
+             BatchEmployeeOrganizationImportService,
+             CommonUIWidgetService){
 
         var compId = $stateParams.company_id;
 
@@ -518,28 +504,10 @@ var batchEmployeeOrganizationImportController = employersController.controller('
             });
         };
 
-        $scope.openSpinnerModal = function() {
-            if (!$scope.spinnerModalInstance) {
-                $scope.spinnerModalInstance = $modal.open({
-                  templateUrl: '/static/partials/common/modal_progress_bar_spinner.html',
-                  controller: function($scope) {},
-                  backdrop: 'static',
-                  size: 'md'
-                });
-            }
-        };
-
-        $scope.closeSpinnerModal = function() {
-            if ($scope.spinnerModalInstance) {
-                $scope.spinnerModalInstance.dismiss();
-                $scope.spinnerModalInstance = null;
-            }
-        };
-
         $scope.parseData = function() {
-            $scope.openSpinnerModal();
+            CommonUIWidgetService.openProgressBarSpinnerModal();
             BatchEmployeeOrganizationImportService.parseRawData(compId, $scope.batchDataModel).then(function(response) {
-                $scope.closeSpinnerModal();
+                CommonUIWidgetService.closeProgressBarSpinnerModal();
 
                 // Actually parse data here, and get result
                 $scope.batchDataModel.parseDataResult = wrapBatchOperationResponse(response);
@@ -547,22 +515,22 @@ var batchEmployeeOrganizationImportController = employersController.controller('
                 $state.go('batch_employee_organization_import.parse_result');
             },
             function(error) {
-                $scope.closeSpinnerModal();
+                CommonUIWidgetService.closeProgressBarSpinnerModal();
                 alert('Failed to parse the given data!');
             });
         };
 
         $scope.save = function() {
-            $scope.openSpinnerModal();
+            CommonUIWidgetService.openProgressBarSpinnerModal();
             BatchEmployeeOrganizationImportService.saveAll(compId, $scope.batchDataModel).then(function(response) {
-                $scope.closeSpinnerModal();
+                CommonUIWidgetService.closeProgressBarSpinnerModal();
                 // Actually parse data here, and get result
                 $scope.batchDataModel.saveResult = wrapBatchOperationResponse(response);
 
                 $state.go('batch_employee_organization_import.save_result');
             },
             function(error) {
-                $scope.closeSpinnerModal();
+                CommonUIWidgetService.closeProgressBarSpinnerModal();
                 alert('Failed to save data!');
             });
         };
