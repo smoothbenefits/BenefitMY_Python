@@ -1,0 +1,64 @@
+<div ng-if="batchAddUserModel.saveResult.hasIssues()">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th><span>There are issues with the data</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="issue in batchDataModel.saveResult.issues">
+            <td>{{issue.message}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<div ng-if="batchDataModel.saveResult.hasFailRecords()">
+    <div class="form-label">Please review the below records that have issues detected</div>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th><span>First Name</span></th>
+            <th><span>Last Name</span></th>
+            <th><span>Issues</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="resultData in batchDataModel.saveResult.getRecordsHaveIssues()">
+            <td>{{resultData.input_data.first_name}}</td>
+            <td>{{resultData.input_data.last_name}}</td>
+            <td><span class="inline" ng-repeat="issue in resultData.issues"> {{$index + 1}}. {{issue.message}}; </br></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<div ng-if="batchDataModel.saveResult.allRecordsSuccessful()">
+    <div class="form-label">Please review all accounts that have been created</div>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th><span>First Name</span></th>
+            <th><span>Last Name</span></th>
+            <th><span>Manager</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="resultData in batchDataModel.saveResult.output_data">
+            <td>{{resultData.output_data.employee_person_info.first_name}}</td>
+            <td>{{resultData.output_data.employee_person_info.last_name}}</td>
+            <td>{{resultData.output_data.manager_profile_info.first_name + ' ' + resultData.output_data.manager_profile_info.last_name}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<div class="submit-box">
+    <button ng-click="backtoDashboard()" class="btn green" ng-disabled="batchDataModel.saveResult.hasIssues()">Back to Dashboard</button>
+</div>

@@ -339,6 +339,7 @@ PIPELINE_JS = {
             'js/services/BenefitPolicyKeyService.js',
             'js/services/CompanyBenefitEnrollmentSummaryService.js',
             'js/services/BatchAccountCreationService.js',
+            'js/services/BatchEmployeeOrganizationImportService.js',
             'js/services/Company1094CService.js',
             'js/services/Company1095CService.js',
             'js/services/Employee1095CService.js',
@@ -346,7 +347,8 @@ PIPELINE_JS = {
             'js/services/EmployeeBenefitsAvailabilityService.js',
             'js/services/TemplateService.js',
             'js/services/SignatureService.js',
-            'js/services/EnvironmentService.js'
+            'js/services/EnvironmentService.js',
+            'js/services/CommonUIWidgetService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

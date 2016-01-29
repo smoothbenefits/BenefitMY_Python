@@ -54,6 +54,7 @@
             <th><span>Compensation Effective Date</span></th>
             <th><span>Benefit Start Date</span></th>
             <th><span>Company Group</span></th>
+            <th><span>Manager</span></th>
             <th><span>Send Email</span></th>
           </tr>
         </thead>
@@ -69,6 +70,7 @@
             <td>{{formatDateForDisplay(accountResultData.output_data.compensation_info.effective_date)}}</td>
             <td>{{formatDateForDisplay(accountResultData.output_data.benefit_start_date)}}</td>
             <td>{{accountResultData.output_data.group_name}}</td>
+            <td>{{accountResultData.output_data.manager_first_name + ' ' + accountResultData.output_data.manager_last_name}}</td>
             <td>{{accountResultData.output_data.send_email}}</td>
           </tr>
         </tbody>

@@ -220,6 +220,11 @@ from app.views.aca.aca_1094_c_eligibility_certification_view import ACA1094CElig
 from app.views.batch_account_creation.batch_account_creation_view import BatchAccountCreationView
 from app.views.batch_account_creation.account_info_list_parse_view import AccountInfoListParseView
 
+from app.views.employee_organization.batch_employee_organization_import_raw_data_parse_view \
+    import BatchEmployeeOrganizationImportRawDataParseView
+from app.views.employee_organization.batch_employee_organization_import_view \
+    import BatchEmployeeOrganizationImportView
+
 from app.views.employee_management.employee_termination_view import EmployeeTerminationView
 
 from app.views.environment_view import EnvironmentView
@@ -614,6 +619,14 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/batch_account_creation/batch_create/?$' % PREFIX,
         BatchAccountCreationView.as_view(),
         name='batch_account_creation_batch_create_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/batch_employee_organization_import/parse_organization_data/?$' % PREFIX,
+        BatchEmployeeOrganizationImportRawDataParseView.as_view(),
+        name='batch_employee_organization_import_parse_data_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/batch_employee_organization_import/batch_import/?$' % PREFIX,
+        BatchEmployeeOrganizationImportView.as_view(),
+        name='batch_employee_organization_import_api'),
 
     url(r'^%s/company/(?P<company_id>\w+)/employee_management/termination/?$' % PREFIX,
         EmployeeTerminationView.as_view(),
