@@ -9,7 +9,7 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-    <div class="panel" ng-show="!requestedPTOs">
+    <div class="panel" ng-show="!requestedPTOs.length">
         <div class="panel-heading">
             PTO Requested
         </div>
@@ -17,7 +17,7 @@
             There are no PTO requested. <a ng-click="requestPTO()">Click here</a> to make a PTO request.
         </div>
     </div>
-    <div class="table-responsive" ng-show="requestedPTOs">
+    <div class="table-responsive" ng-show="requestedPTOs.length">
         <div class="table-sub-title">
           PTO Requested
         </div>

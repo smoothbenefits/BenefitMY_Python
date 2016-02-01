@@ -2665,7 +2665,11 @@ var employeeViewPtoController = employeeControllers.controller('employeeViewPtoC
    'PTOService',
    function($scope, $state, UserService, PTOService){
      UserService.getCurUserInfo().then(function(userInfo) {
-       $scope.user = userInfo;
+       $scope.user = userInfo.user;
+       PTOService.GetPTOsByRequestor($scope.user.id)
+       .then(function(ptos){
+          $scope.requestedPTOs = ptos;
+       })
      });
    }
 ]);
