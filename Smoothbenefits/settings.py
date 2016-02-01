@@ -6,7 +6,7 @@ from logentries import LogentriesHandler
 from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://localhost:8000/"
-
+TIMETRACKINGAPPHOSTNAME = "http://localhost:6999/"
 ENVIRONMENT = "LOCAL"
 
 # Logging Configurations

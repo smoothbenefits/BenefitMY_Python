@@ -16,9 +16,11 @@ benefitmyService.factory('PTOService',
 
         var GetPTOsByRequestor = function(requestor){
             return _GetEnvAwareId(requestor).then(function(id){
-                return PTORepository.ByRequestor.query({userId:id})
-                    .$promise.then(function(ptos){
-                        return ptos;
+                return PTORepository.then(function(resource){
+                    return resource.ByRequestor.query({userId:id})
+                        .$promise.then(function(ptos){
+                            return ptos;
+                        });
                     });
                 });
         };

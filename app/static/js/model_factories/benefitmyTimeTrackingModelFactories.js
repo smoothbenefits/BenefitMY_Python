@@ -2,12 +2,16 @@ var benefitmyTimeTrackingModelFactories = angular.module('benefitmyTimeTrackingM
 
 benefitmyTimeTrackingModelFactories.factory('PTORepository', [
   '$resource',
-  function ($resource){
-    return {
-        ByRequestor: $resource('http://localhost:6999/api/v1/requestor/:userId/ptos', {userId:'@userId'}),
-        ByApprover: $resource('http://localhost:6999/api/v1/approver/:userId/ptos', {userId:'@userId'}),
-        Collection: $resource('http://localhost:6999/api/v1/ptos')
-    }
+  'TimeTrackingAppHostNameRepository',
+  function ($resource, TimeTrackingAppHostNameRepository){
+    return TimeTrackingAppHostNameRepository.get().$promise.then(function(response){
+            var _hostName = response.hostname;
+            return {
+                ByRequestor: $resource(_hostName + 'api/v1/requestor/:userId/ptos', {userId:'@userId'}),
+                ByApprover: $resource(_hostName + 'api/v1/approver/:userId/ptos', {userId:'@userId'}),
+                Collection: $resource(_hostName + 'api/v1/ptos')
+            };
+    });
   }
 ]);
 

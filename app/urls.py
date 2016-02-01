@@ -227,7 +227,7 @@ from app.views.employee_organization.batch_employee_organization_import_view \
 
 from app.views.employee_management.employee_termination_view import EmployeeTerminationView
 
-from app.views.environment_view import EnvironmentView
+from app.views.environment_view import EnvironmentView, TimeTrackingAppView
 from app.views.user_data_change_email_view import UserDataChangeEmailView
 
 from app.views.logging_service_view import LoggingServiceView
@@ -637,7 +637,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/1094_c_certificiations/?$' % PREFIX, ACA1094CEligibilityCertificationView.as_view(), name='ACA_1094_c_cert_api'),
 
     url(r'^%s/env/?$' % PREFIX, EnvironmentView.as_view(), name="environment_api"),
-
+    url(r'^%s/timetrackingapp/?$' % PREFIX, TimeTrackingAppView.as_view(), name="timetrackingapp_api"),
     # Logging
     url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api")
 )
