@@ -2657,3 +2657,15 @@ var employeeHelpCenterController = employeeControllers.controller('employeeHelpC
     };
   }
 ]);
+
+var employeeViewPtoController = employeeControllers.controller('employeeViewPtoController',
+  ['$scope',
+   '$state',
+   'UserService',
+   'PTOService',
+   function($scope, $state, UserService, PTOService){
+     UserService.getCurUserInfo().then(function(userInfo) {
+       $scope.user = userInfo;
+     });
+   }
+]);

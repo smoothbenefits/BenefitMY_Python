@@ -9,6 +9,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'isteven-multi-select',
     'blockUI',
     'benefitmyDomainModelFactories',
+    'benefitmyTimeTrackingModelFactories',
     'benefitmyService',
     'benefitmyApp.constants',
     'benefitmyApp.users.controllers',
@@ -516,6 +517,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
               url: '/employee/support',
               templateUrl: '/static/partials/help_center/employee_help_center.html',
               controller: 'employeeHelpCenterController'
+            }).
+            state('employeepto', {
+                url: '/employee/hr/pto',
+                templateUrl: '/static/partials/pto/view_pto.html',
+                controller: 'employeeViewPtoController'
             });
      }
  ]);

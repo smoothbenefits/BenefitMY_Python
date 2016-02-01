@@ -60,7 +60,9 @@
         border-bottom: 4px solid #151A1E;
         margin-top: -4px; }
       #dashboard-wrapper #sidebar .nav-list li .primary-nav .flaticon {
-        margin-right: 20px; }
+        margin-right: 20px;
+        width:16px;
+        display:inline-block; }
         #dashboard-wrapper #sidebar .nav-list li .primary-nav .flaticon:before {
           margin: 0; }
     #dashboard-wrapper #sidebar .nav-list li .sub-nav {

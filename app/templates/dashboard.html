@@ -126,9 +126,10 @@
       </li>
       <li class="expandable" ng-show="isCurRoleEmployee() && (!disabledFeatures.W4 || !disabledFeature.DD)">
         <div class="primary-nav">
-          <button data-toggle="collapse" data-target="#employee-payroll-nav" aria-expanded="false" aria-controls="employee-payroll-nav"><span class="flaticon flaticon-star145"></span>Payroll</button>
+          <button data-toggle="collapse" data-target="#employee-hr-nav" aria-expanded="false" aria-controls="employee-hr-nav"><span class="flaticon flaticon-star145"></span>HR</button>
         </div>
-        <div class="sub-nav collapse" id="employee-payroll-nav">
+        <div class="sub-nav collapse" id="employee-hr-nav">
+          <a href="#/employee/hr/pto" ng-hide="disabledFeatures.pto">PTO</a>
           <a href="#/employee/payroll/w4" ng-hide="disabledFeatures.W4">W4 Form</a>
           <a href="#/employee/payroll/direct_deposit" ng-hide="disabledFeatures.DD">Direct Deposit</a>
         </div>
