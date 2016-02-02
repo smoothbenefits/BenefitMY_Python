@@ -2662,14 +2662,9 @@ var employeeViewTimeOffController = employeeControllers.controller('employeeView
   ['$scope',
    '$state',
    'UserService',
-   'TimeOffService',
-   function($scope, $state, UserService, TimeOffService){
+   function($scope, $state, UserService){
      UserService.getCurUserInfo().then(function(userInfo) {
        $scope.user = userInfo.user;
-       TimeOffService.GetTimeOffsByRequestor($scope.user.id)
-       .then(function(timeOffs){
-          $scope.requestedTimeOffs = timeOffs;
-       })
      });
    }
 ]);

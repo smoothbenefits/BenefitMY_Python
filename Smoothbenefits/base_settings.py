@@ -294,6 +294,7 @@ PIPELINE_JS = {
             'js/directives/Edit1094c.js',
             'js/directives/GroupMemberLink.js',
             'js/directives/CompanyGroupSelection.js',
+            'js/directives/TimeOffManager.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/services/services.js',
