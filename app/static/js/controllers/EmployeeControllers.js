@@ -2658,17 +2658,17 @@ var employeeHelpCenterController = employeeControllers.controller('employeeHelpC
   }
 ]);
 
-var employeeViewPtoController = employeeControllers.controller('employeeViewPtoController',
+var employeeViewTimeOffController = employeeControllers.controller('employeeViewTimeOffController',
   ['$scope',
    '$state',
    'UserService',
-   'PTOService',
-   function($scope, $state, UserService, PTOService){
+   'TimeOffService',
+   function($scope, $state, UserService, TimeOffService){
      UserService.getCurUserInfo().then(function(userInfo) {
        $scope.user = userInfo.user;
-       PTOService.GetPTOsByRequestor($scope.user.id)
-       .then(function(ptos){
-          $scope.requestedPTOs = ptos;
+       TimeOffService.GetTimeOffsByRequestor($scope.user.id)
+       .then(function(timeOffs){
+          $scope.requestedTimeOffs = timeOffs;
        })
      });
    }

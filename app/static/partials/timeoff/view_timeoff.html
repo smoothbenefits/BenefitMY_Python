@@ -1,0 +1,43 @@
+<div class="breadcrumb">
+  <a ng-href="#/employee">Employee Dashboard</a>
+  <span>Time Off</span>
+</div>
+
+<div class="content-header">
+  <h1>View Time Off requests</h1>
+  <span class="general-info">View my time off requests</span>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+    <div class="panel" ng-show="!requestedTimeOffs.length">
+        <div class="panel-heading">
+            Time Off Requested
+        </div>
+        <div class="panel-body">
+            There are no time requested. <a ng-click="requestPTO()">Click here</a> to make a time off request.
+        </div>
+    </div>
+    <div class="table-responsive" ng-show="requestedTimeOffs.length">
+        <div class="table-sub-title">
+          PTO Requested
+        </div>
+        <table class="table table-striped" >
+          <thead>
+            <th><span>Type</span></th>
+            <th><span>Start</span></th>
+            <th><span>Duration</span></th>
+            <th><span>Date and time created</span></th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="timeOff in requestedTimeOffs">
+                <td>{{timeOff.type}}</td>
+                <td>{{timeOff.start}}</td>
+                <td>{{timeOff.duration}} hour(s)</td>
+                <td>{{timeOff.created}}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+</div>
+<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+</div><!-- / .content-body -->

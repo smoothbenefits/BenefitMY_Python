@@ -351,7 +351,7 @@ PIPELINE_JS = {
             'js/services/SignatureService.js',
             'js/services/EnvironmentService.js',
             'js/services/CommonUIWidgetService.js',
-            'js/services/PTOService.js'
+            'js/services/TimeOffService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

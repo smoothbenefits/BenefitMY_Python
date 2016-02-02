@@ -30,6 +30,7 @@ String.prototype.capitalize = function() {
 
 var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
+var DATE_TIME_FORMAT_STRING = 'LLLL';
 
 // The URL to which logging to server side should be posted to
 var LOGGING_SERVER_URL = '/api/v1/log/level/error'
@@ -518,10 +519,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
               templateUrl: '/static/partials/help_center/employee_help_center.html',
               controller: 'employeeHelpCenterController'
             }).
-            state('employeepto', {
-                url: '/employee/hr/pto',
-                templateUrl: '/static/partials/pto/view_pto.html',
-                controller: 'employeeViewPtoController'
+            state('employeetimeoff', {
+                url: '/employee/hr/timeoff',
+                templateUrl: '/static/partials/timeoff/view_timeoff.html',
+                controller: 'employeeViewTimeOffController'
             });
      }
  ]);
