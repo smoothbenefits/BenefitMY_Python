@@ -10,7 +10,6 @@ IS_PRODUCTION_ENVIRONMENT = True
 ENVIRONMENT = "PROD"
 
 SITE_URL = "https://app.workbenefits.me/"
-TIMETRACKINGAPPHOSTNAME = "http://prod.timetracking.workbenefits.me/"
 
 # Logging Configurations
 LOGGING['handlers']['logentries_handler']['token'] = '11a32264-c904-4765-96c0-fe6e7fbdb09c'

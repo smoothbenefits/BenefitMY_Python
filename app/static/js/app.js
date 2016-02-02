@@ -8,6 +8,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'angularSpinner',
     'isteven-multi-select',
     'blockUI',
+    'environment',
     'benefitmyDomainModelFactories',
     'benefitmyTimeTrackingModelFactories',
     'benefitmyService',
@@ -106,6 +107,35 @@ BenefitMyApp.config(function ($provide) {
     }
   }])
 });
+
+BenefitMyApp.config(['envServiceProvider', function(envServiceProvider) {
+    envServiceProvider.config({
+        domains: {
+            localhost: ['localhost'],
+            stage:['stage.workbenefits.me', 'stage.workbenefitsme.com', 'stage.benefitmy.com'],
+            demo: ['demo.workbenefits.me', 'demo.workbenefitsme.com', 'demo.benefitmy.com'],
+            production: ['app.workbenefits.me', 'app.workbenefitsme.com', 'app.benefitmy.com']
+        },
+        vars: {
+            localhost: {
+                timeTrackingUrl: 'http://localhost:6999/'
+            },
+            stage: {
+                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/'
+            },
+            demo: {
+                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/'
+            },
+            production: {
+                timeTrackingUrl: 'http://timetracking.workbenefits.me/'
+            }
+        }
+    });
+
+    // run the environment check, so the comprobation is made 
+    // before controllers and services are built 
+    envServiceProvider.check();
+}]);
 
 BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {

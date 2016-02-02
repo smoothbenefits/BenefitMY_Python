@@ -5,7 +5,6 @@ Configurations for Staging/Testing environment
 from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://staging.workbenefits.me/"
-TIMETRACKINGAPPHOSTNAME = "http://stage.timetracking.workbenefits.me/"
 
 ENVIRONMENT = "STAGE"
 

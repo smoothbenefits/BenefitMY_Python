@@ -5,7 +5,6 @@ from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://demo.workbenefits.me/"
 ENVIRONMENT = "DEMO"
-TIMETRACKINGAPPHOSTNAME = "http://stage.timetracking.workbenefits.me/"
 
 # Logging Configurations
 LOGGING['handlers']['logentries_handler']['token'] = 'cc97e28c-6b76-4466-bd5b-f260ea68cf4b'

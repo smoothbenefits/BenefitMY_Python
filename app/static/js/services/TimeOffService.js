@@ -30,11 +30,9 @@ benefitmyService.factory('TimeOffService',
 
         var GetTimeOffsByRequestor = function(requestor){
             return _GetEnvAwareId(requestor).then(function(id){
-                return TimeOffRepository.then(function(resource){
-                    return resource.ByRequestor.query({userId:id})
-                        .$promise.then(function(timeoffs){
-                            return mapDomainModelsToViewModels(timeoffs);
-                        });
+                return TimeOffRepository.ByRequestor.query({userId:id})
+                    .$promise.then(function(timeoffs){
+                        return mapDomainModelsToViewModels(timeoffs);
                     });
                 });
         };
