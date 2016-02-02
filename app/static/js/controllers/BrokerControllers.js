@@ -788,14 +788,14 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
    '$controller',
    'SupplementalLifeInsuranceService',
    'UserService',
-   'EnvironmentService',
+   'envService',
    function($scope,
             $state,
             $stateParams,
             $controller,
             SupplementalLifeInsuranceService,
             UserService,
-            EnvironmentService){
+            envService){
 
     // Inherite scope from base
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
@@ -806,9 +806,7 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
         $scope.newPlan = blankCompanyPlan;
     });
 
-    EnvironmentService.isProd().then(function(isProdBool){
-      $scope.isProd = isProdBool;
-    });
+    $scope.isProd = envService.get() == 'production';
 
     $scope.copyFromEmployee = function(){
       _.each($scope.newPlan.planRates.spouseRateTable, function(rate){

@@ -7,7 +7,6 @@ from Smoothbenefits.base_settings import *
 
 # Environment Identification
 IS_PRODUCTION_ENVIRONMENT = True
-ENVIRONMENT = "PROD"
 
 SITE_URL = "https://app.workbenefits.me/"
 

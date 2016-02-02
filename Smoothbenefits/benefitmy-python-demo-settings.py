@@ -4,7 +4,6 @@ Configuations for Demo environment
 from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://demo.workbenefits.me/"
-ENVIRONMENT = "DEMO"
 
 # Logging Configurations
 LOGGING['handlers']['logentries_handler']['token'] = 'cc97e28c-6b76-4466-bd5b-f260ea68cf4b'

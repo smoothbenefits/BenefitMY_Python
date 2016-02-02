@@ -2,16 +2,15 @@ var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('TimeOffService',
   ['$q',
-   'EnvironmentService',
+   'envService',
    'TimeOffRepository',
    function TimeOffService(
     $q,
-    EnvironmentService,
+    envService,
     TimeOffRepository){
         var _GetEnvAwareId = function(id){
-            return EnvironmentService.getEnvironment().then(function(env){
-                    return env + '_' + id;
-                });
+            var env = envService.get();
+            return env + '_' + id;
         };
 
         var mapDomainModelsToViewModels = function(domainModels){
@@ -29,11 +28,10 @@ benefitmyService.factory('TimeOffService',
         };
 
         var GetTimeOffsByRequestor = function(requestor){
-            return _GetEnvAwareId(requestor).then(function(id){
-                return TimeOffRepository.ByRequestor.query({userId:id})
-                    .$promise.then(function(timeoffs){
-                        return mapDomainModelsToViewModels(timeoffs);
-                    });
+            var id = _GetEnvAwareId(requestor);
+            return TimeOffRepository.ByRequestor.query({userId:id})
+                .$promise.then(function(timeoffs){
+                    return mapDomainModelsToViewModels(timeoffs);
                 });
         };
 
