@@ -71,7 +71,7 @@ IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'W4') THE
     values('W4');
 END IF;
 
-IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'Pto') THEN
+IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'Timeoff') THEN
     insert into app_sysapplicationfeature (feature)
     values('Timeoff');
 END IF;
