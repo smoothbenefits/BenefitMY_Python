@@ -33,5 +33,4 @@ class NotificationService(object):
     def execute(self):
         for trigger in self._triggers:
             trigger.examine_and_execute_actions()
-            log.debug("Trigger {} finished".format(type(trigger).__name__))
             log.info("Finished trigger {}".format(type(trigger).__name__))
