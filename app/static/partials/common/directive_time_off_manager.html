@@ -1,0 +1,30 @@
+<div class="panel" ng-show="!requestedTimeOffs.length">
+        <div class="panel-heading">
+            Time Off Requested
+        </div>
+        <div class="panel-body">
+            There are no time requested. <a ng-click="requestPTO()">Click here</a> to make a time off request.
+        </div>
+    </div>
+    <div class="table-responsive" ng-show="requestedTimeOffs.length">
+        <div class="table-sub-title">
+          PTO Requested
+        </div>
+        <table class="table table-striped" >
+          <thead>
+            <th><span>Type</span></th>
+            <th><span>Start</span></th>
+            <th><span>Duration</span></th>
+            <th><span>Date and time created</span></th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="timeOff in requestedTimeOffs">
+                <td>{{timeOff.type}}</td>
+                <td>{{timeOff.start}}</td>
+                <td>{{timeOff.duration}} hour(s)</td>
+                <td>{{timeOff.created}}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+</div>

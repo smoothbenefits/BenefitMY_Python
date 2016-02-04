@@ -246,6 +246,7 @@ PIPELINE_JS = {
             'js/ie.js',
             'js/jquery.scrollspy.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
+            'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
         ),
@@ -293,7 +294,9 @@ PIPELINE_JS = {
             'js/directives/Edit1094c.js',
             'js/directives/GroupMemberLink.js',
             'js/directives/CompanyGroupSelection.js',
+            'js/directives/TimeOffManager.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
+            'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
             'js/jquery.scrollspy.js',
@@ -347,8 +350,8 @@ PIPELINE_JS = {
             'js/services/EmployeeBenefitsAvailabilityService.js',
             'js/services/TemplateService.js',
             'js/services/SignatureService.js',
-            'js/services/EnvironmentService.js',
-            'js/services/CommonUIWidgetService.js'
+            'js/services/CommonUIWidgetService.js',
+            'js/services/TimeOffService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }
