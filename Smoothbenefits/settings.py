@@ -17,6 +17,8 @@ DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES = 1440 # 24 hours
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+LOG_TO_CONSOLE = True
+
 TEMPLATE_DEBUG = True
 
 PDFTK_BIN = '/usr/bin/pdftk'
