@@ -29,6 +29,11 @@ class LoggingService(object):
     def debug(self, message):
         caller = self._caller_name()
         formatted = self._format(message, caller)
+
+        # Print to console if switch is True
+        if (settings.LOG_TO_CONSOLE):
+            print formatted
+
         self.log.debug(formatted)
 
     def _format(self, message, caller):
