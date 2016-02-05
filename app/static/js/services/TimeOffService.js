@@ -13,18 +13,26 @@ benefitmyService.factory('TimeOffService',
             return env + '_' + id;
         };
 
+        var mapDomainModelToViewModel = function(domainModel){
+            var viewModel = {
+                id: domainModel._id,
+                type: domainModel.type,
+                status: domainModel.status,
+                duration: domainModel.duration,
+                start: moment(domainModel.startDateTime).format(DATE_TIME_FORMAT_STRING),
+                created: moment(domainModel.requestTimestamp).format(DATE_TIME_FORMAT_STRING),
+                requestor: domainModel.requestor,
+                approver: domainModel.approver.email,
+                actionNeeded: domainModel.status.toLowerCase() == 'pending',
+                decisionTime: moment(domainModel.decisionTimestamp).format(DATE_TIME_FORMAT_STRING)
+            };
+            return viewModel;
+        };
+
         var mapDomainModelsToViewModels = function(domainModels){
             var viewModels = [];
             _.each(domainModels, function(domainModel){
-                var viewModel = {
-                    type: domainModel.type,
-                    duration: domainModel.duration,
-                    status: domainModel.status,
-                    approver: domainModel.approver.email,
-                    start: moment(domainModel.startDateTime).format(DATE_TIME_FORMAT_STRING),
-                    created: moment(domainModel.timeStamp).format(DATE_TIME_FORMAT_STRING)
-                };
-                viewModels.push(viewModel);
+                viewModels.push(mapDomainModelToViewModel(domainModel));
             });
             return viewModels;
         };
@@ -73,11 +81,26 @@ benefitmyService.factory('TimeOffService',
           .then(function(savedRequest) {
             return savedRequest;
           });
+        var GetTimeOffsByApprover = function(approver){
+            var id = _GetEnvAwareId(approver);
+            return TimeOffRepository.ByApprover.query({userId:id})
+                .$promise.then(function(timeoffs){
+                    return mapDomainModelsToViewModels(timeoffs);
+                });
+        };
+
+        var UpdateTimeOffStatus = function(timeOff){
+            return TimeOffRepository.UpdateStatus.update({timeoffId:timeOff.id}, {status: timeOff.status})
+                .$promise.then(function(timeoff){
+                    return mapDomainModelToViewModel(timeoff);
+                });
         };
 
         return {
             GetTimeOffsByRequestor: GetTimeOffsByRequestor,
-            RequestTimeOff: requestTimeOff
+            RequestTimeOff: requestTimeOff,
+            GetTimeOffsByApprover: GetTimeOffsByApprover,
+            UpdateTimeOffStatus: UpdateTimeOffStatus
         };
     }
 ]);

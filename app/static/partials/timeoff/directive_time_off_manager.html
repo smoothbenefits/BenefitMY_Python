@@ -43,4 +43,36 @@
       </tbody>
     </table>
   </div>
+  <br />
+    <br />
+    <div class="table-responsive" ng-show="requestsFromDirectReports && requestsFromDirectReports.length">
+        <div class="table-sub-title">
+          PTO requests from your direct reports
+        </div>
+        <table class="table table-striped" >
+          <thead>
+            <th><span>Requestor</span></th>
+            <th><span>Type</span></th>
+            <th><span>Start</span></th>
+            <th><span>Duration</span></th>
+            <th><span>Date and time created</span></th>
+            <th><span>Status</span></th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="request in requestsFromDirectReports">
+                <td>
+                    <a href="mailto:{{request.requestor.email}}" target="_top">
+                        {{request.requestor.firstName}} {{request.requestor.lastName}}
+                    </a>
+                </td>
+                <td>{{request.type}}</td>
+                <td>{{request.start}}</td>
+                <td>{{request.duration}} hour(s)</td>
+                <td>{{request.created}}</td>
+                <td ng-if="request.actionNeeded"><a ng-click="updateStatus(request, 'approved')">Approve</a> / <a ng-click="updateStatus(request, 'denied')">Deny</a></td>
+                <td ng-if="!request.actionNeeded">{{request.status}}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
 </div>

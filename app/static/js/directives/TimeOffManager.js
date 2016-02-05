@@ -103,6 +103,18 @@ BenefitMyApp.controller('TimeoffRequestController', [
         $state.reload();
       });
     };
+
+    $scope.updateStatus = function(request, newStatus){
+      request.status = newStatus;
+      TimeOffService.UpdateTimeOffStatus(request)
+      .then(function(updatedRequest){
+        _.each($scope.requestsFromDirectReports, function(request, idx){
+          if(updatedRequest.id == request.id){
+            $scope.requestsFromDirectReports[idx] = updatedRequest;
+          }
+        })
+      });
+    };
   }
 ]).directive('bmTimeOffManager', function(){
 
@@ -114,4 +126,4 @@ BenefitMyApp.controller('TimeoffRequestController', [
         templateUrl: '/static/partials/timeoff/directive_time_off_manager.html',
         controller: 'TimeOffDirectiveController'
       };
-})
+});
