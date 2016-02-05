@@ -132,8 +132,8 @@ BenefitMyApp.config(['envServiceProvider', function(envServiceProvider) {
         }
     });
 
-    // run the environment check, so the comprobation is made 
-    // before controllers and services are built 
+    // run the environment check, so the comprobation is made
+    // before controllers and services are built
     envServiceProvider.check();
 }]);
 
@@ -551,7 +551,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('employeetimeoff', {
                 url: '/employee/hr/timeoff',
-                templateUrl: '/static/partials/timeoff/view_timeoff.html',
+                templateUrl: '/static/partials/timeoff/timeoff_base.html',
                 controller: 'employeeViewTimeOffController'
             });
      }

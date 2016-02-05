@@ -1,0 +1,72 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create a new time off request</h4>
+</div>
+<div class="modal-body col-md-12">
+  <div class="form-holder col-md-10 col-md-offset-1">
+    <form name="form">
+      <ul class="list-group"><li class="list-group-item">
+        <div class="form-label">Request Type</div>
+        <div class="textbox">
+          <select name="type" ng-model="timeoff.type" ng-required="true" class="form-control"
+            ng-options="type for type in timeoffTypes" />
+          <div class="form-validation-error" ng-show="form.type.$invalid">
+            <span ng-show="form.type.$error.required">Request type is a required field</span>
+          </div>
+        </div>
+      </li></ul>
+
+      <div class="form-label">Starting Date</div>
+      <div class="datebox">
+        <bm-date-picker model="timeoff.starting_date"
+        required="true"
+        name="timeoff_starting_date"
+        fieldname="'Starting Date'" />
+      </div>
+
+      <div class="form-label">Duration</div>
+      <div class="textbox">
+        <input type="number"
+        min="0"
+        name="duration"
+        ng-model="timeoff.duration"
+        ng-required="true">
+        <div class="form-error-relative" ng-show="form.duration.$dirty && form.duration.$invalid">
+          <span ng-show="form.duration.$error.required">Duration field is required</span>
+        </div>
+      </div>
+
+      <div class="form-label">Approver</div>
+      <div class="select-box">
+        <input type="text"
+          class="form-control"
+          name="approver"
+          ng-model="approverName()"
+          disabled="true">
+        </input>
+      </div>
+
+      <div class="form-label">Alternative Approver</div>
+      <ul class="list-group"><li class="list-group-item">
+        <div class="form-label">First Name</div>
+        <div class="textbox">
+          <input type="text" name="alt_approver_first_name" ng-model="timeoff.alt_approver.first_name" />
+        </div>
+        <div class="form-label">Last Name</div>
+        <div class="textbox">
+          <input type="text" name="alt_approver_last_name" ng-model="timeoff.alt_approver.last_name" />
+        </div>
+        <div class="form-label">Email</div>
+        <div class="textbox">
+          <input type="email" name="alt_approver_email" ng-model="timeoff.alt_approver.email" />
+        </div>
+      </li></ul>
+    </form>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-info" ng-click="save()" style="width: 20%">Save</button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+  </div>
+</div>

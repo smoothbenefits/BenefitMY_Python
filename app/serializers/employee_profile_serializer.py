@@ -9,9 +9,10 @@ from sys_period_definition_serializer import SysPeriodDefinitionSerializer
 class ManagerSerializer(HashPkSerializerBase):
     first_name = serializers.CharField(source="person.first_name", required=False)
     last_name = serializers.CharField(source="person.last_name", required=False)
+    person = HashField(source="person.id")
     class Meta:
         model = EmployeeProfile
-        fields = ('id', 'first_name', 'last_name')
+        fields = ('id', 'first_name', 'last_name', 'person')
 
 
 class EmployeeProfileSerializer(HashPkSerializerBase):
