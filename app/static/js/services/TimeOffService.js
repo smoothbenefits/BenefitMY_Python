@@ -19,6 +19,8 @@ benefitmyService.factory('TimeOffService',
                 var viewModel = {
                     type: domainModel.type,
                     duration: domainModel.duration,
+                    status: domainModel.status,
+                    approver: domainModel.approver.email,
                     start: moment(domainModel.startDateTime).format(DATE_TIME_FORMAT_STRING),
                     created: moment(domainModel.timeStamp).format(DATE_TIME_FORMAT_STRING)
                 };
@@ -36,16 +38,46 @@ benefitmyService.factory('TimeOffService',
         };
 
         var mapViewModelToDomainModel = function(viewModel) {
-          var domainModel = angular.copy(viewModel);
+          var domainModel = {
+            'status': 'PENDING',
+            'startDateTime': viewModel.starting_date,
+            'type': viewModel.type,
+            'duration': viewModel.duration,
+          };
 
-          domainModel.requestor.personDescriptor = _GetEnvAwareId(viewModel.requestor.person);
-          domainModel.requestor.firstName = viewModel.requestor.first_name;
-          domainModel.requestor.lastName = viewModel.requestor.last_name;
-          
-          domainModel.approver.personDescriptor = _GetEnvAwareId(viewModel.approver.person);
-          domainModel.approver.firstName = viewModel.approver.first_name;
-          domainModel.approver.lastName = viewModel.approver.last_name;
-          domainModel.status = 'PENDING';
+          var requestor = {
+            'personDescriptor': _GetEnvAwareId(viewModel.requestor.profileId),
+            'firstName': viewModel.requestor.first_name,
+            'lastName': viewModel.requestor.last_name,
+            'email': viewModel.requestor.email
+          }
+
+          domainModel.requestor = requestor;
+
+          if (viewModel.alt_approver && viewModel.alt_approver.first_name
+          && viewModel.alt_approver.last_name && viewModel.alt_approver.email) {
+
+            // No person id for alternative approver
+            // Use request's id with current date time
+            var altApprover = {
+              'personDescriptor': _GetEnvAwareId(viewModel.requestor.profileId)
+                + moment().format('yyyyMMDDTHH:mm:ss'),
+              'firstName': viewModel.alt_approver.first_name,
+              'lastName': viewModel.alt_approver.last_name,
+              'email': viewModel.alt_approver.email
+            }
+
+            domainModel.approver = altApprover;
+          } else{
+            var approver = {
+              'personDescriptor': _GetEnvAwareId(viewModel.approver.id),
+              'firstName': viewModel.approver.first_name,
+              'lastName': viewModel.approver.last_name,
+              'email': viewModel.approver.email
+            }
+
+            domainModel.approver = approver;
+          }
 
           return domainModel;
         };

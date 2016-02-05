@@ -23,8 +23,9 @@ BenefitMyApp.controller('TimeoffRequestController', [
     };
 
     $scope.save = function() {
-      if (!manager && (!$scope.alt_approver_first_name || !$scope.alt_approver_last_name
-        || !$scope.alt_approver_email)) {
+      var altApprover = $scope.timeoff.alt_approver;
+      if (!manager && (!altApprover.first_name || !altApprover.last_name
+        || !altApprover.email)) {
 
         alert("Alternative approver's name and email are needed.");
         return;
@@ -48,15 +49,18 @@ BenefitMyApp.controller('TimeoffRequestController', [
 
     $scope.$watch('user', function(theUser){
       if(theUser){
-        TimeOffService.GetTimeOffsByRequestor(theUser.id)
-        .then(function(timeOffs){
-          $scope.requestedTimeOffs = timeOffs;
-        });
 
         var companyId = theUser.company_group_user[0].company_group.company.id;
         EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, theUser.id)
         .then(function(profile) {
           $scope.employeeProfile = profile;
+          theUser.profileId = profile.id
+
+          TimeOffService.GetTimeOffsByRequestor(profile.id)
+          .then(function(timeOffs) {
+            $scope.requestedTimeOffs = timeOffs;
+          });
+
           return profile.manager;
         }).then(function(manager){
           if (!manager) {
@@ -100,7 +104,7 @@ BenefitMyApp.controller('TimeoffRequestController', [
           $scope.showMessageWithOkayOnly('Error', message);
         }
 
-        $state.refresh();
+        $state.reload();
       });
     };
   }
