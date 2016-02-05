@@ -35,8 +35,33 @@ benefitmyService.factory('TimeOffService',
                 });
         };
 
+        var mapViewModelToDomainModel = function(viewModel) {
+          var domainModel = angular.copy(viewModel);
+
+          domainModel.requestor.personDescriptor = _GetEnvAwareId(viewModel.requestor.person);
+          domainModel.requestor.firstName = viewModel.requestor.first_name;
+          domainModel.requestor.lastName = viewModel.requestor.last_name;
+          
+          domainModel.approver.personDescriptor = _GetEnvAwareId(viewModel.approver.person);
+          domainModel.approver.firstName = viewModel.approver.first_name;
+          domainModel.approver.lastName = viewModel.approver.last_name;
+          domainModel.status = 'PENDING';
+
+          return domainModel;
+        };
+
+        var requestTimeOff = function(request) {
+
+          var requestDto = mapViewModelToDomainModel(request);
+          return TimeOffRepository.Collection.save({}, requestDto).$promise
+          .then(function(savedRequest) {
+            return savedRequest;
+          });
+        };
+
         return {
-            GetTimeOffsByRequestor: GetTimeOffsByRequestor
+            GetTimeOffsByRequestor: GetTimeOffsByRequestor,
+            RequestTimeOff: requestTimeOff
         };
     }
 ]);

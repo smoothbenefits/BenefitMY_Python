@@ -1,21 +1,21 @@
 BenefitMyApp.controller('TimeoffRequestController', [
-  '$scope', '$modalInstance', 'user', 'manager',
-  function($scope, $modalInstance, user, manager){
+  '$scope', '$modalInstance', 'user', 'manager', 'TimeOffService',
+  function($scope, $modalInstance, user, manager, TimeOffService){
+
+    if (manager) {
+      $scope.approverName = manager.first_name + ' ' + manager.last_name;
+    } else {
+      $scope.approverName = 'No manager found in the system.';
+    }
 
     $scope.timeoffTypes = [
       'Paid Time Off (PTO)',
       'Sick Day'
     ];
 
-    $scope.approverName = function() {
-      if (manager) {
-        return manager.first_name + ' ' + manager.last_name;
-      }
-      return 'No manager found in the system.';
-    };
-
     $scope.timeoff = {
-      'approver': manager
+      'approver': manager,
+      'requestor': user
     };
 
     $scope.cancel = function() {
@@ -23,14 +23,29 @@ BenefitMyApp.controller('TimeoffRequestController', [
     };
 
     $scope.save = function() {
+      if (!manager && (!$scope.alt_approver_first_name || !$scope.alt_approver_last_name
+        || !$scope.alt_approver_email)) {
 
+        alert("Alternative approver's name and email are needed.");
+        return;
+      }
+
+      TimeOffService.RequestTimeOff($scope.timeoff).then(function(savedRequest) {
+        $modalInstance.close(true);
+      }, function(error) {
+        $modalInstance.close(false);
+      })
     }
   }
 ]).controller('TimeOffDirectiveController', [
-  '$scope', '$state', '$modal', 'TimeOffService', 'EmployeeProfileService',
-  'PersonService',
-  function($scope, $state, $modal, TimeOffService, EmployeeProfileService,
-           PersonService){
+  '$scope', '$state', '$modal', '$controller', 'EmployeeProfileService',
+  'PersonService', 'TimeOffService',
+  function($scope, $state, $modal, $controller, EmployeeProfileService,
+           PersonService, TimeOffService){
+
+    // Inherite scope from base
+    $controller('modalMessageControllerBase', {$scope: $scope});
+
     $scope.$watch('user', function(theUser){
       if(theUser){
         TimeOffService.GetTimeOffsByRequestor(theUser.id)
@@ -72,12 +87,18 @@ BenefitMyApp.controller('TimeoffRequestController', [
         }
       });
 
-      modalInstance.result.then(function(account){
-        var successMessage = "Your timeoff request has been saved. " +
-              "You can return to dashboard through left navigation panel. " +
-              "Or create another request.";
+      modalInstance.result.then(function(success){
 
-        $scope.showMessageWithOkayOnly('Success', successMessage);
+        if (success){
+          var successMessage = "Your timeoff request has been saved. " +
+          "You can return to dashboard through left navigation panel. " +
+          "Or create another request.";
+
+          $scope.showMessageWithOkayOnly('Success', successMessage);
+        } else{
+          var message = 'Failed to save time off request. Please try again later.';
+          $scope.showMessageWithOkayOnly('Error', message);
+        }
 
         $state.refresh();
       });
