@@ -105,15 +105,17 @@ BenefitMyApp.controller('TimeoffRequestController', [
     };
 
     $scope.updateStatus = function(request, newStatus){
-      request.status = newStatus;
-      TimeOffService.UpdateTimeOffStatus(request)
-      .then(function(updatedRequest){
-        _.each($scope.requestsFromDirectReports, function(request, idx){
-          if(updatedRequest.id == request.id){
-            $scope.requestsFromDirectReports[idx] = updatedRequest;
-          }
-        })
-      });
+      if(confirm('Are you sure you want to ' + newStatus + ' the time off request?')){
+        request.status = newStatus;
+        TimeOffService.UpdateTimeOffStatus(request)
+        .then(function(updatedRequest){
+          _.each($scope.requestsFromDirectReports, function(request, idx){
+            if(updatedRequest.id == request.id){
+              $scope.requestsFromDirectReports[idx] = updatedRequest;
+            }
+          })
+        });
+      }
     };
   }
 ]).directive('bmTimeOffManager', function(){
