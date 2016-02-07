@@ -90,7 +90,7 @@ benefitmyService.factory('TimeOffService',
         };
 
         var UpdateTimeOffStatus = function(timeOff){
-            return TimeOffRepository.UpdateStatus.update({timeoffId:timeOff.id}, {status: timeOff.status})
+            return TimeOffRepository.StatusByTimeoffId.update({timeoffId:timeOff.id}, {status: timeOff.status})
                 .$promise.then(function(timeoff){
                     return mapDomainModelToViewModel(timeoff);
                 });
