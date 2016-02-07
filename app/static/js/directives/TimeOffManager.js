@@ -2,10 +2,11 @@ BenefitMyApp.controller('TimeoffRequestController', [
   '$scope', '$modalInstance', 'user', 'manager', 'TimeOffService',
   function($scope, $modalInstance, user, manager, TimeOffService){
 
-    if (manager) {
+    if (!manager.isHr) {
       $scope.approverName = manager.first_name + ' ' + manager.last_name;
     } else {
-      $scope.approverName = 'No manager found in the system.';
+      $scope.approverName = 'No manager found in the system. ' +
+        'Request will be directed to ' + manager.first_name + ' ' + manager.last_name;
     }
 
     $scope.timeoffTypes = [
@@ -23,13 +24,6 @@ BenefitMyApp.controller('TimeoffRequestController', [
     };
 
     $scope.save = function() {
-      var altApprover = $scope.timeoff.alt_approver;
-      if (!manager && (!altApprover.first_name || !altApprover.last_name
-        || !altApprover.email)) {
-
-        alert("Alternative approver's name and email are needed.");
-        return;
-      }
 
       TimeOffService.RequestTimeOff($scope.timeoff).then(function(savedRequest) {
         $modalInstance.close(true);
@@ -40,9 +34,9 @@ BenefitMyApp.controller('TimeoffRequestController', [
   }
 ]).controller('TimeOffDirectiveController', [
   '$scope', '$state', '$modal', '$controller', 'EmployeeProfileService',
-  'PersonService', 'TimeOffService',
+  'PersonService', 'TimeOffService', 'CompanyService',
   function($scope, $state, $modal, $controller, EmployeeProfileService,
-           PersonService, TimeOffService){
+           PersonService, TimeOffService, CompanyService){
 
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
@@ -50,24 +44,26 @@ BenefitMyApp.controller('TimeoffRequestController', [
     $scope.$watch('user', function(theUser){
       if(theUser){
 
+        TimeOffService.GetTimeOffsByRequestor(theUser.id)
+        .then(function(timeOffs) {
+          $scope.requestedTimeOffs = timeOffs;
+        });
+
         var companyId = theUser.company_group_user[0].company_group.company.id;
         EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, theUser.id)
         .then(function(profile) {
           $scope.employeeProfile = profile;
-          theUser.profileId = profile.id
-
-          TimeOffService.GetTimeOffsByRequestor(profile.id)
-          .then(function(timeOffs) {
-            $scope.requestedTimeOffs = timeOffs;
-          });
-
           return profile.manager;
         }).then(function(manager){
           if (!manager) {
-            return None;
+            CompanyService.getCompanyAdmin(companyId).then(function(admins) {
+              $scope.employeeProfile.manager = admins[0];
+              $scope.employeeProfile.manager.isHr = true;
+            });
           } else {
             PersonService.getSelfPersonInfoByPersonId(manager.person)
             .then(function(person) {
+              $scope.employeeProfile.manager.userId = person.person.user;
               $scope.employeeProfile.manager.email = person.person.email;
             });
           }
