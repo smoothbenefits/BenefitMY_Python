@@ -188,10 +188,35 @@ benefitmyService.factory('CompanyService',
         return deferred.promise;
       };
 
+      var mapCompanyAdminToViewModel = function(admin) {
+        return angular.copy(admin.user);
+      }
+
+      var getCompanyAdmin = function(companyId) {
+        var deferred = $q.defer();
+
+        CompanyUserDetailRepository.ByCompany.get({comp_id: companyId, role: 'admin'})
+        .$promise.then(function(response) {
+          var admins = [];
+
+          _.each(response.company_broker, function(admin) {
+            var viewAdmin = mapCompanyAdminToViewModel(admin);
+            admins.push(viewAdmin);
+          });
+
+          deferred.resolve(admins);
+        }).catch(function(error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      };
+
       return {
          saveCompanyInfo: saveCompanyInfo,
          getCompanyInfo: getCompanyInfo,
-         getCompanyBroker: getCompanyBroker
+         getCompanyBroker: getCompanyBroker,
+         getCompanyAdmin: getCompanyAdmin
       };
    }
 ]);
