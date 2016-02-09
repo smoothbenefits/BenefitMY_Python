@@ -8,7 +8,10 @@ benefitmyTimeTrackingModelFactories.factory('TimeOffRepository', [
         return {
             ByRequestor: $resource(_hostName + 'api/v1/requestor/:userId/timeoffs', {userId:'@userId'}),
             ByApprover: $resource(_hostName + 'api/v1/approver/:userId/timeoffs', {userId:'@userId'}),
-            Collection: $resource(_hostName + 'api/v1/timeoff')
+            Collection: $resource(_hostName + 'api/v1/timeoffs'),
+            StatusByTimeoffId: $resource(_hostName + 'api/v1/timeoffs/:timeoffId/status', {timeoffId:'@id'}, {
+              update: { method: 'PUT' }
+            })
         };
   }
 ]);
