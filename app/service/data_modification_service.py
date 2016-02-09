@@ -23,23 +23,28 @@ User = get_user_model()
 '''
 class DataModificationService(object):
 
+    ''' Send notification emails for employee modifications to specific email addresses
+    '''
+    def employee_modifications_notify_specific_target(self, in_last_num_minutes, target_emails):
+        company_list = Company.objects.all()
+        for company in company_list:
+            self._employee_mod_notify_target_by_company(company, in_last_num_minutes, target_emails)
+
     ''' Send notification emails to all companies' employer users
     '''
     def employee_modifications_notify_employer_for_all_companies(self, in_last_num_minutes):
+        email_service = SendEmailService()
         company_list = Company.objects.all()
         for company in company_list:
-            self._employee_mod_notify_employer_by_company(company, in_last_num_minutes)
+            emails = email_service.get_employer_emails_by_company(company.id)
+            self._employee_mod_notify_target_by_company(company, in_last_num_minutes, emails)
 
-    def _employee_mod_notify_employer_by_company(self, company_model, in_last_num_minutes):
+    def _employee_mod_notify_target_by_company(self, company_model, in_last_num_minutes, target_emails):
 
         # Get the list of employee users made modifications in the search range
         mod_summaries = self.employee_modifications_summary(company_model.id, in_last_num_minutes)
         if (len(mod_summaries) > 0):
-            email_service = SendEmailService()
-
-            emails = email_service.get_employer_emails_by_company(company_model.id)
-
-            self._send_notification_email(emails, [{ 'company':company_model, 'mod_summary_list':mod_summaries }])
+            self._send_notification_email(target_emails, [{ 'company':company_model, 'mod_summary_list':mod_summaries }])
 
     ''' Send email notification to all brokers.
         All clients of each broker would have the relevant notification data

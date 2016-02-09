@@ -8,7 +8,9 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'angularSpinner',
     'isteven-multi-select',
     'blockUI',
+    'environment',
     'benefitmyDomainModelFactories',
+    'benefitmyTimeTrackingModelFactories',
     'benefitmyService',
     'benefitmyApp.constants',
     'benefitmyApp.users.controllers',
@@ -29,9 +31,10 @@ String.prototype.capitalize = function() {
 
 var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
+var DATE_TIME_FORMAT_STRING = 'LLLL';
 
 // The URL to which logging to server side should be posted to
-var LOGGING_SERVER_URL = 'http://localhost:3999/api/bm_log'
+var LOGGING_SERVER_URL = '/api/v1/log/level/error'
 
 BenefitMyApp.config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
   // Don't strip trailing slashes from calculated URLs
@@ -63,31 +66,36 @@ BenefitMyApp.config(function(blockUIConfig) {
 // - Add logging to server
 BenefitMyApp.config(function ($provide) {
   $provide.decorator("$exceptionHandler",
-    ['$delegate', '$window', '$log', 'BrowserDetectionService',
-    function($delegate, $window, $log, BrowserDetectionService) {
+    ['$delegate', '$window', '$log', '$injector', 'BrowserDetectionService',
+    function($delegate, $window, $log, $injector, BrowserDetectionService) {
     return function (exception, cause) {
         // now try to log the error to the server side.
         try {
-            var errorMessage = exception.toString();
-
             // use our traceService to generate a stack trace
             var stackTrace = printStackTrace({e: exception});
+            var errorMessage = exception.toString();
 
-            // use AJAX (in this example jQuery) and NOT
-            // an angular service such as $http
-            $.ajax({
-                type: "POST",
-                url: LOGGING_SERVER_URL,
-                contentType: "application/json",
-                data: angular.toJson({
-                    url: $window.location.href,
-                    message: errorMessage,
-                    browser: BrowserDetectionService.getCurrentBrowser(),
-                    type: "exception",
-                    stackTrace: stackTrace.join('\n\n')}) })
-            .fail(function(jqXHR, textStatus, errorThrown) {
-                $log.warn("Error server-side logging failed");
-                $log.log(errorThrown);
+            var $http = $injector.get("$http");
+
+            var request = {
+              method: 'POST',
+              url: LOGGING_SERVER_URL,
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              data: angular.toJson({
+                  url: $window.location.href,
+                  message: errorMessage,
+                  browser: BrowserDetectionService.getCurrentBrowser(),
+                  type: "exception",
+                  stackTrace: stackTrace.join('\n\n')
+                })
+            };
+
+            // Use $http to get CSRF token
+            $http(request).then(function(){}, function(error) {
+              $log.warn("Error server-side logging failed");
+              $log.log(error);
             });
         } catch (loggingError) {
             $log.warn("Error server-side logging failed");
@@ -99,6 +107,35 @@ BenefitMyApp.config(function ($provide) {
     }
   }])
 });
+
+BenefitMyApp.config(['envServiceProvider', function(envServiceProvider) {
+    envServiceProvider.config({
+        domains: {
+            localhost: ['localhost'],
+            stage:['stage.workbenefits.me', 'stage.workbenefitsme.com', 'stage.benefitmy.com'],
+            demo: ['demo.workbenefits.me', 'demo.workbenefitsme.com', 'demo.benefitmy.com'],
+            production: ['app.workbenefits.me', 'app.workbenefitsme.com', 'app.benefitmy.com']
+        },
+        vars: {
+            localhost: {
+                timeTrackingUrl: 'http://localhost:6999/'
+            },
+            stage: {
+                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/'
+            },
+            demo: {
+                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/'
+            },
+            production: {
+                timeTrackingUrl: 'http://timetracking.workbenefits.me/'
+            }
+        }
+    });
+
+    // run the environment check, so the comprobation is made
+    // before controllers and services are built
+    envServiceProvider.check();
+}]);
 
 BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
@@ -280,6 +317,27 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/save_result',
                 templateUrl: '/static/partials/batch_employee_addition/partial_save_result.html',
                 controller:'batchEmployeeAdditionController'
+            }).
+            state('batch_employee_organization_import', {
+                url: '/admin/employee/batch_organization_import/:company_id',
+                templateUrl:'/static/partials/batch_employee_organization/main.html',
+                abstract: true,
+                controller:'batchEmployeeOrganizationImportController'
+            }).
+            state('batch_employee_organization_import.input', {
+                url: '',
+                templateUrl: '/static/partials/batch_employee_organization/partial_input.html',
+                controller:'batchEmployeeOrganizationImportController'
+            }).
+            state('batch_employee_organization_import.parse_result', {
+                url: '/parse_result',
+                templateUrl: '/static/partials/batch_employee_organization/partial_parse_result.html',
+                controller:'batchEmployeeOrganizationImportController'
+            }).
+            state('batch_employee_organization_import.save_result', {
+                url: '/save_result',
+                templateUrl: '/static/partials/batch_employee_organization/partial_save_result.html',
+                controller:'batchEmployeeOrganizationImportController'
             }).
             state('document_templates', {
                 url: '/admin/documents/template/:company_id',
@@ -490,6 +548,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
               url: '/employee/support',
               templateUrl: '/static/partials/help_center/employee_help_center.html',
               controller: 'employeeHelpCenterController'
+            }).
+            state('employeetimeoff', {
+                url: '/employee/hr/timeoff',
+                templateUrl: '/static/partials/timeoff/timeoff_base.html',
+                controller: 'employeeViewTimeOffController'
             });
      }
  ]);

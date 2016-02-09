@@ -7,7 +7,9 @@ from actions.action_notify_employee_not_complete_enrollment \
 from actions.action_notify_company_not_complete_enrollment \
     import ActionNotifyCompanyNotCompleteEnrollment
 from actions.action_print_to_console import ActionPrintToConsole
+from ..monitoring.logging_service import LoggingService
 
+log = LoggingService()
 
 ''' Provides a facility to manage and deliver system notifactions
     to the intended parties.
@@ -31,3 +33,4 @@ class NotificationService(object):
     def execute(self):
         for trigger in self._triggers:
             trigger.examine_and_execute_actions()
+            log.info("Finished trigger {}".format(type(trigger).__name__))

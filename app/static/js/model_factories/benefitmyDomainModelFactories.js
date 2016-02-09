@@ -442,7 +442,8 @@ benefitmyDomainModelFactories.factory('EmployeeProfileRepository', ['$resource',
         update: {
             method: 'PUT'
         }
-      })
+      }),
+      ByCompany: $resource('/api/v1/company/:companyId/employee_profiles', {companyId: '@companyId'})
     };
   }
 ]);
@@ -557,7 +558,7 @@ benefitmyDomainModelFactories.factory('CompanyGroupCommuterPlanRepository', ['$r
       ByCompanyGroup: $resource('/api/v1/company_group/:companyGroupId/company_commuter/', {companyGroupId:'@company_group_id'}),
       ByCompanyPlan: $resource('/api/v1/company_commuter/:pk/company_group_plans/', {pk:'@pk'}, {
         save: {
-            method:'POST', 
+            method:'POST',
             isArray: true
         },
         update: {
@@ -662,6 +663,22 @@ benefitmyDomainModelFactories.factory('BatchAccountCreationBatchCreateRepository
   }
 ]);
 
+benefitmyDomainModelFactories.factory('BatchEmployeeOrganizationImportDataParseRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompany:$resource(PREFIX + 'company/:company_id/batch_employee_organization_import/parse_organization_data/', {company_id:'@company_id'})
+    };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('BatchEmployeeOrganizationImportRepository', ['$resource',
+  function($resource){
+    return{
+      ByCompany:$resource(PREFIX + 'company/:company_id/batch_employee_organization_import/batch_import/', {company_id:'@company_id'})
+    }
+  }
+]);
+
 benefitmyDomainModelFactories.factory('EmployeeManagementEmployeeTerminationRepository', ['$resource',
   function($resource){
     return{
@@ -749,5 +766,11 @@ benefitmyDomainModelFactories.factory('HsaRepository', ['$resource',
         update: { method: 'PUT' }
       })
     };
+  }
+]);
+
+benefitmyDomainModelFactories.factory('TimeTrackingAppHostNameRepository', ['$resource',
+  function($resource){
+    return $resource(PREFIX + 'timetrackingapp');
   }
 ]);

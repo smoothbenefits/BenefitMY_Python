@@ -56,5 +56,10 @@ class EmployeeProfile(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True, default=datetime.datetime.now)
 
+    manager = models.ForeignKey('self',
+                                related_name="direct_reports",
+                                null=True,
+                                blank=True)
+
     class Meta:
         unique_together = ('person', 'company')

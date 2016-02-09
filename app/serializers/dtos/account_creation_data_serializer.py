@@ -23,6 +23,9 @@ class AccountCreationDataSerializer(serializers.Serializer):
     doc_fields = KeyValuePairSerializer(many=True, required=False)
     group_id = serializers.IntegerField(required=False)
     group_name = serializers.CharField(required=False)
+    manager_id = serializers.IntegerField(required=False)
+    manager_last_name = serializers.CharField(required=False)
+    manager_first_name = serializers.CharField(required=False)
 
     def restore_object(self, attrs, instance=None):
         return AccountCreationData(**attrs)

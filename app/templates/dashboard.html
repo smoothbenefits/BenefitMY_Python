@@ -26,6 +26,7 @@
   <script type="text/javascript" src='{% static 'stacktrace-js/dist/stacktrace.js' %}'></script>
   <script type="text/javascript" src='{% static 'spin.js/spin.js' %}'></script>
   <script type="text/javascript" src='{% static 'angular-spinner/angular-spinner.js' %}'></script>
+  <script type="text/javascript" src='{% static 'angular-environment/dist/angular-environment.min.js' %}'></script>
   <link rel="stylesheet" href='{% static 'angular-block-ui/dist/angular-block-ui.min.css' %}'/>
   <script type="text/javascript" src='{% static 'angular-block-ui/dist/angular-block-ui.min.js' %}'></script>
   <link rel="stylesheet" href='{% static 'isteven-angular-multiselect/isteven-multi-select.css' %}'>
@@ -76,6 +77,7 @@
         <div class="sub-nav collapse" id="hr-nav">
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/add/')">Add Employee</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_add/')">Batch Add Employee</a>
+          <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_organization_import/')">Import Employee Organization</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/')">View Employees</a>
           <a ng-click="addOfferTemplate()">Add Templates</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/documents/template/')">View Templates</a>
@@ -125,9 +127,10 @@
       </li>
       <li class="expandable" ng-show="isCurRoleEmployee() && (!disabledFeatures.W4 || !disabledFeature.DD)">
         <div class="primary-nav">
-          <button data-toggle="collapse" data-target="#employee-payroll-nav" aria-expanded="false" aria-controls="employee-payroll-nav"><span class="flaticon flaticon-star145"></span>Payroll</button>
+          <button data-toggle="collapse" data-target="#employee-hr-nav" aria-expanded="false" aria-controls="employee-hr-nav"><span class="flaticon flaticon-star145"></span>HR</button>
         </div>
-        <div class="sub-nav collapse" id="employee-payroll-nav">
+        <div class="sub-nav collapse" id="employee-hr-nav">
+          <a href="#/employee/hr/timeoff" ng-hide="disabledFeatures.Timeoff">Time Off</a>
           <a href="#/employee/payroll/w4" ng-hide="disabledFeatures.W4">W4 Form</a>
           <a href="#/employee/payroll/direct_deposit" ng-hide="disabledFeatures.DD">Direct Deposit</a>
         </div>
