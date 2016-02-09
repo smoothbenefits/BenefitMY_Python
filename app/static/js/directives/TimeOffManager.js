@@ -68,6 +68,11 @@ BenefitMyApp.controller('TimeoffRequestController', [
             });
           }
         });
+
+        TimeOffService.GetTimeOffsByApprover(theUser.id)
+        .then(function(requests){
+           $scope.requestsFromDirectReports = requests;
+        });
       }
     });
 
@@ -105,7 +110,11 @@ BenefitMyApp.controller('TimeoffRequestController', [
     };
 
     $scope.updateStatus = function(request, newStatus){
-      if(confirm('Are you sure you want to ' + newStatus + ' the time off request?')){
+      var confirmMessage = 'Are you sure you want to approve the time off request?'
+      if (newStatus === 'DENIED'){
+        confirmMessage = 'Are you sure you want to deny the time off request?'
+      }
+      if(confirm(confirmMessage)){
         request.status = newStatus;
         TimeOffService.UpdateTimeOffStatus(request)
         .then(function(updatedRequest){

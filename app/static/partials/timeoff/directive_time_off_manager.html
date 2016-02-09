@@ -69,7 +69,7 @@
                 <td>{{request.start}}</td>
                 <td>{{request.duration}} hour(s)</td>
                 <td>{{request.created}}</td>
-                <td ng-if="request.actionNeeded"><a ng-click="updateStatus(request, 'approved')">Approve</a> / <a ng-click="updateStatus(request, 'denied')">Deny</a></td>
+                <td ng-if="request.actionNeeded"><a ng-click="updateStatus(request, 'APPROVED')">Approve</a> / <a ng-click="updateStatus(request, 'DENIED')">Deny</a></td>
                 <td ng-if="!request.actionNeeded">{{request.status}}</td>
             </tr>
           </tbody>

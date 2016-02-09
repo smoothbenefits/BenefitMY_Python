@@ -81,6 +81,8 @@ benefitmyService.factory('TimeOffService',
           .then(function(savedRequest) {
             return savedRequest;
           });
+        };
+        
         var GetTimeOffsByApprover = function(approver){
             var id = _GetEnvAwareId(approver);
             return TimeOffRepository.ByApprover.query({userId:id})
