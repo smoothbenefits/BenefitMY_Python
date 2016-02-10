@@ -112,7 +112,7 @@ BenefitMyApp.config(['envServiceProvider', function(envServiceProvider) {
     envServiceProvider.config({
         domains: {
             localhost: ['localhost'],
-            stage:['stage.workbenefits.me', 'stage.workbenefitsme.com', 'stage.benefitmy.com'],
+            stage:['staging.workbenefits.me', 'staging.workbenefitsme.com', 'staging.benefitmy.com'],
             demo: ['demo.workbenefits.me', 'demo.workbenefitsme.com', 'demo.benefitmy.com'],
             production: ['app.workbenefits.me', 'app.workbenefitsme.com', 'app.benefitmy.com']
         },
