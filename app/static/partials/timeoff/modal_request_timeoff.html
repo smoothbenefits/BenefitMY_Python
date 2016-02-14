@@ -7,8 +7,10 @@
       <ul class="list-group"><li class="list-group-item">
         <div class="form-label">Request Type</div>
         <div class="textbox">
-          <select name="type" ng-model="timeoff.type" ng-required="true" class="form-control"
-            ng-options="type for type in timeoffTypes" />
+          <select name="type" ng-model="timeoff.type" ng-required="true" class="form-control">
+            <option style="display:none" value="">select a type</option>
+            <option ng-repeat="type in timeoffTypes">{{type}}</option> 
+          </select>
           <div class="form-validation-error" ng-show="form.type.$invalid">
             <span ng-show="form.type.$error.required">Request type is a required field</span>
           </div>
