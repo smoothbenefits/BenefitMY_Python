@@ -247,6 +247,10 @@ var userController = userControllers.controller('userController',
       $state.go('document_templates_edit', {company_id:$scope.company_id});
     };
 
+    $scope.viewTimeOffRequests = function() {
+      $state.go('admin_time_off');
+    };
+
     $scope.gotoSettings = function(){
       $state.go('settings', {user_id: $scope.curUser.id});
     };

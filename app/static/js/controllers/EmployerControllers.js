@@ -1630,3 +1630,15 @@ var employerAcaReport = employersController.controller('employerAcaReport', [
     $scope.companyId = $stateParams.company_id;
   }
 ]);
+
+var employerTimeOffController = employersController.controller('employerTimeOffController', [
+  '$scope', 'UserService',
+  function($scope, UserService) {
+    $scope.role = 'Employer';
+
+    UserService.getCurUserInfo().then(function(userInfo) {
+      $scope.user = userInfo.user;
+      $scope.user.role = userInfo.roles[0].company_user_type;
+    });
+  }
+])

@@ -41,33 +41,44 @@ BenefitMyApp.controller('TimeoffRequestController', [
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
 
+    $scope.isCurrentUserAdmin = function() {
+      if ($scope.user) {
+        return $scope.user.role === 'admin';
+      }
+
+      return false;
+    };
+
     $scope.$watch('user', function(theUser){
       if(theUser){
+        $scope.user = theUser;
+        if (theUser.role != 'admin') {
+          TimeOffService.GetTimeOffsByRequestor(theUser.id)
+          .then(function(timeOffs) {
+            $scope.requestedTimeOffs = timeOffs;
+          });
 
-        TimeOffService.GetTimeOffsByRequestor(theUser.id)
-        .then(function(timeOffs) {
-          $scope.requestedTimeOffs = timeOffs;
-        });
-
-        var companyId = theUser.company_group_user[0].company_group.company.id;
-        EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, theUser.id)
-        .then(function(profile) {
-          $scope.employeeProfile = profile;
-          return profile.manager;
-        }).then(function(manager){
-          if (!manager) {
-            CompanyService.getCompanyAdmin(companyId).then(function(admins) {
-              $scope.employeeProfile.manager = admins[0];
-              $scope.employeeProfile.manager.isHr = true;
-            });
-          } else {
-            PersonService.getSelfPersonInfoByPersonId(manager.person)
-            .then(function(person) {
-              $scope.employeeProfile.manager.userId = person.person.user;
-              $scope.employeeProfile.manager.email = person.person.email;
-            });
-          }
-        });
+          var companyId = theUser.company_group_user[0].company_group.company.id;
+          EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, theUser.id)
+          .then(function(profile) {
+            $scope.employeeProfile = profile;
+            return profile.manager;
+          }).then(function(manager){
+            if (!manager) {
+              CompanyService.getCompanyAdmin(companyId).then(function(admins) {
+                $scope.employeeProfile.manager = admins[0];
+                $scope.employeeProfile.manager.userId = $scope.employeeProfile.manager.id;
+                $scope.employeeProfile.manager.isHr = true;
+              });
+            } else {
+              PersonService.getSelfPersonInfoByPersonId(manager.person)
+              .then(function(person) {
+                $scope.employeeProfile.manager.userId = person.person.user;
+                $scope.employeeProfile.manager.email = person.person.email;
+              });
+            }
+          });
+        }
 
         TimeOffService.GetTimeOffsByApprover(theUser.id)
         .then(function(requests){
