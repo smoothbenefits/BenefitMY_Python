@@ -295,6 +295,7 @@ PIPELINE_JS = {
             'js/directives/GroupMemberLink.js',
             'js/directives/CompanyGroupSelection.js',
             'js/directives/TimeOffManager.js',
+            'js/directives/hr/WorkTimesheetManager.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/services/services.js',
@@ -351,7 +352,8 @@ PIPELINE_JS = {
             'js/services/TemplateService.js',
             'js/services/SignatureService.js',
             'js/services/CommonUIWidgetService.js',
-            'js/services/TimeOffService.js'
+            'js/services/TimeOffService.js',
+            'js/services/WorkTimesheetService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

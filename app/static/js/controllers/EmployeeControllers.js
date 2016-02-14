@@ -2668,3 +2668,14 @@ var employeeViewTimeOffController = employeeControllers.controller('employeeView
      });
    }
 ]);
+
+var employeeViewWorkTimeSheetController = employeeControllers.controller('employeeViewWorkTimeSheetController',
+  ['$scope',
+   '$state',
+   'UserService',
+   function($scope, $state, UserService){
+     UserService.getCurUserInfo().then(function(userInfo) {
+       $scope.user = userInfo.user;
+     });
+   }
+]);
