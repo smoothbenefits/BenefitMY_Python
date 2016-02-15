@@ -1,0 +1,69 @@
+<div class="modal-header">
+  <h4 class="modal-title">Format Requirements</h4>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-label">The batch employee organization import functionality requires exact conformation to the expected input format described below. </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div>
+        The input must follow the below rules:
+        <ol>
+            <li>Each line represents the complete data for organzation setup of one employee</li>
+            <li>Each line must contain all the required fields below</li>
+            <li>The fields must be in the order listed out in the table below</li>
+            <li>The fields must be delimited with a <b>tab</b></li>
+            <li>Each line must be ended with the designated "end-record" field</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 10px;">
+    <div class="col-md-12">
+      <div class="form-label">Required Fields:</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th><span>Field</span></th>
+              <th><span>Notes</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>First Name</td>
+              <td>First name of the account holder</td>
+            </tr>
+            <tr>
+              <td>Last Name</td>
+              <td>Last name of the account holder</td>
+            </tr>
+            <tr>
+              <td>Manager First Name</td>
+              <td>First name of the manager of the account holder. Note: Leaving Manager Name fields empty indicates the intention of removing the employee's manager assignment, if one exists.</td>
+            </tr>
+            <tr>
+              <td>Manager Last Name</td>
+              <td>First name of the manager of the account holder. Note: Leaving Manager Name fields empty indicates the intention of removing the employee's manager assignment, if one exists.</td>
+            </tr>
+            <tr>
+              <td>End of Record Annotation Field</td>
+              <td>This is a system required field to clearly indicate the end of a record line. Please simply add a field, <b>"end-record"</b>, as the last field of every line.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="close()">Close</button>
+</div>

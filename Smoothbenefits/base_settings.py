@@ -55,7 +55,10 @@ INSTALLED_APPS = (
     'app',
     'reversion',
     'django_cron',
+    'cid',
 )
+
+CID_GENERATE = True
 
 PDFTK_BIN = './.apt/usr/bin/pdftk'
 
@@ -98,7 +101,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cid.middleware.CidMiddleware',
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
+    'app.middlewares.logging_middleware.LoggingMiddleware',
     'reversion.middleware.RevisionMiddleware',
 )
 
@@ -128,6 +133,35 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Logging settings
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters':{
+        'key-value-pair': {
+            'format': 'ID: %(cid)s; TIME: %(asctime)s; LEVEL: %(levelname)s; MESSAGE: %(message)s; PROCESS: %(process)s; THREAD: %(thread)s'
+        },
+    },
+    'handlers': {
+        'logentries_handler': {
+            'class': 'logentries.LogentriesHandler',
+            'formatter': 'key-value-pair'
+        },
+    },
+    'filters': {
+        'correlation': {
+            (): 'cid.log.CidContextFilter'
+        },
+    },
+    'loggers': {
+        'logentries': {
+            'handlers': ['logentries_handler'],
+            'level': 'INFO',
+            'propagate':True,
+            'filters': ['correlation']
+        },
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
@@ -212,6 +246,7 @@ PIPELINE_JS = {
             'js/ie.js',
             'js/jquery.scrollspy.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
+            'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
         ),
@@ -259,7 +294,9 @@ PIPELINE_JS = {
             'js/directives/Edit1094c.js',
             'js/directives/GroupMemberLink.js',
             'js/directives/CompanyGroupSelection.js',
+            'js/directives/TimeOffManager.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
+            'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
             'js/jquery.scrollspy.js',
@@ -305,6 +342,7 @@ PIPELINE_JS = {
             'js/services/BenefitPolicyKeyService.js',
             'js/services/CompanyBenefitEnrollmentSummaryService.js',
             'js/services/BatchAccountCreationService.js',
+            'js/services/BatchEmployeeOrganizationImportService.js',
             'js/services/Company1094CService.js',
             'js/services/Company1095CService.js',
             'js/services/Employee1095CService.js',
@@ -312,7 +350,8 @@ PIPELINE_JS = {
             'js/services/EmployeeBenefitsAvailabilityService.js',
             'js/services/TemplateService.js',
             'js/services/SignatureService.js',
-            'js/services/EnvironmentService.js'
+            'js/services/CommonUIWidgetService.js',
+            'js/services/TimeOffService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

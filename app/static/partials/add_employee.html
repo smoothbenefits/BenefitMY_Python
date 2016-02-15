@@ -76,7 +76,7 @@
         </div>
       </div>
 
-      <div class="form-label" ng-if="groups.length > 1">The group the employee belongs to</div>
+      <div class="form-label" ng-if="groups.length > 1">The group the employee belongs to*</div>
       <div class="select-box" ng-if="groups.length > 1">
         <select id="gp"
           ng-model="addUser.group_id"
@@ -87,6 +87,21 @@
         <div class="form-error" ng-show="form.employee_email.$dirty && form.gp.$error.required">
           <span>Must assign the employee a group</span>
         </div>
+      </div>
+
+      <div class="form-label">Manager</div>
+      <div class="textbox">
+        <input 
+          type="text"
+          name="employee_manager"
+          ng-model="addUser.managerSelected" 
+          placeholder="Start typing the name of an employee..." 
+          typeahead="manager as manager.first_name + ' ' + manager.last_name for manager in getEmployees($viewValue)"
+          ng-required="false"
+          class="form-control" />
+          <div class="form-error" ng-show="managerInvalid(addUser.managerSelected)">
+            <span>The manager you selected is an invalid candidate!</span>
+          </div>
       </div>
 
       <div class="checkbox">
@@ -228,7 +243,7 @@
         </div>
       </div>
       <div class="submit-box">
-        <button ng-click="createUser('employee')" class="btn green" ng-disabled="form.$invalid || hasNoBenefitGroup()">Add Employee</button>
+        <button ng-click="createUser('employee')" class="btn green" ng-disabled="createUserInvalid() || form.$invalid">Add Employee</button>
       </div>
 
     </form>

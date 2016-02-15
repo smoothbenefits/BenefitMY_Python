@@ -31,6 +31,11 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(employee_profile['employment_status'], 'Active')
         self.assertEqual(employee_profile['person'], self.normalize_key(3))
         self.assertEqual(employee_profile['company'], self.normalize_key(1))
+        self.assertIsNotNone(employee_profile['manager'])
+        manager = employee_profile['manager']
+        self.assertEqual(manager['id'], self.normalize_key(2))
+        self.assertEqual(manager['first_name'], 'Christina')
+        self.assertEqual(manager['last_name'], 'Cowell')
 
     def test_get_employee_profile_by_person_company_success(self):
         response = self.client.get(reverse('employee_profile_by_person_company_api',
@@ -49,6 +54,11 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(employee_profile['employment_status'], 'Active')
         self.assertEqual(employee_profile['person'], self.normalize_key(3))
         self.assertEqual(employee_profile['company'], self.normalize_key(1))
+        self.assertIsNotNone(employee_profile['manager'])
+        manager = employee_profile['manager']
+        self.assertEqual(manager['id'], self.normalize_key(2))
+        self.assertEqual(manager['first_name'], 'Christina')
+        self.assertEqual(manager['last_name'], 'Cowell')
 
     def test_get_employee_profile_by_company_user_success(self):
         response = self.client.get(reverse('employee_profile_by_company_user_api',
@@ -67,6 +77,11 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(employee_profile['employment_status'], 'Active')
         self.assertEqual(employee_profile['person'], self.normalize_key(3))
         self.assertEqual(employee_profile['company'], self.normalize_key(1))
+        self.assertIsNotNone(employee_profile['manager'])
+        manager = employee_profile['manager']
+        self.assertEqual(manager['id'], self.normalize_key(2))
+        self.assertEqual(manager['first_name'], 'Christina')
+        self.assertEqual(manager['last_name'], 'Cowell')
 
     def test_get_employee_profile_non_exist(self):
         response = self.client.get(reverse('employee_profile_api',
@@ -97,8 +112,8 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
 
     def test_get_employee_profile_exist_person_company_non_exist_profile(self):
         response = self.client.get(reverse('employee_profile_by_person_company_api',
-                                           kwargs={'person_id': self.normalize_key(4),
-                                                    'company_id': self.normalize_key(1)}))
+                                           kwargs={'person_id': self.normalize_key(6),
+                                                    'company_id': self.normalize_key(3)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 404)
 
@@ -119,7 +134,8 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "benefit_start_date": '2008-03-22',
             "end_date": "2008-06-01",
             "employment_type": "PartTime",
-            "employment_status": "Terminated"
+            "employment_status": "Terminated",
+            "manager": 2,
         }
         response = self.client.post(reverse('employee_profile_api',
                                            kwargs={'pk': self.normalize_key(sys.maxint)}),
@@ -130,16 +146,20 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.content)
         self.assertIn('id', result)
-        self.assertEqual(result['id'], self.normalize_key(2))
-        self.assertEqual(result['person'], 1)
-        self.assertEqual(result['company'], 1)
+        self.assertEqual(result['person'], self.normalize_key(1))
+        self.assertEqual(result['company'], self.normalize_key(1))
         self.assertEqual(result['job_title'], "Broker")
         self.assertEqual(result['annual_base_salary'], "40022.00")
         self.assertEqual(result['start_date'], "2008-03-01")
         self.assertEqual(result['benefit_start_date'], '2008-03-22')
         self.assertEqual(result['end_date'], "2008-06-01")
         self.assertEqual(result['employment_type'], "PartTime")
-        self.assertEqual(result['employment_status'], "Terminated")
+        self.assertEqual(result['employment_status'], "Terminated"),
+        self.assertIsNotNone(result['manager'])
+        manager = result['manager']
+        self.assertEqual(manager['id'], self.normalize_key(2))
+        self.assertEqual(manager['first_name'], 'Christina')
+        self.assertEqual(manager['last_name'], 'Cowell')
 
     def test_post_employee_profile_same_person_different_company_success(self):
         post_data = {
@@ -162,9 +182,8 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.content)
         self.assertIn('id', result)
-        self.assertEqual(result['id'], self.normalize_key(2))
-        self.assertEqual(result['person'], 3)
-        self.assertEqual(result['company'], 2)
+        self.assertEqual(result['person'], self.normalize_key(3))
+        self.assertEqual(result['company'], self.normalize_key(2))
         self.assertEqual(result['job_title'], "Broker")
         self.assertEqual(result['annual_base_salary'], "40022.00")
         self.assertEqual(result['start_date'], "2008-03-01")
@@ -172,6 +191,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['end_date'], "2008-06-01")
         self.assertEqual(result['employment_type'], "PartTime")
         self.assertEqual(result['employment_status'], "Terminated")
+        self.assertEqual(result['manager'], None)
 
     def test_post_employee_profile_non_exist_person_failure(self):
         post_data = {
@@ -245,7 +265,8 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "benefit_start_date": '2010-03-22',
             "end_date": None,
             "employment_type": "FullTime",
-            "employment_status": "Active"
+            "employment_status": "Active",
+            "manager": None
         }
         response = self.client.put(reverse('employee_profile_api',
                                            kwargs={'pk': self.normalize_key(1)}),
@@ -259,7 +280,9 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['id'], self.normalize_key(1))
         self.assertEqual(result['person'], self.normalize_key(3))
         self.assertEqual(result['company'], self.normalize_key(1))
-        self.assertEqual(result['pay_rate'], 1)
+        self.assertIn('pay_rate', result)
+        self.assertIn('id', result['pay_rate'])
+        self.assertEqual(result['pay_rate']['id'], self.normalize_key(1))
         self.assertEqual(result['job_title'], "Senior Broker")
         self.assertEqual(result['annual_base_salary'], "140022.00")
         self.assertEqual(result['start_date'], "2010-03-01")
@@ -267,6 +290,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['end_date'], None)
         self.assertEqual(result['employment_type'], "FullTime")
         self.assertEqual(result['employment_status'], "Active")
+        self.assertEqual(result['manager'], None)
 
     def test_delete_employee_profile_success(self):
         response = self.client.delete(reverse('employee_profile_api',

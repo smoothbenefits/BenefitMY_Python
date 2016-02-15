@@ -2657,3 +2657,14 @@ var employeeHelpCenterController = employeeControllers.controller('employeeHelpC
     };
   }
 ]);
+
+var employeeViewTimeOffController = employeeControllers.controller('employeeViewTimeOffController',
+  ['$scope',
+   '$state',
+   'UserService',
+   function($scope, $state, UserService){
+     UserService.getCurUserInfo().then(function(userInfo) {
+       $scope.user = userInfo.user;
+     });
+   }
+]);

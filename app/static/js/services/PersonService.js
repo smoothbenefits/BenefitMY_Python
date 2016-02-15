@@ -22,6 +22,17 @@ benefitmyService.factory('PersonService',
         return deferred.promise;
       };
 
+      var getSelfPersonInfoByPersonId = function(personId) {
+        var deferred = $q.defer();
+        peopleRepository.ById.get({personId: personId}).$promise
+        .then(function(person) {
+          var viewPerson = mapDtoPersonToViewPerson(person);
+          deferred.resolve(viewPerson);
+        });
+
+        return deferred.promise;
+      };
+
       var getFamilyInfo = function(uid){
         var deferred = $q.defer();
         peopleRepository.ByUser.get({userId:uid}).$promise
@@ -122,6 +133,7 @@ benefitmyService.factory('PersonService',
 
       return{
         getSelfPersonInfo: getSelfPersonInfo,
+        getSelfPersonInfoByPersonId: getSelfPersonInfoByPersonId,
         savePersonInfo: savePersonInfo,
         getFamilyInfo: getFamilyInfo,
         deletePerson: deletePerson,

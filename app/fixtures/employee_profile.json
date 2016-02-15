@@ -11,9 +11,28 @@
       "job_title": "Senior Software Engineer",
       "company": 1,
       "annual_base_salary": "140000.00",
-      "employment_type": "FullTime"
+      "employment_type": "FullTime",
+      "manager": 2
     },
     "model": "app.employeeprofile",
     "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-05-22T04:00:00Z",
+      "end_date": null,
+      "employment_status": "Active",
+      "updated_at": "2015-05-22T04:00:00Z",
+      "start_date": "2013-01-01",
+      "benefit_start_date": "2013-01-01",
+      "person": 4,
+      "job_title": "Supervisor",
+      "company": 1,
+      "annual_base_salary": "110000.00",
+      "employment_type": "FullTime",
+      "manager": null
+    },
+    "model": "app.employeeprofile",
+    "pk": 2
   }
 ]
