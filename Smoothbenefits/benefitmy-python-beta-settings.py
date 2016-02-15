@@ -1,12 +1,17 @@
 """
 Configurations for Beta environment
 """
+import logging
+from logentries import LogentriesHandler
 from Smoothbenefits.base_settings import *
 
 # Environment Identification
 IS_PRODUCTION_ENVIRONMENT = True
 
 SITE_URL = "https://app.workbenefits.me/"
+
+# Logging Configurations
+LOGGING['handlers']['logentries_handler']['token'] = '11a32264-c904-4765-96c0-fe6e7fbdb09c'
 
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications

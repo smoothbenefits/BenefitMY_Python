@@ -5,8 +5,9 @@ from rest_framework import status
 
 from app.models.employee_profile import EmployeeProfile
 from app.serializers.employee_profile_serializer import (
-    EmployeeProfileSerializer, EmployeeProfilePostSerializer)
+    EmployeeProfileSerializer, EmployeeProfilePostSerializer, EmployeeProfileWithNameSerializer)
 from app.models.person import Person
+from django.db.models import Q
 
 class EmployeeProfileView(APIView):
     def _get_object(self, pk):
@@ -30,14 +31,16 @@ class EmployeeProfileView(APIView):
         serializer = EmployeeProfilePostSerializer(employee_profile, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            response_serializer = EmployeeProfileSerializer(serializer.object)
+            return Response(response_serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, pk, format=None):
         serializer = EmployeeProfilePostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            response_serializer = EmployeeProfileSerializer(serializer.object)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EmployeeProfileByPersonCompanyView(APIView):
@@ -63,3 +66,11 @@ class EmployeeProfileByCompanyUserView(APIView):
         employee_profile = self._get_object(company_id, user_id)
         serializer = EmployeeProfileSerializer(employee_profile)
         return Response(serializer.data)
+
+
+class EmployeeProfilesByCompanyView(APIView):
+    def get(self, request, company_id, format=None):
+        employee_profiles = EmployeeProfile.objects.filter(company=company_id)
+        serializer = EmployeeProfileWithNameSerializer(employee_profiles, many=True)
+        return Response(serializer.data)
+            

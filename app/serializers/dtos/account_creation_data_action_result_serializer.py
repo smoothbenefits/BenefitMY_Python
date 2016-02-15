@@ -1,5 +1,4 @@
 from app.serializers.dtos.operation_result_base_serializer import OperationResultBaseSerializer
-from app.serializers.dtos.batch_account_creation_raw_data_serializer import BatchAccountCreationRawDataSerializer
 from app.serializers.dtos.account_creation_data_serializer import AccountCreationDataSerializer
 
 

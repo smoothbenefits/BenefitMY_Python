@@ -90,7 +90,7 @@ class CompanyUserAdmin(admin.ModelAdmin):
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'user', 'company')
     fieldsets = (
-        (None, {'fields': ('first_name', 'last_name')}),
+        (None, {'fields': ('first_name', 'last_name', 'relationship')}),
         ('User Relation', {'fields': ('user',)}),
         ('Company Relation', {'fields': ('company',)}),
     )

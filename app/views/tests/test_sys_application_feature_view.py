@@ -15,7 +15,6 @@ class SysApplicationFeatureTestCase(TestCase, ViewTestBase):
 
         result = json.loads(response.content)
         self.assertEqual(type(result), list)
-        self.assertEqual(len(result), 17)
 
     def test_post_sys_application_feature_set_failed(self):
         new_feature = {'feature':'TestFeature'}
@@ -31,7 +30,6 @@ class SysApplicationFeatureTestCase(TestCase, ViewTestBase):
 
         result = json.loads(response.content)
         self.assertEqual(type(result), list)
-        self.assertEqual(len(result), 17)
 
     def test_delete_sys_application_feature_set_failed(self):
         response = self.client.delete(reverse('sys_application_feature_api'))
@@ -44,4 +42,3 @@ class SysApplicationFeatureTestCase(TestCase, ViewTestBase):
 
         result = json.loads(response.content)
         self.assertEqual(type(result), list)
-        self.assertEqual(len(result), 17)

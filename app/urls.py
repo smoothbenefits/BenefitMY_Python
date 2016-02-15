@@ -6,7 +6,8 @@ from app.views.person_view import (
 from app.views.employee_profile_view import (
     EmployeeProfileView,
     EmployeeProfileByPersonCompanyView,
-    EmployeeProfileByCompanyUserView)
+    EmployeeProfileByCompanyUserView,
+    EmployeeProfilesByCompanyView)
 from app.views.employee_compensation_view import (
     EmployeeCompensationView,
     EmployeeCompensationByPersonView)
@@ -219,9 +220,16 @@ from app.views.aca.aca_1094_c_eligibility_certification_view import ACA1094CElig
 from app.views.batch_account_creation.batch_account_creation_view import BatchAccountCreationView
 from app.views.batch_account_creation.account_info_list_parse_view import AccountInfoListParseView
 
+from app.views.employee_organization.batch_employee_organization_import_raw_data_parse_view \
+    import BatchEmployeeOrganizationImportRawDataParseView
+from app.views.employee_organization.batch_employee_organization_import_view \
+    import BatchEmployeeOrganizationImportView
+
 from app.views.employee_management.employee_termination_view import EmployeeTerminationView
 
-from app.views.environment_view import EnvironmentView
+from app.views.user_data_change_email_view import UserDataChangeEmailView
+
+from app.views.logging_service_view import LoggingServiceView
 
 PREFIX = "api/v1"
 
@@ -488,11 +496,11 @@ urlpatterns = patterns('app.views',
         PersonCompanyCommuterPlanByPersonView.as_view(), name='person_company_commuter_plan_by_person_api'),
 
     url(r'^%s/company_group/(?P<company_group_id>\w+)/company_commuter/?$' % PREFIX,
-        CompanyGroupCommuterPlanByCompanyGroupView.as_view(), 
+        CompanyGroupCommuterPlanByCompanyGroupView.as_view(),
         name='company_group_commuter_plan_api'),
 
     url(r'^%s/company_commuter/(?P<pk>\w+)/company_group_plans/?$' % PREFIX,
-        CompanyGroupCommuterPlanByCompanyPlanView.as_view(), 
+        CompanyGroupCommuterPlanByCompanyPlanView.as_view(),
         name='company_group_commuter_plan_by_company_plan_api'),
 
     # Extra Benefits api
@@ -532,6 +540,9 @@ urlpatterns = patterns('app.views',
     # util api
     url(r'^%s/onboard_email/?$' % PREFIX, send_onboard_email),
 
+    # UserData Change Email api
+    url(r'^%s/user_data_email/?$' % PREFIX, UserDataChangeEmailView.as_view()),
+
     # Reporting API
     url(r'^%s/person/(?P<person_id>\w+)/benefits/?$' % PREFIX,
         PersonEnrollmentSummaryView.as_view(), name='person_benefit_summary_api'),
@@ -570,6 +581,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/user/(?P<user_id>\w+)/employee_profile/?$' % PREFIX,
         EmployeeProfileByCompanyUserView.as_view(),
         name='employee_profile_by_company_user_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/employee_profiles/?$' % PREFIX,
+        EmployeeProfilesByCompanyView.as_view(),
+        name='employee_profiles_by_company_api'),
 
     url(r'^%s/employee_compensation/(?P<pk>\w+)/?$' % PREFIX,
         EmployeeCompensationView.as_view(),
@@ -605,6 +619,14 @@ urlpatterns = patterns('app.views',
         BatchAccountCreationView.as_view(),
         name='batch_account_creation_batch_create_api'),
 
+    url(r'^%s/company/(?P<company_id>\w+)/batch_employee_organization_import/parse_organization_data/?$' % PREFIX,
+        BatchEmployeeOrganizationImportRawDataParseView.as_view(),
+        name='batch_employee_organization_import_parse_data_api'),
+
+    url(r'^%s/company/(?P<company_id>\w+)/batch_employee_organization_import/batch_import/?$' % PREFIX,
+        BatchEmployeeOrganizationImportView.as_view(),
+        name='batch_employee_organization_import_api'),
+
     url(r'^%s/company/(?P<company_id>\w+)/employee_management/termination/?$' % PREFIX,
         EmployeeTerminationView.as_view(),
         name='employee_management_termination_api'),
@@ -613,7 +635,8 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/1094_c_certificiations/?$' % PREFIX, ACA1094CEligibilityCertificationView.as_view(), name='ACA_1094_c_cert_api'),
 
-    url(r'^%s/env/?$' % PREFIX, EnvironmentView.as_view(), name="environment_api")
+    # Logging
+    url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api")
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
