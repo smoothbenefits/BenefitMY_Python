@@ -2,17 +2,12 @@ var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('WorkTimesheetService',
   ['$q',
-   'envService',
+   'utilityService',
    'WorkTimesheetRepository',
    function WorkTimesheetService(
     $q,
-    envService,
+    utilityService,
     WorkTimesheetRepository){
-        var _GetEnvAwareId = function(id){
-            var env = envService.get();
-            return env + '_' + id;
-        };
-
         var mapDomainModelToViewModel = function(domainModel){
             var viewModel = {
                 id: domainModel._id,
@@ -38,7 +33,7 @@ benefitmyService.factory('WorkTimesheetService',
         var getBlankTimesheetForEmployeeUser = function(employeeUser, weekStartDateString) {
             // First convert employee user struct to employee data required by the DTO
             var employee = {
-                'personDescriptor': _GetEnvAwareId(employeeUser.id),
+                'personDescriptor': utilityService.getEnvAwareId(employeeUser.id),
                 'firstName': employeeUser.first_name,
                 'lastName': employeeUser.last_name,
                 'email': employeeUser.email
@@ -62,7 +57,7 @@ benefitmyService.factory('WorkTimesheetService',
         };
 
         var GetWorkTimesheetByEmployeeUser = function(employeeUser, weekStartDate){
-            var id = _GetEnvAwareId(employeeUser.id);
+            var id = utilityService.getEnvAwareId(employeeUser.id);
             var weekStartDateString = 
                 moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING)
 
