@@ -2664,6 +2664,7 @@ var employeeViewTimeOffController = employeeControllers.controller('employeeView
    'UserService',
    function($scope, $state, UserService){
      $scope.role = 'Employee';
+     $scope.enableRequestorFeatures = true;
 
      UserService.getCurUserInfo().then(function(userInfo) {
        $scope.user = userInfo.user;

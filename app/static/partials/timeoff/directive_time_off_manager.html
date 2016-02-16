@@ -10,7 +10,7 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-  <div class="panel" ng-if="!requestedTimeOffs.length && !isCurrentUserAdmin()">
+  <div class="panel" ng-if="!hasSelfRequests() && enableRequestorFeatures">
     <div class="panel-heading">
         Time Off Requested
     </div>
@@ -18,7 +18,7 @@
         There are no time requested. <a ng-click="requestTimeOff()">Click here</a> to make a time off request.
     </div>
   </div>
-  <div class="table-responsive" ng-if="requestedTimeOffs.length && !isCurrentUserAdmin()">
+  <div class="table-responsive" ng-if="hasSelfRequests() && enableRequestorFeatures">
     <div class="table-sub-title">
       PTO Requested
     </div>
@@ -45,7 +45,7 @@
   </div>
   <br />
   <br />
-  <div class="panel" ng-show="(!requestsFromDirectReports || !requestsFromDirectReports.length) && isCurrentUserAdmin()">
+  <div class="panel" ng-show="!hasDirectReportRequests() && !enableRequestorFeatures">
     <div class="panel-heading">
         Time Off Requested
     </div>
@@ -53,7 +53,7 @@
         There are no time requested pending your action.
     </div>
   </div>
-  <div class="table-responsive" ng-show="requestsFromDirectReports && requestsFromDirectReports.length">
+  <div class="table-responsive" ng-show="hasDirectReportRequests()">
     <div class="table-sub-title">
       PTO requests from your direct reports
     </div>

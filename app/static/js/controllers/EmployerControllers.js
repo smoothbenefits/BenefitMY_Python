@@ -1635,6 +1635,7 @@ var employerTimeOffController = employersController.controller('employerTimeOffC
   '$scope', 'UserService',
   function($scope, UserService) {
     $scope.role = 'Employer';
+    $scope.enableRequestorFeatures = false;
 
     UserService.getCurUserInfo().then(function(userInfo) {
       $scope.user = userInfo.user;

@@ -41,29 +41,36 @@ BenefitMyApp.controller('TimeoffRequestController', [
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
 
-    $scope.isCurrentUserAdmin = function() {
-      if ($scope.user) {
-        return $scope.user.role === 'admin';
-      }
+    $scope.hasSelfRequests = function() {
+      return $scope.requestedTimeOffs && $scope.requestedTimeOffs.length;
+    };
 
-      return false;
+    $scope.hasDirectReportRequests = function() {
+      return $scope.requestsFromDirectReports && $scope.requestsFromDirectReports.length;
     };
 
     $scope.$watch('user', function(theUser){
       if(theUser){
         $scope.user = theUser;
-        if (theUser.role != 'admin') {
+
+        // if the user can request time off
+        if ($scope.enableRequestorFeatures) {
+
+          // Get existing time off requests
           TimeOffService.GetTimeOffsByRequestor(theUser.id)
           .then(function(timeOffs) {
             $scope.requestedTimeOffs = timeOffs;
           });
 
+          // Get manager information through employee profile
           var companyId = theUser.company_group_user[0].company_group.company.id;
           EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, theUser.id)
           .then(function(profile) {
             $scope.employeeProfile = profile;
             return profile.manager;
           }).then(function(manager){
+
+            // If manager not defined, redirect requests to company HR admin
             if (!manager) {
               CompanyService.getCompanyAdmin(companyId).then(function(admins) {
                 $scope.employeeProfile.manager = admins[0];
@@ -80,6 +87,7 @@ BenefitMyApp.controller('TimeoffRequestController', [
           });
         }
 
+        // Get time off requests awaiting the user's action
         TimeOffService.GetTimeOffsByApprover(theUser.id)
         .then(function(requests){
            $scope.requestsFromDirectReports = requests;
@@ -143,7 +151,8 @@ BenefitMyApp.controller('TimeoffRequestController', [
     return {
         restrict: 'E',
         scope: {
-          user: '='
+          user: '=',
+          enableRequestorFeatures: '=isrequestor'
         },
         templateUrl: '/static/partials/timeoff/directive_time_off_manager.html',
         controller: 'TimeOffDirectiveController'
