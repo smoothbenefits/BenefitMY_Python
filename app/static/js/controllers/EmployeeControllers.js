@@ -260,13 +260,13 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
    '$window',
    'currentUser',
    'employeePayrollService',
-   'utilityServcie',
+   'utilityService',
    function($scope,
             $state,
             $window,
             currentUser,
             employeePayrollService,
-            utilityServcie){
+            utilityService){
     var userPromise = currentUser.get().$promise.then(function(response){
       return response.user.id;
     });
@@ -275,7 +275,7 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
       employeePayrollService.getEmployeeTaxSummaryByUserId(userId)
       .then(function(response){
         $scope.employee = employeePayrollService.mapW4DtoToView(response);
-        $scope.fields = utilityServcie.mapObjectToKeyPairArray('w4', response);
+        $scope.fields = utilityService.mapObjectToKeyPairArray('w4', response);
       });
     });
 
@@ -2659,6 +2659,17 @@ var employeeHelpCenterController = employeeControllers.controller('employeeHelpC
 ]);
 
 var employeeViewTimeOffController = employeeControllers.controller('employeeViewTimeOffController',
+  ['$scope',
+   '$state',
+   'UserService',
+   function($scope, $state, UserService){
+     UserService.getCurUserInfo().then(function(userInfo) {
+       $scope.user = userInfo.user;
+     });
+   }
+]);
+
+var employeeViewWorkTimeSheetController = employeeControllers.controller('employeeViewWorkTimeSheetController',
   ['$scope',
    '$state',
    'UserService',

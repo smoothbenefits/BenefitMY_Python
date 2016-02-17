@@ -30,6 +30,7 @@ String.prototype.capitalize = function() {
 };
 
 var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
+var SHORT_DATE_FORMAT_STRING = 'MM/DD/YYYY';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 var DATE_TIME_FORMAT_STRING = 'LLLL';
 
@@ -553,6 +554,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/employee/hr/timeoff',
                 templateUrl: '/static/partials/timeoff/timeoff_base.html',
                 controller: 'employeeViewTimeOffController'
+            }).
+            state('employee_timesheet', {
+                url: '/employee/hr/work_timesheet',
+                templateUrl: '/static/partials/work_timesheet/timesheet_base.html',
+                controller: 'employeeViewWorkTimeSheetController'
             });
      }
  ]);
