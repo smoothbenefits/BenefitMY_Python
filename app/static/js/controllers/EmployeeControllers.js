@@ -2663,8 +2663,12 @@ var employeeViewTimeOffController = employeeControllers.controller('employeeView
    '$state',
    'UserService',
    function($scope, $state, UserService){
+     $scope.role = 'Employee';
+     $scope.enableRequestorFeatures = true;
+
      UserService.getCurUserInfo().then(function(userInfo) {
        $scope.user = userInfo.user;
+       $scope.user.role = userInfo.roles[0].company_user_type;
      });
    }
 ]);

@@ -395,6 +395,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/view_employee_uploads.html',
                 controller: 'employerViewUploads'
             }).
+            state('admin_time_off', {
+              url: '/admin/timeoff',
+              templateUrl: '/static/partials/timeoff/timeoff_base.html',
+              controller: 'employerTimeOffController'
+            }).
             state('/employee',{
                 url: '/employee',
                 templateUrl: '/static/partials/employee_dashboard.html',
