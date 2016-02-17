@@ -120,7 +120,8 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
   return {
     restrict: 'E',
     scope: {
-        user: '='
+        user: '=',
+        adminMode: '='
     },
     templateUrl: '/static/partials/work_timesheet/directive_work_timesheet_manager.html',
     controller: controller
