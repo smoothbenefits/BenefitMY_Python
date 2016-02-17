@@ -1653,6 +1653,7 @@ var employerViewTimesheet = employersController.controller('employerViewTimeshee
     UserService.getCurUserInfo().then(function(curUserInfo){
       $scope.user = curUserInfo.user;
       $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+      $scope.company = curUserInfo.currentRole.company;
     });
 
     $scope.pageTitle = 'Company Worksheets';

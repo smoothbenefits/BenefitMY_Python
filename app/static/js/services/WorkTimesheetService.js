@@ -30,13 +30,14 @@ benefitmyService.factory('WorkTimesheetService',
           return domainModel;
         };
 
-        var getBlankTimesheetForEmployeeUser = function(employeeUser, weekStartDateString) {
+        var getBlankTimesheetForEmployeeUser = function(employeeUser, company, weekStartDateString) {
             // First convert employee user struct to employee data required by the DTO
             var employee = {
                 'personDescriptor': utilityService.getEnvAwareId(employeeUser.id),
                 'firstName': employeeUser.first_name,
                 'lastName': employeeUser.last_name,
-                'email': employeeUser.email
+                'email': employeeUser.email,
+                'companyDescriptor': utilityService.getEnvAwareId(company.id)
             };
 
             var blankViewModel = {
@@ -56,7 +57,7 @@ benefitmyService.factory('WorkTimesheetService',
             return blankViewModel;
         };
 
-        var GetWorkTimesheetByEmployeeUser = function(employeeUser, weekStartDate){
+        var GetWorkTimesheetByEmployeeUser = function(employeeUser, company, weekStartDate){
             var id = utilityService.getEnvAwareId(employeeUser.id);
             var weekStartDateString = 
                 moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING)
@@ -69,7 +70,7 @@ benefitmyService.factory('WorkTimesheetService',
                     if (resultEntries && resultEntries.length > 0) {
                         return mapDomainModelToViewModel(resultEntries[0]);
                     } else {
-                        return getBlankTimesheetForEmployeeUser(employeeUser, weekStartDateString);
+                        return getBlankTimesheetForEmployeeUser(employeeUser, company, weekStartDateString);
                     }
                 });
         };

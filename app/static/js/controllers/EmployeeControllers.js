@@ -2681,6 +2681,7 @@ var employeeViewWorkTimeSheetController = employeeControllers.controller('employ
      UserService.getCurUserInfo().then(function(curUserInfo) {
        $scope.user = curUserInfo.user;
        $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+       $scope.company = curUserInfo.currentRole.company;
      });
      $scope.isAdmin = false;
      $scope.pageTitle = 'Work Hour Timesheet';
