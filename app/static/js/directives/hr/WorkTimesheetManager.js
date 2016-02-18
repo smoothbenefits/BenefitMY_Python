@@ -63,7 +63,7 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
             .then(function(timesheet) {
               $scope.timesheet = timesheet;
             });
-            $scope.employeeWorkHourList = [];
+            
             WorkTimesheetService.GetWorkTimesheetsByCompany(
                 $scope.company.id,
                 $scope.selectedDisplayWeek.weekStartDate)
