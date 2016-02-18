@@ -158,11 +158,28 @@
         </div>
     </div>
   </div>
-  <div class="panel">
+  <div class="panel" ng-show="adminMode">
     <div class="panel-heading">
       The work hours submitted for week <b>{{selectedDisplayWeek.weekDisplayText}}</b>
     </div>
     <div class="panel-body">
+      <table class="table table-striped benefit-table fix-layout-table"
+        id="plan_items_table" 
+        ng-show="employeeWorkHourList.length > 0">
+        <thead>
+          <th><div>Name</div></th>
+          <th><div>Total Hours</div></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="employeeWorkHour in employeeWorkHourList">
+            <td>{{employeeWorkHour.employee.firstName}} {{employeeWorkHour.employee.lastName}}</td>
+            <td>{{employeeWorkHour.totalHours}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="" ng-show="employeeWorkHourList.length == 0">
+        There are no submitted work hours for week {{selectedDisplayWeek.weekDisplayText}}
+      </div>
     </div>
   </div>
 </div>

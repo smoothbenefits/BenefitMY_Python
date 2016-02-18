@@ -8,6 +8,17 @@ benefitmyService.factory('WorkTimesheetService',
     $q,
     utilityService,
     WorkTimesheetRepository){
+
+        var _calculateTotalHours = function(weekHours){
+            var total = 0;
+            _.each(_.values(weekHours), function(hour){
+                if(typeof hour === 'number'){
+                    total += hour;
+                }
+            });
+            return total;
+        };
+
         var mapDomainModelToViewModel = function(domainModel){
             var viewModel = {
                 id: domainModel._id,
@@ -15,7 +26,8 @@ benefitmyService.factory('WorkTimesheetService',
                 employee: domainModel.employee,
                 workHours: domainModel.workHours,
                 createdTimestamp: moment(domainModel.createdTimestamp).format(DATE_TIME_FORMAT_STRING),
-                updatedTimestamp: moment(domainModel.updatedTimestamp).format(DATE_TIME_FORMAT_STRING)
+                updatedTimestamp: moment(domainModel.updatedTimestamp).format(DATE_TIME_FORMAT_STRING),
+                totalHours: _calculateTotalHours(domainModel.workHours)
             };
             return viewModel;
         };
@@ -28,6 +40,14 @@ benefitmyService.factory('WorkTimesheetService',
           };
 
           return domainModel;
+        };
+
+        var mapDomainModelListToViewModelList = function(domainModelList){
+            var viewModelList = [];
+            _.each(domainModelList, function(domainModel){
+                viewModelList.push(mapDomainModelToViewModel(domainModel));
+            });
+            return viewModelList;
         };
 
         var getBlankTimesheetForEmployeeUser = function(employeeUser, company, weekStartDateString) {
@@ -83,9 +103,24 @@ benefitmyService.factory('WorkTimesheetService',
           });
         };
 
+        var GetWorkTimesheetsByCompany = function(companyId, weekStartDate){
+            var weekStartDateString = 
+                moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
+            var compId = utilityService.getEnvAwareId(companyId)
+            return WorkTimesheetRepository.ByCompany.query({
+                    companyId: compId,
+                    start_date: weekStartDateString,
+                    end_date: weekStartDateString
+                })
+                .$promise.then(function(workSheets){
+                    return mapDomainModelListToViewModelList(workSheets);
+                });
+        };
+
         return {
             GetWorkTimesheetByEmployeeUser: GetWorkTimesheetByEmployeeUser,
-            CreateWorkTimesheet: CreateWorkTimesheet
+            CreateWorkTimesheet: CreateWorkTimesheet,
+            GetWorkTimesheetsByCompany: GetWorkTimesheetsByCompany
         };
     }
 ]);
