@@ -121,10 +121,10 @@ BenefitMyApp.config(['envServiceProvider', function(envServiceProvider) {
                 timeTrackingUrl: 'http://localhost:6999/'
             },
             stage: {
-                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/'
+                timeTrackingUrl: 'https://stage.timetracking.workbenefits.me/'
             },
             demo: {
-                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/'
+                timeTrackingUrl: 'https://stage.timetracking.workbenefits.me/'
             },
             production: {
                 timeTrackingUrl: 'https://timetracking.workbenefits.me/'
