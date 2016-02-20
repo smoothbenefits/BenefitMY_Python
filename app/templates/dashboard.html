@@ -75,6 +75,8 @@
           <button data-toggle="collapse" data-target="#hr-nav" aria-expanded="false" aria-controls="hr-nav"><span class="flaticon flaticon-user135"></span>HR</button>
         </div>
         <div class="sub-nav collapse" id="hr-nav">
+          <a ng-click="viewWorkTimeSheet()">View Employee Timesheet</a>
+          <a ng-click="viewTimeOffRequests()">View Time Off Requests</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/add/')">Add Employee</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_add/')">Batch Add Employee</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_organization_import/')">Import Employee Organization</a>
@@ -130,6 +132,7 @@
           <button data-toggle="collapse" data-target="#employee-hr-nav" aria-expanded="false" aria-controls="employee-hr-nav"><span class="flaticon flaticon-star145"></span>HR</button>
         </div>
         <div class="sub-nav collapse" id="employee-hr-nav">
+          <a href="#/employee/hr/work_timesheet" ng-hide="disabledFeatures.WorkTimeSheet">Work Hour Timesheet</a>
           <a href="#/employee/hr/timeoff" ng-hide="disabledFeatures.Timeoff">Time Off</a>
           <a href="#/employee/payroll/w4" ng-hide="disabledFeatures.W4">W4 Form</a>
           <a href="#/employee/payroll/direct_deposit" ng-hide="disabledFeatures.DD">Direct Deposit</a>

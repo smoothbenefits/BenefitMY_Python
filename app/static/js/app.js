@@ -30,6 +30,7 @@ String.prototype.capitalize = function() {
 };
 
 var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
+var SHORT_DATE_FORMAT_STRING = 'MM/DD/YYYY';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 var DATE_TIME_FORMAT_STRING = 'LLLL';
 
@@ -394,6 +395,16 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/view_employee_uploads.html',
                 controller: 'employerViewUploads'
             }).
+            state('admin_time_off', {
+              url: '/admin/timeoff',
+              templateUrl: '/static/partials/timeoff/timeoff_base.html',
+              controller: 'employerTimeOffController'
+            }).
+            state('admin_timesheet',{
+                url: '/admin/:company_id/timesheet',
+                templateUrl: '/static/partials/work_timesheet/timesheet_base.html',
+                controller: 'employerViewTimesheet'
+            }).
             state('/employee',{
                 url: '/employee',
                 templateUrl: '/static/partials/employee_dashboard.html',
@@ -553,6 +564,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/employee/hr/timeoff',
                 templateUrl: '/static/partials/timeoff/timeoff_base.html',
                 controller: 'employeeViewTimeOffController'
+            }).
+            state('employee_timesheet', {
+                url: '/employee/hr/work_timesheet',
+                templateUrl: '/static/partials/work_timesheet/timesheet_base.html',
+                controller: 'employeeViewWorkTimeSheetController'
             });
      }
  ]);

@@ -41,34 +41,53 @@ BenefitMyApp.controller('TimeoffRequestController', [
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
 
+    $scope.hasSelfRequests = function() {
+      return $scope.requestedTimeOffs && $scope.requestedTimeOffs.length;
+    };
+
+    $scope.hasDirectReportRequests = function() {
+      return $scope.requestsFromDirectReports && $scope.requestsFromDirectReports.length;
+    };
+
     $scope.$watch('user', function(theUser){
       if(theUser){
+        $scope.user = theUser;
 
-        TimeOffService.GetTimeOffsByRequestor(theUser.id)
-        .then(function(timeOffs) {
-          $scope.requestedTimeOffs = timeOffs;
-        });
+        // if the user can request time off
+        if ($scope.enableRequestorFeatures) {
 
-        var companyId = theUser.company_group_user[0].company_group.company.id;
-        EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, theUser.id)
-        .then(function(profile) {
-          $scope.employeeProfile = profile;
-          return profile.manager;
-        }).then(function(manager){
-          if (!manager) {
-            CompanyService.getCompanyAdmin(companyId).then(function(admins) {
-              $scope.employeeProfile.manager = admins[0];
-              $scope.employeeProfile.manager.isHr = true;
-            });
-          } else {
-            PersonService.getSelfPersonInfoByPersonId(manager.person)
-            .then(function(person) {
-              $scope.employeeProfile.manager.userId = person.person.user;
-              $scope.employeeProfile.manager.email = person.person.email;
-            });
-          }
-        });
+          // Get existing time off requests
+          TimeOffService.GetTimeOffsByRequestor(theUser.id)
+          .then(function(timeOffs) {
+            $scope.requestedTimeOffs = timeOffs;
+          });
 
+          // Get manager information through employee profile
+          var companyId = theUser.company_group_user[0].company_group.company.id;
+          EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, theUser.id)
+          .then(function(profile) {
+            $scope.employeeProfile = profile;
+            return profile.manager;
+          }).then(function(manager){
+
+            // If manager not defined, redirect requests to company HR admin
+            if (!manager) {
+              CompanyService.getCompanyAdmin(companyId).then(function(admins) {
+                $scope.employeeProfile.manager = admins[0];
+                $scope.employeeProfile.manager.userId = $scope.employeeProfile.manager.id;
+                $scope.employeeProfile.manager.isHr = true;
+              });
+            } else {
+              PersonService.getSelfPersonInfoByPersonId(manager.person)
+              .then(function(person) {
+                $scope.employeeProfile.manager.userId = person.person.user;
+                $scope.employeeProfile.manager.email = person.person.email;
+              });
+            }
+          });
+        }
+
+        // Get time off requests awaiting the user's action
         TimeOffService.GetTimeOffsByApprover(theUser.id)
         .then(function(requests){
            $scope.requestsFromDirectReports = requests;
@@ -132,7 +151,8 @@ BenefitMyApp.controller('TimeoffRequestController', [
     return {
         restrict: 'E',
         scope: {
-          user: '='
+          user: '=',
+          enableRequestorFeatures: '=isrequestor'
         },
         templateUrl: '/static/partials/timeoff/directive_time_off_manager.html',
         controller: 'TimeOffDirectiveController'

@@ -16,3 +16,16 @@ benefitmyTimeTrackingModelFactories.factory('TimeOffRepository', [
   }
 ]);
 
+benefitmyTimeTrackingModelFactories.factory('WorkTimesheetRepository', [
+  '$resource',
+  'envService',
+  function ($resource, envService){
+        var _hostName = envService.read('timeTrackingUrl');
+        return {
+            ByEmployee: $resource(_hostName + 'api/v1/employee/:userId/work_timesheets', {userId:'@userId'}),
+            Collection: $resource(_hostName + 'api/v1/work_timesheets'),
+            ByCompany: $resource(_hostName + 'api/v1/company/:companyId/work_timesheets', {companyId: '@companyId'})
+        };
+  }
+]);
+

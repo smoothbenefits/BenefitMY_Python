@@ -260,13 +260,13 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
    '$window',
    'currentUser',
    'employeePayrollService',
-   'utilityServcie',
+   'utilityService',
    function($scope,
             $state,
             $window,
             currentUser,
             employeePayrollService,
-            utilityServcie){
+            utilityService){
     var userPromise = currentUser.get().$promise.then(function(response){
       return response.user.id;
     });
@@ -275,7 +275,7 @@ var employeeW4Controller = employeeControllers.controller('employeeW4Controller'
       employeePayrollService.getEmployeeTaxSummaryByUserId(userId)
       .then(function(response){
         $scope.employee = employeePayrollService.mapW4DtoToView(response);
-        $scope.fields = utilityServcie.mapObjectToKeyPairArray('w4', response);
+        $scope.fields = utilityService.mapObjectToKeyPairArray('w4', response);
       });
     });
 
@@ -2663,8 +2663,30 @@ var employeeViewTimeOffController = employeeControllers.controller('employeeView
    '$state',
    'UserService',
    function($scope, $state, UserService){
+     $scope.role = 'Employee';
+     $scope.enableRequestorFeatures = true;
+
      UserService.getCurUserInfo().then(function(userInfo) {
        $scope.user = userInfo.user;
+       $scope.user.role = userInfo.roles[0].company_user_type;
      });
+   }
+]);
+
+var employeeViewWorkTimeSheetController = employeeControllers.controller('employeeViewWorkTimeSheetController',
+  ['$scope',
+   '$state',
+   'UserService',
+   function($scope, $state, UserService){
+     UserService.getCurUserInfo().then(function(curUserInfo) {
+       $scope.user = curUserInfo.user;
+       $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+       $scope.company = curUserInfo.currentRole.company;
+     });
+     $scope.isAdmin = false;
+     $scope.pageTitle = 'Work Hour Timesheet';
+     $scope.backToDashboard = function(){
+       $state.go('/employee');
+     };
    }
 ]);
