@@ -58,9 +58,17 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
         $scope.reloadTimesheet = function() {
             WorkTimesheetService.GetWorkTimesheetByEmployeeUser(
                 $scope.user,
+                $scope.company,
                 $scope.selectedDisplayWeek.weekStartDate)
             .then(function(timesheet) {
               $scope.timesheet = timesheet;
+            });
+            
+            WorkTimesheetService.GetWorkTimesheetsByCompany(
+                $scope.company.id,
+                $scope.selectedDisplayWeek.weekStartDate)
+            .then(function(workTimeSheets){
+                $scope.employeeWorkHourList = workTimeSheets;
             });
         };
 
@@ -120,7 +128,9 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
   return {
     restrict: 'E',
     scope: {
-        user: '='
+        user: '=',
+        adminMode: '=',
+        company: '='
     },
     templateUrl: '/static/partials/work_timesheet/directive_work_timesheet_manager.html',
     controller: controller

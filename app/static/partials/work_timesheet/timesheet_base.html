@@ -1,8 +1,8 @@
 <div class="breadcrumb">
-  <a ng-href="#/employee">Employee Dashboard</a>
-  <span>Work Hour Timesheet</span>
+  <a ng-click="backToDashboard()">{{role}} Dashboard</a>
+  <span>{{pageTitle}}</span>
 </div>
 
-<bm-work-timesheet-manager user="user"></bm-work-timesheet-manager>
+<bm-work-timesheet-manager user="user" admin-mode="isAdmin", company="company"></bm-work-timesheet-manager>
 
 <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>

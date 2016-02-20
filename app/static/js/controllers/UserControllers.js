@@ -276,6 +276,10 @@ var userController = userControllers.controller('userController',
             });
         }
     };
+
+    $scope.viewWorkTimeSheet = function(){
+      $state.go('admin_timesheet');
+    };
 }]);
 
 var preBenefitSelectionModalController = userControllers.controller('preBenefitSelectionModalController',

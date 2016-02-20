@@ -1,8 +1,12 @@
 <div class="content-header">
   <h1>Work Timesheet</h1>
-  <span class="general-info">Track and report my work hours on weekly basis</span>
-  <div class="view-instruction">
+  <span class="general-info" ng-hide="adminMode">Track and report my work hours on weekly basis</span>
+  <span class="general-info" ng-show="adminMode">View the work hour reported by employees</span>
+  <div class="view-instruction" ng-hide="adminMode">
     <p>Please use the below form to view and submit timesheet to track and report your work hours on weekly basis.</p>
+  </div>
+  <div class="view-instruction" ng-show="adminMode">
+    <p>You can find the total hours submitted by employees for selected week</p>
   </div>
 </div><!-- / .content-header -->
 
@@ -25,7 +29,7 @@
         </div>
     </div>
   </div>
-  <div class="panel">
+  <div class="panel" ng-hide="adminMode">
     <div class="panel-heading">
         Your Work Hour Timesheet for the Week: <b>{{selectedDisplayWeek.weekDisplayText}}</b>
     </div>
@@ -152,6 +156,32 @@
                 </div>
             </form>
         </div>
+    </div>
+  </div>
+  <div class="panel" ng-show="adminMode">
+    <div class="panel-heading">
+      The work hours submitted for week <b>{{selectedDisplayWeek.weekDisplayText}}</b>
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped benefit-table fix-layout-table"
+        id="plan_items_table" 
+        ng-show="employeeWorkHourList.length > 0">
+        <thead>
+          <th><div>Name</div></th>
+          <th><div>Total Hours</div></th>
+          <th><div>Time Submitted</div></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="employeeWorkHour in employeeWorkHourList">
+            <td>{{employeeWorkHour.employee.firstName}} {{employeeWorkHour.employee.lastName}}</td>
+            <td>{{employeeWorkHour.totalHours}}</td>
+            <td>{{employeeWorkHour.updatedTimestamp}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="" ng-show="employeeWorkHourList.length == 0">
+        There are no submitted work hours for week {{selectedDisplayWeek.weekDisplayText}}
+      </div>
     </div>
   </div>
 </div>
