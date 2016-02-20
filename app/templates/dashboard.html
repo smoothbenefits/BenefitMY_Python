@@ -75,14 +75,14 @@
           <button data-toggle="collapse" data-target="#hr-nav" aria-expanded="false" aria-controls="hr-nav"><span class="flaticon flaticon-user135"></span>HR</button>
         </div>
         <div class="sub-nav collapse" id="hr-nav">
+          <a ng-click="viewWorkTimeSheet()">View Employee Timesheet</a>
+          <a ng-click="viewTimeOffRequests()">View Time Off Requests</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/add/')">Add Employee</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_add/')">Batch Add Employee</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_organization_import/')">Import Employee Organization</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/')">View Employees</a>
           <a ng-click="addOfferTemplate()">Add Templates</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/documents/template/')">View Templates</a>
-          <a ng-click="viewWorkTimeSheet()">View Employee Timesheet</a>
-          <a ng-click="viewTimeOffRequests()">View Time Off Requests</a>
         </div>
       </li>
       <li class="expandable" ng-show="isCurRoleAdmin()">

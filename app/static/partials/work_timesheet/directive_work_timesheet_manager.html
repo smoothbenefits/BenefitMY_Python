@@ -169,11 +169,13 @@
         <thead>
           <th><div>Name</div></th>
           <th><div>Total Hours</div></th>
+          <th><div>Time Submitted</div></th>
         </thead>
         <tbody>
           <tr ng-repeat="employeeWorkHour in employeeWorkHourList">
             <td>{{employeeWorkHour.employee.firstName}} {{employeeWorkHour.employee.lastName}}</td>
             <td>{{employeeWorkHour.totalHours}}</td>
+            <td>{{employeeWorkHour.updatedTimestamp}}</td>
           </tr>
         </tbody>
       </table>
