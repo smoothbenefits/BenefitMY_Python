@@ -30,6 +30,10 @@ class NotificationService(object):
         trig_comp_not_enroll.append_action(ActionNotifyCompanyNotCompleteEnrollment())
         self._triggers.append(trig_comp_not_enroll)
 
+        trig_emp_not_sign_doc = TriggerEmployeeNotSignDocuments()
+        trig_emp_not_sign_doc.append_action(ActionNotifyEmployeeNotSignDocuments())
+        self._triggers.append(trig_emp_not_sign_doc)
+
     def execute(self):
         for trigger in self._triggers:
             trigger.examine_and_execute_actions()
