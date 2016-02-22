@@ -20,7 +20,11 @@ class TriggerNotSignDocumentsBase(TriggerBase):
             user_documents = Document.objects.filter(user=user.id)
             not_signed = [doc for doc in user_documents if not doc.signature]
             if len(not_signed) > 0:
-                self._cache_company_user(company.id, user.id)
+                # sort unsigned document by creation date
+                not_signed_sorted = sorted(not_signed, key=lambda doc: doc.created_at)
+                # check schedule based on the oldest document
+                if (self._check_schedule(not_signed_sorted[0].created_at)):
+                    self._cache_company_user(company.id, user.id)
 
         return (not self._is_cached_data_empty())
 
