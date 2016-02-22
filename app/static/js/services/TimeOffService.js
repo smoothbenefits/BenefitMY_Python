@@ -2,17 +2,12 @@ var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('TimeOffService',
   ['$q',
-   'envService',
+   'utilityService',
    'TimeOffRepository',
    function TimeOffService(
     $q,
-    envService,
+    utilityService,
     TimeOffRepository){
-        var _GetEnvAwareId = function(id){
-            var env = envService.get();
-            return env + '_' + id;
-        };
-
         var mapDomainModelToViewModel = function(domainModel){
             var viewModel = {
                 id: domainModel._id,
@@ -38,7 +33,7 @@ benefitmyService.factory('TimeOffService',
         };
 
         var GetTimeOffsByRequestor = function(requestor){
-            var id = _GetEnvAwareId(requestor);
+            var id = utilityService.getEnvAwareId(requestor);
             return TimeOffRepository.ByRequestor.query({userId:id})
                 .$promise.then(function(timeoffs){
                     return mapDomainModelsToViewModels(timeoffs);
@@ -54,7 +49,7 @@ benefitmyService.factory('TimeOffService',
           };
 
           var requestor = {
-            'personDescriptor': _GetEnvAwareId(viewModel.requestor.id),
+            'personDescriptor': utilityService.getEnvAwareId(viewModel.requestor.id),
             'firstName': viewModel.requestor.first_name,
             'lastName': viewModel.requestor.last_name,
             'email': viewModel.requestor.email
@@ -63,7 +58,7 @@ benefitmyService.factory('TimeOffService',
           domainModel.requestor = requestor;
 
           var approver = {
-            'personDescriptor': _GetEnvAwareId(viewModel.approver.userId),
+            'personDescriptor': utilityService.getEnvAwareId(viewModel.approver.userId),
             'firstName': viewModel.approver.first_name,
             'lastName': viewModel.approver.last_name,
             'email': viewModel.approver.email
@@ -84,7 +79,7 @@ benefitmyService.factory('TimeOffService',
         };
         
         var GetTimeOffsByApprover = function(approver){
-            var id = _GetEnvAwareId(approver);
+            var id = utilityService.getEnvAwareId(approver);
             return TimeOffRepository.ByApprover.query({userId:id})
                 .$promise.then(function(timeoffs){
                     return mapDomainModelsToViewModels(timeoffs);

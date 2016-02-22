@@ -3,11 +3,11 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('employeePayrollService',
   ['$q',
    'employeeTaxRepository',
-   'utilityServcie',
+   'utilityService',
    'profileSettings',
    function ($q,
              employeeTaxRepository,
-             utilityServcie,
+             utilityService,
              profileSettings){
 
     var getMarriageNumber = function(withholdingType){
