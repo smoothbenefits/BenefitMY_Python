@@ -1,10 +1,10 @@
 <div class="content-header">
   <h1>View Time Off requests</h1>
-  <span class="general-info" ng-hide="isCurrentUserAdmin()">View my time off requests</span>
-  <div class="cta" ng-hide="isCurrentUserAdmin()">
+  <span class="general-info" ng-show="enableRequestorFeatures">View my time off requests</span>
+  <div class="cta" ng-show="enableRequestorFeatures">
     <span class="btn green" ng-click="requestTimeOff()">Request Time-Off</span>
   </div>
-  <div class="view-instruction" ng-hide="isCurrentUserAdmin()">
+  <div class="view-instruction" ng-show="enableRequestorFeatures">
     <p> Please use the <span class="green-link">Request Time-Off Button</span> to create a new time-off request</p>
   </div>
 </div><!-- / .content-header -->
