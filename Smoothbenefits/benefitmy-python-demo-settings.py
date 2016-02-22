@@ -17,21 +17,6 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
-# Application definition
-MIDDLEWARE_CLASSES = (
-    'sslify.middleware.SSLifyMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
-    'reversion.middleware.RevisionMiddleware',
-)
-
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
