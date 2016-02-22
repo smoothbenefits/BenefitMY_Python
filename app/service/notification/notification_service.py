@@ -1,9 +1,13 @@
 from triggers.trigger_employee_not_complete_enrollment \
     import TriggerEmployeeNotCompleteEnrollment
+from triggers.trigger_employee_not_sign_document \
+    import TriggerEmployeeNotSignDocument
 from triggers.trigger_company_not_complete_emrollment \
     import TriggerCompanyNotCompleteEnrollment
 from actions.action_notify_employee_not_complete_enrollment \
     import ActionNotifyEmployeeNotCompleteEnrollment
+from actions.action_notify_employee_not_sign_document \
+    import ActionNotifyEmployeeNotSignDocument
 from actions.action_notify_company_not_complete_enrollment \
     import ActionNotifyCompanyNotCompleteEnrollment
 from actions.action_print_to_console import ActionPrintToConsole
@@ -30,8 +34,8 @@ class NotificationService(object):
         trig_comp_not_enroll.append_action(ActionNotifyCompanyNotCompleteEnrollment())
         self._triggers.append(trig_comp_not_enroll)
 
-        trig_emp_not_sign_doc = TriggerEmployeeNotSignDocuments()
-        trig_emp_not_sign_doc.append_action(ActionNotifyEmployeeNotSignDocuments())
+        trig_emp_not_sign_doc = TriggerEmployeeNotSignDocument()
+        trig_emp_not_sign_doc.append_action(ActionNotifyEmployeeNotSignDocument())
         self._triggers.append(trig_emp_not_sign_doc)
 
     def execute(self):

@@ -8,7 +8,7 @@ from app.dtos.notifaction.email_data import EmailData
 
 User = get_user_model()
 
-class ActionNotifyEmployeeNotSignDocuments(ActionNotifyEmployeeBase):
+class ActionNotifyEmployeeNotSignDocument(ActionNotifyEmployeeBase):
 
     def __init__(self):
         super(ActionNotifyEmployeeNotSignDocuments, self).__init__()

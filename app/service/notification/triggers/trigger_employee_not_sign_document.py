@@ -5,20 +5,24 @@ from app.models.document import Document
 from trigger_base import TriggerBase
 
 
-class TriggerNotSignDocumentsBase(TriggerBase):
+class TriggerEmployeeNotSignDocument(TriggerBase):
     def __init__(self):
-        super(TriggerNotSignDocumentsBase, self).__init__()
+        super(TriggerEmployeeNotSignDocument, self).__init__()
 
     def _examine_condition(self):
         self._refresh_cached_data()
-
+        print 'Inside trigger'
         company_users = CompanyUser.objects.filter(company_user_type=USER_TYPE_EMPLOYEE)
-
+        print len(company_users)
         for company_user in company_users:
             user = company_user.user
             company = company_user.company
+            print user.id
+            print company.id
             user_documents = Document.objects.filter(user=user.id)
+            print len(user_documents)
             not_signed = [doc for doc in user_documents if not doc.signature]
+            print len(not_signed)
             if len(not_signed) > 0:
                 # sort unsigned document by creation date
                 not_signed_sorted = sorted(not_signed, key=lambda doc: doc.created_at)
