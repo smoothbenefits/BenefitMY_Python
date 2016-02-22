@@ -3,11 +3,11 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('EmploymentProfileService',
   ['$q',
    'employmentAuthRepository',
-   'utilityServcie',
+   'utilityService',
    'profileSettings',
    function($q,
             employmentAuthRepository,
-            utilityServcie,
+            utilityService,
             profileSettings){
 
      return {
@@ -35,7 +35,7 @@ benefitmyService.factory('EmploymentProfileService',
         var deferred = $q.defer();
 
         employmentAuthRepository.get({userId: userId}).$promise.then(function(response){
-          var fields = utilityServcie.mapObjectToKeyPairArray('i9', response);
+          var fields = utilityService.mapObjectToKeyPairArray('i9', response);
           deferred.resolve(fields);
         }, function(error){
           deferred.reject(error);

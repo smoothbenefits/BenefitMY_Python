@@ -1,10 +1,12 @@
 var benefitmyService = angular.module('benefitmyService', ['benefitmyDomainModelFactories']);
 
-var utilityService = benefitmyService.factory('utilityServcie',
+var utilityService = benefitmyService.factory('utilityService',
   ['$q',
    'profileSettings',
+   'envService',
     function($q,
-             profileSettings){
+             profileSettings,
+             envService){
       var mapObjectToKeyPairArray = function(type, object){
         var fields = [];
 
@@ -34,8 +36,18 @@ var utilityService = benefitmyService.factory('utilityServcie',
         return fields;
       };
 
+      /**
+        Get a descriptor of the given ID based on the environment
+        of the context.
+      */
+      var getEnvAwareId = function(id){
+            var env = envService.get();
+            return env + '_' + id;
+      };
+
       return {
-        mapObjectToKeyPairArray: mapObjectToKeyPairArray
+        mapObjectToKeyPairArray: mapObjectToKeyPairArray,
+        getEnvAwareId: getEnvAwareId
       };
     }
   ]);

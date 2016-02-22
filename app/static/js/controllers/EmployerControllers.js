@@ -1630,3 +1630,36 @@ var employerAcaReport = employersController.controller('employerAcaReport', [
     $scope.companyId = $stateParams.company_id;
   }
 ]);
+
+var employerTimeOffController = employersController.controller('employerTimeOffController', [
+  '$scope', 'UserService',
+  function($scope, UserService) {
+    $scope.role = 'Employer';
+    $scope.enableRequestorFeatures = false;
+
+    UserService.getCurUserInfo().then(function(userInfo) {
+      $scope.user = userInfo.user;
+      $scope.user.role = userInfo.roles[0].company_user_type;
+    });
+  }
+]);
+
+var employerViewTimesheet = employersController.controller('employerViewTimesheet', [
+  '$scope',
+  '$state',
+  '$stateParams',
+  'UserService',
+  function($scope, $state, $stateParams, UserService){
+    UserService.getCurUserInfo().then(function(curUserInfo){
+      $scope.user = curUserInfo.user;
+      $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+      $scope.company = curUserInfo.currentRole.company;
+    });
+
+    $scope.pageTitle = 'Company Worksheets';
+    $scope.isAdmin = true;
+    $scope.backToDashboard = function(){
+      $state.go('/admin');
+    }
+  }
+]);

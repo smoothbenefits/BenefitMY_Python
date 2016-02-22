@@ -1,16 +1,16 @@
 <div class="content-header">
   <h1>View Time Off requests</h1>
-  <span class="general-info">View my time off requests</span>
-  <div class="cta">
+  <span class="general-info" ng-hide="isCurrentUserAdmin()">View my time off requests</span>
+  <div class="cta" ng-hide="isCurrentUserAdmin()">
     <span class="btn green" ng-click="requestTimeOff()">Request Time-Off</span>
   </div>
-  <div class="view-instruction">
+  <div class="view-instruction" ng-hide="isCurrentUserAdmin()">
     <p> Please use the <span class="green-link">Request Time-Off Button</span> to create a new time-off request</p>
   </div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
-  <div class="panel" ng-show="!requestedTimeOffs.length">
+  <div class="panel" ng-if="!hasSelfRequests() && enableRequestorFeatures">
     <div class="panel-heading">
         Time Off Requested
     </div>
@@ -18,7 +18,7 @@
         There are no time requested. <a ng-click="requestTimeOff()">Click here</a> to make a time off request.
     </div>
   </div>
-  <div class="table-responsive" ng-show="requestedTimeOffs.length">
+  <div class="table-responsive" ng-if="hasSelfRequests() && enableRequestorFeatures">
     <div class="table-sub-title">
       PTO Requested
     </div>
@@ -44,35 +44,41 @@
     </table>
   </div>
   <br />
-    <br />
-    <div class="table-responsive" ng-show="requestsFromDirectReports && requestsFromDirectReports.length">
-        <div class="table-sub-title">
-          PTO requests from your direct reports
-        </div>
-        <table class="table table-striped" >
-          <thead>
-            <th><span>Requestor</span></th>
-            <th><span>Type</span></th>
-            <th><span>Start</span></th>
-            <th><span>Duration</span></th>
-            <th><span>Date and time created</span></th>
-            <th><span>Status</span></th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="request in requestsFromDirectReports">
-                <td>
-                    <a href="mailto:{{request.requestor.email}}" target="_top">
-                        {{request.requestor.firstName}} {{request.requestor.lastName}}
-                    </a>
-                </td>
-                <td>{{request.type}}</td>
-                <td>{{request.start}}</td>
-                <td>{{request.duration}} hour(s)</td>
-                <td>{{request.created}}</td>
-                <td ng-if="request.actionNeeded"><a ng-click="updateStatus(request, 'APPROVED')">Approve</a> / <a ng-click="updateStatus(request, 'DENIED')">Deny</a></td>
-                <td ng-if="!request.actionNeeded">{{request.status}}</td>
-            </tr>
-          </tbody>
-        </table>
+  <br />
+  <div class="panel" ng-show="!hasDirectReportRequests() && !enableRequestorFeatures">
+    <div class="panel-heading">
+        Time Off Requested
     </div>
+    <div class="panel-body">
+        There are no time requested pending your action.
+    </div>
+  </div>
+  <div class="table-responsive" ng-show="hasDirectReportRequests()">
+    <div class="table-sub-title">
+      PTO requests from your direct reports
+    </div>
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Requestor</span></th>
+        <th><span>Type</span></th>
+        <th><span>Start</span></th>
+        <th><span>Duration</span></th>
+        <th><span>Date and time created</span></th>
+        <th><span>Status</span></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="request in requestsFromDirectReports">
+          <td> {{request.requestor.firstName}} {{request.requestor.lastName}}</td>
+          <td>{{request.type}}</td>
+          <td>{{request.start}}</td>
+          <td>{{request.duration}} hour(s)</td>
+          <td>{{request.created}}</td>
+          <td ng-if="request.actionNeeded">
+            <a ng-click="updateStatus(request, 'APPROVED')">Approve</a> / <a ng-click="updateStatus(request, 'DENIED')">Deny</a>
+          </td>
+          <td ng-if="!request.actionNeeded">{{request.status}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
