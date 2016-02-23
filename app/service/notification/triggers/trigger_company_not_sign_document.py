@@ -2,9 +2,9 @@ from datetime import date
 from trigger_not_sign_document_base import TriggerNotSignDocumentBase
 
 
-class TriggerEmployeeNotSignDocument(TriggerNotSignDocumentBase):
+class TriggerCompanyNotSignDocument(TriggerNotSignDocumentBase):
     def __init__(self):
-        super(TriggerEmployeeNotSignDocument, self).__init__()
+        super(TriggerCompanyNotSignDocument, self).__init__()
 
     def _check_schedule(self, created_date):
         if (not created_date):
