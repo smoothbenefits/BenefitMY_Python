@@ -27,9 +27,6 @@ class ActionNotifyCompanyBase(ActionBase):
             broker_emails = send_email_service.get_broker_emails_by_company(company_id)
             emails.extend(broker_emails)
 
-            # build the template context data
-            context_data = {'context_data':context_data, 'site_url':settings.SITE_URL}
-
             send_email_service.send_support_email(
                 emails, email_data.subject, email_data.context_data,
                 email_data.html_template_path, email_data.txt_template_path)
