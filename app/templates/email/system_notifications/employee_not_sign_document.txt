@@ -1,0 +1,11 @@
+New document is ready for you to review
+
+Company: {{context_data.company.name}}
+
+You have new document(s) pending your action. Please log onto our website, and review the new document.
+
+Thank you and best regards.
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}
