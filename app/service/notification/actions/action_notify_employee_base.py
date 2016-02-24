@@ -9,6 +9,7 @@ User = get_user_model()
 
 class ActionNotifyEmployeeBase(ActionBase):
     def execute(self, action_data):
+
         if (not action_data
             or not 'company_user_id_list' in action_data):
             raise ValueError("action_data must contains valid 'company_user_id_list'!")
@@ -16,18 +17,18 @@ class ActionNotifyEmployeeBase(ActionBase):
         send_email_service = SendEmailService()
 
         for company_id in action_data['company_user_id_list']:
-
+            print company_id
             user_id_list = action_data['company_user_id_list'][company_id]
-
+            print user_id_list
             for user_id in user_id_list:
-
+                print user_id
                 # build the list of target emails
                 email = send_email_service.get_email_address_by_user(user_id)
                 emails = [email]
-
+                print email
                 # Get action dependent data for outbound emails
                 email_data = self._get_email_data(company_id, user_id)
-
+                print email_data
                 send_email_service.send_support_email(
                     emails, email_data.subject, email_data.context_data,
                     email_data.html_template_path, email_data.txt_template_path
@@ -36,6 +37,13 @@ class ActionNotifyEmployeeBase(ActionBase):
                 self.log.info("Action {} ran to completion for user {}".format(self.__class__.__name__, user_id))
 
         self.log.info("Action {} ran to completion.".format(self.__class__.__name__))
+
+    def _get_site_URL(self, user_id):
+        user = User.objects.get(pk=user_id)
+        if user.check_password(settings.DEFAULT_USER_PW):
+            hash_key_service = HashKeyService()
+            return "%semployee/signup/%s" % (settings.SITE_URL, hash_key_service.encode_key(user_id))
+        return settings.SITE_URL
 
     def _get_email_data(self, company_id, user_id):
         raise NotImplementedError()

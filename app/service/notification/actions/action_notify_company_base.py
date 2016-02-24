@@ -9,6 +9,7 @@ User = get_user_model()
 
 class ActionNotifyCompanyBase(ActionBase):
     def execute(self, action_data):
+        print action_data
         if (not action_data
             or not 'company_user_id_list' in action_data):
             raise ValueError("action_data must contains valid 'company_user_id_list'!")
@@ -16,17 +17,14 @@ class ActionNotifyCompanyBase(ActionBase):
         send_email_service = SendEmailService()
 
         for company_id in action_data['company_user_id_list']:
-
-            self.log.debug("Company " + company_id)
+            print company_id
             user_id_list = action_data['company_user_id_list'][company_id]
 
             email_data = self._get_email_data(company_id, user_id_list)
-
+            print email_data.subject
             # build the list of target emails
             emails = send_email_service.get_employer_emails_by_company(company_id)
-            broker_emails = send_email_service.get_broker_emails_by_company(company_id)
-            emails.extend(broker_emails)
-
+            print emails
             send_email_service.send_support_email(
                 emails, email_data.subject, email_data.context_data,
                 email_data.html_template_path, email_data.txt_template_path)

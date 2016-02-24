@@ -4,7 +4,7 @@ from app.service.send_email_service import SendEmailService
 from app.models.company import Company
 from app.models.person import (Person, SELF)
 from action_notify_company_base import ActionNotifyCompanyBase
-from app.dtos.notifaction.email_data import EmailData
+from app.dtos.notification.email_data import EmailData
 
 User = get_user_model()
 
@@ -16,8 +16,8 @@ class ActionNotifyCompanyNotSignDocument(ActionNotifyCompanyBase):
     def _get_email_data(self, company_id, user_id_list):
 
         subject = '[Action Required] Employee Document not Signed'
-        html_template_path = 'email/system_notifications/company_not_signed_document.html'
-        txt_template_path = 'email/system_notifications/company_not_signed_document.txt'
+        html_template_path = 'email/system_notifications/company_not_sign_document.html'
+        txt_template_path = 'email/system_notifications/company_not_sign_document.txt'
 
         context_data = {
             'company': Company.objects.get(pk=company_id),
