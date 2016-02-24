@@ -1,6 +1,5 @@
 <div class="content-header">
   <h1>View Time Off requests</h1>
-  <span class="general-info" ng-show="enableRequestorFeatures">View my time off requests</span>
   <div class="cta" ng-show="enableRequestorFeatures">
     <span class="btn green" ng-click="requestTimeOff()">Request Time-Off</span>
   </div>
@@ -19,8 +18,12 @@
     </div>
   </div>
   <div class="table-responsive" ng-if="hasSelfRequests() && enableRequestorFeatures">
-    <div class="table-sub-title">
+    <div class="table-title">
       PTO Requested
+    </div>
+    <div class="alert alert-info" ng-show="timeoffQuota">
+      <p>Maximum {{timeoffQuota.paidTimeOffInHours}} hours of PTO allowed this year</p>
+      <p>Maximum {{timeoffQuota.sickDaysInHours}} hours of sick time allowed this year</p>
     </div>
     <table class="table table-striped" >
       <thead>
@@ -54,7 +57,7 @@
     </div>
   </div>
   <div class="table-responsive" ng-show="hasDirectReportRequests()">
-    <div class="table-sub-title">
+    <div class="table-title">
       PTO requests from your direct reports
     </div>
     <table class="table table-striped" >

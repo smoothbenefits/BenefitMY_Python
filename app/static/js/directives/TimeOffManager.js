@@ -62,6 +62,11 @@ BenefitMyApp.controller('TimeoffRequestController', [
             $scope.requestedTimeOffs = timeOffs;
           });
 
+          TimeOffService.GetTimeOffQuota(theUser.id)
+          .then(function(quota){
+            $scope.timeoffQuota = quota;
+          });
+
           // Get manager information through employee profile
           var companyId = theUser.company_group_user[0].company_group.company.id;
           EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, theUser.id)
