@@ -148,19 +148,19 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         succeeded();
       } 
       else {
-        DirectDepositService.getDirectDepositByUserId(employeeId).then(
-            function(accounts) {
-                if (accounts && accounts.length > 0) {
+        UserOnboardingStepStateService.getStateByUserAndStep(
+            employeeId,
+            UserOnboardingStepStateService.Steps.directDeposit).then(
+            function(state) {
+                if (state && 
+                    (state == UserOnboardingStepStateService.States.skipped
+                     || state == UserOnboardingStepStateService.States.completed)) {
                     succeeded();
                 }
                 else {
-                    UserOnboardingStepStateService.getStateByUserAndStep(
-                    employeeId,
-                    UserOnboardingStepStateService.Steps.directDeposit).then(
-                        function(state) {
-                            if (state && 
-                                (state == UserOnboardingStepStateService.States.skipped
-                                 || state == UserOnboardingStepStateService.States.completed)) {
+                    DirectDepositService.getDirectDepositByUserId(employeeId).then(
+                        function(accounts) {
+                            if (accounts && accounts.length > 0) {
                                 succeeded();
                             }
                             else {
@@ -169,13 +169,13 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                         },
                         function(errors) {
                             failed();
-                        } 
+                        }
                     );
                 }
             },
             function(errors) {
                 failed();
-            }
+            } 
         );
       }
     };
