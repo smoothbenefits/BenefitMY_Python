@@ -11,7 +11,7 @@ BenefitMyApp.controller('TimeoffRequestController', [
 
     $scope.timeoffTypes = [
       'Paid Time Off (PTO)',
-      'Sick Day'
+      'Sick Time'
     ];
 
     $scope.timeoff = {

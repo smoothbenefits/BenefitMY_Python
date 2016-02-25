@@ -9,21 +9,18 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
+  <div class="alert alert-info" ng-if="timeoffQuota && enableRequestorFeatures">
+    <p>Maximum {{timeoffQuota.paidTimeOffInHours}} hours of Paid Time Off (PTO) this year</p>
+    <p>Maximum {{timeoffQuota.sickTimeInHours}} hours of Sick Time this year</p>
+  </div>
   <div class="panel" ng-if="!hasSelfRequests() && enableRequestorFeatures">
-    <div class="panel-heading">
-        Time Off Requested
-    </div>
     <div class="panel-body">
         There are no time requested. <a ng-click="requestTimeOff()">Click here</a> to make a time off request.
     </div>
   </div>
   <div class="table-responsive" ng-if="hasSelfRequests() && enableRequestorFeatures">
     <div class="table-title">
-      PTO Requested
-    </div>
-    <div class="alert alert-info" ng-show="timeoffQuota">
-      <p>Maximum {{timeoffQuota.paidTimeOffInHours}} hours of PTO allowed this year</p>
-      <p>Maximum {{timeoffQuota.sickDaysInHours}} hours of sick time allowed this year</p>
+      Time Off Requested
     </div>
     <table class="table table-striped" >
       <thead>
@@ -58,7 +55,7 @@
   </div>
   <div class="table-responsive" ng-show="hasDirectReportRequests()">
     <div class="table-title">
-      PTO requests from your direct reports
+      Time Off requests from your direct reports
     </div>
     <table class="table table-striped" >
       <thead>
