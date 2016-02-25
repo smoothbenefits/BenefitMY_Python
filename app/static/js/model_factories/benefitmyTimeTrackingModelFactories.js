@@ -11,7 +11,8 @@ benefitmyTimeTrackingModelFactories.factory('TimeOffRepository', [
             Collection: $resource(_hostName + 'api/v1/timeoffs'),
             StatusByTimeoffId: $resource(_hostName + 'api/v1/timeoffs/:timeoffId/status', {timeoffId:'@id'}, {
               update: { method: 'PUT' }
-            })
+            }),
+            QuotaByUser: $resource(_hostName + 'api/v1/person/:userId/timeoff_quota', {userId:'@userId'})
         };
   }
 ]);
