@@ -71,12 +71,16 @@ benefitmyService.factory('CompanyPersonnelsService',
                 return deferred.promise;
             }
 
-        }
+        };
 
+        var clearCache = function(){
+            personnels = [];
+        };
 
         return {
             getCompanyBrokers: getCompanyBrokers,
-            getCompanyEmployees: getCompanyEmployees
+            getCompanyEmployees: getCompanyEmployees,
+            clearCache: clearCache
         };
     }
 ]);

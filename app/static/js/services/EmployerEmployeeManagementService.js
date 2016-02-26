@@ -4,7 +4,9 @@ benefitmyService.factory('EmployerEmployeeManagementService',
   ['$q',
   'usersRepository',
   'CompensationService',
-  function ($q, usersRepository, CompensationService) {
+  function ($q,
+    usersRepository,
+    CompensationService) {
 
     var employmentTypes = [
       {
