@@ -224,6 +224,14 @@ settings.constant('tabLayoutGlobalConfig', [
             },
             {
                 id: 4,
+                verbose_name: 'Direct Deposit Information',
+                description: 'Information about your direct deposit accounts setup',
+                name: 'direct_deposit',
+                active: false,
+                state: 'employee_onboard.direct_deposit'
+            },
+            {
+                id: 5,
                 verbose_name: 'Employee Documents',
                 description: 'Documents required by the employer',
                 name: 'document',
