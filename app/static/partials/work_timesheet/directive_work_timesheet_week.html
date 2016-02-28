@@ -1,0 +1,122 @@
+<div class="col-md-8">
+        <form name="myForm">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped benefit-table fix-layout-table" id="plan_items_table">
+                        <thead>
+                          <th><div>Sunday</div></th>
+                          <th><div>Monday</div></th>
+                          <th><div>Tuesday</div></th>
+                          <th><div>Wednesday</div></th>
+                          <th><div>Thursday</div></th>
+                          <th><div>Friday</div></th>
+                          <th><div>Saturday</div></th>
+                        </thead>
+                        <tbody>
+                          <tr>
+                              <td>
+                                <input 
+                                    type="number"
+                                    min="0"
+                                    max="24"
+                                    step="0.5"
+                                    name="sunday_hour"
+                                    ng-model="timesheet.workHours.sunday"
+                                    ng-if="allowEdit()">
+                                <span ng-if="!allowEdit()">{{timesheet.workHours.sunday}}</span>
+                              </td>
+                              <td>
+                                <input 
+                                    type="number"
+                                    min="0"
+                                    max="24"
+                                    step="0.5"
+                                    name="monday_hour"
+                                    ng-model="timesheet.workHours.monday"
+                                    ng-if="allowEdit()">
+                                <span ng-if="!allowEdit()">{{timesheet.workHours.monday}}</span>
+                              </td>
+                              <td>
+                                <input 
+                                    type="number"
+                                    min="0"
+                                    max="24"
+                                    step="0.5"
+                                    name="tuesday_hour"
+                                    ng-model="timesheet.workHours.tuesday"
+                                    ng-if="allowEdit()">
+                                <span ng-if="!allowEdit()">{{timesheet.workHours.tuesday}}</span>
+                              </td>
+                              <td>
+                                <input 
+                                    type="number"
+                                    min="0"
+                                    max="24"
+                                    step="0.5"
+                                    name="wednesday_hour"
+                                    ng-model="timesheet.workHours.wednesday"
+                                    ng-if="allowEdit()">
+                                <span ng-if="!allowEdit()">{{timesheet.workHours.wednesday}}</span>
+                              </td>
+                              <td>
+                                <input 
+                                    type="number"
+                                    min="0"
+                                    max="24"
+                                    step="0.5"
+                                    name="thursday_hour"
+                                    ng-model="timesheet.workHours.thursday"
+                                    ng-if="allowEdit()">
+                                <span ng-if="!allowEdit()">{{timesheet.workHours.thursday}}</span>
+                              </td>
+                              <td>
+                                <input 
+                                    type="number"
+                                    min="0"
+                                    max="24"
+                                    step="0.5"
+                                    name="friday_hour"
+                                    ng-model="timesheet.workHours.friday"
+                                    ng-if="allowEdit()">
+                                <span ng-if="!allowEdit()">{{timesheet.workHours.friday}}</span>
+                              </td>
+                              <td>
+                                <input 
+                                    type="number"
+                                    min="0"
+                                    max="24"
+                                    step="0.5"
+                                    name="saturday_hour"
+                                    ng-model="timesheet.workHours.saturday"
+                                    ng-if="allowEdit()">
+                                <span ng-if="!allowEdit()">{{timesheet.workHours.saturday}}</span>
+                              </td>
+                          </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row" ng-if="allowEdit()">
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        Please note:
+                        <ul>
+                            <li>
+                                <small>* All fields are required for submission. If no work hour to report for a calendar weekday, please report 0.</small>
+                            </li>
+                            <li>
+                                <small>* Number of work hours reported for any weekday should be within the range of 0 to 24.</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-if="allowEdit()">
+                <div class="col-sm-2">
+                  <div class="submit-box">
+                    <a confirm="{{saveTimesheetConfirmText}}" ng-click="save()" class="btn green" ng-disabled="!isTimesheetValidForSave()">Submit</a>
+                  </div>
+                </div>
+            </div>
+        </form>
+    </div>

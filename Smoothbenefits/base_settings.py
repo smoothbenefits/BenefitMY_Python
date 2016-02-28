@@ -297,6 +297,7 @@ PIPELINE_JS = {
             'js/directives/TimeOffManager.js',
             'js/directives/hr/WorkTimesheetManager.js',
             'js/directives/DirectDepositManager.js',
+            'js/directives/hr/WorkTimesheetWeekManager.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/services/services.js',
