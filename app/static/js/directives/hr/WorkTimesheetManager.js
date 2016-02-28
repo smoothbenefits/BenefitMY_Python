@@ -1,6 +1,16 @@
-BenefitMyApp.directive('bmWorkTimesheetManager', function() {
-
-  var controller = [
+BenefitMyApp.controller('WorkTimeSheetEditModalController', [
+  '$scope', '$modalInstance', 'user', 'timesheet', 'week', 'WorkTimesheetService',
+  function($scope, $modalInstance, user, timesheet, week, WorkTimesheetService){
+    $scope.timesheet = timesheet;
+    $scope.week = week;
+    $scope.allowEdit = function(){
+        return true;
+    }
+    $scope.dismiss = function() {
+      $modalInstance.dismiss();
+    };
+  }
+]).controller('WorkTimesheetManagerDirectiveController', [
     '$scope',
     '$modal',
     '$attrs',
@@ -147,9 +157,33 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
                 }
             );
         };
-    }
-  ];
 
+        $scope.viewDetails = function(timesheet){
+            var modalInstance = $modal.open({
+                templateUrl: '/static/partials/work_timesheet/modal_work_time_sheet.html',
+                controller: 'WorkTimeSheetEditModalController',
+                size: 'lg',
+                backdrop: 'static',
+                resolve: {
+                  'user': function() {
+                    return $scope.user;
+                  },
+                  'timesheet': function() {
+                    return angular.copy(timesheet);
+                  },
+                  'week': function(){
+                    return $scope.selectedDisplayWeek.weekDisplayText;
+                  }
+                }
+              });
+
+            modalInstance.result.then(function(result){
+
+            });
+        };
+    }
+  ]
+).directive('bmWorkTimesheetManager', function() {
   return {
     restrict: 'E',
     scope: {
@@ -158,6 +192,6 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
         company: '='
     },
     templateUrl: '/static/partials/work_timesheet/directive_work_timesheet_manager.html',
-    controller: controller
+    controller: 'WorkTimesheetManagerDirectiveController'
   };
 });

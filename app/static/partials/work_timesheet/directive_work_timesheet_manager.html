@@ -173,7 +173,12 @@
         </thead>
         <tbody>
           <tr ng-repeat="employeeWorkHour in employeeWorkHourList">
-            <td>{{employeeWorkHour.employee.firstName}} {{employeeWorkHour.employee.lastName}}</td>
+            <td>
+              <span>{{employeeWorkHour.employee.firstName}} {{employeeWorkHour.employee.lastName}}</span>
+              <span style="float:right" ng-if="employeeWorkHour.createdTimestamp">
+                <a ng-click="viewDetails(employeeWorkHour)">Details</a>
+              </span>
+            </td>
             <td>{{employeeWorkHour.totalHours}}</td>
             <td>{{employeeWorkHour.updatedTimestamp}}</td>
           </tr>
