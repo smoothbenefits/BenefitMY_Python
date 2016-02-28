@@ -1,0 +1,11 @@
+Work time tracking submission is missing
+
+Company: {{context_data.company.name}}
+
+We have not received your submission of work time tracking for the last week. Please visit the site to submit it. 
+
+Thank you and best regards.
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}
