@@ -237,6 +237,12 @@ from app.views.onboarding.user_onboarding_step_state_view import (
     UserOnboardingStepStateByUserView
 )
 
+# Company Service provider_type
+from app.views.company_service_provider_view import (
+    CompanyServiceProviderView,
+    CompanyServiceProviderByCompanyView
+)
+
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
@@ -648,6 +654,14 @@ urlpatterns = patterns('app.views',
         UserOnboardingStepStateView.as_view(), name='user_onboarding_step_states_post_api'),
     url(r'^%s/users/(?P<pk>\w+)/onboarding_step_states/?$' % PREFIX,
         UserOnboardingStepStateByUserView.as_view(), name='user_onboarding_step_states_by_user_api'),
+
+    # Company service provider_type
+    url(r'^%s/company_service_provider/(?P<pk>\w+)/?$' % PREFIX,
+        CompanyServiceProviderView.as_view(), name='company_service_provider_api'),
+    url(r'^%s/company_service_provider/?$' % PREFIX,
+        CompanyServiceProviderView.as_view(), name='company_service_provider_post_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/company_service_provider/?$' % PREFIX,
+        CompanyServiceProviderByCompanyView.as_view(), name='company_service_provider_by_company_api'),
 
     # Logging
     url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api")

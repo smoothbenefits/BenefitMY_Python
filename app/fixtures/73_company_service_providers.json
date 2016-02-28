@@ -1,0 +1,44 @@
+[
+  {
+    "fields": {
+      "company": 1,
+      "email": "payroll_company_1@benefitmy.com",
+      "phone": "1234567890",
+      "link": "http://www.workbenefits.me/",
+      "show_to_employee": true,
+      "provider_type": "payroll",
+      "created_at": "2015-05-23T15:23:33Z",
+      "updated_at": "2015-05-23T15:23:33Z"
+    },
+    "model": "app.companyserviceprovider",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "company": 1,
+      "email": "benefits_company_1@benefitmy.com",
+      "phone": "1234567890",
+      "link": "http://www.workbenefits.me/",
+      "show_to_employee": true,
+      "provider_type": "benefits",
+      "created_at": "2015-05-23T15:23:33Z",
+      "updated_at": "2015-05-23T15:23:33Z"
+    },
+    "model": "app.companyserviceprovider",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "company": 1,
+      "email": "payroll_hide_company_1@benefitmy.com",
+      "phone": null,
+      "link": null,
+      "show_to_employee": true,
+      "provider_type": "payroll",
+      "created_at": "2015-05-23T15:23:33Z",
+      "updated_at": "2015-05-23T15:23:33Z"
+    },
+    "model": "app.companyserviceprovider",
+    "pk": 3
+  }
+]
