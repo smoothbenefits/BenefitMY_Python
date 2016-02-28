@@ -118,8 +118,8 @@
           <a ng-click="goToFunctionalView('/employee/family/')">Family Member</a>
         </div>
       </li>
-      <li class="expandable" ng-show="isCurRoleEmployee()">
-        <div class="primary-nav" ng-if="hasBenefits">
+      <li class="expandable" ng-show="isCurRoleEmployee() && hasBenefits">
+        <div class="primary-nav">
           <button data-toggle="collapse" data-target="#employee-benefit-nav" aria-expanded="false" aria-controls="employee-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
         </div>
         <div class="sub-nav collapse" id="employee-benefit-nav">

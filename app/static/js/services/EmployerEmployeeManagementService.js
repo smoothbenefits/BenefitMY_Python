@@ -4,9 +4,11 @@ benefitmyService.factory('EmployerEmployeeManagementService',
   ['$q',
   'usersRepository',
   'CompensationService',
+  'CompanyPersonnelsService',
   function ($q,
     usersRepository,
-    CompensationService) {
+    CompensationService,
+    CompanyPersonnelsService) {
 
     var employmentTypes = [
       {
@@ -137,6 +139,7 @@ benefitmyService.factory('EmployerEmployeeManagementService',
       .then(function(response) {
         result.added = true;
         result.sentEmail = domainEmployeeModel.send_email;
+        CompanyPersonnelsService.clearCache(companyId);
         deferred.resolve(result);
       }).catch(function(error) {
         result.added = false;

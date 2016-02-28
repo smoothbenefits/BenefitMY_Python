@@ -270,7 +270,6 @@ var employerUser = employersController.controller('employerUser',
         };
         EmployerEmployeeManagementService.AddNewEmployee($scope.compId, $scope.addUser, $scope.templateFields)
         .then(function(response) {
-          CompanyPersonnelsService.clearCache();
           gotoUserView(userType);
         }, function(error) {
           alert('Failed to add a new employee.');

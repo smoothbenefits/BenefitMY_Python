@@ -33,9 +33,7 @@ benefitmyService.factory('CompanyPersonnelsService',
                     brokers.push(role);
                   }
                 });
-                personnels = _.reject(personnels, function(personnels){
-                    return personnels.companyId == companyId;
-                  });
+                clearCache(companyId);
                 var companyPersonnels = {companyId: companyId, brokers: brokers, employees: employees};
                 personnels.push(companyPersonnels);
                 return companyPersonnels;
@@ -73,8 +71,16 @@ benefitmyService.factory('CompanyPersonnelsService',
 
         };
 
-        var clearCache = function(){
-            personnels = [];
+        var clearCache = function(compId){
+            if(!compId){
+                //Remove all the cached data if no company specified
+                personnels = [];
+            }
+            else{
+                personnels = _.reject(personnels, function(companyPersonnels){
+                    return companyPersonnels.companyId == compId;
+                });
+            }
         };
 
         return {
