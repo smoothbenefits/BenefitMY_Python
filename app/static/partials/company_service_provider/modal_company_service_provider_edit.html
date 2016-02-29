@@ -1,0 +1,58 @@
+<div class="modal-header">
+  <h4 class="modal-title">Company Service Provider</h4>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="form-label">Provider Name</div>
+    <div class="textbox">
+      <input type="text"
+      name="provider_name"
+      ng-model="provider.name"
+      ng-required="true" />
+      <div class="form-error" ng-show="form.provider_name.$dirty && form.provider_name.$invalid">
+        <span ng-show="form.provider_name.$error.required">Provider name field is required</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-label">Provider Type</div>
+    <div class="textbox">
+      <select type="text"
+      name="provider_type"
+      ng-options="type for type in providerTypes"
+      ng-model="provider.providerType"
+      ng-required="true"></select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-label">Provider Phone Number</div>
+    <div class="textbox">
+      <input type="text"
+      name="provider_phone"
+      ng-model="provider.phone" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-label">Provider Email</div>
+    <div class="textbox">
+      <input type="text"
+      name="provider_email"
+      ng-model="provider.email" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-label">Provider Link</div>
+    <div class="textbox">
+      <input type="text"
+      name="provider_link"
+      ng-model="provider.link" />
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-info" ng-click="save()" style="width: 20%">Save</button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+  </div>
+</div>

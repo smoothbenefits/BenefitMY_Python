@@ -1,0 +1,27 @@
+<div class="table-responsive table-holder">
+  <table class="table table-striped" ng-repeat="providerType in groupedProviders.keys()">
+    <caption>{{providerType.capitalize()}} Provider</caption>
+    <thead>
+      <tr>
+        <th><span>Name</span></th>
+        <th><span>Phone</span></th>
+        <th><span>Email</span></th>
+        <th><span>Link</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="provider in groupedProviders[providerType]">
+        <td><a ng-click="editProvider(provider)" ng-if="editable">{{provider.name}}</a></td>
+        <td><a ng-if="!editable">{{provider.name}}</a></td>
+        <td><a>{{provider.phone}}</a></td>
+        <td><a>{{provider.email}}</a></td>
+        <td><a>{{provider.link}}</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="cta" ng-if="editable">
+    <span class="btn green" ng-click="addNewProvider()" style="width: 20%">
+      Add new provider
+    </span>
+  </div>
+</div>

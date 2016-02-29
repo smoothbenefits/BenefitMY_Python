@@ -660,7 +660,7 @@ urlpatterns = patterns('app.views',
         CompanyServiceProviderView.as_view(), name='company_service_provider_api'),
     url(r'^%s/company_service_provider/?$' % PREFIX,
         CompanyServiceProviderView.as_view(), name='company_service_provider_post_api'),
-    url(r'^%s/company/(?P<company_id>\w+)/company_service_provider/?$' % PREFIX,
+    url(r'^%s/company/(?P<company_id>\w+)/company_service_providers/?$' % PREFIX,
         CompanyServiceProviderByCompanyView.as_view(), name='company_service_provider_by_company_api'),
 
     # Logging

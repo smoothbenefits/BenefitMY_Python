@@ -785,3 +785,14 @@ benefitmyDomainModelFactories.factory('UserOnboardingStepStateRepository', ['$re
     }
   }
 ]);
+
+benefitmyDomainModelFactories.factory('CompanyServiceProviderRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'company/:companyId/company_service_providers', {companyId: '@companyId'}),
+      ById: $resource(PREFIX + 'company_service_provider/:entryId', {entryId: '@entryId'}, {
+        update: { method: 'PUT' }
+      })
+    }
+  }
+]);

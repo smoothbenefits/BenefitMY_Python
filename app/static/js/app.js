@@ -405,6 +405,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/work_timesheet/timesheet_base.html',
                 controller: 'employerViewTimesheet'
             }).
+            state('admin_service_provider', {
+              url: '/admin/service_provider',
+              templateUrl: '/static/partials/company_service_provider/company_service_provider_base.html',
+              controller: 'EmployerCompanyServiceProvider'
+            }).
             state('/employee',{
                 url: '/employee',
                 templateUrl: '/static/partials/employee_dashboard.html',

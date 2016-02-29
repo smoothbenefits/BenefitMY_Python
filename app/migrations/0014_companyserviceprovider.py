@@ -16,6 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('provider_type', models.CharField(max_length=255, choices=[(b'payroll', b'payroll'), (b'benefits', b'benefits')])),
+                ('name', models.CharField(max_length=1024)),
                 ('email', models.EmailField(max_length=255, null=True, blank=True)),
                 ('phone', models.CharField(max_length=32, null=True, blank=True)),
                 ('link', models.CharField(max_length=1024, null=True, blank=True)),

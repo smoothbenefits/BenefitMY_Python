@@ -2,6 +2,7 @@
   {
     "fields": {
       "company": 1,
+      "name": "FlexPayroll",
       "email": "payroll_company_1@benefitmy.com",
       "phone": "1234567890",
       "link": "http://www.workbenefits.me/",
@@ -16,6 +17,7 @@
   {
     "fields": {
       "company": 1,
+      "name": "Bay Area Benefits",
       "email": "benefits_company_1@benefitmy.com",
       "phone": "1234567890",
       "link": "http://www.workbenefits.me/",
@@ -30,6 +32,7 @@
   {
     "fields": {
       "company": 1,
+      "name": "Chex Payroll",
       "email": "payroll_hide_company_1@benefitmy.com",
       "phone": null,
       "link": null,

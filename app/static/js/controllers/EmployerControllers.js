@@ -1648,3 +1648,18 @@ var employerViewTimesheet = employersController.controller('employerViewTimeshee
     }
   }
 ]);
+
+var employerCompanyServiceProvider = employersController.controller('EmployerCompanyServiceProvider', [
+  '$scope', '$state', 'UserService',
+  function($scope, $state, UserService) {
+    UserService.getCurUserInfo().then(function(curUserInfo){
+      $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+      $scope.company = curUserInfo.currentRole.company;
+    });
+
+    $scope.isAdmin = true;
+    $scope.backToDashboard = function() {
+      $state.go('/admin');
+    };
+  }
+]);
