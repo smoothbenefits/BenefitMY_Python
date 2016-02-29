@@ -6,6 +6,9 @@ from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://staging.workbenefits.me/"
 
+# Time Tracking Service URL
+TIME_TRACKING_SERVICE_URL = "http://stage.timetracking.workbenefits.me/"
+
 # Logging Configurations
 LOGGING['handlers']['logentries_handler']['token'] = '6fe1fb59-38a8-4b16-9448-d7bb1392ecec'
 
