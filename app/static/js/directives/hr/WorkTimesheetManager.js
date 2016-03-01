@@ -6,12 +6,14 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
     '$attrs',
     '$controller',
     'WorkTimesheetService',
+    'CompanyPersonnelsService',
     function WorkTimesheetManagerDirectiveController(
       $scope,
       $modal,
       $attrs,
       $controller,
-      WorkTimesheetService) {
+      WorkTimesheetService,
+      CompanyPersonnelsService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -64,12 +66,35 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
               $scope.timesheet = timesheet;
             });
             
-            WorkTimesheetService.GetWorkTimesheetsByCompany(
-                $scope.company.id,
-                $scope.selectedDisplayWeek.weekStartDate)
-            .then(function(workTimeSheets){
-                $scope.employeeWorkHourList = workTimeSheets;
+            CompanyPersonnelsService.getCompanyEmployees($scope.company.id)
+            .then(function(employees){
+                WorkTimesheetService.GetWorkTimesheetsByCompany(
+                    $scope.company.id,
+                    $scope.selectedDisplayWeek.weekStartDate)
+                .then(function(workTimeSheets){
+                    $scope.employeeWorkHourList = [];
+                    _.each(employees, function(employee){
+                        var employeeWorksheet = _.find(workTimeSheets, function(timesheet){
+                            return timesheet.employee.email == employee.user.email
+                        });
+                        if (!employeeWorksheet){
+                            $scope.employeeWorkHourList.push({
+                                employee: {
+                                    firstName: employee.user.first_name,
+                                    lastName: employee.user.last_name,
+                                    email: employee.user.email
+                                },
+                                totalHours: 'N/A',
+                                updatedTimestamp:'N/A'
+                            });
+                        }
+                        else{
+                            $scope.employeeWorkHourList.push(employeeWorksheet);
+                        }
+                    });
+                });
             });
+            
         };
 
         $scope.$watch('user', function(theUser) {
