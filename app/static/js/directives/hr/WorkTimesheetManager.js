@@ -4,6 +4,9 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
     $scope.timesheet = timesheet;
     $scope.week = week;
     $scope.adminMode = true;
+    $scope.saveResult = function(savedTimesheet){
+        $modalInstance.close(savedTimesheet);
+    }
     $scope.dismiss = function() {
       $modalInstance.dismiss();
     };
@@ -86,19 +89,13 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
                             return timesheet.employee.email == employee.user.email
                         });
                         if (!employeeWorksheet){
-                            $scope.employeeWorkHourList.push({
-                                employee: {
-                                    firstName: employee.user.first_name,
-                                    lastName: employee.user.last_name,
-                                    email: employee.user.email
-                                },
-                                totalHours: 'N/A',
-                                updatedTimestamp:'N/A'
-                            });
+                            employeeWorksheet = 
+                                WorkTimesheetService.GetBlankTimesheetForEmployeeUser(
+                                    employee.user,
+                                    $scope.company,
+                                    $scope.selectedDisplayWeek.weekStartDate);
                         }
-                        else{
-                            $scope.employeeWorkHourList.push(employeeWorksheet);
-                        }
+                        $scope.employeeWorkHourList.push(employeeWorksheet);
                     });
                 });
             });
@@ -119,21 +116,17 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
             }
         });
 
-        $scope.saveTimesheet = function() {
-            WorkTimesheetService.CreateWorkTimesheet($scope.timesheet)
-            .then(
-                function(resultTimesheet) {
-                    $scope.reloadTimesheet();
-
-                    var successMessage = "Your work hour timesheet has been submitted successfully!"
-                    $scope.showMessageWithOkayOnly('Success', successMessage);
-                },
-                function(errors) {
-                    var message = 'Failed to save the timesheet. Please try again later.';
-                    $scope.showMessageWithOkayOnly('Error', message);
-                }
-            );
-        };
+        $scope.saveResult = function(savedTimeSheet){
+            if(savedTimeSheet){
+                $scope.reloadTimesheet();
+                var successMessage = "Your work hour timesheet has been submitted successfully!"
+                $scope.showMessageWithOkayOnly('Success', successMessage);
+            }
+            else{
+                var message = 'Failed to save the timesheet. Please try again later.';
+                $scope.showMessageWithOkayOnly('Error', message);
+            }
+        }
 
         $scope.viewDetails = function(timesheet){
             var modalInstance = $modal.open({
@@ -154,8 +147,8 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
                 }
               });
 
-            modalInstance.result.then(function(result){
-
+            modalInstance.result.then(function(savedTimesheet){
+                $scope.reloadTimesheet();
             });
         };
     }
