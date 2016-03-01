@@ -23,6 +23,7 @@ class CompanyServiceProviderViewTestCase(TestCase, ViewTestBase):
     def test_create_company_service_provider_success(self):
         post_data = {'company': self.normalize_key(1),
                     'provider_type': 'payroll',
+                    'name': 'Payroll provider',
                     'email': 'testing@benefitmy.com',
                     'phone': '123456789',
                     'show_to_employee': True}
@@ -49,6 +50,7 @@ class CompanyServiceProviderViewTestCase(TestCase, ViewTestBase):
         post_data = {'id': self.normalize_key(1),
                     'company': self.normalize_key(1),
                     'provider_type': 'benefits',
+                    'name': 'Benefits provider',
                     'show_to_employee': False}
         response = self.client.put(reverse('company_service_provider_api',
                                             kwargs={'pk': self.normalize_key(1)}),
@@ -56,7 +58,7 @@ class CompanyServiceProviderViewTestCase(TestCase, ViewTestBase):
                                            content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
-
+        
         response = self.client.get(reverse('company_service_provider_api',
                                            kwargs={'pk': self.normalize_key(1)}))
         self.assertIsNotNone(response)
