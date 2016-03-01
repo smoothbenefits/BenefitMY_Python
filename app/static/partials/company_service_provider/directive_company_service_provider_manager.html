@@ -1,25 +1,43 @@
-<div class="table-responsive table-holder">
-  <table class="table table-striped" ng-repeat="providerType in groupedProviders.keys()">
-    <caption>{{providerType.capitalize()}} Provider</caption>
-    <thead>
-      <tr>
-        <th><span>Name</span></th>
-        <th><span>Phone</span></th>
-        <th><span>Email</span></th>
-        <th><span>Link</span></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="provider in groupedProviders[providerType]">
-        <td><a ng-click="editProvider(provider)" ng-if="editable">{{provider.name}}</a></td>
-        <td><a ng-if="!editable">{{provider.name}}</a></td>
-        <td><a>{{provider.phone}}</a></td>
-        <td><a>{{provider.email}}</a></td>
-        <td><a>{{provider.link}}</a></td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="cta" ng-if="editable">
+<div class="content-header">
+  <h1>Company Service Providers</h1>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="panel" ng-if="!presentedTypes">
+    <div class="panel-header">
+      There is no service provider information available yet.
+      <span ng-if="isAdmin" ng-click="addNewProvider()">Click here to add one.</span>
+    </div>
+  </div>
+  <div class="panel" ng-repeat="providerType in presentedTypes | orderBy: providerType">
+    <div class="panel-heading">
+      <b>{{providerType.capitalize()}} Provider</b>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <table class="table table-striped benefit-table fix-layout-table">
+          <thead>
+            <tr>
+              <th><span>Name</span></th>
+              <th><span>Phone</span></th>
+              <th><span>Email</span></th>
+              <th><span>Link</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="provider in groupedProviders[providerType]">
+              <td ng-if="isAdmin"><a ng-click="editProvider(provider)">{{provider.name}}</a></td>
+              <td ng-if="!isAdmin">{{provider.name}}</td>
+              <td><div>{{provider.phone}}</div></td>
+              <td><div>{{provider.email}}</div></td>
+              <td><div>{{provider.link}}</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="cta" ng-if="isAdmin">
     <span class="btn green" ng-click="addNewProvider()" style="width: 20%">
       Add new provider
     </span>

@@ -11,6 +11,7 @@ benefitmyService.factory('CompanyServiceProviderService',
 
         var mapProviderViewModelToDomainModel = function(viewModel, companyId) {
           var domainModel = {
+            name: viewModel.name,
             company: companyId,
             show_to_employee: viewModel.showToEmployee,
             provider_type: viewModel.providerType,
@@ -29,7 +30,9 @@ benefitmyService.factory('CompanyServiceProviderService',
         var mapProviderDomainModelToViewModel = function(domainModel) {
           var viewModel = angular.copy(domainModel);
           viewModel.showToEmployee = domainModel.show_to_employee;
-          viewModel.providerType = domainModel.providerType;
+          viewModel.providerType = domainModel.provider_type;
+
+          return viewModel;
         };
 
         var getProvidersByCompany = function(companyId) {

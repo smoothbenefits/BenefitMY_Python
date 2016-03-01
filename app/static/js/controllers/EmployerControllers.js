@@ -1658,6 +1658,7 @@ var employerCompanyServiceProvider = employersController.controller('EmployerCom
     });
 
     $scope.isAdmin = true;
+    $scope.pageTitle = "Service Providers";
     $scope.backToDashboard = function() {
       $state.go('/admin');
     };

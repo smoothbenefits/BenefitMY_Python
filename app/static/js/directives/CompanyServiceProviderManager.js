@@ -3,12 +3,28 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
   function($scope, $state, $modal, $controller, CompanyServiceProviderService) {
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
-    var companyId = $scope.company;
 
-    CompanyServiceProviderService.GetProvidersByCompany(companyId)
-    .then(function(providers) {
-      $scope.providers = providers;
-      $scope.groupedProviders = _.groupBy(providers, function(provider) {return provider.providerType;});
+    $scope.$watch('company', function(companyId) {
+      if(companyId){
+
+        $scope.company = companyId;
+
+        CompanyServiceProviderService.GetProvidersByCompany(companyId)
+        .then(function(providers) {
+
+          // If not admin, filter base on showToEmployee flag
+          if ($scope.isAdmin) {
+            $scope.providers = providers;
+          } else {
+            $scope.providers = _.where(providers, function(provider) {
+              return provider.showToEmployee;
+            });
+          }
+
+          $scope.groupedProviders = _.groupBy($scope.providers, function(provider) {return provider.providerType;});
+          $scope.presentedTypes = _.keys($scope.groupedProviders);
+        });
+      }
     });
 
     var deleteProvider = function(provider) {
@@ -28,7 +44,7 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
         size: 'lg',
         resolve: {
           companyId: function() {
-            return companyId;
+            return $scope.company;
           }
         }
       });
@@ -45,10 +61,10 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
         size: 'lg',
         resolve: {
           companyId: function() {
-            return companyId;
+            return $scope.company;
           },
           provider: function() {
-            return $scope.provider;
+            return provider;
           }
         }
       });
@@ -63,6 +79,7 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
   '$scope', '$modalInstance', 'CompanyServiceProviderService', 'companyId', 'provider',
   function($scope, $modalInstance, CompanyServiceProviderService, companyId, provider) {
     $scope.provider = angular.copy(provider);
+    $scope.providerTypes = _.values(CompanyServiceProviderService.ProviderTypes);
 
     $scope.save = function() {
       CompanyServiceProviderService.UpdateCompanyServiceProvider(companyId, $scope.provider)
@@ -82,7 +99,7 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
   '$scope', '$modalInstance', 'CompanyServiceProviderService', 'companyId',
   function($scope, $modalInstance, CompanyServiceProviderService, companyId) {
     $scope.provider = { providerType: 'payroll' };
-    $scope.providerTypes = CompanyServiceProviderService.ProviderTypes;
+    $scope.providerTypes = _.values(CompanyServiceProviderService.ProviderTypes);
 
     $scope.save = function() {
       CompanyServiceProviderService.AddCompanyServiceProvider(companyId, $scope.provider)
@@ -104,7 +121,7 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
     restrict: 'E',
     scope: {
       company: '=',
-      editable: '='
+      isAdmin: '='
     },
     templateUrl: '/static/partials/company_service_provider/directive_company_service_provider_manager.html',
     controller: 'CompanyServcieProviderController'
