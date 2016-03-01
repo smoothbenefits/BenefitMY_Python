@@ -2,7 +2,11 @@ from datetime import date
 
 from app.models.company_user import (CompanyUser, USER_TYPE_EMPLOYEE)
 from trigger_base import TriggerBase
-from app.service.application_feature_service import ApplicationFeatureService
+from app.service.application_feature_service import (
+    ApplicationFeatureService,
+    APP_FEATURE_WORKTIMESHEET,
+    APP_FEATURE_WORKTIMESHEETNOTIFICATION
+)
 from app.service.time_tracking_service import TimeTrackingService
 from app.service.date_time_service import DateTimeService
 
@@ -17,7 +21,8 @@ class TriggerNoWorkTimeTrackingBase(TriggerBase):
         # Use the appropriate service to get the list of companies that
         # do not use this feature
         app_feature_service = ApplicationFeatureService()
-        feature_disabled_company_list = app_feature_service.get_company_list_with_feature_disabled('WorkTimeSheet')
+        timesheet_disabled_company_list = app_feature_service.get_company_list_with_feature_disabled(APP_FEATURE_WORKTIMESHEET)
+        timesheet_notify_enabled_company_list = app_feature_service.get_company_list_with_feature_enabled(APP_FEATURE_WORKTIMESHEETNOTIFICATION)
 
         # Get the start date of the past week (starting Sunday)
         week_start_date = self._get_last_week_start_date()
@@ -34,7 +39,8 @@ class TriggerNoWorkTimeTrackingBase(TriggerBase):
             company = company_user.company
 
             # If the company does not use the feature, skip
-            if (company.id in feature_disabled_company_list):
+            if ((company.id in timesheet_disabled_company_list)
+                or (company.id not in timesheet_notify_enabled_company_list)):
                 continue
 
             # If the user has not submitted cache the information for action to follow

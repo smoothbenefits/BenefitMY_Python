@@ -7,6 +7,19 @@ from app.models.company_features import CompanyFeatures
 
 User = get_user_model()
 
+# List of features
+APP_FEATURE_WORKTIMESHEET = 'WorkTimeSheet'
+APP_FEATURE_WORKTIMESHEETNOTIFICATION = 'WorkTimeSheetNotification'
+
+# Feature categorization by expected default behavior
+APP_FEATURES_DEFAULT_ENABLED = [
+    APP_FEATURE_WORKTIMESHEET
+]
+
+APP_FEATURES_DEFAULT_DISABLED = [
+    APP_FEATURE_WORKTIMESHEETNOTIFICATION
+]
+
 
 class ApplicationFeatureService(object):
 
