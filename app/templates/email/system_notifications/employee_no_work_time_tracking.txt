@@ -2,7 +2,7 @@ Work timesheet is missing
 
 Company: {{context_data.company.name}}
 
-We have not received your work timesheet last week. Please visit the site to submit. 
+We have not received your last week's work timesheet. Please visit the site to submit. 
 
 Thank you and best regards.
 - WorkBenefitsMe Support
