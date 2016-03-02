@@ -20,45 +20,53 @@ class TriggerNoWorkTimeTrackingBase(TriggerBase):
         super(TriggerNoWorkTimeTrackingBase, self).__init__()
 
     def _examine_condition(self):
-        send_email_service = SendEmailService()
-
         self._refresh_cached_data()
 
-        # Use the appropriate service to get the list of companies that
-        # do not use this feature
-        app_feature_service = ApplicationFeatureService()
-        timesheet_disabled_company_list = app_feature_service.get_company_list_with_feature_disabled(APP_FEATURE_WORKTIMESHEET)
-        timesheet_notify_enabled_company_list = app_feature_service.get_company_list_with_feature_enabled(APP_FEATURE_WORKTIMESHEETNOTIFICATION)
+        # Only proceed if schedule met
+        if (self._check_schedule()):
 
-        # Get the start date of the past week (starting Sunday)
-        week_start_date = self._get_last_week_start_date()
+            send_email_service = SendEmailService()
 
-        # Get the list of users that have submitted the timesheet
-        # for the week
-        time_tracking_service = TimeTrackingService()
-        submitted_users = time_tracking_service.get_all_users_submitted_work_timesheet_by_week_start_date(week_start_date)
+            # Use the appropriate service to get the list of companies that
+            # do not use this feature
+            app_feature_service = ApplicationFeatureService()
+            timesheet_disabled_company_list = app_feature_service.get_company_list_with_feature_disabled(APP_FEATURE_WORKTIMESHEET)
+            timesheet_notify_enabled_company_list = app_feature_service.get_company_list_with_feature_enabled(APP_FEATURE_WORKTIMESHEETNOTIFICATION)
 
-        company_users = CompanyUser.objects.filter(company_user_type=USER_TYPE_EMPLOYEE)
+            # Get the start date of the past week (starting Sunday)
+            week_start_date = self._get_last_week_start_date()
 
-        for company_user in company_users:
-            user = company_user.user
-            company = company_user.company
+            # Get the list of users that have submitted the timesheet
+            # for the week
+            time_tracking_service = TimeTrackingService()
+            submitted_users = time_tracking_service.get_all_users_submitted_work_timesheet_by_week_start_date(week_start_date)
 
-            # If the company does not use the feature, skip
-            if ((company.id in timesheet_disabled_company_list)
-                or (company.id not in timesheet_notify_enabled_company_list)):
-                continue
+            # Get the list of users that have the notification of this feature blocked
+            blocked_users = send_email_service.get_all_users_blocked_for_email_feature(
+                    EMAIL_BLOCK_FEATURE_WORKTIMESHEETNOTIFICATION
+                )
 
-            # If the user is blocked from receiving this email
-            if (send_email_service.is_email_feature_blocked_for_user(
-                user.id, EMAIL_BLOCK_FEATURE_WORKTIMESHEETNOTIFICATION)):
-                continue
+            # Only include the employee for reporting if all of the below hold
+            #   - Company has the feature on
+            #   - Company has the notification feature on
+            #   - User is not blocked for this notification 
+            #   - User has not submitted yet
+            company_users = CompanyUser.objects.filter(
+                    company_user_type=USER_TYPE_EMPLOYEE,
+                    company__in=timesheet_notify_enabled_company_list,
+                ).exclude(
+                    company__in=timesheet_disabled_company_list
+                ).exclude(
+                    user__in=blocked_users
+                ).exclude(
+                    user__in=submitted_users
+                )
 
-            # If the user has not submitted cache the information for action to follow
-            if user.id not in submitted_users:
-                # check schedule based on the oldest document
-                if (self._check_schedule()):
-                    self._cache_company_user(company.id, user.id)
+            for company_user in company_users:
+                user = company_user.user
+                company = company_user.company
+
+                self._cache_company_user(company.id, user.id)
 
         return (not self._is_cached_data_empty())
 
