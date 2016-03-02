@@ -12,7 +12,7 @@ class ActionNotifyEmployeeNoWorkTimeTracking(ActionNotifyEmployeeBase):
         super(ActionNotifyEmployeeNoWorkTimeTracking, self).__init__()
 
     def _get_email_data(self, company_id, user_id):
-        subject = '[Action Required] Missing Work Time Tracking Submission'
+        subject = '[Action Required] Missing Work Timesheet'
         html_template_path = 'email/system_notifications/employee_no_work_time_tracking.html'
         txt_template_path = 'email/system_notifications/employee_no_work_time_tracking.txt'
 
