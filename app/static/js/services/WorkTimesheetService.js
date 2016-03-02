@@ -36,7 +36,7 @@ benefitmyService.factory('WorkTimesheetService',
           var domainModel = {
             'weekStartDate': viewModel.weekStartDate,
             'workHours': viewModel.workHours,
-            'employee': viewModel.employee,
+            'employee': viewModel.employee
           };
 
           return domainModel;
