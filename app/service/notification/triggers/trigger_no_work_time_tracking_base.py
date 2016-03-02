@@ -9,6 +9,10 @@ from app.service.application_feature_service import (
 )
 from app.service.time_tracking_service import TimeTrackingService
 from app.service.date_time_service import DateTimeService
+from app.service.send_email_service import (
+    SendEmailService,
+    EMAIL_BLOCK_FEATURE_WORKTIMESHEETNOTIFICATION
+)
 
 
 class TriggerNoWorkTimeTrackingBase(TriggerBase):
@@ -16,6 +20,8 @@ class TriggerNoWorkTimeTrackingBase(TriggerBase):
         super(TriggerNoWorkTimeTrackingBase, self).__init__()
 
     def _examine_condition(self):
+        send_email_service = SendEmailService()
+
         self._refresh_cached_data()
 
         # Use the appropriate service to get the list of companies that
@@ -41,6 +47,11 @@ class TriggerNoWorkTimeTrackingBase(TriggerBase):
             # If the company does not use the feature, skip
             if ((company.id in timesheet_disabled_company_list)
                 or (company.id not in timesheet_notify_enabled_company_list)):
+                continue
+
+            # If the user is blocked from receiving this email
+            if (send_email_service.is_email_feature_blocked_for_user(
+                user.id, EMAIL_BLOCK_FEATURE_WORKTIMESHEETNOTIFICATION)):
                 continue
 
             # If the user has not submitted cache the information for action to follow
