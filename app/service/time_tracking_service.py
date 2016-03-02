@@ -8,14 +8,19 @@ from app.service.hash_key_service import HashKeyService
 User = get_user_model()
 
 
+API_URL_WORK_TIMESHEET = '{0}{1}'.format(
+    settings.TIME_TRACKING_SERVICE_URL,
+    'api/v1/work_timesheets'
+)
+
+
 class TimeTrackingService(object):
 
     def get_all_users_submitted_work_timesheet_by_week_start_date(self, week_start_date):
         users = []
 
-        api_url = '{0}{1}?start_date={2}&end_date={2}'.format(
-                        settings.TIME_TRACKING_SERVICE_URL,
-                        'api/v1/work_timesheets',
+        api_url = '{0}?start_date={1}&end_date={1}'.format(
+                        API_URL_WORK_TIMESHEET,
                         week_start_date.isoformat())
 
         # Make the request and parse the response as json
