@@ -2,51 +2,61 @@
   <h4 class="modal-title">Company Service Provider</h4>
 </div>
 <div class="modal-body">
-  <div class="row">
-    <div class="form-label">Provider Name</div>
-    <div class="textbox">
-      <input type="text"
-      name="provider_name"
-      ng-model="provider.name"
-      ng-required="true" />
-      <div class="form-error" ng-show="form.provider_name.$dirty && form.provider_name.$invalid">
-        <span ng-show="form.provider_name.$error.required">Provider name field is required</span>
+  <div class="form-holder">
+    <form name="form">
+      <div class="row">
+        <div class="form-label">Provider Name</div>
+        <div class="textbox">
+          <input type="text"
+          name="provider_name"
+          ng-model="provider.name"
+          ng-required="true" />
+          <div class="form-error" ng-show="form.provider_name.$dirty && form.provider_name.$invalid">
+            <span ng-show="form.provider_name.$error.required">Provider name field is required</span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="form-label">Provider Type</div>
-    <div class="textbox">
-      <select type="text"
-      name="provider_type"
-      ng-options="type for type in providerTypes"
-      ng-model="provider.providerType"
-      ng-required="true"></select>
-    </div>
-  </div>
-  <div class="row">
-    <div class="form-label">Provider Phone Number</div>
-    <div class="textbox">
-      <input type="text"
-      name="provider_phone"
-      ng-model="provider.phone" />
-    </div>
-  </div>
-  <div class="row">
-    <div class="form-label">Provider Email</div>
-    <div class="textbox">
-      <input type="text"
-      name="provider_email"
-      ng-model="provider.email" />
-    </div>
-  </div>
-  <div class="row">
-    <div class="form-label">Provider Link</div>
-    <div class="textbox">
-      <input type="text"
-      name="provider_link"
-      ng-model="provider.link" />
-    </div>
+      <div class="row">
+        <div class="form-label">Provider Type</div>
+        <div class="textbox">
+          <select type="text"
+          name="provider_type"
+          ng-options="type for type in providerTypes"
+          ng-model="provider.providerType"
+          ng-required="true"></select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-label">Provider Phone Number</div>
+        <div class="textbox">
+          <input type="text"
+          name="provider_phone"
+          ui-mask="(999) 999-9999"
+          ng-model="provider.phone" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-label">Provider Email</div>
+        <div class="textbox">
+          <input type="email"
+          name="provider_email"
+          ng-model="provider.email">
+          <div ng-show="form.provider_email.$dirty && form.provider_email.$invalid" style="color:red">
+            <span ng-show="form.provider_email.$error.email">Not a valid email address</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+      </div>
+      <div class="row">
+        <div class="form-label">Provider Link</div>
+        <div class="textbox">
+          <input type="text"
+          name="provider_link"
+          ng-model="provider.link" />
+        </div>
+      </div>
+    </form>
   </div>
 </div>
 

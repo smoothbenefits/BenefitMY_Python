@@ -712,7 +712,7 @@ var onboardDirectDeposit = employeeControllers.controller('onboardDirectDeposit'
         UserOnboardingStepStateService.Steps.directDeposit,
         UserOnboardingStepStateService.States.completed
       );
-      
+
       $state.go('employee_onboard.document', { employee_id: $scope.userId });
     };
 
@@ -2526,12 +2526,12 @@ var employeeHelpCenterController = employeeControllers.controller('employeeHelpC
   'CompanyService',
   function($scope, $state, UserService, CompanyService) {
     UserService.getCurUserInfo().then(function(userInfo) {
-      CompanyService.getCompanyBroker(userInfo.currentRole.company.id)
-      .then(function(companyBrokers) {
-        $scope.brokers = companyBrokers;
-      });
+      $scope.role = userInfo.currentRole.company_user_type.capitalize();
+      $scope.company = userInfo.currentRole.company;
     });
 
+    $scope.isAdmin = false;
+    $scope.pageTitle = "Help Center";
     $scope.backToDashboard = function() {
       $state.go('/');
     };
