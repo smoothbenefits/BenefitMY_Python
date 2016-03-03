@@ -58,7 +58,7 @@ class CompanyServiceProviderViewTestCase(TestCase, ViewTestBase):
                                            content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
-        
+
         response = self.client.get(reverse('company_service_provider_api',
                                            kwargs={'pk': self.normalize_key(1)}))
         self.assertIsNotNone(response)
@@ -69,6 +69,18 @@ class CompanyServiceProviderViewTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['company'], self.normalize_key(1))
         self.assertEqual(result['provider_type'], 'benefits')
         self.assertEqual(result['show_to_employee'], False)
+
+    def test_delete_company_service_provider_success(self):
+        response = self.client.delete(reverse('company_service_provider_api',
+                                              kwargs={'pk': self.normalize_key(1)}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 204)
+
+        response = self.client.get(reverse('company_service_provider_api',
+                                           kwargs={'pk': self.normalize_key(1)}))
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 404)
 
     def test_get_company_service_provider_by_company_success(self):
         response = self.client.get(reverse('company_service_provider_by_company_api',

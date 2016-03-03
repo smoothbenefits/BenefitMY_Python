@@ -33,7 +33,7 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
         $scope.showMessageWithOkayOnly('Success', provider.name + ' has been deleted successfully');
         $state.reload();
       }, function(error) {
-        $scope.showMessageWithOkayOnly('Warn', 'There is an error when trying to delete ' + provider.name + '. Please again later.');
+        $scope.showMessageWithOkayOnly('Error', 'There is an error when trying to delete ' + provider.name + '. Please again later.');
       });
     };
 
@@ -64,7 +64,7 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
             return $scope.company;
           },
           provider: function() {
-            return provider;
+            return angular.copy(provider);
           }
         }
       });
@@ -78,7 +78,7 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
 .controller('CompanyServiceProviderEditModalController', [
   '$scope', '$modalInstance', 'CompanyServiceProviderService', 'companyId', 'provider',
   function($scope, $modalInstance, CompanyServiceProviderService, companyId, provider) {
-    $scope.provider = angular.copy(provider);
+    $scope.provider = provider;
     $scope.providerTypes = _.values(CompanyServiceProviderService.ProviderTypes);
 
     $scope.save = function() {
