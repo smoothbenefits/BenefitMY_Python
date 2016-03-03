@@ -5,25 +5,27 @@
   <div class="form-holder">
     <form name="form">
       <div class="row">
-        <div class="form-label">Provider Name</div>
+        <div class="form-label">Provider Name *</div>
         <div class="textbox">
           <input type="text"
           name="provider_name"
           ng-model="provider.name"
           ng-required="true" />
-          <div class="form-error" ng-show="form.provider_name.$dirty && form.provider_name.$invalid">
+          <div ng-show="form.provider_name.$dirty && form.provider_name.$invalid" style="color:red">
             <span ng-show="form.provider_name.$error.required">Provider name field is required</span>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="form-label">Provider Type</div>
+        <div class="form-label">Provider Type *</div>
         <div class="textbox">
-          <select type="text"
+          <input type="text"
           name="provider_type"
-          ng-options="type for type in providerTypes"
           ng-model="provider.providerType"
-          ng-required="true"></select>
+          ng-required="true" />
+          <div ng-show="form.provider_type.$dirty && form.provider_type.$invalid" style="color:red">
+            <span ng-show="form.provider_type.$error.required">Provider type is a required field</span>
+          </div>
         </div>
       </div>
       <div class="row">
@@ -47,13 +49,22 @@
         </div>
       </div>
       <div class="row">
-      </div>
-      <div class="row">
-        <div class="form-label">Provider Link</div>
+        <div class="form-label">Provider URL</div>
         <div class="textbox">
           <input type="text"
           name="provider_link"
           ng-model="provider.link" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox"
+            name="show_to_employee"
+            ng-model="provider.showToEmployee"
+            ng-require="true">
+            Show this service provider to employee?
+          </label>
         </div>
       </div>
     </form>

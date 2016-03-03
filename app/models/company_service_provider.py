@@ -2,17 +2,10 @@ import reversion
 from django.db import models
 from app.models.company import Company
 
-TYPE_PAYROLL = 'payroll'
-TYPE_BENEFITS = 'benefits'
-PROVIDER_TYPES = (
-        (TYPE_PAYROLL, 'payroll'),
-        (TYPE_BENEFITS, 'benefits'),
-    )
-
 @reversion.register
 class CompanyServiceProvider(models.Model):
     company = models.ForeignKey(Company, related_name="service_provider")
-    provider_type = models.CharField(max_length=255, choices=PROVIDER_TYPES)
+    provider_type = models.CharField(max_length=255)
     name = models.CharField(max_length=1024)
     email = models.EmailField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=32, null=True, blank=True)

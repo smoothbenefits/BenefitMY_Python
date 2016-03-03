@@ -26,7 +26,13 @@
           </thead>
           <tbody>
             <tr ng-repeat="provider in groupedProviders[providerType]">
-              <td ng-if="isAdmin"><a ng-click="editProvider(provider)">{{provider.name}}</a></td>
+              <td ng-if="isAdmin">
+                <a ng-click="editProvider(provider)">{{provider.name}}</a>
+                <a class="delete-cross"
+                   ng-click="deleteProvider(provider)"
+                   href="javascript:void(0);"
+                   confirm="Delete this service provider?">X</a>
+              </td>
               <td ng-if="!isAdmin">{{provider.name}}</td>
               <td><div>{{provider.phone}}</div></td>
               <td><div>{{provider.email}}</div></td>

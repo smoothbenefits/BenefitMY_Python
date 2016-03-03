@@ -27,7 +27,7 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
       }
     });
 
-    var deleteProvider = function(provider) {
+    $scope.deleteProvider = function(provider) {
       CompanyServiceProviderService.DeleteProvider(provider.id)
       .then(function(success) {
         $scope.showMessageWithOkayOnly('Success', provider.name + ' has been deleted successfully');
@@ -79,7 +79,6 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
   '$scope', '$modalInstance', 'CompanyServiceProviderService', 'companyId', 'provider',
   function($scope, $modalInstance, CompanyServiceProviderService, companyId, provider) {
     $scope.provider = provider;
-    $scope.providerTypes = _.values(CompanyServiceProviderService.ProviderTypes);
 
     $scope.save = function() {
       CompanyServiceProviderService.UpdateCompanyServiceProvider(companyId, $scope.provider)
@@ -98,8 +97,7 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
 .controller('CompanyServiceProviderAddModalController', [
   '$scope', '$modalInstance', 'CompanyServiceProviderService', 'companyId',
   function($scope, $modalInstance, CompanyServiceProviderService, companyId) {
-    $scope.provider = { providerType: 'payroll' };
-    $scope.providerTypes = _.values(CompanyServiceProviderService.ProviderTypes);
+    $scope.provider = {};
 
     $scope.save = function() {
       CompanyServiceProviderService.AddCompanyServiceProvider(companyId, $scope.provider)

@@ -4,11 +4,6 @@ benefitmyService.factory('CompanyServiceProviderService',
     ['$q', 'CompanyServiceProviderRepository',
     function ($q, CompanyServiceProviderRepository){
 
-        var PROVIDER_TYPES = {
-            payroll: 'payroll',
-            benefits: 'benefits'
-        };
-
         var mapProviderViewModelToDomainModel = function(viewModel, companyId) {
           var domainModel = {
             name: viewModel.name,
@@ -64,7 +59,6 @@ benefitmyService.factory('CompanyServiceProviderService',
         };
 
         return {
-            ProviderTypes: PROVIDER_TYPES,
             GetProvidersByCompany: getProvidersByCompany,
             AddCompanyServiceProvider: addCompanyServiceProvider,
             UpdateCompanyServiceProvider: updateCompanyServiceProvider,
