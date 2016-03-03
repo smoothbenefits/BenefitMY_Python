@@ -17,18 +17,13 @@ class ActionNotifyEmployeeBase(ActionBase):
         send_email_service = SendEmailService()
 
         for company_id in action_data['company_user_id_list']:
-            print company_id
             user_id_list = action_data['company_user_id_list'][company_id]
-            print user_id_list
             for user_id in user_id_list:
-                print user_id
                 # build the list of target emails
                 email = send_email_service.get_email_address_by_user(user_id)
                 emails = [email]
-                print email
                 # Get action dependent data for outbound emails
                 email_data = self._get_email_data(company_id, user_id)
-                print email_data
                 send_email_service.send_support_email(
                     emails, email_data.subject, email_data.context_data,
                     email_data.html_template_path, email_data.txt_template_path

@@ -6,6 +6,8 @@ from triggers.trigger_company_not_complete_emrollment \
     import TriggerCompanyNotCompleteEnrollment
 from triggers.trigger_company_not_sign_document \
     import TriggerCompanyNotSignDocument
+from triggers.trigger_employee_no_work_time_tracking \
+    import TriggerEmployeeNoWorkTimeTracking
 from actions.action_notify_employee_not_complete_enrollment \
     import ActionNotifyEmployeeNotCompleteEnrollment
 from actions.action_notify_employee_not_sign_document \
@@ -14,6 +16,8 @@ from actions.action_notify_company_not_complete_enrollment \
     import ActionNotifyCompanyNotCompleteEnrollment
 from actions.action_notify_company_not_sign_document \
     import ActionNotifyCompanyNotSignDocument
+from actions.action_notify_employee_no_work_time_tracking \
+    import ActionNotifyEmployeeNoWorkTimeTracking
 from actions.action_print_to_console import ActionPrintToConsole
 from ..monitoring.logging_service import LoggingService
 
@@ -45,6 +49,10 @@ class NotificationService(object):
         trig_comp_not_sign_document = TriggerCompanyNotSignDocument()
         trig_comp_not_sign_document.append_action(ActionNotifyCompanyNotSignDocument())
         self._triggers.append(trig_comp_not_sign_document)
+
+        trig_emp_no_work_time_tracking = TriggerEmployeeNoWorkTimeTracking()
+        trig_emp_no_work_time_tracking.append_action(ActionNotifyEmployeeNoWorkTimeTracking())
+        self._triggers.append(trig_emp_no_work_time_tracking)
 
     def execute(self):
         for trigger in self._triggers:

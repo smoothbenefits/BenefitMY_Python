@@ -52,4 +52,7 @@ class CompanyFeaturesTestCase(TestCase, ViewTestBase):
         result = json.loads(response.content)
 
         self.assertEqual(type(result), list)
-        self.assertEqual(result, [])
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['feature_status'], False)
+        self.assertEqual(result[0]['company_feature']['id'], self.normalize_key(4))
+        self.assertEqual(result[0]['company'], self.normalize_key(2))

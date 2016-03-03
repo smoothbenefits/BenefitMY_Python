@@ -6,6 +6,9 @@ from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://sandbox.benefitmy.com/"
 
+# Time Tracking Service URL
+TIME_TRACKING_SERVICE_URL = "http://stage.timetracking.workbenefits.me/"
+
 # Default global figure of number of minutes notification facilities should
 # look back to check for user data modifications
 DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES = 1440 # 24 hours

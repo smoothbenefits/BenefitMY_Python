@@ -7,6 +7,9 @@ from Smoothbenefits.base_settings import *
 
 SITE_URL = "http://localhost:8000/"
 
+# Time Tracking Service URL
+TIME_TRACKING_SERVICE_URL = "http://localhost:6999/"
+
 # Logging Configurations
 LOGGING['handlers']['logentries_handler']['token'] = '980781a6-72cf-4dd7-b6ae-57fc3e7d7262'
 
