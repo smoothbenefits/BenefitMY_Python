@@ -138,9 +138,5 @@ class SendEmailService(object):
 
         return
 
-    def is_email_feature_blocked_for_user(self, user_id, email_feature):
-        result = EmailBlockList.objects.filter(user=user_id, email_block_feature=email_feature)
-        return result.count() > 0
-
     def get_all_users_blocked_for_email_feature(self, email_feature):
         return EmailBlockList.objects.filter(email_block_feature=email_feature).values_list('user', flat=True).distinct()
