@@ -77,7 +77,6 @@
         <div class="sub-nav collapse" id="hr-nav">
           <a ng-click="viewWorkTimeSheet()">View Employee Timesheet</a>
           <a ng-click="viewTimeOffRequests()">View Time Off Requests</a>
-          <a ng-click="viewServiceProvider()">Manage Service Providers</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/add/')">Add Employee</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_add/')">Batch Add Employee</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_organization_import/')">Import Employee Organization</a>
@@ -105,6 +104,14 @@
           <a ng-click="downloadEmployeeDirectDepositReport()">Direct Deposit</a>
           <a ng-click="downloadCompanyEmployeeLifeBeneficiaryReport()">Life Insurance Beneficiary</a>
           <a ng-click="downloadCompanyEmployeeBenefitSummaryPDF()">Employee Summary PDF</a>
+        </div>
+      </li>
+      <li class="expandable" ng-show="isCurRoleAdmin()">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#employer-settings-nav" aria-expanded="false" aria-controls="employer-settings-nav"><span class="flaticon flaticon-reminder5"></span>Settings</button>
+        </div>
+        <div class="sub-nav collapse" id="employer-settings-nav">
+          <a ng-click="viewServiceProvider()">Manage Service Providers</a>
         </div>
       </li>
       <!-- EMPLOYER NAVS END -->

@@ -16,7 +16,7 @@ BenefitMyApp.controller('CompanyServcieProviderController', [
           if ($scope.isAdmin) {
             $scope.providers = providers;
           } else {
-            $scope.providers = _.where(providers, function(provider) {
+            $scope.providers = _.filter(providers, function(provider) {
               return provider.showToEmployee;
             });
           }
