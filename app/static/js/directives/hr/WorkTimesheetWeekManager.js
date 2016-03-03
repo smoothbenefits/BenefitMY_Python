@@ -74,7 +74,6 @@ BenefitMyApp.controller('WorkTimesheetWeekDirectiveController', [
     scope: {
         user: '=*',
         adminMode: '=',
-        week: '=*',
         timesheet: '=*',
         saveResult: '&'
     },
