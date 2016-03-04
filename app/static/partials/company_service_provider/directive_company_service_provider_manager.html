@@ -1,0 +1,51 @@
+<div class="content-header">
+  <h1>Company Service Providers</h1>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="panel" ng-if="!presentedTypes">
+    <div class="panel-header">
+      There is no service provider information available yet.
+      <span ng-if="isAdmin" ng-click="addNewProvider()">Click here to add one.</span>
+    </div>
+  </div>
+  <div class="panel" ng-repeat="providerType in presentedTypes | orderBy: providerType">
+    <div class="panel-heading">
+      <b>{{providerType.capitalize()}} Provider</b>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <table class="table table-striped benefit-table fix-layout-table">
+          <thead>
+            <tr>
+              <th><span>Name</span></th>
+              <th><span>Phone</span></th>
+              <th><span>Email</span></th>
+              <th><span>Link</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="provider in groupedProviders[providerType]">
+              <td ng-if="isAdmin">
+                <a ng-click="editProvider(provider)">{{provider.name}}</a>
+                <a class="delete-cross"
+                   ng-click="deleteProvider(provider)"
+                   href="javascript:void(0);"
+                   confirm="Delete this service provider?">X</a>
+              </td>
+              <td ng-if="!isAdmin">{{provider.name}}</td>
+              <td><div>{{provider.phone}}</div></td>
+              <td><div>{{provider.email}}</div></td>
+              <td><div>{{provider.link}}</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="cta" ng-if="isAdmin">
+    <span class="btn green" ng-click="addNewProvider()" style="width: 20%">
+      Add new provider
+    </span>
+  </div>
+</div>

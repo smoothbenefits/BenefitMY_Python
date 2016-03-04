@@ -106,6 +106,14 @@
           <a ng-click="downloadCompanyEmployeeBenefitSummaryPDF()">Employee Summary PDF</a>
         </div>
       </li>
+      <li class="expandable" ng-show="isCurRoleAdmin()">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#employer-settings-nav" aria-expanded="false" aria-controls="employer-settings-nav"><span class="flaticon flaticon-reminder5"></span>Settings</button>
+        </div>
+        <div class="sub-nav collapse" id="employer-settings-nav">
+          <a ng-click="viewServiceProvider()">Manage Service Providers</a>
+        </div>
+      </li>
       <!-- EMPLOYER NAVS END -->
 
       <!-- EMPLOYEE NAV STARTS -->
@@ -152,7 +160,7 @@
           <button data-toggle="collapse" data-target="#employee-help-center" aria-expanded="false" aria-controls="employee-help-center"><span class="flaticon flaticon-book163"></span>Help Center</button>
         </div>
         <div class="sub-nav collapse" id="employee-help-center">
-          <a href="#/employee/support">Get Help</a>
+          <a href="#/employee/support">Contact Service Providers</a>
         </div>
       </li>
       <!-- EMPLOYEE NAV ENDS -->

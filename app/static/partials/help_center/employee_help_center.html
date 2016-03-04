@@ -1,4 +1,14 @@
 <div class="breadcrumb">
+  <a ng-click="backToDashboard()">{{role}} Dashboard</a>
+  <span>{{pageTitle}}</span>
+</div>
+
+<bm-company-service-provider-manager company="company.id" is-admin="isAdmin"></bm-company-service-provider-manager>
+
+<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+
+<!--
+<div class="breadcrumb">
   <a ng-href="#/">Employee Dashboard</a>
   <span>Employee Help Center</span>
 </div>
@@ -7,12 +17,12 @@
   <h1>Contact Information</h1>
   <span class="general-info">Find your contact for help</span>
   <div class="cta"><a ng-click="backToDashboard()" class="btn green" >Back</a></div>
-</div><!-- / .content-header -->
+</div>
 
 <div class="content-body">
   <div class="table-responsive table-holder table">
     <div class="table-sub-title">
-      Brokers
+      Benefit Brokers
     </div>
     <table class="table table-striped">
       <thead>
@@ -35,4 +45,4 @@
       </tbody>
     </table>
   </div>
-</div>
+</div> -->

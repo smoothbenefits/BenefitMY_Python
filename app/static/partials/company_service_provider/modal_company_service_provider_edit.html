@@ -1,0 +1,79 @@
+<div class="modal-header">
+  <h4 class="modal-title">Company Service Provider</h4>
+</div>
+<div class="modal-body">
+  <div class="form-holder">
+    <form name="form">
+      <div class="row">
+        <div class="form-label">Provider Name *</div>
+        <div class="textbox">
+          <input type="text"
+          name="provider_name"
+          ng-model="provider.name"
+          ng-required="true" />
+          <div ng-show="form.provider_name.$dirty && form.provider_name.$invalid" style="color:red">
+            <span ng-show="form.provider_name.$error.required">Provider name field is required</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-label">Provider Type *</div>
+        <div class="textbox">
+          <input type="text"
+          name="provider_type"
+          ng-model="provider.providerType"
+          ng-required="true" />
+          <div ng-show="form.provider_type.$dirty && form.provider_type.$invalid" style="color:red">
+            <span ng-show="form.provider_type.$error.required">Provider type is a required field</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-label">Provider Phone Number</div>
+        <div class="textbox">
+          <input type="text"
+          name="provider_phone"
+          ui-mask="(999) 999-9999"
+          ng-model="provider.phone" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-label">Provider Email</div>
+        <div class="textbox">
+          <input type="email"
+          name="provider_email"
+          ng-model="provider.email">
+          <div ng-show="form.provider_email.$dirty && form.provider_email.$invalid" style="color:red">
+            <span ng-show="form.provider_email.$error.email">Not a valid email address</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-label">Provider URL</div>
+        <div class="textbox">
+          <input type="text"
+          name="provider_link"
+          ng-model="provider.link" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox"
+            name="show_to_employee"
+            ng-model="provider.showToEmployee"
+            ng-require="true">
+            Show this service provider to employee?
+          </label>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-info" ng-click="save()" style="width: 20%">Save</button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+  </div>
+</div>
