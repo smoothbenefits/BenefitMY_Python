@@ -12,6 +12,11 @@ from app.models.company_user import CompanyUser, USER_TYPE_ADMIN, USER_TYPE_BROK
 from app.service.Report.company_employee_benefit_pdf_report_service import \
     CompanyEmployeeBenefitPdfReportService
 
+from app.models.system.email_block_list import (
+    EmailBlockList,
+    EMAIL_BLOCK_FEATURE_WORKTIMESHEETNOTIFICATION
+)
+
 User = get_user_model()
 
 
@@ -132,3 +137,6 @@ class SendEmailService(object):
             attachment_name='employee_details.pdf', attachment=pdf, attachment_mime_type='application/pdf')
 
         return
+
+    def get_all_users_blocked_for_email_feature(self, email_feature):
+        return EmailBlockList.objects.filter(email_block_feature=email_feature).values_list('user', flat=True).distinct()

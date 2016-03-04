@@ -11,6 +11,8 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                           'DocumentService',
                           'BenefitSummaryService',
                           'CompanyFeatureService',
+                          'DirectDepositService',
+                          'UserOnboardingStepStateService',
   function($state,
            PersonService,
            UserService,
@@ -19,7 +21,9 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
            PersonService,
            DocumentService,
            BenefitSummaryService,
-           CompanyFeatureService){
+           CompanyFeatureService,
+           DirectDepositService,
+           UserOnboardingStepStateService){
 
     var getUrlFromState = function(state, stateParams) {
         return $state.href(state, stateParams).replace('#', '');
@@ -39,6 +43,10 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
 
     var getDocumentUrl = function(employeeId){
       return getUrlFromState('employee_onboard.document', { employee_id: employeeId });
+    };
+
+    var getDirectDepositUrl = function(employeeId){
+      return getUrlFromState('employee_onboard.direct_deposit', { employee_id: employeeId });
     };
 
     var getBenefitEnrollFlowUrl = function(employeeId){
@@ -117,20 +125,6 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         succeeded();
       } 
       else {
-        UserService.getCurUserInfo().then(
-            function(userInfo) {
-                var company = userInfo.currentRole.company;
-                CompanyFeatureService.getDisabledCompanyFeatureByCompany(company.id).then(
-                    function(disabledFeatures){
-                        if (disabledFeatures.W4) {
-                            succeeded();
-                        }
-                    }
-                );
-            }
-        );
-
-
         employeeTaxRepository.get({userId:employeeId})
         .$promise.then(function(response){
           if(!response ||
@@ -145,6 +139,44 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         }, function(err){
           failed(err);
         });
+      }
+    };
+
+    var validateDirectDeposit = function(employeeId, isNewEmployee, disabledFeatures, succeeded, failed){
+      if (disabledFeatures && disabledFeatures.DirectDeposit) {
+        // Skip if the feature is disabled
+        succeeded();
+      } 
+      else {
+        UserOnboardingStepStateService.getStateByUserAndStep(
+            employeeId,
+            UserOnboardingStepStateService.Steps.directDeposit).then(
+            function(state) {
+                if (state && 
+                    (state == UserOnboardingStepStateService.States.skipped
+                     || state == UserOnboardingStepStateService.States.completed)) {
+                    succeeded();
+                }
+                else {
+                    DirectDepositService.getDirectDepositByUserId(employeeId).then(
+                        function(accounts) {
+                            if (accounts && accounts.length > 0) {
+                                succeeded();
+                            }
+                            else {
+                                failed();
+                            }
+                        },
+                        function(errors) {
+                            failed();
+                        }
+                    );
+                }
+            },
+            function(errors) {
+                failed();
+            } 
+        );
       }
     };
 
@@ -209,16 +241,21 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                   validateBasicInfo(employeeId, isNewEmployee, disabledFeatures, function(){
                     validateEmploymentAuth(employeeId, isNewEmployee, disabledFeatures, function(){
                       validateW4Info(employeeId, isNewEmployee, disabledFeatures, function(){
-                        validateDocuments(employeeId, isNewEmployee, disabledFeatures, function() {
-                            validateBenefitEnrollments(employeeId, isNewEmployee, disabledFeatures, function() {
-                                succeeded();
+                        validateDirectDeposit(employeeId, isNewEmployee, disabledFeatures, function(){
+                            validateDocuments(employeeId, isNewEmployee, disabledFeatures, function() {
+                                validateBenefitEnrollments(employeeId, isNewEmployee, disabledFeatures, function() {
+                                    succeeded();
+                                },
+                                function() {
+                                    failed(getBenefitEnrollFlowUrl(employeeId));
+                                });
                             },
                             function() {
-                                failed(getBenefitEnrollFlowUrl(employeeId));
+                                failed(getDocumentUrl(employeeId, isNewEmployee));
                             });
                         },
                         function() {
-                            failed(getDocumentUrl(employeeId, isNewEmployee));
+                            failed(getDirectDepositUrl(employeeId));
                         });
                       },
                       function(){

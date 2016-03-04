@@ -208,6 +208,11 @@ th .editable-container{
     font-weight: bold;
     margin-bottom:10px;
 }
+.table-title{
+    font-weight: bold;
+    margin-bottom:10px;
+    font-size:14px;
+}
 .attention{
     font-size:12px;
     font-weight: bold;

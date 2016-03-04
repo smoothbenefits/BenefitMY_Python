@@ -231,6 +231,18 @@ from app.views.user_data_change_email_view import UserDataChangeEmailView
 
 from app.views.logging_service_view import LoggingServiceView
 
+# Onboarding
+from app.views.onboarding.user_onboarding_step_state_view import (
+    UserOnboardingStepStateView,
+    UserOnboardingStepStateByUserView
+)
+
+# Company Service provider_type
+from app.views.company_service_provider_view import (
+    CompanyServiceProviderView,
+    CompanyServiceProviderByCompanyView
+)
+
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
@@ -634,6 +646,22 @@ urlpatterns = patterns('app.views',
     url(r'^%s/1095_c_periods/?$' % PREFIX, ACA1095CPeriodsView.as_view(), name='ACA_1095_c_periods_api'),
 
     url(r'^%s/1094_c_certificiations/?$' % PREFIX, ACA1094CEligibilityCertificationView.as_view(), name='ACA_1094_c_cert_api'),
+
+    # Onboarding
+    url(r'^%s/onboarding_step_states/(?P<pk>\w+)/?$' % PREFIX,
+        UserOnboardingStepStateView.as_view(), name='user_onboarding_step_states_api'),
+    url(r'^%s/onboarding_step_states/?$' % PREFIX,
+        UserOnboardingStepStateView.as_view(), name='user_onboarding_step_states_post_api'),
+    url(r'^%s/users/(?P<pk>\w+)/onboarding_step_states/?$' % PREFIX,
+        UserOnboardingStepStateByUserView.as_view(), name='user_onboarding_step_states_by_user_api'),
+
+    # Company service provider_type
+    url(r'^%s/company_service_provider/(?P<pk>\w+)/?$' % PREFIX,
+        CompanyServiceProviderView.as_view(), name='company_service_provider_api'),
+    url(r'^%s/company_service_provider/?$' % PREFIX,
+        CompanyServiceProviderView.as_view(), name='company_service_provider_post_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/company_service_providers/?$' % PREFIX,
+        CompanyServiceProviderByCompanyView.as_view(), name='company_service_provider_by_company_api'),
 
     # Logging
     url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api")

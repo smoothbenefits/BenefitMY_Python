@@ -1,0 +1,12 @@
+Work timesheet is missing
+
+Company: {{context_data.company.name}}
+
+We have not received your last week's work timesheet. Please visit the site to submit. 
+
+Thank you and best regards.
+- WorkBenefitsMe Support
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}

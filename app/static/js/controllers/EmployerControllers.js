@@ -142,7 +142,7 @@ var employerUser = employersController.controller('employerUser',
    '$state',
    '$stateParams',
    '$location',
-   'employerWorkerRepository',
+   'CompanyPersonnelsService',
    'usersRepository',
    'emailRepository',
    'TemplateService',
@@ -155,7 +155,7 @@ var employerUser = employersController.controller('employerUser',
                         $state,
                         $stateParams,
                         $location,
-                        employerWorkerRepository,
+                        CompanyPersonnelsService,
                         usersRepository,
                         emailRepository,
                         TemplateService,
@@ -196,37 +196,24 @@ var employerUser = employersController.controller('employerUser',
         }
       };
 
-      employerWorkerRepository.get({companyId:$scope.compId})
-        .$promise.then(function(response){
-            _.each(response.user_roles, function(role){
-              if(role.company_user_type=='employee')
-              {
-                if (role.user.company_group_user.length > 0){
-                  role.company_group_member = role.user.company_group_user[0];
-                }
-                else{
-                  role.company_group_member = {
-                    company_group:{
-                      name:'N/A'
-                    }
-                  };
-                }
-                $scope.employees.push(role);
-              }
-              else if(role.company_user_type=='broker')
-              {
-                $scope.brokers.push(role);
-              }
-            });
+      CompanyPersonnelsService.getCompanyEmployees($scope.compId)
+      .then(function(employees){
+          $scope.employees = employees;
 
-            // Populate document data for employees
-            _.each($scope.employees, function(employee) {
-                DocumentService.getDocumentsToUserEntry(employee.user.id)
-                .then(function(docEntry) {
-                    employee.docEntry = docEntry;
-                });
-            });
-        });
+          // Populate document data for employees
+          _.each($scope.employees, function(employee) {
+              DocumentService.getDocumentsToUserEntry(employee.user.id)
+              .then(function(docEntry) {
+                  employee.docEntry = docEntry;
+              });
+          });
+      });
+      
+      CompanyPersonnelsService.getCompanyBrokers($scope.compId)
+      .then(function(brokers){
+        $scope.brokers = brokers;
+      });
+
       EmployeeProfileService.initializeCompanyEmployees($scope.compId);
       TemplateService.getAllTemplateFields($scope.compId)
       .then(function(fields){
@@ -324,7 +311,6 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
      '$state',
      '$stateParams',
      '$modal',
-     'employerWorkerRepository',
      'usersRepository',
      'emailRepository',
      'CompensationService',
@@ -335,7 +321,6 @@ var batchEmployeeAdditionController = employersController.controller('batchEmplo
              $state,
              $stateParams,
              $modal,
-             employerWorkerRepository,
              usersRepository,
              emailRepository,
              CompensationService,
@@ -1661,5 +1646,21 @@ var employerViewTimesheet = employersController.controller('employerViewTimeshee
     $scope.backToDashboard = function(){
       $state.go('/admin');
     }
+  }
+]);
+
+var employerCompanyServiceProvider = employersController.controller('EmployerCompanyServiceProvider', [
+  '$scope', '$state', 'UserService',
+  function($scope, $state, UserService) {
+    UserService.getCurUserInfo().then(function(curUserInfo){
+      $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+      $scope.company = curUserInfo.currentRole.company;
+    });
+
+    $scope.isAdmin = true;
+    $scope.pageTitle = "Service Providers";
+    $scope.backToDashboard = function() {
+      $state.go('/admin');
+    };
   }
 ]);
