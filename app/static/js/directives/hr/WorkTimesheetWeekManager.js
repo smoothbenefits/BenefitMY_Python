@@ -72,9 +72,8 @@ BenefitMyApp.controller('WorkTimesheetWeekDirectiveController', [
   return {
     restrict: 'E',
     scope: {
-        user: '=*',
         adminMode: '=',
-        timesheet: '=*',
+        timesheet: '=',
         saveResult: '&'
     },
     templateUrl: '/static/partials/work_timesheet/directive_work_timesheet_week.html',
