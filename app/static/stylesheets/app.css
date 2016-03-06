@@ -282,3 +282,6 @@ div.submit-box.benefit-selection-button{
     filter: alpha(opacity=50);
     background-color: white;
 }
+table.benefit-table input.full-width{
+    width:100%;
+}
