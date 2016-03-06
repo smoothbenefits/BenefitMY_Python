@@ -29,6 +29,9 @@ benefitmyService.factory('WorkTimesheetService',
             if (!hasAnyValue) {
                 total = 'N/A'
             }
+            else{
+                total = total.toFixed(1);
+            }
 
             return total;
         };
