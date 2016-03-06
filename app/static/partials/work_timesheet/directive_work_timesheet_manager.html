@@ -36,9 +36,7 @@
     <div class="panel-body">
       <div class="col-md-8">
         <bm-work-timesheet-week-manager
-          user="user"
           admin-mode="adminMode"
-          week="selectedDisplayWeek"
           timesheet="timesheet"
           save-result="saveResult(savedTimeSheet)">
         </bm-work-timesheet-week-manager>
@@ -55,7 +53,8 @@
         ng-show="employeeWorkHourList.length > 0">
         <thead>
           <th><div>Name</div></th>
-          <th width="100"><div>Total Hours</div></th>
+          <th width="100"><div>Base Hours</div></th>
+          <th width="100"><div>Overtime Hours</div></th>
           <th><div>Time Submitted</div></th>
           <th width="100"><div>Action</div></th>
         </thead>
@@ -64,7 +63,8 @@
             <td>
               <span>{{employeeWorkHour.employee.firstName}} {{employeeWorkHour.employee.lastName}}</span>
             </td>
-            <td width="100">{{employeeWorkHour.totalHours}}</td>
+            <td width="100">{{employeeWorkHour.getTotalBaseHours()}}</td>
+            <td width="100">{{employeeWorkHour.getTotalOvertimeHours()}}</td>
             <td>{{employeeWorkHour.updatedTimestamp}}</td>
             <td width="100"><span>
                 <a ng-click="viewDetails(employeeWorkHour)">Edit</a>
