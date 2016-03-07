@@ -4,21 +4,8 @@ var API_PREFIX = '/api/v1'
 
 benefitmyService.factory('CompanyEmployeeSummaryService', [
   '$q',
-  'employerWorkerRepository',
-  function ($q, employerWorkerRepository){
-
-    var get_company_group_member_from_user = function(user){
-      if (user.company_group_user && user.company_group_user.length > 0){
-        return user.company_group_user[0];
-      }
-      else{
-        return {
-          company_group:{
-            name:'N/A'
-          }
-        };
-      }
-    };
+  'CompanyPersonnelsService',
+  function ($q, CompanyPersonnelsService){
 
     var mapToViewEmployeeList = function(domainList) {
       var viewList = [];
@@ -29,7 +16,7 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
           lastName: employee.user.last_name,
           userId: employee.user.id,
           email: employee.user.email,
-          company_group_member: get_company_group_member_from_user(employee.user)
+          company_group_member: employee.company_group_member
         };
         viewList.push(viewModel);
       });
@@ -38,27 +25,13 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
     };
 
     var getCompanyEmployeeSummary = function(companyId) {
-      var deferred = $q.defer();
-
-      employerWorkerRepository.get({companyId: companyId}).$promise
-      .then(function(response) {
-
-        var users = response.user_roles;
-        var employees = [];
-        if (users) {
-          employees = _.filter(users, function(user) {
-            return user.company_user_type === 'employee';
-          });
-        }
-
+      return CompanyPersonnelsService.getCompanyEmployees(companyId)
+      .then(function(employees){
         var mappedList = mapToViewEmployeeList(employees);
-        deferred.resolve(mappedList);
-
+        return mappedList
       }, function(error) {
         deferred.reject(error);
       });
-
-      return deferred.promise;
     };
 
     return {

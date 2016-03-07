@@ -774,3 +774,25 @@ benefitmyDomainModelFactories.factory('TimeTrackingAppHostNameRepository', ['$re
     return $resource(PREFIX + 'timetrackingapp');
   }
 ]);
+
+benefitmyDomainModelFactories.factory('UserOnboardingStepStateRepository', ['$resource',
+  function($resource) {
+    return {
+      ByUser: $resource(PREFIX + 'users/:userId/onboarding_step_states', {userId: '@userId'}),
+      ById: $resource(PREFIX + 'onboarding_step_states/:entryId', {entryId: '@entryId'}, {
+        update: { method: 'PUT' }
+      })
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('CompanyServiceProviderRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'company/:companyId/company_service_providers', {companyId: '@companyId'}),
+      ById: $resource(PREFIX + 'company_service_provider/:entryId', {entryId: '@entryId'}, {
+        update: { method: 'PUT' }
+      })
+    }
+  }
+]);

@@ -251,6 +251,10 @@ var userController = userControllers.controller('userController',
       $state.go('admin_time_off');
     };
 
+    $scope.viewServiceProvider = function() {
+      $state.go('admin_service_provider');
+    }
+
     $scope.gotoSettings = function(){
       $state.go('settings', {user_id: $scope.curUser.id});
     };

@@ -1,0 +1,12 @@
+[
+  {
+    "fields": {
+      "step": "direct_deposit",
+      "state" : "skipped",
+      "user": 2,
+      "updated_at": "2015-05-23T15:23:33Z"
+    },
+    "model": "app.UserOnboardingStepState",
+    "pk": 1
+  }
+]

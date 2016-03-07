@@ -98,6 +98,7 @@
           placeholder="Start typing the name of an employee..." 
           typeahead="manager as manager.first_name + ' ' + manager.last_name for manager in getEmployees($viewValue)"
           ng-required="false"
+          autocomplete="off" 
           class="form-control" />
           <div class="form-error" ng-show="managerInvalid(addUser.managerSelected)">
             <span>The manager you selected is an invalid candidate!</span>

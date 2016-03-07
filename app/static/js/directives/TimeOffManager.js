@@ -11,7 +11,7 @@ BenefitMyApp.controller('TimeoffRequestController', [
 
     $scope.timeoffTypes = [
       'Paid Time Off (PTO)',
-      'Sick Day'
+      'Sick Time'
     ];
 
     $scope.timeoff = {
@@ -60,6 +60,11 @@ BenefitMyApp.controller('TimeoffRequestController', [
           TimeOffService.GetTimeOffsByRequestor(theUser.id)
           .then(function(timeOffs) {
             $scope.requestedTimeOffs = timeOffs;
+          });
+
+          TimeOffService.GetTimeOffQuota(theUser.id)
+          .then(function(quota){
+            $scope.timeoffQuota = quota;
           });
 
           // Get manager information through employee profile

@@ -405,6 +405,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/work_timesheet/timesheet_base.html',
                 controller: 'employerViewTimesheet'
             }).
+            state('admin_service_provider', {
+              url: '/admin/service_provider',
+              templateUrl: '/static/partials/company_service_provider/company_service_provider_base.html',
+              controller: 'EmployerCompanyServiceProvider'
+            }).
             state('/employee',{
                 url: '/employee',
                 templateUrl: '/static/partials/employee_dashboard.html',
@@ -550,6 +555,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/document',
                 templateUrl: '/static/partials/employee_onboard/partial_document.html',
                 controller: 'onboardDocument'
+            }).
+            state('employee_onboard.direct_deposit', {
+                url: '/direct_deposit',
+                templateUrl: '/static/partials/employee_onboard/partial_direct_deposit.html',
+                controller: 'onboardDirectDeposit'
             }).
             state('employeeUploads', {
                 url:'/employee/uploads',

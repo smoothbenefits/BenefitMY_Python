@@ -10,13 +10,38 @@ benefitmyService.factory('WorkTimesheetService',
     WorkTimesheetRepository){
 
         var _calculateTotalHours = function(weekHours){
+            var hasAnyValue = false;
+
             var total = 0;
-            _.each(_.values(weekHours), function(hour){
-                if(typeof hour === 'number'){
-                    total += hour;
-                }
-            });
+
+            if (weekHours) {
+                _.each(_.values(weekHours), function(hour){
+                    if(typeof hour === 'number'){
+                        hasAnyValue = true;
+
+                        total += hour;
+                    }
+                });
+            }
+
+            // If there is not any valid number in the week hours,
+            // simply set to 'N/A' for display
+            if (!hasAnyValue) {
+                total = 'N/A'
+            }
+            else{
+                total = total.toFixed(1);
+            }
+
             return total;
+        };
+
+        var _calculateTotalBaseHours = function() {
+            return _calculateTotalHours(this.workHours);
+        };
+
+        var _calculateTotalOvertimeHours = function() {
+            return _calculateTotalHours(this.overtimeHours);
         };
 
         var mapDomainModelToViewModel = function(domainModel){
@@ -25,9 +50,11 @@ benefitmyService.factory('WorkTimesheetService',
                 weekStartDate: domainModel.weekStartDate,
                 employee: domainModel.employee,
                 workHours: domainModel.workHours,
+                overtimeHours: domainModel.overtimeHours,
                 createdTimestamp: moment(domainModel.createdTimestamp).format(DATE_TIME_FORMAT_STRING),
                 updatedTimestamp: moment(domainModel.updatedTimestamp).format(DATE_TIME_FORMAT_STRING),
-                totalHours: _calculateTotalHours(domainModel.workHours)
+                getTotalBaseHours: _calculateTotalBaseHours,
+                getTotalOvertimeHours: _calculateTotalOvertimeHours
             };
             return viewModel;
         };
@@ -36,6 +63,7 @@ benefitmyService.factory('WorkTimesheetService',
           var domainModel = {
             'weekStartDate': viewModel.weekStartDate,
             'workHours': viewModel.workHours,
+            'overtimeHours': viewModel.overtimeHours,
             'employee': viewModel.employee
           };
 
@@ -50,7 +78,10 @@ benefitmyService.factory('WorkTimesheetService',
             return viewModelList;
         };
 
-        var getBlankTimesheetForEmployeeUser = function(employeeUser, company, weekStartDateString) {
+        var GetBlankTimesheetForEmployeeUser = function(
+            employeeUser,
+            company,
+            weekStartDateString) {
             // First convert employee user struct to employee data required by the DTO
             var employee = {
                 'personDescriptor': utilityService.getEnvAwareId(employeeUser.id),
@@ -71,7 +102,19 @@ benefitmyService.factory('WorkTimesheetService',
                     'thursday': null,
                     'friday': null,
                     'saturday': null
-                }
+                },
+                'overtimeHours': {
+                    'sunday': null,
+                    'monday': null,
+                    'tuesday': null,
+                    'wednesday': null,
+                    'thursday': null,
+                    'friday': null,
+                    'saturday': null
+                },
+                getTotalBaseHours: _calculateTotalBaseHours,
+                getTotalOvertimeHours: _calculateTotalOvertimeHours,
+                'updatedTimestamp':'N/A'
             };
 
             return blankViewModel;
@@ -90,7 +133,7 @@ benefitmyService.factory('WorkTimesheetService',
                     if (resultEntries && resultEntries.length > 0) {
                         return mapDomainModelToViewModel(resultEntries[0]);
                     } else {
-                        return getBlankTimesheetForEmployeeUser(employeeUser, company, weekStartDateString);
+                        return GetBlankTimesheetForEmployeeUser(employeeUser, company, weekStartDateString);
                     }
                 });
         };
@@ -102,6 +145,16 @@ benefitmyService.factory('WorkTimesheetService',
             return createdEntry;
           });
         };
+
+        var UpdateWorkTimesheet = function(timesheetToUpdate){
+            return WorkTimesheetRepository.ById.update(
+               {id:timesheetToUpdate.id}, 
+               timesheetToUpdate)
+            .$promise
+            .then(function(updatedTimesheet){
+                return updatedTimesheet;
+            });
+        }
 
         var GetWorkTimesheetsByCompany = function(companyId, weekStartDate){
             var weekStartDateString = 
@@ -120,7 +173,9 @@ benefitmyService.factory('WorkTimesheetService',
         return {
             GetWorkTimesheetByEmployeeUser: GetWorkTimesheetByEmployeeUser,
             CreateWorkTimesheet: CreateWorkTimesheet,
-            GetWorkTimesheetsByCompany: GetWorkTimesheetsByCompany
+            UpdateWorkTimesheet: UpdateWorkTimesheet,
+            GetWorkTimesheetsByCompany: GetWorkTimesheetsByCompany,
+            GetBlankTimesheetForEmployeeUser: GetBlankTimesheetForEmployeeUser
         };
     }
 ]);
