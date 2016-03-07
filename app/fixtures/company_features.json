@@ -25,5 +25,14 @@
     },
     "model": "app.companyfeatures",
     "pk": 3
+  },
+  {
+    "fields": {
+      "feature_status": false,
+      "company": 2,
+      "company_feature": 4
+    },
+    "model": "app.companyfeatures",
+    "pk": 4
   }
 ]

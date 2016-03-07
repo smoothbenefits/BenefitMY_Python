@@ -1,38 +1,8 @@
 <div class="breadcrumb">
-  <a ng-href="#/">Employee Dashboard</a>
-  <span>Employee Help Center</span>
+  <a ng-click="backToDashboard()">{{role}} Dashboard</a>
+  <span>{{pageTitle}}</span>
 </div>
 
-<div class="content-header">
-  <h1>Contact Information</h1>
-  <span class="general-info">Find your contact for help</span>
-  <div class="cta"><a ng-click="backToDashboard()" class="btn green" >Back</a></div>
-</div><!-- / .content-header -->
+<bm-company-service-provider-manager company="company.id" is-admin="isAdmin"></bm-company-service-provider-manager>
 
-<div class="content-body">
-  <div class="table-responsive table-holder table">
-    <div class="table-sub-title">
-      Brokers
-    </div>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th><span>Name</span></th>
-          <th><span>Email</span></th>
-          <th><span>Phone Number</span></th>
-          <th><span>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="broker in brokers">
-          <td style="vertical-align: top;">
-            {{broker.firstName}} {{broker.lastName}}
-          </td>
-          <td>{{broker.email}}</td>
-          <td>{{broker.phone}}</td>
-          <td><a class="btn inline" ng-href="mailto:{{broker.email}}">Send A Email</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>

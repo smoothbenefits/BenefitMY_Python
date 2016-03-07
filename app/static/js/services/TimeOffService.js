@@ -93,11 +93,20 @@ benefitmyService.factory('TimeOffService',
                 });
         };
 
+        var GetTimeOffQuota = function(userId){
+            var id = utilityService.getEnvAwareId(userId);
+            return TimeOffRepository.QuotaByUser.get({userId:id})
+                .$promise.then(function(timeoffQuota){
+                    return timeoffQuota.quota;
+                });
+        };
+
         return {
             GetTimeOffsByRequestor: GetTimeOffsByRequestor,
             RequestTimeOff: requestTimeOff,
             GetTimeOffsByApprover: GetTimeOffsByApprover,
-            UpdateTimeOffStatus: UpdateTimeOffStatus
+            UpdateTimeOffStatus: UpdateTimeOffStatus,
+            GetTimeOffQuota: GetTimeOffQuota
         };
     }
 ]);

@@ -1,17 +1,30 @@
-BenefitMyApp.directive('bmWorkTimesheetManager', function() {
-
-  var controller = [
+BenefitMyApp.controller('WorkTimeSheetEditModalController', [
+  '$scope', '$modalInstance', 'user', 'timesheet', 'week', 'WorkTimesheetService',
+  function($scope, $modalInstance, user, timesheet, week, WorkTimesheetService){
+    $scope.timesheet = timesheet;
+    $scope.week = week;
+    $scope.adminMode = true;
+    $scope.saveResult = function(savedTimesheet){
+        $modalInstance.close(savedTimesheet);
+    }
+    $scope.dismiss = function() {
+      $modalInstance.dismiss();
+    };
+  }
+]).controller('WorkTimesheetManagerDirectiveController', [
     '$scope',
     '$modal',
     '$attrs',
     '$controller',
     'WorkTimesheetService',
+    'CompanyPersonnelsService',
     function WorkTimesheetManagerDirectiveController(
       $scope,
       $modal,
       $attrs,
       $controller,
-      WorkTimesheetService) {
+      WorkTimesheetService,
+      CompanyPersonnelsService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -64,12 +77,29 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
               $scope.timesheet = timesheet;
             });
             
-            WorkTimesheetService.GetWorkTimesheetsByCompany(
-                $scope.company.id,
-                $scope.selectedDisplayWeek.weekStartDate)
-            .then(function(workTimeSheets){
-                $scope.employeeWorkHourList = workTimeSheets;
+            CompanyPersonnelsService.getCompanyEmployees($scope.company.id)
+            .then(function(employees){
+                WorkTimesheetService.GetWorkTimesheetsByCompany(
+                    $scope.company.id,
+                    $scope.selectedDisplayWeek.weekStartDate)
+                .then(function(workTimeSheets){
+                    $scope.employeeWorkHourList = [];
+                    _.each(employees, function(employee){
+                        var employeeWorksheet = _.find(workTimeSheets, function(timesheet){
+                            return timesheet.employee.email == employee.user.email
+                        });
+                        if (!employeeWorksheet){
+                            employeeWorksheet = 
+                                WorkTimesheetService.GetBlankTimesheetForEmployeeUser(
+                                    employee.user,
+                                    $scope.company,
+                                    $scope.selectedDisplayWeek.weekStartDate);
+                        }
+                        $scope.employeeWorkHourList.push(employeeWorksheet);
+                    });
+                });
             });
+            
         };
 
         $scope.$watch('user', function(theUser) {
@@ -86,45 +116,44 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
             }
         });
 
-        $scope.isTimesheetValidForSave = function() {
-            return $scope.timesheet
-                && !$scope.timesheet.id
-                && _.isNumber($scope.timesheet.workHours.sunday)
-                && _.isNumber($scope.timesheet.workHours.monday)
-                && _.isNumber($scope.timesheet.workHours.tuesday)
-                && _.isNumber($scope.timesheet.workHours.wednesday)
-                && _.isNumber($scope.timesheet.workHours.thursday)
-                && _.isNumber($scope.timesheet.workHours.friday)
-                && _.isNumber($scope.timesheet.workHours.saturday);
-        };
+        $scope.saveResult = function(savedTimeSheet){
+            if(savedTimeSheet){
+                $scope.reloadTimesheet();
+                var successMessage = "Your work hour timesheet has been submitted successfully!"
+                $scope.showMessageWithOkayOnly('Success', successMessage);
+            }
+            else{
+                var message = 'Failed to save the timesheet. Please try again later.';
+                $scope.showMessageWithOkayOnly('Error', message);
+            }
+        }
 
-        $scope.allowEdit = function() {
-            return $scope.timesheet
-                && !$scope.timesheet.id;
-        };
-
-        // Register the confirm message for saving timesheet, so that the 
-        // auto confirm directive can use this properly.
-        $scope.saveTimesheetConfirmText =  'Do you want to proceed with submitting the timesheet?\n'
-                            + 'Please note once submitted, no further changes are allowed on this timesheet.';
-        $scope.saveTimesheet = function() {
-            WorkTimesheetService.CreateWorkTimesheet($scope.timesheet)
-            .then(
-                function(resultTimesheet) {
-                    $scope.reloadTimesheet();
-
-                    var successMessage = "Your work hour timesheet has been submitted successfully!"
-                    $scope.showMessageWithOkayOnly('Success', successMessage);
-                },
-                function(errors) {
-                    var message = 'Failed to save the timesheet. Please try again later.';
-                    $scope.showMessageWithOkayOnly('Error', message);
+        $scope.viewDetails = function(timesheet){
+            var modalInstance = $modal.open({
+                templateUrl: '/static/partials/work_timesheet/modal_work_time_sheet.html',
+                controller: 'WorkTimeSheetEditModalController',
+                size: 'lg',
+                backdrop: 'static',
+                resolve: {
+                  'user': function() {
+                    return $scope.user;
+                  },
+                  'timesheet': function() {
+                    return angular.copy(timesheet);
+                  },
+                  'week': function(){
+                    return $scope.selectedDisplayWeek.weekDisplayText;
+                  }
                 }
-            );
+              });
+
+            modalInstance.result.then(function(savedTimesheet){
+                $scope.reloadTimesheet();
+            });
         };
     }
-  ];
-
+  ]
+).directive('bmWorkTimesheetManager', function() {
   return {
     restrict: 'E',
     scope: {
@@ -133,6 +162,6 @@ BenefitMyApp.directive('bmWorkTimesheetManager', function() {
         company: '='
     },
     templateUrl: '/static/partials/work_timesheet/directive_work_timesheet_manager.html',
-    controller: controller
+    controller: 'WorkTimesheetManagerDirectiveController'
   };
 });
