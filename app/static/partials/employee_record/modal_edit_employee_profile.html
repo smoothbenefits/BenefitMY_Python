@@ -50,6 +50,7 @@
             ng-required="false"
             name="employeeProfileModel.manager"
             typeahead="manager as manager.first_name + ' ' + manager.last_name for manager in getEmployees($viewValue)"
+            autocomplete="off" 
             class="form-control"></select>
             <div class="form-inline-error" ng-show="managerInvalid(employeeProfileModel.manager)">
               <span>The manager you selected is an invalid candidate!</span>
