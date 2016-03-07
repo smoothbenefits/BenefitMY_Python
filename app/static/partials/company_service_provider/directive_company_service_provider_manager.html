@@ -3,10 +3,10 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-  <div class="panel" ng-if="!presentedTypes">
+  <div class="panel" ng-if="!presentedTypes || presentedTypes.length <= 0">
     <div class="panel-header">
       There is no service provider information available yet.
-      <span ng-if="isAdmin" ng-click="addNewProvider()">Click here to add one.</span>
+      <a ng-if="isAdmin" ng-click="addNewProvider()">Click here to add one.</a>
     </div>
   </div>
   <div class="panel" ng-repeat="providerType in presentedTypes | orderBy: providerType">
@@ -22,7 +22,7 @@
               <th><span>Phone</span></th>
               <th><span>Email</span></th>
               <th><span>Link</span></th>
-              <th><span>Visible to Employees</span></th>
+              <th ng-if="isAdmin"><span>Visible to Employees</span></th>
             </tr>
           </thead>
           <tbody>
@@ -38,7 +38,7 @@
               <td><div>{{provider.phone}}</div></td>
               <td><div>{{provider.email}}</div></td>
               <td><div>{{provider.link}}</div></td>
-              <td><div>{{provider.show_to_employee ? 'Yes' : 'No'}}</div></td>
+              <td ng-if="isAdmin"><div>{{provider.show_to_employee ? 'Yes' : 'No'}}</div></td>
             </tr>
           </tbody>
         </table>
