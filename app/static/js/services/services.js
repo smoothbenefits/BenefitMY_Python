@@ -45,9 +45,23 @@ var utilityService = benefitmyService.factory('utilityService',
             return env + '_' + id;
       };
 
+      var normalizeLink = function(originalLink){
+            if (!originalLink || !originalLink.trim()) {
+                return originalLink;
+            }
+
+            var resultLink = originalLink;
+            if(!(resultLink.indexOf('http://') == 0) 
+                && !(resultLink.indexOf('https://') == 0)) {
+              resultLink = 'http://' + resultLink;
+            }
+            return resultLink;
+        }
+
       return {
         mapObjectToKeyPairArray: mapObjectToKeyPairArray,
-        getEnvAwareId: getEnvAwareId
+        getEnvAwareId: getEnvAwareId,
+        normalizeLink: normalizeLink
       };
     }
   ]);

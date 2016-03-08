@@ -1,8 +1,8 @@
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('CompanyServiceProviderService',
-    ['$q', 'CompanyServiceProviderRepository',
-    function ($q, CompanyServiceProviderRepository){
+    ['$q', 'CompanyServiceProviderRepository', 'utilityService',
+    function ($q, CompanyServiceProviderRepository, utilityService){
 
         var mapProviderViewModelToDomainModel = function(viewModel, companyId) {
           var domainModel = {
@@ -12,7 +12,7 @@ benefitmyService.factory('CompanyServiceProviderService',
             provider_type: viewModel.providerType,
             phone: viewModel.phone,
             email: viewModel.email,
-            link: viewModel.link
+            link: utilityService.normalizeLink(viewModel.link)
           };
 
           if (viewModel.id) {
@@ -26,6 +26,10 @@ benefitmyService.factory('CompanyServiceProviderService',
           var viewModel = angular.copy(domainModel);
           viewModel.showToEmployee = domainModel.show_to_employee;
           viewModel.providerType = domainModel.provider_type;
+
+          // Make sure that the link is in right format, which is needed
+          // for the anchor tag to operate.
+          viewModel.link = utilityService.normalizeLink(viewModel.link);
 
           return viewModel;
         };
