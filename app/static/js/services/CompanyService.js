@@ -90,6 +90,11 @@ benefitmyService.factory('CompanyService',
         apiAddress.state = viewModel.address.state.toUpperCase();
         apiAddress.zipcode = viewModel.address.zip;
         apiClient.addresses.push(apiAddress);
+
+        if (viewModel.default_benefit_group) {
+          apiClient.default_benefit_group = viewModel.default_benefit_group;
+        }
+
         return apiClient;
       };
 

@@ -142,6 +142,15 @@
         </div>
       </div>
 
+      <div ng-if="isNewCompany()">
+        <div class="form-label">Default Benefit Group</div>
+        <div class="textbox">
+          <input type="text"
+          name="default_benefit_group"
+          ng-model="client.default_benefit_group" />
+        </div>
+      </div>
+
       <div class="submit-box">
         <div class="modal-footer">
           <div class="button-group">
