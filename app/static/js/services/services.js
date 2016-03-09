@@ -51,8 +51,8 @@ var utilityService = benefitmyService.factory('utilityService',
             }
 
             var resultLink = originalLink;
-            if(!(resultLink.indexOf('http://') == 0) 
-                && !(resultLink.indexOf('https://') == 0)) {
+            if(!(resultLink.toLowerCase().indexOf('http://') == 0) 
+                && !(resultLink.toLowerCase().indexOf('https://') == 0)) {
               resultLink = 'http://' + resultLink;
             }
             return resultLink;
