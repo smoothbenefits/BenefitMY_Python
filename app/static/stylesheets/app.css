@@ -285,3 +285,11 @@ div.submit-box.benefit-selection-button{
 table.benefit-table input.full-width{
     width:100%;
 }
+#dashboard-wrapper #content-wrapper .content-body table#time-picker tbody tr td{
+    padding:0px;
+    background-color: #ffffff;
+    border:none;
+}
+#dashboard-wrapper #content-wrapper .content-body table#time-picker tbody tr td input{
+    height:37px;
+}

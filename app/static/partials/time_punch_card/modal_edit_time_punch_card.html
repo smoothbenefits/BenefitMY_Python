@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h4 class="modal-title">Work Timesheet by <br />
+ Week {{week}}</h4>
+</div>
+<div class="modal-body col-md-12">
+  <div class="col-md-10 col-md-offset-1">
+      <bm-time-punch-card-week-manager
+          admin-mode="adminMode"
+          week="week"
+          save-result="saveResult(savedTimesheet)">
+      </bm-time-punch-card-week-manager>
+    </div>
+</div>
+
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-primary" ng-click="dismiss()">Cancel</button>
+  </div>
+</div>

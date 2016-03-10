@@ -299,6 +299,8 @@ PIPELINE_JS = {
             'js/directives/hr/WorkTimesheetManager.js',
             'js/directives/DirectDepositManager.js',
             'js/directives/hr/WorkTimesheetWeekManager.js',
+            'js/directives/hr/TimePunchCardManager.js',
+            'js/directives/hr/TimePunchCardWeekManager.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/services/services.js',
@@ -360,6 +362,7 @@ PIPELINE_JS = {
             'js/services/WorkTimesheetService.js',
             'js/services/UserOnboardingStepStateService.js',
             'js/services/CompanyPersonnelsService.js',
+            'js/services/UsStateService.js',
             ),
         'output_filename': 'js/benefitmy.js',
     }

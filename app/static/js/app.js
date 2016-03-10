@@ -579,6 +579,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/employee/hr/work_timesheet',
                 templateUrl: '/static/partials/work_timesheet/timesheet_base.html',
                 controller: 'employeeViewWorkTimeSheetController'
+            }).
+            state('employee_timePunchCard',{
+                url: '/employee/hr/timecards',
+                templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
+                controller: 'employeeManageTimePunchCardController'
             });
      }
  ]);

@@ -1,0 +1,46 @@
+<div class="content-header">
+  <h1>Timesheet Reports and Time-off Requests</h1>
+  <span class="general-info" ng-hide="adminMode">Your timesheet and time off tracking</span>
+  <span class="general-info" ng-show="adminMode">View the work hour reported by employees</span>
+  <div class="view-instruction" ng-hide="adminMode">
+    <p>Please file your timesheets for the week selected.</p>
+    <p>Please make sure to file different timesheets for each State you worked in</p>
+    <p>You can also make time off requests at the bottom of the page</p>
+  </div>
+  <div class="view-instruction" ng-show="adminMode">
+    <p>You can find the total hours submitted by employees for selected week</p>
+  </div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="panel">
+    <div class="panel-heading">
+        Select Week
+    </div>
+    <div class="panel-body">
+        <div class="col-md-4">
+            <div class="select-box">
+                <select 
+                    id="display_week"
+                    ng-model="selectedDisplayWeek"
+                    name="display_week"
+                    ng-options="weekItem.weekDisplayText for weekItem in listOfWeeks"
+                    class="form-control"></select>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="panel" ng-hide="adminMode">
+    <div class="panel-heading">
+        Your Work Timesheet for the Week: <b>{{selectedDisplayWeek.weekDisplayText}}</b>
+    </div>
+    <div class="panel-body">
+      <div class="col-md-12">
+        <bm-time-punch-card-week-manager
+          admin-mode="adminMode"
+          week="selectedDisplayWeek"
+          save-result="saveResult(savedTimecards)">
+        </bm-time-punch-card-week-manager>
+      </div>
+    </div>
+  </div>
