@@ -48,7 +48,7 @@ BenefitMyApp.directive('bmCompanyInfoEditor', function() {
         };
 
         $scope.isNewCompany = function() {
-          return !$scope.target;
+          return !$scope.client.company || !$scope.client.company.id;
         };
     }
   ];
