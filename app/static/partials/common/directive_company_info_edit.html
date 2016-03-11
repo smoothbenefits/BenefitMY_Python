@@ -143,11 +143,18 @@
       </div>
 
       <div ng-if="isNewCompany()">
-        <div class="form-label">Default Benefit Group</div>
+        <div class="form-label">Default Benefit Group(s)*</div>
         <div class="textbox">
           <input type="text"
           name="default_benefit_group"
-          ng-model="client.default_benefit_group" />
+          ng-model="client.default_benefit_group"
+          ng-required="true" />
+          <div>
+            Use semicolon (;) to separate groups
+          </div>
+          <div class="form-error" ng-show="form.default_benefit_group.$dirty && form.default_benefit_group.$invalid">
+            <span ng-show="form.default_benefit_group.$error.required">Benefit group is required</span>
+          </div>
         </div>
       </div>
 

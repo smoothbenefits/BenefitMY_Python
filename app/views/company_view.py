@@ -66,10 +66,11 @@ class CompanyView(APIView):
                                        company_user_type="broker")
             broker_user.save()
 
-            if request.DATA['default_benefit_group']:
-                company_group = CompanyGroup(name=request.DATA['default_benefit_group'],
-                                             company=serializer.object)
-                company_group.save()
+            if request.DATA['default_benefit_groups']:
+                groups = request.DATA['default_benefit_groups']
+                for group in groups:
+                    company_group = CompanyGroup(name=group, company=serializer.object)
+                    company_group.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
