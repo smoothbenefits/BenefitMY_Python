@@ -22,10 +22,10 @@
                               max="24"
                               step="0.5"
                               name="sunday_hour"
-                              ng-model="timesheet.workHours.sunday"
+                              ng-model="timesheet.timecards[0].workHours.sunday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.workHours.sunday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].workHours.sunday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -34,10 +34,10 @@
                               max="24"
                               step="0.5"
                               name="monday_hour"
-                              ng-model="timesheet.workHours.monday"
+                              ng-model="timesheet.timecards[0].workHours.monday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.workHours.monday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].workHours.monday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -46,10 +46,10 @@
                               max="24"
                               step="0.5"
                               name="tuesday_hour"
-                              ng-model="timesheet.workHours.tuesday"
+                              ng-model="timesheet.timecards[0].workHours.tuesday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.workHours.tuesday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].workHours.tuesday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -58,10 +58,10 @@
                               max="24"
                               step="0.5"
                               name="wednesday_hour"
-                              ng-model="timesheet.workHours.wednesday"
+                              ng-model="timesheet.timecards[0].workHours.wednesday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.workHours.wednesday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].workHours.wednesday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -70,10 +70,10 @@
                               max="24"
                               step="0.5"
                               name="thursday_hour"
-                              ng-model="timesheet.workHours.thursday"
+                              ng-model="timesheet.timecards[0].workHours.thursday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.workHours.thursday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].workHours.thursday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -82,10 +82,10 @@
                               max="24"
                               step="0.5"
                               name="friday_hour"
-                              ng-model="timesheet.workHours.friday"
+                              ng-model="timesheet.timecards[0].workHours.friday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.workHours.friday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].workHours.friday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -94,13 +94,13 @@
                               max="24"
                               step="0.5"
                               name="saturday_hour"
-                              ng-model="timesheet.workHours.saturday"
+                              ng-model="timesheet.timecards[0].workHours.saturday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.workHours.saturday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].workHours.saturday.hours}}</span>
                         </td>
                         <td>
-                          <span><b>{{timesheet.getTotalBaseHours()}}</b></span>
+                          <span><b>{{timesheet.timecards[0].getTotalBaseHours()}}</b></span>
                         </td>
                     </tr>
                   </tbody>
@@ -130,10 +130,10 @@
                               max="24"
                               step="0.5"
                               name="sunday_overtime_hour"
-                              ng-model="timesheet.overtimeHours.sunday"
+                              ng-model="timesheet.timecards[0].overtimeHours.sunday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.overtimeHours.sunday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].overtimeHours.sunday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -142,10 +142,10 @@
                               max="24"
                               step="0.5"
                               name="monday_overtime_hour"
-                              ng-model="timesheet.overtimeHours.monday"
+                              ng-model="timesheet.timecards[0].overtimeHours.monday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.overtimeHours.monday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].overtimeHours.monday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -154,10 +154,10 @@
                               max="24"
                               step="0.5"
                               name="tuesday_overtime_hour"
-                              ng-model="timesheet.overtimeHours.tuesday"
+                              ng-model="timesheet.timecards[0].overtimeHours.tuesday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.overtimeHours.tuesday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].overtimeHours.tuesday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -166,10 +166,10 @@
                               max="24"
                               step="0.5"
                               name="wednesday_overtime_hour"
-                              ng-model="timesheet.overtimeHours.wednesday"
+                              ng-model="timesheet.timecards[0].overtimeHours.wednesday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.overtimeHours.wednesday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].overtimeHours.wednesday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -178,10 +178,10 @@
                               max="24"
                               step="0.5"
                               name="thursday_overtime_hour"
-                              ng-model="timesheet.overtimeHours.thursday"
+                              ng-model="timesheet.timecards[0].overtimeHours.thursday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.overtimeHours.thursday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].overtimeHours.thursday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -190,10 +190,10 @@
                               max="24"
                               step="0.5"
                               name="friday_overtime_hour"
-                              ng-model="timesheet.overtimeHours.friday"
+                              ng-model="timesheet.timecards[0].overtimeHours.friday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.overtimeHours.friday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].overtimeHours.friday.hours}}</span>
                         </td>
                         <td>
                           <input 
@@ -202,13 +202,13 @@
                               max="24"
                               step="0.5"
                               name="saturday_overtime_hour"
-                              ng-model="timesheet.overtimeHours.saturday"
+                              ng-model="timesheet.timecards[0].overtimeHours.saturday.hours"
                               ng-if="allowEdit()"
                               class="full-width">
-                          <span ng-if="!allowEdit()">{{timesheet.overtimeHours.saturday}}</span>
+                          <span ng-if="!allowEdit()">{{timesheet.timecards[0].overtimeHours.saturday.hours}}</span>
                         </td>
                         <td>
-                          <span><b>{{timesheet.getTotalOvertimeHours()}}</b></span>
+                          <span><b>{{timesheet.timecards[0].getTotalOvertimeHours()}}</b></span>
                         </td>
                     </tr>
                   </tbody>

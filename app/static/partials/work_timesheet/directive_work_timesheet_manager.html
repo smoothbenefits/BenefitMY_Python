@@ -63,8 +63,8 @@
             <td>
               <span>{{employeeWorkHour.employee.firstName}} {{employeeWorkHour.employee.lastName}}</span>
             </td>
-            <td width="100">{{employeeWorkHour.getTotalBaseHours()}}</td>
-            <td width="100">{{employeeWorkHour.getTotalOvertimeHours()}}</td>
+            <td width="100">{{employeeWorkHour.timecards[0].getTotalBaseHours()}}</td>
+            <td width="100">{{employeeWorkHour.timecards[0].getTotalOvertimeHours()}}</td>
             <td>{{employeeWorkHour.updatedTimestamp}}</td>
             <td width="100"><span>
                 <a ng-click="viewDetails(employeeWorkHour)">Edit</a>
