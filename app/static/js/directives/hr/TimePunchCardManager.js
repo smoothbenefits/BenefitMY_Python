@@ -1,6 +1,8 @@
 BenefitMyApp.controller('TimePunchCardEditModalController', [
   '$scope', '$modalInstance', 'user', 'week', 'WorkTimesheetService',
   function($scope, $modalInstance, user, week, WorkTimesheetService){
+    $scope.user = user;
+    $scope.company = company;
     $scope.week = week;
     $scope.adminMode = true;
     $scope.saveResult = function(savedTimecards){
@@ -100,6 +102,9 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                 resolve: {
                   'user': function() {
                     return $scope.user;
+                  },
+                  'company': function(){
+                    return $scope.company;
                   },
                   'week': function(){
                     return $scope.selectedDisplayWeek;
