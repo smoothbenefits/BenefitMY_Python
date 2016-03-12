@@ -16,29 +16,44 @@ class CompanyEnrollmentSummaryView(APIView):
             cursor.execute("""select distinct cu.user_id, COALESCE(p.first_name, u.first_name), COALESCE(p.last_name, u.last_name)
 from app_companyuser cu
 join app_authuser u on u.id = cu.user_id
+join app_companygroupmember as cgm on cgm.user_id = cu.user_id
 left join app_person p on p.user_id=cu.user_id and p.relationship='self'
-left join app_usercompanybenefitplanoption health on health.user_id = cu.user_id
-left join app_usercompanylifeinsuranceplan basic on basic.user_id = cu.user_id
-left join app_personcompsuppllifeinsuranceplan sp on sp.person_id = p.id
-left join app_usercompanyltdinsuranceplan ltd on ltd.user_id = cu.user_id
-left join app_usercompanystdinsuranceplan std on std.user_id=cu.user_id
-left join app_usercompanywaivedbenefit hwaive on hwaive.user_id = cu.user_id
-left join app_personcompanyhraplan hra on hra.person_id = p.id
-left join app_fsa fsa on fsa.user_id = cu.user_id
-left join app_personcompanygrouphsaplan hsa on hsa.person_id = p.id
+left join app_companygroupbenefitplanoption as compgrouphealth on compgrouphealth.company_group_id = cgm.company_group_id
+left join app_companybenefitplanoption as comphealth on comphealth.id = compgrouphealth.company_benefit_plan_option_id
+left join app_usercompanybenefitplanoption as health on health.user_id = cu.user_id and comphealth.id = health.benefit_id
+left join app_companygroupbasiclifeinsuranceplan as compbasic on compbasic.company_group_id = cgm.company_group_id
+left join app_usercompanylifeinsuranceplan as basic on basic.user_id = cu.user_id
+left join app_companygroupsuppllifeinsuranceplan as compsup on compsup.company_group_id = cgm.company_group_id
+left join app_personcompsuppllifeinsuranceplan as sp on sp.person_id = p.id
+left join app_companygroupltdinsuranceplan as compgltd on compgltd.company_group_id = cgm.company_group_id
+left join app_usercompanyltdinsuranceplan as ltd on ltd.user_id = cu.user_id
+left join app_companygroupstdinsuranceplan as compgstd on compgstd.company_group_id = cgm.company_group_id
+left join app_usercompanystdinsuranceplan as std on std.user_id=cu.user_id
+left join app_companygrouphraplan as comphra on comphra.company_group_id = cgm.company_group_id
+left join app_personcompanyhraplan as hra on hra.person_id = p.id
+left join app_companygroupfsaplan as compfsa on compfsa.company_group_id = cgm.company_group_id
+left join app_fsa as fsa on fsa.user_id = cu.user_id
+left join app_personcompanygrouphsaplan as hsa on hsa.person_id = p.id
+left join app_companygrouphsaplan as comphsa on comphsa.company_group_id = cgm.company_group_id
+left join app_usercompanywaivedbenefit as hwaive on hwaive.user_id = cu.user_id
 where cu.company_id = %s
 and cu.company_user_type = 'employee'
 and (p.id is null
 or
-(health.id is null
- and basic.id is null
- and sp.id is null
- and ltd.id is null
- and std.id is null
- and hwaive.id is null
- and hra.id is null
- and fsa.id is null
- and hsa.id is null))""", [company_id])
+(
+    (
+        comphealth.id is not null or compbasic.id is not null or 
+        compsup.id is not null or compgltd.id is not null or
+        compgstd.id is not null or comphra.id is not null or
+        compfsa.id is not null or comphsa.id is not null
+    )
+    and
+    (
+        health.id is null and sp.id is null and ltd.id is null and
+        std.id is null and hwaive.id is null and hra.id is null and
+        fsa.id is null and hsa.id is null and basic.id is null
+    )
+))""", [company_id])
             rows = cursor.fetchall()
             return self._convert_db_rows_to_list(rows)
 
