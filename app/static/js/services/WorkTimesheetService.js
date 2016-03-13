@@ -15,11 +15,11 @@ benefitmyService.factory('WorkTimesheetService',
             var total = 0;
 
             if (weekHours) {
-                _.each(_.values(weekHours), function(hour){
-                    if(typeof hour === 'number'){
+                _.each(_.values(weekHours), function(dayHours){
+                    if (typeof dayHours.hours === 'number') {
                         hasAnyValue = true;
 
-                        total += hour;
+                        total += dayHours.hours;
                     }
                 });
             }
@@ -49,25 +49,24 @@ benefitmyService.factory('WorkTimesheetService',
                 id: domainModel._id,
                 weekStartDate: domainModel.weekStartDate,
                 employee: domainModel.employee,
-                workHours: domainModel.workHours,
-                overtimeHours: domainModel.overtimeHours,
+                timecards: mapTimecardDomainModelListToViewModelList(domainModel.timecards),
                 createdTimestamp: moment(domainModel.createdTimestamp).format(DATE_TIME_FORMAT_STRING),
-                updatedTimestamp: moment(domainModel.updatedTimestamp).format(DATE_TIME_FORMAT_STRING),
-                getTotalBaseHours: _calculateTotalBaseHours,
-                getTotalOvertimeHours: _calculateTotalOvertimeHours
+                updatedTimestamp: moment(domainModel.updatedTimestamp).format(DATE_TIME_FORMAT_STRING)
             };
             return viewModel;
         };
 
-        var mapViewModelToDomainModel = function(viewModel) {
-          var domainModel = {
-            'weekStartDate': viewModel.weekStartDate,
-            'workHours': viewModel.workHours,
-            'overtimeHours': viewModel.overtimeHours,
-            'employee': viewModel.employee
-          };
+        var mapTimecardDomainToViewModel = function(timecardDomainModel) {
+            var viewModel = {
+                id: timecardDomainModel._id,
+                tags: timecardDomainModel.tags,
+                workHours: timecardDomainModel.workHours,
+                overtimeHours: timecardDomainModel.overtimeHours,
 
-          return domainModel;
+                getTotalBaseHours: _calculateTotalBaseHours,
+                getTotalOvertimeHours: _calculateTotalOvertimeHours
+            };
+            return viewModel;
         };
 
         var mapDomainModelListToViewModelList = function(domainModelList){
@@ -76,6 +75,47 @@ benefitmyService.factory('WorkTimesheetService',
                 viewModelList.push(mapDomainModelToViewModel(domainModel));
             });
             return viewModelList;
+        };
+
+        var mapTimecardDomainModelListToViewModelList = function(domainModelList){
+            var viewModelList = [];
+            _.each(domainModelList, function(domainModel){
+                viewModelList.push(mapTimecardDomainToViewModel(domainModel));
+            });
+            return viewModelList;
+        };
+
+        var getBlankTimecard = function() {
+            return {
+                tags:[],
+                workHours: getBlankWeekHours(),
+                overtimeHours: getBlankWeekHours(),
+
+                getTotalBaseHours: _calculateTotalBaseHours,
+                getTotalOvertimeHours: _calculateTotalOvertimeHours
+            }
+        };
+
+        var getBlankWeekHours = function() {
+            return {
+                sunday: getBlankDayHours(),
+                monday: getBlankDayHours(),
+                tuesday: getBlankDayHours(),
+                wednesday: getBlankDayHours(),
+                thursday: getBlankDayHours(),
+                friday: getBlankDayHours(),
+                saturday: getBlankDayHours()
+            }
+        };
+
+        var getBlankDayHours = function() {
+            return {
+                hours: 0,
+                timeRange: {
+                    start: null,
+                    end: null
+                }
+            };
         };
 
         var GetBlankTimesheetForEmployeeUser = function(
@@ -94,27 +134,9 @@ benefitmyService.factory('WorkTimesheetService',
             var blankViewModel = {
                 'weekStartDate': weekStartDateString,
                 'employee': employee,
-                'workHours': {
-                    'sunday': null,
-                    'monday': null,
-                    'tuesday': null,
-                    'wednesday': null,
-                    'thursday': null,
-                    'friday': null,
-                    'saturday': null
-                },
-                'overtimeHours': {
-                    'sunday': null,
-                    'monday': null,
-                    'tuesday': null,
-                    'wednesday': null,
-                    'thursday': null,
-                    'friday': null,
-                    'saturday': null
-                },
-                getTotalBaseHours: _calculateTotalBaseHours,
-                getTotalOvertimeHours: _calculateTotalOvertimeHours,
-                'updatedTimestamp':'N/A'
+                'timecards': [
+                    getBlankTimecard()
+                ]
             };
 
             return blankViewModel;
@@ -139,8 +161,7 @@ benefitmyService.factory('WorkTimesheetService',
         };
 
         var CreateWorkTimesheet = function(timesheetToSave) {
-          var dto = mapViewModelToDomainModel(timesheetToSave);
-          return WorkTimesheetRepository.Collection.save({}, dto).$promise
+          return WorkTimesheetRepository.Collection.save({}, timesheetToSave).$promise
           .then(function(createdEntry) {
             return createdEntry;
           });
