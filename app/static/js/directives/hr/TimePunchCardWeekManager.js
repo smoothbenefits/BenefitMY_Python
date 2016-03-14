@@ -2,24 +2,23 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
     '$scope',
     '$attrs',
     '$controller',
-    'WorkTimesheetService',
+    'WorkTimePunchCardService',
     'UsStateService',
     function TimePunchCardWeekDirectiveController(
       $scope,
       $attrs,
       $controller,
-      WorkTimesheetService,
+      WorkTimePunchCardService,
       UsStateService) {
 
         var curWeek = null;
 
-        UsStateService.GetStates()
-        .then(function(allStates){
+        UsStateService.GetStates().then(function(allStates){
             $scope.allStates = allStates;
         });
 
-        var getBlankTimeCardForWeek = function(week){
-            var blankCard = WorkTimesheetService.GetBlankTimesheetForEmployeeUser(
+        var getBlankPunchCardForWeek = function(week){
+            var blankCard = WorkTimePunchCardService.GetBlankPunchCardForEmployeeUser(
                                 $scope.user,
                                 $scope.company,
                                 week.weekStartDate);
@@ -27,20 +26,36 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
             return blankCard;
         };
 
+        var getByStateTag = function(tags) {
+          return _.find(tags, function(tag) {
+            return tag.tagType === WorkTimePunchCardService.BY_STATE_PUNCHCARD_TYPE;
+          });
+        };
+
         $scope.showSpinner = false;
         $scope.$watch('week', function(updatedWeek) {
             if(updatedWeek && curWeek !== updatedWeek){
                 curWeek = updatedWeek;
-                $scope.timecards = [];
-                $scope.timecards.push(getBlankTimeCardForWeek(updatedWeek));
+                $scope.workPunchCard = getBlankPunchCardForWeek(updatedWeek);
             }
         });
 
-        // Register the confirm message for saving timecard, so that the 
+
+        $scope.getTimeCardState = function(timecard) {
+          var byStateTag = getByStateTag(timecard.tags);
+          return byStateTag.tagContent;
+        };
+
+        $scope.stateSelected = function(timecard) {
+          var byStateTag = getByStateTag(timecard.tags);
+          byStateTag.tagContent = timecard.state;
+        };
+
+        // Register the confirm message for saving timecard, so that the
         // auto confirm directive can use this properly.
         $scope.saveTimeCardsConfirmText =  'Do you want to proceed with submitting the TimeCard?\n'
             + 'Please note once submitted, no further changes are allowed on this timesheet.';
-        
+
         if($scope.adminMode){
             $scope.saveTimeCardsConfirmText = 'Do you really want to edit the timesheet for this employee?';
         }
@@ -48,30 +63,44 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
         $scope.deleteTimeCardConfirm = 'Are you sure you want to delete this time sheet? The action cannot be reverted!';
 
         $scope.isTimeCardValidForSave = function() {
-            return true;
+          return _.every($scope.workPunchCard.timecards, function(timecard) {
+
+            if (!timecard.state) {
+              return false;
+            }
+
+            var pairs = _.pairs(timecard.workHours);
+            return _.every(pairs, function(pair) {
+              var start = pair[1].timeRange.start;
+              var end = pair[1].timeRange.end;
+
+              if (!start || !end) {
+                return false;
+              }
+
+              return end.getTime() > start.getTime();
+            });
+          });
         };
 
         $scope.allowEdit = function() {
             return true;
         };
 
-        $scope.isTimeCardsValidForSave = function(){
-            return false;
-        };
-
         $scope.addTimeCard = function(){
-            $scope.timecards.push(getBlankTimeCardForWeek(curWeek));
+            $scope.workPunchCard.timecards.push(getBlankTimeCardForWeek(curWeek));
         };
 
         $scope.removeCard = function(timecard){
-            $scope.timecards = _.reject($scope.timecards, function(candidate){
+            $scope.workPunchCard.timecards = _.reject($scope.workPunchCard.timecards,
+              function(candidate){
                 return candidate == timecard;
             });
         };
 
         $scope.saveTimeCards = function() {
-            if($scope.timesheet.id){
-                WorkTimesheetService.UpdateWorkTimesheet($scope.timesheet)
+            if($scope.workPunchCard.id){
+                WorkTimePunchCardService.UpdateWorkPunchCard($scope.workPunchCard)
                 .then(function(resultTimesheet){
                     if($scope.saveResult){
                             $scope.saveResult({savedTimeSheet: resultTimesheet});
@@ -84,7 +113,7 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
                 );
             }
             else{
-                WorkTimesheetService.CreateWorkTimesheet($scope.timesheet)
+                WorkTimePunchCardService.CreateWorkPunchCard($scope.workPunchCard)
                 .then(
                     function(resultTimesheet) {
                         if($scope.saveResult){
@@ -99,8 +128,6 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
                 );
             }
         };
-
-
     }
   ]
 ).directive('bmTimePunchCardWeekManager', function() {

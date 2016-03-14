@@ -360,6 +360,7 @@ PIPELINE_JS = {
             'js/services/CommonUIWidgetService.js',
             'js/services/TimeOffService.js',
             'js/services/WorkTimesheetService.js',
+            'js/services/WorkTimePunchCardService.js',
             'js/services/UserOnboardingStepStateService.js',
             'js/services/CompanyPersonnelsService.js',
             'js/services/UsStateService.js',
