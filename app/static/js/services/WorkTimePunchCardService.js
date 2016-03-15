@@ -113,7 +113,8 @@ benefitmyService.factory('WorkTimePunchCardService',
               var transposed = {state: stateTag.tagContent};
               var keys = _.keys(timecard.workHours);
               _.each(keys, function(key) {
-                transposed[key] = timecard.workHours[key].hours;
+                //Do single decimal rounding
+                transposed[key] = Math.round(timecard.workHours[key].hours * 10) / 10;
               });
               workHoursByStateList.push(transposed);
             });
