@@ -40,7 +40,6 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
             }
         });
 
-
         $scope.getTimeCardState = function(timecard) {
           var byStateTag = getByStateTag(timecard.tags);
           return byStateTag.tagContent;
@@ -63,6 +62,10 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
         $scope.deleteTimeCardConfirm = 'Are you sure you want to delete this time sheet? The action cannot be reverted!';
 
         $scope.isTimeCardValidForSave = function() {
+          if (!$scope.workPunchCard) {
+            return false;
+          }
+
           return _.every($scope.workPunchCard.timecards, function(timecard) {
 
             if (!timecard.state) {
@@ -117,7 +120,7 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
                 .then(
                     function(resultTimesheet) {
                         if($scope.saveResult){
-                            $scope.saveResult({savedTimeSheet: resultTimesheet});
+                            $scope.saveResult({savedTimecards: resultTimesheet});
                         }
                     },
                     function(errors) {

@@ -67,15 +67,16 @@ benefitmyService.factory('WorkTimePunchCardService',
           };
 
           _.each(domainModel.timecards, function(timecard) {
-            var keys = _.key(workHours);
+            var workHours = timecard.workHours;
+            var keys = _.keys(workHours);
             // Calculate total hours base on start and end time
             _.each(keys, function(key) {
-              var start = timecard[key].timeRange.start;
-              var end = timecard[key].timeRange.end;
+              var start = workHours[key].timeRange.start;
+              var end = workHours[key].timeRange.end;
               // Substrction provide difference in milliseconds.
               // Convert to hours and assigned to field
-              if (moment.isDate(start) && moment.isDate(end)) {
-                timecard[key].hours = Math.abs(start - end) / 36e5;
+              if (start && end) {
+                workHours[key].hours = Math.abs(start - end) / 36e5;
               }
             });
           });
@@ -89,6 +90,29 @@ benefitmyService.factory('WorkTimePunchCardService',
                 viewModelList.push(mapDomainModelToViewModel(domainModel));
             });
             return viewModelList;
+        };
+
+        var getByStateTag = function(tags) {
+          return _.find(tags, function(tag) {
+            return tag.tagType === BY_STATE_PUNCHCARD_TYPE;
+          });
+        };
+
+        var GetWorkHoursByState = function(punchCard) {
+          var workHoursByStateList = [];
+          if (punchCard && punchCard.timecards) {
+            _.each(punchCard.timecards, function(timecard) {
+              var stateTag = getByStateTag(timecard.tags);
+              var transposed = {state: stateTag.tagContent};
+              var keys = _.keys(timecard.workHours);
+              _.each(keys, function(key) {
+                transposed[key] = timecard.workHours[key].hours;
+              });
+              workHoursByStateList.push(transposed);
+            });
+          }
+
+          return workHoursByStateList;
         };
 
         var GetBlankPunchCardForEmployeeUser = function(
@@ -182,21 +206,20 @@ benefitmyService.factory('WorkTimePunchCardService',
         };
 
         var GetWorkPunchCardByEmployeeUser = function(employeeUser, company, weekStartDate){
-            var id = utilityService.getEnvAwareId(employeeUser.id);
-            var weekStartDateString =
-                moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING)
+          var id = utilityService.getEnvAwareId(employeeUser.id);
+          var weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
 
-            return WorkTimesheetRepository.ByEmployee.query({
-                    userId: id,
-                    start_date: weekStartDateString,
-                    end_date: weekStartDateString})
-                .$promise.then(function(resultEntries){
-                    if (resultEntries && resultEntries.length > 0) {
-                        return mapDomainModelToViewModel(resultEntries[0]);
-                    } else {
-                        return GetBlankPunchCardForEmployeeUser(employeeUser, company, weekStartDateString);
-                    }
-                });
+          return WorkTimesheetRepository.ByEmployee.query({
+                  userId: id,
+                  start_date: weekStartDateString,
+                  end_date: weekStartDateString})
+              .$promise.then(function(resultEntries){
+                  if (resultEntries && resultEntries.length > 0) {
+                      return mapDomainModelToViewModel(resultEntries[0]);
+                  } else {
+                      return GetBlankPunchCardForEmployeeUser(employeeUser, company, weekStartDateString);
+                  }
+              });
         };
 
         var CreateWorkPunchCard = function(punchCardToSave) {
@@ -233,6 +256,7 @@ benefitmyService.factory('WorkTimePunchCardService',
 
         return {
           BY_STATE_PUNCHCARD_TYPE: BY_STATE_PUNCHCARD_TYPE,
+          GetWorkHoursByState: GetWorkHoursByState,
           GetWorkPunchCardByEmployeeUser: GetWorkPunchCardByEmployeeUser,
           CreateWorkPunchCard: CreateWorkPunchCard,
           UpdateWorkPunchCard: UpdateWorkPunchCard,

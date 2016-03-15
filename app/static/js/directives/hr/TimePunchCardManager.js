@@ -17,14 +17,14 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     '$modal',
     '$attrs',
     '$controller',
-    'WorkTimesheetService',
+    'WorkTimePunchCardService',
     'CompanyPersonnelsService',
     function TimePunchCardDirectiveController(
       $scope,
       $modal,
       $attrs,
       $controller,
-      WorkTimesheetService,
+      WorkTimePunchCardService,
       CompanyPersonnelsService) {
 
         // Inherite scope from base
@@ -45,19 +45,19 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             var today = moment();
             var startDateOfCurrentWeek = moment(today).startOf('week');
 
-            // Construct the list of weeks and massage the data ready for 
+            // Construct the list of weeks and massage the data ready for
             // display
             for (var i = -preWeeks; i <= postWeeks; i++) {
                 var weekStartDate = moment(startDateOfCurrentWeek).add(i, 'weeks');
                 var weekEndDate = moment(weekStartDate).endOf('week');
                 var weekItem = {
                     weekStartDate: weekStartDate,
-                    weekDisplayText: weekStartDate.format(SHORT_DATE_FORMAT_STRING) 
-                                    + ' - ' 
+                    weekDisplayText: weekStartDate.format(SHORT_DATE_FORMAT_STRING)
+                                    + ' - '
                                     + weekEndDate.format(SHORT_DATE_FORMAT_STRING)
                 };
 
-                // Mark the current week for easy selection 
+                // Mark the current week for easy selection
                 if (weekItem.weekStartDate.isSame(startDateOfCurrentWeek)) {
                     weekItem.isCurrentWeek = true;
                     weekItem.weekDisplayText = weekItem.weekDisplayText + ' [*]'
@@ -69,52 +69,69 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             return weeks;
         };
 
+        $scope.reloadTimePunchCard = function() {
+          WorkTimePunchCardService.GetWorkPunchCardByEmployeeUser(
+              $scope.user,
+              $scope.company,
+              $scope.selectedDisplayWeek.weekStartDate)
+          .then(function(punchcard) {
+            $scope.workPunchCard = punchcard;
+            $scope.workHoursByStateList =
+              WorkTimePunchCardService.GetWorkHoursByState($scope.workPunchCard);
+          });
+        };
+
+        $scope.hasFiledPunchCardForCurrentWeek = function() {
+          return $scope.workPunchCard && $scope.workPunchCard.id;
+        };
 
         $scope.$watch('user', function(theUser) {
-            if(theUser){
-                // Populate the weeks for display
-                $scope.listOfWeeks = getListOfWeeks();
+          if(theUser){
+            // Populate the weeks for display
+            $scope.listOfWeeks = getListOfWeeks();
 
-                $scope.selectedDisplayWeek = _.find($scope.listOfWeeks, function(weekItem) {
-                    return weekItem.isCurrentWeek;
-                });
-            }
+            $scope.selectedDisplayWeek = _.find($scope.listOfWeeks, function(weekItem) {
+                return weekItem.isCurrentWeek;
+            });
+
+            $scope.reloadTimePunchCard();
+          }
         });
 
         $scope.saveResult = function(savedTimeSheet){
-            if(savedTimeSheet){
-                $state.reload();
-                var successMessage = "Your timesheet has been submitted successfully!"
-                $scope.showMessageWithOkayOnly('Success', successMessage);
-            }
-            else{
-                var message = 'Failed to save the timesheet. Please try again later.';
-                $scope.showMessageWithOkayOnly('Error', message);
-            }
-        }
+          if(savedTimeSheet){
+            $scope.reloadTimePunchCard();
+            var successMessage = "Your timesheet has been submitted successfully!"
+            $scope.showMessageWithOkayOnly('Success', successMessage);
+          }
+          else{
+            var message = 'Failed to save the timesheet. Please try again later.';
+            $scope.showMessageWithOkayOnly('Error', message);
+          }
+        };
 
         $scope.viewDetails = function(){
-            var modalInstance = $modal.open({
-                templateUrl: '/static/partials/work_timesheet/modal_edit_time_punch_card.html',
-                controller: 'TimePunchCardEditModalController',
-                size: 'lg',
-                backdrop: 'static',
-                resolve: {
-                  'user': function() {
-                    return $scope.user;
-                  },
-                  'company': function(){
-                    return $scope.company;
-                  },
-                  'week': function(){
-                    return $scope.selectedDisplayWeek;
-                  }
-                }
-              });
+          var modalInstance = $modal.open({
+            templateUrl: '/static/partials/work_timesheet/modal_edit_time_punch_card.html',
+            controller: 'TimePunchCardEditModalController',
+            size: 'lg',
+            backdrop: 'static',
+            resolve: {
+              'user': function() {
+                return $scope.user;
+              },
+              'company': function(){
+                return $scope.company;
+              },
+              'week': function(){
+                return $scope.selectedDisplayWeek;
+              }
+            }
+          });
 
-            modalInstance.result.then(function(savedTimesheet){
-                $state.reload();
-            });
+          modalInstance.result.then(function(savedTimesheet){
+              $state.reload();
+          });
         };
     }
   ]
