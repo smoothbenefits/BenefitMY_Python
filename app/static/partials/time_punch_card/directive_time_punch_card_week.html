@@ -29,33 +29,37 @@
                         Sunday
                       </td>
                       <td>
-                        <fieldset ng-disabled="timecard.workHours.sunday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.sunday.timeRange.start"
-                            class="time-picker-sunday">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.sunday.timeRange.start"
+                          ng-hide="timecard.workHours.sunday.notApplicable"
+                          class="time-picker-sunday">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.sunday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
-                        <fieldset ng-disabled="timecard.workHours.sunday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.sunday.timeRange.end"
-                            class="time-picker-sunday">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.sunday.timeRange.end"
+                          ng-hide="timecard.workHours.sunday.notApplicable"
+                          class="time-picker-sunday">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.sunday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
                         <input
                           type="checkbox"
-                          ng-model="timecard.workHours.sunday.notApplicable" />N/A
+                          ng-model="timecard.workHours.sunday.notApplicable" /> It's not a workday
                       </td>
                     </tr>
                     <tr>
@@ -63,33 +67,38 @@
                         Monday
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.monday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.monday.timeRange.start"
-                            class="time-picker-monday">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.monday.timeRange.start"
+                          ng-hide="timecard.workHours.monday.notApplicable"
+                          class="time-picker-monday">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.monday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.monday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.monday.timeRange.end"
-                            class="time-picker-monday">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.monday.timeRange.end"
+                          ng-hide="timecard.workHours.monday.notApplicable"
+                          class="time-picker-monday">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.monday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
                         <input
                           type="checkbox"
-                          ng-model="timecard.workHours.monday.notApplicable" />N/A
+                          ng-model="timecard.workHours.monday.notApplicable" />
+                          It's not a workday
                       </td>
                     </tr>
                     <tr>
@@ -97,33 +106,38 @@
                         Tuesday
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.tuesday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.tuesday.timeRange.start"
-                            class="time-picker">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.tuesday.timeRange.start"
+                          ng-hide="timecard.workHours.tuesday.notApplicable"
+                          class="time-picker">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.tuesday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.tuesday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.tuesday.timeRange.end"
-                            class="time-picker">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.tuesday.timeRange.end"
+                          ng-hide="timecard.workHours.tuesday.notApplicable"
+                          class="time-picker">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.tuesday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
                         <input
                           type="checkbox"
-                          ng-model="timecard.workHours.tuesday.notApplicable" />N/A
+                          ng-model="timecard.workHours.tuesday.notApplicable" />
+                          It's not a workday
                       </td>
                     </tr>
                     <tr>
@@ -131,33 +145,38 @@
                         Wednesday
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.wednesday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.wednesday.timeRange.start"
-                            class="time-picker">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.wednesday.timeRange.start"
+                          ng-hide="timecard.workHours.wednesday.notApplicable"
+                          class="time-picker">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.wednesday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.wednesday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.wednesday.timeRange.end"
-                            class="time-picker">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.wednesday.timeRange.end"
+                          ng-hide="timecard.workHours.wednesday.notApplicable"
+                          class="time-picker">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.wednesday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
                         <input
                           type="checkbox"
-                          ng-model="timecard.workHours.wednesday.notApplicable" />N/A
+                          ng-model="timecard.workHours.wednesday.notApplicable" />
+                          It's not a workday
                       </td>
                     </tr>
                     <tr>
@@ -165,33 +184,38 @@
                         Thursday
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.thursday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.thursday.timeRange.start"
-                            class="time-picker">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.thursday.timeRange.start"
+                          ng-hide="timecard.workHours.thursday.notApplicable"
+                          class="time-picker">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.thursday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.thursday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.thursday.timeRange.end"
-                            class="time-picker">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.thursday.timeRange.end"
+                          ng-hide="timecard.workHours.thursday.notApplicable"
+                          class="time-picker">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.thursday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
                         <input
                           type="checkbox"
-                          ng-model="timecard.workHours.thursday.notApplicable" />N/A
+                          ng-model="timecard.workHours.thursday.notApplicable" />
+                          It's not a work day
                       </td>
                     </tr>
                     <tr>
@@ -199,33 +223,38 @@
                         Friday
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.friday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.friday.timeRange.start"
-                            class="time-picker">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.friday.timeRange.start"
+                          ng-hide="timecard.workHours.friday.notApplicable"
+                          class="time-picker">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.friday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.friday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.friday.timeRange.end"
-                            class="time-picker">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.friday.timeRange.end"
+                          ng-hide="timecard.workHours.friday.notApplicable"
+                          class="time-picker">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.friday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
                         <input
                           type="checkbox"
-                          ng-model="timecard.workHours.friday.notApplicable" />N/A
+                          ng-model="timecard.workHours.friday.notApplicable" />
+                          It's not a workday
                       </td>
                     </tr>
                     <tr>
@@ -233,33 +262,38 @@
                         Saturday
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.saturday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.saturday.timeRange.start"
-                            class="time-picker">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.saturday.timeRange.start"
+                          ng-hide="timecard.workHours.saturday.notApplicable"
+                          class="time-picker">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.saturday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
-                        <fieldset ng-diabled="timecard.workHours.saturday.notApplicable">
-                          <timepicker
-                            id="time-picker"
-                            hour-step="'1'"
-                            minute-step="'1'"
-                            show-spinners="showSpinner"
-                            ng-model="timecard.workHours.saturday.timeRange.end"
-                            class="time-picker">
-                          </timepicker>
-                        </fieldset>
+                        <timepicker
+                          id="time-picker"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="showSpinner"
+                          ng-model="timecard.workHours.saturday.timeRange.end"
+                          ng-hide="timecard.workHours.saturday.notApplicable"
+                          class="time-picker">
+                        </timepicker>
+                        <span ng-show="timecard.workHours.saturday.notApplicable">
+                          Not Applicable
+                        </span>
                       </td>
                       <td>
                         <input
                           type="checkbox"
-                          ng-model="timecard.workHours.saturday.notApplicable" />N/A
+                          ng-model="timecard.workHours.saturday.notApplicable" />
+                          It's not a workday
                       </td>
                     </tr>
                   </tbody>

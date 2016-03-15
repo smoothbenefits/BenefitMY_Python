@@ -71,11 +71,18 @@ benefitmyService.factory('WorkTimePunchCardService',
             var keys = _.keys(workHours);
             // Calculate total hours base on start and end time
             _.each(keys, function(key) {
-              var start = workHours[key].timeRange.start;
-              var end = workHours[key].timeRange.end;
-              // Substrction provide difference in milliseconds.
-              // Convert to hours and assigned to field
-              if (start && end) {
+              var notApplicable = workHours[key].notApplicable;
+              if (notApplicable) {
+                // If the day does not have reported hours, set hours to 0
+                // and start/end time to the beginning of the epoch
+                workHours[key].hours = 0;
+                workHours[key].start = new Date(0);
+                workHours[key].end = new Date(0);
+              } else {
+                var start = workHours[key].timeRange.start;
+                var end = workHours[key].timeRange.end;
+                // Substrction provide difference in milliseconds.
+                // Convert to hours and assigned to field
                 workHours[key].hours = Math.abs(start - end) / 36e5;
               }
             });
