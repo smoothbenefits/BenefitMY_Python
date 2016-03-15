@@ -22,7 +22,6 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
                                 $scope.user,
                                 $scope.company,
                                 week.weekStartDate);
-            blankCard.state = null;
             return blankCard;
         };
 
@@ -42,7 +41,11 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
 
         $scope.getTimeCardState = function(timecard) {
           var byStateTag = getByStateTag(timecard.tags);
-          return byStateTag.tagContent;
+          if (byStateTag) {
+            return byStateTag.tagContent;
+          } else {
+            return null;
+          }
         };
 
         $scope.stateSelected = function(timecard) {
@@ -91,7 +94,8 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
         };
 
         $scope.addTimeCard = function(){
-            $scope.workPunchCard.timecards.push(getBlankTimeCardForWeek(curWeek));
+          var newPunchCard = getBlankPunchCardForWeek(curWeek);
+          $scope.workPunchCard.timecards.push(newPunchCard.timecards[0]);
         };
 
         $scope.removeCard = function(timecard){
