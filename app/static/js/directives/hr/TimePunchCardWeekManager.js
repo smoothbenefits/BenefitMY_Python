@@ -54,8 +54,14 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
           if (!$scope.workPunchCard) {
             return false;
           }
+          var allNotApplicable = _.every($scope.workPunchCard.timecards, function(checkCards){
+            var pairs = _.pairs(checkCards.workHours);
+            return _.every(pairs, function(pair){
+                return pair[1].notApplicable;
+            });
+          });
 
-          return _.every($scope.workPunchCard.timecards, function(timecard) {
+          return !allNotApplicable && _.every($scope.workPunchCard.timecards, function(timecard) {
 
             if (!timecard.state) {
               return false;
