@@ -405,7 +405,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/work_timesheet/timesheet_base.html',
                 controller: 'employerViewTimesheet'
             }).
-            state('admin_timePunchCards', {
+            state('admin_timepunchcards', {
                 url: '/admin/:company_id/time_punch_cards',
                 templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
                 controller: 'employerViewTimePunchCards'
