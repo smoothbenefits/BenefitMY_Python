@@ -18,8 +18,8 @@ benefitmyService.factory('WorkTimePunchCardService',
           if (timecards) {
             _.each(timecards, function(timecard) {
               var workHours = timecard.workHours;
-              if (weekHours) {
-                _.each(_.values(weekHours), function(hourObj){
+              if (workHours) {
+                _.each(_.values(workHours), function(hourObj){
                   if(typeof hourObj.hours === 'number'){
                     hasAnyValue = true;
                     total += hourObj.hours;
@@ -45,12 +45,42 @@ benefitmyService.factory('WorkTimePunchCardService',
             return _calculateTotalHours(this.timecards);
         };
 
+        var mapDomainTimeCardsToViewTimeCards = function(domainTimeCards){
+          var viewTimeCards = [], start, end;
+          _.each(domainTimeCards, function(domainTimeCard){
+            viewTimeCard = angular.copy(domainTimeCard);
+            stateTag = getByStateTag(domainTimeCard.tags);
+            if(stateTag){
+              viewTimeCard.state = stateTag.tagContent;
+            }
+            var workHours = viewTimeCard.workHours;
+            var keys = _.keys(workHours);
+            _.each(keys, function(key) {
+              if (!workHours[key].hours) {
+                // If the day does not have reported hours, set hours to 0
+                // and start/end time to the beginning of the epoch
+                workHours[key].notApplicable = true;
+                start = new Date(0);
+                end = new Date(0);
+              } else {
+                workHours[key].notApplicable = false;
+                start = new Date(workHours[key].timeRange.start);
+                end = new Date(workHours[key].timeRange.end);
+              }
+              workHours[key].timeRange.start = start;
+              workHours[key].timeRange.end = end;
+            });
+            viewTimeCards.push(viewTimeCard);
+          });
+          return viewTimeCards;
+        };
+
         var mapDomainModelToViewModel = function(domainModel){
             var viewModel = {
                 id: domainModel._id,
                 weekStartDate: domainModel.weekStartDate,
                 employee: domainModel.employee,
-                timecards: domainModel.timecards,
+                timecards: mapDomainTimeCardsToViewTimeCards(domainModel.timecards),
                 overtimeHours: domainModel.overtimeHours,
                 createdTimestamp: moment(domainModel.createdTimestamp).format(DATE_TIME_FORMAT_STRING),
                 updatedTimestamp: moment(domainModel.updatedTimestamp).format(DATE_TIME_FORMAT_STRING),
@@ -61,11 +91,7 @@ benefitmyService.factory('WorkTimePunchCardService',
 
         var mapViewModelToDomainModel = function(viewModel) {
           var hourToMillisecondFactor = 60 * 60 * 1000;
-          var domainModel = {
-            'weekStartDate': viewModel.weekStartDate,
-            'timecards': viewModel.timecards,
-            'employee': viewModel.employee
-          };
+          var domainModel = angular.copy(viewModel);
 
           _.each(domainModel.timecards, function(timecard) {
             var workHours = timecard.workHours;
@@ -77,8 +103,8 @@ benefitmyService.factory('WorkTimePunchCardService',
                 // If the day does not have reported hours, set hours to 0
                 // and start/end time to the beginning of the epoch
                 workHours[key].hours = 0;
-                workHours[key].start = new Date(0);
-                workHours[key].end = new Date(0);
+                workHours[key].timeRange.start = new Date(0);
+                workHours[key].timeRange.end = new Date(0);
               } else {
                 var start = workHours[key].timeRange.start;
                 var end = workHours[key].timeRange.end;
@@ -88,6 +114,7 @@ benefitmyService.factory('WorkTimePunchCardService',
               }
             });
           });
+          domainModel.updatedTimestamp = undefined;
 
           return domainModel;
         };
@@ -124,6 +151,75 @@ benefitmyService.factory('WorkTimePunchCardService',
           return workHoursByStateList;
         };
 
+        var GetBlankPunchCard = function(){
+          var defaultStartTime = new Date();
+          defaultStartTime.setHours(8);
+          defaultStartTime.setMinutes(0);
+
+          var defaultEndTime = new Date();
+          defaultEndTime.setHours(18);
+          defaultEndTime.setMinutes(0);
+          return {
+              'workHours': {
+                'sunday': {
+                  'notApplicable': true,
+                  'hours': null,
+                  'timeRange': {
+                    'start': defaultStartTime,
+                    'end': defaultEndTime
+                  }
+                },
+                'monday': {
+                  'hours': null,
+                  'timeRange': {
+                    'start': defaultStartTime,
+                    'end': defaultEndTime
+                  }
+                },
+                'tuesday': {
+                  'hours': null,
+                  'timeRange': {
+                    'start': defaultStartTime,
+                    'end': defaultEndTime
+                  }
+                },
+                'wednesday': {
+                  'hours': null,
+                  'timeRange': {
+                    'start': defaultStartTime,
+                    'end': defaultEndTime
+                  }
+                },
+                'thursday': {
+                  'hours': null,
+                  'timeRange': {
+                    'start': defaultStartTime,
+                    'end': defaultEndTime
+                  }
+                },
+                'friday': {
+                  'hours': null,
+                  'timeRange': {
+                    'start': defaultStartTime,
+                    'end': defaultEndTime
+                  }
+                },
+                'saturday': {
+                  'notApplicable': true,
+                  'hours': null,
+                  'timeRange': {
+                    'start': defaultStartTime,
+                    'end': defaultEndTime
+                  }
+                }
+              },
+              'tags': [{
+                'tagType': BY_STATE_PUNCHCARD_TYPE,
+                'tagContent': ''
+              }]
+            }; 
+        }
+
         var GetBlankPunchCardForEmployeeUser = function(
             employeeUser,
             company,
@@ -137,77 +233,11 @@ benefitmyService.factory('WorkTimePunchCardService',
                 'companyDescriptor': utilityService.getEnvAwareId(company.id)
             };
 
-            var defaultStartTime = new Date();
-            defaultStartTime.setHours(8);
-            defaultStartTime.setMinutes(0);
-
-            var defaultEndTime = new Date();
-            defaultEndTime.setHours(18);
-            defaultEndTime.setMinutes(0);
-
             var blankViewModel = {
                 'weekStartDate': weekStartDateString,
                 'employee': employee,
-                'timecards': [{
-                  'workHours': {
-                    'sunday': {
-                      'notApplicable': true,
-                      'hours': null,
-                      'timeRange': {
-                        'start': defaultStartTime,
-                        'end': defaultEndTime
-                      }
-                    },
-                    'monday': {
-                      'hours': null,
-                      'timeRange': {
-                        'start': defaultStartTime,
-                        'end': defaultEndTime
-                      }
-                    },
-                    'tuesday': {
-                      'hours': null,
-                      'timeRange': {
-                        'start': defaultStartTime,
-                        'end': defaultEndTime
-                      }
-                    },
-                    'wednesday': {
-                      'hours': null,
-                      'timeRange': {
-                        'start': defaultStartTime,
-                        'end': defaultEndTime
-                      }
-                    },
-                    'thursday': {
-                      'hours': null,
-                      'timeRange': {
-                        'start': defaultStartTime,
-                        'end': defaultEndTime
-                      }
-                    },
-                    'friday': {
-                      'hours': null,
-                      'timeRange': {
-                        'start': defaultStartTime,
-                        'end': defaultEndTime
-                      }
-                    },
-                    'saturday': {
-                      'notApplicable': true,
-                      'hours': null,
-                      'timeRange': {
-                        'start': defaultStartTime,
-                        'end': defaultEndTime
-                      }
-                    }
-                  },
-                  'tags': [{
-                    'tagType': BY_STATE_PUNCHCARD_TYPE,
-                    'tagContent': ''
-                  }]
-                }],
-                getTotalBaseHours: _calculateTotalBaseHours,
+                'timecards': [GetBlankPunchCard()],
+                'getTotalBaseHours': _calculateTotalBaseHours,
                 'updatedTimestamp':'N/A'
             };
 
@@ -240,9 +270,10 @@ benefitmyService.factory('WorkTimePunchCardService',
         };
 
         var UpdateWorkPunchCard = function(punchCardToUpdate){
+            var dto = mapViewModelToDomainModel(punchCardToUpdate);
             return WorkTimesheetRepository.ById.update(
                {id:punchCardToUpdate.id},
-               punchCardToUpdate)
+               dto)
             .$promise
             .then(function(updatedEntry){
                 return updatedEntry;
@@ -270,6 +301,7 @@ benefitmyService.factory('WorkTimePunchCardService',
           CreateWorkPunchCard: CreateWorkPunchCard,
           UpdateWorkPunchCard: UpdateWorkPunchCard,
           GetWorkPunchCardsByCompany: GetWorkPunchCardsByCompany,
+          GetBlankPunchCard: GetBlankPunchCard,
           GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser
         };
     }
