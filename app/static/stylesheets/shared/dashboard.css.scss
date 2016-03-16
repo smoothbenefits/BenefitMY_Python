@@ -366,6 +366,24 @@
                         }
                     }
                 }
+            } //#plan_option_table
+            table#time-picker{
+                tbody{
+                    tr{
+                        td{
+                            padding:0px;
+                            background-color: #ffffff;
+                            border:none;
+                            input{
+                                height:30px;
+                            }
+                            button{
+                                height:30px;
+                                padding:5px 3px;
+                            }
+                        }
+                    }
+                }
             }
             .list-group {
                 .list-group-item {
