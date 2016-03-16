@@ -141,7 +141,7 @@
         </div>
         <div class="sub-nav collapse" id="employee-hr-nav">
           <a href="#/employee/hr/work_timesheet" ng-hide="disabledFeatures.WorkTimeSheet">Work Hour Timesheet</a>
-          <a href="#/employee/hr/timecards" ng-hide="disabledFeatures.RangedTimeCard">Work Timesheets</a>
+          <a href="#/employee/hr/timecards" ng-show="enabledFeatures.RangedTimeCard">Work Timesheets</a>
           <a href="#/employee/hr/timeoff" ng-hide="disabledFeatures.Timeoff">Time Off</a>
           <a href="#/employee/payroll/w4" ng-hide="disabledFeatures.W4">W4 Form</a>
           <a href="#/employee/payroll/direct_deposit" ng-hide="disabledFeatures.DD">Direct Deposit</a>

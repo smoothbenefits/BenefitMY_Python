@@ -60,6 +60,7 @@ benefitmyService.factory('WorkTimePunchCardService',
         };
 
         var mapViewModelToDomainModel = function(viewModel) {
+          var hourToMillisecondFactor = 60 * 60 * 1000;
           var domainModel = {
             'weekStartDate': viewModel.weekStartDate,
             'timecards': viewModel.timecards,
@@ -83,7 +84,7 @@ benefitmyService.factory('WorkTimePunchCardService',
                 var end = workHours[key].timeRange.end;
                 // Substrction provide difference in milliseconds.
                 // Convert to hours and assigned to field
-                workHours[key].hours = Math.abs(start - end) / 36e5;
+                workHours[key].hours = Math.abs(start - end) / hourToMillisecondFactor;
               }
             });
           });
