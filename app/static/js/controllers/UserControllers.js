@@ -132,6 +132,12 @@ var userController = userControllers.controller('userController',
       CompanyFeatureService.getDisabledCompanyFeatureByCompany($scope.company_id).then(function(features) {
         $scope.disabledFeatures = features;
       });
+
+      CompanyFeatureService.getEnabledCompanyFeatureByCompany($scope.company_id)
+      .then(function(features) {
+        $scope.enabledFeatures = features;
+      });
+
       EmployeeBenefitsAvailabilityService.getEmployeeAvailableBenefits(
           $scope.company_id,
           userInfo.user.id)
@@ -283,6 +289,10 @@ var userController = userControllers.controller('userController',
 
     $scope.viewWorkTimeSheet = function(){
       $state.go('admin_timesheet');
+    };
+
+    $scope.viewTimePunchCards = function(){
+      $state.go('admin_timepunchcards');
     };
 }]);
 

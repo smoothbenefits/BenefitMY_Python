@@ -1,0 +1,106 @@
+<div class="content-header">
+  <h1>Timesheet Reports and Time-off Requests</h1>
+  <span class="general-info" ng-hide="adminMode">Your timesheet and time off tracking</span>
+  <span class="general-info" ng-show="adminMode">View the work hour reported by employees</span>
+  <div class="view-instruction" ng-hide="adminMode">
+    <p>Please file your timesheets for the week selected.</p>
+    <p>Please make sure to file different timesheets for each State you worked in</p>
+    <p>You can also make time off requests at the bottom of the page</p>
+  </div>
+  <div class="view-instruction" ng-show="adminMode">
+    <p>You can find the total hours submitted by employees for selected week</p>
+  </div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="panel">
+    <div class="panel-heading">
+        Select Week
+    </div>
+    <div class="panel-body">
+        <div class="col-md-4">
+            <div class="select-box">
+                <select
+                    id="display_week"
+                    ng-model="selectedDisplayWeek"
+                    name="display_week"
+                    ng-options="weekItem.weekDisplayText for weekItem in listOfWeeks"
+                    ng-change="reloadTimePunchCard()"
+                    class="form-control"></select>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="panel" ng-hide="adminMode">
+    <div class="panel-heading">
+        Your Work Timesheet for the Week: <b>{{selectedDisplayWeek.weekDisplayText}}</b>
+    </div>
+    <div class="panel-body">
+      <div class="col-md-12" ng-if="!hasFiledPunchCardForCurrentWeek()">
+        <bm-time-punch-card-week-manager
+          admin-mode="adminMode"
+          work-punch-card="workPunchCard"
+          save-result="saveResult(savedPunchCards)">
+        </bm-time-punch-card-week-manager>
+      </div><!-- time punch card manager directive -->
+
+      <div class="col-md-12" ng-if="hasFiledPunchCardForCurrentWeek()">
+        <table class="table table-striped benefit-table fix-layout-table">
+          <thead>
+            <th><div>State</div></th>
+            <th><div>Sun</div></th>
+            <th><div>Mon</div></th>
+            <th><div>Tue</div></th>
+            <th><div>Wed</div></th>
+            <th><div>Thu</div></th>
+            <th><div>Fri</div></th>
+            <th><div>Sat</div></th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="workHours in workHoursByStateList">
+              <td><span>{{workHours.state}}</span></td>
+              <td><span>{{workHours.sunday}} Hrs</span></td>
+              <td><span>{{workHours.monday}} Hrs</span></td>
+              <td><span>{{workHours.tuesday}} Hrs</span></td>
+              <td><span>{{workHours.wednesday}} Hrs</span></td>
+              <td><span>{{workHours.thursday}} Hrs</span></td>
+              <td><span>{{workHours.friday}} Hrs</span></td>
+              <td><span>{{workHours.saturday}} Hrs</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="panel" ng-show="adminMode">
+    <div class="panel-heading">
+      The work hours submitted for week <b>{{selectedDisplayWeek.weekDisplayText}}</b>
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped benefit-table fix-layout-table"
+        id="plan_items_table" 
+        ng-show="employeeTimeCards.length > 0">
+        <thead>
+          <th><div>Name</div></th>
+          <th width="100"><div>Hours</div></th>
+          <th><div>Time Submitted</div></th>
+          <th width="100"><div>Action</div></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="employeeTimeCard in employeeTimeCards">
+            <td>
+              <span>{{employeeTimeCard.employee.firstName}} {{employeeTimeCard.employee.lastName}}</span>
+            </td>
+            <td width="100">{{employeeTimeCard.getTotalBaseHours()}}</td>
+            <td>{{employeeTimeCard.updatedTimestamp}}</td>
+            <td width="100"><span>
+                <a ng-click="viewDetails(employeeTimeCard)">Edit</a>
+              </span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="" ng-show="employeeTimeCards.length == 0">
+        There are no submitted work hours for week {{selectedDisplayWeek.weekDisplayText}}
+      </div>
+    </div>
+  </div>

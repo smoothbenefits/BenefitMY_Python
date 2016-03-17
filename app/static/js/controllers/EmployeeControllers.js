@@ -2570,3 +2570,22 @@ var employeeViewWorkTimeSheetController = employeeControllers.controller('employ
      };
    }
 ]);
+
+var employeeManageTimePunchCardController = employeeControllers.controller('employeeManageTimePunchCardController',
+  ['$scope',
+   '$state',
+   'UserService',
+   function($scope, $state, UserService){
+     UserService.getCurUserInfo().then(function(curUserInfo) {
+       $scope.user = curUserInfo.user;
+       $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+       $scope.company = curUserInfo.currentRole.company;
+     });
+     $scope.enableRequestorFeatures = true;
+     $scope.isAdmin = false;
+     $scope.pageTitle = 'Work Weekly Timesheet';
+     $scope.backToDashboard = function(){
+       $state.go('/employee');
+     };
+   }
+]);
