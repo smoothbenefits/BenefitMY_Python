@@ -8,11 +8,11 @@ BenefitMyApp.directive('bmCompanyInfoEditor', function() {
     'CompanyService',
     'PeriodDefinitionRepository',
     function CompanyInfoEditorDirectiveController(
-      $scope, 
+      $scope,
       $location,
-      $window, 
+      $window,
       $attrs,
-      CompanyService, 
+      CompanyService,
       PeriodDefinitionRepository) {
 
         $scope.client = {};
@@ -45,7 +45,11 @@ BenefitMyApp.directive('bmCompanyInfoEditor', function() {
 
         $scope.cancel = function() {
             $scope.exitView();
-        }
+        };
+
+        $scope.isNewCompany = function() {
+          return !$scope.client.company || !$scope.client.company.id;
+        };
     }
   ];
 

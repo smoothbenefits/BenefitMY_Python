@@ -9,10 +9,7 @@ BenefitMyApp.controller('TimeoffRequestController', [
         'Request will be directed to ' + manager.first_name + ' ' + manager.last_name;
     }
 
-    $scope.timeoffTypes = [
-      'Paid Time Off (PTO)',
-      'Sick Time'
-    ];
+    $scope.timeoffTypes = TimeOffService.GetAvailableTimeoffTypes();
 
     $scope.timeoff = {
       'approver': manager,
@@ -62,13 +59,14 @@ BenefitMyApp.controller('TimeoffRequestController', [
             $scope.requestedTimeOffs = timeOffs;
           });
 
-          TimeOffService.GetTimeOffQuota(theUser.id)
-          .then(function(quota){
-            $scope.timeoffQuota = quota;
+          var companyId = theUser.company_group_user[0].company_group.company.id;
+
+          TimeOffService.GetTimeOffQuota(theUser.id, companyId)
+          .then(function(quotaData){
+            $scope.quotaData = quotaData;
           });
 
           // Get manager information through employee profile
-          var companyId = theUser.company_group_user[0].company_group.company.id;
           EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, theUser.id)
           .then(function(profile) {
             $scope.employeeProfile = profile;
@@ -99,6 +97,12 @@ BenefitMyApp.controller('TimeoffRequestController', [
         });
       }
     });
+
+    $scope.showQuotaInfo = function() {
+        return $scope.quotaData 
+            && $scope.quotaData.quotaInfoCollection
+            && $scope.quotaData.quotaInfoCollection.length > 0;
+    };
 
     $scope.requestTimeOff = function(){
       var modalInstance = $modal.open({

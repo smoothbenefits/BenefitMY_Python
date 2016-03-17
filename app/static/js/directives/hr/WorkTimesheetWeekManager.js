@@ -17,13 +17,13 @@ BenefitMyApp.controller('WorkTimesheetWeekDirectiveController', [
         $scope.isTimesheetValidForSave = function() {
             return $scope.timesheet
                 && ($scope.adminMode || !$scope.timesheet.id)
-                && _.isNumber($scope.timesheet.workHours.sunday)
-                && _.isNumber($scope.timesheet.workHours.monday)
-                && _.isNumber($scope.timesheet.workHours.tuesday)
-                && _.isNumber($scope.timesheet.workHours.wednesday)
-                && _.isNumber($scope.timesheet.workHours.thursday)
-                && _.isNumber($scope.timesheet.workHours.friday)
-                && _.isNumber($scope.timesheet.workHours.saturday);
+                && _.isNumber($scope.timesheet.timecards[0].workHours.sunday.hours)
+                && _.isNumber($scope.timesheet.timecards[0].workHours.monday.hours)
+                && _.isNumber($scope.timesheet.timecards[0].workHours.tuesday.hours)
+                && _.isNumber($scope.timesheet.timecards[0].workHours.wednesday.hours)
+                && _.isNumber($scope.timesheet.timecards[0].workHours.thursday.hours)
+                && _.isNumber($scope.timesheet.timecards[0].workHours.friday.hours)
+                && _.isNumber($scope.timesheet.timecards[0].workHours.saturday.hours);
         };
 
 
