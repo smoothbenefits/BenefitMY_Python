@@ -421,6 +421,15 @@
       border-bottom: 1px solid #E2E7EA !important; }
     .modal-body .table table table tr:last-child td {
       border-bottom: none !important; }
+  .modal-body .table table#time-picker tbody tr td {
+    padding: 0px;
+    background-color: #ffffff;
+    border: none; }
+    .modal-body .table table#time-picker tbody tr td input {
+      height: 30px; }
+    .modal-body .table table#time-picker tbody tr td button {
+      height: 30px;
+      padding: 5px 3px; }
   .modal-body .table.horizontal td {
     max-with: 70px;
     padding: 1px; }

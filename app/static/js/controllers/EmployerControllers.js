@@ -1664,3 +1664,23 @@ var employerCompanyServiceProvider = employersController.controller('EmployerCom
     };
   }
 ]);
+
+var employerViewTimePunchCards = employersController.controller('employerViewTimePunchCards', [
+    '$scope',
+    '$state',
+    '$stateParams',
+    'UserService',
+    function($scope, $state, $stateParams, UserService){
+      UserService.getCurUserInfo().then(function(curUserInfo){
+        $scope.user = curUserInfo.user;
+        $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+        $scope.company = curUserInfo.currentRole.company;
+      });
+
+      $scope.pageTitle = 'Company Worksheets';
+      $scope.isAdmin = true;
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      }
+    }
+]);

@@ -39,10 +39,8 @@
       <div class="col-md-12" ng-if="!hasFiledPunchCardForCurrentWeek()">
         <bm-time-punch-card-week-manager
           admin-mode="adminMode"
-          week="selectedDisplayWeek"
-          user="user"
-          company="company"
-          save-result="saveResult(savedTimecards)">
+          work-punch-card="workPunchCard"
+          save-result="saveResult(savedPunchCards)">
         </bm-time-punch-card-week-manager>
       </div><!-- time punch card manager directive -->
 
@@ -71,6 +69,38 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+  <div class="panel" ng-show="adminMode">
+    <div class="panel-heading">
+      The work hours submitted for week <b>{{selectedDisplayWeek.weekDisplayText}}</b>
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped benefit-table fix-layout-table"
+        id="plan_items_table" 
+        ng-show="employeeTimeCards.length > 0">
+        <thead>
+          <th><div>Name</div></th>
+          <th width="100"><div>Hours</div></th>
+          <th><div>Time Submitted</div></th>
+          <th width="100"><div>Action</div></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="employeeTimeCard in employeeTimeCards">
+            <td>
+              <span>{{employeeTimeCard.employee.firstName}} {{employeeTimeCard.employee.lastName}}</span>
+            </td>
+            <td width="100">{{employeeTimeCard.getTotalBaseHours()}}</td>
+            <td>{{employeeTimeCard.updatedTimestamp}}</td>
+            <td width="100"><span>
+                <a ng-click="viewDetails(employeeTimeCard)">Edit</a>
+              </span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="" ng-show="employeeTimeCards.length == 0">
+        There are no submitted work hours for week {{selectedDisplayWeek.weekDisplayText}}
       </div>
     </div>
   </div>

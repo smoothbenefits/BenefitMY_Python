@@ -75,7 +75,8 @@
           <button data-toggle="collapse" data-target="#hr-nav" aria-expanded="false" aria-controls="hr-nav"><span class="flaticon flaticon-user135"></span>HR</button>
         </div>
         <div class="sub-nav collapse" id="hr-nav">
-          <a ng-click="viewWorkTimeSheet()">View Employee Timesheet</a>
+          <a ng-click="viewWorkTimeSheet()" ng-hide="disabledFeatures.WorkTimeSheet">View Employee Timesheet</a>
+          <a ng-click="viewTimePunchCards()" ng-show="enabledFeatures.RangedTimeCard">View Timesheets and Time-off Requests</a>
           <a ng-click="viewTimeOffRequests()">View Time Off Requests</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/add/')">Add Employee</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_add/')">Batch Add Employee</a>

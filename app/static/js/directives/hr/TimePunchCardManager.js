@@ -1,12 +1,11 @@
 BenefitMyApp.controller('TimePunchCardEditModalController', [
-  '$scope', '$modalInstance', 'user', 'week', 'WorkTimesheetService',
-  function($scope, $modalInstance, user, week, WorkTimesheetService){
+  '$scope', '$modalInstance', 'user', 'workPunchCard', 'WorkTimesheetService',
+  function($scope, $modalInstance, user, workPunchCard, WorkTimesheetService){
     $scope.user = user;
-    $scope.company = company;
-    $scope.week = week;
     $scope.adminMode = true;
-    $scope.saveResult = function(savedTimecards){
-        $modalInstance.close(savedTimecards);
+    $scope.workPunchCard = workPunchCard;
+    $scope.saveResult = function(savedPunchCards){
+        $modalInstance.close(savedPunchCards);
     }
     $scope.dismiss = function() {
       $modalInstance.dismiss();
@@ -79,6 +78,29 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             $scope.workHoursByStateList =
               WorkTimePunchCardService.GetWorkHoursByState($scope.workPunchCard);
           });
+
+          CompanyPersonnelsService.getCompanyEmployees($scope.company.id)
+            .then(function(employees){
+                WorkTimePunchCardService.GetWorkPunchCardsByCompany(
+                    $scope.company.id,
+                    $scope.selectedDisplayWeek.weekStartDate)
+                .then(function(timePunchCards){
+                    $scope.employeeTimeCards = [];
+                    _.each(employees, function(employee){
+                        var employeeTimeCard = _.find(timePunchCards, function(timeCard){
+                            return timeCard.employee.email == employee.user.email
+                        });
+                        if (!employeeTimeCard){
+                            employeeTimeCard = 
+                                WorkTimePunchCardService.GetBlankPunchCardForEmployeeUser(
+                                    employee.user,
+                                    $scope.company,
+                                    $scope.selectedDisplayWeek.weekStartDate);
+                        }
+                        $scope.employeeTimeCards.push(employeeTimeCard);
+                    });
+                });
+            });
         };
 
         $scope.hasFiledPunchCardForCurrentWeek = function() {
@@ -98,8 +120,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
           }
         });
 
-        $scope.saveResult = function(savedTimeSheet){
-          if(savedTimeSheet){
+        $scope.saveResult = function(savedPunchCards){
+          if(savedPunchCards){
             $scope.reloadTimePunchCard();
             var successMessage = "Your timesheet has been submitted successfully!"
             $scope.showMessageWithOkayOnly('Success', successMessage);
@@ -110,9 +132,9 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
           }
         };
 
-        $scope.viewDetails = function(){
+        $scope.viewDetails = function(workPunchCard){
           var modalInstance = $modal.open({
-            templateUrl: '/static/partials/work_timesheet/modal_edit_time_punch_card.html',
+            templateUrl: '/static/partials/time_punch_card/modal_edit_time_punch_card.html',
             controller: 'TimePunchCardEditModalController',
             size: 'lg',
             backdrop: 'static',
@@ -120,17 +142,14 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
               'user': function() {
                 return $scope.user;
               },
-              'company': function(){
-                return $scope.company;
-              },
-              'week': function(){
-                return $scope.selectedDisplayWeek;
+              'workPunchCard': function(){
+                return workPunchCard;
               }
             }
           });
 
-          modalInstance.result.then(function(savedTimesheet){
-              $state.reload();
+          modalInstance.result.then(function(savedPunchCards){
+              $scope.reloadTimePunchCard();
           });
         };
     }

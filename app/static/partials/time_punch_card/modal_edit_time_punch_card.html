@@ -3,15 +3,11 @@
  Week {{week}}</h4>
 </div>
 <div class="modal-body col-md-12">
-  <div class="col-md-10 col-md-offset-1">
-      <bm-time-punch-card-week-manager
-          admin-mode="adminMode"
-          week="week"
-          user="user"
-          company="company"
-          save-result="saveResult(savedTimesheet)">
-      </bm-time-punch-card-week-manager>
-    </div>
+    <bm-time-punch-card-week-manager
+        admin-mode="adminMode"
+        work-punch-card="workPunchCard"
+        save-result="saveResult(savedPunchCards)">
+    </bm-time-punch-card-week-manager>
 </div>
 
 <div class="modal-footer">

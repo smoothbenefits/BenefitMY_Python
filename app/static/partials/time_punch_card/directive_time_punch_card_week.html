@@ -301,7 +301,7 @@
           </div>
       </div>
 
-      <div class="row" ng-if="allowEdit()">
+      <div class="row">
         <div class="col-md-4">
             <a ng-click="addTimeCard()" class="btn green">Add timesheet for another State</a>
         </div>
@@ -310,7 +310,5 @@
               <a confirm="{{saveTimeCardsConfirmText}}" ng-click="saveTimeCards()" class="btn green" ng-disabled="!isTimeCardValidForSave()">Submit</a>
             </div>
         </div>
-      </div>
-      <div class="row" ng-if="allowEdit()">
       </div>
   </form>

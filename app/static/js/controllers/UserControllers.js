@@ -290,6 +290,10 @@ var userController = userControllers.controller('userController',
     $scope.viewWorkTimeSheet = function(){
       $state.go('admin_timesheet');
     };
+
+    $scope.viewTimePunchCards = function(){
+      $state.go('admin_timepunchcards');
+    };
 }]);
 
 var preBenefitSelectionModalController = userControllers.controller('preBenefitSelectionModalController',
