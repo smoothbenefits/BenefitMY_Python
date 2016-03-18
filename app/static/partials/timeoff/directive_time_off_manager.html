@@ -9,9 +9,24 @@
 </div><!-- / .content-header -->
 
 <div class="content-body">
-  <div class="alert alert-info" ng-if="timeoffQuota && enableRequestorFeatures">
-    <p>Maximum {{timeoffQuota.paidTimeOffInHours}} hours of Paid Time Off (PTO) this year</p>
-    <p>Maximum {{timeoffQuota.sickTimeInHours}} hours of Sick Time this year</p>
+  <div class="table-responsive" ng-if="showQuotaInfo()">
+    <div class="table-title">
+      Timeoff Quota Information
+    </div>
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Type</span></th>
+        <th><span>Accrued Hours to Date</span></th>
+        <th><span>Banked Hours Balance</span></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="quotaInfo in quotaData.quotaInfoCollection">
+          <td>{{quotaInfo.timeoffType}}</td>
+          <td>{{quotaInfo.accrualSpecs ? quotaInfo.accrualSpecs.accruedHours : ''}}</td>
+          <td>{{quotaInfo.bankedHours}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <div class="panel" ng-if="!hasSelfRequests() && enableRequestorFeatures">
     <div class="panel-body">
@@ -20,7 +35,7 @@
   </div>
   <div class="table-responsive" ng-if="hasSelfRequests() && enableRequestorFeatures">
     <div class="table-title">
-      Time Off Requested
+      Timeoff Requested
     </div>
     <table class="table table-striped" >
       <thead>

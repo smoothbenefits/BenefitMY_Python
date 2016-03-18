@@ -37,7 +37,7 @@
               <td ng-if="!isAdmin">{{provider.name}}</td>
               <td><div>{{provider.phone}}</div></td>
               <td><div>{{provider.email}}</div></td>
-              <td><div>{{provider.link}}</div></td>
+              <td><div><a href="{{provider.link}}" target="_blank">{{provider.link}}</a></div></td>
               <td ng-if="isAdmin"><div>{{provider.show_to_employee ? 'Yes' : 'No'}}</div></td>
             </tr>
           </tbody>

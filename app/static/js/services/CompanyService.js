@@ -90,6 +90,18 @@ benefitmyService.factory('CompanyService',
         apiAddress.state = viewModel.address.state.toUpperCase();
         apiAddress.zipcode = viewModel.address.zip;
         apiClient.addresses.push(apiAddress);
+
+        // default_benefit_group is a semicolon delimited string
+        var groups = [];
+        _.each(viewModel.default_benefit_group.split(";"), function(group) {
+          var groupName = group.trim();
+          // Remove empty group names
+          if (groupName) {
+            groups.push(groupName);
+          }
+        });
+        apiClient.default_benefit_groups = groups;
+
         return apiClient;
       };
 
@@ -101,6 +113,10 @@ benefitmyService.factory('CompanyService',
 
         if (ein.length != 9) {
           return { isValid: false, message: "EIN should be 9 digits long." };
+        }
+
+        if (!viewModel.default_benefit_group.trim()) {
+          return { isValid: false, message: "Benefit group is required."};
         }
 
         return { isValid: true, message: "Passed all validations." };
