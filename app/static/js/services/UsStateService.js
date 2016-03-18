@@ -1,11 +1,6 @@
 var benefitmyService = angular.module('benefitmyService');
 
-benefitmyService.factory('UsStateService',
-    [
-        '$http',
-        'UsStateRepository',
-        function($http,
-                 UsStateRepository){
+benefitmyService.factory('UsStateService', [ function(){
             var states = [
                 'Alabama',
                 'Alaska',
@@ -71,32 +66,16 @@ benefitmyService.factory('UsStateService',
 
 
             var GetStates = function(searchTerm){
-                if(!searchTerm){
-                    searchTerm = '';
-                }
-                return UsStateRepository.get({text:searchTerm})
-                    .$promise.then(function(resp){
-                        return resp.RestResponse.result.map(function(item){
-                            return item.name;
-                          });
-                    }, function(error){
-                        return getMemoryStates(searchTerm);
-                    });
+                return getMemoryStates(searchTerm);
             };
 
             var GetAllStates = function(){
-                return UsStateRepository.get()
-                    .$promise.then(function(resp){
-                        return resp.RestResponse.result.map(function(item){
-                            return item.name;
-                          });
-                    }, function(error){
-                        return states;
-                    });
+                return states;
             }
 
             return {
-                GetStates: GetStates
+                GetStates: GetStates,
+                GetAllStates: GetAllStates
             };
         }
     ]
