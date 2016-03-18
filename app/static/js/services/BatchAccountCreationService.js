@@ -5,9 +5,11 @@ benefitmyService.factory(
    ['$q', 
     'BatchAccountCreationDataParseRepository',
     'BatchAccountCreationBatchCreateRepository',
+    'CompanyPersonnelsService',
    function($q, 
             BatchAccountCreationDataParseRepository,
-            BatchAccountCreationBatchCreateRepository){
+            BatchAccountCreationBatchCreateRepository,
+            CompanyPersonnelsService){
 
         var mapParseDataViewToDomainModel = function(viewModel) {
             var domainModel = {};
@@ -50,6 +52,7 @@ benefitmyService.factory(
 
             BatchAccountCreationBatchCreateRepository.ByCompany.save({company_id: companyId}, model).$promise.then(function(response){
                 deferred.resolve(response);
+                CompanyPersonnelsService.clearCache(companyId);
             }, function(error) {
                 deferred.reject(error);
             });
