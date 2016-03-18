@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 
 from app.models.company_user import CompanyUser
 from app.models.company import Company
+from app.models.company_group import CompanyGroup
 from app.serializers.company_serializer import (
     CompanySerializer,
     CompanyPostSerializer)
@@ -64,5 +65,12 @@ class CompanyView(APIView):
                                        company=serializer.object,
                                        company_user_type="broker")
             broker_user.save()
+
+            if request.DATA['default_benefit_groups']:
+                groups = request.DATA['default_benefit_groups']
+                for group in groups:
+                    company_group = CompanyGroup(name=group, company=serializer.object)
+                    company_group.save()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

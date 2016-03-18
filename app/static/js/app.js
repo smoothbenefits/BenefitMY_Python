@@ -396,14 +396,19 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'employerViewUploads'
             }).
             state('admin_time_off', {
-              url: '/admin/timeoff',
+              url: '/admin/hr/timeoff',
               templateUrl: '/static/partials/timeoff/timeoff_base.html',
               controller: 'employerTimeOffController'
             }).
             state('admin_timesheet',{
-                url: '/admin/:company_id/timesheet',
+                url: '/admin/hr/timesheet',
                 templateUrl: '/static/partials/work_timesheet/timesheet_base.html',
                 controller: 'employerViewTimesheet'
+            }).
+            state('admin_timepunchcards', {
+                url: '/admin/hr/time_punch_cards',
+                templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
+                controller: 'employerViewTimePunchCards'
             }).
             state('admin_service_provider', {
               url: '/admin/service_provider',
@@ -579,6 +584,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/employee/hr/work_timesheet',
                 templateUrl: '/static/partials/work_timesheet/timesheet_base.html',
                 controller: 'employeeViewWorkTimeSheetController'
+            }).
+            state('employee_timepunchcard',{
+                url: '/employee/hr/timepunchcards',
+                templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
+                controller: 'employeeManageTimePunchCardController'
             });
      }
  ]);

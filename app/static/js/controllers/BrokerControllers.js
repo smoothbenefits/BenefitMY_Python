@@ -1192,6 +1192,7 @@ var brokerAddHealthBenefits = brokersControllers.controller(
    'BenefitPolicyKeyService',
    'benefitDisplayService',
    'HealthBenefitsService',
+   'utilityService',
     function brokerAddHealthBenefits(
       $scope,
       $location,
@@ -1203,7 +1204,8 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       currentUser,
       BenefitPolicyKeyService,
       benefitDisplayService,
-      HealthBenefitsService){
+      HealthBenefitsService,
+      utilityService){
 
       // Inherite scope from base
       $controller('brokerAddBenefitControllerBase', {$scope: $scope});
@@ -1665,11 +1667,8 @@ var brokerAddHealthBenefits = brokersControllers.controller(
       }
 
       $scope.setLink = function(theLink){
-        var linkStartRegex = 'http(s)?:(\/)?(\/)?(\w|.)*|ht?t?p?s?:?(\/)?(\/)?';
-        var regex = new RegExp(linkStartRegex);
-        if(!theLink.match(regex)){
-          $scope.benefit.pcp_link = 'http://' + theLink;
-        }
+        var normalizedLink = utilityService.normalizeLink(theLink);
+        $scope.benefit.pcp_link = normalizedLink;
       }
 
       $scope.allowSaveNewPlan = function() {
