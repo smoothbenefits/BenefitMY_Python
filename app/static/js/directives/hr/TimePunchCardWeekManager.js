@@ -11,9 +11,7 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
       WorkTimePunchCardService,
       UsStateService) {
 
-        UsStateService.GetStates().then(function(allStates){
-            $scope.allStates = allStates;
-        });
+        $scope.allStates = UsStateService.GetAllStates();
 
         var getByStateTag = function(tags) {
           return _.find(tags, function(tag) {

@@ -796,9 +796,3 @@ benefitmyDomainModelFactories.factory('CompanyServiceProviderRepository', ['$res
     }
   }
 ]);
-
-benefitmyDomainModelFactories.factory('UsStateRepository', ['$resource',
-  function($resource) {
-    return $resource('http://services.groupkt.com/state/search/USA');
-  }
-]);
