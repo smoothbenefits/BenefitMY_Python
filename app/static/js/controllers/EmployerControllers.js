@@ -1624,7 +1624,8 @@ var employerTimeOffController = employersController.controller('employerTimeOffC
 
     UserService.getCurUserInfo().then(function(userInfo) {
       $scope.user = userInfo.user;
-      $scope.user.role = userInfo.roles[0].company_user_type;
+      $scope.user.role = userInfo.currentRole.company_user_type;
+      $scope.company = userInfo.currentRole.company;
     });
   }
 ]);
