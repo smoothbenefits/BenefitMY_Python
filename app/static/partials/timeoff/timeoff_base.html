@@ -3,7 +3,6 @@
   <span>Time Off</span>
 </div>
 
-
-<bm-time-off-manager user="user" isrequestor="enableRequestorFeatures"></bm-time-off-manager>
-<bm-employees-time-off-info company="company">
+<bm-time-off-requestor user="user" ng-if="!isAdmin"></bm-time-off-requestor>
+<bm-time-off-manager user="user"></bm-time-off-manager>
 <div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
