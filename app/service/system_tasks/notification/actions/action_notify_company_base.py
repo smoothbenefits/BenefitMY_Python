@@ -3,12 +3,15 @@ from django.contrib.auth import get_user_model
 from app.service.send_email_service import SendEmailService
 from app.models.company import Company
 from app.models.person import (Person, SELF)
-from action_base import ActionBase
+from ...action_base import ActionBase
 
 User = get_user_model()
 
 
 class ActionNotifyCompanyBase(ActionBase):
+    def __init__(self):
+        super(ActionNotifyCompanyBase, self).__init__()
+
     def execute(self, action_data):
         if (not action_data
             or not 'company_user_id_list' in action_data):
