@@ -200,6 +200,14 @@ benefitmyService.factory('TimeOffService',
                 });
         };
 
+        var GetTimeOffQuotaByCompany = function(companyId){
+            var compId = utilityService.getEnvAwareId(companyId);
+            return TimeOffRepository.QuotaByCompany.query({companyId:compId})
+                .$promise.then(function(timeoffQuotaList){
+                    return timeoffQuotaList;
+                });
+        };
+
         return {
             TimeoffTypes: TimeoffTypes,
 
@@ -218,7 +226,8 @@ benefitmyService.factory('TimeOffService',
                 line should be resumed once real timeoff quota data
                 is in.
             */
-            GetTimeOffQuota: GetFakeTimeOffQuota
+            GetTimeOffQuota: GetFakeTimeOffQuota,
+            GetTimeOffQuotaByCompany: GetTimeOffQuotaByCompany
         };
     }
 ]);

@@ -2549,7 +2549,7 @@ var employeeViewTimeOffController = employeeControllers.controller('employeeView
    'UserService',
    function($scope, $state, UserService){
      $scope.role = 'Employee';
-     $scope.enableRequestorFeatures = true;
+     $scope.isAdmin = false;
 
      UserService.getCurUserInfo().then(function(userInfo) {
        $scope.user = userInfo.user;
@@ -2586,7 +2586,6 @@ var employeeManageTimePunchCardController = employeeControllers.controller('empl
        $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
        $scope.company = curUserInfo.currentRole.company;
      });
-     $scope.enableRequestorFeatures = true;
      $scope.isAdmin = false;
      $scope.pageTitle = 'Work Weekly Timesheet';
      $scope.backToDashboard = function(){
