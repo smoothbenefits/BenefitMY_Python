@@ -1,4 +1,4 @@
-BenefitMyApp.controller('TimeOffRequestController', [
+BenefitMyApp.controller('TimeOffRequestModalController', [
   '$scope', '$modalInstance', 'user', 'manager', 'TimeOffService',
   function($scope, $modalInstance, user, manager, TimeOffService){
 
@@ -29,7 +29,7 @@ BenefitMyApp.controller('TimeOffRequestController', [
       })
     }
   }
-]).controller('TimeOffRequestorDirectiveController', [
+]).controller('TimeOffRequestViewDirectiveController', [
   '$scope',
   '$state',
   '$modal',
@@ -104,7 +104,7 @@ BenefitMyApp.controller('TimeOffRequestController', [
     $scope.requestTimeOff = function(){
       var modalInstance = $modal.open({
         templateUrl: '/static/partials/timeoff/modal_request_timeoff.html',
-        controller: 'TimeOffRequestController',
+        controller: 'TimeOffRequestModalController',
         size: 'lg',
         backdrop: 'static',
         resolve: {
@@ -141,7 +141,7 @@ BenefitMyApp.controller('TimeOffRequestController', [
         scope: {
           user: '='        
         },
-        templateUrl: '/static/partials/timeoff/directive_time_off_requestor.html',
-        controller: 'TimeOffRequestorDirectiveController'
+        templateUrl: '/static/partials/timeoff/directive_time_off_request_view.html',
+        controller: 'TimeOffRequestViewDirectiveController'
       };
 });

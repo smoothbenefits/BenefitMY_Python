@@ -42,11 +42,10 @@ BenefitMyApp.controller('TimeOffManagerDirectiveController', [
         request.status = newStatus;
         TimeOffService.UpdateTimeOffStatus(request)
         .then(function(updatedRequest){
-          _.each($scope.requestsFromDirectReports, function(request, idx){
-            if(updatedRequest.id == request.id){
-              $scope.requestsFromDirectReports[idx] = updatedRequest;
-            }
-          })
+          var updatedIndex = _.findIndex($scope.requestsFromDirectReports, {id:updatedRequest.id});
+          if (updatedIndex >= 0){
+            $scope.requestsFromDirectReports[updatedIndex] = updatedRequest;
+          }
         });
       }
     };
