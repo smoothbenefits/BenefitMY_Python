@@ -3,11 +3,15 @@ from django.contrib.auth import get_user_model
 from app.models.company import Company
 from app.service.hash_key_service import HashKeyService
 from app.service.send_email_service import SendEmailService
-from action_base import ActionBase
+from ...action_base import ActionBase
 
 User = get_user_model()
 
+
 class ActionNotifyEmployeeNotCompleteEnrollment(ActionBase):
+    def __init__(self):
+        super(ActionNotifyEmployeeNotCompleteEnrollment, self).__init__()
+
     def execute(self, action_data):
         if (not action_data
             or not 'company_user_id_list' in action_data):

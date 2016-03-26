@@ -109,7 +109,8 @@ MIDDLEWARE_CLASSES = (
 
 CRON_CLASSES = [
     "app.scheduled_jobs.user_changes_notification.UserChangeNotifications",
-    "app.scheduled_jobs.system_notifications.SystemNotifications"
+    "app.scheduled_jobs.system_notifications.SystemNotifications",
+    "app.scheduled_jobs.system_jobs.SystemJobs"
 ]
 
 ROOT_URLCONF = 'Smoothbenefits.urls'

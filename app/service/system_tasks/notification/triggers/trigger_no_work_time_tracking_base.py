@@ -1,7 +1,7 @@
 from datetime import date
 
 from app.models.company_user import (CompanyUser, USER_TYPE_EMPLOYEE)
-from trigger_base import TriggerBase
+from ...trigger_base import TriggerBase
 from app.service.application_feature_service import (
     ApplicationFeatureService,
     APP_FEATURE_WORKTIMESHEET,
