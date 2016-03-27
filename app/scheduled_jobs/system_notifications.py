@@ -1,7 +1,6 @@
 from django_cron import CronJobBase, Schedule
-from django.conf import settings
 
-from app.service.notification.notification_service import \
+from app.service.system_tasks.notification.notification_service import \
     NotificationService
 
 

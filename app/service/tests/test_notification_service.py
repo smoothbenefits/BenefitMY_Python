@@ -1,13 +1,13 @@
 # test document
 # tests can be kicked off by running "python manage.py test app/tests/"
 from django.test import TestCase
-from app.service.notification.triggers.trigger_employee_not_sign_document \
+from app.service.system_tasks.notification.triggers.trigger_employee_not_sign_document \
 	import TriggerEmployeeNotSignDocument
-from app.service.notification.triggers.trigger_company_not_sign_document \
+from app.service.system_tasks.notification.triggers.trigger_company_not_sign_document \
 	import TriggerCompanyNotSignDocument
-from app.service.notification.actions.action_notify_company_not_sign_document \
+from app.service.system_tasks.notification.actions.action_notify_company_not_sign_document \
 	import ActionNotifyCompanyNotSignDocument
-from app.service.notification.actions.action_notify_employee_not_sign_document \
+from app.service.system_tasks.notification.actions.action_notify_employee_not_sign_document \
 	import ActionNotifyEmployeeNotSignDocument
 
 # Create your tests here.

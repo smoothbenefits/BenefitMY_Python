@@ -2,7 +2,7 @@ from datetime import date
 
 from app.models.company_user import (CompanyUser, USER_TYPE_EMPLOYEE)
 from app.models.document import Document
-from trigger_base import TriggerBase
+from ...trigger_base import TriggerBase
 
 
 class TriggerNotSignDocumentBase(TriggerBase):

@@ -1,68 +1,8 @@
-<div class="content-header">
-  <h1>View Time Off requests</h1>
-  <div class="cta" ng-show="enableRequestorFeatures">
-    <span class="btn green" ng-click="requestTimeOff()">Request Time-Off</span>
-  </div>
-  <div class="view-instruction" ng-show="enableRequestorFeatures">
-    <p> Please use the <span class="green-link">Request Time-Off Button</span> to create a new time-off request</p>
-  </div>
-</div><!-- / .content-header -->
-
+<div class="content-header"></div>
 <div class="content-body">
-  <div class="table-responsive" ng-if="showQuotaInfo()">
-    <div class="table-title">
-      Timeoff Quota Information
-    </div>
-    <table class="table table-striped" >
-      <thead>
-        <th><span>Type</span></th>
-        <th><span>Accrued Hours to Date</span></th>
-        <th><span>Banked Hours Balance</span></th>
-      </thead>
-      <tbody>
-        <tr ng-repeat="quotaInfo in quotaData.quotaInfoCollection">
-          <td>{{quotaInfo.timeoffType}}</td>
-          <td>{{quotaInfo.accrualSpecs ? quotaInfo.accrualSpecs.accruedHours : ''}}</td>
-          <td>{{quotaInfo.bankedHours}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="panel" ng-if="!hasSelfRequests() && enableRequestorFeatures">
-    <div class="panel-body">
-        There are no time requested. <a ng-click="requestTimeOff()">Click here</a> to make a time off request.
-    </div>
-  </div>
-  <div class="table-responsive" ng-if="hasSelfRequests() && enableRequestorFeatures">
-    <div class="table-title">
-      Timeoff Requested
-    </div>
-    <table class="table table-striped" >
-      <thead>
-        <th><span>Type</span></th>
-        <th><span>Start</span></th>
-        <th><span>Duration</span></th>
-        <th><span>Status</span></th>
-        <th><span>Approver Email</span></th>
-        <th><span>Date and time created</span></th>
-      </thead>
-      <tbody>
-        <tr ng-repeat="timeOff in requestedTimeOffs">
-          <td>{{timeOff.type}}</td>
-          <td>{{timeOff.start}}</td>
-          <td>{{timeOff.duration}} hour(s)</td>
-          <td>{{timeOff.status}}</td>
-          <td>{{timeOff.approver}}</td>
-          <td>{{timeOff.created}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <br />
-  <br />
-  <div class="panel" ng-show="!hasDirectReportRequests() && !enableRequestorFeatures">
+  <div class="panel" ng-show="!hasDirectReportRequests()">
     <div class="panel-heading">
-        Time Off Requested
+        Time Off requests pending your actions
     </div>
     <div class="panel-body">
         There are no time requested pending your action.
@@ -70,7 +10,7 @@
   </div>
   <div class="table-responsive" ng-show="hasDirectReportRequests()">
     <div class="table-title">
-      Time Off requests from your direct reports
+      Time Off requests pending your actions
     </div>
     <table class="table table-striped" >
       <thead>
@@ -95,5 +35,5 @@
         </tr>
       </tbody>
     </table>
-  </div>
+</div> <!-- TimeOff Request Action Table -->
 </div>

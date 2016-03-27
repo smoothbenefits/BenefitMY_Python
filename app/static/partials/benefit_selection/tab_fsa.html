@@ -68,7 +68,7 @@
   <div class="row">
     <div class="col-sm-6">
       <div class="submit-box benefit-selection-button">
-        <a ng-click="save()" class="btn green">Save Selection</a>
+        <a ng-click="save()" ng-disabled="!isFsaUpdateReasonSelected()" class="btn green">Save Selection</a>
       </div>
     </div>
   </div>

@@ -116,8 +116,7 @@
       color: #58585B; }
   #dashboard-wrapper #content-wrapper .content-header {
     padding: 20px;
-    position: relative;
-    min-height: 85px; }
+    position: relative; }
     #dashboard-wrapper #content-wrapper .content-header .cta {
       position: absolute;
       top: 20px;

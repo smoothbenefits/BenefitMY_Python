@@ -1,5 +1,6 @@
 from app.service.monitoring.logging_service import LoggingService
 
+
 class ActionBase(object):
 
     def __init__(self):
