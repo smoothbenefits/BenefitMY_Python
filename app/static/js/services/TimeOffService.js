@@ -28,8 +28,8 @@ benefitmyService.factory('TimeOffService',
 
         /**
             Get the list of available time off types.
-            TODO: 
-                For now this returns a static list, but in the 
+            TODO:
+                For now this returns a static list, but in the
                 future this will be turned into something that
                 can return lists based on configuration for the
                 company/user.
@@ -102,72 +102,6 @@ benefitmyService.factory('TimeOffService',
           return domainModel;
         };
 
-        /**
-            TODO:
-                Method as short term hack/mock for BM-1051.
-                Needs to be removed once the real data for 
-                timeoff quota is populated
-        */
-        var getFakeTimeoffQuotaModel = function(envAwareUserId, isFullTime) {
-            var annualTargetPtoHours = isFullTime ? 80 : 20;
-            var annualTargetSickTimeHours = isFullTime ? 40 : 20;
-            var accruedPtoHours = ComputeAccruedHours(annualTargetPtoHours);
-            var accruedSickTimeHours = ComputeAccruedHours(annualTargetSickTimeHours);
-
-            return  {
-                personDescriptor: envAwareUserId,
-                quotaInfoCollection:[
-                {
-                    timeoffType: TimeoffTypes.Pto,
-                    bankedHours: accruedPtoHours,
-                    annualTargetHours: annualTargetPtoHours,
-                    accrualSpecs: {
-                        accrualFrequency: AccrualFrequency.Monthly,
-                        accruedHours: accruedPtoHours
-                    }
-                },
-                {
-                    timeoffType: TimeoffTypes.SickTime,
-                    bankedHours: accruedSickTimeHours,
-                    annualTargetHours: annualTargetSickTimeHours,
-                    accrualSpecs: {
-                        accrualFrequency: AccrualFrequency.Monthly,
-                        accruedHours: accruedSickTimeHours
-                    }
-                }]
-            };
-        };
-
-        /**
-            TODO:
-                Method as short term hack/mock for BM-1051.
-                Needs to be removed once the real data for 
-                timeoff quota is populated
-        */
-        var ComputeAccruedHours = function(annualTargetHours) {
-            //  - Accural Frequency: Monthly
-            //  - moment().month() is zero based
-            var fraction = moment().month() / 12.0;
-            return (fraction * annualTargetHours).toFixed(1);
-        };
-
-        /**
-            TODO:
-                Method as short term hack/mock for BM-1051.
-                Needs to be removed once the real data for 
-                timeoff quota is populated
-        */
-        var GetFakeTimeOffQuota = function(userId, companyId) {
-            return EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId).then(
-                function(employeeProfile) {
-                    var id = utilityService.getEnvAwareId(userId);
-                    return getFakeTimeoffQuotaModel(
-                        id,
-                        EmployeeProfileService.isFullTimeEmploymentType(employeeProfile));
-                }
-            );
-        };
-
         var requestTimeOff = function(request) {
 
           var requestDto = mapViewModelToDomainModel(request);
@@ -176,7 +110,7 @@ benefitmyService.factory('TimeOffService',
             return savedRequest;
           });
         };
-        
+
         var GetTimeOffsByApprover = function(approver){
             var id = utilityService.getEnvAwareId(approver);
             return TimeOffRepository.ByApprover.query({userId:id})
@@ -210,23 +144,12 @@ benefitmyService.factory('TimeOffService',
 
         return {
             TimeoffTypes: TimeoffTypes,
-
             GetAvailableTimeoffTypes: getAvailableTimeoffTypes,
             GetTimeOffsByRequestor: GetTimeOffsByRequestor,
             RequestTimeOff: requestTimeOff,
             GetTimeOffsByApprover: GetTimeOffsByApprover,
             UpdateTimeOffStatus: UpdateTimeOffStatus,
-            
-            // GetTimeOffQuota: GetTimeOffQuota
-
-            /**
-            TODO:
-                This method export is for temp hack for BM-1051
-                This should be removed and the above commented out
-                line should be resumed once real timeoff quota data
-                is in.
-            */
-            GetTimeOffQuota: GetFakeTimeOffQuota,
+            GetTimeOffQuota: GetTimeOffQuota,
             GetTimeOffQuotaByCompany: GetTimeOffQuotaByCompany
         };
     }

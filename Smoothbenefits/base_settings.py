@@ -27,6 +27,9 @@ HASH_KEY = '5e14ca8a-4a48-4cf7-aa3b-e207eb1a9adb'
 # Default password for initial user account setup
 DEFAULT_USER_PW = 'd4gf6u0hhfg48ds321cdsf'
 
+# Whether debug logging should also output to console
+LOG_TO_CONSOLE = False
+
 # Allowed hosts names
 ALLOWED_HOSTS = [ \
     'localhost', \

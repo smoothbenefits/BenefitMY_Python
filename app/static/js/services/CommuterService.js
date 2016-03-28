@@ -7,8 +7,8 @@ benefitmyService.factory('CommuterService',
     'CompanyGroupCommuterPlanRepository',
     'UserService',
     function (
-        $q, 
-        CommuterRepository, 
+        $q,
+        CommuterRepository,
         PersonService,
         CompanyGroupCommuterPlanRepository,
         UserService){
@@ -160,12 +160,12 @@ benefitmyService.factory('CommuterService',
                 CompanyGroupCommuterPlanRepository.ByCompanyGroup.query({companyGroupId:companyGroupId})
                 .$promise.then(function(companyGroupPlans) {
                     var resultPlans = [];
-                    
+
                     _.each(companyGroupPlans, function(companyGroupPlan) {
                         var companyPlan = companyGroupPlan.company_commuter_plan;
                         resultPlans.push(mapCompanyPlanDomainToViewModel(companyPlan));
                     });
-                    
+
                     deferred.resolve(resultPlans);
                 },
                 function(failedResponse) {
@@ -179,12 +179,12 @@ benefitmyService.factory('CommuterService',
             var domainModel = [];
 
             _.each(createPlanViewModel.selectedCompanyGroups, function(companyGroupModel) {
-                domainModel.push({ 
+                domainModel.push({
                     'company_commuter_plan': createPlanViewModel.companyPlanId,
-                    'company_group': companyGroupModel.id 
+                    'company_group': companyGroupModel.id
                 });
-            }); 
-  
+            });
+
             return domainModel;
         };
 
@@ -192,8 +192,8 @@ benefitmyService.factory('CommuterService',
             var deferred = $q.defer();
 
             CompanyGroupCommuterPlanRepository.ByCompanyPlan.update(
-                { pk: companyPlanId }, 
-                companyGroupPlanModels, 
+                { pk: companyPlanId },
+                companyGroupPlanModels,
                 function (successResponse) {
                     deferred.resolve(successResponse);
                 }
@@ -207,17 +207,42 @@ benefitmyService.factory('CommuterService',
         };
 
         var computeTotalMonthlyTransitAllowance = function(personPlan) {
-            return (personPlan.companyPlan.employerTransitContribution
-                + personPlan.monthlyAmountTransitPreTax
-                + personPlan.monthlyAmountTransitPostTax)
-                .toFixed(2);
+
+          if (!personPlan.companyPlan.employerTransitContribution) {
+            personPlan.companyPlan.employerTransitContribution = 0;
+          }
+
+          if (!personPlan.monthlyAmountTransitPreTax) {
+            personPlan.monthlyAmountTransitPreTax = 0;
+          }
+
+          if (!personPlan.monthlyAmountTransitPostTax) {
+            personPlan.monthlyAmountTransitPostTax = 0;
+          }
+
+          return (personPlan.companyPlan.employerTransitContribution
+              + personPlan.monthlyAmountTransitPreTax
+              + personPlan.monthlyAmountTransitPostTax)
+              .toFixed(2);
         };
 
         var computeTotalMonthlyParkingAllowance = function(personPlan) {
-            return (personPlan.companyPlan.employerParkingContribution
-                + personPlan.monthlyAmountParkingPreTax
-                + personPlan.monthlyAmountParkingPostTax)
-                .toFixed(2);
+          if (!personPlan.companyPlan.employerParkingContribution) {
+            personPlan.companyPlan.employerParkingContribution = 0;
+          }
+
+          if (!personPlan.monthlyAmountParkingPreTax) {
+            personPlan.monthlyAmountParkingPreTax = 0;
+          }
+
+          if (!personPlan.monthlyAmountParkingPostTax) {
+            personPlan.monthlyAmountParkingPostTax = 0;
+          }
+
+          return (personPlan.companyPlan.employerParkingContribution
+              + personPlan.monthlyAmountParkingPreTax
+              + personPlan.monthlyAmountParkingPostTax)
+              .toFixed(2);
         };
 
         return {
