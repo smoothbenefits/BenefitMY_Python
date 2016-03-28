@@ -149,7 +149,7 @@ benefitmyService.factory('TimeOffService',
             RequestTimeOff: requestTimeOff,
             GetTimeOffsByApprover: GetTimeOffsByApprover,
             UpdateTimeOffStatus: UpdateTimeOffStatus,
-            GetTimeOffQuota: GetTimeOffQuota
+            GetTimeOffQuota: GetTimeOffQuota,
             GetTimeOffQuotaByCompany: GetTimeOffQuotaByCompany
         };
     }
