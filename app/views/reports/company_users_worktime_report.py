@@ -11,12 +11,10 @@ from app.views.permission import (
     company_employer,
     company_employer_or_broker)
 from excel_export_view_base import ExcelExportViewBase
-
+from app.service.time_tracking_service import TimeTrackingService
 User = get_user_model()
 
 class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
-
-    _week_start_date = None
 
     def _write_headers(self, excelSheet):
         col_num = 0
@@ -39,22 +37,40 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         except Company.DoesNotExist:
             raise Http404
 
+    def _get_user_timesheet(self, user_id, timesheets):
+        try:
+            return next(x for x in timesheets if x['user_id'] == user_id)
+        except StopIteration:
+            return None
 
-    def _write_company(self, company, excelSheet):
+
+    def _write_company(self, company, excelSheet, submitted_sheets):
         users_id = self._get_all_employee_user_ids_for_company(company.id)
-
+        row_num = 1
         # For each of them, write out his/her information
         for i in range(len(users_id)):
-            self._write_employee(company, users_id[i], excelSheet, i + 1)
+            user_id = users_id[i]
+            row_num = self._write_employee(company, user_id, excelSheet, row_num, self._get_user_timesheet(user_id, submitted_sheets))
 
         return
 
-    def _write_employee(self, company, employee_user_id, excelSheet, row_num):
-        start_column_num = 0
-        start_column_num = self._write_employee_personal_info(company, employee_user_id, excelSheet, row_num, start_column_num)
-
-        # Now let's get this employee's timesheet info
-        return
+    def _write_employee(self, company, employee_user_id, excelSheet, row_num, user_time_sheet):
+        col_num = 0
+        if not user_time_sheet:
+            print "no user_time_sheet"
+            col_num = self._write_employee_personal_info(company, employee_user_id, excelSheet, row_num, col_num)
+            col_num = self._write_state_info(None, excelSheet, row_num, col_num)
+            col_num = self._write_week_total(None, 40, excelSheet, row_num, col_num)
+            row_num += 1
+        else:
+            for timecard in user_time_sheet['timecards']:
+                col_num = 0
+                col_num = self._write_employee_personal_info(company, employee_user_id, excelSheet, row_num, col_num)
+                print "row_num = {0} and timecard is {1}".format(row_num, timecard)
+                col_num = self._write_state_info(timecard, excelSheet, row_num, col_num)
+                col_num = self._write_week_total(timecard, 40, excelSheet, row_num, col_num)
+                row_num += 1
+        return row_num
 
     def _write_employee_personal_info(self, company, employee_user_id, excelSheet, row_num, start_column_num):
         cur_column_num = start_column_num
@@ -98,6 +114,29 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         return col_num
 
+    def _write_state_info(self, timecard, excelSheet, row_num, col_num):
+        if timecard and timecard.get('tags') and 'State' in timecard['tags'][0]['tagType']:    
+            col_num = self._write_field(excelSheet, row_num, col_num, timecard['tags'][0]['tagContent'])
+            return col_num
+        else:
+            return col_num + 1
+
+    def _write_week_total(self, timecard, default_hours, excelSheet, row_num, col_num):
+        if not timecard:
+            col_num = self._write_field(excelSheet, row_num, col_num, default_hours)
+        else:
+            work_hours = timecard.get('workHours')
+            if work_hours:
+                total = 0
+                for day in work_hours.values():
+                    total += day['hours']
+                col_num = self._write_field(excelSheet, row_num, col_num, total)
+            else:
+                col_num += 1
+        return col_num
+
+
+
 
     ''' Employer should be able to get work time summary 
         report of the employees within the company
@@ -105,18 +144,23 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
     @user_passes_test(company_employer)
     def get(self, request, pk, year, month, day, format=None):
         comp = self._get_company_info(pk)
-        self._week_start_date = datetime(year=int(year), month=int(month), day=int(day))
+        week_start_date = datetime(year=int(year), month=int(month), day=int(day))
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('Timesheet')
+        time_tracking_service = TimeTrackingService()
+        submitted_sheets = time_tracking_service.get_company_users_submitted_work_timesheet_by_week_start_date(
+            comp.id,
+            week_start_date)
+
         self._write_headers(sheet)
 
-        self._write_company(comp, sheet)
+        self._write_company(comp, sheet, submitted_sheets)
 
         response = HttpResponse(content_type='application/vnd.ms-excel')
         # Need company name:
 
         response['Content-Disposition'] = (
             'attachment; filename={0}_employee_worktime_report_{1}.xls'
-        ).format(comp, self._week_start_date)
+        ).format(comp, week_start_date)
         book.save(response)
         return response

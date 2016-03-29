@@ -1,4 +1,6 @@
 import requests
+import urlparse
+import copy
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -14,7 +16,10 @@ API_URL_WORK_TIMESHEET = '{0}{1}'.format(
 )
 
 
+
 class TimeTrackingService(object):
+
+    hash_key_service = HashKeyService()
 
     def get_all_users_submitted_work_timesheet_by_week_start_date(self, week_start_date):
         users = []
@@ -34,6 +39,18 @@ class TimeTrackingService(object):
 
         return users
 
+    def _get_cur_environment(self):
+        if 'localhost' in settings.SITE_URL:
+            return 'localhost'
+        elif 'staging' in settings.SITE_URL:
+            return 'stage'
+        elif 'app' in settings.SITE_URL:
+            return 'production'
+        elif 'demo' in settings.SITE_URL:
+            return 'demo'
+        else:
+            return ''
+
     def _decode_environment_aware_id(self, encoded_id):
         if (not encoded_id):
             return None
@@ -41,10 +58,40 @@ class TimeTrackingService(object):
         if (not hashed_id_part):
             return None
 
-        hash_key_service = HashKeyService()
-        decoded_str = hash_key_service.decode_key(hashed_id_part)
+        decoded_str = self.hash_key_service.decode_key(hashed_id_part)
 
         if (decoded_str):
             return int(decoded_str)
 
         return decoded_str
+
+    def _encode_environment_aware_id(self, id_to_encode):
+        if (not id_to_encode):
+            return None
+        hash_id = self.hash_key_service.encode_key(id_to_encode)
+
+        return '{0}_{1}'.format(self._get_cur_environment(), hash_id)
+
+
+
+    def get_company_users_submitted_work_timesheet_by_week_start_date(self, company_id, week_start_date):
+        user_timesheets = []
+        api_url = '{0}api/v1/company/{1}/work_timesheets?start_date={2}&end_date={2}'.format(
+            settings.TIME_TRACKING_SERVICE_URL,
+            self._encode_environment_aware_id(company_id),
+            week_start_date.isoformat())
+
+        r = requests.get(api_url)
+        if r.status_code == 404:
+            return user_timesheets
+
+        all_entries = r.json()
+
+        for entry in all_entries:
+            user_descriptor = entry['employee']['personDescriptor']
+            user_id = self._decode_environment_aware_id(user_descriptor)
+            item = copy.deepcopy(entry)
+            item['user_id'] = user_id
+            user_timesheets.append(item)
+
+        return user_timesheets
