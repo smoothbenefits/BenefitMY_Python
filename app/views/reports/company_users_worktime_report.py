@@ -5,6 +5,8 @@ from django.http import HttpResponse, Http404
 from django.contrib.auth import get_user_model
 from app.models.person import Person
 from app.models.company import Company
+from app.models.employee_profile import EmployeeProfile, FULL_TIME
+from app.service.compensation_service import CompensationService
 
 from app.views.permission import (
     user_passes_test,
@@ -12,6 +14,8 @@ from app.views.permission import (
     company_employer_or_broker)
 from excel_export_view_base import ExcelExportViewBase
 from app.service.time_tracking_service import TimeTrackingService
+
+FULL_TIME_DEFAULT_WEEKLY_HOURS = 40
 User = get_user_model()
 
 class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
@@ -43,6 +47,19 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         except StopIteration:
             return None
 
+    def _get_employee_person_and_profile(self, employee_user_id, company):
+        person = None
+        profile = None
+        persons = Person.objects.filter(user=employee_user_id, relationship='self')
+        if (len(persons) > 0):
+            person = persons[0]
+        
+        if person:
+            profile = EmployeeProfile.objects.filter(person=person, company=company)
+            if len(profile) > 0:
+                profile = profile[0]
+
+        return person, profile
 
     def _write_company(self, company, excelSheet, submitted_sheets):
         users_id = self._get_all_employee_user_ids_for_company(company.id)
@@ -55,42 +72,25 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         return
 
     def _write_employee(self, company, employee_user_id, excelSheet, row_num, user_time_sheet):
-        col_num = 0
         if not user_time_sheet:
-            print "no user_time_sheet"
-            col_num = self._write_employee_personal_info(company, employee_user_id, excelSheet, row_num, col_num)
-            col_num = self._write_state_info(None, excelSheet, row_num, col_num)
-            col_num = self._write_week_total(None, 40, excelSheet, row_num, col_num)
-            row_num += 1
+            row_num = self._write_employee_row(company, employee_user_id, None, excelSheet, row_num)
         else:
             for timecard in user_time_sheet['timecards']:
-                col_num = 0
-                col_num = self._write_employee_personal_info(company, employee_user_id, excelSheet, row_num, col_num)
-                print "row_num = {0} and timecard is {1}".format(row_num, timecard)
-                col_num = self._write_state_info(timecard, excelSheet, row_num, col_num)
-                col_num = self._write_week_total(timecard, 40, excelSheet, row_num, col_num)
-                row_num += 1
+                row_num = self._write_employee_row(company, employee_user_id, timecard, excelSheet, row_num)
         return row_num
 
-    def _write_employee_personal_info(self, company, employee_user_id, excelSheet, row_num, start_column_num):
-        cur_column_num = start_column_num
-
-        cur_column_num = self._write_field(excelSheet, row_num, cur_column_num, company.name)
-        # The dates column are intentionally left blank for now
-        cur_column_num += 1
-
-        person = None
-        persons = Person.objects.filter(user=employee_user_id, relationship='self')
-        if (len(persons) > 0):
-            person = persons[0]
-
-        # All helpers are built with capability of skiping proper number of columns when
-        # person given is None. This is to ensure other information written after these
-        # would be written to the right columns
-        cur_column_num = self._write_person_name_info(person, excelSheet, row_num, cur_column_num, employee_user_id)
-
-        return cur_column_num
-
+    def _write_employee_row(self, company, employee_user_id, timecard, excelSheet, row_num):
+        col_num = 0
+        person, profile = self._get_employee_person_and_profile(employee_user_id, company)
+        col_num = self._write_field(excelSheet, row_num, col_num, company.name)
+        col_num += 1
+        col_num = self._write_person_name_info(person, excelSheet, row_num, col_num, employee_user_id)
+        col_num = self._write_state_info(timecard, excelSheet, row_num, col_num)
+        col_num = self._write_field(excelSheet, row_num, col_num, company.pay_period_definition.name if company.pay_period_definition else '')
+        col_num = self._write_week_total(timecard, profile, excelSheet, row_num, col_num)
+        col_num = self._write_regular_pay(timecard, person, profile, excelSheet, row_num, col_num)
+        col_num = self._write_overtime_hours(timecard, excelSheet, row_num, col_num)
+        return row_num + 1 
 
     def _write_person_name_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
         if (person_model):
@@ -108,9 +108,11 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
                 user = users[0]
                 col_num = self._write_field(excelSheet, row_num, col_num, user.first_name)
                 col_num = self._write_field(excelSheet, row_num, col_num, user.last_name)
+            else:
+                col_num += 2
         else:
             # Skip the columns
-            col_num = col_num + 3
+            col_num += 2
 
         return col_num
 
@@ -121,22 +123,55 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         else:
             return col_num + 1
 
-    def _write_week_total(self, timecard, default_hours, excelSheet, row_num, col_num):
+    def _write_week_total(self, timecard, profile, excelSheet, row_num, col_num):
         if not timecard:
-            col_num = self._write_field(excelSheet, row_num, col_num, default_hours)
+            default = FULL_TIME_DEFAULT_WEEKLY_HOURS if profile and profile.employment_type == FULL_TIME else 0
+            col_num = self._write_field(excelSheet, row_num, col_num, default)
         else:
-            work_hours = timecard.get('workHours')
-            if work_hours:
-                total = 0
-                for day in work_hours.values():
-                    total += day['hours']
-                col_num = self._write_field(excelSheet, row_num, col_num, total)
+            week_total_hours = self._get_week_total(timecard, 'workHours')
+            if week_total_hours:
+                col_num = self._write_field(excelSheet, row_num, col_num, week_total_hours)
             else:
                 col_num += 1
+        
         return col_num
 
+    def _write_regular_pay(self, timecard, person, profile, excelSheet, row_num, col_num):
+        weekly_pay = None
+        if person:
+            compensation_service = CompensationService(person.id, profile)
+            week_total_hours = 0
+            if timecard:
+                week_total_hours = self._get_week_total(timecard, 'workHours')
+            weekly_pay = compensation_service.get_current_weekly_salary(week_total_hours)
 
+        if weekly_pay:
+            col_num = self._write_field(excelSheet, row_num, col_num, '{0:.2f}'.format(weekly_pay))
+        else:
+            col_num += 1
 
+        return col_num
+
+    def _write_overtime_hours(self, timecard, excelSheet, row_num, col_num):
+        if not timecard:
+            col_num += 1
+        else:
+            week_total_hours = self._get_week_total(timecard, 'overtimeHours')
+            if week_total_hours:
+                col_num = self._write_field(excelSheet, row_num, col_num, week_total_hours)
+            else:
+                col_num += 1
+        
+        return col_num
+
+    def _get_week_total(self, timecard, field):
+        work_hours = timecard.get(field)
+        total = None
+        if work_hours:
+            total = 0
+            for day in work_hours.values():
+                total += day['hours']
+        return int(total)
 
     ''' Employer should be able to get work time summary 
         report of the employees within the company
