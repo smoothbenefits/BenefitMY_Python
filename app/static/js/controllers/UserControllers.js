@@ -257,6 +257,10 @@ var userController = userControllers.controller('userController',
       $state.go('admin_time_off');
     };
 
+    $scope.viewEmployeeTimeOffInfo = function(){
+      $state.go('admin_time_off_quotas');
+    };
+
     $scope.viewServiceProvider = function() {
       $state.go('admin_service_provider');
     }

@@ -7,6 +7,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from app.custom_authentication import AuthUser
 from app.models import Company, CompanyUser, Person, SysPeriodDefinition, \
     SysApplicationFeature, CompanyFeatures
+from app.models.system.email_block_list import EmailBlockList
 
 
 # Register your models here.
@@ -107,6 +108,11 @@ class SysApplicationFeatureAdmin(admin.ModelAdmin):
     list_display = ('feature',)
     fields = ['feature']
 
+class EmailBlockListAdmin(admin.ModelAdmin):
+    list_display=('email_block_feature', 'user')
+    fields=['email_block_feature', 'user']
+
+
 # Now register the new UserAdmin...
 admin.site.register(AuthUser, AuthUserAdmin)
 admin.site.register(Company, CompanyAdmin)
@@ -115,6 +121,7 @@ admin.site.register(Person, PersonAdmin)
 admin.site.register(CompanyFeatures, CompanyFeatureAdmin)
 admin.site.register(SysPeriodDefinition, SysPeriodDefinitionAdmin)
 admin.site.register(SysApplicationFeature, SysApplicationFeatureAdmin)
+admin.site.register(EmailBlockList, EmailBlockListAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

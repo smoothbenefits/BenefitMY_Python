@@ -1428,7 +1428,8 @@ var fsaBenefitsSignup = employeeControllers.controller(
           });
 
           // Get current user selection
-          FsaService.getFsaElectionForUser(employeeId, company.id).then(function(response) {
+          FsaService.getFsaElectionForUser(employeeId, company.id)
+          .then(function(response) {
               $scope.fsaElection = response;
               if (response.update_reason && response.update_reason.length > 0){
                 $scope.selectedFsaUpdateReason = _.findWhere($scope.fsaUpdateReasons, {text: response.update_reason});
@@ -1463,6 +1464,10 @@ var fsaBenefitsSignup = employeeControllers.controller(
           if ($scope.isFsaUpdateReasonSelected()){
             $scope.fsaElection.update_reason = $scope.selectedFsaUpdateReason.text;
             $scope.fsaElection.company_fsa_plan = $scope.fsaPlan.companyPlanId;
+          }
+          else{
+            $scope.savedSuccess = false;
+            return;
           }
 
           // Set values to NULL if user chooses to waive FSA plan
@@ -2544,7 +2549,7 @@ var employeeViewTimeOffController = employeeControllers.controller('employeeView
    'UserService',
    function($scope, $state, UserService){
      $scope.role = 'Employee';
-     $scope.enableRequestorFeatures = true;
+     $scope.isAdmin = false;
 
      UserService.getCurUserInfo().then(function(userInfo) {
        $scope.user = userInfo.user;
@@ -2581,7 +2586,6 @@ var employeeManageTimePunchCardController = employeeControllers.controller('empl
        $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
        $scope.company = curUserInfo.currentRole.company;
      });
-     $scope.enableRequestorFeatures = true;
      $scope.isAdmin = false;
      $scope.pageTitle = 'Work Weekly Timesheet';
      $scope.backToDashboard = function(){
