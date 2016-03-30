@@ -9,7 +9,7 @@ from app.service.user_enrollment_summary_service import(
     UserEnrollmentSummaryService,
     COMPLETED,
     NO_BENEFITS)
-from trigger_base import TriggerBase
+from ...trigger_base import TriggerBase
 
 
 class TriggerNotCompleteEnrollmentBase(TriggerBase):

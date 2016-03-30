@@ -27,6 +27,9 @@ HASH_KEY = '5e14ca8a-4a48-4cf7-aa3b-e207eb1a9adb'
 # Default password for initial user account setup
 DEFAULT_USER_PW = 'd4gf6u0hhfg48ds321cdsf'
 
+# Whether debug logging should also output to console
+LOG_TO_CONSOLE = False
+
 # Allowed hosts names
 ALLOWED_HOSTS = [ \
     'localhost', \
@@ -109,7 +112,8 @@ MIDDLEWARE_CLASSES = (
 
 CRON_CLASSES = [
     "app.scheduled_jobs.user_changes_notification.UserChangeNotifications",
-    "app.scheduled_jobs.system_notifications.SystemNotifications"
+    "app.scheduled_jobs.system_notifications.SystemNotifications",
+    "app.scheduled_jobs.system_jobs.SystemJobs"
 ]
 
 ROOT_URLCONF = 'Smoothbenefits.urls'
@@ -295,7 +299,9 @@ PIPELINE_JS = {
             'js/directives/Edit1094c.js',
             'js/directives/GroupMemberLink.js',
             'js/directives/CompanyGroupSelection.js',
-            'js/directives/TimeOffManager.js',
+            'js/directives/hr/TimeOffManager.js',
+            'js/directives/hr/TimeOffRequestView.js',
+            'js/directives/hr/EmployeesTimeOffInfo.js',
             'js/directives/hr/WorkTimesheetManager.js',
             'js/directives/DirectDepositManager.js',
             'js/directives/hr/WorkTimesheetWeekManager.js',
