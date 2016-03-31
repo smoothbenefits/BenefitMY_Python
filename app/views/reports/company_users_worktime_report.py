@@ -23,7 +23,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
     def _write_headers(self, excelSheet):
         col_num = 0
         col_num = self._write_field(excelSheet, 0, col_num, 'Company')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Dates')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Week Start Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'First Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Last Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'State')
@@ -61,29 +61,29 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         return person, profile
 
-    def _write_company(self, company, excelSheet, submitted_sheets):
+    def _write_company(self, company, week_start_date, excelSheet, submitted_sheets):
         users_id = self._get_all_employee_user_ids_for_company(company.id)
         row_num = 1
         # For each of them, write out his/her information
         for i in range(len(users_id)):
             user_id = users_id[i]
-            row_num = self._write_employee(company, user_id, excelSheet, row_num, self._get_user_timesheet(user_id, submitted_sheets))
+            row_num = self._write_employee(company, week_start_date, user_id, excelSheet, row_num, self._get_user_timesheet(user_id, submitted_sheets))
 
         return
 
-    def _write_employee(self, company, employee_user_id, excelSheet, row_num, user_time_sheet):
+    def _write_employee(self, company, week_start_date, employee_user_id, excelSheet, row_num, user_time_sheet):
         if not user_time_sheet:
-            row_num = self._write_employee_row(company, employee_user_id, None, excelSheet, row_num)
+            row_num = self._write_employee_row(company, week_start_date, employee_user_id, None, excelSheet, row_num)
         else:
             for timecard in user_time_sheet['timecards']:
-                row_num = self._write_employee_row(company, employee_user_id, timecard, excelSheet, row_num)
+                row_num = self._write_employee_row(company, week_start_date, employee_user_id, timecard, excelSheet, row_num)
         return row_num
 
-    def _write_employee_row(self, company, employee_user_id, timecard, excelSheet, row_num):
+    def _write_employee_row(self, company, week_start_date, employee_user_id, timecard, excelSheet, row_num):
         col_num = 0
         person, profile = self._get_employee_person_and_profile(employee_user_id, company)
         col_num = self._write_field(excelSheet, row_num, col_num, company.name)
-        col_num += 1
+        col_num = self._write_field(excelSheet, row_num, col_num, week_start_date.strftime('%m/%d/%Y'))
         col_num = self._write_person_name_info(person, excelSheet, row_num, col_num, employee_user_id)
         col_num = self._write_state_info(timecard, excelSheet, row_num, col_num)
         col_num = self._write_field(excelSheet, row_num, col_num, company.pay_period_definition.name if company.pay_period_definition else '')
@@ -148,7 +148,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         if weekly_pay:
             col_num = self._write_field(excelSheet, row_num, col_num, '{0:.2f}'.format(weekly_pay))
         else:
-            col_num += 1
+            col_num = self._write_field(excelSheet, row_num, col_num, 'Salary Not Available')
 
         return col_num
 
@@ -189,13 +189,13 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         self._write_headers(sheet)
 
-        self._write_company(comp, sheet, submitted_sheets)
+        self._write_company(comp, week_start_date, sheet, submitted_sheets)
 
         response = HttpResponse(content_type='application/vnd.ms-excel')
         # Need company name:
 
         response['Content-Disposition'] = (
             'attachment; filename={0}_employee_worktime_report_{1}.xls'
-        ).format(comp, week_start_date)
+        ).format(comp, week_start_date.strftime('%m_%d_%Y'))
         book.save(response)
         return response
