@@ -1,0 +1,12 @@
+<div class="breadcrumb">
+  <a ng-click="backToDashboard()">{{role}} Dashboard</a>
+  <span>My Documents</span>
+</div>
+
+<br/>
+
+<div class="content-body">
+    <bm-employee-document-viewer user-id="user.id" header-text="documentViewerHeaderText" read-only-mode></bm-employee-document-viewer>
+</div>
+
+<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
