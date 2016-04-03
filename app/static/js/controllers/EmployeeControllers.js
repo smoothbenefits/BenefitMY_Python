@@ -102,6 +102,39 @@ var employeeHome = employeeControllers.controller('employeeHome',
     $scope.viewDocuments = function() {
         $state.go('employee_view_documents');
     };
+
+    $scope.showTimeoff = function() {
+        return $scope.disabledFeatures
+            && !$scope.disabledFeatures.Timeoff; 
+    };
+
+    $scope.viewTimeoff = function() {
+        $state.go('employeetimeoff');
+    };
+
+    $scope.showWorkTimesheets = function() {
+        return $scope.disabledFeatures
+            && !$scope.disabledFeatures.WorkTimeSheet; 
+    };
+
+    $scope.viewWorkTimesheets = function() {
+        $state.go('employee_timesheet');
+    };
+
+    $scope.showTimePunchCards = function() {
+        return $scope.enabledFeatures
+            && $scope.enabledFeatures.RangedTimeCard; 
+    };
+
+    $scope.viewTimePunchCards = function() {
+        $state.go('employee_timepunchcard');
+    };
+
+    $scope.showTimeTrackingSection = function() {
+        return $scope.showTimeoff()
+            || $scope.showWorkTimesheets()
+            || $scope.showTimePunchCards();
+    };
   }
 ]);
 

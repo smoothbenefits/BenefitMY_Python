@@ -8,6 +8,46 @@
 </div>
 
 <div class="content-body">
+  <span ng-if="showTimeTrackingSection()">
+      <h6>My Time Tracking</h6>
+      <div class="dashboard-card" ng-if="showTimeoff()">
+        <div class="info-row">
+          <div class="col-xs-4 img-col"><span class="flaticon-logout5"></span></div>
+          <div class="col-xs-8 info-col">
+            <h4>Timeoff Requests</h4>
+            <p>View and manage timeoff requests</p>
+          </div>
+        </div>
+        <div class="action-row">
+          <div class="col-xs-12"><a ng-click="viewTimeoff()">View</a></div>
+        </div>
+      </div><!-- / .dashboard-card -->
+      <div class="dashboard-card" ng-if="showWorkTimesheets()">
+        <div class="info-row">
+          <div class="col-xs-4 img-col"><span class="flaticon-circular177"></span></div>
+          <div class="col-xs-8 info-col">
+            <h4>Work Timesheet</h4>
+            <p>Review and submit work timesheets</p>
+          </div>
+        </div>
+        <div class="action-row">
+          <div class="col-xs-12"><a ng-click="viewWorkTimesheets()">View</a></div>
+        </div>
+      </div><!-- / .dashboard-card -->
+      <div class="dashboard-card" ng-if="showTimePunchCards()">
+        <div class="info-row">
+          <div class="col-xs-4 img-col"><span class="flaticon-circular177"></span></div>
+          <div class="col-xs-8 info-col">
+            <h4>Work Time Tracking</h4>
+            <p>Review and submit work hours</p>
+          </div>
+        </div>
+        <div class="action-row">
+          <div class="col-xs-12"><a ng-click="viewTimePunchCards()">View</a></div>
+        </div>
+      </div><!-- / .dashboard-card -->
+  </span>
+
   <span ng-if="showBenefitSection()">
       <h6>My Benefits</h6>
       <div class="dashboard-card">
