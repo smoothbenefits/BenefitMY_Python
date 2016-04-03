@@ -86,7 +86,6 @@ class TimeTrackingService(object):
             return user_timesheets
 
         all_entries = r.json()
-
         for entry in all_entries:
             user_descriptor = entry['employee']['personDescriptor']
             user_id = self._decode_environment_aware_id(user_descriptor)
