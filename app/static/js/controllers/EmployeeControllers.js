@@ -64,8 +64,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showPayrollSection = function() {
-        return $scope.showPayrollW4Section
-            || $scope.showPayrollDirectDepositSection; 
+        return $scope.showPayrollW4Section()
+            || $scope.showPayrollDirectDepositSection(); 
     };
 
     $scope.showPayrollW4Section = function() {
