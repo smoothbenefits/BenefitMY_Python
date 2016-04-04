@@ -39,18 +39,6 @@ class TimeTrackingService(object):
 
         return users
 
-    def _get_cur_environment(self):
-        if 'localhost' in settings.SITE_URL:
-            return 'localhost'
-        elif 'staging' in settings.SITE_URL:
-            return 'stage'
-        elif 'app' in settings.SITE_URL:
-            return 'production'
-        elif 'demo' in settings.SITE_URL:
-            return 'demo'
-        else:
-            return ''
-
     def _decode_environment_aware_id(self, encoded_id):
         if (not encoded_id):
             return None
@@ -70,7 +58,7 @@ class TimeTrackingService(object):
             return None
         hash_id = self.hash_key_service.encode_key(id_to_encode)
 
-        return '{0}_{1}'.format(self._get_cur_environment(), hash_id)
+        return '{0}_{1}'.format(settings.ENVIRONMENT_IDENTIFIER, hash_id)
 
 
 
