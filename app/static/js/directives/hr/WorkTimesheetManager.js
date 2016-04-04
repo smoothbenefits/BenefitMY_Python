@@ -18,13 +18,15 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
     '$controller',
     'WorkTimesheetService',
     'CompanyPersonnelsService',
+    'CompanyEmployeeSummaryService',
     function WorkTimesheetManagerDirectiveController(
       $scope,
       $modal,
       $attrs,
       $controller,
       WorkTimesheetService,
-      CompanyPersonnelsService) {
+      CompanyPersonnelsService,
+      CompanyEmployeeSummaryService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -150,6 +152,13 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
             modalInstance.result.then(function(savedTimesheet){
                 $scope.reloadTimesheet();
             });
+        };
+
+        $scope.downloadWeeklyTimeSheetReport = function(){
+          var link = CompanyEmployeeSummaryService.getWeeklyWorktimeReportUrl(
+                $scope.company.id,
+                $scope.selectedDisplayWeek.weekStartDate);
+          location.href = link;
         };
     }
   ]

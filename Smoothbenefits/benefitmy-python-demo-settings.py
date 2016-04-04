@@ -7,6 +7,7 @@ SITE_URL = "http://demo.workbenefits.me/"
 
 # Time Tracking Service URL
 TIME_TRACKING_SERVICE_URL = "http://stage.timetracking.workbenefits.me/"
+ENVIRONMENT_IDENTIFIER = 'demo'
 
 # Logging Configurations
 LOGGING['handlers']['logentries_handler']['token'] = 'cc97e28c-6b76-4466-bd5b-f260ea68cf4b'

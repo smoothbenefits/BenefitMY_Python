@@ -769,11 +769,6 @@ benefitmyDomainModelFactories.factory('HsaRepository', ['$resource',
   }
 ]);
 
-benefitmyDomainModelFactories.factory('TimeTrackingAppHostNameRepository', ['$resource',
-  function($resource){
-    return $resource(PREFIX + 'timetrackingapp');
-  }
-]);
 
 benefitmyDomainModelFactories.factory('UserOnboardingStepStateRepository', ['$resource',
   function($resource) {
