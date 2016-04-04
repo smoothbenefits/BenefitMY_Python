@@ -269,6 +269,14 @@ var userController = userControllers.controller('userController',
       $state.go('settings', {user_id: $scope.curUser.id});
     };
 
+    $scope.employeeViewDocuments = function() {
+        $state.go('employee_view_documents');
+    };
+
+    $scope.employeeViewBenefits = function() {
+        $state.go('employee_view_benefits');
+    };
+
     $scope.startModifyBenefit = function() {
         // Show a modal dialog to take in the reason
         var curRole = $scope.getCurRoleFromPath();
