@@ -8,7 +8,7 @@
 </div>
 
 <div class="content-body">
-  <span ng-if="showTimeTrackingSection()">
+  <div ng-if="showTimeTrackingSection()">
       <h6>My Time Tracking</h6>
       <div class="dashboard-card" ng-if="showTimeoff()">
         <div class="info-row">
@@ -46,9 +46,9 @@
           <div class="col-xs-12"><a ng-click="viewTimePunchCards()">View</a></div>
         </div>
       </div><!-- / .dashboard-card -->
-  </span>
+  </div>
 
-  <span ng-if="showBenefitSection()">
+  <div ng-if="showBenefitSection()">
       <h6>My Benefits</h6>
       <div class="dashboard-card">
         <div class="info-row">
@@ -62,9 +62,9 @@
           <div class="col-xs-12"><a ng-click="viewBenefits()">View</a></div>
         </div>
       </div><!-- / .dashboard-card -->
-  </span>
+  </div>
 
-  <span ng-if="showPayrollSection()">
+  <div ng-if="showPayrollSection()">
       <h6>My Payroll</h6>
       <div class="dashboard-card" ng-if="showPayrollW4Section()">
         <div class="info-row">
@@ -90,7 +90,7 @@
           <div class="col-xs-12"><a ng-click="viewPayrollDirectDeposit()">View</a></div>
         </div>
       </div><!-- / .dashboard-card -->
-  </span>
+  </div>
 
   <h6>My Documents</h6>
   <div class="dashboard-card">
@@ -118,7 +118,7 @@
     </div>
   </div><!-- / .dashboard-card -->
 
-  <span ng-if="showProfileI9()">
+  <div ng-if="showProfileI9()">
       <h6>My Profile</h6>
       <div class="dashboard-card">
         <div class="info-row">
@@ -132,6 +132,6 @@
           <div class="col-xs-12"><a ng-click="viewProfileI9()">View</a></div>
         </div>
       </div><!-- / .dashboard-card -->
-  </span>
+  </div>
 
 </div>

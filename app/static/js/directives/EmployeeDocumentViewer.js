@@ -18,21 +18,21 @@ BenefitMyApp.directive('bmEmployeeDocumentViewer', function() {
         $scope.readOnlyMode = 'readOnlyMode' in $attrs;
 
         $scope.$watch('userId', function(theUser) {
-          if(theUser){
-            // Get the list of documents for the given user
-            DocumentService.getAllDocumentsForUser($scope.userId).then(
-                function(documents) {
-                    if ($scope.readOnlyMode) {
-                        $scope.documents = documents;
+            if(theUser){
+                // Get the list of documents for the given user
+                DocumentService.getAllDocumentsForUser($scope.userId).then(
+                    function(documents) {
+                        if ($scope.readOnlyMode) {
+                            $scope.documents = documents;
+                        }
+                        else {
+                            $scope.documents = _.filter(documents, function(doc) {
+                                return !doc.signature;
+                            });
+                        }
                     }
-                    else {
-                        $scope.documents = _.filter(documents, function(doc) {
-                            return !doc.signature;
-                        });
-                    }
-                }
-            );
-          }
+                );
+            }
         });
 
         $scope.headerSubjectText = ('headerText' in $attrs) 
