@@ -71,11 +71,10 @@ class CompensationService(object):
         if not comp:
             return weekly_salary
 
-        weeks_in_year = int(date(datetime.now().year, 12, 31).strftime("%W"))
-
+        days_in_year = date(datetime.now().year, 12, 31).timetuple().tm_yday
         is_fulltime = self._is_fulltime_employee()
         if is_fulltime and comp.annual_base_salary:
-            return comp.annual_base_salary / weeks_in_year
+            return comp.annual_base_salary / days_in_year * 7
         elif comp.hourly_rate:
             return comp.hourly_rate * weekly_hours
 
