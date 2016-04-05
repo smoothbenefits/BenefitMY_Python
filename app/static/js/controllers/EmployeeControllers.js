@@ -5,49 +5,31 @@ var employeeHome = employeeControllers.controller('employeeHome',
    '$location',
    '$state',
    '$stateParams',
-   '$modal',
-   'clientListRepository',
-   'employeeBenefits',
    'UserService',
    'EmployeePreDashboardValidationService',
-   'FsaService',
-   'BasicLifeInsuranceService',
-   'SupplementalLifeInsuranceService',
    'employeePayrollService',
    'EmploymentProfileService',
    'DirectDepositService',
-   'StdService',
-   'LtdService',
-   'HraService',
-   'CommuterService',
    'DocumentService',
    'CompanyFeatureService',
-   'EmployeeBenefitsAvailabilityService',
   function ($scope,
             $location,
             $state,
             $stateParams,
-            $modal,
-            clientListRepository,
-            employeeBenefits,
             UserService,
             EmployeePreDashboardValidationService,
-            FsaService,
-            BasicLifeInsuranceService,
-            SupplementalLifeInsuranceService,
             employeePayrollService,
             EmploymentProfileService,
             DirectDepositService,
-            StdService,
-            LtdService,
-            HraService,
-            CommuterService,
             DocumentService,
-            CompanyFeatureService,
-            EmployeeBenefitsAvailabilityService){
+            CompanyFeatureService){
     $('body').removeClass('onboarding-page');
+
     var curUserId;
     var userPromise = UserService.getCurUserInfo();
+
+    // Get user information, and perform validation and redirect
+    // upon landing
     userPromise.then(function(response){
       $scope.employee_id = response.user.id;
       $scope.company = response.currentRole.company;
@@ -70,121 +52,137 @@ var employeeHome = employeeControllers.controller('employeeHome',
       return response;
     });
 
-    userPromise.then(function(userInfo){
-      if(userInfo && userInfo.currentRole.company.id){
-        EmployeeBenefitsAvailabilityService.getEmployeeAvailableBenefits(
-            userInfo.currentRole.company.id,
-            userInfo.user.id)
-        .then(function(availableBenefits){
-          $scope.availableBenefits = availableBenefits;
-          $scope.hasBenefits = _.some($scope.availableBenefits, function(availability) {
-            return availability;
-          });
-        });
+    // Now start preparing all the data needed to pass to the 
+    // the module directives
 
-        employeeBenefits.enroll().get({userId:userInfo.user.id, companyId:userInfo.currentRole.company.id})
-          .$promise.then(function(response){
-                       $scope.benefits = response.benefits;
-                       $scope.benefitCount = response.benefits.length;
-          });
-        employeeBenefits.waive().query({userId:userInfo.user.id, companyId:userInfo.currentRole.company.id})
-          .$promise.then(function(waivedResponse){
-            $scope.waivedBenefits = waivedResponse;
-          });
+    $scope.showBenefitSection = function() {
+        return $scope.hasBenefits;
+    };
 
-        CompanyFeatureService.getDisabledCompanyFeatureByCompany(userInfo.currentRole.company.id)
-        .then(function(features) {
-          $scope.disabledFeatures = features;
-        });
-      }
-    });
+    $scope.viewBenefits = function() {
+        $state.go('employee_view_benefits');
+    };
 
-    userPromise.then(function(userInfo){
-      if(userInfo) {
-        DocumentService.getAllDocumentsForUser(userInfo.user.id).then(function(userDocs){
-            $scope.documents = userDocs;
-            $scope.documentCount = $scope.documents.length;
-        });
-      }
-    });
+    $scope.showPayrollSection = function() {
+        return $scope.showPayrollW4Section()
+            || $scope.showPayrollDirectDepositSection(); 
+    };
 
-     $scope.ViewDocument = function(documentId){
-         $location.path('/employee/document/' + documentId);
-     };
+    $scope.showPayrollW4Section = function() {
+        return $scope.disabledFeatures
+            && !$scope.disabledFeatures.W4;
+    };
 
-     $scope.goToState = function(state){
-      $state.go(state);
-     };
+    $scope.showPayrollDirectDepositSection = function() {
+        return $scope.disabledFeatures
+            && !$scope.disabledFeatures.DD;
+    };
 
-    userPromise.then(function(userInfo) {
-      // FSA election data
-      FsaService.getFsaElectionForUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(fsaPlan){
-        $scope.fsaElection = fsaPlan;
-      });
+    $scope.viewPayrollW4 = function() {
+        $state.go('employee_payroll.w4');
+    };
 
-      // Supplemental Life Insurance
-      SupplementalLifeInsuranceService.getPlanByUser(userInfo.user.id, userInfo.currentRole.company).then(function(plan) {
-        $scope.supplementalLifeInsurancePlan = plan;
-      });
+    $scope.viewPayrollDirectDeposit = function() {
+        $state.go('employee_payroll.direct_deposit');
+    };
 
-      // Basic Life Insurance
-      BasicLifeInsuranceService.getBasicLifeInsuranceEnrollmentByUser(userInfo.user.id, userInfo.currentRole.company)
-      .then(function(response){
-        $scope.basicLifeInsurancePlan = response;
-      });
+    $scope.viewUploads = function() {
+        $state.go('employeeUploads');
+    };
 
-      // W4 Form
-      employeePayrollService.getEmployeeTaxSummaryByUserId(userInfo.user.id).then(function(response){
-        $scope.w4Info = response;
-      });
+    $scope.showProfileI9 = function() {
+        return $scope.disabledFeatures
+            && !$scope.disabledFeatures.I9;  
+    };
 
-      // I9 Form
-      EmploymentProfileService.getEmploymentAuthSummaryByUserId(userInfo.user.id).then(function(response){
-        $scope.i9Info = response;
-      });
+    $scope.viewProfileI9 = function() {
+        $state.go('employee_profile.i9');
+    };
 
-      // Direct Deposit
-      DirectDepositService.getDirectDepositByUserId(userInfo.user.id).then(function(response){
-        $scope.directDepositAccounts = DirectDepositService.mapDtoToViewDirectDepositInBulk(response);
-      });
+    $scope.viewDocuments = function() {
+        $state.go('employee_view_documents');
+    };
 
-      // STD
-      StdService.getUserEnrolledStdPlanByUser(userInfo.user.id).then(function(response){
-        $scope.userStdPlan = response;
-      });
+    $scope.showTimeoff = function() {
+        return $scope.disabledFeatures
+            && !$scope.disabledFeatures.Timeoff; 
+    };
 
-      // LTD
-      LtdService.getUserEnrolledLtdPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(response){
-        $scope.userLtdPlan = response;
-      });
+    $scope.viewTimeoff = function() {
+        $state.go('employeetimeoff');
+    };
 
-      // HRA
-      HraService.getPersonPlanByUser(userInfo.user.id, userInfo.currentRole.company.id).then(function(response){
-        $scope.hraPlan = response;
-      });
+    $scope.showWorkTimesheets = function() {
+        return $scope.disabledFeatures
+            && !$scope.disabledFeatures.WorkTimeSheet; 
+    };
 
-      // Commuter
-      CommuterService.getPersonPlanByUser(userInfo.user.id).then(function(response){
-        if(response){
-          $scope.commuterPlan = response;
-          $scope.commuterPlan.calculatedTotalTransitAllowance = CommuterService.computeTotalMonthlyTransitAllowance($scope.commuterPlan);
-          $scope.commuterPlan.calculatedTotalParkingAllowance = CommuterService.computeTotalMonthlyParkingAllowance($scope.commuterPlan);
-        }
-      });
+    $scope.viewWorkTimesheets = function() {
+        $state.go('employee_timesheet');
+    };
 
-    });
+    $scope.showTimePunchCards = function() {
+        return $scope.enabledFeatures
+            && $scope.enabledFeatures.RangedTimeCard; 
+    };
 
-    $scope.isLifeInsuranceWaived = function(employeeFamilyLifeInsurancePlan) {
-        return (!employeeFamilyLifeInsurancePlan)
-          || (!employeeFamilyLifeInsurancePlan.mainPlan)
-          || (!employeeFamilyLifeInsurancePlan.mainPlan.id);
-      };
+    $scope.viewTimePunchCards = function() {
+        $state.go('employee_timepunchcard');
+    };
 
-    $scope.ViewDirectDeposit = function(editMode){
-      $location.path('/employee/direct_deposit').search('edit', editMode);
+    $scope.showTimeTrackingSection = function() {
+        return $scope.showTimeoff()
+            || $scope.showWorkTimesheets()
+            || $scope.showTimePunchCards();
     };
   }
 ]);
+
+var employeeViewBenefits = employeeControllers.controller('employeeViewBenefits',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   'UserService',
+   function($scope,
+            $state,
+            $stateParams,
+            UserService) {
+    
+     UserService.getCurUserInfo().then(function(userInfo){
+       $scope.user = userInfo.user;
+       $scope.company = userInfo.currentRole.company;
+     });
+
+     $scope.backToDashboard = function(){
+       $state.go('/employee');
+     };
+
+   }
+  ]);
+
+var employeeViewDocuments = employeeControllers.controller('employeeViewDocuments',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   'UserService',
+   function($scope,
+            $state,
+            $stateParams,
+            UserService) {
+    
+     UserService.getCurUserInfo().then(function(userInfo){
+       $scope.user = userInfo.user;
+       $scope.company = userInfo.currentRole.company;
+     });
+
+     $scope.documentViewerHeaderText = "Documents from my Employer";
+
+     $scope.backToDashboard = function(){
+       $state.go('/employee');
+     };
+
+   }
+  ]);
 
 var viewDocument = employeeControllers.controller('viewDocument',
   ['$scope', '$location', '$stateParams', 'DocumentService', 'currentUser', 'documentRepository',

@@ -187,6 +187,7 @@ from app.views.reports.company_users_full_summary_excel import CompanyUsersFullS
 from app.views.reports.company_users_benefits_billing_excel import CompanyUsersBenefitsBillingExcelExportView
 from app.views.reports.company_users_direct_deposit_excel import CompanyUsersDirectDepositExcelExportView
 from app.views.reports.company_users_life_insurance_beneficiary_excel import CompanyUsersLifeInsuranceBeneficiaryExcelExportView
+from app.views.reports.company_users_worktime_report import CompanyUsersWorktimeWeeklyReportView
 from app.views.reports.company_users_summary_pdf import CompanyUsersSummaryPdfExportView
 
 from app.views.reports.integration.company_hphc_excel import CompanyHphcExcelView
@@ -303,6 +304,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/life_beneficiary?$' % PREFIX, CompanyUsersLifeInsuranceBeneficiaryExcelExportView.as_view(), name='company_life_insurance_beneficiary_excel_api'),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view(), name='company_direct_deposit_excel_api'),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_billing?$' % PREFIX, CompanyUsersBenefitsBillingExcelExportView.as_view()),
+    url(r'^%s/company/(?P<pk>\w+)/worktime_excel/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/?$' % PREFIX, CompanyUsersWorktimeWeeklyReportView.as_view(), name='company_worktime_report_weekly'),
     url(r'^%s/companies/(?P<pk>\w+)/users/pdf/?$' % PREFIX, CompanyUsersSummaryPdfExportView.as_view(), name='company_summary_pdf_api'),
     url(r'^%s/company/(?P<pk>\w+)/role/(?P<role_type>\w+)/?$' % PREFIX, CompanyUserDetailView.as_view(), name='company_user_details_api'),
 
@@ -564,7 +566,6 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/company/(?P<comp_id>\w+)/enrollment_summary/?$' % PREFIX,
         CompanyEnrollmentSummaryView.as_view(), name='company_enrollment_summary_api'),
-
 
     # upload API
     url(r'^%s/users/(?P<pk>\w+)/uploads/?$' % PREFIX, UserUploadView.as_view(), name='uploads_by_user'),

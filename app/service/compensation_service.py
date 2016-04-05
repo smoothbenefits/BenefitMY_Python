@@ -1,4 +1,5 @@
 from django.utils import timezone
+from datetime import datetime, date
 from app.models.employee_compensation import EmployeeCompensation
 from app.models.employee_profile import EmployeeProfile, FULL_TIME
 from app.dtos.compensation_info import CompensationInfo
@@ -8,13 +9,18 @@ This is the service to provide compensation information to who ever needs it.
 The service only needs the person_id where compensation is needed
 '''
 class CompensationService(object):
-    def __init__(self, person_id):
+    def __init__(self, person_id, profile=None):
         self.person_id = person_id
+        self.profile = profile
 
     def _is_fulltime_employee(self):
-        profiles = EmployeeProfile.objects.filter(person_id=self.person_id)
-        if profiles and len(profiles) > 0:
-            return profiles[0].employment_type == FULL_TIME
+        if not self.profile:
+            profiles = EmployeeProfile.objects.filter(person_id=self.person_id)
+            if profiles and len(profiles) > 0:
+                self.profile = profiles[0]
+
+        if self.profile:
+            return self.profile.employment_type == FULL_TIME
         return False
 
     def _get_compensation_records_order_by_effective_date(self, ascending=True):
@@ -37,20 +43,41 @@ class CompensationService(object):
 
         return current_salary
 
-    def get_current_annual_salary(self):
-        current_salary = 0
+    def _get_current_compensation(self):
+        current_comp = None
         comps = self.get_all_compensation_ordered()
         if not comps:
+            return current_comp
+
+        decending_comps = comps[::-1]
+        for comp in decending_comps:
+            current_comp = comp
+            if current_comp.effective_date < timezone.now():
+                break
+        return current_comp
+
+    def get_current_annual_salary(self):
+        current_salary = 0
+        comp = self._get_current_compensation()
+        if not comp:
             return current_salary
 
         is_fulltime = self._is_fulltime_employee()
-        decending_comps = comps[::-1]
-        for comp in decending_comps:
-            current_salary = self._calculate_annual_salary(comp, is_fulltime)
-            if comp.effective_date < timezone.now():
-                break
+        return self._calculate_annual_salary(comp, is_fulltime)
 
-        return current_salary
+    def get_current_weekly_salary(self, weekly_hours):
+        weekly_salary = 0
+        comp = self._get_current_compensation()
+        if not comp:
+            return weekly_salary
+
+        days_in_year = date(datetime.now().year, 12, 31).timetuple().tm_yday
+        is_fulltime = self._is_fulltime_employee()
+        if is_fulltime and comp.annual_base_salary:
+            return comp.annual_base_salary / days_in_year * 7
+        elif comp.hourly_rate:
+            return comp.hourly_rate * weekly_hours
+
 
     def get_all_compensation_ordered(self):
         comps = self._get_compensation_records_order_by_effective_date()

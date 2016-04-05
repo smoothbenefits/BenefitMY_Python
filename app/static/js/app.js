@@ -425,6 +425,16 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_dashboard.html',
                 controller: 'employeeHome'
             }).
+            state('employee_view_documents', {
+                url: '/employee/view_documents',
+                templateUrl:'/static/partials/documents/employee_view_documents.html',
+                controller:'employeeViewDocuments'
+            }).
+            state('employee_view_benefits', {
+                url: '/employee/view_benefits',
+                templateUrl:'/static/partials/benefit_view/employee_benefit_selection_viewer.html',
+                controller:'employeeViewBenefits'
+            }).
             state('employee_benefit_signup', {
                 url: '/employee/benefits/:employee_id',
                 templateUrl: '/static/partials/benefit_selection/main.html',
