@@ -420,6 +420,16 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
               templateUrl: '/static/partials/company_service_provider/company_service_provider_base.html',
               controller: 'EmployerCompanyServiceProvider'
             }).
+            state('admin_subcontractor_manager', {
+                url:'/admin/contractor',
+                templateUrl: '/static/partials/subcontractor/subcontractor_base.html',
+                controller: 'employerManageSubcontractor'
+            }).
+            state('admin_subcontractor_insurance', {
+                url:'/admin/contractor/insurance',
+                templateUrl: '/static/partials/subcontractor/insurance_certificate_base.html',
+                controller: 'employerManageInsuranceCertificate'
+            }).
             state('/employee',{
                 url: '/employee',
                 templateUrl: '/static/partials/employee_dashboard.html',

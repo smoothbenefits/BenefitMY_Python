@@ -1684,3 +1684,68 @@ var employerViewTimePunchCards = employersController.controller('employerViewTim
       }
     }
 ]);
+
+var employerEditSubcontractorModal = employersController.controller('employerEditSubcontractorModal', [
+    '$scope',
+    '$modal',
+    '$modalInstance',
+    function($scope, $modal, $modalInstance){
+      $scope.cancel = function(){
+        $modalInstance.dismiss();
+      };
+    }
+]);
+
+var employerManageSubcontractor = employersController.controller('employerManageSubcontractor', [
+    '$scope',
+    '$state',
+    '$modal',
+    function($scope, $state, $modal){
+      $scope.openModal = function(){
+        var modalInstance = $modal.open({
+              templateUrl: '/static/partials/subcontractor/modal_subcontractor.html',
+              controller: 'employerEditSubcontractorModal',
+              backdrop: 'static',
+              size: 'lg'
+            });
+      };
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      };
+      $scope.manageInsuranceCert = function(){
+        $state.go('admin_subcontractor_insurance');
+      }
+    }
+]);
+
+var employerEditInsuranceCertificateModal = employersController.controller('employerEditInsuranceCertificateModal', [
+    '$scope',
+    '$modal',
+    '$modalInstance',
+    function($scope, $modal, $modalInstance){
+      $scope.cancel = function(){
+        $modalInstance.dismiss();
+      };
+    }
+]);
+
+var employerManageInsuranceCertificate = employersController.controller('employerManageInsuranceCertificate', [
+    '$scope',
+    '$state',
+    '$modal',
+    function($scope, $state, $modal){
+      $scope.openModal = function(){
+        var modalInstance = $modal.open({
+              templateUrl: '/static/partials/subcontractor/modal_insurance_certificate.html',
+              controller: 'employerEditInsuranceCertificateModal',
+              backdrop: 'static',
+              size: 'lg'
+            });
+      };
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      }
+    }
+]);
+
+

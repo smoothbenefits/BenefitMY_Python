@@ -1,0 +1,52 @@
+<div class="breadcrumb">
+  <a ng-href="#/admin">Admin Dashboard</a>
+  <span>Contractors</span>
+</div>
+
+<div class="content-header">
+  <h1>Manage Your Contractors</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="openModal()">Add Contractor</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Add Contractor</span> button to create a contractor</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="table-responsive">
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Contractor</span></th>
+        <th><span>Status</span></th>
+        <th><span>Actions</span></th>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a ng-click="openModal()">Alexis Construction Inc</a></td>
+          <td>Active</td>
+          <td>
+            <span><button ng-click="manageInsuranceCert()">Manage Insurance Certificates</button></span>
+            <span><button>Deactivate</button></span>
+          </td>
+        </tr>
+        <tr>
+          <td><a ng-click="openModal()">Asphalt Paver Inc</a></td>
+          <td>Inactive</td>
+          <td>
+            <span><button>Activate</button></span>
+          </td>
+        </tr>
+        <tr>
+          <td><a ng-click="openModal()">Green Lawn Inc</a></td>
+          <td>Active</td>
+          <td>
+            <span><button>Add Insurance Certificates</button></span>
+            <span><button>Deactivate</button></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div> 
+</div>
+
+<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>

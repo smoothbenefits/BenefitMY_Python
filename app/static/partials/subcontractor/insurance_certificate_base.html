@@ -1,0 +1,49 @@
+<div class="breadcrumb">
+  <a ng-href="#/admin">Admin Dashboard</a>
+  <a ng-href="#/admin/contractor">Contractor</a>
+  <span>Insurance Ceritificate</span>
+</div>
+
+<div class="content-header">
+  <h1>Manage Insurance Certificate for Alexis Construction Inc</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="openModal()">Add Insurance Certificate</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Add Insurance Certificate</span> button to create a new insurance certificate</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="table-responsive">
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Type</span></th>
+        <th><span>Agent</span></th>
+        <th><span>Policy Number</span></th>
+        <th><span>Policy Effective</span></th>
+        <th><span>Amount</span></th>
+        <th><span>Uploaded</span></th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Commercial General Liability</td>
+          <td>Blackman Insurance Agency</td>
+          <td>BP 0032432</td>
+          <td>06/03/2015 - 06/02/2016</td>
+          <td>$2,349,483</td>
+          <td><button>Upload</button></td>
+        </tr>
+        <tr>
+          <td>Umbrella Liability</td>
+          <td>Blackman Insurance Agency</td>
+          <td>CX 0004324832948</td>
+          <td>04/21/2015 - 04/20/2016</td>
+          <td>$526,733</td>
+          <td><a>Insurance document</a></td>
+        </tr>
+      </tbody>
+    </table>
+</div> 
+</div>
+
+<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>

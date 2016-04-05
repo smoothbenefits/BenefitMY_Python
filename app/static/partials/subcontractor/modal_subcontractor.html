@@ -1,0 +1,96 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create a New Contractor</h4>
+</div>
+<div class="modal-body col-md-12">
+  <div class="form-holder col-md-10 col-md-offset-1">
+    <form name="form">
+      <ul class="list-group"><li class="list-group-item">
+        <div class="form-label">Business Name</div>
+        <div class="textbox">
+          <input type="text" />
+        </div>
+      </li></ul>
+      <ul class="list-group"><li class="list-group-item">
+          <div class="col-md-6">
+            <div class="form-label">Contact First Name</div>
+            <div class="textbox">
+              <input type="text" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-label">Contact Last Name</div>
+            <div class="textbox">
+              <input type="text" />
+            </div>
+          </div>
+          <div style="clear:both"></div>
+      </li></ul>
+
+      <ul class="list-group"><li class="list-group-item">
+        <div class="col-md-6">
+          <div class="form-label">Street Address 1</div>
+          <div class="select-box">
+            <div class="textbox">
+              <input type="text" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-label">Street Address 2</div>
+          <div class="select-box">
+            <div class="textbox">
+              <input type="text" />
+            </div>
+          </div>
+        </div>
+        <div style="clear:both"></div>
+        <div class="col-md-4">
+          <div class="form-label">City</div>
+          <div class="select-box">
+            <div class="textbox">
+              <input type="text" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-label">State</div>
+          <div class="select-box">
+            <div class="textbox">
+              <input type="text" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="form-label">Zip</div>
+          <div class="select-box">
+            <div class="textbox">
+              <input type="text" ng-model="TestZip" ui-mask="99999" ui-mask-placeholder ui-mask-placeholder-char="_"/>
+            </div>
+          </div>
+        </div>
+        <div style="clear:both"></div>
+      </li></ul>
+      <ul class="list-group"><li class="list-group-item">
+        <div class="form-label">Email</div>
+        <div class="select-box">
+          <div class="textbox">
+            <input type="email" />
+          </div>
+        </div>
+        
+        <div class="form-label">Phone</div>
+        <div class="select-box">
+          <div class="textbox">
+            <input type="text" ng-model="TestPhone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_"/>
+          </div>
+        </div>
+      </li></ul>
+    </form>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-info" ng-click="save()" style="width: 20%">Save</button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+  </div>
+</div>

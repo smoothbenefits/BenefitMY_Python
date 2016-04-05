@@ -1,0 +1,99 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create A New Insurance Certificate</h4>
+</div>
+<div class="modal-body col-md-12">
+  <div class="form-holder col-md-10 col-md-offset-1">
+    <form name="form">
+      <ul class="list-group"><li class="list-group-item">
+        <div class="form-label">Type</div>
+        <div class="textbox">
+          <select>
+            <option>Commercial General Liability</option>
+            <option>Umbrella Liability</option>
+            <option>Excess Liability</option>
+            <option>Worker's Compensation and Employee Liability</option>
+          </select>
+        </div>
+      </li></ul>
+      <ul class="list-group"><li class="list-group-item">
+          <div class="col-md-6">
+            <div class="form-label">Agent</div>
+            <div class="textbox">
+              <input type="text" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-label">Agent Contact</div>
+            <div class="textbox">
+              <input type="text" />
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-label">Agent Address</div>
+            <div class="textbox">
+              <input type="text" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-label">Agent Email</div>
+            <div class="textbox">
+              <input type="email" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-label">Agent Phone</div>
+            <div class="textbox">
+              <input type="text" ng-model="AgentPhone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_"/>
+            </div>
+          </div>
+          <div style="clear:both"></div>
+      </li></ul>
+
+      <ul class="list-group"><li class="list-group-item">
+        <div class="form-label">Policy Number</div>
+        <div class="select-box">
+          <div class="textbox">
+            <input type="text" />
+          </div>
+        </div>
+      </li></ul>
+      <ul class="list-group"><li class="list-group-item">
+        <div class="col-md-6">
+            <div class="form-label">Policy Start Date</div>
+            <div class="textbox">
+              <bm-date-picker model="policyStartDate"
+                required="true"
+                name="policy_start_date"
+                fieldname="'policy_start_date'"
+                dirty="form.policy_start_date.$dirty" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-label">Policy End Date</div>
+            <div class="textbox">
+              <bm-date-picker model="policyEndDate"
+                required="true"
+                name="policy_end_date"
+                fieldname="'policy_end_date'"
+                dirty="form.policy_end_date.$dirty" />
+            </div>
+          </div>
+          <div style="clear:both"></div>
+      </li></ul>
+      <ul class="list-group"><li class="list-group-item">
+        <div class="form-label">Policy Amount</div>
+        <div class="select-box">
+          <div class="textbox">
+            <input type="text" />
+          </div>
+        </div>
+      </li></ul>
+    </form>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-info" ng-click="save()" style="width: 20%">Save</button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+  </div>
+</div>
