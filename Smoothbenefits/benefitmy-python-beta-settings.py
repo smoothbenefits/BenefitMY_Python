@@ -12,6 +12,7 @@ SITE_URL = "https://app.workbenefits.me/"
 
 # Time Tracking Service URL
 TIME_TRACKING_SERVICE_URL = "https://timetracking.workbenefits.me/"
+ENVIRONMENT_IDENTIFIER = 'production'
 
 # Logging Configurations
 LOGGING['handlers']['logentries_handler']['token'] = '11a32264-c904-4765-96c0-fe6e7fbdb09c'

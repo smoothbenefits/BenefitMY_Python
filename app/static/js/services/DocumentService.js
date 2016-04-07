@@ -34,6 +34,11 @@ benefitmyService.factory('DocumentService',
             viewModel.createDateForDisplay = moment(domainModel.created_at).format(DATE_FORMAT_STRING);
             viewModel.updateDateForDisplay = moment(domainModel.updated_at).format(DATE_FORMAT_STRING);
 
+            // Also prepare signature timestamp for display
+            if (viewModel.signature) {
+                viewModel.signature.createTimeForDisplay = moment(viewModel.signature.created_at).format(DATE_TIME_FORMAT_STRING);
+            }
+
             return viewModel;
         };
 
