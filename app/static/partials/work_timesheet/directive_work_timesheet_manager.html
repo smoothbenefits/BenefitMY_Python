@@ -18,7 +18,7 @@
     <div class="panel-body">
         <div class="col-md-4">
             <div class="select-box">
-                <select 
+                <select
                     id="display_week"
                     ng-model="selectedDisplayWeek"
                     name="display_week"
@@ -26,6 +26,9 @@
                     class="form-control"
                     ng-change="reloadTimesheet()"></select>
             </div>
+        </div>
+        <div class="col-md-4 col-md-offset-4" ng-show="adminMode">
+          <a ng-click="downloadWeeklyTimeSheetReport()">Download weekly worktime report</a>
         </div>
     </div>
   </div>
@@ -49,7 +52,7 @@
     </div>
     <div class="panel-body">
       <table class="table table-striped benefit-table fix-layout-table"
-        id="plan_items_table" 
+        id="plan_items_table"
         ng-show="employeeWorkHourList.length > 0">
         <thead>
           <th><div>Name</div></th>

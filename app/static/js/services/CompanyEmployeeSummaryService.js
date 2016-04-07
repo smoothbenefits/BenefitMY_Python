@@ -63,6 +63,12 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
 
       getEmployee1095cUrl: function(employeeUserId) {
         return API_PREFIX + '/users/' + employeeUserId + '/forms/1095c';
+      },
+
+      getWeeklyWorktimeReportUrl: function(companyId, weekStartDate){
+        var reportUrl = API_PREFIX + '/company/' + companyId + '/worktime_excel';
+        reportUrl += moment(weekStartDate).format('/YYYY/M/DD');
+        return reportUrl;
       }
     };
   }

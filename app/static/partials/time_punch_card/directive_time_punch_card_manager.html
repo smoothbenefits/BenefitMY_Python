@@ -29,6 +29,9 @@
                     class="form-control"></select>
             </div>
         </div>
+        <div class="col-md-4 col-md-offset-4" ng-show="adminMode">
+          <a ng-click="downloadWeeklyTimeSheetReport()">Download weekly worktime report</a>
+        </div>
     </div>
   </div>
   <div class="panel" ng-hide="adminMode">
@@ -78,7 +81,7 @@
     </div>
     <div class="panel-body">
       <table class="table table-striped benefit-table fix-layout-table"
-        id="plan_items_table" 
+        id="plan_items_table"
         ng-show="employeeTimeCards.length > 0">
         <thead>
           <th><div>Name</div></th>
