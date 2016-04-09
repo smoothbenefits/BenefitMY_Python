@@ -20,7 +20,7 @@ BenefitMyApp.controller('EmployeesTimeoffInfoController', [
                 .then(function(timeoffQuotaList){
                     $scope.employeeQuotas = [];
                     _.each(employees, function(employee){
-                        var envAwareId = utilityService.getEnvAwareId(employee.id);
+                        var envAwareId = utilityService.getEnvAwareId(employee.user.id);
                         var timeoffQuota = _.findWhere(timeoffQuotaList, {personDescriptor: envAwareId});
                         $scope.employeeQuotas.push({
                             employee: employee.user,
@@ -29,7 +29,7 @@ BenefitMyApp.controller('EmployeesTimeoffInfoController', [
                     })
                 });
             });
-            
+
         });
 
     }
