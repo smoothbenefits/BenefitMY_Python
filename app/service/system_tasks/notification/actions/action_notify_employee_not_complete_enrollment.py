@@ -25,12 +25,12 @@ class ActionNotifyEmployeeNotCompleteEnrollment(ActionBase):
 
         for company_id in action_data['company_user_id_list']:
 
-            self.log.debug("Company " + company_id)
+            self.log.debug("Company {0}".format(company_id))
             user_id_list = action_data['company_user_id_list'][company_id]
 
             for user_id in user_id_list:
 
-                self.log.debug("User " + user_id)
+                self.log.debug("User {0}".format(user_id))
                 context_data = { 'company': Company.objects.get(pk=company_id) }
 
                 # build the list of target emails
@@ -43,9 +43,11 @@ class ActionNotifyEmployeeNotCompleteEnrollment(ActionBase):
                 send_email_service.send_support_email(
                     emails, subject, context_data, html_template_path, txt_template_path)
 
-                self.log.info("Action {} ran to completion for user {}".format(self.__class__.__name__, user_id))
+                self.log.info("Action {0} ran to completion for user {1}".format(
+                    self.__class__.__name__,
+                    user_id))
 
-        self.log.info("Action {} ran to completion.".format(self.__class__.__name__))
+        self.log.info("Action {0} ran to completion.".format(self.__class__.__name__))
 
 
     def _get_site_URL(self, user_id):
