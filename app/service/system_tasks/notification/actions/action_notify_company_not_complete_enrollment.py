@@ -24,7 +24,7 @@ class ActionNotifyCompanyNotCompleteEnrollment(ActionBase):
 
         for company_id in action_data['company_user_id_list']:
 
-            self.log.debug("Company " + company_id)
+            self.log.debug("Company {0}".format(company_id))
             user_id_list = action_data['company_user_id_list'][company_id]
 
             context_data = {
@@ -43,11 +43,12 @@ class ActionNotifyCompanyNotCompleteEnrollment(ActionBase):
             send_email_service.send_support_email(
                 emails, subject, context_data, html_template_path, txt_template_path)
 
-            self.log.info("Action {} ran to completion for company {}".format(
-                self.__class__.__name__, company_id
+            self.log.info("Action {0} ran to completion for company {1}".format(
+                self.__class__.__name__,
+                company_id
             ))
 
-        self.log.info("Action {} ran to completion".format(self.__class__.__name__))
+        self.log.info("Action {0} ran to completion".format(self.__class__.__name__))
 
     def _get_user_view_model_list(self, user_id_list):
         send_email_service = SendEmailService()
