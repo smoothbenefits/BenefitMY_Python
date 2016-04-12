@@ -1,0 +1,65 @@
+---
+FieldType: Text
+FieldName: topmostSubform[0].Page1[0].body_month[0]
+FieldNameAlt: body_month
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: topmostSubform[0].Page1[0].body_day[0]
+FieldNameAlt: body_day
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: topmostSubform[0].Page1[0].body_year[0]
+FieldNameAlt: body_year
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: topmostSubform[0].Page1[0].body_subcontractor_name[0]
+FieldNameAlt: body_subcontractor_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: topmostSubform[0].Page1[0].subcontractor_signature[0]
+FieldNameAlt: subcontractor_signature
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: topmostSubform[0].Page1[0].subcontractor_date[0]
+FieldNameAlt: subcontractor_date
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: topmostSubform[0].Page1[0].subcontractor_name[0]
+FieldNameAlt: subcontractor_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: topmostSubform[0].Page1[0].company_signature[0]
+FieldNameAlt: company_signature
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: topmostSubform[0].Page1[0].company_date[0]
+FieldNameAlt: company_date
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: topmostSubform[0].Page1[0].company_title[0]
+FieldNameAlt: company_title
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: 
+FieldName: topmostSubform[0]
+FieldFlags: 0
+FieldJustification: Left
