@@ -1,4 +1,3 @@
-import requests
 import urlparse
 import copy
 
@@ -6,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from app.service.hash_key_service import HashKeyService
+from app.service.web_request_service import WebRequestService
 
 User = get_user_model()
 
@@ -16,10 +16,10 @@ API_URL_WORK_TIMESHEET = '{0}{1}'.format(
 )
 
 
-
 class TimeTrackingService(object):
 
     hash_key_service = HashKeyService()
+    request_service = WebRequestService()
 
     def get_all_users_submitted_work_timesheet_by_week_start_date(self, week_start_date):
         users = []
@@ -29,7 +29,7 @@ class TimeTrackingService(object):
                         week_start_date.isoformat())
 
         # Make the request and parse the response as json
-        r = requests.get(api_url)
+        r = self.request_service.get(api_url)
         all_entries = r.json()
 
         for entry in all_entries:
@@ -69,7 +69,7 @@ class TimeTrackingService(object):
             self._encode_environment_aware_id(company_id),
             week_start_date.isoformat())
 
-        r = requests.get(api_url)
+        r = self.request_service.get(api_url)
         if r.status_code == 404:
             return user_timesheets
 
