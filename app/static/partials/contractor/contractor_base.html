@@ -1,0 +1,54 @@
+<div class="breadcrumb">
+  <a ng-href="#/admin">Admin Dashboard</a>
+  <span>Contractors</span>
+</div>
+
+<div class="content-header">
+  <h1>Manage Your Contractors</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="createOrEditContractor()">Add Contractor</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Add Contractor</span> button to create a contractor</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="table-responsive" ng-if="contractors && contractors.length > 0">
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Contractor</span></th>
+        <th><span>Status</span></th>
+        <th><span>Actions</span></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="contractor in contractors">
+          <td>
+            <a 
+              ng-click="createOrEditContractor(contractor)"
+              ng-if="isContractorActive(contractor)">
+              {{contractor.name}}
+            </a>
+            <span ng-if="!isContractorActive(contractor)">{{contractor.name}}</span>
+          </td>
+          <td>{{contractor.status}}</td>
+          <td>
+            <span><button ng-click="manageInsuranceCert(contractor)" ng-if="isContractorActive(contractor)">Manage Insurance Certificates</button></span>
+            <span ng-if="isContractorActive(contractor)"><button ng-click="deactivate(contractor)">Deactivate</button></span>
+            <span ng-if="!isContractorActive(contractor)"><button ng-click="activate(contractor)">Activate</button></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div ng-if="!contractors || contractors.length <= 0" class="panel">
+    <div class="panel-heading">
+      No Contractors
+    </div>
+    <div class="panel-body">
+      Currently there are no contractors setup for your company.
+      <a ng-click="createOrEditContractor()">Click Here</a> to create a contractor
+    </div>
+  </div> 
+</div>
+
+<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>

@@ -87,6 +87,16 @@
           <a ng-click="goToFunctionalViewByCompanyId('/admin/documents/template/')">View Templates</a>
         </div>
       </li>
+      <li class="expandable" ng-show="isCurRoleAdmin() && enabledFeatures.ProjectManagement">
+        <div class="primary-nav">
+          <button data-toggle="collapse" data-target="#project-management-nav" aria-expanded="false" aria-controls="project-management-nav">
+          <span class="flaticon flaticon-circular177">
+          </span>Projects</button>
+        </div>
+        <div class="sub-nav collapse" id="project-management-nav">
+          <a ng-click="viewContractors()">Manage Contractors</a>
+        </div>
+      </li>
       <li class="expandable" ng-show="isCurRoleAdmin()">
         <div class="primary-nav">
           <button data-toggle="collapse" data-target="#employer-benefit-nav" aria-expanded="false" aria-controls="employer-benefit-nav"><span class="flaticon flaticon-heart260"></span>Benefits</button>
