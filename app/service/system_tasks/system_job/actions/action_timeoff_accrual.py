@@ -1,10 +1,12 @@
-import requests
-
 from django.conf import settings
 from ...action_base import ActionBase
 
+from app.service.web_request_service import WebRequestService
+
 
 class ActionTimeoffAccural(ActionBase):
+    request_service = WebRequestService()
+
     API_URL_TIMEOFF_ACCURAL = '{0}{1}'.format(
         settings.TIME_TRACKING_SERVICE_URL,
         'api/v1/timeoff_quotas/execute_accrual'
@@ -15,7 +17,7 @@ class ActionTimeoffAccural(ActionBase):
 
     def execute(self, action_data):
         # Invoke the remote URL to trigger global timeoff accural
-        r = requests.get(self.API_URL_TIMEOFF_ACCURAL)
+        r = self.request_service.get(self.API_URL_TIMEOFF_ACCURAL)
 
         if (r.status_code != 200):
             self.log.error("Action {} failed to complete.".format(self.__class__.__name__))
