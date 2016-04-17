@@ -41,6 +41,21 @@ benefitmyService.factory('TimeOffService',
             ];
         };
 
+        /**
+            Get the list of available accrual frequency.
+            TODO:
+                For now this returns a static list, but in the
+                future this will be turned into something that
+                can return lists based on configuration for the
+                company/user.
+        */
+        var getAvailableAccrualFrequecy = function() {
+            return [
+              AccrualFrequency.Monthly,
+              AccrualFrequency.Daily
+            ];
+        };
+
         var mapDomainModelToViewModel = function(domainModel){
             var viewModel = {
                 id: domainModel._id,
@@ -134,7 +149,15 @@ benefitmyService.factory('TimeOffService',
                 });
         };
 
-        var GetTimeOffQuotaByCompany = function(companyId){
+        var UpdateTimeOffQuotaByUser = function(userId, quotaModel){
+            var id = utilityService.getEnvAwareId(userId);
+            return TimeOffRepository.QuotaByUser.update({userId:id}, quotaModel)
+                .$promise.then(function(timeoffQuota){
+                    return timeoffQuota;
+                });
+        };
+
+        var GetTimeOffQuotaByCompany = function(companyId) {
             var compId = utilityService.getEnvAwareId(companyId);
             return TimeOffRepository.QuotaByCompany.query({companyId:compId})
                 .$promise.then(function(timeoffQuotaList){
@@ -142,15 +165,48 @@ benefitmyService.factory('TimeOffService',
                 });
         };
 
+        var GetBlankTimeOffQuota = function(companyId, userId) {
+            return getBlankQuotaModel(companyId, userId);
+        };
+
+        var getBlankQuotaModel = function(companyId, userId) {
+            var compId = utilityService.getEnvAwareId(companyId);
+            var uId = utilityService.getEnvAwareId(userId);
+
+            return { 
+                personDescriptor: uId,
+                companyDescriptor: compId,
+                quotaInfoCollection:_.map(
+                    getAvailableTimeoffTypes(),
+                    getBlankAccrualModel)
+            };
+        };
+
+        var getBlankAccrualModel = function(timeoffType) {
+            return {
+                timeoffType: timeoffType,
+                bankedHours: 0.0,
+                annualTargetHours: 0.0,
+                accrualSpecs: {
+                    accrualFrequency: AccrualFrequency.Monthly,
+                    accruedHours: 0.0
+                }
+            };
+        };
+
         return {
             TimeoffTypes: TimeoffTypes,
+            AccrualFrequency: AccrualFrequency,
             GetAvailableTimeoffTypes: getAvailableTimeoffTypes,
+            GetAvailableAccrualFrequecy: getAvailableAccrualFrequecy,
             GetTimeOffsByRequestor: GetTimeOffsByRequestor,
             RequestTimeOff: requestTimeOff,
             GetTimeOffsByApprover: GetTimeOffsByApprover,
             UpdateTimeOffStatus: UpdateTimeOffStatus,
             GetTimeOffQuota: GetTimeOffQuota,
-            GetTimeOffQuotaByCompany: GetTimeOffQuotaByCompany
+            UpdateTimeOffQuotaByUser: UpdateTimeOffQuotaByUser,
+            GetTimeOffQuotaByCompany: GetTimeOffQuotaByCompany,
+            GetBlankTimeOffQuota: GetBlankTimeOffQuota
         };
     }
 ]);
