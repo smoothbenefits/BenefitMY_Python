@@ -107,6 +107,7 @@ class TimeTrackingService(object):
             item = copy.deepcopy(entry)
             item['user_id'] = user_id
 
+            # Group returned timesheet by work start date
             week_start_date = entry['weekStartDate']
             if week_start_date in week_user_timesheets:
                 week_user_timesheets[week_start_date].append(item)

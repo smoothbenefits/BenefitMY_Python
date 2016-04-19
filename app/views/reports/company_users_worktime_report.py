@@ -193,7 +193,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         self._write_headers(sheet)
 
-        # A dictionary with work start date as the key is returned
+        # A dictionary with work start date as key is returned
         # when getting timesheets by week range.
         # Value is an array of user timesheets
         for key in submitted_sheets:
