@@ -1778,7 +1778,7 @@ var employerManageContractor = employersController.controller('employerManageCon
       };
 
       $scope.manageInsuranceCert = function(contractor){
-        $state.go('admin_contractor_insurance');
+        $state.go('admin_contractor_insurance', {contractorId: contractor._id});
       };
 
       $scope.deactivate = function(contractor){
@@ -1806,7 +1806,27 @@ var employerEditInsuranceCertificateModal = employersController.controller('empl
     '$scope',
     '$modal',
     '$modalInstance',
-    function($scope, $modal, $modalInstance){
+    'insuranceCertificate',
+    'contractorId',
+    'ContractorsService',
+    function($scope, $modal, $modalInstance, insuranceCertificate, contractorId, ContractorsService){
+      var contractorId = contractorId;
+      if(insuranceCertificate){
+        $scope.insurance = insuranceCertificate;
+      }
+      else{
+        $scope.Insurance = ContractorsService.GetBlankInsuranceCertificate();
+      }
+      $scope.insuranceTypes = ContractorsService.InsuranceCertificateTypes;
+      
+      $scope.save = function(){
+        ContractorsService.SaveInsuranceCertificate(contractorId, $scope.insurance)
+          .then(function(modifiedContractor){
+            $modalInstance.close(true);
+          }, function(error){
+            $modalInstance.close(false);
+          });
+      }
       $scope.cancel = function(){
         $modalInstance.dismiss();
       };
@@ -1816,19 +1836,72 @@ var employerEditInsuranceCertificateModal = employersController.controller('empl
 var employerManageInsuranceCertificate = employersController.controller('employerManageInsuranceCertificate', [
     '$scope',
     '$state',
+    '$stateParams',
     '$modal',
-    function($scope, $state, $modal){
-      $scope.openModal = function(){
+    '$controller',
+    'ContractorsService',
+    function($scope, $state, $stateParams, $modal, $controller, ContractorsService){
+      var contractorId = $stateParams.contractorId;
+      // Inherit base modal controller for dialog window
+      $controller('modalMessageControllerBase', {$scope: $scope});
+
+      $scope.openCreateOrEditModal = function(insuranceCertificate){
         var modalInstance = $modal.open({
               templateUrl: '/static/partials/contractor/modal_insurance_certificate.html',
               controller: 'employerEditInsuranceCertificateModal',
               backdrop: 'static',
-              size: 'lg'
+              size: 'lg',
+              resolve: {
+                insuranceCertificate: function(){ return insuranceCertificate; },
+                contractorId: function(){ return contractorId; }
+              }
             });
+        modalInstance.result.then(function(success){
+          if(success){
+            var successMessage = "Insurance certificate saved successfully!";
+            $scope.showMessageWithOkayOnly('Success', successMessage);
+          }
+          else{
+            var message = "Insurance certificate save failed!";
+            $scope.showMessageWithOkayOnly('Error', message);
+          }
+          $state.reload();
+        });
       };
+      $scope.goContractors = function(){
+        $state.go('admin_contractor_manager');
+      };
+
+      if (!contractorId){
+        alert('Contractor Not Valid. Returning back to Contractors View');
+        $scope.goContractors();
+        return;
+      }
+
+
+      ContractorsService.GetContractorById(contractorId)
+        .then(function(contractor){
+          $scope.contractor = contractor;
+        });
+
       $scope.backToDashboard = function(){
         $state.go('/admin');
-      }
+      };
+
+      $scope.hasInsurances = function(){
+        return $scope.contractor &&
+          $scope.contractor.insurances &&
+          $scope.contractor.insurances.length > 0;
+      };
+
+      $scope.deleteInsurance = function(insuranceId){
+        ContractorsService.DeleteInsuranceCertificate(contractorId, insuranceId)
+          .then(function(success){
+            $state.reload();
+          },function(error){
+            alert(error);
+          });
+      };
     }
 ]);
 
