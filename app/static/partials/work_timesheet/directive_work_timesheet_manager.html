@@ -16,6 +16,7 @@
         Select Week
     </div>
     <div class="panel-body">
+      <div class="row">
         <div class="col-md-4">
             <div class="select-box">
                 <select
@@ -28,8 +29,34 @@
             </div>
         </div>
         <div class="col-md-4 col-md-offset-4" ng-show="adminMode">
-          <a ng-click="downloadWeeklyTimeSheetReport()">Download weekly worktime report</a>
+          <button ng-click="downloadWeeklyTimeSheetReport()">Download Weekly Worktime Report</button>
+          <div>
+            <a ng-click="toggleTimeFilter()" style="align-right" ng-hide="showTimeFilter">
+              <i class="fa fa-angle-double-down" aria-hidden="true"></i>  more filters
+            </a>
+            <a ng-click="toggleTimeFilter()" style="align-right" ng-show="showTimeFilter">
+              <i class="fa fa-angle-double-up" aria-hidden="true"></i>  hide and clear filters
+            </a>
+          </div>
         </div>
+      </div>
+      <hr style="padding-top: 15px;" ng-show="showTimeFilter">
+      <div class="row col-md-6 col-md-offset-2" ng-show="showTimeFilter">
+        <div class="form-label">From the week of: </div>
+        <div class="datebox">
+          <bm-date-picker model="report.starting_date" required="report.end_date"
+          name="report_starting_date"
+          fieldname="'Starting Week'" />
+        </div>
+      </div>
+      <div class="row col-md-6 col-md-offset-2" ng-show="showTimeFilter">
+        <div class="form-label">To the week of: </div>
+        <div class="datebox">
+          <bm-date-picker model="report.end_date" required="report.start_date"
+          name="report_end_date"
+          fieldname="'End Week'" />
+        </div>
+      </div>
     </div>
   </div>
   <div class="panel" ng-hide="adminMode">

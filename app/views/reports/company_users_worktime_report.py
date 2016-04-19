@@ -53,7 +53,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         persons = Person.objects.filter(user=employee_user_id, relationship='self')
         if (len(persons) > 0):
             person = persons[0]
-        
+
         if person:
             profile = EmployeeProfile.objects.filter(person=person, company=company)
             if len(profile) > 0:
@@ -90,7 +90,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         col_num = self._write_week_total(timecard, profile, excelSheet, row_num, col_num)
         col_num = self._write_regular_pay(timecard, person, profile, excelSheet, row_num, col_num)
         col_num = self._write_overtime_hours(timecard, excelSheet, row_num, col_num)
-        return row_num + 1 
+        return row_num + 1
 
     def _write_person_name_info(self, person_model, excelSheet, row_num, col_num, employee_user_id = None):
         if (person_model):
@@ -117,7 +117,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         return col_num
 
     def _write_state_info(self, timecard, excelSheet, row_num, col_num):
-        if timecard and timecard.get('tags') and 'State' in timecard['tags'][0]['tagType']:    
+        if timecard and timecard.get('tags') and 'State' in timecard['tags'][0]['tagType']:
             col_num = self._write_field(excelSheet, row_num, col_num, timecard['tags'][0]['tagContent'])
             return col_num
         else:
@@ -133,7 +133,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, week_total_hours)
             else:
                 col_num += 1
-        
+
         return col_num
 
     def _write_regular_pay(self, timecard, person, profile, excelSheet, row_num, col_num):
@@ -161,7 +161,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, week_total_hours)
             else:
                 col_num += 1
-        
+
         return col_num
 
     def _get_week_total(self, timecard, field):
@@ -173,25 +173,34 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
                 total += day['hours']
         return int(total)
 
-    ''' Employer should be able to get work time summary 
+    ''' Employer should be able to get work time summary
         report of the employees within the company
     '''
     @user_passes_test(company_employer)
-    def get(self, request, pk, year, month, day, format=None):
+    def get(self, request, pk,
+            from_year, from_month, from_day,
+            to_year, to_month, to_day, format=None):
         comp = self._get_company_info(pk)
-        week_start_date = datetime(year=int(year), month=int(month), day=int(day))
+        week_start_date = datetime(year=int(from_year), month=int(from_month), day=int(from_day))
+        end_week_start_date = datetime(year=int(to_year), month=int(to_month), day=int(to_day))
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('Timesheet')
         time_tracking_service = TimeTrackingService()
-        submitted_sheets = time_tracking_service.get_company_users_submitted_work_timesheet_by_week_start_date(
+        submitted_sheets = time_tracking_service.get_company_users_submitted_work_timesheet_by_week_start_date_range(
             comp.id,
-            week_start_date)
+            week_start_date,
+            end_week_start_date)
 
         self._write_headers(sheet)
 
-        self._write_company(comp, week_start_date, sheet, submitted_sheets)
+        # A dictionary with work start date as the key is returned
+        # when getting timesheets by week range.
+        # Value is an array of user timesheets
+        for key in submitted_sheets:
+            self._write_company(comp, key, sheet, submitted_sheets[key])
 
         response = HttpResponse(content_type='application/vnd.ms-excel')
+
         # Need company name:
 
         response['Content-Disposition'] = (

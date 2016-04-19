@@ -46,19 +46,19 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
             var today = moment();
             var startDateOfCurrentWeek = moment(today).startOf('week');
 
-            // Construct the list of weeks and massage the data ready for 
+            // Construct the list of weeks and massage the data ready for
             // display
             for (var i = -preWeeks; i <= postWeeks; i++) {
                 var weekStartDate = moment(startDateOfCurrentWeek).add(i, 'weeks');
                 var weekEndDate = moment(weekStartDate).endOf('week');
                 var weekItem = {
                     weekStartDate: weekStartDate,
-                    weekDisplayText: weekStartDate.format(SHORT_DATE_FORMAT_STRING) 
-                                    + ' - ' 
+                    weekDisplayText: weekStartDate.format(SHORT_DATE_FORMAT_STRING)
+                                    + ' - '
                                     + weekEndDate.format(SHORT_DATE_FORMAT_STRING)
                 };
 
-                // Mark the current week for easy selection 
+                // Mark the current week for easy selection
                 if (weekItem.weekStartDate.isSame(startDateOfCurrentWeek)) {
                     weekItem.isCurrentWeek = true;
                     weekItem.weekDisplayText = weekItem.weekDisplayText + ' [*]'
@@ -78,7 +78,7 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
             .then(function(timesheet) {
               $scope.timesheet = timesheet;
             });
-            
+
             CompanyPersonnelsService.getCompanyEmployees($scope.company.id)
             .then(function(employees){
                 WorkTimesheetService.GetWorkTimesheetsByCompany(
@@ -91,7 +91,7 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
                             return timesheet.employee.email == employee.user.email
                         });
                         if (!employeeWorksheet){
-                            employeeWorksheet = 
+                            employeeWorksheet =
                                 WorkTimesheetService.GetBlankTimesheetForEmployeeUser(
                                     employee.user,
                                     $scope.company,
@@ -101,7 +101,7 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
                     });
                 });
             });
-            
+
         };
 
         $scope.$watch('user', function(theUser) {
@@ -155,10 +155,31 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
         };
 
         $scope.downloadWeeklyTimeSheetReport = function(){
+
+          if ($scope.report.starting_date > $scope.report.end_date) {
+            $scope.showMessageWithOkayOnly('Warning', 'End date must not be earlier than start date.');
+            return;
+          }
+
+          if (($scope.report.starting_date && !$scope.report.end_date) ||
+          (!$scope.report.starting_date && $scope.report.end_date)) {
+            $scope.showMessageWithOkayOnly('Warning', 'Both start date and end date are needed.');
+            return;
+          }
+
           var link = CompanyEmployeeSummaryService.getWeeklyWorktimeReportUrl(
                 $scope.company.id,
                 $scope.selectedDisplayWeek.weekStartDate);
           location.href = link;
+        };
+
+        $scope.toggleTimeFilter = function() {
+          $scope.showTimeFilter = !$scope.showTimeFilter;
+
+          if (!$scope.showTimeFilter) {
+            $scope.report.starting_date = null;
+            $scope.report.end_date = null;
+          }
         };
     }
   ]
