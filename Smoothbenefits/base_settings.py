@@ -251,6 +251,7 @@ PIPELINE_JS = {
             'js/jquery.scrollspy.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
+            'js/model_factories/benefitmyInsuranceCertificateModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
         ),
@@ -310,6 +311,7 @@ PIPELINE_JS = {
             'js/directives/BenefitSelectionViewer.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
+            'js/model_factories/benefitmyInsuranceCertificateModelFactories.js',
             'js/services/services.js',
             'js/pixel-admin.min.js',
             'js/jquery.scrollspy.js',
@@ -371,6 +373,7 @@ PIPELINE_JS = {
             'js/services/UserOnboardingStepStateService.js',
             'js/services/CompanyPersonnelsService.js',
             'js/services/UsStateService.js',
+            'js/services/ContractorsService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

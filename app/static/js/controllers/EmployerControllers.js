@@ -1684,3 +1684,152 @@ var employerViewTimePunchCards = employersController.controller('employerViewTim
       }
     }
 ]);
+
+var employerEditContractorModal = employersController.controller('employerEditContractorModal', [
+    '$scope',
+    '$modal',
+    '$modalInstance',
+    'ContractorsService',
+    'contractor',
+    'companyId',
+    function($scope, $modal, $modalInstance, ContractorsService, contractor, companyId){
+      if(!contractor){
+        $scope.contractor = ContractorsService.GetBlankContractor(companyId); 
+      }
+      else{
+        $scope.contractor = contractor;
+      }
+
+      $scope.cancel = function(){
+        $modalInstance.dismiss();
+      };
+
+      $scope.save = function(){
+        ContractorsService.SaveContractor($scope.contractor)
+          .then(function(savedContractor){
+            $modalInstance.close(true);
+          }, function(error){
+            $modalInstance.close(false)
+          });
+      }
+    }
+]);
+
+var employerManageContractor = employersController.controller('employerManageContractor',
+  [
+    '$scope',
+    '$state',
+    '$modal',
+    '$controller',
+    'UserService',
+    'ContractorsService',
+    function($scope, $state, $modal, $controller, UserService, ContractorsService){
+      // Inherit base modal controller for dialog window
+      $controller('modalMessageControllerBase', {$scope: $scope});
+
+      //Get the contractors
+      UserService.getCurUserInfo().then(function(curUserInfo){
+        $scope.company = curUserInfo.currentRole.company;
+        ContractorsService.GetContractorsByCompany($scope.company.id)
+          .then(function(contractors){
+            $scope.contractors = contractors;
+          });
+      });
+      
+      var updateContractor = function(updatedContractor){
+        var contractorIndex = _.findIndex($scope.contractors, function(contractor){
+            return updatedContractor._id === contractor._id;
+          }); 
+          if(contractorIndex >= 0){
+            $scope.contractors[contractorIndex] = updatedContractor;
+          }
+      };
+
+      $scope.createOrEditContractor = function(contractor){
+        
+        var modalInstance = $modal.open({
+              templateUrl: '/static/partials/contractor/modal_contractor.html',
+              controller: 'employerEditContractorModal',
+              backdrop: 'static',
+              size: 'lg',
+              resolve: {
+                contractor: function() {
+                  return contractor;
+                },
+                companyId: function() {return $scope.company.id}
+              }
+            });
+
+        modalInstance.result.then(function(success){
+          if(success){
+            var successMessage = "Contractor saved successfully!";
+            $scope.showMessageWithOkayOnly('Success', successMessage);
+          }
+          else{
+            var message = "Contractor save failed!";
+            $scope.showMessageWithOkayOnly('Error', message);
+          }
+          $state.reload();
+        });
+      };
+
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      };
+
+      $scope.manageInsuranceCert = function(contractor){
+        $state.go('admin_contractor_insurance');
+      };
+
+      $scope.deactivate = function(contractor){
+        ContractorsService.SetContractorStatus(contractor, ContractorsService.ContractorStatus.Deactivated)
+        .then(function(updatedContractor){
+          updateContractor(updatedContractor);
+        });
+      };
+
+      $scope.activate = function(contractor){
+        ContractorsService.SetContractorStatus(contractor, ContractorsService.ContractorStatus.Active)
+        .then(function(updatedContractor){
+          updateContractor(updatedContractor);
+        });
+      };
+
+      $scope.isContractorActive = function(contractor){
+        return contractor &&
+          contractor.status == ContractorsService.ContractorStatus.Active;
+      };
+    }
+]);
+
+var employerEditInsuranceCertificateModal = employersController.controller('employerEditInsuranceCertificateModal', [
+    '$scope',
+    '$modal',
+    '$modalInstance',
+    function($scope, $modal, $modalInstance){
+      $scope.cancel = function(){
+        $modalInstance.dismiss();
+      };
+    }
+]);
+
+var employerManageInsuranceCertificate = employersController.controller('employerManageInsuranceCertificate', [
+    '$scope',
+    '$state',
+    '$modal',
+    function($scope, $state, $modal){
+      $scope.openModal = function(){
+        var modalInstance = $modal.open({
+              templateUrl: '/static/partials/contractor/modal_insurance_certificate.html',
+              controller: 'employerEditInsuranceCertificateModal',
+              backdrop: 'static',
+              size: 'lg'
+            });
+      };
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      }
+    }
+]);
+
+
