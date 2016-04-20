@@ -96,7 +96,7 @@ class TimeTrackingService(object):
             start_week_start_date.isoformat(),
             end_week_start_date.isoformat())
 
-        r = requests.get(api_url)
+        r = self.request_service.get(api_url)
         if r.status_code == 404:
             return user_timesheets
 

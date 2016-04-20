@@ -168,8 +168,12 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
           }
 
           // Convert to the start date of the week selected
-          var start_week_start_date = moment($scope.report.starting_date).startOf('week');
-          var end_week_start_date = moment($scope.report.end_date).startOf('week');
+          var start_week_start_date =
+            $scope.report.starting_date ? moment($scope.report.starting_date).startOf('week')
+                                        : $scope.selectedDisplayWeek.weekStartDate;
+          var end_week_start_date =
+            $scope.report.end_date ? moment($scope.report.end_date).startOf('week')
+                                   : $scope.selectedDisplayWeek.weekStartDate;
 
           var link = CompanyEmployeeSummaryService.getWeeklyWorktimeReportUrl(
                 $scope.company.id,
