@@ -98,7 +98,7 @@ class TimeTrackingService(object):
 
         r = self.request_service.get(api_url)
         if r.status_code == 404:
-            return user_timesheets
+            return week_user_timesheets
 
         all_entries = r.json()
         for entry in all_entries:

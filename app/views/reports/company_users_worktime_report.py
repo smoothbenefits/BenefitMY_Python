@@ -197,7 +197,9 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         # when getting timesheets by week range.
         # Value is an array of user timesheets
         for key in submitted_sheets:
-            self._write_company(comp, key, sheet, submitted_sheets[key])
+            # Convert key from string to datetime
+            key_in_date = datetime.strptime(key, '%Y-%m-%dT%H:%M:%S.000000Z')
+            self._write_company(comp, key_in_date, sheet, submitted_sheets[key])
 
         response = HttpResponse(content_type='application/vnd.ms-excel')
 
