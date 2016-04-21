@@ -1822,9 +1822,13 @@ var employerEditInsuranceCertificateModal = employersController.controller('empl
       $scope.save = function(){
         ContractorsService.SaveInsuranceCertificate(contractorId, $scope.insurance)
           .then(function(modifiedContractor){
-            $modalInstance.close(true);
+            $modalInstance.close({
+              isDelete: false,
+              saveSuccess: true});
           }, function(error){
-            $modalInstance.close(false);
+            $modalInstance.close({
+              isDelete: false,
+              saveSuccess: false});
           });
       }
       $scope.cancel = function(){
@@ -1834,7 +1838,9 @@ var employerEditInsuranceCertificateModal = employersController.controller('empl
       $scope.delete = function(){
         ContractorsService.DeleteInsuranceCertificate(contractorId, $scope.insurance._id)
           .then(function(success){
-            $modalInstance.dismiss();
+            $modalInstance.close({
+              isDelete: true,
+              saveSuccess: null});
           },function(error){
             alert(error);
             $modalInstance.dismiss();
@@ -1870,14 +1876,16 @@ var employerManageInsuranceCertificate = employersController.controller('employe
                 contractorId: function(){ return contractorId; }
               }
             });
-        modalInstance.result.then(function(success){
-          if(success){
-            var successMessage = "Insurance certificate saved successfully!";
-            $scope.showMessageWithOkayOnly('Success', successMessage);
-          }
-          else{
-            var message = "Insurance certificate save failed!";
-            $scope.showMessageWithOkayOnly('Error', message);
+        modalInstance.result.then(function(actionResult){
+          if(!actionResult.isDelete){
+            if(actionResult.saveSuccess){
+              var successMessage = "Insurance certificate saved successfully!";
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            }
+            else{
+              var message = "Insurance certificate save failed!";
+              $scope.showMessageWithOkayOnly('Error', message);
+            }
           }
           $state.reload();
         });
