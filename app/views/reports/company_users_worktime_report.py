@@ -61,15 +61,15 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         return person, profile
 
-    def _write_company(self, company, week_start_date, excelSheet, submitted_sheets):
+    def _write_company(self, row_num, company, week_start_date, excelSheet, submitted_sheets):
         users_id = self._get_all_employee_user_ids_for_company(company.id)
-        row_num = 1
+
         # For each of them, write out his/her information
         for i in range(len(users_id)):
             user_id = users_id[i]
             row_num = self._write_employee(company, week_start_date, user_id, excelSheet, row_num, self._get_user_timesheet(user_id, submitted_sheets))
 
-        return
+        return row_num
 
     def _write_employee(self, company, week_start_date, employee_user_id, excelSheet, row_num, user_time_sheet):
         if not user_time_sheet:
@@ -196,10 +196,11 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         # A dictionary with work start date as key is returned
         # when getting timesheets by week range.
         # Value is an array of user timesheets
+        row_num = 1
         for key in submitted_sheets:
             # Convert key from string to datetime
-            key_in_date = datetime.strptime(key, '%Y-%m-%dT%H:%M:%S.000000Z')
-            self._write_company(comp, key_in_date, sheet, submitted_sheets[key])
+            key_in_date = datetime.strptime(key, '%Y-%m-%dT%H:%M:%S.%fZ')
+            row_num = self._write_company(row_num, comp, key_in_date, sheet, submitted_sheets[key])
 
         response = HttpResponse(content_type='application/vnd.ms-excel')
 
