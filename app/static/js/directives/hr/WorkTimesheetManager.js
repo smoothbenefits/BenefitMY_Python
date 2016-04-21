@@ -11,6 +11,53 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
       $modalInstance.dismiss();
     };
   }
+]).controller('WorkTimeReportDownloadModalController', [
+  '$scope', '$modalInstance', 'CompanyEmployeeSummaryService', 'selectedDisplayWeek', 'companyId',
+  function($scope, $modalInstance, CompanyEmployeeSummaryService, selectedDisplayWeek, companyId) {
+
+    $scope.downloadType = 'current';
+
+    $scope.showWeekSelector = function() {
+      return $scope.downloadType === 'custom';
+    };
+
+    $scope.download = function(){
+
+      if ($scope.report.starting_date > $scope.report.end_date) {
+        $scope.warningMessage = 'End date must not be earlier than start date.';
+        return;
+      }
+
+      if (($scope.report.starting_date && !$scope.report.end_date) ||
+      (!$scope.report.starting_date && $scope.report.end_date)) {
+        $scope.warningMessage = 'Both start date and end date are needed.';
+        return;
+      }
+
+      // Convert to the start date of the week selected
+      var start_week_start_date, end_week_start_date;
+      if ($scope.showWeekSelector()) {
+        start_week_start_date = moment($scope.report.starting_date).startOf('week');
+        end_week_start_date = moment($scope.report.end_date).startOf('week');
+      } else {
+        start_week_start_date = selectedDisplayWeek.weekStartDate;
+        end_week_start_date = selectedDisplayWeek.weekStartDate;
+      }
+
+      var link = CompanyEmployeeSummaryService.getWeeklyWorktimeReportUrl(
+        companyId,
+        start_week_start_date,
+        end_week_start_date);
+
+      location.href = link;
+
+      $modalInstance.close();
+    };
+
+    $scope.cancel = function() {
+      $modalInstance.dismiss();
+    };
+  }
 ]).controller('WorkTimesheetManagerDirectiveController', [
     '$scope',
     '$modal',
@@ -154,32 +201,25 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
             });
         };
 
-        $scope.downloadWeeklyTimeSheetReport = function(){
+        $scope.downloadWeeklyTimeSheetReport = function() {
+          var modalInstance = $modal.open({
+            templateUrl: '/static/partials/work_timesheet/modal_download_work_time_report.html',
+            controller: 'WorkTimeReportDownloadModalController',
+            size: 'md',
+            backdrop: 'static',
+            resolve: {
+              'selectedDisplayWeek': function() {
+                return $scope.selectedDisplayWeek;
+              },
+              'companyId': function() {
+                return $scope.company.id;
+              }
+            }
+          });
 
-          if ($scope.report.starting_date > $scope.report.end_date) {
-            $scope.showMessageWithOkayOnly('Warning', 'End date must not be earlier than start date.');
-            return;
-          }
-
-          if (($scope.report.starting_date && !$scope.report.end_date) ||
-          (!$scope.report.starting_date && $scope.report.end_date)) {
-            $scope.showMessageWithOkayOnly('Warning', 'Both start date and end date are needed.');
-            return;
-          }
-
-          // Convert to the start date of the week selected
-          var start_week_start_date =
-            $scope.report.starting_date ? moment($scope.report.starting_date).startOf('week')
-                                        : $scope.selectedDisplayWeek.weekStartDate;
-          var end_week_start_date =
-            $scope.report.end_date ? moment($scope.report.end_date).startOf('week')
-                                   : $scope.selectedDisplayWeek.weekStartDate;
-
-          var link = CompanyEmployeeSummaryService.getWeeklyWorktimeReportUrl(
-                $scope.company.id,
-                start_week_start_date,
-                end_week_start_date);
-          location.href = link;
+          modalInstance.result.then(function() {
+            $scope.reloadTimesheet();
+          });
         };
 
         $scope.toggleTimeFilter = function() {
