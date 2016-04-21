@@ -115,6 +115,14 @@
   <div class="modal-footer">
     <div class="button-group">
       <button
+        class="btn red"
+        ng-click="delete()"
+        style="width: 20%; float:left;"
+        ng-if="deletable()"
+        confirm="Are you sure you want to delete this insurance certificate?">
+        Delete
+      </button>
+      <button
         class="btn green"
         ng-click="save()"
         style="width: 20%"

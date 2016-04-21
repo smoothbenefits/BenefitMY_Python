@@ -14,7 +14,7 @@
   </div>
 </div><!-- / .content-header -->
 <div class="content-body">
-  <div class="panel" ng-if="!hasInsurances()">
+  <div class="panel" ng-if="!hasActiveInsurances()">
     <div class="panel-heading">
       <span>Insurance Certificates</span>
     </div>
@@ -23,33 +23,55 @@
       <p>Please <a ng-click="openCreateOrEditModal()">click here</a> to add an insurance certificate.</p>
     </div>
   </div>
-  <div class="table-responsive" ng-if="hasInsurances()">
-    <div class="table-heading">
-      Insurance Certificates of {{contractor.name}}
+  <div class="panel" ng-if="hasActiveInsurances()">
+    <div class="panel-heading">
+      Active Insurance Certificates
     </div>
-    <table class="table table-striped" >
-      <thead>
-        <th><span>Certificate Type</span></th>
-        <th><span>Policy Expires</span></th>
-        <th><span>Amount</span></th>
-        <th><span>Uploaded</span></th>
-      </thead>
-      <tbody>
-        <tr ng-repeat="insurance in contractor.insurances">
-          <td>
-            <a class="delete-cross"
-              ng-click="deleteInsurance(insurance._id)"
-              confirm="Delete the insurance certificate?">
-              X
-            </a>
-              &nbsp;<a ng-click="openCreateOrEditModal(insurance)">{{insurance.type}}</a>
-          </td>
-          <td>{{insurance.policy.endDateDisplay}}</td>
-          <td>${{insurance.policy.coveredAmount}}</td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Certificate Type</span></th>
+          <th><span>Policy Expires</span></th>
+          <th><span>Amount</span></th>
+          <th><span>Uploaded</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="insurance in activeInsurances">
+            <td>
+                &nbsp;<a ng-click="openCreateOrEditModal(insurance)">{{insurance.type}}</a>
+            </td>
+            <td>{{insurance.policy.endDateDisplay}}</td>
+            <td>${{insurance.policy.coveredAmount}}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel" ng-if="hasExpiredInsurances()">
+    <div class="panel-heading">
+      Expired Insurance Certificates
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Certificate Type</span></th>
+          <th><span>Policy Expires</span></th>
+          <th><span>Amount</span></th>
+          <th><span>Uploaded</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="insurance in expiredInsurances">
+            <td>
+                &nbsp;<a ng-click="openCreateOrEditModal(insurance)">{{insurance.type}}</a>
+            </td>
+            <td>{{insurance.policy.endDateDisplay}}</td>
+            <td>${{insurance.policy.coveredAmount}}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 

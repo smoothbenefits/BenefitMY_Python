@@ -1830,6 +1830,20 @@ var employerEditInsuranceCertificateModal = employersController.controller('empl
       $scope.cancel = function(){
         $modalInstance.dismiss();
       };
+
+      $scope.delete = function(){
+        ContractorsService.DeleteInsuranceCertificate(contractorId, $scope.insurance._id)
+          .then(function(success){
+            $modalInstance.dismiss();
+          },function(error){
+            alert(error);
+            $modalInstance.dismiss();
+          });
+      };
+
+      $scope.deletable = function(){
+        return $scope.insurance && $scope.insurance._id;
+      }
     }
 ]);
 
@@ -1881,26 +1895,31 @@ var employerManageInsuranceCertificate = employersController.controller('employe
 
       ContractorsService.GetContractorById(contractorId)
         .then(function(contractor){
-          $scope.contractor = contractor;
+          $scope.activeInsurances = [];
+          $scope.expiredInsurances = [];
+          _.each(contractor.insurances, function(insurance){
+            if(moment(insurance.policy.endDate) < Date.now()){
+              $scope.expiredInsurances.unshift(insurance);
+            }
+            else{
+              $scope.activeInsurances.unshift(insurance);
+            }
+          });
+          
         });
 
       $scope.backToDashboard = function(){
         $state.go('/admin');
       };
 
-      $scope.hasInsurances = function(){
-        return $scope.contractor &&
-          $scope.contractor.insurances &&
-          $scope.contractor.insurances.length > 0;
+      $scope.hasActiveInsurances = function(){
+        return $scope.activeInsurances &&
+          $scope.activeInsurances.length > 0;
       };
 
-      $scope.deleteInsurance = function(insuranceId){
-        ContractorsService.DeleteInsuranceCertificate(contractorId, insuranceId)
-          .then(function(success){
-            $state.reload();
-          },function(error){
-            alert(error);
-          });
+      $scope.hasExpiredInsurances = function(){
+        return $scope.expiredInsurances &&
+          $scope.expiredInsurances.length > 0;
       };
     }
 ]);
