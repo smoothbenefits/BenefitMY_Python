@@ -1778,7 +1778,7 @@ var employerManageContractor = employersController.controller('employerManageCon
       };
 
       $scope.manageInsuranceCert = function(contractor){
-        $state.go('admin_contractor_insurance');
+        $state.go('admin_contractor_insurance', {contractorId: contractor._id});
       };
 
       $scope.deactivate = function(contractor){
@@ -1806,29 +1806,129 @@ var employerEditInsuranceCertificateModal = employersController.controller('empl
     '$scope',
     '$modal',
     '$modalInstance',
-    function($scope, $modal, $modalInstance){
+    'insuranceCertificate',
+    'contractorId',
+    'ContractorsService',
+    function($scope, $modal, $modalInstance, insuranceCertificate, contractorId, ContractorsService){
+      var contractorId = contractorId;
+      if(insuranceCertificate){
+        $scope.insurance = insuranceCertificate;
+      }
+      else{
+        $scope.Insurance = ContractorsService.GetBlankInsuranceCertificate();
+      }
+      $scope.insuranceTypes = ContractorsService.InsuranceCertificateTypes;
+      
+      $scope.save = function(){
+        ContractorsService.SaveInsuranceCertificate(contractorId, $scope.insurance)
+          .then(function(modifiedContractor){
+            $modalInstance.close({
+              isDelete: false,
+              saveSuccess: true});
+          }, function(error){
+            $modalInstance.close({
+              isDelete: false,
+              saveSuccess: false});
+          });
+      }
       $scope.cancel = function(){
         $modalInstance.dismiss();
       };
+
+      $scope.delete = function(){
+        ContractorsService.DeleteInsuranceCertificate(contractorId, $scope.insurance._id)
+          .then(function(success){
+            $modalInstance.close({
+              isDelete: true,
+              saveSuccess: null});
+          },function(error){
+            alert(error);
+            $modalInstance.dismiss();
+          });
+      };
+
+      $scope.deletable = function(){
+        return $scope.insurance && $scope.insurance._id;
+      }
     }
 ]);
 
 var employerManageInsuranceCertificate = employersController.controller('employerManageInsuranceCertificate', [
     '$scope',
     '$state',
+    '$stateParams',
     '$modal',
-    function($scope, $state, $modal){
-      $scope.openModal = function(){
+    '$controller',
+    'ContractorsService',
+    function($scope, $state, $stateParams, $modal, $controller, ContractorsService){
+      var contractorId = $stateParams.contractorId;
+      // Inherit base modal controller for dialog window
+      $controller('modalMessageControllerBase', {$scope: $scope});
+
+      $scope.openCreateOrEditModal = function(insuranceCertificate){
         var modalInstance = $modal.open({
               templateUrl: '/static/partials/contractor/modal_insurance_certificate.html',
               controller: 'employerEditInsuranceCertificateModal',
               backdrop: 'static',
-              size: 'lg'
+              size: 'lg',
+              resolve: {
+                insuranceCertificate: function(){ return insuranceCertificate; },
+                contractorId: function(){ return contractorId; }
+              }
             });
+        modalInstance.result.then(function(actionResult){
+          if(!actionResult.isDelete){
+            if(actionResult.saveSuccess){
+              var successMessage = "Insurance certificate saved successfully!";
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            }
+            else{
+              var message = "Insurance certificate save failed!";
+              $scope.showMessageWithOkayOnly('Error', message);
+            }
+          }
+          $state.reload();
+        });
       };
+      $scope.goContractors = function(){
+        $state.go('admin_contractor_manager');
+      };
+
+      if (!contractorId){
+        alert('Contractor Not Valid. Returning back to Contractors View');
+        $scope.goContractors();
+        return;
+      }
+
+
+      ContractorsService.GetContractorById(contractorId)
+        .then(function(contractor){
+          $scope.activeInsurances = [];
+          $scope.expiredInsurances = [];
+          _.each(contractor.insurances, function(insurance){
+            if(moment(insurance.policy.endDate) < Date.now()){
+              $scope.expiredInsurances.unshift(insurance);
+            }
+            else{
+              $scope.activeInsurances.unshift(insurance);
+            }
+          });
+          
+        });
+
       $scope.backToDashboard = function(){
         $state.go('/admin');
-      }
+      };
+
+      $scope.hasActiveInsurances = function(){
+        return $scope.activeInsurances &&
+          $scope.activeInsurances.length > 0;
+      };
+
+      $scope.hasExpiredInsurances = function(){
+        return $scope.expiredInsurances &&
+          $scope.expiredInsurances.length > 0;
+      };
     }
 ]);
 

@@ -14,6 +14,13 @@ benefitmyService.factory('ContractorsService',
         Deactivated: 'Deactivated'
       };
 
+      var InsuranceCertificateTypes = [
+        'Commercial General Liability',
+        'Umbrella Liability',
+        'Excess Liability',
+        'Worker\'s Compensation and Employee Liability'
+      ];
+
       var mapViewModelToDomainModel = function(viewModel){
         var domainModel = angular.copy(viewModel);
         return domainModel;
@@ -21,17 +28,27 @@ benefitmyService.factory('ContractorsService',
 
       var mapDomainModelToViewModel = function(domainModel){
           var viewModel = angular.copy(domainModel);
+          _.each(viewModel.insurances, function(insurance){
+            insurance.policy.endDateDisplay = moment(insurance.policy.endDate).format('MMM Do YYYY');
+          });
           return viewModel;
       };
 
 
       var mapDomainModelListToViewModelList = function(domainModelList){
-            var viewModelList = [];
-            _.each(domainModelList, function(domainModel){
-                viewModelList.push(mapDomainModelToViewModel(domainModel));
-            });
-            return viewModelList;
-        };
+          var viewModelList = [];
+          _.each(domainModelList, function(domainModel){
+              viewModelList.push(mapDomainModelToViewModel(domainModel));
+          });
+          return viewModelList;
+      };
+
+      var GetContractorById = function(contractorId){
+        return ContractorsRepository.ById.get({contractorId: contractorId})
+          .$promise.then(function(contractor){
+            return mapDomainModelToViewModel(contractor);
+          });
+      };
 
       var GetContractorsByCompany = function(companyId){
         var compId = utilityService.getEnvAwareId(companyId);
@@ -92,12 +109,56 @@ benefitmyService.factory('ContractorsService',
           });
       };
 
+      var GetBlankInsuranceCertificate = function(contractorId){
+        var insuranceCertificate = {
+          type: '',
+          agent : {
+            name: '',
+            contact: '',
+            address: '',
+            email: '',
+            phone: ''
+          },
+          policy: {
+            policyNumber: '',
+            startDate: '',
+            endDate: '',
+            coveredAmount: ''
+          }
+        };
+        return insuranceCertificate;
+      };
+
+      var SaveInsuranceCertificate = function(contractorId, insuranceCertificate){
+        return ContractorsRepository.InsuranceCertificates.save(
+          {contractorId: contractorId},
+          insuranceCertificate)
+          .$promise.then(function(updatedContractor){
+            return updatedContractor;
+          });
+      };
+
+      var DeleteInsuranceCertificate = function(contractorId, insuranceCertificateId){
+        return ContractorsRepository.InsuranceCertificateById.delete(
+          {contractorId: contractorId, insuranceCertificateId: insuranceCertificateId})
+          .$promise.then(function(){
+            return true;
+          }, function(error){
+            return error;
+          });
+      }
+
       return {
         GetContractorsByCompany: GetContractorsByCompany,
         GetBlankContractor: GetBlankContractor,
         ContractorStatus: ContractorStatus,
         SaveContractor: SaveContractor,
-        SetContractorStatus: SetContractorStatus
+        SetContractorStatus: SetContractorStatus,
+        GetBlankInsuranceCertificate: GetBlankInsuranceCertificate,
+        SaveInsuranceCertificate: SaveInsuranceCertificate,
+        DeleteInsuranceCertificate: DeleteInsuranceCertificate,
+        GetContractorById: GetContractorById,
+        InsuranceCertificateTypes: InsuranceCertificateTypes
       }; 
    }
 ]);

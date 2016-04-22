@@ -13,7 +13,18 @@ benefitmyInsuranceCertificateModelFactories.factory('ContractorsRepository', [
         Collection: $resource(_hostName + 'api/v1/contractors'),
         StatusById: $resource(_hostName + 'api/v1/contractor/:contractorId/status', {contractorId:'@contractorId'}, {
           update: { method: 'PUT' }
-        })
+        }),
+        InsuranceCertificates: $resource(_hostName + 'api/v1/contractor/:contractorId/insurance',
+          {
+            contractorId: '@contractorId'
+          }
+        ),
+        InsuranceCertificateById: $resource(_hostName + 'api/v1/contractor/:contractorId/insurance/:insuranceCertificateId',
+          {
+            contractorId: '@contractorId',
+            insuranceCertificateId: '@insuranceCertificateId'
+          }
+        )
     };
   }
 ]);
