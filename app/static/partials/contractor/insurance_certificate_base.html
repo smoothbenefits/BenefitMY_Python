@@ -42,7 +42,17 @@
             </td>
             <td>{{insurance.policy.endDateDisplay}}</td>
             <td>${{insurance.policy.coveredAmount}}</td>
-            <td></td>
+            <td>
+              <bmuploadmanager
+               upload-type="CertificateInsurance"
+               upload-mode="button"
+               feature-id="{{insurance._id}}"
+               view-mode="list"
+               hide-type="true"
+               uploaded-files="insurance.uploads"
+               file-uploaded="fileUploaded(uploadedFile, uploadType, featureId)">
+             </bmuploadmanager>
+            </td>
           </tr>
         </tbody>
       </table>

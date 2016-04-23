@@ -2,7 +2,10 @@ BenefitMyApp.directive('bmuploadmanager',
   function() {
     return {
       restrict: 'E',
-      scope: {},
+      scope: {
+        uploadedFiles: '=',
+        fileUploaded: '&'
+      },
       templateUrl: '/static/partials/common/upload.html',
       controller: ['$scope',
                    '$timeout',
@@ -19,7 +22,7 @@ BenefitMyApp.directive('bmuploadmanager',
               uploadMode: $attrs.uploadMode || 'area',
               viewMode: $attrs.viewMode || 'table',
               viewTitle: $attrs.viewTitle,
-              uploadedFiles: [],
+              uploadedFiles: $scope.uploadedFiles || [],
               files:[],
               deleteS3File: function(file){
                 UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
@@ -39,13 +42,25 @@ BenefitMyApp.directive('bmuploadmanager',
                   UploadService.uploadFile(file, uploadType).then(
                     function(fileUploaded){
                       $scope.uploadManager.inProgress = undefined;
-                      $scope.uploadManager.uploadedFiles.unshift(fileUploaded);
+                      if(_.isUndefined($scope.uploadedFiles)){
+                        $scope.uploadManager.uploadedFiles.unshift(fileUploaded);
+                      }
                       if($attrs.featureId){
-                        UploadService.SetUploadApplicationFeature(fileUploaded.id, uploadType, $attrs.featureId)
-                        .then(function(){
-                        }, function(error){
-                          alert(error);
-                        });
+                        if($scope.fileUploaded){
+                          $scope.fileUploaded({
+                              uploadedFile: fileUploaded,
+                              uploadType: uploadType,
+                              featureId: $attrs.featureId
+                            });
+                        }
+                        else{
+                          UploadService.SetUploadApplicationFeature(fileUploaded.id, uploadType, $attrs.featureId)
+                          .then(function(){
+    
+                          }, function(error){
+                            alert(error);
+                          });
+                        }
                       }
                     },
                     function(error){
@@ -62,19 +77,26 @@ BenefitMyApp.directive('bmuploadmanager',
               handleUploadArea($scope.uploadManager.files, $attrs.uploadType);
             });
 
-            if($attrs.featureId && $attrs.uploadType){
-              $attrs.$observe('featureId', function(){
-                UploadService.getUploadsByFeature($attrs.featureId, $attrs.uploadType)
-                .then(function(resp){
+            var loadUploadedFilesByUploadType = function(){
+              if($attrs.featureId && $attrs.uploadType){
+                $attrs.$observe('featureId', function(){
+                  UploadService.getUploadsByFeature($attrs.featureId, $attrs.uploadType)
+                  .then(function(resp){
+                    $scope.uploadManager.uploadedFiles = resp;
+                  });
+                });
+              }
+              else{
+                UploadService.getAllUploadsByCurrentUser().then(function(resp){
                   $scope.uploadManager.uploadedFiles = resp;
                 });
-              });
+              }
+            };
+
+            if (_.isUndefined($scope.uploadedFiles)){
+              loadUploadedFilesByUploadType();
             }
-            else{
-              UploadService.getAllUploadsByCurrentUser().then(function(resp){
-                $scope.uploadManager.uploadedFiles = resp;
-              });
-            }
+            
           }]
     };
   });
