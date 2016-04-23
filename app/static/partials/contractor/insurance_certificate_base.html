@@ -77,7 +77,11 @@
             </td>
             <td>{{insurance.policy.endDateDisplay}}</td>
             <td>${{insurance.policy.coveredAmount}}</td>
-            <td></td>
+            <td>
+              <div ng-repeat="upload in insurance.uploads">
+                <a href="{{upload.S3}}" target="_blank">{{upload.file_name}}</a>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
