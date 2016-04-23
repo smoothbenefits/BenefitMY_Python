@@ -216,19 +216,6 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
               }
             }
           });
-
-          modalInstance.result.then(function() {
-            $scope.reloadTimesheet();
-          });
-        };
-
-        $scope.toggleTimeFilter = function() {
-          $scope.showTimeFilter = !$scope.showTimeFilter;
-
-          if (!$scope.showTimeFilter) {
-            $scope.report.starting_date = null;
-            $scope.report.end_date = null;
-          }
         };
     }
   ]

@@ -186,7 +186,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('Timesheet')
         time_tracking_service = TimeTrackingService()
-        submitted_sheets = time_tracking_service.get_company_users_submitted_work_timesheet_by_week_start_date_range(
+        submitted_sheets = time_tracking_service.get_company_users_submitted_work_timesheet_by_week_range(
             comp.id,
             week_start_date,
             end_week_start_date)

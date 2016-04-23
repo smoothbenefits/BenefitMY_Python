@@ -61,29 +61,7 @@ class TimeTrackingService(object):
         return '{0}_{1}'.format(settings.ENVIRONMENT_IDENTIFIER, hash_id)
 
 
-
-    def get_company_users_submitted_work_timesheet_by_week_start_date(self, company_id, week_start_date):
-        user_timesheets = []
-        api_url = '{0}api/v1/company/{1}/work_timesheets?start_date={2}&end_date={2}'.format(
-            settings.TIME_TRACKING_SERVICE_URL,
-            self._encode_environment_aware_id(company_id),
-            week_start_date.isoformat())
-
-        r = self.request_service.get(api_url)
-        if r.status_code == 404:
-            return user_timesheets
-
-        all_entries = r.json()
-        for entry in all_entries:
-            user_descriptor = entry['employee']['personDescriptor']
-            user_id = self._decode_environment_aware_id(user_descriptor)
-            item = copy.deepcopy(entry)
-            item['user_id'] = user_id
-            user_timesheets.append(item)
-
-        return user_timesheets
-
-    def get_company_users_submitted_work_timesheet_by_week_start_date_range(
+    def get_company_users_submitted_work_timesheet_by_week_range(
         self,
         company_id,
         start_week_start_date,
