@@ -34,32 +34,10 @@ class TimeTrackingService(object):
 
         for entry in all_entries:
             user_descriptor = entry['employee']['personDescriptor']
-            user_id = self._decode_environment_aware_id(user_descriptor)
+            user_id = int(hash_key_service.decode_key_with_environment(user_descriptor))
             users.append(user_id)
 
         return users
-
-    def _decode_environment_aware_id(self, encoded_id):
-        if (not encoded_id):
-            return None
-        hashed_id_part = encoded_id.split('_', 1)[1]
-        if (not hashed_id_part):
-            return None
-
-        decoded_str = self.hash_key_service.decode_key(hashed_id_part)
-
-        if (decoded_str):
-            return int(decoded_str)
-
-        return decoded_str
-
-    def _encode_environment_aware_id(self, id_to_encode):
-        if (not id_to_encode):
-            return None
-        hash_id = self.hash_key_service.encode_key(id_to_encode)
-
-        return '{0}_{1}'.format(settings.ENVIRONMENT_IDENTIFIER, hash_id)
-
 
     def get_company_users_submitted_work_timesheet_by_week_range(
         self,
@@ -67,10 +45,12 @@ class TimeTrackingService(object):
         start_week_start_date,
         end_week_start_date
     ):
+        hash_key_service = HashKeyService()
+
         week_user_timesheets = {}
         api_url = '{0}api/v1/company/{1}/work_timesheets?start_date={2}&end_date={3}'.format(
             settings.TIME_TRACKING_SERVICE_URL,
-            self._encode_environment_aware_id(company_id),
+            hash_key_service.encode_key_with_environment(company_id),
             start_week_start_date.isoformat(),
             end_week_start_date.isoformat())
 
@@ -81,7 +61,7 @@ class TimeTrackingService(object):
         all_entries = r.json()
         for entry in all_entries:
             user_descriptor = entry['employee']['personDescriptor']
-            user_id = self._decode_environment_aware_id(user_descriptor)
+            user_id = hash_key_service.decode_key_with_environment(user_descriptor)
             item = copy.deepcopy(entry)
             item['user_id'] = user_id
 
