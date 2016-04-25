@@ -19,10 +19,10 @@ BenefitMyApp.directive('bmUploadAppFeatureManager',
                    UploadService) {
 
             var init = function(){
-              $scope.uploadMode = $attrs.uploadMode;
               if($attrs.featureId && $attrs.uploadType){
                 $attrs.$observe('featureId', function(){
-                  UploadService.getUploadsByFeature($attrs.featureId, $attrs.uploadType)
+                  $scope.featureId = $attrs.featureId;
+                  UploadService.getUploadsByFeature($scope.featureId, $attrs.uploadType)
                   .then(function(resp){
                     $scope.uploadedFiles = resp;
                   });
@@ -35,11 +35,10 @@ BenefitMyApp.directive('bmUploadAppFeatureManager',
               }
             };
 
-            $scope.fileUploaded = function(uploadedFile, uploadType, featureId){
-              if($attrs.featureId && $attrs.uploadType){
-                UploadService.SetUploadApplicationFeature(uploadedFile.id, uploadType, featureId)
+            $scope.fileUploaded = function(uploadedFile, featureId){
+              if(featureId && $attrs.uploadType){
+                UploadService.SetUploadApplicationFeature(uploadedFile.id, $attrs.uploadType, featureId)
                   .then(function(){
-
                   }, function(error){
                     alert(error);
                   });

@@ -16,14 +16,12 @@ BenefitMyApp.directive('bmuploadmanager',
                    $timeout,
                    $attrs,
                    UploadService) {
+            
             $scope.uploadManager = {
               hideUploadArea: false,
               canManageUpload: true,
-              hideTypeColumn: $attrs.hideType,
-              uploadMode: $attrs.uploadMode || 'area',
-              viewMode: $attrs.viewMode || 'table',
-              viewTitle: $attrs.viewTitle,
-              uploadedFiles: $scope.uploadedFiles || [],
+              uploadMode: 'area',
+              viewMode: 'table',
               files:[],
               deleteS3File: function(file){
                 UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
@@ -35,12 +33,12 @@ BenefitMyApp.directive('bmuploadmanager',
                   if($scope.fileDeleted){
                     $scope.fileDeleted({
                       deletedFile: file,
-                      uploadType: $attrs.uploadType,
                       featureId: $attrs.featureId
                     });
                   }
                 });
-              }};
+              }
+            };
 
             var handleUploadArea = function(files){
               if (files && files.length) {
@@ -50,25 +48,12 @@ BenefitMyApp.directive('bmuploadmanager',
                   UploadService.uploadFile(file).then(
                     function(fileUploaded){
                       $scope.uploadManager.inProgress = undefined;
-                      if(_.isUndefined($scope.uploadedFiles)){
-                        $scope.uploadManager.uploadedFiles.unshift(fileUploaded);
-                      }
-                      if($attrs.featureId){
-                        if($scope.fileUploaded){
-                          $scope.fileUploaded({
-                              uploadedFile: fileUploaded,
-                              uploadType: $attrs.uploadType,
-                              featureId: $attrs.featureId
-                            });
-                        }
-                        else{
-                          UploadService.SetUploadApplicationFeature(fileUploaded.id, $attrs.uploadType, $attrs.featureId)
-                          .then(function(){
-    
-                          }, function(error){
-                            alert(error);
+                      $scope.uploadManager.uploadedFiles.unshift(fileUploaded);
+                      if($scope.fileUploaded){
+                        $scope.fileUploaded({
+                            uploadedFile: fileUploaded,
+                            featureId: $attrs.featureId
                           });
-                        }
                       }
                     },
                     function(error){
@@ -84,27 +69,27 @@ BenefitMyApp.directive('bmuploadmanager',
             $scope.$watch('uploadManager.files', function(){
               handleUploadArea($scope.uploadManager.files);
             });
-
-            var loadUploadedFilesByUploadType = function(){
-              if($attrs.featureId && $attrs.uploadType){
-                $attrs.$observe('featureId', function(){
-                  UploadService.getUploadsByFeature($attrs.featureId, $attrs.uploadType)
-                  .then(function(resp){
-                    $scope.uploadManager.uploadedFiles = resp;
-                  });
-                });
+            $scope.$watch('uploadedFiles', function(){
+              if(!$scope.uploadManager.uploadedFiles){
+                $scope.uploadManager.uploadedFiles = $scope.uploadedFiles;
               }
-              else{
-                UploadService.getAllUploadsByCurrentUser().then(function(resp){
-                  $scope.uploadManager.uploadedFiles = resp;
-                });
+            });
+            $attrs.$observe('viewTitle', function(){
+              $scope.uploadManager.viewTitle = $attrs.viewTitle;
+            });
+            $attrs.$observe('viewMode', function(){
+              if($attrs.viewMode){
+                $scope.uploadManager.viewMode = $attrs.viewMode;
               }
-            };
-
-            if (_.isUndefined($scope.uploadedFiles)){
-              loadUploadedFilesByUploadType();
-            }
-            
-          }]
+            });
+            $attrs.$observe('uploadMode', function(){
+              if($attrs.uploadMode){
+                $scope.uploadManager.uploadMode = $attrs.uploadMode;
+              }
+            });
+            $attrs.$observe('hideType', function(){
+              $scope.uploadManager.hideTypeColumn = $attrs.hideType;
+            });
+        }]
     };
   });

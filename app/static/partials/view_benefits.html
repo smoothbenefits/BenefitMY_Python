@@ -31,7 +31,12 @@
         <tr class="title-row">
           <td colspan="2" class="plan-row-head"><span>Summary Document(s)</span></td>
           <td ng-repeat="benefitName in medicalBenefitGroup.benefitNameArray" colspan="6" class="upload-td">
-            <bmuploadmanager upload-type="MedicalBenefit" upload-mode="button" feature-id="{{benefitName.id}}" hide-type="true"></bmuploadmanager>
+            <bm-upload-app-feature-manager
+              upload-type="MedicalBenefit"
+              upload-mode="button"
+              feature-id="{{benefitName.id}}"
+              hide-type="true">
+            </bm-upload-app-feature-manager>
           </td>
         </tr>
         <tr class="title-row">
@@ -100,12 +105,12 @@
             {{hraPlan.planDescription}}
           </td>
           <td class="upload-td">
-            <bmuploadmanager
+            <bm-upload-app-feature-manager
             upload-type="HRA"
             upload-mode="button"
             feature-id="{{hraPlan.companyPlanId}}"
             hide-type="true">
-          </bmuploadmanager>
+          </bm-upload-app-feature-manager>
         </td>
       </tr>
     </tbody>
@@ -138,20 +143,20 @@
         </td>
         <td><span class="inline" ng-repeat="group in benefit.companyGroups">{{group.company_group.name}};</br></span></td>
         <td class="upload-td">
-          <bmuploadmanager
+          <bm-upload-app-feature-manager
           ng-if="benefitArray.type==='Dental'"
           upload-type="DentalBenefit"
           upload-mode="button"
           feature-id="{{benefit.id}}"
           hide-type="true">
-        </bmuploadmanager>
-        <bmuploadmanager
+        </bm-upload-app-feature-manager>
+        <bm-upload-app-feature-manager
         ng-if="benefitArray.type==='Vision'"
         upload-type="VisionBenefit"
         upload-mode="button"
         feature-id="{{benefit.id}}"
         hide-type="true">
-      </bmuploadmanager>
+      </bm-upload-app-feature-manager>
     </td>
     <td colspan="3" style="padding: 0;">
       <table class="table">
@@ -195,12 +200,12 @@
              confirm="Delete the basic life insurance plan?">X</a>
         </td>
         <td class="upload-td">
-          <bmuploadmanager
+          <bm-upload-app-feature-manager
           upload-type="BasicLife"
           upload-mode="button"
           feature-id="{{lifeInsurancePlan.id}}"
           hide-type="true">
-        </bmuploadmanager>
+        </bm-upload-app-feature-manager>
       </td>
       <td><span class="inline" ng-repeat="group in lifeInsurancePlan.company_groups">{{group.company_group.name}};</br></span></td>
       <td>$ {{lifeInsurancePlan.total_cost_per_period}}</td>
@@ -235,12 +240,12 @@
         </td>
         <td><span class="inline" ng-repeat="group in supplementalLifeInsurancePlan.companyGroups">{{group.company_group.name}};</br></span></td>
         <td class="upload-td">
-          <bmuploadmanager
+          <bm-upload-app-feature-manager
           upload-type="OptionalLife"
           upload-mode="button"
           feature-id="{{supplementalLifeInsurancePlan.companyPlanId}}"
           hide-type="true">
-        </bmuploadmanager>
+        </bm-upload-app-feature-manager>
       </td>
     </tr>
   </tbody>
@@ -274,12 +279,12 @@
              confirm="Delete the STD plan?">X</a>
         </td>
         <td class="upload-td">
-          <bmuploadmanager
+          <bm-upload-app-feature-manager
           upload-type="STD"
           upload-mode="button"
           feature-id="{{stdPlan.companyPlanId}}"
           hide-type="true">
-        </bmuploadmanager>
+        </bm-upload-app-feature-manager>
       </td>
       <td><span class="inline" ng-repeat="group in stdPlan.companyGroups">{{group.company_group.name}};</br></span></td>
       <td>{{stdPlan.percentageOfSalary}}% of Base Salary</td>
@@ -323,12 +328,12 @@
              confirm="Delete the LTD plan?">X</a>
         </td>
         <td class="upload-td">
-          <bmuploadmanager
+          <bm-upload-app-feature-manager
           upload-type="LTD"
           upload-mode="button"
           feature-id="{{ltdPlan.companyPlanId}}"
           hide-type="true">
-        </bmuploadmanager>
+        </bm-upload-app-feature-manager>
       </td>
       <td><span class="inline" ng-repeat="group in ltdPlan.companyGroups">{{group.company_group.name}};</br></span></td>
       <td>{{ltdPlan.percentageOfSalary}}% of Base Salary</td>
@@ -368,12 +373,12 @@
         <td><span class="inline" ng-repeat="group in fsaPlan.companyGroups">{{group.company_group.name}};</br></span>
         </td>
         <td class="upload-td">
-          <bmuploadmanager
+          <bm-upload-app-feature-manager
           upload-type="FSA"
           upload-mode="button"
           feature-id="{{fsaPlan.companyPlanId}}"
           hide-type="true">
-        </bmuploadmanager>
+        </bm-upload-app-feature-manager>
       </td>
     </tr>
   </tbody>
@@ -406,12 +411,12 @@
           </span>
         </td>
         <td class="upload-td">
-          <bmuploadmanager
+          <bm-upload-app-feature-manager
           upload-type="HSA"
           upload-mode="button"
           feature-id="{{hsaPlan.companyPlanId}}"
           hide-type="true">
-        </bmuploadmanager>
+        </bm-upload-app-feature-manager>
       </td>
     </tr>
   </tbody>
@@ -445,12 +450,12 @@
         <td><span class="inline" ng-repeat="group in commuterPlan.companyGroups">{{group.company_group.name}};</br></span>
         </td>
         <td class="upload-td">
-          <bmuploadmanager
+          <bm-upload-app-feature-manager
               upload-type="Commuter"
               upload-mode="button"
               feature-id="{{commuterPlan.companyPlanId}}"
               hide-type="true">
-          </bmuploadmanager>
+          </bm-upload-app-feature-manager>
         </td>
         <td>{{commuterPlan.benefitEnablementOption.displayName}}</td>
         <td>${{commuterPlan.employerTransitContribution}}/Month</td>
@@ -483,12 +488,12 @@
           confirm="Delete the individual benefits plan?">X</a>
         </td>
         <td class="upload-td">
-          <bmuploadmanager
+          <bm-upload-app-feature-manager
               upload-type="ExtraBenefit"
               upload-mode="button"
               feature-id="{{extraBenefitPlan.companyPlanId}}"
               hide-type="true">
-          </bmuploadmanager>
+          </bm-upload-app-feature-manager>
         </td>
         <td colspan="2" style="padding: 0;">
           <table class="table">

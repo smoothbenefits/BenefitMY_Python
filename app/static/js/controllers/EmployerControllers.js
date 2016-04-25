@@ -1916,7 +1916,7 @@ var employerManageInsuranceCertificate = employersController.controller('employe
           
         });
 
-      $scope.fileUploaded = function(uploadedFile, uploadType, featureId){
+      $scope.fileUploaded = function(uploadedFile, featureId){
         var insuranceCert = _.find($scope.activeInsurances, function(insCert){
           return insCert._id == featureId;
         });
@@ -1933,7 +1933,7 @@ var employerManageInsuranceCertificate = employersController.controller('employe
         }
       };
 
-      $scope.fileDeleted = function(deletedFile, uploadType, featureId){
+      $scope.fileDeleted = function(deletedFile, featureId){
         var insuranceCert = _.find($scope.activeInsurances, function(insCert){
           return insCert._id == featureId;
         });
