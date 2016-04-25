@@ -72,6 +72,12 @@
 </div>
 <ul id="upload_display_list" ng-if="uploadManager.viewMode == 'list'" ng-show="uploadManager.uploadedFiles.length>0">
   <li ng-repeat="file in uploadManager.uploadedFiles |orderBy:'-uploaded_at'">
+    <a 
+      href="javascript:void(0)"
+      ng-click="uploadManager.deleteS3File(file)"
+      class="delete-cross"
+      confirm="Are you sure you want to delete this file?">X</a>
+    &nbsp;
     <a ng-href="{{file.S3}}" target="_blank">{{file.file_name}}</a>
   </li>
 </ul>
