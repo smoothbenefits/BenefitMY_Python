@@ -48,7 +48,6 @@ BenefitMyApp.directive('bmuploadmanager',
                   UploadService.uploadFile(file).then(
                     function(fileUploaded){
                       $scope.uploadManager.inProgress = undefined;
-                      $scope.uploadManager.uploadedFiles.unshift(fileUploaded);
                       if($scope.fileUploaded){
                         $scope.fileUploaded({
                             uploadedFile: fileUploaded,
@@ -70,9 +69,7 @@ BenefitMyApp.directive('bmuploadmanager',
               handleUploadArea($scope.uploadManager.files);
             });
             $scope.$watch('uploadedFiles', function(){
-              if(!$scope.uploadManager.uploadedFiles){
-                $scope.uploadManager.uploadedFiles = $scope.uploadedFiles;
-              }
+              $scope.uploadManager.uploadedFiles = $scope.uploadedFiles;
             });
             $attrs.$observe('viewTitle', function(){
               $scope.uploadManager.viewTitle = $attrs.viewTitle;

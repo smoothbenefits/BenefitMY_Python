@@ -44,14 +44,13 @@
             <td>${{insurance.policy.coveredAmount}}</td>
             <td>
               <bmuploadmanager
-               upload-type="CertificateInsurance"
                upload-mode="button"
                feature-id="{{insurance._id}}"
                view-mode="list"
                hide-type="true"
                uploaded-files="insurance.uploads"
                file-uploaded="fileUploaded(uploadedFile, featureId)"
-               file-deleted = "fileDeleted(deletedFile, featureId)">
+               file-deleted ="fileDeleted(deletedFile, featureId)">
              </bmuploadmanager>
             </td>
           </tr>

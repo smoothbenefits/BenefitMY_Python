@@ -39,6 +39,7 @@ BenefitMyApp.directive('bmUploadAppFeatureManager',
               if(featureId && $attrs.uploadType){
                 UploadService.SetUploadApplicationFeature(uploadedFile.id, $attrs.uploadType, featureId)
                   .then(function(){
+                    $scope.uploadedFiles.unshift(uploadedFile);
                   }, function(error){
                     alert(error);
                   });
