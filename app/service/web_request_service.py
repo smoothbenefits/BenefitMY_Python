@@ -8,3 +8,6 @@ class WebRequestService(object):
 
     def get(self, url):
         return requests.get(url, verify=False)
+
+    def post(self, url, data_object):
+        return requests.post(url, json=data_object, verify=False)
