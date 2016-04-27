@@ -77,6 +77,26 @@ class SendEmailService(object):
 
         return emails
 
+    def get_employer_emails_for_all_companies(self):
+        return self._get_emails_for_all_companies_user_type(USER_TYPE_ADMIN)
+
+    def get_broker_emails_for_all_companies(self):
+        return self._get_emails_for_all_companies_user_type(USER_TYPE_BROKER)
+
+    def _get_emails_for_all_companies_user_type(self, user_type):
+        company_emails = {}
+
+        comp_users = CompanyUser.objects.filter(
+            company_user_type=user_type)
+        for comp_user in comp_users:
+            email = self.get_email_address_by_user(comp_user.user_id)
+            if (not company_emails.has_key(comp_user.company.id)):
+                company_emails[comp_user.company.id] = []
+
+            company_emails[comp_user.company.id].append(email)
+
+        return company_emails
+
     ''' Get the email address to use for the given user
     '''
     def get_email_address_by_user(self, user_id):

@@ -194,6 +194,7 @@ from app.views.reports.integration.company_hphc_excel import CompanyHphcExcelVie
 
 from app.views.reports.forms.form_1095c import Form1095CView
 from app.views.reports.forms.form_1094c import Form1094CView
+from app.views.reports.forms.COI.form_lien_waiver import FormLienWaiverView
 
 from app.views.upload import (UserUploadView,
                               UploadView,
@@ -304,7 +305,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/life_beneficiary?$' % PREFIX, CompanyUsersLifeInsuranceBeneficiaryExcelExportView.as_view(), name='company_life_insurance_beneficiary_excel_api'),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/direct_deposit?$' % PREFIX, CompanyUsersDirectDepositExcelExportView.as_view(), name='company_direct_deposit_excel_api'),
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_billing?$' % PREFIX, CompanyUsersBenefitsBillingExcelExportView.as_view()),
-    url(r'^%s/company/(?P<pk>\w+)/worktime_excel/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/?$' % PREFIX, CompanyUsersWorktimeWeeklyReportView.as_view(), name='company_worktime_report_weekly'),
+    url(r'^%s/company/(?P<pk>\w+)/worktime_excel/from/(?P<from_year>\d+)/(?P<from_month>\d+)/(?P<from_day>\d+)/to/(?P<to_year>\d+)/(?P<to_month>\d+)/(?P<to_day>\d+)/?$' % PREFIX,
+        CompanyUsersWorktimeWeeklyReportView.as_view(), name='company_worktime_report_weekly'),
     url(r'^%s/companies/(?P<pk>\w+)/users/pdf/?$' % PREFIX, CompanyUsersSummaryPdfExportView.as_view(), name='company_summary_pdf_api'),
     url(r'^%s/company/(?P<pk>\w+)/role/(?P<role_type>\w+)/?$' % PREFIX, CompanyUserDetailView.as_view(), name='company_user_details_api'),
 
@@ -312,6 +314,7 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/users/(?P<pk>\w+)/forms/1095c/?$' % PREFIX, Form1095CView.as_view(), name='employee_1095_c_form_api'),
     url(r'^%s/company/(?P<pk>\w+)/forms/1094c/?$' % PREFIX, Form1094CView.as_view(), name='company_1094_c_form_api'),
+    url(r'^%s/forms/lien_waiver/?$' % PREFIX, FormLienWaiverView.as_view(), name='coi_lien_waiver_form_api'),
 
     url(r'^%s/companies/(?P<pk>\w+)/users/modification_summary/?$' % PREFIX, CompanyUsersDataModificationSummaryView.as_view()),
 

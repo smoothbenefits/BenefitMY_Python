@@ -10,6 +10,7 @@
         <th><span>Types</span></th>
         <th><span>Accrued Hours to Date</span></th>
         <th><span>Banked Hours Balance</span></th>
+        <th><span>Actions</span></th>
       </thead>
       <tbody>
         <tr ng-repeat="quotaPerEmployee in employeeQuotas">
@@ -39,6 +40,9 @@
             <div ng-if="quotaPerEmployee.quota" ng-repeat="quotaInfoItem in quotaPerEmployee.quota.quotaInfoCollection">
               {{quotaInfoItem.bankedHours}}
             <div>
+          </td>
+          <td>
+            <span class="btn inline" ng-click="configEmployeeAccrualSpecs(quotaPerEmployee)">Configure</span>
           </td>
         </tr>
       </tbody>

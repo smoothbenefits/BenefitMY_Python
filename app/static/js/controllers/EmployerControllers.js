@@ -1684,3 +1684,279 @@ var employerViewTimePunchCards = employersController.controller('employerViewTim
       }
     }
 ]);
+
+var employerEditContractorModal = employersController.controller('employerEditContractorModal', [
+    '$scope',
+    '$modal',
+    '$modalInstance',
+    'ContractorsService',
+    'contractor',
+    'companyId',
+    function($scope, $modal, $modalInstance, ContractorsService, contractor, companyId){
+      if(!contractor){
+        $scope.contractor = ContractorsService.GetBlankContractor(companyId); 
+      }
+      else{
+        $scope.contractor = contractor;
+      }
+
+      $scope.cancel = function(){
+        $modalInstance.dismiss();
+      };
+
+      $scope.save = function(){
+        ContractorsService.SaveContractor($scope.contractor)
+          .then(function(savedContractor){
+            $modalInstance.close(true);
+          }, function(error){
+            $modalInstance.close(false)
+          });
+      }
+    }
+]);
+
+var employerManageContractor = employersController.controller('employerManageContractor',
+  [
+    '$scope',
+    '$state',
+    '$modal',
+    '$controller',
+    'UserService',
+    'ContractorsService',
+    function($scope, $state, $modal, $controller, UserService, ContractorsService){
+      // Inherit base modal controller for dialog window
+      $controller('modalMessageControllerBase', {$scope: $scope});
+
+      //Get the contractors
+      UserService.getCurUserInfo().then(function(curUserInfo){
+        $scope.company = curUserInfo.currentRole.company;
+        ContractorsService.GetContractorsByCompany($scope.company.id)
+          .then(function(contractors){
+            $scope.contractors = contractors;
+          });
+      });
+      
+      var updateContractor = function(updatedContractor){
+        var contractorIndex = _.findIndex($scope.contractors, function(contractor){
+            return updatedContractor._id === contractor._id;
+          }); 
+          if(contractorIndex >= 0){
+            $scope.contractors[contractorIndex] = updatedContractor;
+          }
+      };
+
+      $scope.createOrEditContractor = function(contractor){
+        
+        var modalInstance = $modal.open({
+              templateUrl: '/static/partials/contractor/modal_contractor.html',
+              controller: 'employerEditContractorModal',
+              backdrop: 'static',
+              size: 'lg',
+              resolve: {
+                contractor: function() {
+                  return contractor;
+                },
+                companyId: function() {return $scope.company.id}
+              }
+            });
+
+        modalInstance.result.then(function(success){
+          if(success){
+            var successMessage = "Contractor saved successfully!";
+            $scope.showMessageWithOkayOnly('Success', successMessage);
+          }
+          else{
+            var message = "Contractor save failed!";
+            $scope.showMessageWithOkayOnly('Error', message);
+          }
+          $state.reload();
+        });
+      };
+
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      };
+
+      $scope.manageInsuranceCert = function(contractor){
+        $state.go('admin_contractor_insurance', {contractorId: contractor._id});
+      };
+
+      $scope.deactivate = function(contractor){
+        ContractorsService.SetContractorStatus(contractor, ContractorsService.ContractorStatus.Deactivated)
+        .then(function(updatedContractor){
+          updateContractor(updatedContractor);
+        });
+      };
+
+      $scope.activate = function(contractor){
+        ContractorsService.SetContractorStatus(contractor, ContractorsService.ContractorStatus.Active)
+        .then(function(updatedContractor){
+          updateContractor(updatedContractor);
+        });
+      };
+
+      $scope.isContractorActive = function(contractor){
+        return contractor &&
+          contractor.status == ContractorsService.ContractorStatus.Active;
+      };
+    }
+]);
+
+var employerEditInsuranceCertificateModal = employersController.controller('employerEditInsuranceCertificateModal', [
+    '$scope',
+    '$modal',
+    '$modalInstance',
+    'insuranceCertificate',
+    'contractorId',
+    'ContractorsService',
+    function($scope, $modal, $modalInstance, insuranceCertificate, contractorId, ContractorsService){
+      var contractorId = contractorId;
+      if(insuranceCertificate){
+        $scope.insurance = insuranceCertificate;
+      }
+      else{
+        $scope.Insurance = ContractorsService.GetBlankInsuranceCertificate();
+      }
+      $scope.insuranceTypes = ContractorsService.InsuranceCertificateTypes;
+      
+      $scope.save = function(){
+        ContractorsService.SaveInsuranceCertificate(contractorId, $scope.insurance)
+          .then(function(modifiedContractor){
+            $modalInstance.close({
+              isDelete: false,
+              saveSuccess: true});
+          }, function(error){
+            $modalInstance.close({
+              isDelete: false,
+              saveSuccess: false});
+          });
+      }
+      $scope.cancel = function(){
+        $modalInstance.dismiss();
+      };
+
+      $scope.delete = function(){
+        ContractorsService.DeleteInsuranceCertificate(contractorId, $scope.insurance._id)
+          .then(function(success){
+            $modalInstance.close({
+              isDelete: true,
+              saveSuccess: null});
+          },function(error){
+            alert(error);
+            $modalInstance.dismiss();
+          });
+      };
+
+      $scope.deletable = function(){
+        return $scope.insurance && $scope.insurance._id;
+      }
+    }
+]);
+
+var employerManageInsuranceCertificate = employersController.controller('employerManageInsuranceCertificate', [
+    '$scope',
+    '$state',
+    '$stateParams',
+    '$modal',
+    '$controller',
+    'ContractorsService',
+    function($scope, $state, $stateParams, $modal, $controller, ContractorsService){
+      var contractorId = $stateParams.contractorId;
+      // Inherit base modal controller for dialog window
+      $controller('modalMessageControllerBase', {$scope: $scope});
+
+      $scope.openCreateOrEditModal = function(insuranceCertificate){
+        var modalInstance = $modal.open({
+              templateUrl: '/static/partials/contractor/modal_insurance_certificate.html',
+              controller: 'employerEditInsuranceCertificateModal',
+              backdrop: 'static',
+              size: 'lg',
+              resolve: {
+                insuranceCertificate: function(){ return insuranceCertificate; },
+                contractorId: function(){ return contractorId; }
+              }
+            });
+        modalInstance.result.then(function(actionResult){
+          if(!actionResult.isDelete){
+            if(actionResult.saveSuccess){
+              var successMessage = "Insurance certificate saved successfully!";
+              $scope.showMessageWithOkayOnly('Success', successMessage);
+            }
+            else{
+              var message = "Insurance certificate save failed!";
+              $scope.showMessageWithOkayOnly('Error', message);
+            }
+          }
+          $state.reload();
+        });
+      };
+      $scope.goContractors = function(){
+        $state.go('admin_contractor_manager');
+      };
+
+      if (!contractorId){
+        alert('Contractor Not Valid. Returning back to Contractors View');
+        $scope.goContractors();
+        return;
+      }
+
+
+      ContractorsService.GetContractorById(contractorId)
+        .then(function(contractor){
+          $scope.activeInsurances = [];
+          $scope.expiredInsurances = [];
+          _.each(contractor.insurances, function(insurance){
+            if(moment(insurance.policy.endDate) < Date.now()){
+              $scope.expiredInsurances.unshift(insurance);
+            }
+            else{
+              $scope.activeInsurances.unshift(insurance);
+            }
+          });
+          
+        });
+
+      $scope.fileUploaded = function(uploadedFile, featureId){
+        var insuranceCert = _.find($scope.activeInsurances, function(insCert){
+          return insCert._id == featureId;
+        });
+        if(insuranceCert){
+          createdUpload = {
+            id: uploadedFile.id,
+            S3: uploadedFile.S3,
+            file_name: uploadedFile.file_name,
+            file_type: uploadedFile.file_type,
+            uploaded_at: uploadedFile.uploaded_at
+          };
+          insuranceCert.uploads.unshift(createdUpload);
+          ContractorsService.SaveInsuranceCertificate(contractorId, insuranceCert);
+        }
+      };
+
+      $scope.fileDeleted = function(deletedFile, featureId){
+        var insuranceCert = _.find($scope.activeInsurances, function(insCert){
+          return insCert._id == featureId;
+        });
+        if(insuranceCert){
+          insuranceCert.uploads.shift(deletedFile);
+          ContractorsService.SaveInsuranceCertificate(contractorId, insuranceCert);
+        }
+      };
+
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      };
+
+      $scope.hasActiveInsurances = function(){
+        return $scope.activeInsurances &&
+          $scope.activeInsurances.length > 0;
+      };
+
+      $scope.hasExpiredInsurances = function(){
+        return $scope.expiredInsurances &&
+          $scope.expiredInsurances.length > 0;
+      };
+    }
+]);
+
+

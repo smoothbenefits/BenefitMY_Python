@@ -11,6 +11,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'environment',
     'benefitmyDomainModelFactories',
     'benefitmyTimeTrackingModelFactories',
+    'benefitmyInsuranceCertificateModelFactories',
     'benefitmyService',
     'benefitmyApp.constants',
     'benefitmyApp.users.controllers',
@@ -119,16 +120,20 @@ BenefitMyApp.config(['envServiceProvider', function(envServiceProvider) {
         },
         vars: {
             localhost: {
-                timeTrackingUrl: 'http://localhost:6999/'
+                timeTrackingUrl: 'http://localhost:6999/',
+                insuranceCertificateUrl: 'http://localhost:10999/'
             },
             stage: {
-                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/'
+                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/',
+                insuranceCertificateUrl: 'http://stage.insurcert.workbenefits.me/'
             },
             demo: {
-                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/'
+                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/',
+                insuranceCertificateUrl: 'http://stage.insurcert.workbenefits.me/'
             },
             production: {
-                timeTrackingUrl: 'https://timetracking.workbenefits.me/'
+                timeTrackingUrl: 'https://timetracking.workbenefits.me/',
+                insuranceCertificateUrl: 'https://insurcert.workbenefits.me/'
             }
         }
     });
@@ -419,6 +424,16 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
               url: '/admin/service_provider',
               templateUrl: '/static/partials/company_service_provider/company_service_provider_base.html',
               controller: 'EmployerCompanyServiceProvider'
+            }).
+            state('admin_contractor_manager', {
+                url:'/admin/contractors',
+                templateUrl: '/static/partials/contractor/contractor_base.html',
+                controller: 'employerManageContractor'
+            }).
+            state('admin_contractor_insurance', {
+                url:'/admin/contractors/:contractorId/insurance',
+                templateUrl: '/static/partials/contractor/insurance_certificate_base.html',
+                controller: 'employerManageInsuranceCertificate'
             }).
             state('/employee',{
                 url: '/employee',

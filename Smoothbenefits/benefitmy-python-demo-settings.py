@@ -7,6 +7,10 @@ SITE_URL = "http://demo.workbenefits.me/"
 
 # Time Tracking Service URL
 TIME_TRACKING_SERVICE_URL = "http://stage.timetracking.workbenefits.me/"
+
+# Certificate of Insurance Service URL
+COI_SERVICE_URL = "http://stage.insurcert.workbenefits.me/"
+
 ENVIRONMENT_IDENTIFIER = 'demo'
 
 # Logging Configurations
