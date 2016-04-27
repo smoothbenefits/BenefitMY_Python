@@ -42,7 +42,17 @@
             </td>
             <td>{{insurance.policy.endDateDisplay}}</td>
             <td>${{insurance.policy.coveredAmount}}</td>
-            <td></td>
+            <td>
+              <bmuploadmanager
+               upload-mode="button"
+               feature-id="{{insurance._id}}"
+               view-mode="list"
+               hide-type="true"
+               uploaded-files="insurance.uploads"
+               file-uploaded="fileUploaded(uploadedFile, featureId)"
+               file-deleted ="fileDeleted(deletedFile, featureId)">
+             </bmuploadmanager>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -67,7 +77,11 @@
             </td>
             <td>{{insurance.policy.endDateDisplay}}</td>
             <td>${{insurance.policy.coveredAmount}}</td>
-            <td></td>
+            <td>
+              <div ng-repeat="upload in insurance.uploads">
+                <a href="{{upload.S3}}" target="_blank">{{upload.file_name}}</a>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>

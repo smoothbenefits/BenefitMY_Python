@@ -288,6 +288,7 @@ PIPELINE_JS = {
             'js/directives/ConfirmDialogOnClick.js',
             'js/directives/FamilyMemberManager.js',
             'js/directives/UploadManager.js',
+            'js/directives/UploadAppFeatureManager.js',
             'js/directives/UploadViewer.js',
             'js/directives/CustomDatePicker.js',
             'js/directives/PersonalInfoEditor.js',

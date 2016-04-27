@@ -124,7 +124,8 @@ benefitmyService.factory('ContractorsService',
             startDate: '',
             endDate: '',
             coveredAmount: ''
-          }
+          },
+          uploads: []
         };
         return insuranceCertificate;
       };

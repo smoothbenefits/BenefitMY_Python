@@ -1916,6 +1916,33 @@ var employerManageInsuranceCertificate = employersController.controller('employe
           
         });
 
+      $scope.fileUploaded = function(uploadedFile, featureId){
+        var insuranceCert = _.find($scope.activeInsurances, function(insCert){
+          return insCert._id == featureId;
+        });
+        if(insuranceCert){
+          createdUpload = {
+            id: uploadedFile.id,
+            S3: uploadedFile.S3,
+            file_name: uploadedFile.file_name,
+            file_type: uploadedFile.file_type,
+            uploaded_at: uploadedFile.uploaded_at
+          };
+          insuranceCert.uploads.unshift(createdUpload);
+          ContractorsService.SaveInsuranceCertificate(contractorId, insuranceCert);
+        }
+      };
+
+      $scope.fileDeleted = function(deletedFile, featureId){
+        var insuranceCert = _.find($scope.activeInsurances, function(insCert){
+          return insCert._id == featureId;
+        });
+        if(insuranceCert){
+          insuranceCert.uploads.shift(deletedFile);
+          ContractorsService.SaveInsuranceCertificate(contractorId, insuranceCert);
+        }
+      };
+
       $scope.backToDashboard = function(){
         $state.go('/admin');
       };
