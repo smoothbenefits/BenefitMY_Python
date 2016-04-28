@@ -25,7 +25,6 @@ BenefitMyApp.directive('bmuploadmanager',
               files:[],
               deleteS3File: function(file){
                 UploadService.deleteFile(file.id, file.S3).then(function(deletedFile){
-                  $scope.uploadManager.uploadedFiles = _.without($scope.uploadManager.uploadedFiles, file);
                   $scope.uploadManager.deleteSuccess = true;
                   $timeout(function(){
                     $scope.uploadManager.deleteSuccess = false;

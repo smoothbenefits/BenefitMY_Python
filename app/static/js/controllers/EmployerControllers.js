@@ -1938,7 +1938,7 @@ var employerManageInsuranceCertificate = employersController.controller('employe
           return insCert._id == featureId;
         });
         if(insuranceCert){
-          insuranceCert.uploads.shift(deletedFile);
+          insuranceCert.uploads.shift();
           ContractorsService.SaveInsuranceCertificate(contractorId, insuranceCert);
         }
       };
