@@ -47,7 +47,7 @@ BenefitMyApp.directive('bmUploadAppFeatureManager',
             };
 
             $scope.fileDeleted = function(deletedFile, featureId){
-              $scope.uploadedFiles.shift();
+              $scope.uploadedFiles = _.without($scope.uploadedFiles, deletedFile);
             };
 
             init();
