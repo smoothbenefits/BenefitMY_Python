@@ -101,7 +101,7 @@ benefitmyService.factory('UploadService',
       return deferred.promise;
     };
 
-    var uploadFile = function(file, uploadType){
+    var uploadFile = function(file){
         var deferred = $q.defer();
 
         _getCurrentUserInfo().then(function(userInfo){

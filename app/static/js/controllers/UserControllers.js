@@ -263,7 +263,11 @@ var userController = userControllers.controller('userController',
 
     $scope.viewServiceProvider = function() {
       $state.go('admin_service_provider');
-    }
+    };
+
+    $scope.viewContractors = function(){
+      $state.go('admin_contractor_manager');
+    };
 
     $scope.gotoSettings = function(){
       $state.go('settings', {user_id: $scope.curUser.id});

@@ -110,4 +110,3 @@ class TimeTrackingAppMock(object):
             json=return_json,
             status=return_status,
             match_querystring=True)
-
