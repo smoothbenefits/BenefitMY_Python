@@ -1,0 +1,50 @@
+<div class="modal-header">
+  <h4 class="modal-title">Configure Employee Time Off</h4>
+</div>
+<div class="modal-body col-md-12">
+  <div class="form-holder col-md-10 col-md-offset-1">
+    <form name="form">
+      <div class="row">
+        <div class="col-md-4"><div class="form-label">Type</div></div>
+        <div class="col-md-4"><div class="form-label">Annual Target Hours</div></div>
+        <div class="col-md-4"><div class="form-label">Accrual Frequency</div></div>
+      </div>
+      <div class="row" ng-repeat="quotaInfo in timeoffQuota.quotaInfoCollection">
+        <ng-form name="subform_{{$index}}">
+            <div class="col-md-4">
+                <b>{{quotaInfo.timeoffType}}</b>
+            </div>
+            <div class="col-md-4">
+                <div class="textbox">
+                    <input type="number"
+                    min="0"
+                    name="annualtargethours"
+                    ng-model="quotaInfo.annualTargetHours"
+                    ng-required="true">
+                    <div class="form-error-relative" ng-show="subform_{{$index}}.annualtargethours.$dirty && subform_{{$index}}.annualtargethours.$invalid">
+                      <span ng-show="subform_{{$index}}.annualtargethours.$error.required">Annual Target Hours field is required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="textbox">
+                    <select name="accrualfrequency" ng-model="quotaInfo.accrualSpecs.accrualFrequency" ng-required="true" class="form-control">
+                        <option ng-repeat="frequency in accrualFrequencyTypes">{{frequency}}</option> 
+                    </select>
+                    <div class="form-validation-error" ng-show="subform_{{$index}}.accrualfrequency.$invalid">
+                        <span ng-show="subform_{{$index}}.accrualfrequency.$error.required">Accrual Frequency is a required field</span>
+                    </div>
+                </div>
+            </div>
+        </ng-form>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-info" ng-click="save()" ng-disabled="form.$invalid" style="width: 20%">Save</button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+  </div>
+</div>

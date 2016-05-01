@@ -1,0 +1,92 @@
+<div class="breadcrumb">
+  <a ng-href="#/admin">Admin Dashboard</a>
+  <a ng-click="goContractors()">Contractors</a>
+  <span>Insurance Ceritificate</span>
+</div>
+
+<div class="content-header">
+  <h1>Manage Insurance Certificate for {{contractor.name}}</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="openCreateOrEditModal()">Add Insurance Certificate</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Add Insurance Certificate</span> button to create a new insurance certificate</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="panel" ng-if="!hasActiveInsurances()">
+    <div class="panel-heading">
+      <span>Active Insurance Certificates</span>
+    </div>
+    <div class="panel-body">
+      <p>There are currently no activate insurance certificate for contractor {{contractor.name}}</p>
+      <p>Please <a ng-click="openCreateOrEditModal()">click here</a> to add insurance certificate.</p>
+    </div>
+  </div>
+  <div class="panel" ng-if="hasActiveInsurances()">
+    <div class="panel-heading">
+      Active Insurance Certificates
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Certificate Type</span></th>
+          <th><span>Policy Expires</span></th>
+          <th><span>Amount</span></th>
+          <th><span>Uploaded</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="insurance in activeInsurances">
+            <td>
+                &nbsp;<a ng-click="openCreateOrEditModal(insurance)">{{insurance.type}}</a>
+            </td>
+            <td>{{insurance.policy.endDateDisplay}}</td>
+            <td>${{insurance.policy.coveredAmount}}</td>
+            <td>
+              <bmuploadmanager
+               upload-mode="button"
+               feature-id="{{insurance._id}}"
+               view-mode="list"
+               hide-type="true"
+               uploaded-files="insurance.uploads"
+               file-uploaded="fileUploaded(uploadedFile, featureId)"
+               file-deleted ="fileDeleted(deletedFile, featureId)">
+             </bmuploadmanager>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel" ng-if="hasExpiredInsurances()">
+    <div class="panel-heading">
+      Expired Insurance Certificates
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Certificate Type</span></th>
+          <th><span>Policy Expires</span></th>
+          <th><span>Amount</span></th>
+          <th><span>Uploaded</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="insurance in expiredInsurances">
+            <td>
+                &nbsp;<a ng-click="openCreateOrEditModal(insurance)">{{insurance.type}}</a>
+            </td>
+            <td>{{insurance.policy.endDateDisplay}}</td>
+            <td>${{insurance.policy.coveredAmount}}</td>
+            <td>
+              <div ng-repeat="upload in insurance.uploads">
+                <a href="{{upload.S3}}" target="_blank">{{upload.file_name}}</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>

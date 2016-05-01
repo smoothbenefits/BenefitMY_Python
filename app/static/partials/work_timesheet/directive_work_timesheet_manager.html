@@ -16,6 +16,7 @@
         Select Week
     </div>
     <div class="panel-body">
+      <div class="row">
         <div class="col-md-4">
             <div class="select-box">
                 <select
@@ -28,8 +29,9 @@
             </div>
         </div>
         <div class="col-md-4 col-md-offset-4" ng-show="adminMode">
-          <a ng-click="downloadWeeklyTimeSheetReport()">Download weekly worktime report</a>
+          <a ng-click="downloadWeeklyTimeSheetReport()">Download Weekly Worktime Report</a>
         </div>
+      </div>
     </div>
   </div>
   <div class="panel" ng-hide="adminMode">

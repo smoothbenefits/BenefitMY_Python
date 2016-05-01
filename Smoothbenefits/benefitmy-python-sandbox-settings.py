@@ -8,6 +8,10 @@ SITE_URL = "http://sandbox.benefitmy.com/"
 
 # Time Tracking Service URL
 TIME_TRACKING_SERVICE_URL = "http://stage.timetracking.workbenefits.me/"
+
+# Certificate of Insurance Service URL
+COI_SERVICE_URL = "http://stage.insurcert.workbenefits.me/"
+
 ENVIRONMENT_IDENTIFIER = 'stage'
 
 # Default global figure of number of minutes notification facilities should

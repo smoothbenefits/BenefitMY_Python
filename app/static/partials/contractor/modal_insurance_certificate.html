@@ -1,0 +1,135 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create A New Insurance Certificate</h4>
+</div>
+<form name="insurance_form">
+  <div class="modal-body col-md-12">
+    <div class="form-holder col-md-10 col-md-offset-1">
+      <ul class="list-group"><li class="list-group-item">
+        <div class="form-label">Type</div>
+        <div class="textbox">
+          <select
+            name="insurance_type"
+            ng-model="insurance.type"
+            ng-required="true"
+            ng-options="item for item in insuranceTypes"/>
+          </select>
+          <div class="form-validation-error" ng-show="insurance_form.insurance_type.$dirty && insurance_form.insurance_type.$invalid">
+            <span ng-show="insurance_form.insurance_type.$invalid">Please select a type</span>
+          </div>
+        </div>
+      </li></ul>
+      <ul class="list-group"><li class="list-group-item">
+          <div class="col-md-6">
+            <div class="form-label">Agent Name</div>
+            <div class="textbox">
+              <input type="text"
+                ng-model="insurance.agent.name"
+                ng-required="true"/>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-label">Agent Contact Person Name</div>
+            <div class="textbox">
+              <input type="text"
+                ng-model="insurance.agent.contact"
+                ng-required="false"/>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-label">Agent Address</div>
+            <div class="textbox">
+              <input type="text"
+                ng-model="insurance.agent.address"
+                ng-required="false"/>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-label">Agent Email</div>
+            <div class="textbox">
+              <input type="email"
+                ng-model="insurance.agent.email"
+                ng-required="false"/>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-label">Agent Phone</div>
+            <div class="textbox">
+              <input type="text"
+                ng-model="insurance.agent.phone"
+                ui-mask="(999) 999-9999"
+                ui-mask-placeholder
+                ui-mask-placeholder-char="_"
+                ng-required="false"/>
+            </div>
+          </div>
+          <div style="clear:both"></div>
+      </li></ul>
+
+      <ul class="list-group"><li class="list-group-item">
+        <div class="form-label">Policy Number</div>
+        <div class="select-box">
+          <div class="textbox">
+            <input type="text"
+              ng-model="insurance.policy.policyNumber"
+              ng-required="true"/>
+          </div>
+        </div>
+      </li></ul>
+      <ul class="list-group"><li class="list-group-item">
+        <div class="col-md-6">
+            <div class="form-label">Policy Start Date</div>
+            <div class="textbox">
+              <bm-date-picker
+                model="insurance.policy.startDate"
+                ng-required="false"
+                name="policy_start_date"
+                fieldname="'policy_start_date'"
+                dirty="form.policy_start_date.$dirty" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-label">Policy End Date</div>
+            <div class="textbox">
+              <bm-date-picker
+                model="insurance.policy.endDate"
+                ng-required="true"
+                name="policy_end_date"
+                fieldname="'policy_end_date'"
+                dirty="form.policy_end_date.$dirty" />
+            </div>
+          </div>
+          <div style="clear:both"></div>
+      </li></ul>
+      <ul class="list-group"><li class="list-group-item">
+        <div class="form-label">Policy Amount</div>
+        <div class="textbox input-group">
+          <span class="input-group-addon">$</span>
+          <input type="number"
+            ng-model="insurance.policy.coveredAmount"
+            ng-required="true"
+            min="0"/>
+        </div>
+      </li></ul>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="button-group">
+      <button
+        class="btn red"
+        ng-click="delete()"
+        style="width: 20%; float:left;"
+        ng-if="deletable()"
+        confirm="Are you sure you want to delete this insurance certificate?">
+        Delete
+      </button>
+      <button
+        class="btn green"
+        ng-click="save()"
+        style="width: 20%"
+        ng-disabled="insurance_form.$invalid">
+          Save
+      </button>
+      <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+    </div>
+  </div>
+</form>

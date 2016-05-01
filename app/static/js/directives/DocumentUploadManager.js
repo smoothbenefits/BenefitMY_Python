@@ -57,12 +57,12 @@ BenefitMyApp.directive('bmdocumentuploadmanager',
               }
             }; 
 
-            var handleUploadArea = function(files, uploadType){
+            var handleUploadArea = function(files){
               if (files && files.length) {
                 for (var i = 0; i < files.length; i++) {
                   var file = files[i];
                   $scope.uploadManager.inProgress = {file:file};
-                  UploadService.uploadFile(file, uploadType).then(
+                  UploadService.uploadFile(file).then(
                     function(fileUploaded){
                       $scope.uploadManager.inProgress = undefined;
                       $scope.uploadManager.uploadedFiles.unshift(fileUploaded);
@@ -88,7 +88,7 @@ BenefitMyApp.directive('bmdocumentuploadmanager',
             };
 
             $scope.$watch('uploadManager.files', function(){
-              handleUploadArea($scope.uploadManager.files, $attrs.uploadType);
+              handleUploadArea($scope.uploadManager.files);
             });
 
             if ('templateId' in $attrs) {

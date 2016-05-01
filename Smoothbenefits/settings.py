@@ -9,6 +9,10 @@ SITE_URL = "http://localhost:8000/"
 
 # Time Tracking Service URL
 TIME_TRACKING_SERVICE_URL = 'http://localhost:6999/'
+
+# Certificate of Insurance Service URL
+COI_SERVICE_URL = "http://localhost:10999/"
+
 ENVIRONMENT_IDENTIFIER = 'localhost'
 
 # Logging Configurations
