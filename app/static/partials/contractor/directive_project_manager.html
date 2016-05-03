@@ -1,0 +1,57 @@
+<div class="content-header">
+  <h1>Manage Projects</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="openProjectModal()">Create Project</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Create Project</span> button to create a new project</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="panel">
+    <div class="panel-heading">
+      Active Projects
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Name</span></th>
+          <th><span>Address</span></th>
+          <th><span>Sub-Contractors</span></th>
+          <th><span>Required Insurances</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="project in activeProjects">
+            <td><a ng-click="openProjectModal(project)">{{project.name}}</a></td>
+            <td>{{project.address}}</td>
+            <td><span class="inline" ng-repeat="contractor in project.contractors"> {{$index + 1}}. {{contractor.name}} </br></span></td>
+            <td><span class="inline" ng-repeat="insurType in project.requiredInsuranceTypes"> {{$index + 1}}. {{insurType}} </br></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-heading">
+      Inactive Projects
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Name</span></th>
+          <th><span>Address</span></th>
+          <th><span>Sub-Contractors</span></th>
+          <th><span>Required Insurances</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="project in inactiveProjects">
+            <td><a ng-click="openProjectModal(project)">{{project.name}}</a></td>
+            <td>{{project.address}}</td>
+            <td><span class="inline" ng-repeat="contractor in project.contractors"> {{$index + 1}}. {{contractor.name}} </br></span></td>
+            <td><span class="inline" ng-repeat="insurType in project.requiredInsuranceTypes"> {{$index + 1}}. {{insurType}} </br></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

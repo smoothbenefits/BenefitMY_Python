@@ -435,6 +435,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/contractor/insurance_certificate_base.html',
                 controller: 'employerManageInsuranceCertificate'
             }).
+            state('admin_project_manager', {
+                url:'/admin/projects',
+                templateUrl: '/static/partials/contractor/project_base.html',
+                controller: 'employerManageProject'
+            }).
             state('/employee',{
                 url: '/employee',
                 templateUrl: '/static/partials/employee_dashboard.html',
