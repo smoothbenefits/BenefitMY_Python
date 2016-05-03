@@ -34,7 +34,7 @@ class TimeTrackingService(object):
 
         for entry in all_entries:
             user_descriptor = entry['employee']['personDescriptor']
-            user_id = int(hash_key_service.decode_key_with_environment(user_descriptor))
+            user_id = int(self.hash_key_service.decode_key_with_environment(user_descriptor))
             users.append(user_id)
 
         return users
@@ -45,12 +45,11 @@ class TimeTrackingService(object):
         start_week_start_date,
         end_week_start_date
     ):
-        hash_key_service = HashKeyService()
 
         week_user_timesheets = {}
         api_url = '{0}api/v1/company/{1}/work_timesheets?start_date={2}&end_date={3}'.format(
             settings.TIME_TRACKING_SERVICE_URL,
-            hash_key_service.encode_key_with_environment(company_id),
+            self.hash_key_service.encode_key_with_environment(company_id),
             start_week_start_date.isoformat(),
             end_week_start_date.isoformat())
 
@@ -61,7 +60,7 @@ class TimeTrackingService(object):
         all_entries = r.json()
         for entry in all_entries:
             user_descriptor = entry['employee']['personDescriptor']
-            user_id = hash_key_service.decode_key_with_environment(user_descriptor)
+            user_id = self.hash_key_service.decode_key_with_environment(user_descriptor)
             item = copy.deepcopy(entry)
             item['user_id'] = user_id
 
