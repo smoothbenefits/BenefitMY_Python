@@ -420,6 +420,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
                 controller: 'employerViewTimePunchCards'
             }).
+            state('admin_departments', {
+              url: '/admin/hr/departments',
+              templateUrl: '/static/partials/workers_comp/departments_base.html',
+              controller: 'employerViewDepartments'
+            }).
             state('admin_service_provider', {
               url: '/admin/service_provider',
               templateUrl: '/static/partials/company_service_provider/company_service_provider_base.html',
