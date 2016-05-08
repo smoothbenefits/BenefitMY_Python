@@ -6,12 +6,14 @@
     <form name="form">
       <div class="form-label">Workers' Comp Phraseology</div>
       <div class="textbox">
-          <select ng-model="contextDepartment.phraseology"
-              ng-required="true"
-              name="phraseology"
-              ng-options="phraseology.phraseology for phraseology in allPhraseologys track by phraseology.id"
-              class="form-control">
-          </select>
+          <input type="text" 
+            ng-model="contextDepartment.phraseology"
+            placeholder="Start typing the phraseology" 
+            ng-required="true"
+            name="phraseology"
+            typeahead="phraseology as phraseology.phraseology for phraseology in searchPhraseologys($viewValue)"
+            autocomplete="off" 
+            class="form-control">
           <div class="form-validation-error" ng-show="form.phraseology.$dirty && form.phraseology.$invalid">
             <span ng-show="form.phraseology.$error.required">Phraseology is a required field</span>
           </div>
@@ -34,7 +36,7 @@
 
 <div class="modal-footer">
   <div class="button-group">
-    <button class="btn btn-info" ng-click="save()" style="width: 20%" ng-disabled="form.$invalid">Save</button>
+    <button class="btn btn-info" ng-click="save()" style="width: 20%" ng-disabled="!isValidToSave()">Save</button>
     <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
   </div>
 </div>

@@ -13,6 +13,13 @@ BenefitMyApp.controller('DepartmentModalController', [
         $scope.allPhraseologys = allPhraseologys;
     });
 
+    $scope.searchPhraseologys = function(term){
+        var lowerTerm = term.toLowerCase();
+        return _.filter($scope.allPhraseologys, function(entry){
+          return entry.phraseology.toLowerCase().indexOf(lowerTerm) > -1;
+        });
+    };
+
     $scope.editMode = department;
 
     $scope.modalHeader = $scope.editMode ? 'Edit Department Info' : 'Create a New Department';
@@ -28,6 +35,12 @@ BenefitMyApp.controller('DepartmentModalController', [
     $scope.save = function() {
         $modalInstance.close($scope.contextDepartment);
     }
+
+    $scope.isValidToSave = function() {
+        return !$scope.form.$invalid
+            && $scope.contextDepartment.phraseology
+            && $scope.contextDepartment.phraseology.id;
+    };
   }
 ]).controller('DepartmentManagerDirectiveController', [
   '$scope',

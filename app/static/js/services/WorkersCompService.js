@@ -25,6 +25,47 @@ benefitmyService.factory('WorkersCompService',
                     id: 'BMHT_4_8e37f27ce2220e875bfb0b9815df0b0d',
                     phraseology: 'FEATHER PILLOW MFG',
                     ma_code: '5024'
+                },
+
+                {
+                    id: 'BMHT_5_b457df460695969e8960e3f1623a3ee7',
+                    phraseology: 'FARM5: NURSERY EMP & DRIVERS',
+                    ma_code: '1001'
+                },
+                {
+                    id: 'BMHT_6_b457df460695969e8960e3f1623a3ee7',
+                    phraseology: 'FARM6: NURSERY EMP & DRIVERS',
+                    ma_code: '1001'
+                },
+                {
+                    id: 'BMHT_7_b457df460695969e8960e3f1623a3ee7',
+                    phraseology: 'FARM7: NURSERY EMP & DRIVERS',
+                    ma_code: '1001'
+                },
+                {
+                    id: 'BMHT_8_b457df460695969e8960e3f1623a3ee7',
+                    phraseology: 'FARM8: NURSERY EMP & DRIVERS',
+                    ma_code: '1001'
+                },
+                {
+                    id: 'BMHT_9_b457df460695969e8960e3f1623a3ee7',
+                    phraseology: 'FARM9: NURSERY EMP & DRIVERS',
+                    ma_code: '1001'
+                },
+                {
+                    id: 'BMHT_10_b457df460695969e8960e3f1623a3ee7',
+                    phraseology: 'FARM10: NURSERY EMP & DRIVERS',
+                    ma_code: '1001'
+                },
+                {
+                    id: 'BMHT_11_b457df460695969e8960e3f1623a3ee7',
+                    phraseology: 'FARM11: NURSERY EMP & DRIVERS',
+                    ma_code: '1001'
+                },
+                {
+                    id: 'BMHT_12_b457df460695969e8960e3f1623a3ee7',
+                    phraseology: 'FARM12: NURSERY EMP & DRIVERS',
+                    ma_code: '1001'
                 }
             ];
 
