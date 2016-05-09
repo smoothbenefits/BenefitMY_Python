@@ -40,7 +40,14 @@ BenefitMyApp.controller('DepartmentModalController', [
     };
 
     $scope.save = function() {
-        $modalInstance.close($scope.contextDepartment);
+        WorkersCompService.SaveCompanyPhraseology($scope.contextDepartment).then(
+            function(resultDepartment) {
+                $modalInstance.close(resultDepartment);
+            },
+            function(errors) {
+                $modalInstance.close(null);
+            }
+        );
     }
 
     // Check whether the current state is valid for saving.
@@ -100,24 +107,16 @@ BenefitMyApp.controller('DepartmentModalController', [
               $scope.showMessageWithOkayOnly('Error', message);
             }
 
-            // $state.reload();
-
-            // TODO: To remove
-            if (department) {
-                $scope.companyDepartments = _.reject($scope.companyDepartments, function(d) {
-                    return d.id == department.id;
-                });
-            }
-
-            $scope.companyDepartments.push(resultDepartment);
+            $state.reload();
         });
     };
 
     $scope.deleteConfirmMsg = 'Are you sure you want to delete this department setup?';
   
     $scope.deleteDepartment = function(department) {
-        $scope.companyDepartments = _.reject($scope.companyDepartments, function(d) {
-            return d.id == department.id;
+        WorkersCompService.DeleteCompanyPhraseology(department)
+        .then(function(response) {
+            $state.reload();
         });
     };
   }
