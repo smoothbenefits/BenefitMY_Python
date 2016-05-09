@@ -13,6 +13,8 @@ BenefitMyApp.controller('DepartmentModalController', [
         $scope.allPhraseologys = allPhraseologys;
     });
 
+    // Perform search based on text term. 
+    // This is to support filtering on typeahead
     $scope.searchPhraseologys = function(term){
         var lowerTerm = term.toLowerCase();
         return _.filter($scope.allPhraseologys, function(entry){
@@ -20,13 +22,18 @@ BenefitMyApp.controller('DepartmentModalController', [
         });
     };
 
+    // When a model is passed in, it means we are in
+    // edit (vs creation) mode
     $scope.editMode = department;
 
     $scope.modalHeader = $scope.editMode ? 'Edit Department Info' : 'Create a New Department';
 
+    // Set the model object in focus
+    // If in edit mode, use the model passed in.
+    // Else use a blank model created from the service
     $scope.contextDepartment = $scope.editMode 
         ? department
-        : { company: company.id };
+        : WorkersCompService.GetBlankCompanyDepartmentByCompany(company);
 
     $scope.cancel = function() {
         $modalInstance.dismiss();
@@ -36,6 +43,8 @@ BenefitMyApp.controller('DepartmentModalController', [
         $modalInstance.close($scope.contextDepartment);
     }
 
+    // Check whether the current state is valid for saving.
+    // 
     $scope.isValidToSave = function() {
         return !$scope.form.$invalid
             && $scope.contextDepartment.phraseology

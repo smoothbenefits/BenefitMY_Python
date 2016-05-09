@@ -4,7 +4,12 @@ benefitmyService.factory('WorkersCompService',
   ['$q',
    function WorkersCompService(
     $q) {
+
+        // A cached copy of the full phraseology list
+        var _cachedAllPhraseologys = [];
+
         var GetAllPhraseologys = function() {
+
             var allDepartments = [
                 {
                     id: 'BMHT_1_b457df460695969e8960e3f1623a3ee7',
@@ -70,7 +75,14 @@ benefitmyService.factory('WorkersCompService',
             ];
 
             var deferred = $q.defer();
-            deferred.resolve(allDepartments);
+
+            if (_cachedAllPhraseologys.length > 0) {
+                deferred.resolve(_cachedAllPhraseologys);
+            } else {
+                _cachedAllPhraseologys = allDepartments;
+                deferred.resolve(_cachedAllPhraseologys);
+            }
+
             return deferred.promise;
         };
 
@@ -103,9 +115,16 @@ benefitmyService.factory('WorkersCompService',
             return deferred.promise;
         };
 
+        var GetBlankCompanyDepartmentByCompany = function(company) {
+            return {
+                company: company.id
+            };
+        };
+
         return {
             GetAllPhraseologys: GetAllPhraseologys,
-            GetCompanyDepartments: GetCompanyDepartments
+            GetCompanyDepartments: GetCompanyDepartments,
+            GetBlankCompanyDepartmentByCompany: GetBlankCompanyDepartmentByCompany
         };
     }
 ]);
