@@ -791,3 +791,15 @@ benefitmyDomainModelFactories.factory('CompanyServiceProviderRepository', ['$res
     }
   }
 ]);
+
+benefitmyDomainModelFactories.factory('PhraseologyRepository', ['$resource',
+  function($resource) {
+    return {
+      All: $resource(PREFIX + 'phraseologys'),
+      CompanyPhraseologyById: $resource(PREFIX + 'company_phraseologys/:id', {id: '@id'}, {
+        update: { method: 'PUT' }
+      }),
+      CompanyPhraseologysByCompany: $resource(PREFIX + 'company/:companyId/phraseologys', {companyId: '@companyId'})
+    }
+  }
+]);

@@ -1685,6 +1685,22 @@ var employerViewTimePunchCards = employersController.controller('employerViewTim
     }
 ]);
 
+var employerViewDepartments = employersController.controller('employerViewDepartments', [
+    '$scope',
+    '$state',
+    '$stateParams',
+    'UserService',
+    function($scope, $state, $stateParams, UserService){
+      UserService.getCurUserInfo().then(function(curUserInfo){
+        $scope.company = curUserInfo.currentRole.company;
+      });
+
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      }
+    }
+]);
+
 var employerEditContractorModal = employersController.controller('employerEditContractorModal', [
     '$scope',
     '$modal',
