@@ -1,5 +1,5 @@
 from datetime import timedelta
-
+from datetime import date
 
 class DateTimeService(object):
 
@@ -34,3 +34,24 @@ class DateTimeService(object):
         end_date = start_date + timedelta(6)
 
         return (start_date, end_date)
+
+    def get_list_of_week_start_dates_in_range(self, start_date, end_date):
+        """
+            Get the list of week start dates that fall in the given date 
+            range
+        """
+        week_list = []    
+
+        week_delta = timedelta(7)
+        start_week_range = self.get_week_range_by_date(start_date)
+        start_week_begin = start_week_range[0]
+        end_week_range = self.get_week_range_by_date(end_date)
+        end_week_end = end_week_range[1]
+
+        curr_week_begin = start_week_begin
+
+        while curr_week_begin <= end_week_end:
+            week_list.append(curr_week_begin)
+            curr_week_begin += week_delta 
+
+        return week_list

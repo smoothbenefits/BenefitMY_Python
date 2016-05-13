@@ -1,5 +1,6 @@
 import urlparse
 import copy
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -65,7 +66,8 @@ class TimeTrackingService(object):
             item['user_id'] = user_id
 
             # Group returned timesheet by work start date
-            week_start_date = entry['weekStartDate']
+            week_start_date_str = entry['weekStartDate']
+            week_start_date = datetime.strptime(week_start_date_str, '%Y-%m-%dT%H:%M:%S.%fZ').date()
             if week_start_date in week_user_timesheets:
                 week_user_timesheets[week_start_date].append(item)
             else:

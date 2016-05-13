@@ -1,5 +1,6 @@
 import xlwt
 from datetime import datetime
+from datetime import date
 from rest_framework.response import Response
 from django.http import HttpResponse, Http404
 from django.contrib.auth import get_user_model
@@ -14,6 +15,7 @@ from app.views.permission import (
     company_employer_or_broker)
 from excel_export_view_base import ExcelExportViewBase
 from app.service.time_tracking_service import TimeTrackingService
+from app.service.date_time_service import DateTimeService
 
 FULL_TIME_DEFAULT_WEEKLY_HOURS = 40
 User = get_user_model()
@@ -43,7 +45,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
     def _get_user_timesheet(self, user_id, timesheets):
         try:
-            return next(x for x in timesheets if x['user_id'] == user_id)
+            return next(x for x in timesheets if x['user_id'] == str(user_id))
         except StopIteration:
             return None
 
@@ -181,8 +183,8 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
             from_year, from_month, from_day,
             to_year, to_month, to_day, format=None):
         comp = self._get_company_info(pk)
-        week_start_date = datetime(year=int(from_year), month=int(from_month), day=int(from_day))
-        end_week_start_date = datetime(year=int(to_year), month=int(to_month), day=int(to_day))
+        week_start_date = date(year=int(from_year), month=int(from_month), day=int(from_day))
+        end_week_start_date = date(year=int(to_year), month=int(to_month), day=int(to_day))
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('Timesheet')
         time_tracking_service = TimeTrackingService()
@@ -193,14 +195,21 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         self._write_headers(sheet)
 
-        # A dictionary with work start date as key is returned
-        # when getting timesheets by week range.
-        # Value is an array of user timesheets
         row_num = 1
-        for key in submitted_sheets:
-            # Convert key from string to datetime
-            key_in_date = datetime.strptime(key, '%Y-%m-%dT%H:%M:%S.%fZ')
-            row_num = self._write_company(row_num, comp, key_in_date, sheet, submitted_sheets[key])
+
+        # Now enumerate every single week within the specified 
+        # time range and delegate to the writing method to 
+        # determine what to write out
+        # i.e. even if the retrieved submitted time sheets do
+        # not contain data for a week, we should still attempt
+        # to run through that week, and let the logic to decide
+        # what to write. e.g. default weekly total for fulltime
+        # employees, and empty for part time workers, etc.
+        date_time_service = DateTimeService()
+        week_start_dates = date_time_service.get_list_of_week_start_dates_in_range(week_start_date, end_week_start_date)
+        for week_start_date in week_start_dates:
+            timesheet = submitted_sheets.get(week_start_date, [])
+            row_num = self._write_company(row_num, comp, week_start_date, sheet, timesheet)
 
         response = HttpResponse(content_type='application/vnd.ms-excel')
 
