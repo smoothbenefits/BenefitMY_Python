@@ -217,10 +217,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
               }
             }
           });
-          // var link = CompanyEmployeeSummaryService.getWeeklyWorktimeReportUrl(
-          //       $scope.company.id,
-          //       $scope.selectedDisplayWeek.weekStartDate);
-          // location.href = link;
         };
     }
   ]
