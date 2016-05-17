@@ -1,0 +1,38 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "employee_person": 3,
+      "start_date": "2015-08-27",
+      "end_date": "2015-11-27",
+      "phraseology": 5
+    },
+    "model": "app.employeephraseology",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "employee_person": 3,
+      "start_date": "2015-11-27",
+      "end_date": null,
+      "phraseology": 7
+    },
+    "model": "app.employeephraseology",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "employee_person": 4,
+      "start_date": "2016-01-11",
+      "end_date": null,
+      "phraseology": 10
+    },
+    "model": "app.employeephraseology",
+    "pk": 3
+  }
+] 
