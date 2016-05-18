@@ -10,3 +10,8 @@ class EmployeePhraseology(models.Model):
     end_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    def _get_is_active(self):
+        return self.end_date is None
+
+    is_active = property(_get_is_active)

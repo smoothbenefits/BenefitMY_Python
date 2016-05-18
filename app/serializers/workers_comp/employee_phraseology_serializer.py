@@ -10,13 +10,10 @@ from phraseology_serializer import PhraseologySerializer
 class EmployeePhraseologySerializer(HashPkSerializerBase):
     phraseology = PhraseologySerializer()
     employee_person = HashField(source="employee_person.id")
-    is_active = serializers.SerializerMethodField('get_is_active')
+    is_active = serializers.Field(source="is_active")
 
     class Meta:
         model = EmployeePhraseology
-
-    def get_is_active(self, model):
-        return model.end_date is None
 
 
 class EmployeePhraseologyPostSerializer(serializers.ModelSerializer):
