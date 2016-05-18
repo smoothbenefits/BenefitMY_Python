@@ -140,11 +140,12 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         width_array = []
         if employee_profile:
             meta_info.append("Type: {}".format(employee_profile.employment_type))
-            width_array.append(0.5)
-
+            width_array.append(0.3)
+            meta_info.append("Status: {}".format(employee_profile.employment_status))
+            width_array.append(0.3)
         if company_group:
             meta_info.append("Group: {}".format(company_group.name))
-            width_array.append(0.5)
+            width_array.append(0.3)
 
         if meta_info:
             self._write_line_uniform_width(meta_info, width_array)
