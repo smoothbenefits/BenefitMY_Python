@@ -122,7 +122,7 @@ class EmployeePhraseologyViewTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['employee_person'], self.normalize_key(3))
         self.assertEqual(result['phraseology']['id'], self.normalize_key(7))
         self.assertEqual(result['start_date'], '2015-11-27')
-        self.assertIsNone(result['end_date'], date.today().isoformat())
+        self.assertEqual(result['end_date'], date.today().isoformat())
 
     def test_put_employee_phraseology(self):
         put_data = {

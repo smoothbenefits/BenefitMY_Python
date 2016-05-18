@@ -19,8 +19,9 @@ class EmployeePhraseologyView(APIView):
             raise Http404
 
     def _get_current_phraseology_by_employee_person(self, person_id):
-        return EmployeePhraseology.objects.filter(
-            employee_person=person_id, end_date__isnull=True)
+        # Wrapping in a list to force evaluation
+        return list(EmployeePhraseology.objects.filter(
+            employee_person=person_id, end_date__isnull=True))
 
     def get(self, request, pk, format=None):
         model = self._get_object(pk)
@@ -44,19 +45,21 @@ class EmployeePhraseologyView(APIView):
     def post(self, request, format=None):
         serializer = EmployeePhraseologyPostSerializer(data=request.DATA)
         if serializer.is_valid():
-            # First update the end_date of current employee phraseology,
-            # if one exists
+            # First find current employee phraseology, if one exists
+            # This needs to be collect before saving the new model
+            # or else the new model will be included in this result set
             current_phraseologys = self._get_current_phraseology_by_employee_person(
                 serializer.object.employee_person.id)
 
+            # Save the new posted data, to create the model
+            serializer.save()
+
+            # Now update existing current entry to mark its end_date
             for entry in current_phraseologys:
                 entry.end_date = serializer.object.start_date
                 entry.save()
 
-            # Now save the new posted data
-            serializer.save()
             response_serializer = EmployeePhraseologySerializer(serializer.object)
-
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
