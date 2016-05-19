@@ -2007,4 +2007,5 @@ IF NOT EXISTS (select 1 from app_phraseology) THEN
 
 END IF;
 
+END
 $$
