@@ -28,6 +28,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Week Start Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'First Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Last Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Employment Status')
         col_num = self._write_field(excelSheet, 0, col_num, 'State')
         col_num = self._write_field(excelSheet, 0, col_num, 'Payroll Frequency')
         col_num = self._write_field(excelSheet, 0, col_num, 'Regular Hours')
@@ -87,6 +88,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, row_num, col_num, company.name)
         col_num = self._write_field(excelSheet, row_num, col_num, week_start_date.strftime('%m/%d/%Y'))
         col_num = self._write_person_name_info(person, excelSheet, row_num, col_num, employee_user_id)
+        col_num = self._write_profile_info(profile, excelSheet, row_num, col_num)
         col_num = self._write_state_info(timecard, excelSheet, row_num, col_num)
         col_num = self._write_field(excelSheet, row_num, col_num, company.pay_period_definition.name if company.pay_period_definition else '')
         col_num = self._write_week_total(timecard, profile, excelSheet, row_num, col_num)
@@ -116,6 +118,13 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
             # Skip the columns
             col_num += 2
 
+        return col_num
+
+    def _write_profile_info(self, profile_model, excelSheet, row_num, col_num):
+        if(profile_model):
+            col_num = self._write_field(excelSheet, row_num, col_num, profile_model.employment_status)
+        else:
+            col_num = self._write_field(excelSheet, row_num, col_num, 'N/A')
         return col_num
 
     def _write_state_info(self, timecard, excelSheet, row_num, col_num):
