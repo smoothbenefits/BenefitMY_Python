@@ -13,7 +13,8 @@ class CompanyUserWorktimeReportTests(TestCase, ViewTestBase, TimeTrackingAppMock
     # your fixture files here
     fixtures = ['24_person', '49_period_definition', '10_company', '23_auth_user',
                 'sys_application_feature', '34_company_user', 'company_features',
-                'employee_profile', '27_compensation_update_reason', '50_employee_compensation']
+                'employee_profile', '27_compensation_update_reason',
+                '50_employee_compensation', '74_phraseology', '76_employee_phraseology']
 
 
     def _setup_mock_url(self, start_week_start_date, end_week_start_date, company_id):

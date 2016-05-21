@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from app.models.person import Person
 from app.models.company import Company
 from app.models.employee_profile import EmployeeProfile, FULL_TIME
+from app.models.workers_comp.employee_phraseology import EmployeePhraseology
 from app.service.compensation_service import CompensationService
 
 from app.views.permission import (
@@ -29,6 +30,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'First Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Last Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Employment Status')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Department')
         col_num = self._write_field(excelSheet, 0, col_num, 'State')
         col_num = self._write_field(excelSheet, 0, col_num, 'Payroll Frequency')
         col_num = self._write_field(excelSheet, 0, col_num, 'Regular Hours')
@@ -64,6 +66,24 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         return person, profile
 
+    def _get_employee_department_code_in_effect(self, employee_person_id, week_start_date):
+        employee_phraseology = EmployeePhraseology.objects.filter(employee_person=employee_person_id)
+
+        if not employee_phraseology or len(employee_phraseology) <= 0:
+            return None
+
+        # Check if employee's department code is in effect
+        for phraseology in employee_phraseology:
+            # if end date not available, put it way into the future
+            if not phraseology.end_date:
+                phraseology.end_date = date(2199, 1, 1)
+
+            if phraseology.start_date <= week_start_date < phraseology.end_date:
+                return phraseology.phraseology.phraseology
+
+        # No department code in effect for the employee in current week
+        return None
+
     def _write_company(self, row_num, company, week_start_date, excelSheet, submitted_sheets):
         users_id = self._get_all_employee_user_ids_for_company(company.id)
 
@@ -89,6 +109,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, row_num, col_num, week_start_date.strftime('%m/%d/%Y'))
         col_num = self._write_person_name_info(person, excelSheet, row_num, col_num, employee_user_id)
         col_num = self._write_profile_info(profile, excelSheet, row_num, col_num)
+        col_num = self._write_person_workers_comp_department(person, excelSheet, week_start_date, row_num, col_num)
         col_num = self._write_state_info(timecard, excelSheet, row_num, col_num)
         col_num = self._write_field(excelSheet, row_num, col_num, company.pay_period_definition.name if company.pay_period_definition else '')
         col_num = self._write_week_total(timecard, profile, excelSheet, row_num, col_num)
@@ -125,6 +146,18 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, row_num, col_num, profile_model.employment_status)
         else:
             col_num = self._write_field(excelSheet, row_num, col_num, 'N/A')
+
+        return col_num
+
+    def _write_person_workers_comp_department(self, person, excelSheet, week_start_date, row_num, col_num):
+        if not person:
+            col_num = self._write_field(excelSheet, row_num, col_num, 'N/A')
+        else:
+            department = self._get_employee_department_code_in_effect(person.id, week_start_date)
+            if department:
+                col_num = self._write_field(excelSheet, row_num, col_num, department)
+            else:
+                col_num = self._write_field(excelSheet, row_num, col_num, 'N/A')
         return col_num
 
     def _write_state_info(self, timecard, excelSheet, row_num, col_num):
@@ -206,8 +239,8 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         row_num = 1
 
-        # Now enumerate every single week within the specified 
-        # time range and delegate to the writing method to 
+        # Now enumerate every single week within the specified
+        # time range and delegate to the writing method to
         # determine what to write out
         # i.e. even if the retrieved submitted time sheets do
         # not contain data for a week, we should still attempt
