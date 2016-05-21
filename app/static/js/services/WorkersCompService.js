@@ -39,6 +39,41 @@ benefitmyService.factory('WorkersCompService',
                 );
         };
 
+        /**
+            This is a utility method to help getting a list of company departments
+            while also ensure that the given phraseology presents in the list. 
+            If the phraseology does not link to any of the existing department 
+            definitions, mock out a department definition on the fly and include it
+            in the resultant list.
+            The main use case for this is to ensure that employees' phraseology 
+            assignment can be cannonically represented in places where a department 
+            definition is assumed.
+        */
+        var GetCompanyDepartmentsIncludePhraseology = function(companyId, phraseologyToEnsure) {
+            if(!phraseologyToEnsure) {
+                return GetCompanyDepartments(companyId);
+            } else {
+                return GetCompanyDepartments(companyId).then(function(departments) {
+                    var found = _.some(departments, function(department) {
+                        return department.phraseology.id == phraseologyToEnsure.id;
+                    });
+
+                    if (!found) {
+                        // Construct a department from the given phraseology and
+                        // insert into the list
+                        var insertDepartment = {
+                            company: companyId,
+                            description: phraseologyToEnsure.phraseology,
+                            phraseology: phraseologyToEnsure
+                        };
+                        departments.push(insertDepartment);
+                    }
+
+                    return departments;
+                })
+            }
+        };
+
         var DeleteCompanyPhraseology = function(companyPhraseology) {
             return PhraseologyRepository.CompanyPhraseologyById.delete({id:companyPhraseology.id})
             .$promise.then(function(response) {
@@ -77,12 +112,74 @@ benefitmyService.factory('WorkersCompService',
             };
         };
 
+        var GetEmployeePhraseologys = function(employeePersonId) {
+            return PhraseologyRepository.EmployeePhraseologysByPerson.query({personId:employeePersonId})
+                .$promise.then(
+                    function(employeePhraseologys) {
+                        return employeePhraseologys;
+                    }
+                );
+        };
+
+        var GetActiveEmployeePhraseology = function(employeePersonId) {
+            return GetEmployeePhraseologys(employeePersonId).then(
+                function(employeePhraseologys) {
+                    return _.find(employeePhraseologys, function(employeePhraseology) {
+                        return employeePhraseology.is_active;
+                    });
+                }
+            );
+        };
+
+        var DeleteEmployeePhraseology = function(employeePhraseology) {
+            return PhraseologyRepository.EmployeePhraseologyById.delete({id:employeePhraseology.id})
+            .$promise.then(function(response) {
+                return response;
+            });
+        };
+
+        var SaveEmployeePhraseology = function(employeePhraseology) {
+            var domainSaveModel = mapEmployeePhraseologyToDomainSaveModel(employeePhraseology);
+            
+            if (domainSaveModel.id) {
+                return PhraseologyRepository.EmployeePhraseologyById.update({id:domainSaveModel.id}, domainSaveModel)
+                .$promise.then(function(resultEmployeePhraseology) {
+                    return resultEmployeePhraseology;
+                });
+            } else {
+                return PhraseologyRepository.EmployeePhraseologyById.save(domainSaveModel)
+                .$promise.then(function(resultEmployeePhraseology) {
+                    return resultEmployeePhraseology;
+                });
+            }
+        };
+
+        var GetBlankEmployeePhraseologyByEmployeePerson = function(personId) {
+            return {
+                employee_person: personId
+            };
+        };
+
+        var mapEmployeePhraseologyToDomainSaveModel = function(viewModel) {
+            return {
+                id: viewModel.id,
+                employee_person: viewModel.employee_person,
+                phraseology: viewModel.phraseology.id
+            };
+        };
+
         return {
             GetAllPhraseologys: GetAllPhraseologys,
             GetCompanyDepartments: GetCompanyDepartments,
+            GetCompanyDepartmentsIncludePhraseology: GetCompanyDepartmentsIncludePhraseology,
             GetBlankCompanyDepartmentByCompany: GetBlankCompanyDepartmentByCompany,
             DeleteCompanyPhraseology: DeleteCompanyPhraseology,
-            SaveCompanyPhraseology: SaveCompanyPhraseology
+            SaveCompanyPhraseology: SaveCompanyPhraseology,
+            GetEmployeePhraseologys: GetEmployeePhraseologys,
+            GetActiveEmployeePhraseology: GetActiveEmployeePhraseology,
+            DeleteEmployeePhraseology: DeleteEmployeePhraseology,
+            SaveEmployeePhraseology: SaveEmployeePhraseology,
+            GetBlankEmployeePhraseologyByEmployeePerson: GetBlankEmployeePhraseologyByEmployeePerson
         };
     }
 ]);
