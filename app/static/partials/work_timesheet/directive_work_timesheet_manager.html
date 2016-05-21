@@ -39,7 +39,7 @@
         Your Work Hour Timesheet for the Week: <b>{{selectedDisplayWeek.weekDisplayText}}</b>
     </div>
     <div class="panel-body">
-      <div class="col-md-10">
+      <div class="col-md-12">
         <bm-work-timesheet-week-manager
           admin-mode="adminMode"
           timesheet="timesheet"
@@ -68,8 +68,8 @@
             <td>
               <span>{{employeeWorkHour.employee.firstName}} {{employeeWorkHour.employee.lastName}}</span>
             </td>
-            <td width="100">{{employeeWorkHour.timecards[0].getTotalBaseHours()}}</td>
-            <td width="100">{{employeeWorkHour.timecards[0].getTotalOvertimeHours()}}</td>
+            <td width="100">{{GetTotalBaseHoursForTimesheet(employeeWorkHour)}}</td>
+            <td width="100">{{GetTotalOvertimeHoursForTimesheet(employeeWorkHour)}}</td>
             <td>{{employeeWorkHour.updatedTimestamp}}</td>
             <td width="100"><span>
                 <a ng-click="viewDetails(employeeWorkHour)">Edit</a>
