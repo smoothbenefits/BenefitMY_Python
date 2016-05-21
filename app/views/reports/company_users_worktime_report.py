@@ -79,7 +79,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
                 phraseology.end_date = date(2199, 1, 1)
 
             if phraseology.start_date <= week_start_date < phraseology.end_date:
-                return phraseology
+                return phraseology.phraseology.phraseology
 
         # No department code in effect for the employee in current week
         return None
@@ -146,6 +146,8 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
             col_num = self._write_field(excelSheet, row_num, col_num, profile_model.employment_status)
         else:
             col_num = self._write_field(excelSheet, row_num, col_num, 'N/A')
+
+        return col_num
 
     def _write_person_workers_comp_department(self, person, excelSheet, week_start_date, row_num, col_num):
         if not person:
