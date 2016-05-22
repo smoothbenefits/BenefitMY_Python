@@ -29,7 +29,7 @@ BenefitMyApp.controller('EmployeeDepartmentModalController', [
         var currentDepartment = _.find($scope.companyDepartments, function(department) {
             return department.phraseology.id == employeePhraseology.phraseology.id;
         });
-        
+
         $scope.contextEmployeePhraseology.phraseology = currentDepartment.phraseology;
     }
 
@@ -84,11 +84,12 @@ BenefitMyApp.controller('EmployeeDepartmentModalController', [
                 var phraseologyToEnsure = $scope.employeePhraseology
                                          ? $scope.employeePhraseology.phraseology
                                          : null;  
-                WorkersCompService.GetCompanyDepartmentsIncludePhraseology(companyId, phraseologyToEnsure).then(function(companyDepartments) {
-                    $scope.companyDepartments = companyDepartments;
-                    
-                    refreshDepartmentInfoForDisplay();
-                });
+                WorkersCompService.GetCompanyDepartmentsIncludePhraseology(companyId, phraseologyToEnsure)
+                    .then(function(companyDepartments) {
+                        $scope.companyDepartments = companyDepartments;
+                        
+                        refreshDepartmentInfoForDisplay();
+                    });
             });
         }
     });
