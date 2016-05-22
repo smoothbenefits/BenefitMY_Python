@@ -13,7 +13,7 @@
                 ng-change = "stateSelected(timecard)"
                 style="-webkit-appearance: menulist-button; max-width:90px;" />
             </div>
-            <div style="vertical-align:middle; padding-left:0px; padding-right:0px;">
+            <div ng-show="allowEdit()" style="vertical-align:middle; padding-left:0px; padding-right:0px;">
               <a class="delete-cross" confirm="{{deleteTimeCardConfirm}}" ng-click="removeCard(timecard)">X</a>
             </div>
           </th>
