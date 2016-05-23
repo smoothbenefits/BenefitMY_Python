@@ -153,6 +153,33 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
                 $scope.reloadTimesheet();
             });
         };
+
+        var convertToFloat = function(numberString){
+            convertedFloat = parseFloat(numberString);
+            if (convertedFloat === NaN){
+                return 0;
+            }
+            else{
+                return convertedFloat;
+            }
+        }
+
+        $scope.GetTotalBaseHoursForTimesheet = function(timesheet){
+            var totalBaseHours = 0;
+            _.each(timesheet.timecards, function(timecard){
+
+                totalBaseHours += convertToFloat(timecard.getTotalBaseHours());
+            });
+            return totalBaseHours.toFixed(1);
+        };
+
+        $scope.GetTotalOvertimeHoursForTimesheet = function(timesheet){
+            var totalOvertimeHours = 0;
+            _.each(timesheet.timecards, function(timecard){
+                totalOvertimeHours += convertToFloat(timecard.getTotalOvertimeHours());
+            });
+            return totalOvertimeHours.toFixed(1);
+        };
     }
   ]
 ).directive('bmWorkTimesheetManager', function() {

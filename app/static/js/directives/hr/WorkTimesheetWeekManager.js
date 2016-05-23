@@ -3,27 +3,65 @@ BenefitMyApp.controller('WorkTimesheetWeekDirectiveController', [
     '$attrs',
     '$controller',
     'WorkTimesheetService',
+    'UsStateService',
     function WorkTimesheetWeekDirectiveController(
       $scope,
       $attrs,
       $controller,
-      WorkTimesheetService) {
+      WorkTimesheetService,
+      UsStateService) {
 
         $scope.allowEdit = function() {
             return $scope.adminMode || 
                 $scope.timesheet && !$scope.timesheet.id;
         };
 
+        $scope.allStates = UsStateService.GetAllStates();
+
+        $scope.getTimeCardState = function(timecard) {
+          var byStateTag = WorkTimesheetService.GetByStateTag(timecard.tags);
+          if (byStateTag) {
+            return byStateTag.tagContent;
+          } else {
+            return null;
+          }
+        };
+        $scope.stateSelected = function(timecard) {
+          if(timecard && timecard.state){
+            var byStateTag = WorkTimesheetService.GetByStateTag(timecard.tags);
+            byStateTag.tagContent = timecard.state;
+          }
+        };
+
         $scope.isTimesheetValidForSave = function() {
             return $scope.timesheet
                 && ($scope.adminMode || !$scope.timesheet.id)
-                && _.isNumber($scope.timesheet.timecards[0].workHours.sunday.hours)
-                && _.isNumber($scope.timesheet.timecards[0].workHours.monday.hours)
-                && _.isNumber($scope.timesheet.timecards[0].workHours.tuesday.hours)
-                && _.isNumber($scope.timesheet.timecards[0].workHours.wednesday.hours)
-                && _.isNumber($scope.timesheet.timecards[0].workHours.thursday.hours)
-                && _.isNumber($scope.timesheet.timecards[0].workHours.friday.hours)
-                && _.isNumber($scope.timesheet.timecards[0].workHours.saturday.hours);
+                && _.every($scope.timesheet.timecards, function(timecard) {
+                    if (!timecard.state) {
+                      return false;
+                    }
+                    else
+                    {
+                        return _.isNumber(timecard.workHours.sunday.hours)
+                            && _.isNumber(timecard.workHours.monday.hours)
+                            && _.isNumber(timecard.workHours.tuesday.hours)
+                            && _.isNumber(timecard.workHours.wednesday.hours)
+                            && _.isNumber(timecard.workHours.thursday.hours)
+                            && _.isNumber(timecard.workHours.friday.hours)
+                            && _.isNumber(timecard.workHours.saturday.hours);
+                    }
+                });
+        };
+
+        $scope.addTimeCard = function(){
+          $scope.timesheet.timecards.push(WorkTimesheetService.GetBlankTimecard());
+        };
+
+        $scope.removeCard = function(timecard){
+            $scope.timesheet.timecards = _.reject($scope.timesheet.timecards,
+              function(candidate){
+                return candidate === timecard;
+            });
         };
 
 
