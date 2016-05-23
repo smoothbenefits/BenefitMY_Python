@@ -27,8 +27,8 @@ BenefitMyApp.controller('WorkTimesheetWeekDirectiveController', [
           }
         };
         $scope.stateSelected = function(timecard) {
-          var byStateTag = WorkTimesheetService.GetByStateTag(timecard.tags);
-          if(!byStateTag.tagContent || byStateTag.tagContent !== timecard.state){
+          if(timecard && timecard.state){
+            var byStateTag = WorkTimesheetService.GetByStateTag(timecard.tags);
             byStateTag.tagContent = timecard.state;
           }
         };
@@ -60,7 +60,7 @@ BenefitMyApp.controller('WorkTimesheetWeekDirectiveController', [
         $scope.removeCard = function(timecard){
             $scope.timesheet.timecards = _.reject($scope.timesheet.timecards,
               function(candidate){
-                return candidate == timecard;
+                return candidate === timecard;
             });
         };
 

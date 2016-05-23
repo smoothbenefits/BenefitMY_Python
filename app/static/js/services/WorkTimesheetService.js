@@ -55,6 +55,7 @@ benefitmyService.factory('WorkTimesheetService',
         var mapDomainModelToViewModel = function(domainModel){
             var viewModel = {
                 id: domainModel._id,
+                _id: domainModel._id,
                 weekStartDate: domainModel.weekStartDate,
                 employee: domainModel.employee,
                 timecards: mapTimecardDomainModelListToViewModelList(domainModel.timecards),
