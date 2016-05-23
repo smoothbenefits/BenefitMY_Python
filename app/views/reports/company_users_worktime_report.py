@@ -1,11 +1,13 @@
 import xlwt
 from datetime import datetime
+from datetime import date
 from rest_framework.response import Response
 from django.http import HttpResponse, Http404
 from django.contrib.auth import get_user_model
 from app.models.person import Person
 from app.models.company import Company
 from app.models.employee_profile import EmployeeProfile, FULL_TIME
+from app.models.workers_comp.employee_phraseology import EmployeePhraseology
 from app.service.compensation_service import CompensationService
 
 from app.views.permission import (
@@ -14,6 +16,7 @@ from app.views.permission import (
     company_employer_or_broker)
 from excel_export_view_base import ExcelExportViewBase
 from app.service.time_tracking_service import TimeTrackingService
+from app.service.date_time_service import DateTimeService
 
 FULL_TIME_DEFAULT_WEEKLY_HOURS = 40
 User = get_user_model()
@@ -26,6 +29,8 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Week Start Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'First Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Last Name')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Employment Status')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Department')
         col_num = self._write_field(excelSheet, 0, col_num, 'State')
         col_num = self._write_field(excelSheet, 0, col_num, 'Payroll Frequency')
         col_num = self._write_field(excelSheet, 0, col_num, 'Regular Hours')
@@ -43,7 +48,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
     def _get_user_timesheet(self, user_id, timesheets):
         try:
-            return next(x for x in timesheets if x['user_id'] == user_id)
+            return next(x for x in timesheets if x['user_id'] == str(user_id))
         except StopIteration:
             return None
 
@@ -60,6 +65,24 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
                 profile = profile[0]
 
         return person, profile
+
+    def _get_employee_department_code_in_effect(self, employee_person_id, week_start_date):
+        employee_phraseology = EmployeePhraseology.objects.filter(employee_person=employee_person_id)
+
+        if not employee_phraseology or len(employee_phraseology) <= 0:
+            return None
+
+        # Check if employee's department code is in effect
+        for phraseology in employee_phraseology:
+            # if end date not available, put it way into the future
+            if not phraseology.end_date:
+                phraseology.end_date = date(2199, 1, 1)
+
+            if phraseology.start_date <= week_start_date < phraseology.end_date:
+                return phraseology.phraseology.phraseology
+
+        # No department code in effect for the employee in current week
+        return None
 
     def _write_company(self, row_num, company, week_start_date, excelSheet, submitted_sheets):
         users_id = self._get_all_employee_user_ids_for_company(company.id)
@@ -85,6 +108,8 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, row_num, col_num, company.name)
         col_num = self._write_field(excelSheet, row_num, col_num, week_start_date.strftime('%m/%d/%Y'))
         col_num = self._write_person_name_info(person, excelSheet, row_num, col_num, employee_user_id)
+        col_num = self._write_profile_info(profile, excelSheet, row_num, col_num)
+        col_num = self._write_person_workers_comp_department(person, excelSheet, week_start_date, row_num, col_num)
         col_num = self._write_state_info(timecard, excelSheet, row_num, col_num)
         col_num = self._write_field(excelSheet, row_num, col_num, company.pay_period_definition.name if company.pay_period_definition else '')
         col_num = self._write_week_total(timecard, profile, excelSheet, row_num, col_num)
@@ -114,6 +139,25 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
             # Skip the columns
             col_num += 2
 
+        return col_num
+
+    def _write_profile_info(self, profile_model, excelSheet, row_num, col_num):
+        if(profile_model):
+            col_num = self._write_field(excelSheet, row_num, col_num, profile_model.employment_status)
+        else:
+            col_num = self._write_field(excelSheet, row_num, col_num, 'N/A')
+
+        return col_num
+
+    def _write_person_workers_comp_department(self, person, excelSheet, week_start_date, row_num, col_num):
+        if not person:
+            col_num = self._write_field(excelSheet, row_num, col_num, 'N/A')
+        else:
+            department = self._get_employee_department_code_in_effect(person.id, week_start_date)
+            if department:
+                col_num = self._write_field(excelSheet, row_num, col_num, department)
+            else:
+                col_num = self._write_field(excelSheet, row_num, col_num, 'N/A')
         return col_num
 
     def _write_state_info(self, timecard, excelSheet, row_num, col_num):
@@ -181,8 +225,8 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
             from_year, from_month, from_day,
             to_year, to_month, to_day, format=None):
         comp = self._get_company_info(pk)
-        week_start_date = datetime(year=int(from_year), month=int(from_month), day=int(from_day))
-        end_week_start_date = datetime(year=int(to_year), month=int(to_month), day=int(to_day))
+        week_start_date = date(year=int(from_year), month=int(from_month), day=int(from_day))
+        end_week_start_date = date(year=int(to_year), month=int(to_month), day=int(to_day))
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet('Timesheet')
         time_tracking_service = TimeTrackingService()
@@ -193,14 +237,21 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         self._write_headers(sheet)
 
-        # A dictionary with work start date as key is returned
-        # when getting timesheets by week range.
-        # Value is an array of user timesheets
         row_num = 1
-        for key in submitted_sheets:
-            # Convert key from string to datetime
-            key_in_date = datetime.strptime(key, '%Y-%m-%dT%H:%M:%S.%fZ')
-            row_num = self._write_company(row_num, comp, key_in_date, sheet, submitted_sheets[key])
+
+        # Now enumerate every single week within the specified
+        # time range and delegate to the writing method to
+        # determine what to write out
+        # i.e. even if the retrieved submitted time sheets do
+        # not contain data for a week, we should still attempt
+        # to run through that week, and let the logic to decide
+        # what to write. e.g. default weekly total for fulltime
+        # employees, and empty for part time workers, etc.
+        date_time_service = DateTimeService()
+        week_start_dates = date_time_service.get_list_of_week_start_dates_in_range(week_start_date, end_week_start_date)
+        for week_start_date in week_start_dates:
+            timesheet = submitted_sheets.get(week_start_date, [])
+            row_num = self._write_company(row_num, comp, week_start_date, sheet, timesheet)
 
         response = HttpResponse(content_type='application/vnd.ms-excel')
 

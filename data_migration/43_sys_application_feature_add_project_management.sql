@@ -6,4 +6,5 @@ IF NOT EXISTS (select 1 from app_sysapplicationfeature where feature = 'ProjectM
     values('ProjectManagement');
 END IF;
 
+END
 $$

@@ -1,0 +1,82 @@
+[
+  {
+    "fields": {
+      "phraseology": "FARM: NURSERY EMP & DRIVERS",
+      "ma_code": "0005"
+    },
+    "model": "app.phraseology",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "phraseology": "LANDSCAPE GARDENING & DRIVERS",
+      "ma_code": "0042"
+    },
+    "model": "app.phraseology",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "phraseology": "BOTTLING-NOT CARBONATED LIQUIDS OR SPIRIT LIQRS & RTE SUP,DR",
+      "ma_code": "2156"
+    },
+    "model": "app.phraseology",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "phraseology": "WEBBING MFG",
+      "ma_code": "2380"
+    },
+    "model": "app.phraseology",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "phraseology": "CULVERT MFG - SHEET METAL",
+      "ma_code": "3076"
+    },
+    "model": "app.phraseology",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "phraseology": "OVEN MFG - METAL INDUSTRIAL DRYING OVENS",
+      "ma_code": "3076"
+    },
+    "model": "app.phraseology",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "phraseology": "ACID MFG-ALL OPERATIONS & DR",
+      "ma_code": "4829"
+    },
+    "model": "app.phraseology",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "phraseology": "SNOW REMOVAL & DR",
+      "ma_code": "9410"
+    },
+    "model": "app.phraseology",
+    "pk": 8
+  },
+  {
+    "fields": {
+      "phraseology": "DREDGING NOC: COV II",
+      "ma_code": "7335"
+    },
+    "model": "app.phraseology",
+    "pk": 9
+  },
+  {
+    "fields": {
+      "phraseology": "OIL OR GAS GEOLOGIST OR SCOUT",
+      "ma_code": "8601"
+    },
+    "model": "app.phraseology",
+    "pk": 10
+  }
+]

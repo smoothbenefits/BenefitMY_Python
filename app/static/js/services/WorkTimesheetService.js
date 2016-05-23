@@ -9,6 +9,8 @@ benefitmyService.factory('WorkTimesheetService',
     utilityService,
     WorkTimesheetRepository){
 
+        var BY_STATE_TIMESHEET_TYPE = 'ByState';
+
         var _calculateTotalHours = function(weekHours){
             var hasAnyValue = false;
 
@@ -44,9 +46,16 @@ benefitmyService.factory('WorkTimesheetService',
             return _calculateTotalHours(this.overtimeHours);
         };
 
+        var GetByStateTag = function(tags) {
+          return _.find(tags, function(tag) {
+            return tag.tagType === BY_STATE_TIMESHEET_TYPE;
+          });
+        };
+
         var mapDomainModelToViewModel = function(domainModel){
             var viewModel = {
                 id: domainModel._id,
+                _id: domainModel._id,
                 weekStartDate: domainModel.weekStartDate,
                 employee: domainModel.employee,
                 timecards: mapTimecardDomainModelListToViewModelList(domainModel.timecards),
@@ -57,16 +66,14 @@ benefitmyService.factory('WorkTimesheetService',
         };
 
         var mapTimecardDomainToViewModel = function(timecardDomainModel) {
-            var viewModel = {
-                id: timecardDomainModel._id,
-                tags: timecardDomainModel.tags,
-                workHours: timecardDomainModel.workHours,
-                overtimeHours: timecardDomainModel.overtimeHours,
-
-                getTotalBaseHours: _calculateTotalBaseHours,
-                getTotalOvertimeHours: _calculateTotalOvertimeHours
-            };
-            return viewModel;
+            viewTimeCard = angular.copy(timecardDomainModel);
+            stateTag = GetByStateTag(timecardDomainModel.tags);
+            if(stateTag){
+              viewTimeCard.state = stateTag.tagContent;
+            }
+            viewTimeCard.getTotalBaseHours = _calculateTotalBaseHours;
+            viewTimeCard.getTotalOvertimeHours = _calculateTotalOvertimeHours;
+            return viewTimeCard;
         };
 
         var mapDomainModelListToViewModelList = function(domainModelList){
@@ -85,9 +92,12 @@ benefitmyService.factory('WorkTimesheetService',
             return viewModelList;
         };
 
-        var getBlankTimecard = function() {
+        var GetBlankTimecard = function() {
             return {
-                tags:[],
+                tags:[{
+                    'tagType': BY_STATE_TIMESHEET_TYPE,
+                    'tagContent': ''
+                }],
                 workHours: getBlankWeekHours(),
                 overtimeHours: getBlankWeekHours(),
 
@@ -135,7 +145,7 @@ benefitmyService.factory('WorkTimesheetService',
                 'weekStartDate': weekStartDateString,
                 'employee': employee,
                 'timecards': [
-                    getBlankTimecard()
+                    GetBlankTimecard()
                 ]
             };
 
@@ -192,6 +202,9 @@ benefitmyService.factory('WorkTimesheetService',
         };
 
         return {
+            BY_STATE_TIMESHEET_TYPE: BY_STATE_TIMESHEET_TYPE,
+            GetBlankTimecard: GetBlankTimecard,
+            GetByStateTag: GetByStateTag,
             GetWorkTimesheetByEmployeeUser: GetWorkTimesheetByEmployeeUser,
             CreateWorkTimesheet: CreateWorkTimesheet,
             UpdateWorkTimesheet: UpdateWorkTimesheet,
