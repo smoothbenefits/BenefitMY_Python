@@ -1,5 +1,5 @@
 import xlwt
-from datetime import datetime
+from datetime import datetime, timedelta
 from datetime import date
 from rest_framework.response import Response
 from django.http import HttpResponse, Http404
@@ -79,7 +79,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
                 phraseology.end_date = date(2199, 1, 1)
 
             # take the value if it is in effective in all days of current week
-            week_end_date = week_end_date + datetime.timedelta(days=7)
+            week_end_date = week_start_date + timedelta(days=7)
             if week_end_date <= phraseology.end_date and week_start_date >= phraseology.start_date:
                 return phraseology.phraseology.phraseology
 
