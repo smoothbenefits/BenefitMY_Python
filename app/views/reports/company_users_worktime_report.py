@@ -78,10 +78,13 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
             if not phraseology.end_date:
                 phraseology.end_date = date(2199, 1, 1)
 
-            if phraseology.start_date <= week_start_date < phraseology.end_date:
+            # take the value if it is in effective in all days of current week
+            week_end_date = week_end_date + datetime.timedelta(days=7)
+            if week_end_date <= phraseology.end_date and week_start_date >= phraseology.start_date:
                 return phraseology.phraseology.phraseology
 
-        # No department code in effect for the employee in current week
+        # No department code or multiple department codes in effect
+        # for the employee in current week
         return None
 
     def _write_company(self, row_num, company, week_start_date, excelSheet, submitted_sheets):
