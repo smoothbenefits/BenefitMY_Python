@@ -54,5 +54,5 @@ class NotificationService(SystemTaskServiceBase):
         self.register_trigger(trig_emp_no_work_time_tracking)
 
         trig_employee_i9_expiration = TriggerEmployeeI9Expiration()
-        trig_employee_i9_expiration.append_action(ActionNotifyCompanyI9Expiration)
+        trig_employee_i9_expiration.append_action(ActionNotifyCompanyI9Expiration())
         self.register_trigger(trig_employee_i9_expiration)

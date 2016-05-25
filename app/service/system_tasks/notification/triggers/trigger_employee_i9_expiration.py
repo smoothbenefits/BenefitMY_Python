@@ -13,8 +13,8 @@ class TriggerEmployeeI9Expiration(TriggerI9ExpirationBase):
         if (not expiration_date):
             return False
 
-        # Document creation should always be earlier than or the same as today
-        date_diff = (date.today() - expiration_date.date()).days
+        # I9 Expiration creation should always be later than or the same as today
+        date_diff = (expiration_date - date.today()).days
 
         # Current schedule settings:
         #  - between 7 days before and 0 days before expiration date, send daily

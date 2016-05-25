@@ -1,6 +1,5 @@
 from app.service.monitoring.logging_service import LoggingService
 
-
 class TriggerBase(object):
     def __init__(self):
         self._actions = []
