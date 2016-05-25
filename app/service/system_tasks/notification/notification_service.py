@@ -8,6 +8,8 @@ from triggers.trigger_company_not_sign_document \
     import TriggerCompanyNotSignDocument
 from triggers.trigger_employee_no_work_time_tracking \
     import TriggerEmployeeNoWorkTimeTracking
+from triggers.trigger_employee_i9_expiration \
+    import TriggerEmployeeI9Expiration
 from actions.action_notify_employee_not_complete_enrollment \
     import ActionNotifyEmployeeNotCompleteEnrollment
 from actions.action_notify_employee_not_sign_document \
@@ -18,6 +20,8 @@ from actions.action_notify_company_not_sign_document \
     import ActionNotifyCompanyNotSignDocument
 from actions.action_notify_employee_no_work_time_tracking \
     import ActionNotifyEmployeeNoWorkTimeTracking
+from actions.action_notify_company_i9_expiration \
+    import ActionNotifyCompanyI9Expiration
 from ..action_print_to_console import ActionPrintToConsole
 from ..system_task_service_base import SystemTaskServiceBase
 
@@ -48,3 +52,7 @@ class NotificationService(SystemTaskServiceBase):
         trig_emp_no_work_time_tracking = TriggerEmployeeNoWorkTimeTracking()
         trig_emp_no_work_time_tracking.append_action(ActionNotifyEmployeeNoWorkTimeTracking())
         self.register_trigger(trig_emp_no_work_time_tracking)
+
+        trig_employee_i9_expiration = TriggerEmployeeI9Expiration()
+        trig_employee_i9_expiration.append_action(ActionNotifyCompanyI9Expiration)
+        self.register_trigger(trig_employee_i9_expiration)

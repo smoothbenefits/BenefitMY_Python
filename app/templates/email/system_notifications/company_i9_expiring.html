@@ -1,0 +1,29 @@
+<html>
+    <head>
+    </head>
+    <body>
+      <h3>Company: {{context_data.company.name}}</h3>
+      <h4>The employee(s) below have their I-9 (Employment Authorization) expiring! Please ask the employee to update their I-9 form with most recent information</h4>
+      <br/>
+      <div>Employee(s) Information</div>
+      <table border="1">
+          <thead>
+            <tr>
+              <th><span>First Name</span></th>
+              <th><span>Last Name</span></th>
+              <th><span>Email</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in context_data.users %}
+            <tr>
+                <td>{{user.first_name}}</td>
+                <td>{{user.last_name}}</td>
+                <td>{{user.email}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      <br/>
+    </body>
+</html>
