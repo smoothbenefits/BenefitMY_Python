@@ -72,19 +72,21 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         if not employee_phraseology or len(employee_phraseology) <= 0:
             return None
 
+        sorted_phraseology = sorted(employee_phraseology, key=lambda x:x.start_date, reverse=True)
         # Check if employee's department code is in effect
         for phraseology in employee_phraseology:
             # if end date not available, put it way into the future
             if not phraseology.end_date:
                 phraseology.end_date = date(2199, 1, 1)
 
-            # take the value if it is in effective in all days of current week
-            week_end_date = week_start_date + timedelta(days=7)
-            if week_end_date <= phraseology.end_date and week_start_date >= phraseology.start_date:
+            if phraseology.start_date <= week_start_date < phraseology.end_date:
                 return phraseology.phraseology.phraseology
 
-        # No department code or multiple department codes in effect
-        # for the employee in current week
+        # return the latest phraseology if phraseology exists but not picked by logic above
+        if len(employee_phraseology) > 0:
+            return employee_phraseology[0]
+
+        # No department code in effect for the employee in current week
         return None
 
     def _write_company(self, row_num, company, week_start_date, excelSheet, submitted_sheets):
