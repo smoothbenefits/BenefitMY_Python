@@ -19,4 +19,4 @@ class ActionNotifyEmployeeNoWorkTimeTracking(ActionNotifyEmployeeBase):
         context_data = { 'company': Company.objects.get(pk=company_id) }
         context_data = {'context_data':context_data, 'site_url':self._get_site_URL(user_id)}
 
-        return EmailData(subject, html_template_path, txt_template_path, context_data)
+        return EmailData(subject, html_template_path, txt_template_path, context_data, False)
