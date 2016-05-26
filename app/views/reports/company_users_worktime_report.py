@@ -67,12 +67,11 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         return person, profile
 
     def _get_employee_department_code_in_effect(self, employee_person_id, week_start_date):
-        employee_phraseology = EmployeePhraseology.objects.filter(employee_person=employee_person_id)
+        employee_phraseology = EmployeePhraseology.objects.filter(employee_person=employee_person_id).order_by('-start_date')
 
         if not employee_phraseology or len(employee_phraseology) <= 0:
             return None
 
-        sorted_phraseology = sorted(employee_phraseology, key=lambda x:x.start_date, reverse=True)
         # Check if employee's department code is in effect
         for phraseology in employee_phraseology:
             # if end date not available, put it way into the future
@@ -84,7 +83,12 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         # return the latest phraseology if phraseology exists but not picked by logic above
         if len(employee_phraseology) > 0:
-            return employee_phraseology[0]
+            latest = employee_phraseology[0]
+            # if latest phraseology has expired, return None
+            if latest.end_date and latest.end_date < week_start_date:
+                return None
+            else:
+                return latest
 
         # No department code in effect for the employee in current week
         return None
