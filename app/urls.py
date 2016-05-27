@@ -245,6 +245,16 @@ from app.views.company_service_provider_view import (
     CompanyServiceProviderByCompanyView
 )
 
+# Workers' Comp
+from app.views.workers_comp.phraseology_view import \
+    AllPhraseologyView
+from app.views.workers_comp.company_phraseology_view import (
+    CompanyPhraseologyView,
+    CompanyPhraseologyByCompanyView)
+from app.views.workers_comp.employee_phraseology_view import (
+    EmployeePhraseologyView,
+    EmployeePhraseologyByEmployeePersonView)
+
 PREFIX = "api/v1"
 
 urlpatterns = patterns('app.views',
@@ -666,6 +676,22 @@ urlpatterns = patterns('app.views',
         CompanyServiceProviderView.as_view(), name='company_service_provider_post_api'),
     url(r'^%s/company/(?P<company_id>\w+)/company_service_providers/?$' % PREFIX,
         CompanyServiceProviderByCompanyView.as_view(), name='company_service_provider_by_company_api'),
+
+    # Workers' Comp
+    url(r'^%s/phraseologys/?$' % PREFIX,
+        AllPhraseologyView.as_view(), name='all_phraseology_api'),
+    url(r'^%s/company_phraseologys/(?P<pk>\w+)/?$' % PREFIX,
+        CompanyPhraseologyView.as_view(), name='company_phraseology_api'),
+    url(r'^%s/company_phraseologys/?$' % PREFIX,
+        CompanyPhraseologyView.as_view(), name='company_phraseology_post_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/phraseologys/?$' % PREFIX,
+        CompanyPhraseologyByCompanyView.as_view(), name='company_phraseology_by_company_api'),
+    url(r'^%s/employee_phraseologys/(?P<pk>\w+)/?$' % PREFIX,
+        EmployeePhraseologyView.as_view(), name='employee_phraseology_api'),
+    url(r'^%s/employee_phraseologys/?$' % PREFIX,
+        EmployeePhraseologyView.as_view(), name='employee_phraseology_post_api'),
+    url(r'^%s/person/(?P<person_id>\w+)/phraseologys/?$' % PREFIX,
+        EmployeePhraseologyByEmployeePersonView.as_view(), name='employee_phraseology_by_person_api'),
 
     # Logging
     url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api")
