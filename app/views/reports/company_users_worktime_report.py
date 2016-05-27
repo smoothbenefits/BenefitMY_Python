@@ -1,5 +1,5 @@
 import xlwt
-from datetime import datetime
+from datetime import datetime, timedelta
 from datetime import date
 from rest_framework.response import Response
 from django.http import HttpResponse, Http404
@@ -67,7 +67,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         return person, profile
 
     def _get_employee_department_code_in_effect(self, employee_person_id, week_start_date):
-        employee_phraseology = EmployeePhraseology.objects.filter(employee_person=employee_person_id)
+        employee_phraseology = EmployeePhraseology.objects.filter(employee_person=employee_person_id).order_by('-start_date')
 
         if not employee_phraseology or len(employee_phraseology) <= 0:
             return None
@@ -80,6 +80,15 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
             if phraseology.start_date <= week_start_date < phraseology.end_date:
                 return phraseology.phraseology.phraseology
+
+        # return the latest phraseology if phraseology exists but not picked by logic above
+        if len(employee_phraseology) > 0:
+            latest = employee_phraseology[0]
+            # if latest phraseology has expired, return None
+            if latest.end_date and latest.end_date < week_start_date:
+                return None
+            else:
+                return latest
 
         # No department code in effect for the employee in current week
         return None
