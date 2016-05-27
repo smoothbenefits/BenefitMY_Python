@@ -162,6 +162,9 @@ th .editable-container{
     word-wrap: break-word;
     white-space: pre;
 }
+.benefit-table .long-cell{
+    width:150px;
+}
 .fix-layout-table{
     table-layout: fixed;
 }

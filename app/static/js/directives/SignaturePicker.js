@@ -153,14 +153,14 @@ BenefitMyApp.directive('bmSignaturePicker', function() {
   return {
     restrict: 'E',
     scope: {
-        onConfirmSign: '&',
-        userId: '=',
-        signatureId: '=',
-        viewMode: '=',
-        panelHeaderText: '=',
-        descriptionText: '=',
-        signButtonText: '=',
-        allowSignPredicate: '&'
+        onConfirmSign: '&?',
+        userId: '=?',
+        signatureId: '=?',
+        viewMode: '=?',
+        panelHeaderText: '=?',
+        descriptionText: '=?',
+        signButtonText: '=?',
+        allowSignPredicate: '&?'
     },
     templateUrl: '/static/partials/employee_profile/directive_signature_picker.html',
     controller: controller

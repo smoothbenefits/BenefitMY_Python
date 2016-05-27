@@ -76,7 +76,8 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Date of Hire')
         col_num = self._write_field(excelSheet, 0, col_num, 'Benefit Start Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Annual Salary')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Employment Type')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Employment Type')        
+        col_num = self._write_field(excelSheet, 0, col_num, 'Employment Status')
         col_num = self._write_field(excelSheet, 0, col_num, 'Member of Group')
         col_num = self._write_field(excelSheet, 0, col_num, 'Email')
         col_num = self._write_field(excelSheet, 0, col_num, 'Work Phone')
@@ -320,6 +321,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
 
                 col_num = self._write_field(excelSheet, row_num, col_num, self._get_employee_current_annual_salary(person_model))
                 col_num = self._write_field(excelSheet, row_num, col_num, employee_profiles[0].employment_type)
+                col_num = self._write_field(excelSheet, row_num, col_num, employee_profiles[0].employment_status)
                 return col_num
 
             return col_num + 3

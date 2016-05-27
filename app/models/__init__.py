@@ -94,6 +94,10 @@ from extra_benefits.company_extra_benefit_plan import CompanyExtraBenefitPlan
 from extra_benefits.person_company_extra_benefit_plan import PersonCompanyExtraBenefitPlan
 from extra_benefits.person_company_extra_benefit_plan_item import PersonCompanyExtraBenefitPlanItem
 
+from workers_comp.phraseology import Phraseology
+from workers_comp.company_phraseology import CompanyPhraseology
+from workers_comp.employee_phraseology import EmployeePhraseology
+
 from onboarding.user_onboarding_step_state import UserOnboardingStepState
 from system.email_block_list import EmailBlockList
 from company_service_provider import CompanyServiceProvider

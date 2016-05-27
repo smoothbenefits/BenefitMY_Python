@@ -93,7 +93,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                             return timeCard.employee.email == employee.user.email
                         });
                         if (!employeeTimeCard){
-                            employeeTimeCard = 
+                            employeeTimeCard =
                                 WorkTimePunchCardService.GetBlankPunchCardForEmployeeUser(
                                     employee.user,
                                     $scope.company,
@@ -153,13 +153,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
           modalInstance.result.then(function(savedPunchCards){
               $scope.reloadTimePunchCard();
           });
-        };
-
-        $scope.downloadWeeklyTimeSheetReport = function(){
-          var link = CompanyEmployeeSummaryService.getWeeklyWorktimeReportUrl(
-                $scope.company.id,
-                $scope.selectedDisplayWeek.weekStartDate);
-          location.href = link;
         };
     }
   ]
