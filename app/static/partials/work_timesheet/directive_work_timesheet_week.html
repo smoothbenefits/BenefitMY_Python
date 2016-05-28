@@ -5,17 +5,18 @@
       <table class="table table-striped benefit-table fix-layout-table">
         <thead>
           <th class="long-cell">
-            <div style="float:left;padding-left:20px; padding-right:5px;">
+            <div ng-show="allowEdit()" style="float:left;padding-left:20px; padding-right:5px;">
               <select
                 ng-options="state for state in allStates track by state"
                 ng-model="timecard.state"
                 ng-required="'true'"
-                ng-change = "stateSelected(timecard)"
+                ng-change="stateSelected(timecard)"
                 style="-webkit-appearance: menulist-button; max-width:90px;" />
             </div>
             <div ng-show="allowEdit()" style="vertical-align:middle; padding-left:0px; padding-right:0px;">
               <a class="delete-cross" confirm="{{deleteTimeCardConfirm}}" ng-click="removeCard(timecard)">X</a>
             </div>
+            <div ng-show="!allowEdit()"><b>{{timecard.state}}</b></div>
           </th>
           <th><div>Sunday</div></th>
           <th><div>Monday</div></th>
