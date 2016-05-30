@@ -9,6 +9,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'isteven-multi-select',
     'blockUI',
     'environment',
+    'fcsa-number',
     'benefitmyDomainModelFactories',
     'benefitmyTimeTrackingModelFactories',
     'benefitmyInsuranceCertificateModelFactories',
