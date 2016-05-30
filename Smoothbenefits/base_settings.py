@@ -270,7 +270,6 @@ PIPELINE_JS = {
             'js/demo-mock.js',
             'js/front_end.js.js',
             'js/flashcanvas.js',
-            'js/fcsaNumber.min.js',
             'js/google_analytics.js.js',
             'js/ie.js',
             'js/jquery-select2.js',
