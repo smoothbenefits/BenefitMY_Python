@@ -1,8 +1,9 @@
 BenefitMyApp.controller('TimePunchCardEditModalController', [
-  '$scope', '$modalInstance', 'user', 'workPunchCard', 'WorkTimesheetService',
-  function($scope, $modalInstance, user, workPunchCard, WorkTimesheetService){
+  '$scope', '$modalInstance', 'user', 'selectedWeek', 'workPunchCard', 'WorkTimesheetService',
+  function($scope, $modalInstance, user, selectedWeek, workPunchCard, WorkTimesheetService){
     $scope.user = user;
     $scope.adminMode = true;
+    $scope.selectedWeek = selectedWeek;
     $scope.workPunchCard = workPunchCard;
     $scope.saveResult = function(savedPunchCards){
         $modalInstance.close(savedPunchCards);
@@ -109,8 +110,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
           return $scope.workPunchCard && $scope.workPunchCard.id;
         };
 
-        $scope.$watch('user', function(theUser) {
-          if(theUser){
+        $scope.$watchGroup(['user', 'company'], function(watchGroup) {
+          if(watchGroup && watchGroup[0] && watchGroup[1]){
             // Populate the weeks for display
             $scope.listOfWeeks = getListOfWeeks();
 
@@ -146,6 +147,9 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
               },
               'workPunchCard': function(){
                 return workPunchCard;
+              },
+              'selectedWeek' : function(){
+                return $scope.selectedDisplayWeek;
               }
             }
           });

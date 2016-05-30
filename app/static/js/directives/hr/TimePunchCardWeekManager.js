@@ -11,7 +11,35 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
       WorkTimePunchCardService,
       UsStateService) {
 
-        $scope.allStates = UsStateService.GetAllStates();
+        $scope.init = function(){
+          //The init function to setup all the initial state:
+          $scope.allStates = UsStateService.GetAllStates();
+          $scope.showSpinner = false;
+
+          // Register the confirm message for saving timecard, so that the
+          // auto confirm directive can use this properly.
+          $scope.saveTimeCardsConfirmText =  'Do you want to proceed with submitting the TimeCard?\n'
+              + 'Please note once submitted, no further changes are allowed on this timesheet.';
+
+          if($scope.adminMode){
+              $scope.saveTimeCardsConfirmText = 'Do you really want to edit the timesheet for this employee?';
+          }
+
+          $scope.deleteTimeCardConfirm = 'Are you sure you want to delete this time sheet? The action cannot be reverted!';
+          $scope.$watch('week', function(weekItem){
+            if(weekItem){
+              var startDate = weekItem.weekStartDate;
+              $scope.datesOfWeek = [];
+              for (var i=0; i<7; i++){
+                var weekDate = moment(startDate).add(i, 'days');
+                $scope.datesOfWeek[weekDate.format('dddd')] = weekDate;
+              }
+            }
+          });
+        };
+
+        $scope.init();
+
 
         var getByStateTag = function(tags) {
           return _.find(tags, function(tag) {
@@ -19,7 +47,15 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
           });
         };
 
-        $scope.showSpinner = false;
+        $scope.displayDateByWeekday = function(weekday){
+          if($scope.datesOfWeek){
+            var weekDate = $scope.datesOfWeek[weekday];
+            if(weekDate){
+              return weekDate.format(SHORT_DATE_FORMAT_STRING);
+            }
+          }
+          return '';
+        }
 
         $scope.getTimeCardState = function(timecard) {
           var byStateTag = getByStateTag(timecard.tags);
@@ -37,16 +73,6 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
           }
         };
 
-        // Register the confirm message for saving timecard, so that the
-        // auto confirm directive can use this properly.
-        $scope.saveTimeCardsConfirmText =  'Do you want to proceed with submitting the TimeCard?\n'
-            + 'Please note once submitted, no further changes are allowed on this timesheet.';
-
-        if($scope.adminMode){
-            $scope.saveTimeCardsConfirmText = 'Do you really want to edit the timesheet for this employee?';
-        }
-
-        $scope.deleteTimeCardConfirm = 'Are you sure you want to delete this time sheet? The action cannot be reverted!';
 
         $scope.isTimeCardValidForSave = function() {
           if (!$scope.workPunchCard) {
@@ -128,6 +154,7 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
     scope: {
         adminMode: '=',
         workPunchCard: '=',
+        week: '=',
         saveResult: '&'
     },
     templateUrl: '/static/partials/time_punch_card/directive_time_punch_card_week.html',
