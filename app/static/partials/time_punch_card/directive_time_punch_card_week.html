@@ -21,7 +21,7 @@
                     </th>
                     <th><div>Start</div></th>
                     <th><div>End</div></th>
-                    <th></th>
+                    <th><div>Card Type</div></th>
                   </thead>
                   <tbody>
                     <tr>
@@ -57,10 +57,11 @@
                         </span>
                       </td>
                       <td>
-                        <input
-                          type="checkbox"
-                          ng-model="timecard.workHours.sunday.notApplicable" /> It's not a workday
-                      </td>
+                        <select
+                          ng-model="timecard.workHours.sunday.recordType",
+                          ng-required="'true'"
+                          ng-options="option for option in cardTypes",
+                          ng-change="cardTypeUpdated(timecard, 'sunday')"/>
                     </tr>
                     <tr>
                       <td>
@@ -95,10 +96,11 @@
                         </span>
                       </td>
                       <td>
-                        <input
-                          type="checkbox"
-                          ng-model="timecard.workHours.monday.notApplicable" />
-                          It's not a workday
+                        <select
+                          ng-model="timecard.workHours.monday.recordType",
+                          ng-required="'true'"
+                          ng-options="option for option in cardTypes",
+                          ng-change="cardTypeUpdated(timecard, 'monday')"/>
                       </td>
                     </tr>
                     <tr>
@@ -134,10 +136,11 @@
                         </span>
                       </td>
                       <td>
-                        <input
-                          type="checkbox"
-                          ng-model="timecard.workHours.tuesday.notApplicable" />
-                          It's not a workday
+                        <select
+                          ng-model="timecard.workHours.tuesday.recordType",
+                          ng-required="'true'"
+                          ng-options="option for option in cardTypes",
+                          ng-change="cardTypeUpdated(timecard, 'tuesday')"/>
                       </td>
                     </tr>
                     <tr>
@@ -173,10 +176,11 @@
                         </span>
                       </td>
                       <td>
-                        <input
-                          type="checkbox"
-                          ng-model="timecard.workHours.wednesday.notApplicable" />
-                          It's not a workday
+                        <select
+                          ng-model="timecard.workHours.wednesday.recordType",
+                          ng-required="'true'"
+                          ng-options="option for option in cardTypes",
+                          ng-change="cardTypeUpdated(timecard, 'wednesday')"/>
                       </td>
                     </tr>
                     <tr>
@@ -212,10 +216,11 @@
                         </span>
                       </td>
                       <td>
-                        <input
-                          type="checkbox"
-                          ng-model="timecard.workHours.thursday.notApplicable" />
-                          It's not a work day
+                        <select
+                          ng-model="timecard.workHours.thursday.recordType",
+                          ng-required="'true'"
+                          ng-options="option for option in cardTypes",
+                          ng-change="cardTypeUpdated(timecard, 'thursday')"/>
                       </td>
                     </tr>
                     <tr>
@@ -251,10 +256,11 @@
                         </span>
                       </td>
                       <td>
-                        <input
-                          type="checkbox"
-                          ng-model="timecard.workHours.friday.notApplicable" />
-                          It's not a workday
+                        <select
+                          ng-model="timecard.workHours.friday.recordType",
+                          ng-required="'true'"
+                          ng-options="option for option in cardTypes",
+                          ng-change="cardTypeUpdated(timecard, 'friday')"/>
                       </td>
                     </tr>
                     <tr>
@@ -290,10 +296,11 @@
                         </span>
                       </td>
                       <td>
-                        <input
-                          type="checkbox"
-                          ng-model="timecard.workHours.saturday.notApplicable" />
-                          It's not a workday
+                        <select
+                          ng-model="timecard.workHours.saturday.recordType",
+                          ng-required="'true'"
+                          ng-options="option for option in cardTypes",
+                          ng-change="cardTypeUpdated(timecard, 'saturday')"/>
                       </td>
                     </tr>
                   </tbody>

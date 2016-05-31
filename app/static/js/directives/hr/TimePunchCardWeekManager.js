@@ -36,6 +36,8 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
               }
             }
           });
+
+          $scope.cardTypes = WorkTimePunchCardService.CARD_TYPES;
         };
 
         $scope.init();
@@ -100,7 +102,8 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
                 return false;
               }
 
-              return pair[1].notApplicable || end.getTime() > start.getTime();
+              return pair[1].recordType !== $scope.cardTypes[0]
+                || end.getTime() > start.getTime();
             });
           });
         };
@@ -145,6 +148,11 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
                     }
                 );
             }
+        };
+
+        $scope.cardTypeUpdated = function(timeCard, day){
+          timeCard.workHours[day].notApplicable = 
+            timeCard.workHours[day].recordType !== $scope.cardTypes[0];
         };
     }
   ]
