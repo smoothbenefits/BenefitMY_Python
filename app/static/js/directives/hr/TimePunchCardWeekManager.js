@@ -150,9 +150,9 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
             }
         };
 
-        $scope.cardTypeUpdated = function(timeCard, day){
-          timeCard.workHours[day].notApplicable = 
-            timeCard.workHours[day].recordType !== $scope.cardTypes[0];
+        $scope.cardTypeUpdated = function(timeCardOfWeekDay){
+          timeCardOfWeekDay.notApplicable = 
+            timeCardOfWeekDay.recordType !== $scope.cardTypes[0];
         };
     }
   ]

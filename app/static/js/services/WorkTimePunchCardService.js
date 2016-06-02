@@ -64,7 +64,9 @@ benefitmyService.factory('WorkTimePunchCardService',
             var workHours = viewTimeCard.workHours;
             var keys = _.keys(workHours);
             _.each(keys, function(key) {
-              if (!(workHours[key].hours && workHours[key].recordType === CARD_TYPES[0])) {
+              if (!(workHours[key].hours && 
+                    (!workHours[key].recordType || 
+                     workHours[key].recordType === CARD_TYPES[0]))) {
                 // If the day does not have reported hours, set hours to 0
                 // and start/end time to the beginning of the epoch
                 workHours[key].notApplicable = true;

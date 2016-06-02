@@ -61,7 +61,7 @@
                           ng-model="timecard.workHours.sunday.recordType",
                           ng-required="'true'"
                           ng-options="option for option in cardTypes",
-                          ng-change="cardTypeUpdated(timecard, 'sunday')"/>
+                          ng-change="cardTypeUpdated(timecard.workHours.sunday)"/>
                     </tr>
                     <tr>
                       <td>
@@ -100,7 +100,7 @@
                           ng-model="timecard.workHours.monday.recordType",
                           ng-required="'true'"
                           ng-options="option for option in cardTypes",
-                          ng-change="cardTypeUpdated(timecard, 'monday')"/>
+                          ng-change="cardTypeUpdated(timecard.workHours.monday)"/>
                       </td>
                     </tr>
                     <tr>
@@ -140,7 +140,7 @@
                           ng-model="timecard.workHours.tuesday.recordType",
                           ng-required="'true'"
                           ng-options="option for option in cardTypes",
-                          ng-change="cardTypeUpdated(timecard, 'tuesday')"/>
+                          ng-change="cardTypeUpdated(timecard.workHours.tuesday)"/>
                       </td>
                     </tr>
                     <tr>
@@ -180,7 +180,7 @@
                           ng-model="timecard.workHours.wednesday.recordType",
                           ng-required="'true'"
                           ng-options="option for option in cardTypes",
-                          ng-change="cardTypeUpdated(timecard, 'wednesday')"/>
+                          ng-change="cardTypeUpdated(timecard.workHours.wednesday)"/>
                       </td>
                     </tr>
                     <tr>
@@ -220,7 +220,7 @@
                           ng-model="timecard.workHours.thursday.recordType",
                           ng-required="'true'"
                           ng-options="option for option in cardTypes",
-                          ng-change="cardTypeUpdated(timecard, 'thursday')"/>
+                          ng-change="cardTypeUpdated(timecard.workHours.thursday)"/>
                       </td>
                     </tr>
                     <tr>
@@ -260,7 +260,7 @@
                           ng-model="timecard.workHours.friday.recordType",
                           ng-required="'true'"
                           ng-options="option for option in cardTypes",
-                          ng-change="cardTypeUpdated(timecard, 'friday')"/>
+                          ng-change="cardTypeUpdated(timecard.workHours.friday)"/>
                       </td>
                     </tr>
                     <tr>
@@ -300,7 +300,7 @@
                           ng-model="timecard.workHours.saturday.recordType",
                           ng-required="'true'"
                           ng-options="option for option in cardTypes",
-                          ng-change="cardTypeUpdated(timecard, 'saturday')"/>
+                          ng-change="cardTypeUpdated(timecard.workHours.saturday)"/>
                       </td>
                     </tr>
                   </tbody>
