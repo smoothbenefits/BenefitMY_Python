@@ -88,7 +88,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
             if latest.end_date and latest.end_date < week_start_date:
                 return None
             else:
-                return latest
+                return latest.phraseology.phraseology
 
         # No department code in effect for the employee in current week
         return None

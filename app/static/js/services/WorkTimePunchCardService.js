@@ -10,6 +10,14 @@ benefitmyService.factory('WorkTimePunchCardService',
     WorkTimesheetRepository){
 
         var BY_STATE_PUNCHCARD_TYPE = 'ByState';
+        var CARD_TYPES = [
+            'Work Day',
+            'Not a Work Day',
+            'Company Holiday',
+            'Paid Time Off',
+            'Sick Time',
+            'Personal Leave'
+        ];
 
         var _calculateTotalHours = function(timecards){
           var hasAnyValue = false;
@@ -56,7 +64,9 @@ benefitmyService.factory('WorkTimePunchCardService',
             var workHours = viewTimeCard.workHours;
             var keys = _.keys(workHours);
             _.each(keys, function(key) {
-              if (!workHours[key].hours) {
+              if (!(workHours[key].hours && 
+                    (!workHours[key].recordType || 
+                     workHours[key].recordType === CARD_TYPES[0]))) {
                 // If the day does not have reported hours, set hours to 0
                 // and start/end time to the beginning of the epoch
                 workHours[key].notApplicable = true;
@@ -167,42 +177,48 @@ benefitmyService.factory('WorkTimePunchCardService',
                   'timeRange': {
                     'start': defaultStartTime,
                     'end': defaultEndTime
-                  }
+                  },
+                  'recordType': CARD_TYPES[1]
                 },
                 'monday': {
                   'hours': null,
                   'timeRange': {
                     'start': defaultStartTime,
                     'end': defaultEndTime
-                  }
+                  },
+                  'recordType': CARD_TYPES[0]
                 },
                 'tuesday': {
                   'hours': null,
                   'timeRange': {
                     'start': defaultStartTime,
                     'end': defaultEndTime
-                  }
+                  },
+                  'recordType': CARD_TYPES[0]
                 },
                 'wednesday': {
                   'hours': null,
                   'timeRange': {
                     'start': defaultStartTime,
                     'end': defaultEndTime
-                  }
+                  },
+                  'recordType': CARD_TYPES[0]
                 },
                 'thursday': {
                   'hours': null,
                   'timeRange': {
                     'start': defaultStartTime,
                     'end': defaultEndTime
-                  }
+                  },
+                  'recordType': CARD_TYPES[0]
                 },
                 'friday': {
                   'hours': null,
                   'timeRange': {
                     'start': defaultStartTime,
                     'end': defaultEndTime
-                  }
+                  },
+                  'recordType': CARD_TYPES[0]
                 },
                 'saturday': {
                   'notApplicable': true,
@@ -210,7 +226,8 @@ benefitmyService.factory('WorkTimePunchCardService',
                   'timeRange': {
                     'start': defaultStartTime,
                     'end': defaultEndTime
-                  }
+                  },
+                  'recordType': CARD_TYPES[1]
                 }
               },
               'tags': [{
@@ -294,8 +311,10 @@ benefitmyService.factory('WorkTimePunchCardService',
                 });
         };
 
+
         return {
           BY_STATE_PUNCHCARD_TYPE: BY_STATE_PUNCHCARD_TYPE,
+          CARD_TYPES: CARD_TYPES,
           GetWorkHoursByState: GetWorkHoursByState,
           GetWorkPunchCardByEmployeeUser: GetWorkPunchCardByEmployeeUser,
           CreateWorkPunchCard: CreateWorkPunchCard,

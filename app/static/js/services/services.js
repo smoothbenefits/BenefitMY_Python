@@ -45,6 +45,12 @@ var utilityService = benefitmyService.factory('utilityService',
             return env + '_' + id;
       };
 
+      var retrieveIdFromEnvAwareId = function(envAwareId){
+        var breakIndex = envAwareId.indexOf('_');
+        var id = envAwareId.substring(breakIndex + 1);
+        return id;
+      };
+
       var normalizeLink = function(originalLink){
             if (!originalLink || !originalLink.trim()) {
                 return originalLink;
@@ -61,6 +67,7 @@ var utilityService = benefitmyService.factory('utilityService',
       return {
         mapObjectToKeyPairArray: mapObjectToKeyPairArray,
         getEnvAwareId: getEnvAwareId,
+        retrieveIdFromEnvAwareId: retrieveIdFromEnvAwareId,
         normalizeLink: normalizeLink
       };
     }

@@ -4,16 +4,15 @@ from action_notify_company_base import ActionNotifyCompanyBase
 from app.dtos.notification.email_data import EmailData
 
 
-class ActionNotifyCompanyNotSignDocument(ActionNotifyCompanyBase):
-
+class ActionNotifyCompanyI9Expiration(ActionNotifyCompanyBase):
+    
     def __init__(self):
-        super(ActionNotifyCompanyNotSignDocument, self).__init__()
+        super(ActionNotifyCompanyI9Expiration, self).__init__()
 
     def _get_email_data(self, company_id, user_id_list):
-
-        subject = '[Action Required] Employee Document not Signed'
-        html_template_path = 'email/system_notifications/company_not_sign_document.html'
-        txt_template_path = 'email/system_notifications/company_not_sign_document.txt'
+        subject = '[Action Required] Employee I9 (Employment Authorization) is expiring!'
+        html_template_path = 'email/system_notifications/company_i9_expiring.html'
+        txt_template_path = 'email/system_notifications/company_i9_expiring.txt'
 
         context_data = {
             'company': Company.objects.get(pk=company_id),

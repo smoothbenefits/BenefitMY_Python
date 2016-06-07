@@ -2,15 +2,15 @@ from datetime import date
 
 from app.models.company_user import (CompanyUser, USER_TYPE_EMPLOYEE)
 from app.models.document import Document
-from ...trigger_base import TriggerBase
+from trigger_company_user_base import TriggerCompanyUserBase
 
 
-class TriggerNotSignDocumentBase(TriggerBase):
+class TriggerNotSignDocumentBase(TriggerCompanyUserBase):
     def __init__(self):
         super(TriggerNotSignDocumentBase, self).__init__()
 
     def _examine_condition(self):
-        self._refresh_cached_data()
+        super(TriggerNotSignDocumentBase, self)._examine_condition()
 
         company_users = CompanyUser.objects.filter(company_user_type=USER_TYPE_EMPLOYEE)
 
@@ -29,22 +29,6 @@ class TriggerNotSignDocumentBase(TriggerBase):
                     self._cache_company_user(company.id, user.id)
 
         return (not self._is_cached_data_empty())
-
-    def _refresh_cached_data(self):
-        self._cached_company_user_list = dict()
-
-    def _cache_company_user(self, company_id, user_id):
-        if (company_id not in self._cached_company_user_list):
-            self._cached_company_user_list[company_id] = []
-        self._cached_company_user_list[company_id].append(user_id)
-
-    def _is_cached_data_empty(self):
-        return len(self._cached_company_user_list) <= 0
-
-    def _get_action_data(self):
-        return {
-            'company_user_id_list': self._cached_company_user_list
-        }
 
     def _check_schedule(self, created_date):
         raise NotImplementedError()
