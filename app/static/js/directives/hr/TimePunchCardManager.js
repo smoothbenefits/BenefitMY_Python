@@ -20,6 +20,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     'WorkTimePunchCardService',
     'CompanyPersonnelsService',
     'CompanyEmployeeSummaryService',
+    'utilityService',
     function TimePunchCardDirectiveController(
       $scope,
       $modal,
@@ -27,7 +28,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       $controller,
       WorkTimePunchCardService,
       CompanyPersonnelsService,
-      CompanyEmployeeSummaryService) {
+      CompanyEmployeeSummaryService,
+      utilityService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -136,27 +138,17 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         };
 
         $scope.viewDetails = function(workPunchCard){
-          var modalInstance = $modal.open({
-            templateUrl: '/static/partials/time_punch_card/modal_edit_time_punch_card.html',
-            controller: 'TimePunchCardEditModalController',
-            size: 'lg',
-            backdrop: 'static',
-            resolve: {
-              'user': function() {
-                return $scope.user;
-              },
-              'workPunchCard': function(){
-                return workPunchCard;
-              },
-              'selectedWeek' : function(){
-                return $scope.selectedDisplayWeek;
+          if($scope.viewEmployeeDetails){
+            
+            $scope.viewEmployeeDetails(
+              {
+                userId: utilityService.retrieveIdFromEnvAwareId(
+                          workPunchCard.employee.personDescriptor
+                        ),
+                week: $scope.selectedDisplayWeek
               }
-            }
-          });
-
-          modalInstance.result.then(function(savedPunchCards){
-              $scope.reloadTimePunchCard();
-          });
+            );
+          }
         };
     }
   ]
@@ -166,7 +158,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     scope: {
         user: '=',
         adminMode: '=',
-        company: '='
+        company: '=',
+        viewEmployeeDetails: '&'
     },
     templateUrl: '/static/partials/time_punch_card/directive_time_punch_card_manager.html',
     controller: 'TimePunchCardDirectiveController'

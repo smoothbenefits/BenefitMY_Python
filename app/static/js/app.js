@@ -421,6 +421,12 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
                 controller: 'employerViewTimePunchCards'
             }).
+            state('admin_employee_timepunchcards', {
+                url: '/admin/hr/time_punch_cards/employee/:employee_id',
+                templateUrl: '/static/partials/time_punch_card/time_punch_card_admin_base.html',
+                controller: 'employerEditEmployeeTimePunchCards',
+                params: {startDate: null}
+            }).
             state('admin_departments', {
               url: '/admin/hr/departments',
               templateUrl: '/static/partials/workers_comp/departments_base.html',
