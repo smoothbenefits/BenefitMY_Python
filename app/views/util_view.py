@@ -21,7 +21,7 @@ We, WorkBenefitsMe, are partnering with your employer, %s, to welcome you.  Your
      * Collect the personal info in order to setup your health benefit.
      * Help you to enroll benefit plans for you and your family.
 
-Here is your unique link to setup your account: %s.
+Here is your unique link to setup your account: %s
 
 If you have any questions, feel free to drop us an email.
 
