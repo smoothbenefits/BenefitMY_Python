@@ -42,10 +42,11 @@ BenefitMyApp.controller('TimePunchCardByDateDirectiveController', [
               else{
                 setDateOfWeek(moment());
               }
-              $scope.$watch('selectedDate', function(){
-                setDateOfWeek($scope.selectedDate);
-              });
             }
+          });
+
+          $scope.$watch('selectedDate', function(){
+            setDateOfWeek($scope.selectedDate);
           });
         };
 
