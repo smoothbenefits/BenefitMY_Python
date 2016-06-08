@@ -1,0 +1,9 @@
+Company: {{context_data.company.name}}
+
+[The employee(s) below have their I-9 (Employment Authorization) expiring! Please ask the employee to update their I-9 form with most recent information]
+
+Employee(s) Information
+
+{% for user in context_data.users %}
+{{user.first_name}} {{user.last_name}} ({{user.email}})
+{% endfor %}

@@ -31,7 +31,8 @@ benefitmyTimeTrackingModelFactories.factory('WorkTimesheetRepository', [
             ById: $resource(_hostName + 'api/v1/work_timesheets/:id', {id:'@id'}, {
               update: { method: 'PUT' }
             }),
-            ByCompany: $resource(_hostName + 'api/v1/company/:companyId/work_timesheets', {companyId: '@companyId'})
+            ByCompany: $resource(_hostName + 'api/v1/company/:companyId/work_timesheets', {companyId: '@companyId'}),
+            RecordTypes: $resource(_hostName + 'api/v1/work_timesheets/record_types')
         };
   }
 ]);

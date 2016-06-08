@@ -27,6 +27,7 @@
   <script type="text/javascript" src='{% static 'spin.js/spin.js' %}'></script>
   <script type="text/javascript" src='{% static 'angular-spinner/angular-spinner.js' %}'></script>
   <script type="text/javascript" src='{% static 'angular-environment/dist/angular-environment.min.js' %}'></script>
+  <script type="text/javascript" src='{% static 'angular-fcsa-number/src/fcsaNumber.min.js' %}'></script>
   <link rel="stylesheet" href='{% static 'angular-block-ui/dist/angular-block-ui.min.css' %}'/>
   <script type="text/javascript" src='{% static 'angular-block-ui/dist/angular-block-ui.min.js' %}'></script>
   <link rel="stylesheet" href='{% static 'isteven-angular-multiselect/isteven-multi-select.css' %}'>
@@ -81,7 +82,7 @@
           <a ng-click="viewEmployeeTimeOffInfo()" ng-hide="disabledFeatures.Timeoff">View Time Off Quotas</a>
           <a ng-click="viewDepartmentInfo()">Department Management</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/add/')">Add Employee</a>
-          <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_add/')">Batch Add Employee</a>
+          <!-- <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_add/')">Batch Add Employee</a> -->
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/batch_organization_import/')">Import Employee Organization</a>
           <a ng-click="goToFunctionalViewByCompanyId('/admin/employee/')">View Employees</a>
           <a ng-click="addOfferTemplate()">Add Templates</a>
@@ -195,7 +196,7 @@
 
     <div id="side-footer">
       <div class="footer-nav">
-        <a href="http://www.benefitmy.com">Home</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="http://www.benefitmy.com/our-crew/">About Us</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="http://www.benefitmy.com/contact-us/">Contact Us</a>
+        <a href="http://www.workbenefits.me">Home</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="http://www.workbenefits.me/teams">About Us</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="http://www.workbenefits.me/contact">Contact Us</a>
       </div>
       <div class="copyright">&copy; 2015 BenefitMy</div>
     </div>

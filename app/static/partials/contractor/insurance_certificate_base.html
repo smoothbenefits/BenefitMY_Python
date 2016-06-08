@@ -41,7 +41,7 @@
                 &nbsp;<a ng-click="openCreateOrEditModal(insurance)">{{insurance.type}}</a>
             </td>
             <td>{{insurance.policy.endDateDisplay}}</td>
-            <td>${{insurance.policy.coveredAmount}}</td>
+            <td>${{insurance.policy.coveredAmount | number:2}}</td>
             <td>
               <bmuploadmanager
                upload-mode="button"
