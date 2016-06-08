@@ -9,15 +9,15 @@ from app.service.user_enrollment_summary_service import(
     UserEnrollmentSummaryService,
     COMPLETED,
     NO_BENEFITS)
-from ...trigger_base import TriggerBase
+from trigger_company_user_base import TriggerCompanyUserBase
 
 
-class TriggerNotCompleteEnrollmentBase(TriggerBase):
+class TriggerNotCompleteEnrollmentBase(TriggerCompanyUserBase):
     def __init__(self):
         super(TriggerNotCompleteEnrollmentBase, self).__init__()
 
     def _examine_condition(self):
-        self._refresh_cached_data()
+        super(TriggerNotCompleteEnrollmentBase, self)._examine_condition()
 
         company_users = CompanyUser.objects.filter(company_user_type=USER_TYPE_EMPLOYEE)
 
@@ -55,22 +55,6 @@ class TriggerNotCompleteEnrollmentBase(TriggerBase):
                 self._cache_company_user(company.id, user.id)
 
         return (not self._is_cached_data_empty())
-
-    def _refresh_cached_data(self):
-        self._cached_company_user_list = dict()
-
-    def _cache_company_user(self, company_id, user_id):
-        if (company_id not in self._cached_company_user_list):
-            self._cached_company_user_list[company_id] = []
-        self._cached_company_user_list[company_id].append(user_id)
-
-    def _is_cached_data_empty(self):
-        return len(self._cached_company_user_list) <= 0
-
-    def _get_action_data(self):
-        return {
-            'company_user_id_list': self._cached_company_user_list
-        }
 
     def _check_schedule(self, start_date):
         raise NotImplementedError

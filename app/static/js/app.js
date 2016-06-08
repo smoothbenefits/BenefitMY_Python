@@ -9,6 +9,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'isteven-multi-select',
     'blockUI',
     'environment',
+    'fcsa-number',
     'benefitmyDomainModelFactories',
     'benefitmyTimeTrackingModelFactories',
     'benefitmyInsuranceCertificateModelFactories',
@@ -419,6 +420,12 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/admin/hr/time_punch_cards',
                 templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
                 controller: 'employerViewTimePunchCards'
+            }).
+            state('admin_employee_timepunchcards', {
+                url: '/admin/hr/time_punch_cards/employee/:employee_id',
+                templateUrl: '/static/partials/time_punch_card/time_punch_card_admin_base.html',
+                controller: 'employerEditEmployeeTimePunchCards',
+                params: {startDate: null}
             }).
             state('admin_departments', {
               url: '/admin/hr/departments',
