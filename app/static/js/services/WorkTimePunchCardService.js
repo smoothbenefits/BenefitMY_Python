@@ -50,7 +50,12 @@ benefitmyService.factory('WorkTimePunchCardService',
         };
 
         var _calculateTotalBaseHours = function() {
-            return _calculateTotalHours(this.timecards);
+          return _calculateTotalHours(this.timecards);
+        };
+
+        var IsHolidayRecordType = function(recordType){
+          return recordType === CARD_TYPES[1]
+            || recordType === CARD_TYPES[2];
         };
 
         var mapDomainTimeCardsToViewTimeCards = function(domainTimeCards){
@@ -64,9 +69,8 @@ benefitmyService.factory('WorkTimePunchCardService',
             var workHours = viewTimeCard.workHours;
             var keys = _.keys(workHours);
             _.each(keys, function(key) {
-              if (!(workHours[key].hours && 
-                    (!workHours[key].recordType || 
-                     workHours[key].recordType === CARD_TYPES[0]))) {
+              if (!workHours[key].hours || 
+                    IsHolidayRecordType(workHours[key].recordType)) {
                 // If the day does not have reported hours, set hours to 0
                 // and start/end time to the beginning of the epoch
                 workHours[key].notApplicable = true;
@@ -321,7 +325,8 @@ benefitmyService.factory('WorkTimePunchCardService',
           UpdateWorkPunchCard: UpdateWorkPunchCard,
           GetWorkPunchCardsByCompany: GetWorkPunchCardsByCompany,
           GetBlankPunchCard: GetBlankPunchCard,
-          GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser
+          GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser,
+          IsHolidayRecordType: IsHolidayRecordType
         };
     }
 ]);

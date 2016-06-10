@@ -51,15 +51,17 @@ BenefitMyApp.controller('TimePunchCardByDateDirectiveController', [
         };
 
         $scope.reloadTimePunchCard = function() {
-          WorkTimePunchCardService.GetWorkPunchCardByEmployeeUser(
-              $scope.user,
-              $scope.company,
-              $scope.selectedWeek.weekStartDate)
-          .then(function(punchcard) {
-            $scope.workPunchCard = punchcard;
-            $scope.workHoursByStateList =
-              WorkTimePunchCardService.GetWorkHoursByState($scope.workPunchCard);
-          });
+          if($scope.user && $scope.company){
+            WorkTimePunchCardService.GetWorkPunchCardByEmployeeUser(
+                $scope.user,
+                $scope.company,
+                $scope.selectedWeek.weekStartDate)
+            .then(function(punchcard) {
+              $scope.workPunchCard = punchcard;
+              $scope.workHoursByStateList =
+                WorkTimePunchCardService.GetWorkHoursByState($scope.workPunchCard);
+            });
+          }
         };
 
         $scope.saveResult = function(savedPunchCards){
