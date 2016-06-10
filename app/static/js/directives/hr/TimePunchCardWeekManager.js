@@ -151,8 +151,8 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
         };
 
         $scope.cardTypeUpdated = function(timeCardOfWeekDay){
-          timeCardOfWeekDay.notApplicable = 
-            timeCardOfWeekDay.recordType !== $scope.cardTypes[0];
+          timeCardOfWeekDay.notApplicable =
+            WorkTimePunchCardService.IsHolidayRecordType(timeCardOfWeekDay.recordType);
         };
     }
   ]
