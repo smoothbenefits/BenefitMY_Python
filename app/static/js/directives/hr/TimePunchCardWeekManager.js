@@ -26,14 +26,20 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
           }
 
           $scope.deleteTimeCardConfirm = 'Are you sure you want to delete this time sheet? The action cannot be reverted!';
-          $scope.$watch('week', function(weekItem){
-            if(weekItem){
+          $scope.$watchGroup(['week', 'workPunchCard'], function(watchItems){
+            if(watchItems[0]){
+              var weekItem = watchItems[0];
               var startDate = weekItem.weekStartDate;
               $scope.datesOfWeek = [];
               for (var i=0; i<7; i++){
                 var weekDate = moment(startDate).add(i, 'days');
                 $scope.datesOfWeek[weekDate.format('dddd')] = weekDate;
               }
+            }
+            if(watchItems[1]){
+              $scope.editMode = _.isUndefined($scope.workPunchCard.id);
+              $scope.workHoursByStateList =
+                WorkTimePunchCardService.GetWorkHoursByState($scope.workPunchCard);
             }
           });
 
@@ -140,6 +146,7 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
                         if($scope.saveResult){
                             $scope.saveResult({savedPunchCards: resultPunchCards});
                         }
+                        $scope.editMode = false;
                     },
                     function(errors) {
                         if($scope.saveResult){
@@ -153,6 +160,14 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
         $scope.cardTypeUpdated = function(timeCardOfWeekDay){
           timeCardOfWeekDay.notApplicable =
             WorkTimePunchCardService.IsHolidayRecordType(timeCardOfWeekDay.recordType);
+        };
+
+        $scope.showEdit = function(){
+          $scope.editMode = true;
+        };
+
+        $scope.viewMode = function(){
+          $scope.editMode = false;
         };
     }
   ]

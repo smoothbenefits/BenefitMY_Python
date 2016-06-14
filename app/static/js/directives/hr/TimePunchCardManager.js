@@ -108,10 +108,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             });
         };
 
-        $scope.hasFiledPunchCardForCurrentWeek = function() {
-          return $scope.workPunchCard && $scope.workPunchCard.id;
-        };
-
         $scope.$watchGroup(['user', 'company'], function(watchGroup) {
           if(watchGroup && watchGroup[0] && watchGroup[1]){
             // Populate the weeks for display
