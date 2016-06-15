@@ -1,13 +1,15 @@
-BenefitMyApp.controller('TimePunchCardByDateDirectiveController', [
+BenefitMyApp.controller('AdminTimePunchCardDirectiveController', [
     '$scope',
     '$modal',
     '$controller',
     'WorkTimePunchCardService',
-    function TimePunchCardByDateDirectiveController(
+    'EmployeeProfileService',
+    function AdminTimePunchCardDirectiveController(
       $scope,
       $modal,
       $controller,
-      WorkTimePunchCardService) {
+      WorkTimePunchCardService,
+      EmployeeProfileService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -32,7 +34,24 @@ BenefitMyApp.controller('TimePunchCardByDateDirectiveController', [
           $scope.reloadTimePunchCard();
         };
 
-        $scope.init = function(){
+        var validateEmployee = function(employee){
+          if(employee.id){
+            $scope.userUpdated(
+              {
+                selectedUser: employee.person.user,
+                weekDate: $scope.selectedWeek.weekStartDate
+              }
+            );
+            $scope.employeeIsInvalid = false;
+          }
+          else{
+            $scope.user = null;
+            $scope.workPunchCard = null;
+            $scope.employeeIsInvalid = true;
+          }
+        };
+
+        $scope.init = function(){          
           $scope.$watchGroup(['user', 'company'], function(watchGroup) {
             if(watchGroup && watchGroup[0] && watchGroup[1]){
               // Populate the weeks for display
@@ -42,11 +61,22 @@ BenefitMyApp.controller('TimePunchCardByDateDirectiveController', [
               else{
                 setDateOfWeek(moment());
               }
+              $scope.selectedEmployee = $scope.user;
+              EmployeeProfileService.initializeCompanyEmployees($scope.company.id);
             }
           });
 
           $scope.$watch('selectedDate', function(){
             setDateOfWeek($scope.selectedDate);
+          });
+
+          $scope.$watch('selectedEmployee', function(employee){
+            if(employee &&
+               employee.person &&
+               employee.person.user !== $scope.user.id){
+
+              validateEmployee(employee);
+            }
           });
         };
 
@@ -76,18 +106,33 @@ BenefitMyApp.controller('TimePunchCardByDateDirectiveController', [
           }
         };
 
+        $scope.matchAndSelect = function(){
+          if(_.isString($scope.selectedEmployee)){
+            var resultEmployees = EmployeeProfileService.searchEmployees($scope.selectedEmployee);
+            if(resultEmployees && resultEmployees.length === 1){
+              $scope.selectedEmployee = resultEmployees[0];
+            }
+            else{
+              $scope.employeeIsInvalid = true;
+            }
+          }
+        };
+
+        $scope.getEmployees = EmployeeProfileService.searchEmployees;
+
         $scope.init();
     }
   ]
-).directive('bmTimePunchCardByDateManager', function() {
+).directive('bmAdminTimePunchCard', function() {
   return {
     restrict: 'E',
     scope: {
         user: '=',
         company: '=',
-        startDate: '='
+        startDate: '=',
+        userUpdated: '&'
     },
-    templateUrl: '/static/partials/time_punch_card/directive_time_punch_card_by_date.html',
-    controller: 'TimePunchCardByDateDirectiveController'
+    templateUrl: '/static/partials/time_punch_card/directive_admin_time_punch_card.html',
+    controller: 'AdminTimePunchCardDirectiveController'
   };
 });

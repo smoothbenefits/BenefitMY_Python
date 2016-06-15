@@ -310,7 +310,7 @@ PIPELINE_JS = {
             'js/directives/hr/WorkTimesheetWeekManager.js',
             'js/directives/hr/TimePunchCardManager.js',
             'js/directives/hr/TimePunchCardWeekManager.js',
-            'js/directives/hr/TimePunchCardByDateManager.js',
+            'js/directives/hr/AdminTimePunchCard.js',
             'js/directives/hr/DepartmentManager.js',
             'js/directives/hr/EmployeeDepartmentManager.js',
             'js/directives/BenefitSelectionViewer.js',
