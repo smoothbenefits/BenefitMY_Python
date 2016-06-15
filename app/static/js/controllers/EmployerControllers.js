@@ -1715,6 +1715,14 @@ var employerEditEmployeeTimePunchCards = employersController.controller('employe
       $scope.backToDashboard = function(){
         $state.go('admin_timepunchcards');
       };
+
+      $scope.updateUser = function(selectedUser, weekDate){
+        $state.go('admin_employee_timepunchcards',
+          {
+            employee_id: selectedUser,
+            startDate: weekDate
+          });
+      };
     }
 ]);
 
