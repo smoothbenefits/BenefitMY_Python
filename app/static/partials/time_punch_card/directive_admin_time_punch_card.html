@@ -31,6 +31,7 @@
             ng-required="false"
             autocomplete="off"
             ng-blur = "matchAndSelect()"
+            ng-focus = "prepareEmployeeSearch()"
             class="form-control" />
             <div class="alert alert-danger" ng-show="employeeIsInvalid">
               <span>The employee you selected is invalid!</span>

@@ -45,7 +45,6 @@ BenefitMyApp.controller('AdminTimePunchCardDirectiveController', [
             $scope.employeeIsInvalid = false;
           }
           else{
-            $scope.user = null;
             $scope.workPunchCard = null;
             $scope.employeeIsInvalid = true;
           }
@@ -108,14 +107,24 @@ BenefitMyApp.controller('AdminTimePunchCardDirectiveController', [
 
         $scope.matchAndSelect = function(){
           if(_.isString($scope.selectedEmployee)){
-            var resultEmployees = EmployeeProfileService.searchEmployees($scope.selectedEmployee);
-            if(resultEmployees && resultEmployees.length === 1){
-              $scope.selectedEmployee = resultEmployees[0];
+            $scope.employeeIsInvalid = false;
+            if($scope.selectedEmployee === ''){
+              $scope.selectedEmployee = $scope.user;
             }
             else{
-              $scope.employeeIsInvalid = true;
+              var resultEmployees = EmployeeProfileService.searchEmployees($scope.selectedEmployee);
+              if(resultEmployees && resultEmployees.length === 1){
+                $scope.selectedEmployee = resultEmployees[0];
+              }
+              else{
+                $scope.employeeIsInvalid = true;
+              }
             }
           }
+        };
+
+        $scope.prepareEmployeeSearch = function(){
+          $scope.selectedEmployee = '';
         };
 
         $scope.getEmployees = EmployeeProfileService.searchEmployees;
