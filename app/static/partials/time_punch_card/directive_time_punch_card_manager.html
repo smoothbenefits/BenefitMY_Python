@@ -39,7 +39,7 @@
         Your Work Timesheet for the Week: <b>{{selectedDisplayWeek.weekDisplayText}}</b>
     </div>
     <div class="panel-body">
-      <div class="col-md-12" ng-if="!hasFiledPunchCardForCurrentWeek()">
+      <div class="col-md-12">
         <bm-time-punch-card-week-manager
           admin-mode="adminMode"
           week="selectedDisplayWeek"
@@ -47,33 +47,6 @@
           save-result="saveResult(savedPunchCards)">
         </bm-time-punch-card-week-manager>
       </div><!-- time punch card manager directive -->
-
-      <div class="col-md-12" ng-if="hasFiledPunchCardForCurrentWeek()">
-        <table class="table table-striped benefit-table fix-layout-table">
-          <thead>
-            <th><div>State</div></th>
-            <th><div>Sun</div></th>
-            <th><div>Mon</div></th>
-            <th><div>Tue</div></th>
-            <th><div>Wed</div></th>
-            <th><div>Thu</div></th>
-            <th><div>Fri</div></th>
-            <th><div>Sat</div></th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="workHours in workHoursByStateList">
-              <td><span>{{workHours.state}}</span></td>
-              <td><span>{{workHours.sunday}} Hrs</span></td>
-              <td><span>{{workHours.monday}} Hrs</span></td>
-              <td><span>{{workHours.tuesday}} Hrs</span></td>
-              <td><span>{{workHours.wednesday}} Hrs</span></td>
-              <td><span>{{workHours.thursday}} Hrs</span></td>
-              <td><span>{{workHours.friday}} Hrs</span></td>
-              <td><span>{{workHours.saturday}} Hrs</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
   <div class="panel" ng-show="adminMode">
