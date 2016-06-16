@@ -1707,13 +1707,24 @@ var employerEditEmployeeTimePunchCards = employersController.controller('employe
       UserService.getUserDataByUserId(employeeId)
         .then(function(employee){
           $scope.user = employee;
-          $scope.pageTitle = 'Time Worksheets for employee ' + employee.first_name + ' ' + employee.last_name;
+          $scope.pageTitle = 'Time Worksheets for ' + employee.first_name + ' ' + employee.last_name;
 
         });
 
       $scope.isAdmin = false;
       $scope.backToDashboard = function(){
+        $state.go('/');
+      };
+
+      $scope.goToEmployeeListView = function(){
         $state.go('admin_timepunchcards');
+      };
+      $scope.updateUser = function(selectedUser, weekDate){
+        $state.go('admin_employee_timepunchcards',
+          {
+            employee_id: selectedUser,
+            startDate: weekDate
+          });
       };
     }
 ]);

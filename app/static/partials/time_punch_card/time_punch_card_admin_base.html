@@ -1,13 +1,15 @@
 <div class="breadcrumb">
   <a ng-click="backToDashboard()">{{role}} Dashboard</a>
+  <a ng-click="goToEmployeeListView()">Company Worksheets</a>
   <span>{{pageTitle}}</span>
 </div>
 
-<bm-time-punch-card-by-date-manager
+<bm-admin-time-punch-card
     user="user"
     company="company"
-    start-date="startDate">
-</bm-time-punch-card-by-date-manager>
+    start-date="startDate"
+    user-updated = "updateUser(selectedUser, weekDate)">
+</bm-admin-time-punch-card>
 
 
-<div class="back"><a href="javascript:void(0);" onclick="history.back()">&laquo; Back</a></div>
+<div class="back"><a ng-click="goToEmployeeListView()">&laquo; Back</a></div>
