@@ -2019,4 +2019,14 @@ var employerManageInsuranceCertificate = employersController.controller('employe
     }
 ]);
 
+var employerManageProject = employersController.controller('employerManageProject',
+  [ '$scope',
+    '$state',
+    function($scope, $state){
 
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      };
+      
+    }
+]);
