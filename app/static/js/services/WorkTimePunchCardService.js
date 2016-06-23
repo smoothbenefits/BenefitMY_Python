@@ -167,11 +167,11 @@ benefitmyService.factory('WorkTimePunchCardService',
 
         var GetBlankPunchCard = function(){
           var defaultStartTime = new Date();
-          defaultStartTime.setHours(8);
+          defaultStartTime.setHours(0);
           defaultStartTime.setMinutes(0);
 
           var defaultEndTime = new Date();
-          defaultEndTime.setHours(18);
+          defaultEndTime.setHours(0);
           defaultEndTime.setMinutes(0);
           return {
               'workHours': {
