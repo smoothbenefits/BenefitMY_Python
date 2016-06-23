@@ -4,53 +4,95 @@
 <div class="modal-body col-md-12">
   <div class="form-holder col-md-10 col-md-offset-1">
     <form name="form">
-      <div class="form-label">Project Name</div>
-      <div class="textbox">
-        <input type="text"
-          name="project_name"
-          ng-model="contextProject.name"
-          ng-required="true"/>
-      </div>
+      <ul class="list-group"><li class="list-group-item">
+          <div class="form-label">Project Name</div>
+          <div class="textbox">
+            <input type="text"
+              name="project_name"
+              ng-model="contextProject.name"
+              ng-required="true"/>
+          </div>
+      </li></ul>
 
-      <div class="form-label">Address</div>
-      <div class="textbox">
-        <input type="text"
-          name="project_address"
-          ng-model="contextProject.address"
-          ng-required="true"/>
-      </div>
+      <ul class="list-group"><li class="list-group-item">
+        <div class="col-md-6">
+          <div class="form-label">Street Address 1</div>
+          <div class="select-box">
+            <div class="textbox">
+              <input
+                type="text"
+                ng-model="contextProject.address.address1"
+                ng-required="false"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-label">Street Address 2</div>
+          <div class="select-box">
+            <div class="textbox">
+              <input
+                type="text"
+                ng-model="contextProject.address.address2"
+                ng-required="false"/>
+            </div>
+          </div>
+        </div>
+        <div style="clear:both"></div>
+        <div class="col-md-4">
+          <div class="form-label">City</div>
+          <div class="select-box">
+            <div class="textbox">
+              <input
+                type="text"
+                ng-model="contextProject.address.city"
+                ng-required="false"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-label">State</div>
+          <div class="select-box">
+            <div class="textbox">
+              <input
+                type="text"
+                ng-model="contextProject.address.state"
+                maxlength="2"
+                class="input-upper"
+                ng-required="false"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="form-label">Zip</div>
+          <div class="select-box">
+            <div class="textbox">
+              <input type="text"
+                ng-model="contextProject.address.zip"
+                maxlength="5"
+                ng-required="false"/>
+            </div>
+          </div>
+        </div>
+        <div style="clear:both"></div>
+      </li></ul>
+      <ul class="list-group"><li class="list-group-item">
+          
 
-      <div class="form-label">Sub-Contractors</div>
-      <isteven-multi-select    
-            input-model="companyContractors"    
-            output-model="contextProject.contractors"
-            button-label="name"
-            item-label="name"
-            tick-property="ticked"
-            helper-elements="all none">
-      </isteven-multi-select>
-
-      <div class="form-label">Required Insurance Types</div>
-      <isteven-multi-select    
-            input-model="insuranceTypes"    
-            output-model="contextProject.requiredInsuranceTypes"
-            button-label="name"
-            item-label="name"
-            tick-property="ticked"
-            helper-elements="all none">
-      </isteven-multi-select>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox"
+              name="is_ccip"
+              ng-model="contextProject.isCCIP"
+              ng-require="true">
+              Project Is CCIP
+            </label>
+          </div>
+      </li></ul>
     </form>
   </div>
 </div>
 
-<div class="modal-footer">
-  <button
-    ng-class="isProjectActive() ? 'btn red' : 'btn green'"
-    ng-click="toggleActivate()"
-    style="width: 20%; float:left;"
-    ng-if="editMode">
-    {{isProjectActive() ? 'Deactivate' : 'Activate'}}
-  </button>
+<div class="modal-footer" style="margin-top: 10px;">
   <div class="button-group">
     <button class="btn btn-info" ng-click="save()" style="width: 20%">Save</button>
     <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
