@@ -76,8 +76,18 @@
         <div style="clear:both"></div>
       </li></ul>
       <ul class="list-group"><li class="list-group-item">
-          
+          <div class="form-label">Required Insurance Types</div>
+          <isteven-multi-select    
+            input-model="insuranceTypesForSelection"    
+            output-model="insuranceTypesSelected"
+            button-label="name"
+            item-label="name"
+            tick-property="ticked"
+            helper-elements="all none">
+          </isteven-multi-select>
+      </li></ul>
 
+      <ul class="list-group"><li class="list-group-item">
           <div class="checkbox">
             <label>
               <input type="checkbox"

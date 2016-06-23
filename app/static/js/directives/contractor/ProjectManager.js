@@ -23,11 +23,35 @@ BenefitMyApp.controller('ProjectModalController', [
                         ? project
                         : ProjectService.GetBlankProject(companyId);
 
+    var convertInsuranceTypeListForSelection = function(insuranceTypeList) {
+        return _.map(insuranceTypeList, function(type) {
+            return { name: type };
+        });
+    };
+
+    var convertInsuranceTypeSelectionsToList = function(selectionList) {
+        return _.map(selectionList, function(selectionItem) {
+            return selectionItem.name;
+        });
+    };
+
+    $scope.insuranceTypesForSelection = convertInsuranceTypeListForSelection($scope.insuranceTypes);
+    $scope.insuranceTypesSelected = convertInsuranceTypeListForSelection($scope.contextProject.requiredInsuranceTypes);
+
+    _.each($scope.insuranceTypesForSelection, function(item) {
+        if (_.some($scope.insuranceTypesSelected, function(selected) {
+                return selected.name == item.name;
+        })) {
+            item.ticked = true;
+        }
+    });
+
     $scope.cancel = function() {
         $modalInstance.dismiss();
     };
 
     $scope.save = function() {
+        $scope.contextProject.requiredInsuranceTypes = convertInsuranceTypeSelectionsToList($scope.insuranceTypesSelected);
         ProjectService.SaveProject($scope.contextProject)
           .then(function(savedProject){
             $modalInstance.close(true);
@@ -76,41 +100,7 @@ BenefitMyApp.controller('ProjectModalController', [
         ];
 
         return _.reject(addressArray, function(token) { return !token; }).join(", ");
-    }
-
-    // $scope.activeProjects = [
-    //     {
-    //         name: 'AMC at Woburn',
-    //         address: '39 Aloha Street, Woburn, MA',
-    //         requiredInsuranceTypes: [
-    //             'Commercial General Liability',
-    //             'Umbrella Liability',
-    //         ],
-    //         status: 'Active'
-    //     },
-    //     {
-    //         name: 'Lexington Music School',
-    //         address: '44 Main Street, Lexington, MA',
-    //         requiredInsuranceTypes: [
-    //             'Umbrella Liability',
-    //             'Excess Liability',
-    //             'Worker\'s Compensation and Employee Liability'
-    //         ],
-    //         status: 'Active'
-    //     }
-    // ];
-
-    // $scope.inactiveProjects = [
-    //     {
-    //         name: 'Newton High Gym',
-    //         address: '92 Pleasant Road, Newton, MA',
-    //         requiredInsuranceTypes: [
-    //             'Umbrella Liability',
-    //             'Worker\'s Compensation and Employee Liability'
-    //         ],
-    //         status: 'Inactive'
-    //     }
-    // ];
+    };
 
     $scope.openProjectModal = function(project) {
         var modalInstance = $modal.open({
