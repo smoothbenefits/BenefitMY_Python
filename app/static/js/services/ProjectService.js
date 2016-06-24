@@ -4,11 +4,12 @@ benefitmyService.factory('ProjectService',
   [ '$q',
     'utilityService',
     'ProjectRepository',
+    'ContractorsService',
     function ProjectService(
       $q,
       utilityService,
       ProjectRepository){
-      
+
       var ProjectStatus = {
         Active: 'Active',
         Inactive: 'Inactive'
@@ -94,14 +95,34 @@ benefitmyService.factory('ProjectService',
           });
       };
 
+      var IsAllCertificatesExpired = function(contractorId, date) {
+        return ContractorsService.GetContractorById(contractorId).then(function(response) {
+          var insurances = response.insurances;
+
+          // If a contractor does not have insurance policy, display warning message to admin
+          if (!insurances || insurnaces.length === 0) {
+            return false;
+          }
+
+          // If all contractor's policies are expired or not taken effect yet,
+          // show warning message to admin
+          var benchmark = moment(date);
+          var hasValid = _.some(insurances, function(insurance) {
+            return moment(insurance.policy.startDate).isBefore(benchmark) &&
+              moment(insurance.policy.endDate).isAfter(benchmark);
+          });
+
+          return !hasValid;
+        });
+      };
+
       return {
         ProjectStatus: ProjectStatus,
-
         GetProjectsByCompany: GetProjectsByCompany,
         GetBlankProject: GetBlankProject,
         SaveProject: SaveProject,
         SetProjectStatus: SetProjectStatus,
         GetProjectById: GetProjectById
-      }; 
+      };
    }
 ]);
