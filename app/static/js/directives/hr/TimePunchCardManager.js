@@ -146,6 +146,14 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             );
           }
         };
+
+        $scope.downloadWeeklyTimePunchCardReport = function(){
+          var link = CompanyEmployeeSummaryService.getWeeklyTimePunchCardReportUrl(
+            $scope.company.id,
+            $scope.selectedDisplayWeek.weekStartDate);
+
+          location.href = link;
+        }
     }
   ]
 ).directive('bmTimePunchCardManager', function() {
