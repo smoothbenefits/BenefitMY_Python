@@ -1,0 +1,66 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{modalHeader}}</h4>
+</div>
+<div class="modal-body col-md-12">
+  <div class="form-holder col-md-10 col-md-offset-1">
+    <form name="form">
+      <ul class="list-group"><li class="list-group-item">
+          <div class="form-label">Payable To (contractor)</div>
+          <div class="select-box">
+            <select ng-model="payable.contractor"
+              ng-required="true"
+              name="payable_to"
+              ng-options="contractor.name for contractor in contractors | orderBy: contractor.name"
+              class="form-control">
+            </select>
+          </div>
+      </li></ul>
+
+      <ul class="list-group"><li class="list-group-item">
+        <div class="col-md-6">
+          <div class="form-label">Amount</div>
+          <div class="textbox input-group">
+            <span class="input-group-addon">$</span>
+            <input type="text"
+              ng-model="payable.amount"
+              ng-required="true"
+              min="0"
+              fcsa-number="{ preventInvalidInput: true, maxDecimals: 2 }" />
+          </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="col-md-6">
+          <div class="form-label">Payable Start Date</div>
+          <div class="textbox">
+            <bm-date-picker
+              model="payable.dateStart"
+              ng-required="false"
+              name="payable_start_date"
+              fieldname="'payable_start_date'"
+              dirty="form.payable_start_date.$dirty" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-label">Payable End Date</div>
+          <div class="textbox">
+            <bm-date-picker
+              model="payable.dateEnd"
+              ng-required="true"
+              name="payable_end_date"
+              fieldname="'payable_end_date'"
+              dirty="form.payable_end_date.$dirty" />
+          </div>
+        </div>
+        <div style="clear:both"></div>
+      </li></ul>
+    </form>
+  </div>
+</div>
+
+<div class="modal-footer" style="margin-top: 10px;">
+  <div class="button-group">
+    <button class="btn btn-info" ng-click="save()" style="width: 20%" ng-disable="form.$invalid">Save</button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+  </div>
+</div>

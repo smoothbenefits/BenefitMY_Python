@@ -1,0 +1,47 @@
+<div class="content-header">
+  <h1>Manage Payables for</h1>
+  <h1>Project {{project.name}}</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="openPayableModal()">Create Payable</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Create Payable</span> button to create a new payable for project {{project.name}}</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="panel" ng-if="hasPayablesMade()">
+    <div class="panel-heading">
+      Payables Made
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Payable To</span></th>
+          <th><span>Created Date</span></th>
+          <th><span>Amount</span></th>
+          <th><span>Actions</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="payable in project.payables">
+            <td>{{payable.contractor.name}}</td>
+            <td>{{payable.createdTime}}</td>
+            <td>$ {{payable.amount}}</td>
+            <td>
+              <span><button ng-click="openPayableModal(payable)">Edit</button></span>
+              <span><button ng-click="delete(payable)" confirm="Are you sure to delete a payable?">Delete</button></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div ng-if="!hasPayablesMade()" class="panel">
+    <div class="panel-heading">
+      No Payable Made
+    </div>
+    <div class="panel-body">
+      Currently there are no payable made for project {{project.name}}
+      <a ng-click="openPayableModal()">Click Here</a> to create a payable
+    </div>
+  </div>
+</div>

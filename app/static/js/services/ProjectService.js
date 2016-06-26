@@ -95,6 +95,46 @@ benefitmyService.factory('ProjectService',
           });
       };
 
+      var GetBlankProjectPayable = function(projectId) {
+        var payable = {
+          amount: 0,
+          contractor: '',
+          updatedTime: moment(),
+          dateStart: moment(),
+          dateEnd: moment()
+        }
+
+        return payable;
+      };
+
+      var mapPayableViewModelToDomainModel = function(viewModel){
+        var domainModel = angular.copy(viewModel);
+        domainModel.contractor = viewModel.contractor._id;
+        return domainModel;
+      }
+
+      var mapPayableDomainModelToViewModel = function(domainModel){
+          var viewModel = angular.copy(domainModel);
+          return viewModel;
+      };
+
+      var SaveProjectPayable = function(projectId, payable) {
+        var domainModel = mapPayableViewModelToDomainModel(payable);
+        return ProjectRepository.PayableByProjectId.save({projectId: projectId}, domainModel)
+        .$promise.then(function(savedPayable) {
+          return mapPayableDomainModelToViewModel(savedPayable);
+        });
+      };
+
+      var DeletePayableByProjectPayable = function(projectId, payable) {
+        return ProjectRepository.PayableByProjectPayable.delete({projectId: projectId, payableId: payable._id})
+        .$promise.then(function(response) {
+          return true;
+        }).catch(function(err) {
+          return false;
+        });
+      };
+
       var IsAllCertificatesExpired = function(contractorId, date) {
         return ContractorsService.GetContractorById(contractorId).then(function(response) {
           var insurances = response.insurances;
@@ -122,7 +162,10 @@ benefitmyService.factory('ProjectService',
         GetBlankProject: GetBlankProject,
         SaveProject: SaveProject,
         SetProjectStatus: SetProjectStatus,
-        GetProjectById: GetProjectById
+        GetProjectById: GetProjectById,
+        GetBlankProjectPayable: GetBlankProjectPayable,
+        SaveProjectPayable: SaveProjectPayable,
+        DeletePayableByProjectPayable: DeletePayableByProjectPayable
       };
    }
 ]);
