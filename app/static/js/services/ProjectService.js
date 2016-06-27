@@ -22,6 +22,13 @@ benefitmyService.factory('ProjectService',
 
       var mapDomainModelToViewModel = function(domainModel){
           var viewModel = angular.copy(domainModel);
+
+          // Format payable created time for views
+          var viewPayables = _.map(viewModel.payables, function(payable) {
+            return mapPayableDomainModelToViewModel(payable);
+          });
+
+          viewModel.payables = viewPayables;
           return viewModel;
       };
 
@@ -115,6 +122,8 @@ benefitmyService.factory('ProjectService',
 
       var mapPayableDomainModelToViewModel = function(domainModel){
           var viewModel = angular.copy(domainModel);
+          viewModel.startDate = moment(viewModel.dateStart).format(SHORT_DATE_FORMAT_STRING);
+          viewModel.endDate = moment(viewModel.dateEnd).format(SHORT_DATE_FORMAT_STRING);
           return viewModel;
       };
 

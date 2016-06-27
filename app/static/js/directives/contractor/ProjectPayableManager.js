@@ -31,8 +31,20 @@ BenefitMyApp.controller('ProjectPayableModalController', [
       });
     }
 
+    $scope.enableSave = function(payable) {
+      if (moment(payable.dateStart).isAfter(moment(payable.dateEnd))) {
+        return false;
+      }
+
+      if (!payable.amount || payable.amount <= 0) {
+        return false;
+      }
+
+      return payable.contractor;
+    };
+
     $scope.cancel = function() {
-        $modalInstance.dismiss();
+      $modalInstance.dismiss();
     };
 
     $scope.save = function() {
@@ -110,11 +122,11 @@ BenefitMyApp.controller('ProjectPayableModalController', [
 
       modalInstance.result.then(function(success){
         if(success){
-          var successMessage = "Project saved successfully!";
+          var successMessage = "Project Payable saved successfully!";
           $scope.showMessageWithOkayOnly('Success', successMessage);
         }
         else{
-          var message = "Project save failed!";
+          var message = "Project Payable save failed!";
           $scope.showMessageWithOkayOnly('Error', message);
         }
         $state.reload();

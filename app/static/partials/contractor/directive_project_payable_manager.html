@@ -17,14 +17,16 @@
       <table class="table table-striped" >
         <thead>
           <th><span>Payable To</span></th>
-          <th><span>Created Date</span></th>
+          <th><span>Start Date</span></th>
+          <th><span>End Date</span></th>
           <th><span>Amount</span></th>
           <th><span>Actions</span></th>
         </thead>
         <tbody>
-          <tr ng-repeat="payable in project.payables">
+          <tr ng-repeat="payable in project.payables | orderBy: '-endDate'">
             <td>{{payable.contractor.name}}</td>
-            <td>{{payable.createdTime}}</td>
+            <td>{{payable.startDate}}</td>
+            <td>{{payable.endDate}}</td>
             <td>$ {{payable.amount}}</td>
             <td>
               <span><button ng-click="openPayableModal(payable)">Edit</button></span>
