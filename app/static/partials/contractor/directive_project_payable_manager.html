@@ -27,7 +27,7 @@
             <td>{{payable.contractor.name}}</td>
             <td>{{payable.startDate}}</td>
             <td>{{payable.endDate}}</td>
-            <td>$ {{payable.amount}}</td>
+            <td>$ {{payable.amount.toLocaleString()}}</td>
             <td>
               <span><button ng-click="openPayableModal(payable)">Edit</button></span>
               <span><button ng-click="delete(payable)" confirm="Are you sure to delete a payable?">Delete</button></span>

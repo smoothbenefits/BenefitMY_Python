@@ -85,22 +85,6 @@ BenefitMyApp.controller('ProjectPayableModalController', [
         }
     });
 
-    $scope.getAddressForDisplay = function(address) {
-        if (!address) {
-            return '';
-        }
-
-        var addressArray = [
-            address.address1,
-            address.address2,
-            address.city,
-            address.state,
-            address.zip
-        ];
-
-        return _.reject(addressArray, function(token) { return !token; }).join(", ");
-    };
-
     $scope.openPayableModal = function(payable) {
       var modalInstance = $modal.open({
         templateUrl: '/static/partials/contractor/modal_project_payable.html',
