@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from datetime import date
 import json
 from copy import deepcopy
+from collections import OrderedDict
 from rest_framework.response import Response
 from django.http import HttpResponse, Http404
 from django.contrib.auth import get_user_model
@@ -21,13 +22,13 @@ from app.service.date_time_service import DateTimeService
 
 FULL_TIME_DEFAULT_WEEKLY_HOURS = 40
 
-RECORD_TYPES = {
-    'Work Day': { 'name': 'Worked Hours' },
-    'Company Holiday': { 'name': 'Company Holiday', 'NoHours': True },
-    'Paid Time Off': { 'name': 'PTO' },
-    'Sick Time': { 'name': 'Sick Time' },
-    'Personal Leave': { 'name': 'Personal Leave (unpaid)', 'PrePopulate': False }
-}
+RECORD_TYPES = OrderedDict([
+    ('Work Day', { 'name': 'Worked Hours' }),
+    ('Sick Time', { 'name': 'Sick Time' }),
+    ('Paid Time Off', { 'name': 'PTO' }),
+    ('Company Holiday', { 'name': 'Company Holiday', 'NoHours': True }),
+    ('Personal Leave', { 'name': 'Personal Leave (unpaid)', 'PrePopulate': False })
+])
 
 WEEK_DAYS = [
     'sunday',
@@ -75,8 +76,7 @@ class CompanyUsersTimePunchCardWeeklyReportView(ExcelExportViewBase):
                 employee_entry = record_type_entry.setdefault(
                     user_id,
                     self._empty_employee_entry())
-
-                if record_type_entry.get('NoHours', False):
+                if RECORD_TYPES[record_type].get('NoHours', False):
                     employee_entry[week_day]['hours'] = 8
                 else:
                     employee_entry[week_day]['hours'] = week_day_record['hours']
@@ -212,10 +212,11 @@ class CompanyUsersTimePunchCardWeeklyReportView(ExcelExportViewBase):
     def _write_state_time_cards(self, excel_sheet, company, state, state_entry, week_start_date, week_end_date):
         row = self._write_sheet_headers(excel_sheet, company, state, week_start_date, week_end_date)
         col = 0
-        for record_type in state_entry:
+        for record_type in RECORD_TYPES:
             self._write_field(excel_sheet, row, col, RECORD_TYPES[record_type]['name'])
             row += 1
             row = self._write_record_type_entry(excel_sheet, state_entry[record_type], row, week_start_date)
+
 
     '''
     Get the Weekly Time Punch Card report excel of a company's all employees
