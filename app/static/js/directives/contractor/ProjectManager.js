@@ -66,11 +66,13 @@ BenefitMyApp.controller('ProjectModalController', [
   '$modal',
   '$controller',
   'ProjectService',
+  'utilityService',
   function($scope,
            $state,
            $modal,
            $controller,
-           ProjectService){
+           ProjectService,
+           utilityService){
 
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
@@ -87,19 +89,7 @@ BenefitMyApp.controller('ProjectModalController', [
     });
 
     $scope.getAddressForDisplay = function(address) {
-        if (!address) {
-            return '';
-        }
-
-        var addressArray = [
-            address.address1,
-            address.address2,
-            address.city,
-            address.state,
-            address.zip
-        ];
-
-        return _.reject(addressArray, function(token) { return !token; }).join(", ");
+        return utilityService.getAddressForDisplay(address);
     };
 
     $scope.openProjectModal = function(project) {

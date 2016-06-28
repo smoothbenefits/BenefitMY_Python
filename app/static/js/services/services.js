@@ -62,13 +62,30 @@ var utilityService = benefitmyService.factory('utilityService',
               resultLink = 'http://' + resultLink;
             }
             return resultLink;
+      };
+
+      var getAddressForDisplay = function(address) {
+        if (!address) {
+            return '';
         }
+
+        var addressArray = [
+            address.address1,
+            address.address2,
+            address.city,
+            address.state,
+            address.zip
+        ];
+
+        return _.reject(addressArray, function(token) { return !token; }).join(", ");
+      };
 
       return {
         mapObjectToKeyPairArray: mapObjectToKeyPairArray,
         getEnvAwareId: getEnvAwareId,
         retrieveIdFromEnvAwareId: retrieveIdFromEnvAwareId,
-        normalizeLink: normalizeLink
+        normalizeLink: normalizeLink,
+        getAddressForDisplay: getAddressForDisplay
       };
     }
   ]);
