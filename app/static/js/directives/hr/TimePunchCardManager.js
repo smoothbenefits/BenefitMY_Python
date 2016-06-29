@@ -108,10 +108,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             });
         };
 
-        $scope.hasFiledPunchCardForCurrentWeek = function() {
-          return $scope.workPunchCard && $scope.workPunchCard.id;
-        };
-
         $scope.$watchGroup(['user', 'company'], function(watchGroup) {
           if(watchGroup && watchGroup[0] && watchGroup[1]){
             // Populate the weeks for display
@@ -150,6 +146,14 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             );
           }
         };
+
+        $scope.downloadWeeklyTimePunchCardReport = function(){
+          var link = CompanyEmployeeSummaryService.getWeeklyTimePunchCardReportUrl(
+            $scope.company.id,
+            $scope.selectedDisplayWeek.weekStartDate);
+
+          location.href = link;
+        }
     }
   ]
 ).directive('bmTimePunchCardManager', function() {
