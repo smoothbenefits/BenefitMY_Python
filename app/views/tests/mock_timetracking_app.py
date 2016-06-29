@@ -33,49 +33,56 @@ class TimeTrackingAppMock(object):
                     'start': '1970-01-01T00:00:00.000Z',
                     'end': '1970-01-01T00:00:00.000Z'
                 },
-                'hours': 0
+                'hours': 0,
+                'recordType': 'Not a Work Day'
             },
             'friday': {
                 'timeRange': {
                     'start': '2016-03-17T12:00:18.057Z',
                     'end': '2016-03-17T22:00:18.057Z'
                 },
-                'hours': 10
+                'hours': 10,
+                'recordType': 'Work Day'
             },
             'thursday': {
                 'timeRange': {
                     'start': '2016-03-17T12:00:18.057Z',
                     'end': '2016-03-17T22:00:18.057Z'
                 },
-                'hours': 10
+                'hours': 10,
+                'recordType': 'Work Day'
             },
             'wednesday': {
                 'timeRange': {
                     'start': '2016-03-17T12:00:18.057Z',
                     'end': '2016-03-17T22:00:18.057Z'
                 },
-                'hours': 10
+                'hours': 10,
+                'recordType': 'Work Day'
             },
             'tuesday': {
                 'timeRange': {
                     'start': '2016-03-17T12:00:18.057Z',
                     'end': '2016-03-17T22:30:18.057Z'
                 },
-                'hours': 10.5
+                'hours': 10.5,
+                'recordType': 'Work Day'
             },
             'monday': {
                 'timeRange': {
                     'start': '1970-01-01T00:00:00.000Z',
                     'end': '1970-01-01T00:00:00.000Z'
                 },
-                'hours': 0
+                'hours': 0,
+                'recordType': 'Work Day'
             },
             'sunday': {
                 'timeRange': {
                     'start': '1970-01-01T00:00:00.000Z',
                     'end': '1970-01-01T00:00:00.000Z'
                 },
-                'hours': 0
+                'hours': 0,
+                'recordType': 'Not a Work Day'
             }
         },
         'tags': [
@@ -93,7 +100,7 @@ class TimeTrackingAppMock(object):
         'createdTimestamp': '2016-03-18T02:53:48.824Z',
         'timecards': [],
         'employee': {
-            'personDescriptor': 'BMHT_83_ad8d5d44039a0e60411c7fce79e17ea8',
+            'personDescriptor': 'BMHT_3_babf7c42f76af6f81486d76ff6e33505',
             'firstName': 'Simon',
             'lastName': 'Cowell',
             'email': 'user3@benefitmy.com',

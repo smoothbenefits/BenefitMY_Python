@@ -70,6 +70,12 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
         reportUrl += moment(weekStartDate).format('/YYYY/M/DD');
         reportUrl += '/to' + moment(endWeekStartDate).format('/YYYY/M/DD');
         return reportUrl;
+      },
+
+      getWeeklyTimePunchCardReportUrl: function(companyId, weekStartDate){
+        var reportUrl = API_PREFIX + '/companies/' + companyId + '/time_punch_card_excel';
+        reportUrl += moment(weekStartDate).format('/YYYY/M/DD');
+        return reportUrl;
       }
     };
   }
