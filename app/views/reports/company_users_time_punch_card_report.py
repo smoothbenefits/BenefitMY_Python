@@ -22,6 +22,12 @@ from app.service.date_time_service import DateTimeService
 
 FULL_TIME_DEFAULT_WEEKLY_HOURS = 40
 
+# In the following dictionary, 
+# "NoHours": used to determine whether we should
+#     assign 8 hours to the days where this record type exists.
+# "PrePopulate": used to determine whether we should pre-populate the default
+#     set of hours for each employee even if there are no such record of the type exists
+
 RECORD_TYPES = OrderedDict([
     ('Work Day', { 'name': 'Worked Hours' }),
     ('Sick Time', { 'name': 'Sick Time' }),
@@ -108,7 +114,6 @@ class CompanyUsersTimePunchCardWeeklyReportView(ExcelExportViewBase):
 
     def _build_user_id_name_cache(self, user_id, company):
         person = None
-        profile = None
         self.user_id_name_cache[user_id] ={
             'user': User.objects.get(id=user_id)
         }
@@ -116,12 +121,6 @@ class CompanyUsersTimePunchCardWeeklyReportView(ExcelExportViewBase):
         if (len(persons) > 0):
             person = persons[0]
             self.user_id_name_cache[user_id]['person'] = person
-
-        if person:
-            profile = EmployeeProfile.objects.filter(person=person, company=company)
-            if len(profile) > 0:
-                profile = profile[0]
-                self.user_id_name_cache[user_id]['profile'] = profile
 
 
     def _get_report_entries_by_state_and_type(self, timesheet_by_employee, company):
