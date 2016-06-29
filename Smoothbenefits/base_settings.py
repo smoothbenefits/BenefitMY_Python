@@ -314,6 +314,7 @@ PIPELINE_JS = {
             'js/directives/hr/DepartmentManager.js',
             'js/directives/hr/EmployeeDepartmentManager.js',
             'js/directives/BenefitSelectionViewer.js',
+            'js/directives/contractor/ProjectManager.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/model_factories/benefitmyInsuranceCertificateModelFactories.js',
@@ -379,7 +380,8 @@ PIPELINE_JS = {
             'js/services/CompanyPersonnelsService.js',
             'js/services/UsStateService.js',
             'js/services/ContractorsService.js',
-            'js/services/WorkersCompService.js'
+            'js/services/WorkersCompService.js',
+            'js/services/ProjectService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }
