@@ -1,22 +1,41 @@
 <div class="content-header">
   <h1>Timesheet Reports for {{user.first_name}} {{user.last_name}}</h1>
   <div class="view-instruction">
-    <p>You can use the date selector below to switch to the desired week</p>
+    <p>You can use the date selector to switch to the desired week</p>
     <p>The week of the date selected starts from Sunday and ends on Saturday</p>
+    <p>You can also use the selection box on the right to jump to desired employee</p>
   </div>
 </div><!-- / .content-header -->
 
 <div class="content-body">
   <div class="panel">
     <div class="panel-heading">
-        Select Week
+        Select Time Sheet To Edit
     </div>
     <div class="panel-body">
         <div class="col-md-6">
+          <label>Select Week</label>
           <bm-date-picker
             model="selectedDate"
             required="true"
             fieldname="'weekDate'" />
+        </div>
+        <div class="col-md-6">
+          <label>Select Employee</label>
+          <input 
+            type="text"
+            name="employee"
+            ng-model="selectedEmployee" 
+            placeholder="Start typing the name of another employee" 
+            typeahead="employee as employee.first_name + ' ' + employee.last_name for employee in getEmployees($viewValue)"
+            ng-required="false"
+            autocomplete="off"
+            ng-blur = "matchAndSelect()"
+            ng-focus = "prepareEmployeeSearch()"
+            class="form-control" />
+            <div class="alert alert-danger" ng-show="employeeIsInvalid">
+              <span>The employee you selected is invalid!</span>
+            </div>
         </div>
     </div>
   </div>

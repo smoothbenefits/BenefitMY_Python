@@ -188,6 +188,7 @@ from app.views.reports.company_users_benefits_billing_excel import CompanyUsersB
 from app.views.reports.company_users_direct_deposit_excel import CompanyUsersDirectDepositExcelExportView
 from app.views.reports.company_users_life_insurance_beneficiary_excel import CompanyUsersLifeInsuranceBeneficiaryExcelExportView
 from app.views.reports.company_users_worktime_report import CompanyUsersWorktimeWeeklyReportView
+from app.views.reports.company_users_time_punch_card_report import CompanyUsersTimePunchCardWeeklyReportView
 from app.views.reports.company_users_summary_pdf import CompanyUsersSummaryPdfExportView
 
 from app.views.reports.integration.company_hphc_excel import CompanyHphcExcelView
@@ -317,6 +318,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/users/excel/benefits_billing?$' % PREFIX, CompanyUsersBenefitsBillingExcelExportView.as_view()),
     url(r'^%s/company/(?P<pk>\w+)/worktime_excel/from/(?P<from_year>\d+)/(?P<from_month>\d+)/(?P<from_day>\d+)/to/(?P<to_year>\d+)/(?P<to_month>\d+)/(?P<to_day>\d+)/?$' % PREFIX,
         CompanyUsersWorktimeWeeklyReportView.as_view(), name='company_worktime_report_weekly'),
+    url(r'^%s/companies/(?P<pk>\w+)/time_punch_card_excel/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/?$' % PREFIX,
+        CompanyUsersTimePunchCardWeeklyReportView.as_view(), name='company_time_punch_card_report_weekly'),
     url(r'^%s/companies/(?P<pk>\w+)/users/pdf/?$' % PREFIX, CompanyUsersSummaryPdfExportView.as_view(), name='company_summary_pdf_api'),
     url(r'^%s/company/(?P<pk>\w+)/role/(?P<role_type>\w+)/?$' % PREFIX, CompanyUserDetailView.as_view(), name='company_user_details_api'),
 

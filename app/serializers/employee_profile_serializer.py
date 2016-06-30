@@ -4,6 +4,7 @@ from app.models.person import Person
 from hash_pk_serializer_base import HashPkSerializerBase
 from custom_fields.hash_field import HashField
 from sys_period_definition_serializer import SysPeriodDefinitionSerializer
+from app.serializers.person_serializer import PersonSerializer
 
 
 class ManagerSerializer(HashPkSerializerBase):
@@ -33,5 +34,6 @@ class EmployeeProfileWithNameSerializer(HashPkSerializerBase):
     first_name = serializers.CharField(source="person.first_name", required=False)
     last_name = serializers.CharField(source="person.last_name", required=False)
     manager = ManagerSerializer(required=False)
+    person = PersonSerializer()
     class Meta:
         model = EmployeeProfile
