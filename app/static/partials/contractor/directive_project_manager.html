@@ -1,0 +1,70 @@
+<div class="content-header">
+  <h1>Manage Projects</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="openProjectModal()">Create Project</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Create Project</span> button to create a new project</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="panel" ng-if="hasActiveProjects()">
+    <div class="panel-heading">
+      Active Projects
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Name</span></th>
+          <th><span>Address</span></th>
+          <th><span>Required Insurances</span></th>
+          <th><span>Is CCIP</span></th>
+          <th><span>Actions</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="project in activeProjects">
+            <td><a ng-click="openProjectModal(project)">{{project.name}}</a></td>
+            <td>{{getAddressForDisplay(project.address)}}</td>
+            <td><span class="inline" ng-repeat="insurType in project.requiredInsuranceTypes"> {{$index + 1}}. {{insurType}} </br></span></td>
+            <td><span>{{project.isCCIP ? 'Yes' : 'No'}}</span></td>
+            <td><span><button ng-click="deactivate(project)">Deactivate</button></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div ng-if="!hasActiveProjects()" class="panel">
+    <div class="panel-heading">
+      No Active Projects
+    </div>
+    <div class="panel-body">
+      Currently there are no active projects setup for your company.
+      <a ng-click="openProjectModal()">Click Here</a> to create a project
+    </div>
+  </div>
+  <div class="panel" ng-if="hasInactiveProjects()">
+    <div class="panel-heading">
+      Inactive Projects
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Name</span></th>
+          <th><span>Address</span></th>
+          <th><span>Required Insurances</span></th>
+          <th><span>Is CCIP</span></th>
+          <th><span>Actions</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="project in inactiveProjects">
+            <td><a ng-click="openProjectModal(project)">{{project.name}}</a></td>
+            <td>{{getAddressForDisplay(project.address)}}</td>
+            <td><span class="inline" ng-repeat="insurType in project.requiredInsuranceTypes"> {{$index + 1}}. {{insurType}} </br></span></td>
+            <td><span>{{project.isCCIP ? 'Yes' : 'No'}}</span></td>
+            <td><span><button ng-click="activate(project)">Activate</button></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

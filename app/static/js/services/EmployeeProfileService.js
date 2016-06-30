@@ -96,7 +96,7 @@ benefitmyService.factory('EmployeeProfileService',
         var searchEmployees = function(term){
             return _.filter(_cachedEmployeeProfiles, function(employee){
               var fullName = employee.first_name + ' ' + employee.last_name;
-              return fullName.toLowerCase().indexOf(term) > -1;
+              return fullName.toLowerCase().indexOf(term.toLowerCase()) > -1;
             });
         };
 
