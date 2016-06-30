@@ -28,9 +28,9 @@ BenefitMyApp.controller('ProjectPayableModalController', [
       });
     }
 
-    $scope.$watch('payable', function(newPayable) {
-      if (newPayable) {
-        $scope.expiredInsurances = ProjectService.IsAnyRequiredCertificatesExpired(
+    $scope.$watch('payable', function(payable) {
+      if (payable) {
+        $scope.expiredInsurances = ProjectService.GetAllExpiredCertificatesOfRequiredInsurance(
           payable.contractor,
           payable.dateStart,
           payable.dateEnd,
