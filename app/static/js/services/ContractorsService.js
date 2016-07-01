@@ -8,7 +8,7 @@ benefitmyService.factory('ContractorsService',
       $q,
       utilityService,
       ContractorsRepository){
-      
+
       var ContractorStatus = {
         Active: 'Active',
         Deactivated: 'Deactivated'
@@ -160,6 +160,6 @@ benefitmyService.factory('ContractorsService',
         DeleteInsuranceCertificate: DeleteInsuranceCertificate,
         GetContractorById: GetContractorById,
         InsuranceCertificateTypes: InsuranceCertificateTypes
-      }; 
+      };
    }
 ]);

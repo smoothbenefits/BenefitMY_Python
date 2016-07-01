@@ -4,11 +4,12 @@ benefitmyService.factory('ProjectService',
   [ '$q',
     'utilityService',
     'ProjectRepository',
+    'ContractorsService',
     function ProjectService(
       $q,
       utilityService,
       ProjectRepository){
-      
+
       var ProjectStatus = {
         Active: 'Active',
         Inactive: 'Inactive'
@@ -21,6 +22,13 @@ benefitmyService.factory('ProjectService',
 
       var mapDomainModelToViewModel = function(domainModel){
           var viewModel = angular.copy(domainModel);
+
+          // Format payable created time for views
+          var viewPayables = _.map(viewModel.payables, function(payable) {
+            return mapPayableDomainModelToViewModel(payable);
+          });
+
+          viewModel.payables = viewPayables;
           return viewModel;
       };
 
@@ -94,14 +102,58 @@ benefitmyService.factory('ProjectService',
           });
       };
 
+      var GetBlankProjectPayable = function(projectId) {
+        var payable = {
+          amount: 0,
+          contractor: '',
+          updatedTime: moment(),
+          dateStart: moment(),
+          dateEnd: moment()
+        }
+
+        return payable;
+      };
+
+      var mapPayableViewModelToDomainModel = function(viewModel){
+        var domainModel = angular.copy(viewModel);
+        domainModel.contractor = viewModel.contractor._id;
+        return domainModel;
+      }
+
+      var mapPayableDomainModelToViewModel = function(domainModel){
+          var viewModel = angular.copy(domainModel);
+          viewModel.startDate = moment(viewModel.dateStart).format(SHORT_DATE_FORMAT_STRING);
+          viewModel.endDate = moment(viewModel.dateEnd).format(SHORT_DATE_FORMAT_STRING);
+          return viewModel;
+      };
+
+      var SaveProjectPayable = function(projectId, payable) {
+        var domainModel = mapPayableViewModelToDomainModel(payable);
+        return ProjectRepository.PayableByProjectId.save({projectId: projectId}, domainModel)
+        .$promise.then(function(savedPayable) {
+          return mapPayableDomainModelToViewModel(savedPayable);
+        });
+      };
+
+      var DeletePayableByProjectPayable = function(projectId, payable) {
+        return ProjectRepository.PayableByProjectPayable.delete({projectId: projectId, payableId: payable._id})
+        .$promise.then(function(response) {
+          return true;
+        }).catch(function(err) {
+          return false;
+        });
+      };
+
       return {
         ProjectStatus: ProjectStatus,
-
         GetProjectsByCompany: GetProjectsByCompany,
         GetBlankProject: GetBlankProject,
         SaveProject: SaveProject,
         SetProjectStatus: SetProjectStatus,
-        GetProjectById: GetProjectById
-      }; 
+        GetProjectById: GetProjectById,
+        GetBlankProjectPayable: GetBlankProjectPayable,
+        SaveProjectPayable: SaveProjectPayable,
+        DeletePayableByProjectPayable: DeletePayableByProjectPayable
+      };
    }
 ]);
