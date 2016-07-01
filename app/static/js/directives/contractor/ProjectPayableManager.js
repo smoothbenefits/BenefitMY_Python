@@ -4,7 +4,7 @@ BenefitMyApp.controller('ProjectPayableModalController', [
   'ProjectService',
   'ContractorsService',
   'payable',
-  'projectId',
+  'project',
   'contractors',
   function(
     $scope,
@@ -12,24 +12,32 @@ BenefitMyApp.controller('ProjectPayableModalController', [
     ProjectService,
     ContractorsService,
     payable,
-    projectId,
+    project,
     contractors) {
 
     $scope.editMode = payable;
-
-    $scope.modalHeader = $scope.editMode ? 'Edit Payable Info' : 'Create a New Payable';
-
     $scope.contractors = contractors;
-
+    $scope.modalHeader = $scope.editMode ? 'Edit Payable Info' : 'Create a New Payable';
     $scope.payable = $scope.editMode
                         ? payable
-                        : ProjectService.GetBlankProjectPayable(projectId);
+                        : ProjectService.GetBlankProjectPayable(project._id);
 
     if ($scope.editMode) {
       $scope.payable.contractor = _.find(contractors, function(contractor) {
         return contractor._id === $scope.payable.contractor._id;
       });
     }
+
+    $scope.$watch('payable', function(payable) {
+      if (payable) {
+        $scope.expiredInsurances = ProjectService.GetAllExpiredCertificatesOfRequiredInsurance(
+          payable.contractor,
+          payable.dateStart,
+          payable.dateEnd,
+          project
+        );
+      }
+    }, true); // Equality watch (use angular.equals to determine changes)
 
     $scope.enableSave = function(payable) {
       if (moment(payable.dateStart).isAfter(moment(payable.dateEnd))) {
@@ -48,7 +56,7 @@ BenefitMyApp.controller('ProjectPayableModalController', [
     };
 
     $scope.save = function() {
-      ProjectService.SaveProjectPayable(projectId, $scope.payable)
+      ProjectService.SaveProjectPayable(project._id, $scope.payable)
         .then(function(savedPayable){
           $modalInstance.close(true);
         }, function(error){
@@ -95,8 +103,8 @@ BenefitMyApp.controller('ProjectPayableModalController', [
           payable: function() {
             return angular.copy(payable);
           },
-          projectId: function() {
-            return $scope.project._id;
+          project: function() {
+            return $scope.project;
           },
           contractors: function() {
             return angular.copy($scope.contractors);

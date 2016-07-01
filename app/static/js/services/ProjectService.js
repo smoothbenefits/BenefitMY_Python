@@ -8,7 +8,8 @@ benefitmyService.factory('ProjectService',
     function ProjectService(
       $q,
       utilityService,
-      ProjectRepository){
+      ProjectRepository,
+      ContractorsService){
 
       var ProjectStatus = {
         Active: 'Active',
@@ -144,6 +145,48 @@ benefitmyService.factory('ProjectService',
         });
       };
 
+      // Project defines required certificates
+      // Return all required types of insurance that do not cover given payment period
+      var GetAllExpiredCertificatesOfRequiredInsurance = function(contractor, paymentStart, paymentEnd, project) {
+        var requiredInsuranceTypes = project.requiredInsuranceTypes;
+
+        // No required insurance type specified means no insurance required
+        if (!requiredInsuranceTypes || requiredInsuranceTypes.length <= 0) {
+          return [];
+        }
+
+        // If no contractor selected, return empty array
+        if (!contractor) {
+          return [];
+        }
+
+        var insurances = contractor.insurances;
+
+        // If a contractor does not have insurance policy, display warning message to admin
+        if (!insurances || insurances.length === 0) {
+          return requiredInsuranceTypes;
+        }
+
+        // Iterate through all required insurance types,
+        // determine if there is any policy which covers the entire payment period
+        var expiredInsuranceTypes = [];
+        var start = moment(paymentStart);
+        var end = moment(paymentEnd);
+        _.each(requiredInsuranceTypes, function(insuranceType) {
+          var hasValid = _.some(insurances, function(insurance) {
+            return moment(insurance.policy.endDate).isAfter(end) &&
+              moment(insurance.policy.startDate).isBefore(start) &&
+              insurance.type === insuranceType;
+          });
+
+          if (!hasValid) {
+            expiredInsuranceTypes.push(insuranceType);
+          }
+        });
+
+        return expiredInsuranceTypes;
+      };
+
       return {
         ProjectStatus: ProjectStatus,
         GetProjectsByCompany: GetProjectsByCompany,
@@ -153,7 +196,8 @@ benefitmyService.factory('ProjectService',
         GetProjectById: GetProjectById,
         GetBlankProjectPayable: GetBlankProjectPayable,
         SaveProjectPayable: SaveProjectPayable,
-        DeletePayableByProjectPayable: DeletePayableByProjectPayable
+        DeletePayableByProjectPayable: DeletePayableByProjectPayable,
+        GetAllExpiredCertificatesOfRequiredInsurance: GetAllExpiredCertificatesOfRequiredInsurance
       };
    }
 ]);

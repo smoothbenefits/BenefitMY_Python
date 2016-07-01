@@ -88,9 +88,7 @@ BenefitMyApp.controller('ProjectModalController', [
         }
     });
 
-    $scope.getAddressForDisplay = function(address) {
-        return utilityService.getAddressForDisplay(address);
-    };
+    $scope.getAddressForDisplay = utilityService.getAddressForDisplay;
 
     $scope.openProjectModal = function(project) {
         var modalInstance = $modal.open({
