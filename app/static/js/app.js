@@ -117,6 +117,7 @@ BenefitMyApp.config(['envServiceProvider', function(envServiceProvider) {
             localhost: ['localhost'],
             stage:['staging.workbenefits.me', 'staging.workbenefitsme.com', 'staging.benefitmy.com'],
             demo: ['demo.workbenefits.me', 'demo.workbenefitsme.com', 'demo.benefitmy.com'],
+            demo2: ['demo2.workbenefits.me', 'demo2.workbenefitsme.com', 'demo2.benefitmy.com'],
             production: ['app.workbenefits.me', 'app.workbenefitsme.com', 'app.benefitmy.com']
         },
         vars: {
@@ -129,6 +130,10 @@ BenefitMyApp.config(['envServiceProvider', function(envServiceProvider) {
                 insuranceCertificateUrl: 'http://stage.insurcert.workbenefits.me/'
             },
             demo: {
+                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/',
+                insuranceCertificateUrl: 'http://stage.insurcert.workbenefits.me/'
+            },
+            demo2: {
                 timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/',
                 insuranceCertificateUrl: 'http://stage.insurcert.workbenefits.me/'
             },

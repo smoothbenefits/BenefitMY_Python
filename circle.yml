@@ -15,6 +15,7 @@ deployment:
     branch: demo
     commands:
       - sh ./deployment.sh benefitmy-python-demo HEROKU_POSTGRESQL_BROWN
+      - sh ./deployment.sh benefitmy-python-sales DATABASE
   beta:
     branch: beta
     commands:
