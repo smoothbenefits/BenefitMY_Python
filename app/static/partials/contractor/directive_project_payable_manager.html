@@ -20,6 +20,7 @@
           <th><span>Start Date</span></th>
           <th><span>End Date</span></th>
           <th><span>Amount</span></th>
+          <th><span>Lien Waiver</span></th>
           <th><span>Actions</span></th>
         </thead>
         <tbody>
@@ -28,6 +29,17 @@
             <td>{{payable.startDate}}</td>
             <td>{{payable.endDate}}</td>
             <td>$ {{payable.amount.toLocaleString()}}</td>
+            <td>
+              <bmuploadmanager
+               upload-mode="button"
+               feature-id="{{payable._id}}"
+               view-mode="list"
+               hide-type="true"
+               uploaded-files="payable.lienWaivers"
+               file-uploaded="fileUploaded(uploadedFile, featureId)"
+               file-deleted ="fileDeleted(deletedFile, featureId)">
+             </bmuploadmanager>
+            </td>
             <td>
               <span><button ng-click="openPayableModal(payable)">Edit</button></span>
               <span><button ng-click="delete(payable)" confirm="Are you sure to delete a payable?">Delete</button></span>

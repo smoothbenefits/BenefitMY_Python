@@ -137,6 +137,33 @@ BenefitMyApp.controller('ProjectPayableModalController', [
         $state.reload();
       });
     };
+
+    $scope.fileUploaded = function(uploadedFile, featureId){
+      var payable = _.find($scope.project.payables, function(projectPayable){
+        return projectPayable._id == featureId;
+      });
+      if(payable){
+        createdWaiver = {
+          id: uploadedFile.id,
+          S3: uploadedFile.S3,
+          file_name: uploadedFile.file_name,
+          file_type: uploadedFile.file_type,
+          uploaded_at: uploadedFile.uploaded_at
+        };
+        payable.lienWaivers.unshift(createdWaiver);
+        ProjectService.SaveProjectPayable($scope.project._id, payable);
+      }
+    };
+
+    $scope.fileDeleted = function(deletedFile, featureId){
+      var payable = _.find($scope.project.payables, function(projectPayable){
+        return projectPayable._id == featureId;
+      });
+      if(payable){
+        payable.lienWaivers = _.without(payable.lienWaivers, deletedFile);
+        ProjectService.SaveProjectPayable($scope.project._id, payable);
+      }
+    };
   }
 ]).directive('bmProjectPayableManager', function(){
 
