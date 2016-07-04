@@ -130,10 +130,21 @@ benefitmyService.factory('ProjectService',
 
       var SaveProjectPayable = function(projectId, payable) {
         var domainModel = mapPayableViewModelToDomainModel(payable);
-        return ProjectRepository.PayableByProjectId.save({projectId: projectId}, domainModel)
-        .$promise.then(function(savedPayable) {
-          return mapPayableDomainModelToViewModel(savedPayable);
-        });
+
+        // If payable has _id assigned, update existing payable
+        if (payable._id) {
+          return ProjectRepository.PayableByProjectPayable
+          .update({projectId: projectId, payableId: payable._id}, domainModel)
+          .$promise.then(function(updatedPayable) {
+            return mapPayableDomainModelToViewModel(updatedPayable);
+          });
+        } else {
+          // If not, create a new payable for the project
+          return ProjectRepository.PayableByProjectId.save({projectId: projectId}, domainModel)
+          .$promise.then(function(savedPayable) {
+            return mapPayableDomainModelToViewModel(savedPayable);
+          });
+        }
       };
 
       var DeletePayableByProjectPayable = function(projectId, payable) {
