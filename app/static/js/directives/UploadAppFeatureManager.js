@@ -44,6 +44,9 @@ BenefitMyApp.directive('bmUploadAppFeatureManager',
                     alert(error);
                   });
               }
+              else{
+                $scope.uploadedFiles.unshift(uploadedFile);
+              }
             };
 
             $scope.fileDeleted = function(deletedFile, featureId){
