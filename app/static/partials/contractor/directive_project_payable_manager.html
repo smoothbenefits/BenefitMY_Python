@@ -41,8 +41,18 @@
              </bmuploadmanager>
             </td>
             <td>
-              <span><button ng-click="openPayableModal(payable)">Edit</button></span>
-              <span><button ng-click="delete(payable)" confirm="Are you sure to delete a payable?">Delete</button></span>
+              <span dropdown on-toggle="toggled(open)">
+                <button id="action-menu-{{payable._id}}" dropdown-toggle>
+                  Actions  <i class="fa fa-caret-square-o-down"></i>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="action-menu-{{payable._id}}">
+                  <li role="menuitem"><a ng-click="openPayableModal(payable)">Edit Payable</a></li>
+                  <li role="menuitem"><a ng-click="delete(payable)" confirm="Are you sure to delete a payable?">Delete Payable</a></li>
+                  <li role="menuitem">
+                    <a ng-click="downloadLienWaiver(payable)">Download Lien Waiver</a>
+                  </li>
+                </ul>
+              </span>  
             </td>
           </tr>
         </tbody>
