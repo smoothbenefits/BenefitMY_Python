@@ -85,9 +85,9 @@ BenefitMyApp.controller('ProjectPayableModalController', [
 
     $scope.$watch('project', function(project) {
         if(project){
-          var companyId = utilityService.retrieveIdFromEnvAwareId(project.companyDescriptor);
+          $scope.companyId = utilityService.retrieveIdFromEnvAwareId(project.companyDescriptor);
 
-          ContractorsService.GetContractorsByCompany(companyId).then(function(contractors) {
+          ContractorsService.GetContractorsByCompany($scope.companyId).then(function(contractors) {
             $scope.contractors = contractors;
           });
         }
@@ -163,6 +163,12 @@ BenefitMyApp.controller('ProjectPayableModalController', [
         payable.lienWaivers = _.without(payable.lienWaivers, deletedFile);
         ProjectService.SaveProjectPayable($scope.project._id, payable);
       }
+    };
+      
+    $scope.downloadLienWaiver = function(payable) {
+        var contractorId = payable.contractor._id;
+        var url = ContractorsService.GetLienWaiverDownloadUrl($scope.companyId, contractorId);
+        location.href = url;
     };
   }
 ]).directive('bmProjectPayableManager', function(){

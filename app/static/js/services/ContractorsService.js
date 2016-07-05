@@ -1,5 +1,7 @@
 var benefitmyService = angular.module('benefitmyService');
 
+var API_PREFIX = '/api/v1';
+
 benefitmyService.factory('ContractorsService',
   [ '$q',
     'utilityService',
@@ -33,7 +35,6 @@ benefitmyService.factory('ContractorsService',
           });
           return viewModel;
       };
-
 
       var mapDomainModelListToViewModelList = function(domainModelList){
           var viewModelList = [];
@@ -147,7 +148,11 @@ benefitmyService.factory('ContractorsService',
           }, function(error){
             return error;
           });
-      }
+      };
+
+      var GetLienWaiverDownloadUrl = function(companyId, contractorId) {
+        return API_PREFIX + '/company/' + companyId + '/contractors/' + contractorId + '/forms/lien_waiver';
+      };
 
       return {
         GetContractorsByCompany: GetContractorsByCompany,
@@ -159,7 +164,8 @@ benefitmyService.factory('ContractorsService',
         SaveInsuranceCertificate: SaveInsuranceCertificate,
         DeleteInsuranceCertificate: DeleteInsuranceCertificate,
         GetContractorById: GetContractorById,
-        InsuranceCertificateTypes: InsuranceCertificateTypes
+        InsuranceCertificateTypes: InsuranceCertificateTypes,
+        GetLienWaiverDownloadUrl: GetLienWaiverDownloadUrl
       };
    }
 ]);
