@@ -19,7 +19,7 @@ BenefitMyApp.controller('ProjectModalController', [
 
     $scope.modalHeader = $scope.editMode ? 'Edit Project Info' : 'Create a New Project';
 
-    $scope.contextProject = $scope.editMode 
+    $scope.contextProject = $scope.editMode
                         ? project
                         : ProjectService.GetBlankProject(companyId);
 
@@ -88,9 +88,7 @@ BenefitMyApp.controller('ProjectModalController', [
         }
     });
 
-    $scope.getAddressForDisplay = function(address) {
-        return utilityService.getAddressForDisplay(address);
-    };
+    $scope.getAddressForDisplay = utilityService.getAddressForDisplay;
 
     $scope.openProjectModal = function(project) {
         var modalInstance = $modal.open({
@@ -122,13 +120,13 @@ BenefitMyApp.controller('ProjectModalController', [
     };
 
     $scope.hasInactiveProjects = function() {
-        return $scope.inactiveProjects 
-            && $scope.inactiveProjects.length > 0; 
+        return $scope.inactiveProjects
+            && $scope.inactiveProjects.length > 0;
     };
 
     $scope.hasActiveProjects = function() {
-        return $scope.activeProjects 
-            && $scope.activeProjects.length > 0; 
+        return $scope.activeProjects
+            && $scope.activeProjects.length > 0;
     };
 
     $scope.activate = function(project) {
@@ -143,6 +141,10 @@ BenefitMyApp.controller('ProjectModalController', [
         .then(function(updatedProject){
           $state.reload();
         });
+    };
+
+    $scope.managePayables = function(project) {
+      $state.go('admin_project_payable', {projectId: project._id});
     };
   }
 ]).directive('bmProjectManager', function(){

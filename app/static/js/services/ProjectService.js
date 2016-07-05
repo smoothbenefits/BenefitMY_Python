@@ -4,11 +4,13 @@ benefitmyService.factory('ProjectService',
   [ '$q',
     'utilityService',
     'ProjectRepository',
+    'ContractorsService',
     function ProjectService(
       $q,
       utilityService,
-      ProjectRepository){
-      
+      ProjectRepository,
+      ContractorsService){
+
       var ProjectStatus = {
         Active: 'Active',
         Inactive: 'Inactive'
@@ -21,6 +23,13 @@ benefitmyService.factory('ProjectService',
 
       var mapDomainModelToViewModel = function(domainModel){
           var viewModel = angular.copy(domainModel);
+
+          // Format payable created time for views
+          var viewPayables = _.map(viewModel.payables, function(payable) {
+            return mapPayableDomainModelToViewModel(payable);
+          });
+
+          viewModel.payables = viewPayables;
           return viewModel;
       };
 
@@ -94,14 +103,112 @@ benefitmyService.factory('ProjectService',
           });
       };
 
+      var GetBlankProjectPayable = function(projectId) {
+        var payable = {
+          amount: 0,
+          contractor: '',
+          updatedTime: moment(),
+          dateStart: moment(),
+          dateEnd: moment()
+        }
+
+        return payable;
+      };
+
+      var mapPayableViewModelToDomainModel = function(viewModel){
+        var domainModel = angular.copy(viewModel);
+        domainModel.contractor = viewModel.contractor._id;
+        return domainModel;
+      }
+
+      var mapPayableDomainModelToViewModel = function(domainModel){
+          var viewModel = angular.copy(domainModel);
+          viewModel.startDate = moment(viewModel.dateStart).format(SHORT_DATE_FORMAT_STRING);
+          viewModel.endDate = moment(viewModel.dateEnd).format(SHORT_DATE_FORMAT_STRING);
+          return viewModel;
+      };
+
+      var SaveProjectPayable = function(projectId, payable) {
+        var domainModel = mapPayableViewModelToDomainModel(payable);
+
+        // If payable has _id assigned, update existing payable
+        if (payable._id) {
+          return ProjectRepository.PayableByProjectPayable
+          .update({projectId: projectId, payableId: payable._id}, domainModel)
+          .$promise.then(function(updatedPayable) {
+            return mapPayableDomainModelToViewModel(updatedPayable);
+          });
+        } else {
+          // If not, create a new payable for the project
+          return ProjectRepository.PayableByProjectId.save({projectId: projectId}, domainModel)
+          .$promise.then(function(savedPayable) {
+            return mapPayableDomainModelToViewModel(savedPayable);
+          });
+        }
+      };
+
+      var DeletePayableByProjectPayable = function(projectId, payable) {
+        return ProjectRepository.PayableByProjectPayable.delete({projectId: projectId, payableId: payable._id})
+        .$promise.then(function(response) {
+          return true;
+        }).catch(function(err) {
+          return false;
+        });
+      };
+
+      // Project defines required certificates
+      // Return all required types of insurance that do not cover given payment period
+      var GetAllExpiredCertificatesOfRequiredInsurance = function(contractor, paymentStart, paymentEnd, project) {
+        var requiredInsuranceTypes = project.requiredInsuranceTypes;
+
+        // No required insurance type specified means no insurance required
+        if (!requiredInsuranceTypes || requiredInsuranceTypes.length <= 0) {
+          return [];
+        }
+
+        // If no contractor selected, return empty array
+        if (!contractor) {
+          return [];
+        }
+
+        var insurances = contractor.insurances;
+
+        // If a contractor does not have insurance policy, display warning message to admin
+        if (!insurances || insurances.length === 0) {
+          return requiredInsuranceTypes;
+        }
+
+        // Iterate through all required insurance types,
+        // determine if there is any policy which covers the entire payment period
+        var expiredInsuranceTypes = [];
+        var start = moment(paymentStart);
+        var end = moment(paymentEnd);
+        _.each(requiredInsuranceTypes, function(insuranceType) {
+          var hasValid = _.some(insurances, function(insurance) {
+            return moment(insurance.policy.endDate).isAfter(end) &&
+              moment(insurance.policy.startDate).isBefore(start) &&
+              insurance.type === insuranceType;
+          });
+
+          if (!hasValid) {
+            expiredInsuranceTypes.push(insuranceType);
+          }
+        });
+
+        return expiredInsuranceTypes;
+      };
+
       return {
         ProjectStatus: ProjectStatus,
-
         GetProjectsByCompany: GetProjectsByCompany,
         GetBlankProject: GetBlankProject,
         SaveProject: SaveProject,
         SetProjectStatus: SetProjectStatus,
-        GetProjectById: GetProjectById
-      }; 
+        GetProjectById: GetProjectById,
+        GetBlankProjectPayable: GetBlankProjectPayable,
+        SaveProjectPayable: SaveProjectPayable,
+        DeletePayableByProjectPayable: DeletePayableByProjectPayable,
+        GetAllExpiredCertificatesOfRequiredInsurance: GetAllExpiredCertificatesOfRequiredInsurance
+      };
    }
 ]);
