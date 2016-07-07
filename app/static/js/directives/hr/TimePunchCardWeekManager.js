@@ -2,12 +2,14 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
     '$scope',
     '$attrs',
     '$controller',
+    '$confirm',
     'WorkTimePunchCardService',
     'UsStateService',
     function TimePunchCardWeekDirectiveController(
       $scope,
       $attrs,
       $controller,
+      $confirm,
       WorkTimePunchCardService,
       UsStateService) {
 
@@ -26,9 +28,9 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
           }
 
           $scope.deleteTimeCardConfirm = 'Are you sure you want to delete this time sheet? The action cannot be reverted!';
-          $scope.$watchGroup(['week', 'workPunchCard'], function(watchItems){
-            if(watchItems[0]){
-              var weekItem = watchItems[0];
+          $scope.$watch('week', function(weekValue){
+            if(weekValue){
+              var weekItem = weekValue;
               var startDate = weekItem.weekStartDate;
               $scope.datesOfWeek = [];
               for (var i=0; i<7; i++){
@@ -36,10 +38,30 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
                 $scope.datesOfWeek[weekDate.format('dddd')] = weekDate;
               }
             }
-            if(watchItems[1]){
-              $scope.editMode = _.isUndefined($scope.workPunchCard.id);
+          });
+
+          $scope.$watch('workPunchCard', function(inputPunchCard){
+            if(inputPunchCard){
+              if ($scope.contextWorkPunchCard 
+                && $scope.myForm.$dirty
+                && $scope.isTimeCardValidForSave()) {
+                var confirmMsg = 'There are changes on the current card that are not saved. Do you want to save them before navigating away?';
+                $confirm({text: confirmMsg, title: 'Unsaved Changes Pending', ok: 'Yes, save changes', cancel: 'No, discard changes'})
+                .then(
+                  function() {
+                      //$scope.saveTimeCards();
+                      alert('yes!!');
+                      $scope.myForm.$setPristine();
+                  },
+                  function() {
+                      alert('no!!');
+                      $scope.myForm.$setPristine();
+                  });
+              }  
+              $scope.contextWorkPunchCard = angular.copy(inputPunchCard);  
+              $scope.editMode = _.isUndefined($scope.contextWorkPunchCard.id);
               $scope.workHoursByStateList =
-                WorkTimePunchCardService.GetWorkHoursByState($scope.workPunchCard);
+                WorkTimePunchCardService.GetWorkHoursByState($scope.contextWorkPunchCard);
             }
           });
 
@@ -47,7 +69,6 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
         };
 
         $scope.init();
-
 
         var getByStateTag = function(tags) {
           return _.find(tags, function(tag) {
@@ -83,17 +104,17 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
 
 
         $scope.isTimeCardValidForSave = function() {
-          if (!$scope.workPunchCard) {
+          if (!$scope.contextWorkPunchCard) {
             return false;
           }
-          var allNotApplicable = _.every($scope.workPunchCard.timecards, function(checkCards){
+          var allNotApplicable = _.every($scope.contextWorkPunchCard.timecards, function(checkCards){
             var pairs = _.pairs(checkCards.workHours);
             return _.every(pairs, function(pair){
                 return pair[1].notApplicable;
             });
           });
 
-          return !allNotApplicable && _.every($scope.workPunchCard.timecards, function(timecard) {
+          return !allNotApplicable && _.every($scope.contextWorkPunchCard.timecards, function(timecard) {
 
             if (!timecard.state) {
               return false;
@@ -115,19 +136,19 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
         };
 
         $scope.addTimeCard = function(){
-          $scope.workPunchCard.timecards.push(WorkTimePunchCardService.GetBlankPunchCard());
+          $scope.contextWorkPunchCard.timecards.push(WorkTimePunchCardService.GetBlankPunchCard());
         };
 
         $scope.removeCard = function(timecard){
-            $scope.workPunchCard.timecards = _.reject($scope.workPunchCard.timecards,
+            $scope.contextWorkPunchCard.timecards = _.reject($scope.contextWorkPunchCard.timecards,
               function(candidate){
                 return candidate == timecard;
             });
         };
 
         $scope.saveTimeCards = function() {
-            if($scope.workPunchCard.id){
-                WorkTimePunchCardService.UpdateWorkPunchCard($scope.workPunchCard)
+            if($scope.contextWorkPunchCard.id){
+                WorkTimePunchCardService.UpdateWorkPunchCard($scope.contextWorkPunchCard)
                 .then(function(resultPunchCards){
                     if($scope.saveResult){
                             $scope.saveResult({savedPunchCards: resultPunchCards});
@@ -140,7 +161,7 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
                 );
             }
             else{
-                WorkTimePunchCardService.CreateWorkPunchCard($scope.workPunchCard)
+                WorkTimePunchCardService.CreateWorkPunchCard($scope.contextWorkPunchCard)
                 .then(
                     function(resultPunchCards) {
                         if($scope.saveResult){

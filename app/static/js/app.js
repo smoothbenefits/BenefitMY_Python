@@ -10,6 +10,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'blockUI',
     'environment',
     'fcsa-number',
+    'angular-confirm',
     'benefitmyDomainModelFactories',
     'benefitmyTimeTrackingModelFactories',
     'benefitmyInsuranceCertificateModelFactories',

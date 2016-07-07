@@ -1,5 +1,5 @@
 <form name="myForm" ng-show="editMode">
-    <div class="row" ng-repeat="timecard in workPunchCard.timecards">
+    <div class="row" ng-repeat="timecard in contextWorkPunchCard.timecards">
       <div class="col-md-12">
         <h6 ng-show="timecard.state"> Time Sheet for {{getTimeCardState(timecard)}}</h6>
         <div class="table-title form-validation-error" ng-show="!timecard.state">Please select a state</div>
@@ -308,13 +308,13 @@
   </div>
 
   <div class="row">
-    <div class="col-md-4" ng-show="workPunchCard.id">
+    <div class="col-md-4" ng-show="contextWorkPunchCard.id">
         <a ng-click="viewMode()" class="btn gray">Cancel</a>
     </div>
     <div class="col-md-4">
         <a ng-click="addTimeCard()" class="btn green">Add timesheet for another State</a>
     </div>
-    <div class="col-md-4" ng-class="workPunchCard.id ? '' : 'col-md-offset-4'">
+    <div class="col-md-4" ng-class="contextWorkPunchCard.id ? '' : 'col-md-offset-4'">
       <div class="submit-box">
           <a confirm="{{saveTimeCardsConfirmText}}" ng-click="saveTimeCards()" class="btn green" ng-disabled="!isTimeCardValidForSave()">Submit</a>
         </div>
