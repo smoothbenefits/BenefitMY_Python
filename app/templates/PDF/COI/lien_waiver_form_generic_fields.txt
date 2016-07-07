@@ -1,0 +1,55 @@
+---
+FieldType: Text
+FieldName: body_month
+FieldFlags: 0
+FieldJustification: Center
+---
+FieldType: Text
+FieldName: body_day
+FieldFlags: 0
+FieldJustification: Center
+---
+FieldType: Text
+FieldName: body_year
+FieldFlags: 0
+FieldJustification: Center
+---
+FieldType: Text
+FieldName: body_subcontractor_name
+FieldFlags: 0
+FieldJustification: Center
+---
+FieldType: Text
+FieldName: body_company_name
+FieldFlags: 0
+FieldJustification: Center
+---
+FieldType: Text
+FieldName: subcontractor_signature
+FieldFlags: 0
+FieldJustification: Center
+---
+FieldType: Text
+FieldName: subcontractor_date
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: subcontractor_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: company_signature
+FieldFlags: 0
+FieldJustification: Center
+---
+FieldType: Text
+FieldName: company_date
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: company_title
+FieldFlags: 0
+FieldJustification: Left

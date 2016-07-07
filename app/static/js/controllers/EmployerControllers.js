@@ -208,7 +208,7 @@ var employerUser = employersController.controller('employerUser',
               });
           });
       });
-      
+
       CompanyPersonnelsService.getCompanyBrokers($scope.compId)
       .then(function(brokers){
         $scope.brokers = brokers;
@@ -1754,7 +1754,7 @@ var employerEditContractorModal = employersController.controller('employerEditCo
     'companyId',
     function($scope, $modal, $modalInstance, ContractorsService, contractor, companyId){
       if(!contractor){
-        $scope.contractor = ContractorsService.GetBlankContractor(companyId); 
+        $scope.contractor = ContractorsService.GetBlankContractor(companyId);
       }
       else{
         $scope.contractor = contractor;
@@ -1795,18 +1795,18 @@ var employerManageContractor = employersController.controller('employerManageCon
             $scope.contractors = contractors;
           });
       });
-      
+
       var updateContractor = function(updatedContractor){
         var contractorIndex = _.findIndex($scope.contractors, function(contractor){
             return updatedContractor._id === contractor._id;
-          }); 
+          });
           if(contractorIndex >= 0){
             $scope.contractors[contractorIndex] = updatedContractor;
           }
       };
 
       $scope.createOrEditContractor = function(contractor){
-        
+
         var modalInstance = $modal.open({
               templateUrl: '/static/partials/contractor/modal_contractor.html',
               controller: 'employerEditContractorModal',
@@ -1878,7 +1878,7 @@ var employerEditInsuranceCertificateModal = employersController.controller('empl
         $scope.Insurance = ContractorsService.GetBlankInsuranceCertificate();
       }
       $scope.insuranceTypes = ContractorsService.InsuranceCertificateTypes;
-      
+
       $scope.save = function(){
         ContractorsService.SaveInsuranceCertificate(contractorId, $scope.insurance)
           .then(function(modifiedContractor){
@@ -1973,7 +1973,7 @@ var employerManageInsuranceCertificate = employersController.controller('employe
               $scope.activeInsurances.unshift(insurance);
             }
           });
-          
+
         });
 
       $scope.fileUploaded = function(uploadedFile, featureId){
@@ -2033,6 +2033,22 @@ var employerManageProject = employersController.controller('employerManageProjec
       $scope.backToDashboard = function(){
         $state.go('/admin');
       };
-      
+
     }
+]);
+
+var employerManageProjectPayable = employersController.controller('employerManageProjectPayable',
+  ['$scope',
+  '$state',
+  '$stateParams',
+  'ProjectService',
+  function($scope, $state, $stateParams, ProjectService) {
+    var projectId = $stateParams.projectId;
+
+    ProjectService.GetProjectById(projectId).then(function(project) {
+      $scope.project = project;
+    });
+
+    
+  }
 ]);

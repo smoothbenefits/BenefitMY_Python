@@ -42,7 +42,10 @@ benefitmyInsuranceCertificateModelFactories.factory('ProjectRepository', [
         Collection: $resource(_hostName + 'api/v1/project'),
         StatusById: $resource(_hostName + 'api/v1/project/:projectId/status', {projectId:'@projectId'}, {
           update: { method: 'PUT' }
-        })
+        }),
+        PayableByProjectId: $resource(_hostName + 'api/v1/project/:projectId/payable', {projectId: '@projectId'}),
+        PayableByProjectPayable: $resource(_hostName + 'api/v1/project/:projectId/payable/:payableId',
+          {projectId: '@projectId', payableId: '@payableId'}, {update: { method: 'PUT' }})
     };
   }
 ]);
