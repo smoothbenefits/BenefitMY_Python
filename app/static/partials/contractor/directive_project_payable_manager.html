@@ -1,0 +1,71 @@
+<div class="content-header">
+  <h1>Manage Payables for</h1>
+  <h1>Project {{project.name}}</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="openPayableModal()">Create Payable</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Create Payable</span> button to create a new payable for project {{project.name}}</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="panel" ng-if="hasPayablesMade()">
+    <div class="panel-heading">
+      Payables Made
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Payable To</span></th>
+          <th><span>Start Date</span></th>
+          <th><span>End Date</span></th>
+          <th><span>Amount</span></th>
+          <th><span>Lien Waiver</span></th>
+          <th><span>Actions</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="payable in project.payables | orderBy: '-endDate'">
+            <td>{{payable.contractor.name}}</td>
+            <td>{{payable.startDate}}</td>
+            <td>{{payable.endDate}}</td>
+            <td>$ {{payable.amount.toLocaleString()}}</td>
+            <td>
+              <bmuploadmanager
+               upload-mode="button"
+               feature-id="{{payable._id}}"
+               view-mode="list"
+               hide-type="true"
+               uploaded-files="payable.lienWaivers"
+               file-uploaded="fileUploaded(uploadedFile, featureId)"
+               file-deleted ="fileDeleted(deletedFile, featureId)">
+             </bmuploadmanager>
+            </td>
+            <td>
+              <span dropdown on-toggle="toggled(open)">
+                <button id="action-menu-{{payable._id}}" dropdown-toggle>
+                  Actions  <i class="fa fa-caret-square-o-down"></i>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="action-menu-{{payable._id}}">
+                  <li role="menuitem"><a ng-click="openPayableModal(payable)">Edit Payable</a></li>
+                  <li role="menuitem"><a ng-click="delete(payable)" confirm="Are you sure to delete a payable?">Delete Payable</a></li>
+                  <li role="menuitem">
+                    <a ng-click="downloadLienWaiver(payable)">Download Lien Waiver</a>
+                  </li>
+                </ul>
+              </span>  
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div ng-if="!hasPayablesMade()" class="panel">
+    <div class="panel-heading">
+      No Payable Made
+    </div>
+    <div class="panel-body">
+      Currently there are no payable made for project {{project.name}}
+      <a ng-click="openPayableModal()">Click Here</a> to create a payable
+    </div>
+  </div>
+</div>

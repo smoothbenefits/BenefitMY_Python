@@ -48,6 +48,8 @@ WEEK_DAYS = [
 
 DATE_FORMAT_STRING = '%m/%d/%Y'
 
+HOUR_PRECISION = 1
+
 User = get_user_model()
 
 
@@ -85,7 +87,10 @@ class CompanyUsersTimePunchCardWeeklyReportView(ExcelExportViewBase):
                 if RECORD_TYPES[record_type].get('NoHours', False):
                     employee_entry[week_day]['hours'] = 8
                 else:
-                    employee_entry[week_day]['hours'] = week_day_record['hours']
+                    employee_entry[week_day]['hours'] = round(
+                        float(week_day_record['hours']),
+                        HOUR_PRECISION
+                    )
 
                 employee_entry[week_day]['timeRange'] = week_day_record['timeRange']
 

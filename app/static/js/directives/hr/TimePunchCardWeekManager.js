@@ -18,8 +18,7 @@ BenefitMyApp.controller('TimePunchCardWeekDirectiveController', [
 
           // Register the confirm message for saving timecard, so that the
           // auto confirm directive can use this properly.
-          $scope.saveTimeCardsConfirmText =  'Do you want to proceed with submitting the TimeCard?\n'
-              + 'Please note once submitted, no further changes are allowed on this timesheet.';
+          $scope.saveTimeCardsConfirmText =  'Do you want to proceed with submitting the TimeCard?';
 
           if($scope.adminMode){
               $scope.saveTimeCardsConfirmText = 'Do you really want to edit the timesheet for this employee?';

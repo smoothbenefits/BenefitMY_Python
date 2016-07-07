@@ -327,7 +327,8 @@ urlpatterns = patterns('app.views',
 
     url(r'^%s/users/(?P<pk>\w+)/forms/1095c/?$' % PREFIX, Form1095CView.as_view(), name='employee_1095_c_form_api'),
     url(r'^%s/company/(?P<pk>\w+)/forms/1094c/?$' % PREFIX, Form1094CView.as_view(), name='company_1094_c_form_api'),
-    url(r'^%s/forms/lien_waiver/?$' % PREFIX, FormLienWaiverView.as_view(), name='coi_lien_waiver_form_api'),
+    
+    url(r'^%s/company/(?P<company_id>\w+)/contractors/(?P<contractor_id>\w+)/forms/lien_waiver/?$' % PREFIX, FormLienWaiverView.as_view(), name='coi_lien_waiver_form_api'),
 
     url(r'^%s/companies/(?P<pk>\w+)/users/modification_summary/?$' % PREFIX, CompanyUsersDataModificationSummaryView.as_view()),
 

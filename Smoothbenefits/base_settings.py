@@ -315,6 +315,7 @@ PIPELINE_JS = {
             'js/directives/hr/EmployeeDepartmentManager.js',
             'js/directives/BenefitSelectionViewer.js',
             'js/directives/contractor/ProjectManager.js',
+            'js/directives/contractor/ProjectPayableManager.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/model_factories/benefitmyInsuranceCertificateModelFactories.js',
