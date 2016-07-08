@@ -42,7 +42,7 @@
             </td>
             <td>
               <span dropdown on-toggle="toggled(open)">
-                <button id="action-menu-{{payable._id}}" dropdown-toggle>
+                <button id="action-menu-{{payable._id}}" class="btn btn-primary" dropdown-toggle>
                   Actions  <i class="fa fa-caret-square-o-down"></i>
                 </button>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="action-menu-{{payable._id}}">
@@ -52,7 +52,7 @@
                     <a ng-click="downloadLienWaiver(payable)">Download Lien Waiver</a>
                   </li>
                 </ul>
-              </span>  
+              </span>
             </td>
           </tr>
         </tbody>
