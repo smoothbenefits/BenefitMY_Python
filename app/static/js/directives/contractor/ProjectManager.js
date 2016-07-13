@@ -46,6 +46,13 @@ BenefitMyApp.controller('ProjectModalController', [
         }
     });
 
+    $scope.inputInvalid = function(){
+      return !$scope.contextProject ||
+        !$scope.contextProject.name ||
+        !$scope.insuranceTypesSelected ||
+        $scope.insuranceTypesSelected.length == 0;
+    };
+
     $scope.cancel = function() {
         $modalInstance.dismiss();
     };
