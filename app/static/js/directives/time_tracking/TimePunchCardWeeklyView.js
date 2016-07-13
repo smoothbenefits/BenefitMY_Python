@@ -4,15 +4,18 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   'TimePunchCardService',
   'UsStateService',
   'punchCard',
+  'adminView',
   function(
     $scope,
     $modalInstance,
     TimePunchCardService,
     UsStateService,
-    punchCard){
+    punchCard,
+    adminView){
     $scope.headerText = punchCard ? 'Edit Punch Card' : 'Create Punch Card';
 
     $scope.punchCard = punchCard;
+    $scope.adminView = adminView;
 
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
     $scope.allStates = UsStateService.GetAllStates();
@@ -25,6 +28,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     $scope.selectedState = null;
     $scope.selectedProject = null;
+    $scope.hourlyRate = 65.4;
 
     $scope.save = function(){
         $modalInstance.close();
@@ -45,6 +49,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       $modal,
       $controller,
       TimePunchCardService) {
+
+        $scope.adminView = 'adminMode' in $attrs;
 
         $scope.weekdayNums = [0, 1, 2, 3, 4, 5, 6];
 
@@ -83,6 +89,9 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                 resolve: {
                   'punchCard': function() {
                     return punchCard;
+                  },
+                  'adminView' : function() {
+                    return $scope.adminView;
                   }
                 }
             });
@@ -112,7 +121,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     scope: {
         week: '=',
         user: '=',
-        company: '='
+        company: '=',
+        adminMode: '=?'
     },
     templateUrl: '/static/partials/time_punch_card_new/directive_time_punch_card_weekly_view.html',
     controller: 'TimePunchCardWeeklyViewController'
