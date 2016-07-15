@@ -2550,8 +2550,9 @@ var employeeViewTimeOffController = employeeControllers.controller('employeeView
      $scope.isAdmin = false;
 
      UserService.getCurUserInfo().then(function(userInfo) {
-       $scope.user = userInfo.user;
-       $scope.user.role = userInfo.roles[0].company_user_type;
+        $scope.user = userInfo.user;
+        $scope.user.role = userInfo.roles[0].company_user_type;
+        $scope.company = userInfo.currentRole.company;
      });
    }
 ]);

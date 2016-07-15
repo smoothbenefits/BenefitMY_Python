@@ -19,6 +19,7 @@
         <th><span>Start</span></th>
         <th><span>Duration</span></th>
         <th><span>Date and time created</span></th>
+        <th><span>Hours Available</span></th>
         <th><span>Status</span></th>
       </thead>
       <tbody>
@@ -28,6 +29,7 @@
           <td>{{request.start}}</td>
           <td>{{request.duration}} hour(s)</td>
           <td>{{request.created}}</td>
+          <td>{{getQuotaByTimeOffRequest(request)}}</td>
           <td ng-if="request.actionNeeded">
             <a ng-click="updateStatus(request, 'APPROVED')">Approve</a> / <a ng-click="updateStatus(request, 'DENIED')">Deny</a>
           </td>
@@ -35,5 +37,30 @@
         </tr>
       </tbody>
     </table>
-</div> <!-- TimeOff Request Action Table -->
+  </div> <!-- TimeOff Request Action Table -->
+  <div class="table-responsive" ng-show="hasActionedRequests()">
+    <div class="table-title">
+      Actioned Time Off requests
+    </div>
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Requestor</span></th>
+        <th><span>Type</span></th>
+        <th><span>Start</span></th>
+        <th><span>Duration</span></th>
+        <th><span>Date and time created</span></th>
+        <th><span>Status</span></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="request in actionedRequests">
+          <td> {{request.requestor.firstName}} {{request.requestor.lastName}}</td>
+          <td>{{request.type}}</td>
+          <td>{{request.start}}</td>
+          <td>{{request.duration}} hour(s)</td>
+          <td>{{request.created}}</td>
+          <td>{{request.status}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div> <!-- TimeOff Request Action Table -->
 </div>
