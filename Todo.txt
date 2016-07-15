@@ -1,0 +1,7 @@
+* getListOfWeeks should be factored out to a DateTimeService as it is being used in multiple places
+* Employee project payment view should be wrapped into a separate directive, and not be jammed into the payable directive
+* Can possibly directly provide punch card editability on the employee project payments view
+* Can think about expandable panel for employee weekly payments
+* Punch card attributes should be categorized into which ones are visible by default vs by admin only, which ones are editable by default vs by admin only, and have the client code respect that instead of hard coding the sections' visibility
+* PunchCardService should have overload to take employee and company descriptors, in addition to the existing ones that take in user and company objects
+* Consider set default state
