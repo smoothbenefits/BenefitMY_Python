@@ -23,7 +23,7 @@
         <th><span>Status</span></th>
       </thead>
       <tbody>
-        <tr ng-repeat="request in requestsFromDirectReports">
+        <tr ng-repeat="request in pendingRequests">
           <td> {{request.requestor.firstName}} {{request.requestor.lastName}}</td>
           <td>{{request.type}}</td>
           <td>{{request.start}}</td>

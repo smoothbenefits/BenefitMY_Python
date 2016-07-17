@@ -12,7 +12,7 @@ BenefitMyApp.controller('TimeOffManagerDirectiveController', [
     $controller('modalMessageControllerBase', {$scope: $scope});
 
     $scope.hasDirectReportRequests = function() {
-      return $scope.requestsFromDirectReports && $scope.requestsFromDirectReports.length;
+      return $scope.pendingRequests && $scope.pendingRequests.length;
     };
 
     $scope.hasActionedRequests = function(){
@@ -28,7 +28,7 @@ BenefitMyApp.controller('TimeOffManagerDirectiveController', [
         // Get time off requests awaiting the user's action
         TimeOffService.GetTimeOffsByApprover(theUser.id)
         .then(function(requests){
-           $scope.requestsFromDirectReports = requests.requestsPending;
+           $scope.pendingRequests = requests.requestsPending;
            $scope.actionedRequests = requests.requestsActioned;
         });
       }
@@ -63,8 +63,8 @@ BenefitMyApp.controller('TimeOffManagerDirectiveController', [
         request.status = newStatus;
         TimeOffService.UpdateTimeOffStatus(request)
         .then(function(updatedRequest){
-          $scope.requestsFromDirectReports = 
-            _.reject($scope.requestsFromDirectReports, {id:updatedRequest.id});
+          $scope.pendingRequests = 
+            _.reject($scope.pendingRequests, {id:updatedRequest.id});
           $scope.actionedRequests.unshift(updatedRequest);
         });
       }
