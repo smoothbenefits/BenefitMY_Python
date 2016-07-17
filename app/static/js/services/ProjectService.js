@@ -16,6 +16,8 @@ benefitmyService.factory('ProjectService',
         Inactive: 'Inactive'
       };
 
+      var ProjectsById = {};
+
       var mapViewModelToDomainModel = function(viewModel){
         var domainModel = angular.copy(viewModel);
         return domainModel;
@@ -42,17 +44,30 @@ benefitmyService.factory('ProjectService',
       };
 
       var GetProjectById = function(projectId){
-        return ProjectRepository.ById.get({projectId: projectId})
+        if(ProjectsById[projectId]){
+          var deferred = $q.defer();
+          deferred.resolve(ProjectsById[projectId]);
+          return deferred.promise;
+        }
+        else{
+          return ProjectRepository.ById.get({projectId: projectId})
           .$promise.then(function(project){
-            return mapDomainModelToViewModel(project);
+            var retrievedProject = mapDomainModelToViewModel(project);
+            ProjectsById[retrievedProject._id] = retrievedProject;
+            return retrievedProject;
           });
+        }
       };
 
       var GetProjectsByCompany = function(companyId){
         var compId = utilityService.getEnvAwareId(companyId);
         return ProjectRepository.ByCompany.query({compId: compId})
             .$promise.then(function(projects){
-                return mapDomainModelListToViewModelList(projects);
+                var viewList = mapDomainModelListToViewModelList(projects);
+                _.each(viewList, function(viewProject){
+                  ProjectsById[viewProject._id] = viewProject;
+                });
+                return viewList;
             });
       };
 
@@ -81,7 +96,9 @@ benefitmyService.factory('ProjectService',
           //This is a new model to save.
           return ProjectRepository.Collection.save({}, domainModel)
             .$promise.then(function(createdModel){
-                return mapDomainModelToViewModel(createdModel);
+                var createdProject = mapDomainModelToViewModel(createdModel);
+                ProjectsById[createdProject._id] = createdProject;
+                return createdProject;
             });
         }
         else{
@@ -89,7 +106,9 @@ benefitmyService.factory('ProjectService',
             {projectId:project._id},
             domainModel)
             .$promise.then(function(updatedEntry){
-              return updatedEntry;
+              var updatedProject = mapDomainModelToViewModel(updatedEntry);
+              ProjectsById[updatedProject._id] = updatedProject;
+              return updatedProject;
             });
         }
       };
@@ -98,8 +117,10 @@ benefitmyService.factory('ProjectService',
         return ProjectRepository.StatusById.update(
           {projectId: project._id},
           {status: status})
-          .$promise.then(function(updateProject){
-            return updateProject;
+          .$promise.then(function(updatedEntry){
+            var updatedProject = mapDomainModelToViewModel(updatedEntry);
+            ProjectsById[updatedProject._id] = updatedProject;
+            return updatedProject;
           });
       };
 

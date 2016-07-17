@@ -72,16 +72,64 @@ BenefitMyApp.controller('ProjectPayableModalController', [
   'ProjectService',
   'ContractorsService',
   'utilityService',
+  'TimePunchCardService',
   function($scope,
            $state,
            $modal,
            $controller,
            ProjectService,
            ContractorsService,
-           utilityService){
+           utilityService,
+           TimePunchCardService){
+
 
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
+
+    var PopulateEmployeePayables = function(companyId, project){
+      TimePunchCardService.GetWeeklyPunchCardsByCompany(companyId)
+      .then(function(punchCardsByEmployee){
+        $scope.employeePayments = [];
+        for(employeeId in punchCardsByEmployee){
+          var filteredPunchCardsByWeek = {};
+          var employeePunchCards = punchCardsByEmployee[employeeId];
+          _.each(employeePunchCards, function(punchCard){
+            //Filter cards that maps to the current project.
+            if(punchCard.attributes.project &&
+               punchCard.attributes.project.id === project._id){
+              //Calculate the week start date for the card.
+              var weekStart = moment(punchCard.date).startOf('week').format(SHORT_DATE_FORMAT_STRING);
+              if(!filteredPunchCardsByWeek[weekStart]){
+                filteredPunchCardsByWeek[weekStart] = [];
+              }
+              //Construct the punch cards by week dictionary
+              filteredPunchCardsByWeek[weekStart].push(punchCard);
+            }
+          });
+          //Start calculate the employeePayments object
+          for (weekStart in filteredPunchCardsByWeek){
+            var punchCards = filteredPunchCardsByWeek[weekStart];
+            var filteredForHoursCalculation = TimePunchCardService.FilteredCardsForTotalHours(punchCards);
+            if (!filteredForHoursCalculation || filteredForHoursCalculation.length <= 0){
+              continue;
+            }
+            var employeeFullName = filteredForHoursCalculation[0].employee.firstName + ' ' + filteredForHoursCalculation[0].employee.lastName;
+            var amount = 0;
+            _.each(filteredForHoursCalculation, function(employeeCard){
+                 var duration = TimePunchCardService.GetDurationInCard(employeeCard);
+                 //TODO: Get the compensation record of the employee and apply it here.
+                 amount += duration * employeeCard.attributes.hourlyRate.value || 0;
+            });
+            var weekStartDate = Date.parse(weekStart);
+            $scope.employeePayments.push({
+              'employee': employeeFullName,
+              'week': moment(weekStartDate).format(SHORT_DATE_FORMAT_STRING) + ' - ' + moment(weekStartDate).add(7, 'd').format(SHORT_DATE_FORMAT_STRING),
+              'amount': amount
+            });
+          }
+        }
+      });
+    };
 
     $scope.$watch('project', function(project) {
         if(project){
@@ -90,6 +138,8 @@ BenefitMyApp.controller('ProjectPayableModalController', [
           ContractorsService.GetContractorsByCompany($scope.companyId).then(function(contractors) {
             $scope.contractors = contractors;
           });
+
+          PopulateEmployeePayables($scope.companyId, project);          
         }
     });
 
