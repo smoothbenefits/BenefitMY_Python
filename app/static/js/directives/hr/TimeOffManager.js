@@ -11,7 +11,7 @@ BenefitMyApp.controller('TimeOffManagerDirectiveController', [
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
 
-    $scope.hasDirectReportRequests = function() {
+    $scope.hasPendingRequests = function() {
       return $scope.pendingRequests && $scope.pendingRequests.length;
     };
 
