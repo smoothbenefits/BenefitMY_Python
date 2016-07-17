@@ -28,8 +28,8 @@
             <td><span class="inline" ng-repeat="insurType in project.requiredInsuranceTypes"> {{$index + 1}}. {{insurType}} </br></span></td>
             <td><span>{{project.isCCIP ? 'Yes' : 'No'}}</span></td>
             <td>
-              <span><button ng-click="deactivate(project)">Deactivate</button></span>
-              <span><button ng-click="managePayables(project)">Manage Payables</button></span>
+              <span><button class="btn btn-primary" ng-click="deactivate(project)">Deactivate</button></span>
+              <span><button class="btn btn-primary" ng-click="managePayables(project)">Manage Payables</button></span>
             </td>
           </tr>
         </tbody>

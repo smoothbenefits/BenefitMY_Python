@@ -130,7 +130,11 @@ benefitmyService.factory('TimeOffService',
             var id = utilityService.getEnvAwareId(approver);
             return TimeOffRepository.ByApprover.query({userId:id})
                 .$promise.then(function(timeoffs){
-                    return mapDomainModelsToViewModels(timeoffs);
+                    var timeOffRequests = mapDomainModelsToViewModels(timeoffs);
+                    return {
+                        requestsPending: _.where(timeOffRequests, {actionNeeded: true}),
+                        requestsActioned: _.where(timeOffRequests, {actionNeeded: false})
+                    };
                 });
         };
 
