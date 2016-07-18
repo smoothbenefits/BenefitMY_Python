@@ -26,9 +26,9 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         'Harland Street Rework'
     ];
 
-    $scope.selectedState = null;
-    $scope.selectedProject = null;
-    $scope.hourlyRate = 65.4;
+    $scope.isAttributeVisible = function(attribute) {
+        return !attribute.type.adminOnly || $scope.adminMode;
+    };
 
     $scope.save = function(){
         TimePunchCardService.SavePunchCard($scope.punchCard).then(
@@ -147,6 +147,11 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                     }
                 );
             }
+        };
+
+        $scope.isAttributeVisible = function(attribute) {
+            return (!attribute.type.adminOnly || $scope.adminMode) 
+                && attribute.value;
         };
     }
   ]

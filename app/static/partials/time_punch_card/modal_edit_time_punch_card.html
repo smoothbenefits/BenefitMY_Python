@@ -36,28 +36,28 @@
             </div>
         </div>
 
-        <div>
+        <div ng-if="isAttributeVisible(punchCard.attributes.state)">
             <div class="form-label">State</div>
-            <select name="state" ng-model="selectedState" ng-required="true" class="form-control">
+            <select name="state" ng-model="punchCard.attributes.state.value" ng-required="true" class="form-control">
                 <option style="display:none" value="">select a state</option>
                 <option ng-repeat="state in allStates">{{state}}</option> 
             </select>
         </div>
 
-        <div>
+        <div ng-if="isAttributeVisible(punchCard.attributes.project)">
             <div class="form-label">Project</div>
-            <select name="project" ng-model="selectedProject" ng-required="true" class="form-control">
+            <select name="project" ng-model="punchCard.attributes.project.value" ng-required="true" class="form-control">
                 <option style="display:none" value="">select a project</option>
                 <option ng-repeat="project in allProjects">{{project}}</option> 
             </select>
         </div>
 
-        <div ng-if="adminView">
+        <div ng-if="isAttributeVisible(punchCard.attributes.hourlyRate)">
             <div class="form-label">Houly Rate</div>
             <div class="textbox input-group">
                 <span class="input-group-addon">$</span>
                 <input type="text"
-                  ng-model="hourlyRate"
+                  ng-model="punchCard.attributes.hourlyRate.value"
                   min="0"
                   fcsa-number="{ preventInvalidInput: true, maxDecimals: 2 }" />
               </div>

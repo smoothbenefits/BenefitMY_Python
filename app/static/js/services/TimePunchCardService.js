@@ -3,15 +3,34 @@ var benefitmyService = angular.module('benefitmyService');
 benefitmyService.factory('TimePunchCardService',
   ['$q',
    'utilityService',
+   'ProjectService',
    'TimePunchCardRepository',
    function TimePunchCardService(
     $q,
     utilityService,
+    ProjectService,
     TimePunchCardRepository){
 
+        // Define supported attributes on time punch cards
+        // 'name' - is the attribute name expected to get persisted
+        // 'displayText' - is the text used for displaying the attributes on UI
+        // 'adminOnly' - determines whether only admin has view/edit rights to the attribute
         var AttributeTypes = {
-            'State': 'state',
-            'Project': 'project'
+            'State': {
+                'name': 'State',
+                'displayText': 'State',
+                'adminOnly': false
+            },
+            'Project': {
+                'name': 'Project',
+                'displayText': 'Project',
+                'adminOnly': false
+            },
+            'HourlyRate': {
+                'name': 'HourlyRate',
+                'displayText': 'Hourly Rate',
+                'adminOnly': true
+            },
         };
 
         var PunchCardTypes = {
@@ -33,16 +52,96 @@ benefitmyService.factory('TimePunchCardService',
 
         var mapDomainToViewModel = function(domainModel) {
             var viewModel = angular.copy(domainModel);
+            viewModel.attributes = mapAttributesDomainToViewModel(domainModel.attributes);
+            
             return viewModel;
         };
 
         var mapViewToDomainModel = function(viewModel) {
             var domainModel = angular.copy(viewModel);
+            domainModel.attributes = mapAttributesViewToDomainModel(viewModel.attributes);
 
             // Delete this to avoid mongo db error 
             delete domainModel._id
 
             return domainModel;
+        };
+
+        var mapAttributesDomainToViewModel = function(attributesDomainModel) {
+            // Domain model of attributes is expected to be an array
+            // Where view model of attributes we define it to be an object
+            //  holding attributes we care as properties
+            var result = {
+                'state': {
+                    type: AttributeTypes.State,
+                    value: null
+                },
+                'project': {
+                    type: AttributeTypes.Project,
+                    value: null
+                },
+                'hourlyRate': {
+                    type: AttributeTypes.HourlyRate,
+                    value: null
+                }
+            };
+
+            if (attributesDomainModel && attributesDomainModel.length > 0) {
+                for (i = 0; i < attributesDomainModel.length; i++) {
+                    var domainAttr = attributesDomainModel[i];
+                    switch(domainAttr.name) {
+                        case AttributeTypes.State.name:
+                            result.state.value = domainAttr.value;
+                            break;
+                        case AttributeTypes.Project.name:
+                            // TODO:
+                            // Needs to translate to project object via
+                            // Project Service. This requires building
+                            // a cache for this access first.
+                            result.project.value = domainAttr.value;
+                            break;
+                        case AttributeTypes.HourlyRate.name:
+                            result.hourlyRate.value = domainAttr.value; 
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            
+            return result; 
+        };
+
+        var mapAttributesViewToDomainModel = function(attributesViewModel) {
+            // Domain model of attributes is expected to be an array
+            // Where view model of attributes we define it to be an object
+            //  holding attributes we care as properties
+            var result = [];
+
+            if (attributesViewModel) {
+                if (attributesViewModel.state && attributesViewModel.state.value) {
+                    result.push({
+                        'name': AttributeTypes.State.name,
+                        'value': attributesViewModel.state.value
+                    });
+                } 
+
+                if (attributesViewModel.project && attributesViewModel.project.value) {
+                    result.push({
+                        'name': AttributeTypes.Project.name,
+                        'value': attributesViewModel.project.value
+                    });
+                } 
+
+                if (attributesViewModel.hourlyRate && attributesViewModel.hourlyRate.value) {
+                    result.push({
+                        'name': AttributeTypes.HourlyRate.name,
+                        'value': attributesViewModel.hourlyRate.value
+                    });
+                }
+            } 
+            
+            return result;
         };
 
         // Global default start and end time for new cards

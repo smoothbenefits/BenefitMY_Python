@@ -381,7 +381,8 @@ PIPELINE_JS = {
             'js/services/ContractorsService.js',
             'js/services/WorkersCompService.js',
             'js/services/ProjectService.js',
-            'js/services/TimePunchCardService.js'
+            'js/services/TimePunchCardService.js',
+            'js/services/common/DateTimeService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }
