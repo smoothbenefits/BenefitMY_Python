@@ -33,6 +33,7 @@ String.prototype.capitalize = function() {
 
 var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
 var SHORT_DATE_FORMAT_STRING = 'MM/DD/YYYY';
+var SHORT_DATE_FORMAT_STRING_NO_YEAR = 'MM/DD';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 var DATE_TIME_FORMAT_STRING = 'LLLL';
 

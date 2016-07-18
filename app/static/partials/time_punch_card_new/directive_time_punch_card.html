@@ -1,0 +1,40 @@
+<div class="content-header">
+  <h1>Time Punch Cards</h1>
+  <span class="general-info">Manage Time Tracking</span>
+  <div class="view-instruction">
+    <p>Please use the below card to punch in time spent</p>
+    <p>You can also make time off requests at the bottom of the page</p>
+  </div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="panel">
+    <div class="panel-heading">
+        Select Week
+    </div>
+    <div class="panel-body">
+        <div class="col-md-4">
+            <div class="select-box">
+                <select
+                    id="display_week"
+                    ng-model="selectedDisplayWeek"
+                    name="display_week"
+                    ng-options="weekItem.weekDisplayText for weekItem in listOfWeeks"
+                    ng-change="reloadTimePunchCard()"
+                    class="form-control"></select>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-heading">
+        Time Punch Cards for the Week: <b>{{selectedDisplayWeek.weekDisplayText}}</b>
+    </div>
+    <div class="panel-body">
+      <div class="col-md-12">
+        <bm-time-punch-card-weekly-view
+          week="selectedDisplayWeek" user="user" company="company">
+        </bm-time-punch-card-weekly-view>
+      </div>
+    </div>
+  </div>

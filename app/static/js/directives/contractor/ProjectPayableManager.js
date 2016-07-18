@@ -80,6 +80,76 @@ BenefitMyApp.controller('ProjectPayableModalController', [
            ContractorsService,
            utilityService){
 
+    /**
+        #########################
+        # Fake Data Begins
+        #########################
+    */
+
+    $scope.employeePayments = [];
+    var employees = [
+        {
+            'fullName': 'Simon Cowell'
+        }, 
+        {
+            'fullName': 'Audrea White'
+        }, 
+        {
+            'fullName': 'Simpson Fleet'
+        } 
+    ];
+
+    var getListOfWeeks = function() {
+
+        // Configuration of the view window of weeks to include
+        var preWeeks = 10;
+        var postWeeks = 5;
+
+        var weeks = [];
+
+        // Get the start date of the current week as reference
+        var today = moment();
+        var startDateOfCurrentWeek = moment(today).startOf('week');
+
+        // Construct the list of weeks and massage the data ready for
+        // display
+        for (var i = -preWeeks; i <= postWeeks; i++) {
+            var weekStartDate = moment(startDateOfCurrentWeek).add(i, 'weeks');
+            var weekEndDate = moment(weekStartDate).endOf('week');
+            var weekItem = {
+                weekStartDate: weekStartDate,
+                weekDisplayText: weekStartDate.format(SHORT_DATE_FORMAT_STRING)
+                                + ' - '
+                                + weekEndDate.format(SHORT_DATE_FORMAT_STRING)
+            };
+
+            weeks.push(weekItem);
+        }
+
+        return weeks;
+    };
+
+    var weeks = getListOfWeeks();
+
+    for (i = 0; i < employees.length; i++) {
+        for (j = 0; j < weeks.length; j++) {
+            var amount = Math.floor((Math.random() * 2000) + 1);;
+            $scope.employeePayments.push(
+                {
+                    'employee': employees[i],
+                    'week': weeks[j].weekDisplayText,
+                    'amount': amount.toLocaleString()
+                }
+            );
+        }
+    }
+
+    /**
+        #########################
+        # Fake Data Ends
+        #########################
+    */
+
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
 
