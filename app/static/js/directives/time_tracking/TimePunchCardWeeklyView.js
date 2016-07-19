@@ -2,16 +2,20 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   '$scope',
   '$modalInstance',
   'TimePunchCardService',
+  'ProjectService',
   'UsStateService',
   'punchCard',
   'adminView',
+  'company',
   function(
     $scope,
     $modalInstance,
     TimePunchCardService,
+    ProjectService,
     UsStateService,
     punchCard,
-    adminView){
+    adminView,
+    company){
     $scope.headerText = punchCard ? 'Edit Punch Card' : 'Create Punch Card';
 
     $scope.punchCard = punchCard;
@@ -20,14 +24,28 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
     $scope.allStates = UsStateService.GetAllStates();
 
-    $scope.allProjects = [
-        '205 Aloha Avenue',
-        'The Universal Tower',
-        'Harland Street Rework'
-    ];
+    ProjectService.GetProjectsByCompany(company.id).then(function(projects) {
+        $scope.allProjects = projects;
+    });
 
     $scope.isAttributeVisible = function(attribute) {
         return !attribute.type.adminOnly || $scope.adminMode;
+    };
+
+    $scope.isValidToSave = function() {
+      if ($scope.form.$invalid) {
+        return false;
+      }
+
+      if (!moment($scope.punchCard.start).isBefore(moment($scope.punchCard.end))) {
+        return false;
+      }
+
+      if ($scope.punchCard.attributes.hourlyRate.value && $scope.punchCard.attributes.hourlyRate.value < 0) {
+        return false;
+      }
+
+      return true;
     };
 
     $scope.save = function(){
@@ -39,7 +57,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                 $modalInstance.close(false);
             }
         );
-    }
+    };
+
     $scope.cancel = function() {
         $modalInstance.dismiss();
     };
@@ -101,10 +120,13 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                 backdrop: 'static',
                 resolve: {
                   'punchCard': function() {
-                    return punchCard;
+                    return angular.copy(punchCard);
                   },
                   'adminView' : function() {
                     return $scope.adminView;
+                  },
+                  'company': function() {
+                    return $scope.company;
                   }
                 }
             });

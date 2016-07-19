@@ -29,7 +29,7 @@ benefitmyService.factory('TimePunchCardService',
             'HourlyRate': {
                 'name': 'HourlyRate',
                 'displayText': 'Hourly Rate',
-                'adminOnly': true
+                'adminOnly': false
             },
         };
 
@@ -89,22 +89,26 @@ benefitmyService.factory('TimePunchCardService',
             if (attributesDomainModel && attributesDomainModel.length > 0) {
                 for (i = 0; i < attributesDomainModel.length; i++) {
                     var domainAttr = attributesDomainModel[i];
-                    switch(domainAttr.name) {
-                        case AttributeTypes.State.name:
-                            result.state.value = domainAttr.value;
-                            break;
-                        case AttributeTypes.Project.name:
-                            // TODO:
-                            // Needs to translate to project object via
-                            // Project Service. This requires building
-                            // a cache for this access first.
-                            result.project.value = domainAttr.value;
-                            break;
-                        case AttributeTypes.HourlyRate.name:
-                            result.hourlyRate.value = domainAttr.value; 
-                            break;
-                        default:
-                            break;
+                    if (domainAttr.value) {
+                        switch(domainAttr.name) {
+                            case AttributeTypes.State.name:
+                                result.state.value = domainAttr.value;
+                                break;
+                            case AttributeTypes.Project.name:
+                                // TODO:
+                                // Needs to translate to project object via
+                                // Project Service. This requires building
+                                // a cache for this access first.
+                                ProjectService.GetProjectById(domainAttr.value).then(function(project) {
+                                    result.project.value = project;
+                                });
+                                break;
+                            case AttributeTypes.HourlyRate.name:
+                                result.hourlyRate.value = Number(domainAttr.value).toFixed(2); 
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
@@ -129,7 +133,7 @@ benefitmyService.factory('TimePunchCardService',
                 if (attributesViewModel.project && attributesViewModel.project.value) {
                     result.push({
                         'name': AttributeTypes.Project.name,
-                        'value': attributesViewModel.project.value
+                        'value': attributesViewModel.project.value._id
                     });
                 } 
 
