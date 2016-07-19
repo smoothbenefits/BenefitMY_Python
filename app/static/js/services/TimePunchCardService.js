@@ -29,7 +29,7 @@ benefitmyService.factory('TimePunchCardService',
             'HourlyRate': {
                 'name': 'HourlyRate',
                 'displayText': 'Hourly Rate',
-                'adminOnly': false
+                'adminOnly': true
             },
         };
 
