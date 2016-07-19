@@ -1,0 +1,76 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{headerText}}</h4>
+</div>
+<div class="modal-body col-md-12">
+  <div class="form-holder col-md-10 col-md-offset-1">
+    <form name="form">
+        <div>
+            <div class="form-label">Card Type</div>
+            <select name="card_type" ng-model="punchCard.recordType" ng-required="true" class="form-control">
+                <option style="display:none" value="">select a card type</option>
+                <option ng-repeat="type in cardTypes">{{type}}</option> 
+            </select>
+        </div>
+
+        <div>
+            <div class="form-label" style="margin-top: 10px;">Time Range</div>
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <timepicker
+                          style="float:left;"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="false"
+                          ng-model="punchCard.start">
+                        </timepicker>
+                        <timepicker
+                          style="float:right;"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="false"
+                          ng-model="punchCard.end">
+                        </timepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-if="isAttributeVisible(punchCard.attributes.state)">
+            <div class="form-label">State</div>
+            <select name="state" ng-model="punchCard.attributes.state.value" ng-required="true" class="form-control">
+                <option style="display:none" value="">select a state</option>
+                <option ng-repeat="state in allStates">{{state}}</option> 
+            </select>
+        </div>
+
+        <div ng-if="isAttributeVisible(punchCard.attributes.project)">
+            <div class="form-label">Project</div>
+            <select 
+                name="project" 
+                ng-model="punchCard.attributes.project.value"
+                ng-options="project.name for project in allProjects track by project._id"
+                class="form-control">
+            </select>
+        </div>
+
+        <div ng-if="isAttributeVisible(punchCard.attributes.hourlyRate)">
+            <div class="form-label">Houly Rate</div>
+            <div class="textbox input-group">
+                <span class="input-group-addon">$</span>
+                <input type="text"
+                  ng-model="punchCard.attributes.hourlyRate.value"
+                  min="0"
+                  fcsa-number="{ preventInvalidInput: true, maxDecimals: 2 }" />
+              </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-info" ng-click="save()" ng-disabled="!isValidToSave()" style="width: 20%">Save</button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+  </div>
+</div>
