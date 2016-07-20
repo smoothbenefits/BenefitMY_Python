@@ -6,13 +6,16 @@
     <form name="form">
         <div>
             <div class="form-label">Card Type</div>
-            <select name="card_type" ng-model="punchCard.recordType" ng-required="true" class="form-control">
-                <option style="display:none" value="">select a card type</option>
-                <option ng-repeat="type in cardTypes">{{type}}</option> 
+            <select
+                name="card_type"
+                ng-model="punchCard.recordType"
+                ng-options="cardType.name for cardType in cardTypes track by cardType.name"
+                ng-required="true"
+                class="form-control">
             </select>
         </div>
 
-        <div>
+        <div ng-if="isTimeRangeVisisble()">
             <div class="form-label" style="margin-top: 10px;">Time Range</div>
             <div class="panel">
                 <div class="panel-body">
@@ -36,7 +39,7 @@
             </div>
         </div>
 
-        <div ng-if="isAttributeVisible(punchCard.attributes.state)">
+        <div ng-if="isStateAttributeVisisble()">
             <div class="form-label">State</div>
             <select name="state" ng-model="punchCard.attributes.state.value" ng-required="true" class="form-control">
                 <option style="display:none" value="">select a state</option>
@@ -44,7 +47,7 @@
             </select>
         </div>
 
-        <div ng-if="isAttributeVisible(punchCard.attributes.project)">
+        <div ng-if="isProjectAttributeVisisble()">
             <div class="form-label">Project</div>
             <select 
                 name="project" 
@@ -54,7 +57,7 @@
             </select>
         </div>
 
-        <div ng-if="isAttributeVisible(punchCard.attributes.hourlyRate)">
+        <div ng-if="isHourlyRateAttributeVisisble()">
             <div class="form-label">Houly Rate</div>
             <div class="textbox input-group">
                 <span class="input-group-addon">$</span>
