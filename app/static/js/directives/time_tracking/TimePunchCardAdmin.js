@@ -26,39 +26,6 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
       $controller,
       TimePunchCardService) {
 
-        $scope.employeeTimeCards = [
-            {
-                'employee': {
-                    'firstName': 'Simon',
-                    'lastName': 'Cowell'
-                },
-                'getTotalBaseHours': function() {
-                    return 40;
-                },
-                updatedTimestamp: 'Tuesday, July 5, 2016 8:08 PM'
-            },
-            {
-                'employee': {
-                    'firstName': 'Clint',
-                    'lastName': 'Wilson'
-                },
-                'getTotalBaseHours': function() {
-                    return 38.5;
-                },
-                updatedTimestamp: 'Monday, July 4, 2016 4:08 PM'
-            },
-            {
-                'employee': {
-                    'firstName': 'Laura',
-                    'lastName': 'White'
-                },
-                'getTotalBaseHours': function() {
-                    return 47.5;
-                },
-                updatedTimestamp: 'Thursday, July 7, 2016 11:25 AM'
-            }
-        ];
-
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
 
@@ -117,16 +84,24 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
         $scope.reloadTimePunchCard = function() {
           TimePunchCardService.GetWeeklyPunchCardsByCompany($scope.company.id, $scope.selectedDisplayWeek.weekStartDate)
           .then(function(companyPunchCardsByEmployee) {
+
+            // Expect companyPunchCardsByEmployee is an array of objects
+            // which key off employee person descriptor
             var employeeTotalTimes = [];
             var employees = _.keys(companyPunchCardsByEmployee);
+
             _.each(employees, function(employee) {
               var employeePunchCards = companyPunchCardsByEmployee[employee];
 
               if (employeePunchCards && employeePunchCards.length > 0) {
+                // Calculate total time for each employee
+                // Set initial reduce value to 0
                 var totalTimeInHour = _.reduce(employeePunchCards, function(memo, punchCard) {
                   var startTime = moment(punchCard.start);
                   var endTime = moment(punchCard.end);
-                  var duration = endTime.diff(startTime, 'hours', true); // avoid rounding when calculating
+
+                  // Get time difference between start and end time in hour before rounding
+                  var duration = endTime.diff(startTime, 'hours', true);
 
                   return memo + duration;
                 }, 0);
