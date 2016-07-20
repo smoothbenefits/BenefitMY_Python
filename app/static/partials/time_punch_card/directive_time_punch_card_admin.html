@@ -1,0 +1,61 @@
+<div class="content-header">
+  <h1>Timesheet Reports and Time-off Requests</h1>
+  <span class="general-info">View the work hour reported by employees</span>
+  <div class="view-instruction">
+    <p>You can find the total hours submitted by employees for selected week</p>
+  </div>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="panel">
+    <div class="panel-heading">
+        Select Week
+    </div>
+    <div class="panel-body">
+        <div class="col-md-4">
+            <div class="select-box">
+                <select
+                    id="display_week"
+                    ng-model="selectedDisplayWeek"
+                    name="display_week"
+                    ng-options="weekItem.weekDisplayText for weekItem in listOfWeeks"
+                    ng-change="reloadTimePunchCard()"
+                    class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-md-4 col-md-offset-4">
+          <a ng-click="downloadWeeklyTimePunchCardReport()">Download weekly worktime report</a>
+        </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-heading">
+      The work hours submitted for week <b>{{selectedDisplayWeek.weekDisplayText}}</b>
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped benefit-table fix-layout-table"
+        id="plan_items_table"
+        ng-show="employeePunchCards.length > 0">
+        <thead>
+          <th><div>Name</div></th>
+          <th width="100"><div>Hours</div></th>
+          <th width="100"><div>Action</div></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="employeeTimeCard in employeePunchCards">
+            <td>
+              <span>{{employeeTimeCard.employee.firstName}} {{employeeTimeCard.employee.lastName}}</span>
+            </td>
+            <td width="100">{{employeeTimeCard.hours}}</td>
+            <td width="100"><span>
+                <a ng-click="editTimeCard(null, null, selectedDisplayWeek)">Edit</a>
+              </span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="" ng-show="employeePunchCards.length == 0">
+        There are no submitted work hours for week {{selectedDisplayWeek.weekDisplayText}}
+      </div>
+    </div>
+  </div>
+</div>
