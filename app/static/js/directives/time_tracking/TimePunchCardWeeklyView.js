@@ -37,18 +37,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             && $scope.punchCard.recordType.behavior.timeRangeOn;
     };
 
-    $scope.isStateAttributeVisisble = function() {
-        return $scope.punchCard.recordType
-            && $scope.punchCard.recordType.behavior.stateOn
-            && isAttributeVisible(punchCard.attributes.state);
-    };
-
-    $scope.isProjectAttributeVisisble = function() {
-        return $scope.punchCard.recordType
-            && $scope.punchCard.recordType.behavior.projectOn
-            && isAttributeVisible(punchCard.attributes.project);
-    };
-
     $scope.isHourlyRateAttributeVisisble = function() {
         return $scope.punchCard.recordType
             && $scope.punchCard.recordType.behavior.hourlyRateOn

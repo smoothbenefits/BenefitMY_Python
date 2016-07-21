@@ -38,37 +38,19 @@ benefitmyService.factory('TimePunchCardService',
                 punchCard.start = null;
                 punchCard.end = null;
             }
-            if (!this.stateOn) {
-                punchCard.attributes.state.value = null;
-            }
-            if (!this.projectOn) {
-                punchCard.attributes.project.value = null;
-            }
-            if (!this.hourlyRateOn) {
-                punchCard.attributes.hourlyRate.value = null;
-            }
         };
 
         var PunchCardTypeBehaviors = {
             'WorkTime': {
                 'timeRangeOn': true,
-                'stateOn': true,
-                'projectOn': true,
-                'hourlyRateOn': true,
                 'sanitizeViewModel': sanitizeViewModel
             },
             'PartialDayOff': {
                 'timeRangeOn': true,
-                'stateOn': true,
-                'projectOn': true,
-                'hourlyRateOn': true,
                 'sanitizeViewModel': sanitizeViewModel
             },
             'FullDayOff': {
                 'timeRangeOn': false,
-                'stateOn': true,
-                'projectOn': true,
-                'hourlyRateOn': true,
                 'sanitizeViewModel': sanitizeViewModel
             }
         };
