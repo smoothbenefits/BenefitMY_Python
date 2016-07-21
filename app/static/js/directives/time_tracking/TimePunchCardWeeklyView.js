@@ -28,8 +28,19 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         $scope.allProjects = projects;
     });
 
-    $scope.isAttributeVisible = function(attribute) {
+    var isAttributeVisible = function(attribute) {
         return !attribute.type.adminOnly || $scope.adminMode;
+    };
+
+    $scope.isTimeRangeVisisble = function() {
+        return $scope.punchCard.recordType
+            && $scope.punchCard.recordType.behavior.timeRangeOn;
+    };
+
+    $scope.isHourlyRateAttributeVisisble = function() {
+        return $scope.punchCard.recordType
+            && $scope.punchCard.recordType.behavior.hourlyRateOn
+            && isAttributeVisible(punchCard.attributes.hourlyRate);
     };
 
     $scope.isValidToSave = function() {
@@ -37,18 +48,24 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         return false;
       }
 
-      if (!moment($scope.punchCard.start).isBefore(moment($scope.punchCard.end))) {
+      if ($scope.isTimeRangeVisisble()
+            && !moment($scope.punchCard.start).isBefore(moment($scope.punchCard.end))) {
         return false;
       }
 
-      if ($scope.punchCard.attributes.hourlyRate.value && $scope.punchCard.attributes.hourlyRate.value < 0) {
+      if ($scope.punchCard.attributes.hourlyRate.value
+            && $scope.punchCard.attributes.hourlyRate.value < 0) {
         return false;
       }
 
       return true;
     };
 
-    $scope.save = function(){
+    $scope.save = function() {
+        // Perform card type based sanitization first
+        $scope.punchCard.recordType.behavior.sanitizeViewModel($scope.punchCard);
+
+        // Now save
         TimePunchCardService.SavePunchCard($scope.punchCard).then(
             function(successResponse) {
                 $modalInstance.close(true);
@@ -106,11 +123,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         };
 
         $scope.init();
-
-        $scope.getDisplayTime = function(dateTime) {
-            var time = moment(dateTime);
-            return time.format('hh:mm');
-        };
 
         var showEditModal = function(punchCard) {
             var modalInstance = $modal.open({

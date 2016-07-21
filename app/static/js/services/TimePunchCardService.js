@@ -33,33 +33,105 @@ benefitmyService.factory('TimePunchCardService',
             },
         };
 
-        var PunchCardTypes = {
-            'WorkDay': 'Work Day',
-            'NotWorkDay': 'Not a Work Day',
-            'CompanyHoliday': 'Company Holiday',
-            'PaidTimeOff': 'Paid Time Off',
-            'SickTime': 'Sick Time',
-            'PersonalLeave': 'Personal Leave'
+        var sanitizeViewModel = function(punchCard) {
+            if (!this.timeRangeOn) {
+                punchCard.start = null;
+                punchCard.end = null;
+            }
         };
 
-        var GetAvailablePunchCardTypes = function() {
-            var result = $.map(PunchCardTypes, function(value, index) {
+        var PunchCardTypeBehaviors = {
+            'WorkTime': {
+                'timeRangeOn': true,
+                'sanitizeViewModel': sanitizeViewModel
+            },
+            'PartialDayOff': {
+                'timeRangeOn': true,
+                'sanitizeViewModel': sanitizeViewModel
+            },
+            'FullDayOff': {
+                'timeRangeOn': false,
+                'sanitizeViewModel': sanitizeViewModel
+            }
+        };
+
+        var PunchCardTypes = {
+            'WorkTime': {
+                'name': 'Work Time',
+                'behavior': PunchCardTypeBehaviors.WorkTime
+            },
+            'CompanyHoliday': {
+                'name': 'Company Holiday',
+                'behavior': PunchCardTypeBehaviors.FullDayOff
+            },
+            'PaidTimeOff': {
+                'name': 'Paid Time Off',
+                'behavior': PunchCardTypeBehaviors.PartialDayOff
+            },
+            'SickTime': {
+                'name': 'Sick Time',
+                'behavior': PunchCardTypeBehaviors.PartialDayOff
+            },
+            'PersonalLeave': {
+                'name': 'Personal Leave',
+                'behavior': PunchCardTypeBehaviors.PartialDayOff
+            }
+        };
+
+        // Transform the card types to an array and cache for continued
+        // uses.
+        var punchCardTypesArray = $.map(PunchCardTypes, function(value, index) {
                 return [value];
             });
 
-            return result;
+        var GetAvailablePunchCardTypes = function() {
+            return punchCardTypesArray;
         };
+
+
+        // Global default start and end time for new cards
+        var defaultStartTime = new Date();
+        defaultStartTime.setHours(0);
+        defaultStartTime.setMinutes(0);
+
+        var defaultEndTime = new Date();
+        defaultEndTime.setHours(0);
+        defaultEndTime.setMinutes(0);
 
         var mapDomainToViewModel = function(domainModel) {
             var viewModel = angular.copy(domainModel);
+            
+            // Map out the card attributes for front-end usage
             viewModel.attributes = mapAttributesDomainToViewModel(domainModel.attributes);
             
+            // Map out the card type to one of the object defined in 
+            // PunchCardTypes above
+            viewModel.recordType = _.find(punchCardTypesArray, function(cardType) {
+                return cardType.name == domainModel.recordType;
+            });
+
+            // Attach utility functions
+            viewModel.getTimeRangeDisplayText = function() {
+                if (!this.start || !this.end) {
+                    return 'N/A';
+                }
+
+                return moment(this.start).format('HH:mm') 
+                    + ' - '
+                    + moment(this.end).format('HH:mm');
+            };
+
             return viewModel;
         };
 
         var mapViewToDomainModel = function(viewModel) {
             var domainModel = angular.copy(viewModel);
+            
+            // Map out the card attributes for storage
             domainModel.attributes = mapAttributesViewToDomainModel(viewModel.attributes);
+
+            // Map out the card type name
+            domainModel.recordType = viewModel.recordType.name;
 
             // Delete this to avoid mongo db error 
             delete domainModel._id
@@ -148,15 +220,6 @@ benefitmyService.factory('TimePunchCardService',
             return result;
         };
 
-        // Global default start and end time for new cards
-        var defaultStartTime = new Date();
-        defaultStartTime.setHours(0);
-        defaultStartTime.setMinutes(0);
-
-        var defaultEndTime = new Date();
-        defaultEndTime.setHours(0);
-        defaultEndTime.setMinutes(0);
-
         var GetBlankPunchCardForEmployeeUser = function(
             employeeUser,
             company,
@@ -241,7 +304,9 @@ benefitmyService.factory('TimePunchCardService',
         };
 
         var OrderPunchCardsByTime = function(punchCards) {
-            return punchCards;
+            return _.sortBy(punchCards, function(card) {
+                return card.start;
+            });
         };
 
         var MapPunchCardsToWeekdays = function(punchCards) {
