@@ -18,60 +18,27 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     '$modal',
     '$attrs',
     '$controller',
+    'DateTimeService',
     'TimePunchCardService',
     function TimePunchCardAdminController(
       $scope,
       $modal,
       $attrs,
       $controller,
+      DateTimeService,
       TimePunchCardService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
 
-        /**
-            Get the list of weeks for display
-        */
-        var getListOfWeeks = function() {
-
+        $scope.$watch('company', function(company) {
+          if(company){
             // Configuration of the view window of weeks to include
             var preWeeks = 10;
             var postWeeks = 5;
 
-            var weeks = [];
-
-            // Get the start date of the current week as reference
-            var today = moment();
-            var startDateOfCurrentWeek = moment(today).startOf('week');
-
-            // Construct the list of weeks and massage the data ready for
-            // display
-            for (var i = -preWeeks; i <= postWeeks; i++) {
-                var weekStartDate = moment(startDateOfCurrentWeek).add(i, 'weeks');
-                var weekEndDate = moment(weekStartDate).endOf('week');
-                var weekItem = {
-                    weekStartDate: weekStartDate,
-                    weekDisplayText: weekStartDate.format(SHORT_DATE_FORMAT_STRING)
-                                    + ' - '
-                                    + weekEndDate.format(SHORT_DATE_FORMAT_STRING)
-                };
-
-                // Mark the current week for easy selection
-                if (weekItem.weekStartDate.isSame(startDateOfCurrentWeek)) {
-                    weekItem.isCurrentWeek = true;
-                    weekItem.weekDisplayText = weekItem.weekDisplayText + ' [*]'
-                }
-
-                weeks.push(weekItem);
-            }
-
-            return weeks;
-        };
-
-        $scope.$watch('company', function(company) {
-          if(company){
             // Populate the weeks for display
-            $scope.listOfWeeks = getListOfWeeks();
+            $scope.listOfWeeks = DateTimeService.GetListOfWeeks(preWeeks, postWeeks);
 
             $scope.selectedDisplayWeek = _.find($scope.listOfWeeks, function(weekItem) {
                 return weekItem.isCurrentWeek;
@@ -82,16 +49,25 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
         });
 
         $scope.reloadTimePunchCard = function() {
+
+          /***
+          *  Total work hours should NOT include times with these record type.
+          *  TODO: control excluded types dynamically based on types defined in service
+          ***/
+          var EXCLUDED_RECORD_TYPE = 'Company Holiday';
+
           TimePunchCardService.GetWeeklyPunchCardsByCompany($scope.company.id, $scope.selectedDisplayWeek.weekStartDate)
           .then(function(companyPunchCardsByEmployee) {
 
             // Expect companyPunchCardsByEmployee is an array of objects
-            // which key off employee person descriptor
+            // which keys off employee person descriptor
             var employeeTotalTimes = [];
             var employees = _.keys(companyPunchCardsByEmployee);
 
             _.each(employees, function(employee) {
-              var employeePunchCards = companyPunchCardsByEmployee[employee];
+              var employeePunchCards = _.filter(companyPunchCardsByEmployee[employee], function(punchCard) {
+                return punchCard.recordType !== EXCLUDED_RECORD_TYPE;
+              });
 
               if (employeePunchCards && employeePunchCards.length > 0) {
                 // Calculate total time for each employee

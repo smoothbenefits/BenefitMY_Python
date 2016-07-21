@@ -38,16 +38,16 @@
         ng-show="employeePunchCards.length > 0">
         <thead>
           <th><div>Name</div></th>
-          <th width="100"><div>Hours</div></th>
-          <th width="100"><div>Action</div></th>
+          <th><div>Total Hours</div></th>
+          <th><div>Action</div></th>
         </thead>
         <tbody>
           <tr ng-repeat="employeeTimeCard in employeePunchCards">
             <td>
               <span>{{employeeTimeCard.employee.firstName}} {{employeeTimeCard.employee.lastName}}</span>
             </td>
-            <td width="100">{{employeeTimeCard.hours}}</td>
-            <td width="100"><span>
+            <td>{{employeeTimeCard.hours}}</td>
+            <td><span>
                 <a ng-click="editTimeCard(null, null, selectedDisplayWeek)">Edit</a>
               </span></td>
           </tr>
