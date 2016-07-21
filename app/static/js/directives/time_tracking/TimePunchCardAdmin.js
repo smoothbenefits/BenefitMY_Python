@@ -48,6 +48,41 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
           }
         });
 
+        var CalculateEmployeeTotalHours = function(punchCardsByEmployee, excludedRecordType) {
+          // Expect companyPunchCardsByEmployee is an array of objects
+          // which keys off employee person descriptor
+          var employeeTotalTimes = [];
+          var employees = _.keys(companyPunchCardsByEmployee);
+
+          _.each(employees, function(employee) {
+            var employeePunchCards = _.filter(companyPunchCardsByEmployee[employee], function(punchCard) {
+              return punchCard.recordType !== excludedRecordType;
+            });
+
+            if (employeePunchCards && employeePunchCards.length > 0) {
+              // Calculate total time for each employee
+              // Set initial reduce value to 0
+              var totalTimeInHour = _.reduce(employeePunchCards, function(memo, punchCard) {
+                var startTime = moment(punchCard.start);
+                var endTime = moment(punchCard.end);
+
+                // Get time difference between start and end time in hour before rounding
+                var duration = endTime.diff(startTime, 'hours', true);
+
+                return memo + duration;
+              }, 0);
+
+              // Get employee information from the first punch time
+              employeeTotalTimes.push({
+                employee: employeePunchCards[0].employee,
+                hours: totalTimeInHour.toFixed(2)
+              });
+            }
+          });
+
+          return employeeTotalTimes;
+        };
+
         $scope.reloadTimePunchCard = function() {
 
           /***
@@ -59,37 +94,11 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
           TimePunchCardService.GetWeeklyPunchCardsByCompany($scope.company.id, $scope.selectedDisplayWeek.weekStartDate)
           .then(function(companyPunchCardsByEmployee) {
 
-            // Expect companyPunchCardsByEmployee is an array of objects
-            // which keys off employee person descriptor
-            var employeeTotalTimes = [];
-            var employees = _.keys(companyPunchCardsByEmployee);
-
-            _.each(employees, function(employee) {
-              var employeePunchCards = _.filter(companyPunchCardsByEmployee[employee], function(punchCard) {
-                return punchCard.recordType !== EXCLUDED_RECORD_TYPE;
-              });
-
-              if (employeePunchCards && employeePunchCards.length > 0) {
-                // Calculate total time for each employee
-                // Set initial reduce value to 0
-                var totalTimeInHour = _.reduce(employeePunchCards, function(memo, punchCard) {
-                  var startTime = moment(punchCard.start);
-                  var endTime = moment(punchCard.end);
-
-                  // Get time difference between start and end time in hour before rounding
-                  var duration = endTime.diff(startTime, 'hours', true);
-
-                  return memo + duration;
-                }, 0);
-
-                // Get employee information from the first punch time
-                employeeTotalTimes.push({
-                  employee: employeePunchCards[0].employee,
-                  hours: totalTimeInHour.toFixed(2)
-                });
-              }
-            });
-
+            var employeeTotalTimes = CalculateEmployeeTotalHours(
+                companyPunchCardsByEmployee,
+                EXCLUDED_RECORD_TYPE
+              );
+            
             $scope.employeePunchCards = employeeTotalTimes;
           });
         };
