@@ -85,20 +85,27 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
         $scope.reloadTimePunchCard = function() {
 
-          /***
-          *  Total work hours should NOT include times with these record type.
-          *  TODO: control excluded types dynamically based on types defined in service
-          ***/
-          var EXCLUDED_RECORD_TYPE = 'Company Holiday';
-
           TimePunchCardService.GetWeeklyPunchCardsByCompany($scope.company.id, $scope.selectedDisplayWeek.weekStartDate)
           .then(function(companyPunchCardsByEmployee) {
 
-            var employeeTotalTimes = CalculateEmployeeTotalHours(
-                companyPunchCardsByEmployee,
-                EXCLUDED_RECORD_TYPE
-              );
-            
+            // Expect companyPunchCardsByEmployee is an array of objects
+            // which keys off employee person descriptor
+            var employeeTotalTimes = [];
+            var employees = _.keys(companyPunchCardsByEmployee);
+
+            _.each(employees, function(employee) {
+              var employeePunchCards = companyPunchCardsByEmployee[employee];
+
+              if (employeePunchCards && employeePunchCards.length > 0) {
+                var totalTimeInHour = TimePunchCardService.CalculateTotalHours(employeePunchCards);
+                // Get employee information from the first punch time
+                employeeTotalTimes.push({
+                  employee: employeePunchCards[0].employee,
+                  hours: totalTimeInHour.toFixed(2)
+                });
+              }
+            });
+
             $scope.employeePunchCards = employeeTotalTimes;
           });
         };

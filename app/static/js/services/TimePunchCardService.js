@@ -43,14 +43,17 @@ benefitmyService.factory('TimePunchCardService',
         var PunchCardTypeBehaviors = {
             'WorkTime': {
                 'timeRangeOn': true,
+                'includedInTotalHours': true,
                 'sanitizeViewModel': sanitizeViewModel
             },
             'PartialDayOff': {
                 'timeRangeOn': true,
+                'includedInTotalHours': true,
                 'sanitizeViewModel': sanitizeViewModel
             },
             'FullDayOff': {
                 'timeRangeOn': false,
+                'includedInTotalHours': false,
                 'sanitizeViewModel': sanitizeViewModel
             }
         };
@@ -322,6 +325,37 @@ benefitmyService.factory('TimePunchCardService',
               });
         };
 
+        var CalculateTotalHours = function(punchCards) {
+
+          // Get record types of which punch cards should be included in calculation
+          var includedRecordTypes = _.filter(PunchCardTypes, function(type) {
+            return type.behavior.includedInTotalHours;
+          });
+
+          var includedRecordTypeNames = _.map(includedRecordTypes, function(type) {
+            return type.name;
+          });
+
+          var includedPunchCards = _.filter(punchCards, function(card) {
+            var cardType = card.recordType ? card.recordType.name : '';
+            return _.contains(includedRecordTypeNames, cardType);
+          });
+
+          // Calculate total time for each employee
+          // Set initial reduce value to 0
+          var totalTimeInHour = _.reduce(includedPunchCards, function(memo, punchCard) {
+            var startTime = moment(punchCard.start);
+            var endTime = moment(punchCard.end);
+
+            // Get time difference between start and end time in hour before rounding
+            var duration = endTime.diff(startTime, 'hours', true);
+
+            return memo + duration;
+          }, 0);
+
+          return totalTimeInHour;
+        };
+
         var OrderPunchCardsByTime = function(punchCards) {
             return _.sortBy(punchCards, function(card) {
                 return card.start;
@@ -340,6 +374,7 @@ benefitmyService.factory('TimePunchCardService',
           GetAvailablePunchCardTypes: GetAvailablePunchCardTypes,
           SavePunchCard: SavePunchCard,
           DeletePunchCard: DeletePunchCard,
+          CalculateTotalHours: CalculateTotalHours,
           GetWeeklyPunchCardsByEmployeeUser: GetWeeklyPunchCardsByEmployeeUser,
           GetWeeklyPunchCardsByCompany: GetWeeklyPunchCardsByCompany,
           GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser
