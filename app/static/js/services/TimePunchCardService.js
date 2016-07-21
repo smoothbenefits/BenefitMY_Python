@@ -134,9 +134,9 @@ benefitmyService.factory('TimePunchCardService',
                     return 'N/A';
                 }
 
-                return moment(this.start).format('hh:mm') 
+                return moment(this.start).format('HH:mm') 
                     + ' - '
-                    + moment(this.end).format('hh:mm');
+                    + moment(this.end).format('HH:mm');
             };
 
             return viewModel;
@@ -322,7 +322,9 @@ benefitmyService.factory('TimePunchCardService',
         };
 
         var OrderPunchCardsByTime = function(punchCards) {
-            return punchCards;
+            return _.sortBy(punchCards, function(card) {
+                return card.start;
+            });
         };
 
         var MapPunchCardsToWeekdays = function(punchCards) {
