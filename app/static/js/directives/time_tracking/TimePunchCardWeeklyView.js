@@ -52,9 +52,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     $scope.isHourlyRateAttributeVisisble = function() {
         return $scope.punchCard.recordType
             && $scope.punchCard.recordType.behavior.hourlyRateOn
-            && isAttributeVisible(punchCard.attributes.hourlyRate)
-            && $scope.isProjectAttributeVisisble()
-            && $scope.punchCard.attributes.project.value;
+            && isAttributeVisible(punchCard.attributes.hourlyRate);
     };
 
     $scope.isValidToSave = function() {

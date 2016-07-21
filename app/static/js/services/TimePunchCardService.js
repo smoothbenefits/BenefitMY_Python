@@ -59,16 +59,16 @@ benefitmyService.factory('TimePunchCardService',
             },
             'PartialDayOff': {
                 'timeRangeOn': true,
-                'stateOn': false,
-                'projectOn': false,
-                'hourlyRateOn': false,
+                'stateOn': true,
+                'projectOn': true,
+                'hourlyRateOn': true,
                 'sanitizeViewModel': sanitizeViewModel
             },
             'FullDayOff': {
                 'timeRangeOn': false,
-                'stateOn': false,
-                'projectOn': false,
-                'hourlyRateOn': false,
+                'stateOn': true,
+                'projectOn': true,
+                'hourlyRateOn': true,
                 'sanitizeViewModel': sanitizeViewModel
             }
         };
