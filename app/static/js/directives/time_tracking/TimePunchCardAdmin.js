@@ -2,12 +2,18 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
   '$scope',
   '$modalInstance',
   'week',
+  'user',
+  'company',
   function(
     $scope,
     $modalInstance,
-    week) {
+    week,
+    user,
+    company) {
 
     $scope.week = week;
+    $scope.user = user;
+    $scope.company = company;
 
     $scope.close = function(){
         $modalInstance.close();
@@ -18,6 +24,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     '$modal',
     '$attrs',
     '$controller',
+    'utilityService',
     'DateTimeService',
     'TimePunchCardService',
     function TimePunchCardAdminController(
@@ -25,6 +32,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
       $modal,
       $attrs,
       $controller,
+      utilityService,
       DateTimeService,
       TimePunchCardService) {
 
@@ -78,15 +86,25 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
         $scope.downloadWeeklyTimePunchCardReport = function() {
         };
 
-        $scope.editTimeCard = function(userDesc, companyDesc, weekSelected) {
+        $scope.editTimeCard = function(employee, weekSelected) {
           $modal.open({
-            templateUrl: '/static/partials/time_punch_card_new/modal_weekly_time_punch_card.html',
+            templateUrl: '/static/partials/time_punch_card/modal_weekly_time_punch_card.html',
             controller: 'TimePunchCardWeeklyViewModalController',
             size: 'lg',
             backdrop: 'static',
             resolve: {
               'week': function() {
                 return weekSelected;
+              },
+              'user': function() {
+                return {
+                  id: utilityService.retrieveIdFromEnvAwareId(employee.personDescriptor)
+                };
+              },
+              'company': function() {
+                return {
+                  id: utilityService.retrieveIdFromEnvAwareId(employee.companyDescriptor)
+                };
               }
             }
           });
