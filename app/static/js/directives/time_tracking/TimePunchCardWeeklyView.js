@@ -4,6 +4,9 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   'TimePunchCardService',
   'ProjectService',
   'UsStateService',
+  'PersonService',
+  'CompensationService',
+  'utilityService',
   'punchCard',
   'adminView',
   'company',
@@ -13,6 +16,9 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     TimePunchCardService,
     ProjectService,
     UsStateService,
+    PersonService,
+    CompensationService,
+    utilityService,
     punchCard,
     adminView,
     company){
@@ -27,6 +33,26 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     ProjectService.GetProjectsByCompany(company.id).then(function(projects) {
         $scope.allProjects = projects;
     });
+
+    //Fill in the hourly rate of the punchCard by compensation if missing
+    if(!$scope.punchCard.attributes.hourlyRate.value){
+      var userId = utilityService.retrieveIdFromEnvAwareId(
+        $scope.punchCard.employee.personDescriptor);
+      PersonService.getSelfPersonInfo(userId)
+      .then(function(person){
+        CompensationService.getCurrentCompensationByPerson(person.id)
+        .then(function(compensation){
+          if(compensation){
+            if(compensation.hourly_rate){
+              $scope.punchCard.attributes.hourlyRate.value = parseFloat(compensation.hourlyRate);
+            }
+            else{
+              $scope.punchCard.attributes.hourlyRate.value = parseFloat(compensation.salary) / 40 / 52;
+            }
+          }
+        });
+      });
+    }
 
     var isAttributeVisible = function(attribute) {
         return !attribute.type.adminOnly || $scope.adminMode;
