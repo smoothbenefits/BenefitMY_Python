@@ -1729,6 +1729,43 @@ var employerEditEmployeeTimePunchCards = employersController.controller('employe
     }
 ]);
 
+var employerAdminIndividualTimePunchCards = employersController.controller('employerAdminIndividualTimePunchCards', [
+  '$scope',
+  '$state',
+  '$stateParams',
+  'UserService',
+  function($scope, $state, $stateParams, UserService){
+    var employeeId = $stateParams.employee_id;
+    $scope.startDate = $stateParams.startDate;
+    UserService.getCurUserInfo().then(function(curUserInfo){
+      $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+      $scope.company = curUserInfo.currentRole.company;
+    });
+    UserService.getUserDataByUserId(employeeId)
+      .then(function(employee){
+        $scope.user = employee;
+        $scope.pageTitle = 'Time punch cards for ' + employee.first_name + ' ' + employee.last_name;
+
+      });
+
+    $scope.isAdmin = false;
+    $scope.backToDashboard = function(){
+      $state.go('/');
+    };
+
+    $scope.goToEmployeeListView = function(){
+      $state.go('admin_timepunchcards');
+    };
+    $scope.updateUser = function(selectedUser, weekDate){
+      $state.go('admin_individual_timepunchcards',
+        {
+          employee_id: selectedUser,
+          startDate: weekDate
+        });
+    };
+  }
+]);
+
 var employerViewDepartments = employersController.controller('employerViewDepartments', [
     '$scope',
     '$state',
