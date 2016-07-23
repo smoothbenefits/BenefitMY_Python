@@ -123,7 +123,7 @@ BenefitMyApp.controller('ProjectPayableModalController', [
             $scope.employeePayments.push({
               'employee': employeeFullName,
               'week': moment(weekStartDate).format(SHORT_DATE_FORMAT_STRING) + ' - ' + moment(weekStartDate).add(7, 'd').format(SHORT_DATE_FORMAT_STRING),
-              'amount': amount
+              'amount': amount.toFixed(2)
             });
           }
         }
