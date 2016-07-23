@@ -430,14 +430,14 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 self._draw_line()
 
                 month_factor = fsa.company_fsa_plan.company.pay_period_definition.month_factor
-                prim_amount = 0
+                primary_amount = 0
                 if (fsa.primary_amount_per_year):
-                    prim_amount = fsa.primary_amount_per_year
-                dep_amount = 0
+                    primary_amount = fsa.primary_amount_per_year
+                dependent_amount = 0
                 if (fsa.dependent_amount_per_year):
-                    dep_amount = fsa.dependent_amount_per_year
-                self._write_line_uniform_width(['Health Account', prim_amount, "${:.2f}".format(float(prim_amount) / 12 * month_factor)])
-                self._write_line_uniform_width(['Dependent Care Account', dep_amount, "${:.2f}".format(float(dep_amount) / 12 * month_factor)])
+                    dependent_amount = fsa.dependent_amount_per_year
+                self._write_line_uniform_width(['Health Account', primary_amount, "${:.2f}".format(float(primary_amount) / 12 * month_factor)])
+                self._write_line_uniform_width(['Dependent Care Account', dependent_amount, "${:.2f}".format(float(dependent_amount) / 12 * month_factor)])
 
                 self._start_new_line()
                 self._start_new_line()
