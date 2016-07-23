@@ -87,7 +87,7 @@ BenefitMyApp.controller('ProjectPayableModalController', [
     $controller('modalMessageControllerBase', {$scope: $scope});
 
     var PopulateEmployeePayables = function(companyId, project){
-      TimePunchCardService.GetWeeklyPunchCardsByCompany(companyId)
+      TimePunchCardService.GetAllPunchCardsByCompany(companyId)
       .then(function(punchCardsByEmployee){
         $scope.employeePayments = [];
         for(employeeId in punchCardsByEmployee){
@@ -116,8 +116,7 @@ BenefitMyApp.controller('ProjectPayableModalController', [
             var employeeFullName = filteredForHoursCalculation[0].employee.firstName + ' ' + filteredForHoursCalculation[0].employee.lastName;
             var amount = 0;
             _.each(filteredForHoursCalculation, function(employeeCard){
-                 var duration = TimePunchCardService.GetDurationInCard(employeeCard);
-                 //TODO: Get the compensation record of the employee and apply it here.
+                 var duration = employeeCard.getDuration();
                  amount += duration * employeeCard.attributes.hourlyRate.value || 0;
             });
             var weekStartDate = Date.parse(weekStart);

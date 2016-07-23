@@ -124,6 +124,17 @@ benefitmyService.factory('TimePunchCardService',
                     + moment(this.end).format('HH:mm');
             };
 
+            viewModel.getDuration = function(){
+                if (!this.start || !this.end) {
+                    return 0;
+                }
+                var startTime = moment(this.start);
+                var endTime = moment(this.end);
+
+                // Get time difference between start and end time in hour before rounding
+                return endTime.diff(startTime, 'hours', true);
+            };
+
             return viewModel;
         };
 
@@ -280,51 +291,63 @@ benefitmyService.factory('TimePunchCardService',
             });
         };
 
-        var GetWeeklyPunchCardsByEmployeeUser = function(employeeUser, weekStartDate, weekEndDate){
-            var id = utilityService.getEnvAwareId(employeeUser.id);
-            var weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
-            var weekEndDateString = moment(weekEndDate).format(STORAGE_DATE_FORMAT_STRING);
+        var GetPunchCards = function(repoEndpoint, apiId, startDate, endDate){
+            var id = utilityService.getEnvAwareId(apiId);
 
-            return TimePunchCardRepository.ByEmployee.query({
-                  userId: id,
-                  start_date: weekStartDateString,
-                  end_date: weekEndDateString})
-              .$promise.then(function(punchCards) {
+            return repoEndpoint.query({
+                id: id,
+                start_date: startDate,
+                end_date: endDate
+            }).$promise.then(function(punchCards){
                 var resultCards = [];
                 if (punchCards && punchCards.length > 0) {
                     _.each(punchCards, function(domainModel) {
                         resultCards.push(mapDomainToViewModel(domainModel));
                     });
                 }
-                return MapPunchCardsToWeekdays(resultCards);
-              });
+                return resultCards;
+            });
+        }
+
+        var GetWeeklyPunchCardsByEmployeeUser = function(employeeUser, weekStartDate, weekEndDate){
+            var weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
+            var weekEndDateString = moment(weekEndDate).format(STORAGE_DATE_FORMAT_STRING);
+
+            return GetPunchCards(
+                TimePunchCardRepository.ByEmployee,
+                employeeUser.id,
+                weekStartDateString,
+                weekEndDateString).then(function(punchCards){
+                    return MapPunchCardsToWeekdays(punchCards);
+                });
         };
 
-        var GetWeeklyPunchCardsByCompany = function(companyId, weekStartDate){
-          var weekStartDateString, weekEndDateString;
-          if(weekStartDate){
+        var GetAllPunchCardsByCompany = function(companyId){
+            return GetPunchCards(
+                TimePunchCardRepository.ByCompany,
+                companyId,
+                undefined,
+                undefined).then(function(punchCards){
+                    var groupedPunchCards = _.groupBy(punchCards, function(card) {
+                      return card.employee.personDescriptor;
+                    });
+                    return groupedPunchCards;
+                });
+        };
+
+        var GetPunchCardsByCompanyTimeRange = function(companyId, weekStartDate){
             weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
             weekEndDateString = moment(weekStartDate).add(7, 'days').format(STORAGE_DATE_FORMAT_STRING);
-          }
-          var compId = utilityService.getEnvAwareId(companyId)
-          return TimePunchCardRepository.ByCompany.query({
-                  companyId: compId,
-                  start_date: weekStartDateString,
-                  end_date: weekEndDateString
-              })
-              .$promise.then(function(punchCards){
-                var resultCards = [];
-                if (punchCards && punchCards.length > 0) {
-                  _.each(punchCards, function(domainModel) {
-                    resultCards.push(mapDomainToViewModel(domainModel));
-                  });
-                }
-
-                var groupedPunchCards = _.groupBy(resultCards, function(card) {
-                  return card.employee.personDescriptor;
+            return GetPunchCards(
+                TimePunchCardRepository.ByCompany,
+                companyId,
+                weekStartDateString,
+                weekEndDateString).then(function(punchCards){
+                    var groupedPunchCards = _.groupBy(punchCards, function(card) {
+                      return card.employee.personDescriptor;
+                    });
+                    return groupedPunchCards;
                 });
-                return groupedPunchCards;
-              });
         };
 
         var FilteredCardsForTotalHours = function(punchCards){
@@ -346,14 +369,6 @@ benefitmyService.factory('TimePunchCardService',
           });
         }
 
-        var GetDurationInCard = function(punchCard){
-            var startTime = moment(punchCard.start);
-            var endTime = moment(punchCard.end);
-
-            // Get time difference between start and end time in hour before rounding
-            return endTime.diff(startTime, 'hours', true);
-        };
-
         var CalculateTotalHours = function(punchCards) {
 
           var includedPunchCards = FilteredCardsForTotalHours(punchCards);
@@ -361,8 +376,7 @@ benefitmyService.factory('TimePunchCardService',
           // Calculate total time for each employee
           // Set initial reduce value to 0
           var totalTimeInHour = _.reduce(includedPunchCards, function(memo, punchCard) {
-            var duration = GetDurationInCard(punchCard);
-            return memo + duration;
+            return memo + punchCard.getDuration();
           }, 0);
 
           return totalTimeInHour;
@@ -382,29 +396,16 @@ benefitmyService.factory('TimePunchCardService',
             });
         };
 
-        var groupPunchCardsByWeek = function(punchCards){
-            var punchCardsByWeek = {};
-            _.each(punchCards, function(punchCard){
-                var date = moment(punchCard.date);
-                var weekStart = date.startOf('week').format(SHORT_DATE_FORMAT_STRING);
-                if (!punchCardsByWeek[weekStart]){
-                    punchCardsByWeek[weekStart] = [];
-                }
-                punchCardsByWeek[weekStart].push(punchCard);
-            });
-            return punchCardsByWeek;
-        }; 
-
         return {
           GetAvailablePunchCardTypes: GetAvailablePunchCardTypes,
           SavePunchCard: SavePunchCard,
           DeletePunchCard: DeletePunchCard,
           CalculateTotalHours: CalculateTotalHours,
           GetWeeklyPunchCardsByEmployeeUser: GetWeeklyPunchCardsByEmployeeUser,
-          GetWeeklyPunchCardsByCompany: GetWeeklyPunchCardsByCompany,
+          GetPunchCardsByCompanyTimeRange: GetPunchCardsByCompanyTimeRange,
+          GetAllPunchCardsByCompany: GetAllPunchCardsByCompany,
           GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser,
-          FilteredCardsForTotalHours: FilteredCardsForTotalHours,
-          GetDurationInCard: GetDurationInCard
+          FilteredCardsForTotalHours: FilteredCardsForTotalHours
         };
     }
 ]);

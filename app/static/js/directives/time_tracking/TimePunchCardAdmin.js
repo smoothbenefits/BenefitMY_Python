@@ -50,7 +50,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
         $scope.reloadTimePunchCard = function() {
 
-          TimePunchCardService.GetWeeklyPunchCardsByCompany($scope.company.id, $scope.selectedDisplayWeek.weekStartDate)
+          TimePunchCardService.GetPunchCardsByCompanyTimeRange($scope.company.id, $scope.selectedDisplayWeek.weekStartDate)
           .then(function(companyPunchCardsByEmployee) {
 
             // Expect companyPunchCardsByEmployee is an array of objects
