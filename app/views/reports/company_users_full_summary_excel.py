@@ -615,7 +615,13 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
             if (fsa.company_fsa_plan):
                 col_num = self._write_field(excelSheet, row_num, col_num, fsa.primary_amount_per_year)
                 col_num = self._write_field(excelSheet, row_num, col_num, fsa.dependent_amount_per_year)
-                fsa_employee_withhold = float((fsa.primary_amount_per_year + fsa.dependent_amount_per_year)) / 12 * fsa.company_fsa_plan.company.pay_period_definition.month_factor
+                primary_amount = 0
+                if (fsa.primary_amount_per_year):
+                    primary_amount = fsa.primary_amount_per_year
+                dependent_amount = 0
+                if (fsa.dependent_amount_per_year):
+                    dependent_amount = fsa.dependent_amount_per_year
+                fsa_employee_withhold = float((primary_amount + dependent_amount)) / 12 * fsa.company_fsa_plan.company.pay_period_definition.month_factor
                 col_num = self._write_field(excelSheet, row_num, col_num, "${:.2f}".format(fsa_employee_withhold))
                 col_num = self._write_employee_benefit_record_reason(fsa, excelSheet, row_num, col_num)
                 return col_num
