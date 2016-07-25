@@ -1,7 +1,11 @@
 from datetime import timedelta
 from datetime import date
+import dateutil.parser
+
 
 class DateTimeService(object):
+
+    TIME_UNIT_PRECISION = 1
 
     def get_last_week_range_by_date(self, date):
         curr_week_range = self.get_week_range_by_date(date)
@@ -55,3 +59,10 @@ class DateTimeService(object):
             curr_week_begin += week_delta 
 
         return week_list
+
+    def parse_date_time(self, date_time_string):
+        return dateutil.parser.parse(date_time_string)
+
+    def get_time_diff_in_hours(self, start_time, end_time):
+        delta = end_time - start_time
+        return round(delta.total_seconds() / 3600, self.TIME_UNIT_PRECISION)

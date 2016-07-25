@@ -20,13 +20,15 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     '$controller',
     'DateTimeService',
     'TimePunchCardService',
+    'CompanyEmployeeSummaryService',
     function TimePunchCardAdminController(
       $scope,
       $modal,
       $attrs,
       $controller,
       DateTimeService,
-      TimePunchCardService) {
+      TimePunchCardService,
+      CompanyEmployeeSummaryService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -76,6 +78,11 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
         };
 
         $scope.downloadWeeklyTimePunchCardReport = function() {
+            var link = CompanyEmployeeSummaryService.getWeeklyTimePunchCardReportUrl(
+            $scope.company.id,
+            $scope.selectedDisplayWeek.weekStartDate);
+
+            location.href = link;
         };
 
         $scope.editTimeCard = function(userDesc, companyDesc, weekSelected) {
