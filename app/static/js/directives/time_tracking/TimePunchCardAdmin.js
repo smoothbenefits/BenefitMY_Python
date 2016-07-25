@@ -24,6 +24,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     '$modal',
     '$attrs',
     '$controller',
+    'PersonService',
     'utilityService',
     'DateTimeService',
     'TimePunchCardService',
@@ -32,6 +33,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
       $modal,
       $attrs,
       $controller,
+      PersonService,
       utilityService,
       DateTimeService,
       TimePunchCardService) {
@@ -87,27 +89,28 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
         };
 
         $scope.editTimeCard = function(employee, weekSelected) {
-          $modal.open({
-            templateUrl: '/static/partials/time_punch_card/modal_weekly_time_punch_card.html',
-            controller: 'TimePunchCardWeeklyViewModalController',
-            size: 'lg',
-            backdrop: 'static',
-            resolve: {
-              'week': function() {
-                return weekSelected;
-              },
-              'user': function() {
-                return {
-                  id: utilityService.retrieveIdFromEnvAwareId(employee.personDescriptor)
-                };
-              },
-              'company': function() {
-                return {
-                  id: utilityService.retrieveIdFromEnvAwareId(employee.companyDescriptor)
-                };
+
+          var personId = utilityService.retrieveIdFromEnvAwareId(employee.personDescriptor);
+          PersonService.getSelfPersonInfoByPersonId(personId).then(function(person) {
+            $modal.open({
+              templateUrl: '/static/partials/time_punch_card/modal_weekly_time_punch_card.html',
+              controller: 'TimePunchCardWeeklyViewModalController',
+              size: 'lg',
+              backdrop: 'static',
+              resolve: {
+                'week': function() {
+                  return weekSelected;
+                },
+                'user': function() {
+                  return person.person;
+                },
+                'company': function() {
+                  return utilityService.retrieveIdFromEnvAwareId(employee.companyDescriptor);
+                }
               }
-            }
+            });
           });
+
         };
     }
   ]

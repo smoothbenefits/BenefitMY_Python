@@ -235,14 +235,14 @@ benefitmyService.factory('TimePunchCardService',
 
         var GetBlankPunchCardForEmployeeUser = function(
             employeeUser,
-            company,
+            companyId,
             date) {
             var employee = {
                 'personDescriptor': utilityService.getEnvAwareId(employeeUser.id),
                 'firstName': employeeUser.first_name,
                 'lastName': employeeUser.last_name,
                 'email': employeeUser.email,
-                'companyDescriptor': utilityService.getEnvAwareId(company.id)
+                'companyDescriptor': utilityService.getEnvAwareId(companyId)
             };
             var domainModel = {
               'employee': employee,
