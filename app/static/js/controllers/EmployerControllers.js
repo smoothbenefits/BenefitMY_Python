@@ -1734,21 +1734,38 @@ var employerAdminIndividualTimePunchCards = employersController.controller('empl
   '$state',
   '$stateParams',
   'UserService',
-  function($scope, $state, $stateParams, UserService){
-    var employeeId = $stateParams.employee_id;
-    $scope.startDate = $stateParams.startDate;
-    UserService.getCurUserInfo().then(function(curUserInfo){
-      $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
-      $scope.company = curUserInfo.currentRole.company;
-    });
-    UserService.getUserDataByUserId(employeeId)
-      .then(function(employee){
-        $scope.user = employee;
-        $scope.pageTitle = 'Time punch cards for ' + employee.first_name + ' ' + employee.last_name;
+  'CompanyPersonnelsService',
+  function($scope, $state, $stateParams, UserService, CompanyPersonnelsService){
+    $scope.init = function(){
+      var employeeId = $stateParams.employee_id;
+      $scope.startDate = $stateParams.startDate;
+      UserService.getCurUserInfo().then(function(curUserInfo){
+        $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+        $scope.company = curUserInfo.currentRole.company;
 
+        if(employeeId){
+          UserService.getUserDataByUserId(employeeId)
+          .then(function(employee){
+            $scope.user = employee;
+            $scope.pageTitle = 'Time punch cards for ' + employee.first_name + ' ' + employee.last_name;
+          });  
+        } else {
+          CompanyPersonnelsService.getCompanyEmployees($scope.company.id)
+            .then(function(employees){
+              if(employees && employees.length > 0){
+                var employee = employees[0];
+                $scope.user = employee.user;
+                $scope.pageTitle = 'Time punch cards for ' + $scope.user.first_name + ' ' + $scope.user.last_name;
+              }
+              else{
+                alert('Your company do not have any employees! You cannot edit individual employee time cards.');
+                $scope.goToEmployeeListView();
+              }
+            });
+        }
       });
-
-    $scope.isAdmin = false;
+    };
+    
     $scope.backToDashboard = function(){
       $state.go('/');
     };
@@ -1763,6 +1780,8 @@ var employerAdminIndividualTimePunchCards = employersController.controller('empl
           startDate: weekDate
         });
     };
+
+    $scope.init();
   }
 ]);
 
