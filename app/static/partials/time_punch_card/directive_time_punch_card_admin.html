@@ -42,7 +42,7 @@
           <th><div>Action</div></th>
         </thead>
         <tbody>
-          <tr ng-repeat="employeeTimeCard in employeePunchCards">
+          <tr ng-repeat="employeeTimeCard in employeePunchCards | orderBy:'employee.lastName'">
             <td>
               <span>{{employeeTimeCard.employee.firstName}} {{employeeTimeCard.employee.lastName}}</span>
             </td>

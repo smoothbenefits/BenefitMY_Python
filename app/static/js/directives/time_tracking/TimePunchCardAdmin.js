@@ -3,7 +3,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
   '$modalInstance',
   'week',
   'user',
-  'company',
+  'companyId',
   function(
     $scope,
     $modalInstance,
@@ -13,7 +13,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
     $scope.week = week;
     $scope.user = user;
-    $scope.company = company;
+    $scope.companyId = companyId;
 
     $scope.close = function(){
         $modalInstance.close();
@@ -24,19 +24,21 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     '$modal',
     '$attrs',
     '$controller',
-    'PersonService',
+    'UserService',
     'utilityService',
     'DateTimeService',
     'TimePunchCardService',
+    'CompanyPersonnelsService',
     function TimePunchCardAdminController(
       $scope,
       $modal,
       $attrs,
       $controller,
-      PersonService,
+      UserService,
       utilityService,
       DateTimeService,
-      TimePunchCardService) {
+      TimePunchCardService,
+      CompanyPersonnelsService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -60,11 +62,13 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
         $scope.reloadTimePunchCard = function() {
 
+          var employeePromise = CompanyPersonnelsService.getCompanyEmployees($scope.company.id);
+
           TimePunchCardService.GetPunchCardsByCompanyTimeRange($scope.company.id, $scope.selectedDisplayWeek.weekStartDate)
           .then(function(companyPunchCardsByEmployee) {
 
             // Expect companyPunchCardsByEmployee is an array of objects
-            // which keys off employee person descriptor
+            // which keys off employee person descriptor (user id)
             var employeeTotalTimes = [];
             var employees = _.keys(companyPunchCardsByEmployee);
 
@@ -81,7 +85,33 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
               }
             });
 
-            $scope.employeePunchCards = employeeTotalTimes;
+            var countedEmployees = _.map(employeeTotalTimes, function(times) {
+              return times.employee.personDescriptor;
+            });
+
+            // Get all employees in the company and fill in 0s for employees
+            // who have not filed any punch card yet
+            employeePromise.then(function(allEmployees) {
+              _.each(allEmployees, function(employee) {
+
+                // Convert to environment aware user id for employee comparison
+                var envAwareUserId = utilityService.getEnvAwareId(employee.user.id);
+                if (!_.contains(countedEmployees, envAwareUserId)) {
+                  employeeTotalTimes.push({
+                    employee: {
+                      personDescriptor: envAwareUserId,
+                      companyDescriptor: utilityService.getEnvAwareId($scope.company.id),
+                      firstName: employee.user.first_name,
+                      lastName: employee.user.last_name
+                    },
+                    hours: 0
+                  });
+                  countedEmployees.push(envAwareUserId);
+                }
+              });
+
+              $scope.employeePunchCards = employeeTotalTimes;
+            });
           });
         };
 
@@ -91,7 +121,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
         $scope.editTimeCard = function(employee, weekSelected) {
 
           var userId = utilityService.retrieveIdFromEnvAwareId(employee.personDescriptor);
-          PersonService.getSelfPersonInfo(userId).then(function(person) {
+          UserService.getUserDataByUserId(userId).then(function(user) {
             $modal.open({
               templateUrl: '/static/partials/time_punch_card/modal_weekly_time_punch_card.html',
               controller: 'TimePunchCardWeeklyViewModalController',
@@ -102,9 +132,9 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
                   return weekSelected;
                 },
                 'user': function() {
-                  return person.person;
+                  return user;
                 },
-                'company': function() {
+                'companyId': function() {
                   return utilityService.retrieveIdFromEnvAwareId(employee.companyDescriptor);
                 }
               }
