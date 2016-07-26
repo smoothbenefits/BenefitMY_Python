@@ -69,7 +69,7 @@ class ReportExportViewBase(APIView):
         users_id = []
 
         # Get all employees for the company
-        users = self._get_all_employee_uses_for_company(company_id)   
+        users = self._get_all_employee_users_for_company(company_id)   
 
         for user in users:
             users_id.append(user.id)
