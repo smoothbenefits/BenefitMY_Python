@@ -72,31 +72,13 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
             var employeeTotalTimes = [];
             var employees = _.keys(companyPunchCardsByEmployee);
 
-            _.each(employees, function(employee) {
-              var employeePunchCards = companyPunchCardsByEmployee[employee];
-
-              if (employeePunchCards && employeePunchCards.length > 0) {
-                var totalTimeInHour = TimePunchCardService.CalculateTotalHours(employeePunchCards);
-                // Get employee information from the first punch time
-                employeeTotalTimes.push({
-                  employee: employeePunchCards[0].employee,
-                  hours: totalTimeInHour.toFixed(2)
-                });
-              }
-            });
-
-            var countedEmployees = _.map(employeeTotalTimes, function(times) {
-              return times.employee.personDescriptor;
-            });
-
-            // Get all employees in the company and fill in 0s for employees
-            // who have not filed any punch card yet
             employeePromise.then(function(allEmployees) {
               _.each(allEmployees, function(employee) {
-
                 // Convert to environment aware user id for employee comparison
                 var envAwareUserId = utilityService.getEnvAwareId(employee.user.id);
-                if (!_.contains(countedEmployees, envAwareUserId)) {
+
+                // if employee has not filed any punch card
+                if (!_.contains(employees, envAwareUserId)) {
                   employeeTotalTimes.push({
                     employee: {
                       personDescriptor: envAwareUserId,
@@ -106,7 +88,17 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
                     },
                     hours: 0
                   });
-                  countedEmployees.push(envAwareUserId);
+                } else {
+                  var employeePunchCards = companyPunchCardsByEmployee[envAwareUserId];
+
+                  if (employeePunchCards && employeePunchCards.length > 0) {
+                    var totalTimeInHour = TimePunchCardService.CalculateTotalHours(employeePunchCards);
+                    // Get employee information from the first punch time
+                    employeeTotalTimes.push({
+                      employee: employeePunchCards[0].employee,
+                      hours: totalTimeInHour.toFixed(2)
+                    });
+                  }
                 }
               });
 
