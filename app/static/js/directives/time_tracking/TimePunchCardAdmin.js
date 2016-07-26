@@ -15,6 +15,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
   }
 ]).controller('TimePunchCardAdminController', [
     '$scope',
+    '$state',
     '$modal',
     '$attrs',
     '$controller',
@@ -22,6 +23,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     'TimePunchCardService',
     function TimePunchCardAdminController(
       $scope,
+      $state,
       $modal,
       $attrs,
       $controller,
@@ -90,6 +92,14 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
               }
             }
           });
+        };
+
+        $scope.editIndividual = function(){
+          $state.go('admin_individual_timepunchcards',
+            {
+              startDate: $scope.selectedDisplayWeek.weekStartDate
+            }
+          );
         };
     }
   ]

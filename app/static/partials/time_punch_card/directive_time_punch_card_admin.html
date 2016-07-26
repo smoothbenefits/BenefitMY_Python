@@ -33,6 +33,11 @@
       The work hours submitted for week <b>{{selectedDisplayWeek.weekDisplayText}}</b>
     </div>
     <div class="panel-body">
+      <div class="cta-above-table">
+        <div class="cta">
+          <span class="btn green" ng-click="editIndividual()">Edit Per Employee</span>
+        </div>
+      </div>
       <table class="table table-striped benefit-table fix-layout-table"
         id="plan_items_table"
         ng-show="employeePunchCards.length > 0">
