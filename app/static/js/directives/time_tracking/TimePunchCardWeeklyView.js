@@ -102,7 +102,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     };
 
     $scope.cancel = function() {
-        $modalInstance.dismiss();
+      $modalInstance.dismiss();
     };
   }
 ]).controller('TimePunchCardWeeklyViewController', [

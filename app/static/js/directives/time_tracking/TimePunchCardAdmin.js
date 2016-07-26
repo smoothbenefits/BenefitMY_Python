@@ -90,8 +90,8 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
         $scope.editTimeCard = function(employee, weekSelected) {
 
-          var personId = utilityService.retrieveIdFromEnvAwareId(employee.personDescriptor);
-          PersonService.getSelfPersonInfoByPersonId(personId).then(function(person) {
+          var userId = utilityService.retrieveIdFromEnvAwareId(employee.personDescriptor);
+          PersonService.getSelfPersonInfo(userId).then(function(person) {
             $modal.open({
               templateUrl: '/static/partials/time_punch_card/modal_weekly_time_punch_card.html',
               controller: 'TimePunchCardWeeklyViewModalController',
