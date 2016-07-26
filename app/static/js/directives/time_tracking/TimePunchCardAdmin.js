@@ -9,7 +9,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     $modalInstance,
     week,
     user,
-    company) {
+    companyId) {
 
     $scope.week = week;
     $scope.user = user;
@@ -121,8 +121,9 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
         $scope.editTimeCard = function(employee, weekSelected) {
 
           var userId = utilityService.retrieveIdFromEnvAwareId(employee.personDescriptor);
+
           UserService.getUserDataByUserId(userId).then(function(user) {
-            $modal.open({
+            var modalInstance = $modal.open({
               templateUrl: '/static/partials/time_punch_card/modal_weekly_time_punch_card.html',
               controller: 'TimePunchCardWeeklyViewModalController',
               size: 'lg',
@@ -139,8 +140,11 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
                 }
               }
             });
-          });
 
+            modalInstance.result.then(function() {
+              $scope.reloadTimePunchCard();
+            });
+          });
         };
     }
   ]
