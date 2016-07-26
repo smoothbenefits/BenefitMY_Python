@@ -1,21 +1,12 @@
-from datetime import datetime, timedelta
-from datetime import date
-import json
-from copy import deepcopy
+from datetime import (date, timedelta)
 from collections import OrderedDict
-from rest_framework.response import Response
-from django.http import HttpResponse, Http404
 from django.contrib.auth import get_user_model
-from app.models.person import Person
-from app.models.company import Company
-from app.models.employee_profile import EmployeeProfile, FULL_TIME
-from app.models.workers_comp.employee_phraseology import EmployeePhraseology
-from app.service.compensation_service import CompensationService
+from django.http import HttpResponse
+from copy import deepcopy
 
 from app.views.permission import (
     user_passes_test,
-    company_employer,
-    company_employer_or_broker)
+    company_employer)
 from excel_export_view_base import ExcelExportViewBase
 from app.service.date_time_service import DateTimeService
 from app.service.time_punch_card_service import (
@@ -44,7 +35,7 @@ CARD_TYPES = OrderedDict([
 DATE_FORMAT_STRING = '%m/%d/%Y'
 
 # For the case where a card type does not expect user
-# specified hours (such as Company Holiday), use the 
+# specified hours (such as Company Holiday), use the
 # below default
 TIME_PUNCH_CARD_NO_HOURS_DEFAULT_HOURS = 8
 
@@ -66,6 +57,7 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
         self._week_start_date = None
         self._week_end_date = None
         self._employee_list_cache = None
+        self._blank_state_sheet_data_template = None
 
     def _build_employee_info_cache(self):
         self._employee_list_cache = []
@@ -79,7 +71,6 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
     def _build_report_time_sheets_data(self):
         # The structure of the result would be a nested dictionary
         # result{ state: { card_type: { user_id: { weekday_index: hours } } } }
-
         all_state_sheets = {}
 
         # First read in all employee submitted cards
@@ -105,24 +96,9 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
         # Now "merge" user submitted data into the sheets
         # data
         for punch_card in all_cards:
-            state_data = all_state_sheets[punch_card.state]
-            card_type = punch_card.card_type
-            if (card_type in CARD_TYPES):
-                card_type_data = state_data[card_type]
-                if punch_card.user_id not in card_type_data:
-                    card_type_data.setdefault(
-                        punch_card.user_id,
-                        self._get_employee_weekly_blank_data())
-                employee_weekly_data = card_type_data[punch_card.user_id]
-                card_weekday_iso = punch_card.get_card_day_of_week_iso()
-                if (CARD_TYPES[card_type].get('NoHours', True)):
-                    # Even if an employee filed 2 of such cards in one slot
-                    # Only count hours once
-                    if (employee_weekly_data[card_weekday_iso] <= 0):
-                        employee_weekly_data[card_weekday_iso] = TIME_PUNCH_CARD_NO_HOURS_DEFAULT_HOURS
-                else:
-                    hours = punch_card.get_punch_card_hours()   
-                    employee_weekly_data[card_weekday_iso] += hours
+            self._merge_punch_card_data_to_full_set(
+                punch_card,
+                all_state_sheets)
 
         return all_state_sheets
 
@@ -133,12 +109,17 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
             self._week_end_date)
 
     def _get_blank_sheet_data(self):
-        sheet_data = {}
-        for card_type in CARD_TYPES:
-            sheet_data.setdefault(
-                card_type,
-                self._get_blank_card_type_section_data(card_type))
-        return sheet_data
+        # Cache a copy as template and return deep copies of that
+        # to save some computational power
+        if (not self._blank_state_sheet_data_template):
+            sheet_data = {}
+            for card_type in CARD_TYPES:
+                sheet_data.setdefault(
+                    card_type,
+                    self._get_blank_card_type_section_data(card_type))
+            self._blank_state_sheet_data_template = sheet_data
+
+        return deepcopy(self._blank_state_sheet_data_template)
 
     def _get_blank_card_type_section_data(self, card_type):
         card_type_section_data = {}
@@ -158,6 +139,27 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
         for isoweekday in range(7):
             blank_data.setdefault(isoweekday, 0.0)
         return blank_data
+
+    def _merge_punch_card_data_to_full_set(self, punch_card, all_states_sheets_data):
+        state_data = all_states_sheets_data[punch_card.state]
+        card_type = punch_card.card_type
+        if (card_type in CARD_TYPES):
+            card_type_data = state_data[card_type]
+            if punch_card.user_id not in card_type_data:
+                card_type_data.setdefault(
+                    punch_card.user_id,
+                    self._get_employee_weekly_blank_data())
+            employee_weekly_data = card_type_data[punch_card.user_id]
+            card_weekday_iso = punch_card.get_card_day_of_week_iso()
+            if (CARD_TYPES[card_type].get('NoHours', True)):
+                # Even if an employee filed 2 of such cards in one slot
+                # Only count hours once
+                if (employee_weekly_data[card_weekday_iso] <= 0):
+                    employee_weekly_data[card_weekday_iso] = TIME_PUNCH_CARD_NO_HOURS_DEFAULT_HOURS
+            else:
+                # Accumulate the hours specified by the card
+                hours = punch_card.get_punch_card_hours()   
+                employee_weekly_data[card_weekday_iso] += hours
 
     def _write_all_states_sheets(self, all_states_sheets_data):
         for state in all_states_sheets_data:
