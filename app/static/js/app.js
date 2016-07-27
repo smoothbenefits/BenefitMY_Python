@@ -34,6 +34,7 @@ String.prototype.capitalize = function() {
 var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
 var SHORT_DATE_FORMAT_STRING = 'MM/DD/YYYY';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
+var SHORT_DATE_FORMAT_STRING_NO_YEAR = 'MM/DD';
 var DATE_TIME_FORMAT_STRING = 'LLLL';
 
 // The URL to which logging to server side should be posted to
@@ -423,13 +424,13 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('admin_timepunchcards', {
                 url: '/admin/hr/time_punch_cards',
-                templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
+                templateUrl: '/static/partials/time_punch_card/time_punch_card_admin_base.html',
                 controller: 'employerViewTimePunchCards'
             }).
-            state('admin_employee_timepunchcards', {
+            state('admin_individual_timepunchcards', {
                 url: '/admin/hr/time_punch_cards/employee/:employee_id',
-                templateUrl: '/static/partials/time_punch_card/time_punch_card_admin_base.html',
-                controller: 'employerEditEmployeeTimePunchCards',
+                templateUrl: '/static/partials/time_punch_card/time_punch_card_admin_individual_base.html',
+                controller: 'employerAdminIndividualTimePunchCards',
                 params: {startDate: null}
             }).
             state('admin_departments', {

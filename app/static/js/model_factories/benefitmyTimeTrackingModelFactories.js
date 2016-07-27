@@ -37,3 +37,18 @@ benefitmyTimeTrackingModelFactories.factory('WorkTimesheetRepository', [
   }
 ]);
 
+benefitmyTimeTrackingModelFactories.factory('TimePunchCardRepository', [
+  '$resource',
+  'envService',
+  function ($resource, envService){
+    var _hostName = envService.read('timeTrackingUrl');
+    return {
+      ByEmployee: $resource(_hostName + 'api/v1/employee/:id/time_punch_cards', {id:'@id'}),
+      Collection: $resource(_hostName + 'api/v1/time_punch_cards'),
+      ById: $resource(_hostName + 'api/v1/time_punch_cards/:id', {id:'@id'}, {
+        update: { method: 'PUT' }
+      }),
+      ByCompany: $resource(_hostName + 'api/v1/company/:id/time_punch_cards', {companyId: '@id'})
+    };
+  }
+]);

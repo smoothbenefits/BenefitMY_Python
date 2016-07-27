@@ -288,3 +288,7 @@ div.submit-box.benefit-selection-button{
 table.benefit-table input.full-width{
     width:100%;
 }
+.cta-above-table{
+    float:right;
+    margin-bottom:10px;
+}

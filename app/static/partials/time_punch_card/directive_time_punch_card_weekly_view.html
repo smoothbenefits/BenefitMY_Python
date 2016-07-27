@@ -1,0 +1,29 @@
+<table class="table table-striped fix-layout-table">
+    <thead>
+        <th width="150"><span>Weekday</span></th>
+        <th><span>Punch Cards</span></th>
+    </thead>
+    <tbody>
+        <tr ng-repeat="weekdayNum in weekdayNums">
+            <td width="150"><span><b>{{datesOfWeek[weekdayNum].weekdayName}}</b><br/>({{datesOfWeek[weekdayNum].displayDate}})</span></td>
+            <td> 
+              <div class="time-punch-card" ng-repeat="punchCard in weeklyPunchCards[weekdayNum]">
+                <div class="header-row"><b>{{punchCard.getTimeRangeDisplayText()}}</b></div>
+                <div class="info-row">
+                    <div>Card Type: <b>{{punchCard.recordType.name}}</b></div>
+                    <div ng-if="isAttributeVisible(punchCard.attributes.state)">State: <b>{{punchCard.attributes.state.value}}</b></div>
+                    <div ng-if="isAttributeVisible(punchCard.attributes.project)">Project: <b>{{punchCard.attributes.project.value.name}}</b></div>
+                    <div ng-if="isAttributeVisible(punchCard.attributes.hourlyRate)">Houly Rate: <b>${{punchCard.attributes.hourlyRate.value.toLocaleString()}}</b></div>
+                </div>
+                <div class="action-row">
+                  <div class="col-xs-6"><a ng-click="editPunchCard(punchCard)">Edit</a></div>
+                  <div class="col-xs-6"><a ng-click="deletePunchCard(punchCard)" confirm="Please confirm to delete this time punch card.">Delete</a></div>
+                </div>
+              </div>
+              <div style="margin:5px;">
+                <span class="btn inline" ng-click="createPunchCard(datesOfWeek[weekdayNum].date)"><i class="fa fa-plus"></i></span>
+              </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
