@@ -9,7 +9,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   'utilityService',
   'punchCard',
   'adminView',
-  'company',
+  'companyId',
   function(
     $scope,
     $modalInstance,
@@ -21,7 +21,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     utilityService,
     punchCard,
     adminView,
-    company){
+    companyId){
     $scope.headerText = punchCard ? 'Edit Punch Card' : 'Create Punch Card';
 
     $scope.punchCard = punchCard;
@@ -30,7 +30,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
     $scope.allStates = UsStateService.GetAllStates();
 
-    ProjectService.GetProjectsByCompany(company.id).then(function(projects) {
+    ProjectService.GetProjectsByCompany(companyId).then(function(projects) {
         $scope.allProjects = projects;
     });
 
@@ -65,7 +65,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     $scope.isHourlyRateAttributeVisisble = function() {
         return $scope.punchCard.recordType
-            && $scope.punchCard.recordType.behavior.hourlyRateOn
             && isAttributeVisible(punchCard.attributes.hourlyRate);
     };
 
@@ -103,7 +102,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     };
 
     $scope.cancel = function() {
-        $modalInstance.dismiss();
+      $modalInstance.dismiss();
     };
   }
 ]).controller('TimePunchCardWeeklyViewController', [
@@ -127,11 +126,11 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         $scope.weekdayNums = [0, 1, 2, 3, 4, 5, 6];
 
         $scope.init = function(){
-          $scope.$watchGroup(['week', 'user', 'company'], function(watchGroup){
+          $scope.$watchGroup(['week', 'user', 'companyId'], function(watchGroup){
             var weekSelected = watchGroup[0];
             var user = watchGroup[1];
-            var company = watchGroup[2];
-            if(weekSelected && user && company) {
+            var companyId = watchGroup[2];
+            if(weekSelected && user && companyId) {
               var startDate = weekSelected.weekStartDate;
               $scope.datesOfWeek = [];
               for (var i=0; i<7; i++){
@@ -163,8 +162,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                   'adminView' : function() {
                     return $scope.adminView;
                   },
-                  'company': function() {
-                    return $scope.company;
+                  'companyId': function() {
+                    return $scope.companyId;
                   }
                 }
             });
@@ -182,7 +181,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         $scope.createPunchCard = function(date) {
             var punchCard = TimePunchCardService.GetBlankPunchCardForEmployeeUser(
                     $scope.user,
-                    $scope.company,
+                    $scope.companyId,
                     date);
             showEditModal(punchCard);
         };
@@ -199,7 +198,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
         $scope.reloadCards = function() {
             $scope.weeklyPunchCards = [];
-            if ($scope.week && $scope.user && $scope.company) {
+            if ($scope.week && $scope.user && $scope.companyId) {
                 TimePunchCardService.GetWeeklyPunchCardsByEmployeeUser(
                     $scope.user, $scope.week.weekStartDate, $scope.week.weekEndDate).then(
                     function(punchCards) {
@@ -210,7 +209,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         };
 
         $scope.isAttributeVisible = function(attribute) {
-            return (!attribute.type.adminOnly || $scope.adminMode) 
+            return (!attribute.type.adminOnly || $scope.adminMode)
                 && attribute.value;
         };
     }
@@ -221,7 +220,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     scope: {
         week: '=',
         user: '=',
-        company: '=',
+        companyId: '=',
         adminMode: '=?'
     },
     templateUrl: '/static/partials/time_punch_card/directive_time_punch_card_weekly_view.html',
