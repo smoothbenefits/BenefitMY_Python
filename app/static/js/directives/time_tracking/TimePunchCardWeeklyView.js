@@ -55,7 +55,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     }
 
     var isAttributeVisible = function(attribute) {
-        return !attribute.type.adminOnly || $scope.adminMode;
+        return !attribute.type.adminOnly || $scope.adminView;
     };
 
     $scope.isTimeRangeVisisble = function() {
