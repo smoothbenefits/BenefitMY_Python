@@ -29,6 +29,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     'utilityService',
     'DateTimeService',
     'TimePunchCardService',
+    'CompanyEmployeeSummaryService',
     'CompanyPersonnelsService',
     function TimePunchCardAdminController(
       $scope,
@@ -40,6 +41,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
       utilityService,
       DateTimeService,
       TimePunchCardService,
+      CompanyEmployeeSummaryService,
       CompanyPersonnelsService) {
 
         // Inherite scope from base
@@ -109,6 +111,11 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
         };
 
         $scope.downloadWeeklyTimePunchCardReport = function() {
+            var link = CompanyEmployeeSummaryService.getWeeklyTimePunchCardReportUrl(
+            $scope.company.id,
+            $scope.selectedDisplayWeek.weekStartDate);
+
+            location.href = link;
         };
 
         $scope.editTimeCard = function(employee, weekSelected) {

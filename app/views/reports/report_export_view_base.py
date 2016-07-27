@@ -66,14 +66,26 @@ class ReportExportViewBase(APIView):
         return 0
 
     def _get_all_employee_user_ids_for_company(self, company_id):
-        # Get all employees for the company
         users_id = []
-        users = CompanyUser.objects.filter(company=company_id,
-                                           company_user_type='employee')
+
+        # Get all employees for the company
+        users = self._get_all_employee_users_for_company(company_id)   
+
         for user in users:
-            users_id.append(user.user_id)
+            users_id.append(user.id)
 
         return users_id
+
+    def _get_all_employee_users_for_company(self, company_id):
+        # Get all employees for the company
+        users = []
+        comp_users = CompanyUser.objects.filter(company=company_id,
+                                           company_user_type='employee')
+        for comp_user in comp_users:
+            if (comp_user.user):
+                users.append(comp_user.user)
+
+        return users
 
     def _get_company_by_user(self, user_id):
         company_model = None
@@ -83,6 +95,32 @@ class ReportExportViewBase(APIView):
             company_model = companies[0].company
 
         return company_model
+
+    def _get_employee_person(self, user_id):
+        try:
+            person_list = Person.objects.filter(user=user_id, relationship='self')
+            if person_list:
+                return person_list[0]
+            return None
+        except Person.DoesNotExist:
+            return None
+
+    def _get_company_info(self, company_id):
+        try:
+            return Company.objects.get(pk=company_id)
+        except Company.DoesNotExist:
+            raise Http404
+
+    def _get_user_full_name(self, user):
+        if (not user):
+            return None
+
+        person = self._get_employee_person(user.id)
+        if (person):
+            return '{} {}'.format(person.first_name, person.last_name)
+
+        return '{} {}'.format(user.first_name, user.last_name)
+
 
     @staticmethod
     def get_date_string(date):

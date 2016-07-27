@@ -1,6 +1,7 @@
 var benefitmyService = angular.module('benefitmyService');
 
 var API_PREFIX = '/api/v1'
+var API_PREFIX_V2 = '/api/v2'
 
 benefitmyService.factory('CompanyEmployeeSummaryService', [
   '$q',
@@ -73,7 +74,7 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
       },
 
       getWeeklyTimePunchCardReportUrl: function(companyId, weekStartDate){
-        var reportUrl = API_PREFIX + '/companies/' + companyId + '/time_punch_card_excel';
+        var reportUrl = API_PREFIX_V2 + '/companies/' + companyId + '/time_punch_card_excel';
         reportUrl += moment(weekStartDate).format('/YYYY/M/DD');
         return reportUrl;
       }
