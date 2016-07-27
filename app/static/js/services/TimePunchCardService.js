@@ -124,6 +124,17 @@ benefitmyService.factory('TimePunchCardService',
                     + moment(this.end).format('HH:mm');
             };
 
+            viewModel.getDuration = function(){
+                if (!this.start || !this.end) {
+                    return 0;
+                }
+                var startTime = moment(this.start);
+                var endTime = moment(this.end);
+
+                // Get time difference between start and end time in hour before rounding
+                return endTime.diff(startTime, 'hours', true);
+            };
+
             return viewModel;
         };
 
@@ -153,6 +164,7 @@ benefitmyService.factory('TimePunchCardService',
                 },
                 'project': {
                     type: AttributeTypes.Project,
+                    id: null,
                     value: null
                 },
                 'hourlyRate': {
@@ -170,13 +182,11 @@ benefitmyService.factory('TimePunchCardService',
                                 result.state.value = domainAttr.value;
                                 break;
                             case AttributeTypes.Project.name:
-                                // TODO:
-                                // Needs to translate to project object via
-                                // Project Service. This requires building
-                                // a cache for this access first.
-                                ProjectService.GetProjectById(domainAttr.value).then(function(project) {
-                                    result.project.value = project;
-                                });
+                                result.project.id = domainAttr.value;
+                                ProjectService.GetProjectById(domainAttr.value)
+                                    .then(function(project){
+                                        result.project.value = project;
+                                    });
                                 break;
                             case AttributeTypes.HourlyRate.name:
                                 result.hourlyRate.value = Number(domainAttr.value).toFixed(2);
@@ -225,14 +235,14 @@ benefitmyService.factory('TimePunchCardService',
 
         var GetBlankPunchCardForEmployeeUser = function(
             employeeUser,
-            company,
+            companyId,
             date) {
             var employee = {
                 'personDescriptor': utilityService.getEnvAwareId(employeeUser.id),
                 'firstName': employeeUser.first_name,
                 'lastName': employeeUser.last_name,
                 'email': employeeUser.email,
-                'companyDescriptor': utilityService.getEnvAwareId(company.id)
+                'companyDescriptor': utilityService.getEnvAwareId(companyId)
             };
             var domainModel = {
               'employee': employee,
@@ -281,53 +291,70 @@ benefitmyService.factory('TimePunchCardService',
             });
         };
 
-        var GetWeeklyPunchCardsByEmployeeUser = function(employeeUser, weekStartDate, weekEndDate){
-            var id = utilityService.getEnvAwareId(employeeUser.id);
-            var weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
-            var weekEndDateString = moment(weekEndDate).format(STORAGE_DATE_FORMAT_STRING);
+        var GetPunchCards = function(repoEndpoint, apiId, startDate, endDate){
+            var id = utilityService.getEnvAwareId(apiId);
 
-            return TimePunchCardRepository.ByEmployee.query({
-                  userId: id,
-                  start_date: weekStartDateString,
-                  end_date: weekEndDateString})
-              .$promise.then(function(punchCards) {
+            return repoEndpoint.query({
+                id: id,
+                start_date: startDate,
+                end_date: endDate
+            }).$promise.then(function(punchCards){
                 var resultCards = [];
                 if (punchCards && punchCards.length > 0) {
                     _.each(punchCards, function(domainModel) {
                         resultCards.push(mapDomainToViewModel(domainModel));
                     });
                 }
-                return MapPunchCardsToWeekdays(resultCards);
-              });
-        };
+                return resultCards;
+            });
+        }
 
-        var GetWeeklyPunchCardsByCompany = function(companyId, weekStartDate){
-          var weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
-          var weekEndDateString = moment(weekStartDate).add(7, 'days').format(STORAGE_DATE_FORMAT_STRING);
-          var compId = utilityService.getEnvAwareId(companyId)
-          return TimePunchCardRepository.ByCompany.query({
-                  companyId: compId,
-                  start_date: weekStartDateString,
-                  end_date: weekEndDateString
-              })
-              .$promise.then(function(punchCards){
-                var resultCards = [];
-                if (punchCards && punchCards.length > 0) {
-                  _.each(punchCards, function(domainModel) {
-                    resultCards.push(mapDomainToViewModel(domainModel));
-                  });
-                }
+        var GetWeeklyPunchCardsByEmployeeUser = function(employeeUser, weekStartDate, weekEndDate){
+            var weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
+            var weekEndDateString = moment(weekEndDate).format(STORAGE_DATE_FORMAT_STRING);
 
-                var groupedPunchCards = _.groupBy(resultCards, function(card) {
-                  return card.employee.personDescriptor;
+            return GetPunchCards(
+                TimePunchCardRepository.ByEmployee,
+                employeeUser.id,
+                weekStartDateString,
+                weekEndDateString).then(function(punchCards){
+                    return MapPunchCardsToWeekdays(punchCards);
                 });
-                return groupedPunchCards;
-              });
         };
 
-        var CalculateTotalHours = function(punchCards) {
+        var GetAllPunchCardsByCompany = function(companyId){
+            return GetPunchCards(
+                TimePunchCardRepository.ByCompany,
+                companyId,
+                undefined,
+                undefined).then(function(punchCards){
+                    var groupedPunchCards = _.groupBy(punchCards, function(card) {
+                      return card.employee.personDescriptor;
+                    });
+                    return groupedPunchCards;
+                });
+        };
 
-          // Get record types of which punch cards should be included in calculation
+        var GetPunchCardsByCompanyTimeRange = function(companyId, weekStartDate){
+            weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
+            weekEndDateString = moment(weekStartDate).add(7, 'days').format(STORAGE_DATE_FORMAT_STRING);
+            return GetPunchCards(
+                TimePunchCardRepository.ByCompany,
+                companyId,
+                weekStartDateString,
+                weekEndDateString).then(function(punchCards){
+                    var groupedPunchCards = _.groupBy(punchCards, function(card) {
+                      return card.employee.personDescriptor;
+                    });
+                    return groupedPunchCards;
+                });
+        };
+
+        var FilteredCardsForTotalHours = function(punchCards){
+          if (!punchCards || punchCards.length <= 0){
+            return [];
+          }
+            // Get record types of which punch cards should be included in calculation
           var includedRecordTypes = _.filter(PunchCardTypes, function(type) {
             return type.behavior.includedInTotalHours;
           });
@@ -336,21 +363,20 @@ benefitmyService.factory('TimePunchCardService',
             return type.name;
           });
 
-          var includedPunchCards = _.filter(punchCards, function(card) {
+          return _.filter(punchCards, function(card) {
             var cardType = card.recordType ? card.recordType.name : '';
             return _.contains(includedRecordTypeNames, cardType);
           });
+        }
+
+        var CalculateTotalHours = function(punchCards) {
+
+          var includedPunchCards = FilteredCardsForTotalHours(punchCards);
 
           // Calculate total time for each employee
           // Set initial reduce value to 0
           var totalTimeInHour = _.reduce(includedPunchCards, function(memo, punchCard) {
-            var startTime = moment(punchCard.start);
-            var endTime = moment(punchCard.end);
-
-            // Get time difference between start and end time in hour before rounding
-            var duration = endTime.diff(startTime, 'hours', true);
-
-            return memo + duration;
+            return memo + punchCard.getDuration();
           }, 0);
 
           return totalTimeInHour;
@@ -376,8 +402,10 @@ benefitmyService.factory('TimePunchCardService',
           DeletePunchCard: DeletePunchCard,
           CalculateTotalHours: CalculateTotalHours,
           GetWeeklyPunchCardsByEmployeeUser: GetWeeklyPunchCardsByEmployeeUser,
-          GetWeeklyPunchCardsByCompany: GetWeeklyPunchCardsByCompany,
-          GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser
+          GetPunchCardsByCompanyTimeRange: GetPunchCardsByCompanyTimeRange,
+          GetAllPunchCardsByCompany: GetAllPunchCardsByCompany,
+          GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser,
+          FilteredCardsForTotalHours: FilteredCardsForTotalHours
         };
     }
 ]);

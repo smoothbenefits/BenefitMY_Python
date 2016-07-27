@@ -4,18 +4,24 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   'TimePunchCardService',
   'ProjectService',
   'UsStateService',
+  'PersonService',
+  'CompensationService',
+  'utilityService',
   'punchCard',
   'adminView',
-  'company',
+  'companyId',
   function(
     $scope,
     $modalInstance,
     TimePunchCardService,
     ProjectService,
     UsStateService,
+    PersonService,
+    CompensationService,
+    utilityService,
     punchCard,
     adminView,
-    company){
+    companyId){
     $scope.headerText = punchCard ? 'Edit Punch Card' : 'Create Punch Card';
 
     $scope.punchCard = punchCard;
@@ -24,9 +30,29 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
     $scope.allStates = UsStateService.GetAllStates();
 
-    ProjectService.GetProjectsByCompany(company.id).then(function(projects) {
+    ProjectService.GetProjectsByCompany(companyId).then(function(projects) {
         $scope.allProjects = projects;
     });
+
+    //Fill in the hourly rate of the punchCard by compensation if missing
+    if(!$scope.punchCard.attributes.hourlyRate.value){
+      var userId = utilityService.retrieveIdFromEnvAwareId(
+        $scope.punchCard.employee.personDescriptor);
+      PersonService.getSelfPersonInfo(userId)
+      .then(function(person){
+        CompensationService.getCurrentCompensationByPerson(person.id)
+        .then(function(compensation){
+          if(compensation){
+            if(compensation.hourly_rate){
+              $scope.punchCard.attributes.hourlyRate.value = parseFloat(compensation.hourlyRate);
+            }
+            else{
+              $scope.punchCard.attributes.hourlyRate.value = parseFloat(compensation.salary) / 40 / 52;
+            }
+          }
+        });
+      });
+    }
 
     var isAttributeVisible = function(attribute) {
         return !attribute.type.adminOnly || $scope.adminMode;
@@ -39,7 +65,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     $scope.isHourlyRateAttributeVisisble = function() {
         return $scope.punchCard.recordType
-            && $scope.punchCard.recordType.behavior.hourlyRateOn
             && isAttributeVisible(punchCard.attributes.hourlyRate);
     };
 
@@ -77,7 +102,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     };
 
     $scope.cancel = function() {
-        $modalInstance.dismiss();
+      $modalInstance.dismiss();
     };
   }
 ]).controller('TimePunchCardWeeklyViewController', [
@@ -101,11 +126,11 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         $scope.weekdayNums = [0, 1, 2, 3, 4, 5, 6];
 
         $scope.init = function(){
-          $scope.$watchGroup(['week', 'user', 'company'], function(watchGroup){
+          $scope.$watchGroup(['week', 'user', 'companyId'], function(watchGroup){
             var weekSelected = watchGroup[0];
             var user = watchGroup[1];
-            var company = watchGroup[2];
-            if(weekSelected && user && company) {
+            var companyId = watchGroup[2];
+            if(weekSelected && user && companyId) {
               var startDate = weekSelected.weekStartDate;
               $scope.datesOfWeek = [];
               for (var i=0; i<7; i++){
@@ -137,8 +162,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                   'adminView' : function() {
                     return $scope.adminView;
                   },
-                  'company': function() {
-                    return $scope.company;
+                  'companyId': function() {
+                    return $scope.companyId;
                   }
                 }
             });
@@ -156,7 +181,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         $scope.createPunchCard = function(date) {
             var punchCard = TimePunchCardService.GetBlankPunchCardForEmployeeUser(
                     $scope.user,
-                    $scope.company,
+                    $scope.companyId,
                     date);
             showEditModal(punchCard);
         };
@@ -173,7 +198,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
         $scope.reloadCards = function() {
             $scope.weeklyPunchCards = [];
-            if ($scope.week && $scope.user && $scope.company) {
+            if ($scope.week && $scope.user && $scope.companyId) {
                 TimePunchCardService.GetWeeklyPunchCardsByEmployeeUser(
                     $scope.user, $scope.week.weekStartDate, $scope.week.weekEndDate).then(
                     function(punchCards) {
@@ -184,7 +209,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         };
 
         $scope.isAttributeVisible = function(attribute) {
-            return (!attribute.type.adminOnly || $scope.adminMode) 
+            return (!attribute.type.adminOnly || $scope.adminMode)
                 && attribute.value;
         };
     }
@@ -195,7 +220,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     scope: {
         week: '=',
         user: '=',
-        company: '=',
+        companyId: '=',
         adminMode: '=?'
     },
     templateUrl: '/static/partials/time_punch_card/directive_time_punch_card_weekly_view.html',

@@ -316,6 +316,7 @@ PIPELINE_JS = {
             'js/directives/time_tracking/TimePunchCard.js',
             'js/directives/time_tracking/TimePunchCardAdmin.js',
             'js/directives/time_tracking/TimePunchCardWeeklyView.js',
+            'js/directives/time_tracking/TimePunchCardAdminIndividual.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/model_factories/benefitmyInsuranceCertificateModelFactories.js',

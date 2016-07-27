@@ -33,6 +33,11 @@
       The work hours submitted for week <b>{{selectedDisplayWeek.weekDisplayText}}</b>
     </div>
     <div class="panel-body">
+      <div class="cta-above-table">
+        <div class="cta">
+          <span class="btn green" ng-click="editIndividual()">Edit Per Employee</span>
+        </div>
+      </div>
       <table class="table table-striped benefit-table fix-layout-table"
         id="plan_items_table"
         ng-show="employeePunchCards.length > 0">
@@ -42,13 +47,13 @@
           <th><div>Action</div></th>
         </thead>
         <tbody>
-          <tr ng-repeat="employeeTimeCard in employeePunchCards">
+          <tr ng-repeat="employeeTimeCard in employeePunchCards | orderBy:'employee.lastName'">
             <td>
               <span>{{employeeTimeCard.employee.firstName}} {{employeeTimeCard.employee.lastName}}</span>
             </td>
             <td>{{employeeTimeCard.hours}}</td>
             <td><span>
-                <a ng-click="editTimeCard(null, null, selectedDisplayWeek)">Edit</a>
+                <a ng-click="editTimeCard(employeeTimeCard.employee, selectedDisplayWeek)">Edit</a>
               </span></td>
           </tr>
         </tbody>
