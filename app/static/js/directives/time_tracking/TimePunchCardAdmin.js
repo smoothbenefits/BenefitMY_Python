@@ -79,15 +79,14 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
                 // if employee has not filed any punch card
                 if (!_.contains(employees, envAwareUserId)) {
-                  employeeTotalTimes.push({
-                    employee: {
-                      personDescriptor: envAwareUserId,
-                      companyDescriptor: utilityService.getEnvAwareId($scope.company.id),
-                      firstName: employee.user.first_name,
-                      lastName: employee.user.last_name
-                    },
-                    hours: 0
-                  });
+                  var blankPunchCard = TimePunchCardService.GetBlankPunchCardForEmployeeUser(
+                    employee.user,
+                    $scope.company.id,
+                    $scope.selectedDisplayWeek.weekStartDate
+                  );
+
+                  blankPunchCard.hours = 0;
+                  employeeTotalTimes.push(blankPunchCard);
                 } else {
                   var employeePunchCards = companyPunchCardsByEmployee[envAwareUserId];
 
