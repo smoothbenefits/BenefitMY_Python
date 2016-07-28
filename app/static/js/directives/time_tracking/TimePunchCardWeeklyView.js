@@ -43,11 +43,11 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         CompensationService.getCurrentCompensationByPerson(person.id)
         .then(function(compensation){
           if(compensation){
-            if(compensation.hourly_rate){
-              $scope.punchCard.attributes.hourlyRate.value = parseFloat(compensation.hourlyRate);
+            if(compensation.hourlyRate){
+              $scope.punchCard.attributes.hourlyRate.value = parseFloat(compensation.hourlyRate).toFixed(2);
             }
             else{
-              $scope.punchCard.attributes.hourlyRate.value = parseFloat(compensation.salary) / 40 / 52;
+              $scope.punchCard.attributes.hourlyRate.value = (parseFloat(compensation.salary) / 40 / 52).toFixed(2);
             }
           }
         });
