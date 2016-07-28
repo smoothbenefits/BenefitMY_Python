@@ -36,6 +36,7 @@ var SHORT_DATE_FORMAT_STRING = 'MM/DD/YYYY';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 var SHORT_DATE_FORMAT_STRING_NO_YEAR = 'MM/DD';
 var DATE_TIME_FORMAT_STRING = 'LLLL';
+var DEFAULT_HOURS_IN_YEAR = 40*52;
 
 // The URL to which logging to server side should be posted to
 var LOGGING_SERVER_URL = '/api/v1/log/level/error'

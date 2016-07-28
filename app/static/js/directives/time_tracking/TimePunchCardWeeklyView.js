@@ -47,7 +47,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
               $scope.punchCard.attributes.hourlyRate.value = parseFloat(compensation.hourlyRate).toFixed(2);
             }
             else{
-              $scope.punchCard.attributes.hourlyRate.value = (parseFloat(compensation.salary) / 40 / 52).toFixed(2);
+              $scope.punchCard.attributes.hourlyRate.value = (parseFloat(compensation.salary) / DEFAULT_HOURS_IN_YEAR ).toFixed(2);
             }
           }
         });
