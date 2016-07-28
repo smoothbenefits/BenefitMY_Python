@@ -18,6 +18,10 @@ benefitmyService.factory('ProjectService',
 
       var ProjectsById = {};
 
+      var invalidateProjectByIdCache = function(projectId) {
+        ProjectsById[projectId] = null;
+      };
+
       var mapViewModelToDomainModel = function(viewModel){
         var domainModel = angular.copy(viewModel);
         return domainModel;
@@ -97,7 +101,7 @@ benefitmyService.factory('ProjectService',
           return ProjectRepository.Collection.save({}, domainModel)
             .$promise.then(function(createdModel){
                 var createdProject = mapDomainModelToViewModel(createdModel);
-                ProjectsById[createdProject._id] = createdProject;
+                invalidateProjectByIdCache(createdProject._id);
                 return createdProject;
             });
         }
@@ -107,7 +111,7 @@ benefitmyService.factory('ProjectService',
             domainModel)
             .$promise.then(function(updatedEntry){
               var updatedProject = mapDomainModelToViewModel(updatedEntry);
-              ProjectsById[updatedProject._id] = updatedProject;
+              invalidateProjectByIdCache(updatedProject._id);
               return updatedProject;
             });
         }
@@ -119,7 +123,7 @@ benefitmyService.factory('ProjectService',
           {status: status})
           .$promise.then(function(updatedEntry){
             var updatedProject = mapDomainModelToViewModel(updatedEntry);
-            ProjectsById[updatedProject._id] = updatedProject;
+            invalidateProjectByIdCache(updatedProject._id);
             return updatedProject;
           });
       };
@@ -157,12 +161,14 @@ benefitmyService.factory('ProjectService',
           return ProjectRepository.PayableByProjectPayable
           .update({projectId: projectId, payableId: payable._id}, domainModel)
           .$promise.then(function(updatedPayable) {
+            invalidateProjectByIdCache(projectId);
             return mapPayableDomainModelToViewModel(updatedPayable);
           });
         } else {
           // If not, create a new payable for the project
           return ProjectRepository.PayableByProjectId.save({projectId: projectId}, domainModel)
           .$promise.then(function(savedPayable) {
+            invalidateProjectByIdCache(projectId);
             return mapPayableDomainModelToViewModel(savedPayable);
           });
         }
@@ -171,6 +177,7 @@ benefitmyService.factory('ProjectService',
       var DeletePayableByProjectPayable = function(projectId, payable) {
         return ProjectRepository.PayableByProjectPayable.delete({projectId: projectId, payableId: payable._id})
         .$promise.then(function(response) {
+          invalidateProjectByIdCache(projectId);
           return true;
         }).catch(function(err) {
           return false;
