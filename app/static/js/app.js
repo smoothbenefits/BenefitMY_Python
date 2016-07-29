@@ -34,7 +34,9 @@ String.prototype.capitalize = function() {
 var DATE_FORMAT_STRING = 'dddd, MMM Do, YYYY';
 var SHORT_DATE_FORMAT_STRING = 'MM/DD/YYYY';
 var STORAGE_DATE_FORMAT_STRING = 'YYYY-MM-DD';
+var SHORT_DATE_FORMAT_STRING_NO_YEAR = 'MM/DD';
 var DATE_TIME_FORMAT_STRING = 'LLLL';
+var DEFAULT_HOURS_IN_YEAR = 40*52;
 
 // The URL to which logging to server side should be posted to
 var LOGGING_SERVER_URL = '/api/v1/log/level/error'
@@ -117,6 +119,7 @@ BenefitMyApp.config(['envServiceProvider', function(envServiceProvider) {
             localhost: ['localhost'],
             stage:['staging.workbenefits.me', 'staging.workbenefitsme.com', 'staging.benefitmy.com'],
             demo: ['demo.workbenefits.me', 'demo.workbenefitsme.com', 'demo.benefitmy.com'],
+            demo2: ['demo2.workbenefits.me', 'demo2.workbenefitsme.com', 'demo2.benefitmy.com'],
             production: ['app.workbenefits.me', 'app.workbenefitsme.com', 'app.benefitmy.com']
         },
         vars: {
@@ -129,6 +132,10 @@ BenefitMyApp.config(['envServiceProvider', function(envServiceProvider) {
                 insuranceCertificateUrl: 'http://stage.insurcert.workbenefits.me/'
             },
             demo: {
+                timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/',
+                insuranceCertificateUrl: 'http://stage.insurcert.workbenefits.me/'
+            },
+            demo2: {
                 timeTrackingUrl: 'http://stage.timetracking.workbenefits.me/',
                 insuranceCertificateUrl: 'http://stage.insurcert.workbenefits.me/'
             },
@@ -418,13 +425,13 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('admin_timepunchcards', {
                 url: '/admin/hr/time_punch_cards',
-                templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
+                templateUrl: '/static/partials/time_punch_card/time_punch_card_admin_base.html',
                 controller: 'employerViewTimePunchCards'
             }).
-            state('admin_employee_timepunchcards', {
+            state('admin_individual_timepunchcards', {
                 url: '/admin/hr/time_punch_cards/employee/:employee_id',
-                templateUrl: '/static/partials/time_punch_card/time_punch_card_admin_base.html',
-                controller: 'employerEditEmployeeTimePunchCards',
+                templateUrl: '/static/partials/time_punch_card/time_punch_card_admin_individual_base.html',
+                controller: 'employerAdminIndividualTimePunchCards',
                 params: {startDate: null}
             }).
             state('admin_departments', {

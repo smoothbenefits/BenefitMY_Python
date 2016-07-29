@@ -30,7 +30,7 @@
           </div>
           <div class="col-md-2 input-group">
             <span class="input-group-addon">$</span>
-            <input class="form-control" type="text" min="0" max="2550" ui-number-mask="0" ng-model="fsaElection.primary_amount_per_year" />
+            <input class="form-control" type="text" min="0" max="2550" ui-number-mask="0" ng-model="fsaElection.primary_amount_per_year" ng-required="true" />
           </div>
         </div>
         <div class="row" style="margin-top:3px;">
@@ -39,7 +39,7 @@
           </div>
           <div class="col-md-2 input-group">
             <span class="input-group-addon">$</span>
-            <input class="form-control" type="text" min="0" max="5000" ui-number-mask="0" ng-model="fsaElection.dependent_amount_per_year" />
+            <input class="form-control" type="text" min="0" max="5000" ui-number-mask="0" ng-model="fsaElection.dependent_amount_per_year" ng-required="true" />
           </div>
         </div>
         <div class="row"  style="margin-top:10px;">
@@ -68,7 +68,7 @@
   <div class="row">
     <div class="col-sm-6">
       <div class="submit-box benefit-selection-button">
-        <a ng-click="save()" ng-disabled="!isFsaUpdateReasonSelected()" class="btn green">Save Selection</a>
+        <a ng-click="save()" ng-disabled="!isValidToSave()" class="btn green">Save Selection</a>
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 <div class="content-header"></div>
 <div class="content-body">
-  <div class="panel" ng-show="!hasDirectReportRequests()">
+  <div class="panel" ng-show="!hasPendingRequests()">
     <div class="panel-heading">
         Time Off requests from your direct reports
     </div>
@@ -8,9 +8,39 @@
         There are no time off requested.
     </div>
   </div>
-  <div class="table-responsive" ng-show="hasDirectReportRequests()">
+  <div class="table-responsive" ng-show="hasPendingRequests()">
     <div class="table-title">
       Time Off requests from your direct reports
+    </div>
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Requestor</span></th>
+        <th><span>Type</span></th>
+        <th><span>Start</span></th>
+        <th><span>Duration</span></th>
+        <th><span>Date and time created</span></th>
+        <th><span>Hours Available</span></th>
+        <th><span>Status</span></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="request in pendingRequests">
+          <td> {{request.requestor.firstName}} {{request.requestor.lastName}}</td>
+          <td>{{request.type}}</td>
+          <td>{{request.start}}</td>
+          <td>{{request.duration}} hour(s)</td>
+          <td>{{request.created}}</td>
+          <td>{{getQuotaByTimeOffRequest(request)}}</td>
+          <td ng-if="request.actionNeeded">
+            <a ng-click="updateStatus(request, 'APPROVED')">Approve</a> / <a ng-click="updateStatus(request, 'DENIED')">Deny</a>
+          </td>
+          <td ng-if="!request.actionNeeded">{{request.status}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div> <!-- TimeOff Request Action Table -->
+  <div class="table-responsive" ng-show="hasActionedRequests()">
+    <div class="table-title">
+      Actioned Time Off requests
     </div>
     <table class="table table-striped" >
       <thead>
@@ -22,18 +52,15 @@
         <th><span>Status</span></th>
       </thead>
       <tbody>
-        <tr ng-repeat="request in requestsFromDirectReports">
+        <tr ng-repeat="request in actionedRequests">
           <td> {{request.requestor.firstName}} {{request.requestor.lastName}}</td>
           <td>{{request.type}}</td>
           <td>{{request.start}}</td>
           <td>{{request.duration}} hour(s)</td>
           <td>{{request.created}}</td>
-          <td ng-if="request.actionNeeded">
-            <a ng-click="updateStatus(request, 'APPROVED')">Approve</a> / <a ng-click="updateStatus(request, 'DENIED')">Deny</a>
-          </td>
-          <td ng-if="!request.actionNeeded">{{request.status}}</td>
+          <td>{{request.status}}</td>
         </tr>
       </tbody>
     </table>
-</div> <!-- TimeOff Request Action Table -->
+  </div> <!-- TimeOff Actioned Table -->
 </div>

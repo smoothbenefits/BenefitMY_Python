@@ -3,11 +3,11 @@
   <span>{{pageTitle}}</span>
 </div>
 
-<bm-time-punch-card-manager
+<bm-time-punch-card
+    ng-if="!isAdmin"
     user="user"
-    admin-mode="isAdmin"
-    company="company"
-    view-employee-details="viewDetails(userId, week)"></bm-time-punch-card-manager>
+    company="company">
+</bm-time-punch-card>
 <bm-time-off-requestor user="user" ng-if="!isAdmin"></bm-time-off-requestor>
 <bm-time-off-manager user="user"></bm-time-off-manager>
 

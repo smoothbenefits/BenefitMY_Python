@@ -36,7 +36,14 @@ BenefitMyApp.controller('ProjectModalController', [
     };
 
     $scope.insuranceTypesForSelection = convertInsuranceTypeListForSelection($scope.insuranceTypes);
-    $scope.insuranceTypesSelected = convertInsuranceTypeListForSelection($scope.contextProject.requiredInsuranceTypes);
+    
+    if($scope.contextProject.requiredInsuranceTypes && 
+       $scope.contextProject.requiredInsuranceTypes.length > 0){
+      $scope.insuranceTypesSelected = convertInsuranceTypeListForSelection($scope.contextProject.requiredInsuranceTypes);
+    }
+    else{
+      $scope.insuranceTypesSelected = $scope.insuranceTypesForSelection;
+    }
 
     _.each($scope.insuranceTypesForSelection, function(item) {
         if (_.some($scope.insuranceTypesSelected, function(selected) {
@@ -45,6 +52,10 @@ BenefitMyApp.controller('ProjectModalController', [
             item.ticked = true;
         }
     });
+
+    $scope.inputInvalid = function(){
+      return !$scope.contextProject || !$scope.contextProject.name;
+    };
 
     $scope.cancel = function() {
         $modalInstance.dismiss();

@@ -80,17 +80,17 @@ benefitmyService.factory(
       };
 
       var getCurrentCompensationByPerson = function(personId){
-        var compensations = getCompensationByPersonSortedByDate(personId, true);
-
-        // Compensations for a person is pre-sorted descendingly by effective date
-        // Just need to find out the first one that takes effects before today
-        for (var i = 0; i < compensations.length; i++) {
-          if (compensations[i].effectiveDate < new Date()) {
-            return compensation[i];
-          }
-        }
-
-        return null;
+        return getCompensationByPersonSortedByDate(personId, true)
+          .then(function(compensationList){
+            // Compensations for a person is pre-sorted descendingly by effective date
+            // Just need to find out the first one that takes effects before today
+            for (var i = 0; i < compensationList.length; i++) {
+              if (moment(compensationList[i].effectiveDate, DATE_FORMAT_STRING) < moment()) {
+                return compensationList[i];
+              }
+            }
+            return null;
+          });
       };
 
       var getCurrentCompensationFromViewList = function(compensations) {
@@ -133,7 +133,8 @@ benefitmyService.factory(
          getCompensationByPersonSortedByDate: getCompensationByPersonSortedByDate,
          addCompensationByPerson: addCompensationByPerson,
          mapToViewModel: mapToViewModel,
-         getCurrentCompensationFromViewList: getCurrentCompensationFromViewList
+         getCurrentCompensationFromViewList: getCurrentCompensationFromViewList,
+         getCurrentCompensationByPerson: getCurrentCompensationByPerson
       };
    }
 ]);

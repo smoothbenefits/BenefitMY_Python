@@ -1437,12 +1437,6 @@ var fsaBenefitsSignup = employeeControllers.controller(
             });
         });
 
-        // Whether the user has selected a reason for updating
-        // his/her FSA configuration.
-        $scope.isFsaUpdateReasonSelected = function() {
-          return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value > 0;
-        };
-
         $scope.waivedFsa = function() {
           return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value === 1;
         };
@@ -1455,6 +1449,17 @@ var fsaBenefitsSignup = employeeControllers.controller(
               size: 'lg',
               scope: $scope
             });
+        };
+
+        // Whether the user has selected a reason for updating
+        // his/her FSA configuration.
+        $scope.isFsaUpdateReasonSelected = function() {
+          return $scope.selectedFsaUpdateReason && $scope.selectedFsaUpdateReason.value > 0;
+        };
+
+        $scope.isValidToSave = function() {
+            return $scope.isFsaUpdateReasonSelected()
+                && !$scope.myForm.$invalid;
         };
 
         $scope.save = function(){
@@ -2550,8 +2555,9 @@ var employeeViewTimeOffController = employeeControllers.controller('employeeView
      $scope.isAdmin = false;
 
      UserService.getCurUserInfo().then(function(userInfo) {
-       $scope.user = userInfo.user;
-       $scope.user.role = userInfo.roles[0].company_user_type;
+        $scope.user = userInfo.user;
+        $scope.user.role = userInfo.roles[0].company_user_type;
+        $scope.company = userInfo.currentRole.company;
      });
    }
 ]);

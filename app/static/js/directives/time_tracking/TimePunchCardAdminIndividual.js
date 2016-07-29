@@ -1,14 +1,14 @@
-BenefitMyApp.controller('AdminTimePunchCardDirectiveController', [
+BenefitMyApp.controller('TimePunchCardAdminIndividualDirectiveController', [
     '$scope',
     '$modal',
     '$controller',
-    'WorkTimePunchCardService',
+    'TimePunchCardService',
     'EmployeeProfileService',
-    function AdminTimePunchCardDirectiveController(
+    function TimePunchCardAdminIndividualDirectiveController(
       $scope,
       $modal,
       $controller,
-      WorkTimePunchCardService,
+      TimePunchCardService,
       EmployeeProfileService) {
 
         // Inherite scope from base
@@ -19,6 +19,7 @@ BenefitMyApp.controller('AdminTimePunchCardDirectiveController', [
           var theEndDate = moment($scope.dateOfWeek).endOf('week');
           var selectedWeek = {
               weekStartDate: theStartDate,
+              weekEndDate: theEndDate,
               weekDisplayText: theStartDate.format(SHORT_DATE_FORMAT_STRING)
                               + ' - '
                               + theEndDate.format(SHORT_DATE_FORMAT_STRING)
@@ -31,7 +32,6 @@ BenefitMyApp.controller('AdminTimePunchCardDirectiveController', [
           $scope.selectedWeek = getWeekFromDate();
           $scope.selectedDate = 
             $scope.selectedWeek.weekStartDate.format(SHORT_DATE_FORMAT_STRING);
-          $scope.reloadTimePunchCard();
         };
 
         var validateEmployee = function(employee){
@@ -79,31 +79,6 @@ BenefitMyApp.controller('AdminTimePunchCardDirectiveController', [
           });
         };
 
-        $scope.reloadTimePunchCard = function() {
-          if($scope.user && $scope.company){
-            WorkTimePunchCardService.GetWorkPunchCardByEmployeeUser(
-                $scope.user,
-                $scope.company,
-                $scope.selectedWeek.weekStartDate)
-            .then(function(punchcard) {
-              $scope.workPunchCard = punchcard;
-              $scope.workHoursByStateList =
-                WorkTimePunchCardService.GetWorkHoursByState($scope.workPunchCard);
-            });
-          }
-        };
-
-        $scope.saveResult = function(savedPunchCards){
-          if(savedPunchCards){
-            $scope.reloadTimePunchCard();
-            var successMessage = "Your timesheet has been submitted successfully!"
-            $scope.showMessageWithOkayOnly('Success', successMessage);
-          }
-          else{
-            var message = 'Failed to save the timesheet. Please try again later.';
-            $scope.showMessageWithOkayOnly('Error', message);
-          }
-        };
 
         $scope.matchAndSelect = function(){
           if(_.isString($scope.selectedEmployee)){
@@ -132,7 +107,7 @@ BenefitMyApp.controller('AdminTimePunchCardDirectiveController', [
         $scope.init();
     }
   ]
-).directive('bmAdminTimePunchCard', function() {
+).directive('bmTimePunchCardAdminIndividual', function() {
   return {
     restrict: 'E',
     scope: {
@@ -141,7 +116,7 @@ BenefitMyApp.controller('AdminTimePunchCardDirectiveController', [
         startDate: '=',
         userUpdated: '&'
     },
-    templateUrl: '/static/partials/time_punch_card/directive_admin_time_punch_card.html',
-    controller: 'AdminTimePunchCardDirectiveController'
+    templateUrl: '/static/partials/time_punch_card/directive_time_punch_card_admin_individual.html',
+    controller: 'TimePunchCardAdminIndividualDirectiveController'
   };
 });

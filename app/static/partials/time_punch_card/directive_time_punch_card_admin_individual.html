@@ -22,11 +22,11 @@
         </div>
         <div class="col-md-6">
           <label>Select Employee</label>
-          <input 
+          <input
             type="text"
             name="employee"
-            ng-model="selectedEmployee" 
-            placeholder="Start typing the name of another employee" 
+            ng-model="selectedEmployee"
+            placeholder="Start typing the name of another employee"
             typeahead="employee as employee.first_name + ' ' + employee.last_name for employee in getEmployees($viewValue)"
             ng-required="false"
             autocomplete="off"
@@ -45,12 +45,9 @@
     </div>
     <div class="panel-body">
       <div class="col-md-12">
-        <bm-time-punch-card-week-manager
-          admin-mode="'true'"
-          week="selectedWeek"
-          work-punch-card="workPunchCard"
-          save-result="saveResult(savedPunchCards)">
-        </bm-time-punch-card-week-manager>
+        <bm-time-punch-card-weekly-view
+          week="selectedWeek" user="user" company-id="company.id" admin-mode>
+        </bm-time-punch-card-weekly-view>
       </div>
     </div>
   </div>

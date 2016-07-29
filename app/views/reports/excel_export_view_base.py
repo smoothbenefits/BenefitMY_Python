@@ -1,7 +1,7 @@
 import xlwt
 
 from report_export_view_base import ReportExportViewBase
-from app.models.person import Person
+
 
 class ExcelExportViewBase(ReportExportViewBase):
 
@@ -29,15 +29,6 @@ class ExcelExportViewBase(ReportExportViewBase):
     def _save(self, response):
         self._book.save(response)
         return
-
-    def _get_employee_person(self, user_id):
-        try:
-            person_list = Person.objects.filter(user=user_id, relationship='self')
-            if person_list:
-                return person_list[0]
-            return None
-        except Person.DoesNotExist:
-            return None
 
     def _write_cell(self, value, value_format=None):
         if (value_format):

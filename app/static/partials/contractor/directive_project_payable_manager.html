@@ -11,7 +11,7 @@
 <div class="content-body">
   <div class="panel" ng-if="hasPayablesMade()">
     <div class="panel-heading">
-      Payables Made
+      Payables Made to Sub-Contractors
     </div>
     <div class="panel-body">
       <table class="table table-striped" >
@@ -28,7 +28,7 @@
             <td>{{payable.contractor.name}}</td>
             <td>{{payable.startDate}}</td>
             <td>{{payable.endDate}}</td>
-            <td>$ {{payable.amount.toLocaleString()}}</td>
+            <td>${{payable.amount.toLocaleString()}}</td>
             <td>
               <bmuploadmanager
                upload-mode="button"
@@ -42,7 +42,7 @@
             </td>
             <td>
               <span dropdown on-toggle="toggled(open)">
-                <button id="action-menu-{{payable._id}}" dropdown-toggle>
+                <button id="action-menu-{{payable._id}}" class="btn btn-primary" dropdown-toggle>
                   Actions  <i class="fa fa-caret-square-o-down"></i>
                 </button>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="action-menu-{{payable._id}}">
@@ -52,7 +52,7 @@
                     <a ng-click="downloadLienWaiver(payable)">Download Lien Waiver</a>
                   </li>
                 </ul>
-              </span>  
+              </span>
             </td>
           </tr>
         </tbody>
@@ -61,11 +61,41 @@
   </div>
   <div ng-if="!hasPayablesMade()" class="panel">
     <div class="panel-heading">
-      No Payable Made
+      No Payable Made to Sub-Contractors
     </div>
     <div class="panel-body">
-      Currently there are no payable made for project {{project.name}}
-      <a ng-click="openPayableModal()">Click Here</a> to create a payable
+      Currently there are no payable made to Sub-Contractors for project {{project.name}}
+      <a ng-click="openPayableModal()">Click Here</a> to create a payable for sub-contractor
+    </div>
+  </div>
+
+  <div class="panel" ng-show="employeePayments && employeePayments.length > 0">
+    <div class="panel-heading">
+      Payments Made to Employees 
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Employee</span></th>
+          <th><span>Week</span></th>
+          <th><span>Amount</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="employeePayment in employeePayments">
+            <td>{{employeePayment.employee}}</td>
+            <td>{{employeePayment.week}}</td>
+            <td>${{employeePayment.amount}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel" ng-hide="employeePayments && employeePayments.length > 0">
+    <div class="panel-heading">
+      Payments Made to Employees 
+    </div>
+    <div class="panel-body">
+      <p>There are no payments made to employees yet.</p>
     </div>
   </div>
 </div>
