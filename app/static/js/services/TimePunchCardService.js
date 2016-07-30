@@ -119,9 +119,9 @@ benefitmyService.factory('TimePunchCardService',
                     return 'N/A';
                 }
 
-                return moment(this.start).format('HH:mm')
+                return moment(this.start).format('hh:mm A')
                     + ' - '
-                    + moment(this.end).format('HH:mm');
+                    + moment(this.end).format('hh:mm A');
             };
 
             viewModel.getDuration = function(){
