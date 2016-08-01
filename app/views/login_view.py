@@ -1,10 +1,11 @@
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.utils.http import urlsafe_base64_decode
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.shortcuts import render_to_response
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from app.service.authentication_service import AuthenticationService
 
 
 def user_login(request, info_message=None):
@@ -18,23 +19,10 @@ def user_login(request, info_message=None):
         userEmail = request.POST['email']
         password = request.POST['password']
 
-        # Use Django's machinery to attempt to see if the email/password
-        # combination is valid - a User object is returned if it is.
-        user = authenticate(email=userEmail, password=password)
+        auth_result = AuthenticationService().login(userEmail, password, request)
 
-        # If we have a User object, the details are correct.
-        # If None (Python's way of representing the absence of a value), no user
-        # with matching credentials was found.
-        if user:
-            # Is the account active? It could have been disabled.
-            if user.is_active:
-                # If the account is valid and active, we can log the user in.
-                # We'll send the user back to the homepage.
-                login(request, user)
-                return HttpResponseRedirect('/dashboard/')
-            else:
-                # An inactive account was used - no logging in!
-                return HttpResponse("Your account is disabled.")
+        if auth_result.user:
+            return auth_result.response
         else:
             external_message = "The combination of your email and password is not correct"
             return render_to_response('login.html', {'message':external_message}, context)
