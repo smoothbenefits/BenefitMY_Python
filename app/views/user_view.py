@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404, HttpResponse
 from django.shortcuts import render_to_response
 from rest_framework.response import Response
 from rest_framework import status
@@ -128,7 +128,7 @@ class UserByCredentialView(APIView):
         email = credential.get('email')
         password = credential.get('password')
         if not email or not password:
-            return HttpResponseForbidden()
+            return HttpResponse(status=401)
         auth_result = AuthenticationService().login(email, password, request)
         if auth_result.user:
             # Authentication successful.
@@ -136,4 +136,4 @@ class UserByCredentialView(APIView):
             result = get_user_response_object(auth_result.user)
             return Response(result)
         else:
-            return HttpResponseForbidden()
+            return HttpResponse(status=401)

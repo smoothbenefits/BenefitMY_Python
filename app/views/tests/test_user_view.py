@@ -16,7 +16,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
                 '11_address',
                 '12_phone',
                 '34_company_user',
-                '61_company_group']
+                '61_company_group',
+                'employee_profile']
 
     def setUp(self):
         self.user_password = 'foobar'
@@ -456,3 +457,56 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(result['created_at'])
         self.assertIsNotNone(result['updated_at'])
         self.assertEqual(result['benefit_start_date'], new_user['benefit_start_date'])
+
+    def test_get_user_by_credential_successful(self):
+        credential = {
+            'email': 'user3@benefitmy.com',
+            'password': 'foobar'
+        }
+        response = self.client.post(
+            reverse('user_by_credential'),
+            json.dumps(credential),
+            content_type='application/json'
+        )
+
+        created_response = json.loads(response.content)
+        self.assertTrue('user' in created_response and created_response['user'])
+        created_user = created_response['user']
+        self.assertTrue('id' in created_user and created_user['id'])
+        self.assertTrue('email' in created_user and created_user['email'] == credential['email'])
+        roles = created_response['roles']
+        self.assertTrue(len(roles) == 1)
+
+        self.assertTrue('person' in created_response and created_response['person'])
+        created_person = created_response['person']
+        self.assertTrue('id' in created_person and created_person['id'])
+
+        self.assertTrue('profile' in created_response and created_response['profile'])
+        created_profile = created_response['profile']
+        self.assertTrue('person' in created_profile and created_profile['person'] == created_person['id'])
+
+    def test_get_user_by_credential_bad_credential(self):
+        credential = {
+            'email': 'user3@benefitmy.com',
+            'password': 'badpassword'
+        }
+        response = self.client.post(
+            reverse('user_by_credential'),
+            json.dumps(credential),
+            content_type='application/json'
+        )
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 401)
+
+    def test_get_user_by_credential_no_credential(self):
+        credential = {
+            'email': 'user3@benefitmy.com',
+            'password': ''
+        }
+        response = self.client.post(
+            reverse('user_by_credential'),
+            json.dumps(credential),
+            content_type='application/json'
+        )
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 401)
