@@ -318,7 +318,7 @@ benefitmyService.factory('TimePunchCardService',
             });
         }
 
-        // Capture the most recent loged (the "updatedTimestamp" on the card)
+        // Capture the most recent logged (the "updatedTimestamp" on the card)
         // time punch card in the current context, keyed by user.
         // More specifically, whenever "GetWeeklyPunchCardsByEmployeeUser"
         // is invoked and retrieved the list of cards for the employee
