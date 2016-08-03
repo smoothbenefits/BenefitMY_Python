@@ -92,13 +92,13 @@ benefitmyService.factory('TimePunchCardService',
         };
 
         // Global default start and end time for new cards
-        var defaultStartTime = new Date();
-        defaultStartTime.setHours(0);
-        defaultStartTime.setMinutes(0);
+        var getDefaultStartTime = function(date) {
+          return moment(date).clone().startOf('day').toDate();
+        };
 
-        var defaultEndTime = new Date();
-        defaultEndTime.setHours(0);
-        defaultEndTime.setMinutes(0);
+        var getDefaultEndTime = function(date) {
+          return moment(date).clone().startOf('day').toDate();
+        };
 
         var mapDomainToViewModel = function(domainModel) {
             var viewModel = angular.copy(domainModel);
@@ -247,8 +247,8 @@ benefitmyService.factory('TimePunchCardService',
             var domainModel = {
               'employee': employee,
               'date': date,
-              'start': defaultStartTime,
-              'end': defaultEndTime,
+              'start': getDefaultStartTime(date),
+              'end': getDefaultEndTime(date),
               'attributes': []
             };
 
