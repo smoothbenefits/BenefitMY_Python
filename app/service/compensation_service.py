@@ -4,6 +4,8 @@ from app.models.employee_compensation import EmployeeCompensation
 from app.models.employee_profile import EmployeeProfile, FULL_TIME
 from app.dtos.compensation_info import CompensationInfo
 
+DEFAULT_COMPENSATION_HOURS_IN_YEAR = 40 * 52
+
 '''
 This is the service to provide compensation information to who ever needs it.
 The service only needs the person_id where compensation is needed
@@ -78,6 +80,21 @@ class CompensationService(object):
         elif comp.hourly_rate:
             return comp.hourly_rate * weekly_hours
 
+    def get_current_hourly_rate(self):
+        hourly_rate = None
+
+        comp = self._get_current_compensation()
+        if not comp:
+            return hourly_rate
+
+        is_fulltime = self._is_fulltime_employee()
+
+        if is_fulltime and comp.annual_base_salary:
+            hourly_rate = comp.annual_base_salary / DEFAULT_COMPENSATION_HOURS_IN_YEAR
+        elif (comp.hourly_rate):
+            hourly_rate = comp.hourly_rate
+
+        return hourly_rate
 
     def get_all_compensation_ordered(self):
         comps = self._get_compensation_records_order_by_effective_date()

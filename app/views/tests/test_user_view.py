@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from view_test_base import ViewTestBase
+from app.service.hash_key_service import HashKeyService
 
 User = get_user_model()
 
@@ -11,6 +12,8 @@ class UserViewTestCase(TestCase, ViewTestBase):
 
     fixtures = ['24_person',
                 '49_period_definition',
+                '27_compensation_update_reason',
+                '50_employee_compensation',
                 '10_company',
                 '23_auth_user',
                 '11_address',
@@ -459,8 +462,9 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['benefit_start_date'], new_user['benefit_start_date'])
 
     def test_get_user_by_credential_successful(self):
+        email = 'user3@benefitmy.com'
         credential = {
-            'email': 'user3@benefitmy.com',
+            'email': email,
             'password': 'foobar'
         }
         response = self.client.post(
@@ -469,21 +473,27 @@ class UserViewTestCase(TestCase, ViewTestBase):
             content_type='application/json'
         )
 
-        created_response = json.loads(response.content)
-        self.assertTrue('user' in created_response and created_response['user'])
-        created_user = created_response['user']
-        self.assertTrue('id' in created_user and created_user['id'])
-        self.assertTrue('email' in created_user and created_user['email'] == credential['email'])
-        roles = created_response['roles']
-        self.assertTrue(len(roles) == 1)
+        hash_key_service = HashKeyService()
 
-        self.assertTrue('person' in created_response and created_response['person'])
-        created_person = created_response['person']
-        self.assertTrue('id' in created_person and created_person['id'])
-
-        self.assertTrue('profile' in created_response and created_response['profile'])
-        created_profile = created_response['profile']
-        self.assertTrue('person' in created_profile and created_profile['person'] == created_person['id'])
+        response_object = json.loads(response.content)
+        self.assertTrue('user_id' in response_object and response_object['user_id'])
+        response_object = json.loads(response.content)
+        self.assertTrue('user_id_env_encode' in response_object and response_object['user_id_env_encode'])
+        self.assertEqual(str(response_object['user_id']), hash_key_service.decode_key_with_environment(response_object['user_id_env_encode']))
+        response_object = json.loads(response.content)
+        self.assertTrue('company_id' in response_object and response_object['company_id'])
+        response_object = json.loads(response.content)
+        self.assertTrue('company_id_env_encode' in response_object and response_object['company_id_env_encode'])
+        self.assertEqual(str(response_object['company_id']), hash_key_service.decode_key_with_environment(response_object['company_id_env_encode']))
+        response_object = json.loads(response.content)
+        self.assertTrue('account_email' in response_object and response_object['account_email'])
+        self.assertEqual(response_object['account_email'], email)
+        response_object = json.loads(response.content)
+        self.assertTrue('first_name' in response_object and response_object['first_name'])
+        response_object = json.loads(response.content)
+        self.assertTrue('last_name' in response_object and response_object['last_name'])
+        response_object = json.loads(response.content)
+        self.assertTrue('hourly_rate' in response_object and response_object['hourly_rate'])
 
     def test_get_user_by_credential_bad_credential(self):
         credential = {
