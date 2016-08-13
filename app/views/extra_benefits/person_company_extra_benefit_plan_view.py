@@ -19,7 +19,7 @@ from app.serializers.extra_benefits.person_company_extra_benefit_plan_serializer
     PersonCompanyExtraBenefitPlanSerializer,
     PersonCompanyExtraBenefitPlanPostSerializer)
 from app.service.send_email_service import SendEmailService
-from app.view_models.report.person_info import PersonInfo
+from app.view_models.person_info import PersonInfo
 
 
 class PersonCompanyExtraBenefitPlanView(APIView):

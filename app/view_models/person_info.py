@@ -17,8 +17,16 @@ class PersonInfo(object):
 
     def __init__(self, person_model):
         if (person_model):
-            self.first_name = person_model.first_name
-            self.last_name = person_model.last_name
+            if (person_model.first_name):
+                self.first_name = person_model.first_name
+            elif (person_model.user.first_name):
+                self.first_name = person_model.user.first_name
+
+            if (person_model.last_name):
+                self.last_name = person_model.last_name
+            elif (person_model.user.last_name):
+                self.last_name = person_model.user.last_name
+
             self.ssn = person_model.ssn
             self.birth_date = person_model.birth_date
 
@@ -71,4 +79,10 @@ class PersonInfo(object):
         curr_salary = self.compensation_service.get_current_annual_salary()
         if (curr_salary):
             result = "$%.2f" % curr_salary
+        return result
+
+    def get_current_hourly_rate(self):
+        result = self.compensation_service.get_current_hourly_rate()
+        if (result):
+            result = round(result, 2)
         return result

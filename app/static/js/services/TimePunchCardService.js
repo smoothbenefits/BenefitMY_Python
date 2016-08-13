@@ -92,13 +92,13 @@ benefitmyService.factory('TimePunchCardService',
         };
 
         // Global default start and end time for new cards
-        var defaultStartTime = new Date();
-        defaultStartTime.setHours(0);
-        defaultStartTime.setMinutes(0);
+        var getDefaultStartTime = function(date) {
+          return moment(date).clone().startOf('day').toDate();
+        };
 
-        var defaultEndTime = new Date();
-        defaultEndTime.setHours(0);
-        defaultEndTime.setMinutes(0);
+        var getDefaultEndTime = function(date) {
+          return moment(date).clone().startOf('day').toDate();
+        };
 
         var mapDomainToViewModel = function(domainModel) {
             var viewModel = angular.copy(domainModel);
@@ -247,10 +247,19 @@ benefitmyService.factory('TimePunchCardService',
             var domainModel = {
               'employee': employee,
               'date': date,
-              'start': defaultStartTime,
-              'end': defaultEndTime,
+              'start': getDefaultStartTime(date),
+              'end': getDefaultEndTime(date),
               'attributes': []
             };
+
+            // Prefill state if applicable
+            var cachedCard = cachedMostRecentCardInContextByEmployeeUser[employeeUser.id];
+            if (cachedCard) {
+                domainModel.attributes.push({
+                    'name': AttributeTypes.State.name,
+                    'value': cachedCard.attributes.state.value
+                });
+            }
 
             return mapDomainToViewModel(domainModel);
         };
@@ -309,6 +318,28 @@ benefitmyService.factory('TimePunchCardService',
             });
         }
 
+        // Capture the most recent logged (the "updatedTimestamp" on the card)
+        // time punch card in the current context, keyed by user.
+        // More specifically, whenever "GetWeeklyPunchCardsByEmployeeUser"
+        // is invoked and retrieved the list of cards for the employee
+        // for that context, update this cache with the latest card logged
+        // in that result set. 
+        // This is because the main intention for this cache is to provide
+        // a "prototype" to potentially save some re-type for card creation
+        // in this selected week. So caching the latest card for the context
+        // is more useful/meaningful than caching the global latest
+        var cachedMostRecentCardInContextByEmployeeUser = {};
+        var CacheLatestPunchedCardForUserFromSet = function(userId, punchCards) {
+            var sortedCardsByModifiedDesc = _.sortBy(punchCards, function(card) {
+                return card.updatedTimestamp;
+            }).reverse();
+
+            var latestCard = sortedCardsByModifiedDesc[0];
+            if (latestCard) {
+                cachedMostRecentCardInContextByEmployeeUser[userId] = latestCard;
+            }
+        };
+
         var GetWeeklyPunchCardsByEmployeeUser = function(employeeUser, weekStartDate, weekEndDate){
             var weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
             var weekEndDateString = moment(weekEndDate).format(STORAGE_DATE_FORMAT_STRING);
@@ -317,7 +348,8 @@ benefitmyService.factory('TimePunchCardService',
                 TimePunchCardRepository.ByEmployee,
                 employeeUser.id,
                 weekStartDateString,
-                weekEndDateString).then(function(punchCards){
+                weekEndDateString).then(function(punchCards) {
+                    CacheLatestPunchedCardForUserFromSet(employeeUser.id, punchCards);
                     return MapPunchCardsToWeekdays(punchCards);
                 });
         };

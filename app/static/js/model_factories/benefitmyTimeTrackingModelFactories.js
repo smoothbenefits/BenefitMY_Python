@@ -46,7 +46,7 @@ benefitmyTimeTrackingModelFactories.factory('TimePunchCardRepository', [
       ByEmployee: $resource(_hostName + 'api/v1/employee/:id/time_punch_cards', {id:'@id'}),
       Collection: $resource(_hostName + 'api/v1/time_punch_cards'),
       ById: $resource(_hostName + 'api/v1/time_punch_cards/:id', {id:'@id'}, {
-        update: { method: 'PUT' }
+        update: { method: 'PUT', isArray: true }
       }),
       ByCompany: $resource(_hostName + 'api/v1/company/:id/time_punch_cards', {companyId: '@id'})
     };

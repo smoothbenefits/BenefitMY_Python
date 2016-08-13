@@ -17,7 +17,8 @@ from app.views.employee_timetracking_view import (
 from app.views.user_view import (
     UserView,
     UsersView,
-    CurrentUserView)
+    CurrentUserView,
+    UserByCredentialView)
 from app.views.company_user_view import (
     CompanyUserView,
     CompanyEmployeeCountView,
@@ -271,6 +272,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/settings/?$' % PREFIX, SettingView.as_view()),
     url(r'^%s/users/?$' % PREFIX, UsersView.as_view(), name='all_users'),
     url(r'^%s/users/current/?$' % PREFIX, CurrentUserView.as_view(), name='current_user'),
+    url(r'^%s/user/auth/?$' % PREFIX, UserByCredentialView.as_view(), name='user_by_credential'),
     url(r'^%s/users/(?P<pk>\w+)/?$' % PREFIX, UserView.as_view(), name='user_by_id'),
     url(r'^%s/users/(?P<pk>\w+)/family/?$' % PREFIX, FamilyByUserView.as_view(), name='user_family_api'),
     url(r'^%s/users/(?P<pk>\w+)/documents/?$' % PREFIX, UserDocumentView.as_view()),

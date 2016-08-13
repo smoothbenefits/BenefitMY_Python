@@ -6,8 +6,8 @@ from app.models.aca.company_1095_c import Company1095C, PERIODS
 from app.models.aca.company_1094_c_member_info import Company1094CMemberInfo
 from app.models.aca.company_1094_c_monthly_member_info import Company1094CMonthlyMemberInfo
 
-from app.view_models.report.person_info import PersonInfo
-from app.view_models.report.company_info import CompanyInfo
+from app.view_models.person_info import PersonInfo
+from app.view_models.company_info import CompanyInfo
 from app.view_models.report.employee_1095_c_data import Employee1095CData
 from app.view_models.report.company_1094_c_data import Company1094CData
 from django.http import Http404

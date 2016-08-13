@@ -10,29 +10,43 @@ BenefitMyApp.directive('bmDatePicker', function() {
     },
     templateUrl: '/static/partials/common/datepicker.html',
     controller: ['$scope',
-                function($scope) {
-                  if ($scope.model) {
-                    $scope.model = moment($scope.model).format('MM/DD/YYYY');
-                  } else {
-                    $scope.model = null;
-                  }
-                  if(!$scope.fieldname){
-                    $scope.fieldname = 'date_field';
-                  }
-                  $scope.opened = false;
-                  $scope.format = 'MM/dd/yyyy';
+      function($scope) {
+        $scope.date = moment($scope.model).toDate();
+        $scope.$watch('model', function(updatedModel){
+          if(updatedModel){
+            $scope.date = moment($scope.model).toDate();
+          }
+          else{
+            $scope.date = null;
+          }
+        });
 
-                  $scope.pickADate = function ($event) {
-                    $event.preventDefault();
-                    $event.stopPropagation();
+        $scope.$watch('date', function(updatedDate){
+          if(updatedDate){
+            $scope.model = moment($scope.date).format('MM/DD/YYYY');
+          }
+          else{
+            $scope.model = '';
+          }
+        });
+        
+        if(!$scope.fieldname){
+          $scope.fieldname = 'date_field';
+        }
+        $scope.opened = false;
+        $scope.format = 'MM/dd/yyyy';
 
-                    $scope.opened = !$scope.opened;
-                  };
+        $scope.pickADate = function ($event) {
+          $event.preventDefault();
+          $event.stopPropagation();
 
-                  $scope.dateValidate = function(){
-                    return !$scope.model && $scope.required && $scope.dirty;
-                  };
-                }]
+          $scope.opened = !$scope.opened;
+        };
+
+        $scope.dateValidate = function(){
+          return !$scope.model && $scope.required && $scope.dirty;
+        };
+      }]
     };
   }
 )
