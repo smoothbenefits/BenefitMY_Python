@@ -34,7 +34,7 @@ BenefitMyApp.directive('bmDatePicker', function() {
           $scope.fieldname = 'date_field';
         }
         $scope.opened = false;
-        $scope.format = 'MM/dd/yyyy';
+        $scope.format = 'M/d/yyyy';
 
         $scope.pickADate = function ($event) {
           $event.preventDefault();
