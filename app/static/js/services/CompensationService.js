@@ -34,7 +34,7 @@ benefitmyService.factory(
         var domainModel = {
           company: viewModel.company,
           person: viewModel.person,
-          effective_date: viewModel.effective_date
+          effective_date: moment(viewModel.effective_date)
         };
 
         if (viewModel.salary) {
