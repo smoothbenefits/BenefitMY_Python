@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from view_test_base import ViewTestBase
+from app.service.hash_key_service import HashKeyService
 
 User = get_user_model()
 
@@ -11,12 +12,15 @@ class UserViewTestCase(TestCase, ViewTestBase):
 
     fixtures = ['24_person',
                 '49_period_definition',
+                '27_compensation_update_reason',
+                '50_employee_compensation',
                 '10_company',
                 '23_auth_user',
                 '11_address',
                 '12_phone',
                 '34_company_user',
-                '61_company_group']
+                '61_company_group',
+                'employee_profile']
 
     def setUp(self):
         self.user_password = 'foobar'
@@ -456,3 +460,63 @@ class UserViewTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(result['created_at'])
         self.assertIsNotNone(result['updated_at'])
         self.assertEqual(result['benefit_start_date'], new_user['benefit_start_date'])
+
+    def test_get_user_by_credential_successful(self):
+        email = 'user3@benefitmy.com'
+        credential = {
+            'email': email,
+            'password': 'foobar'
+        }
+        response = self.client.post(
+            reverse('user_by_credential'),
+            json.dumps(credential),
+            content_type='application/json'
+        )
+
+        hash_key_service = HashKeyService()
+
+        response_object = json.loads(response.content)
+        self.assertTrue('user_id' in response_object and response_object['user_id'])
+        response_object = json.loads(response.content)
+        self.assertTrue('user_id_env_encode' in response_object and response_object['user_id_env_encode'])
+        self.assertEqual(str(response_object['user_id']), hash_key_service.decode_key_with_environment(response_object['user_id_env_encode']))
+        response_object = json.loads(response.content)
+        self.assertTrue('company_id' in response_object and response_object['company_id'])
+        response_object = json.loads(response.content)
+        self.assertTrue('company_id_env_encode' in response_object and response_object['company_id_env_encode'])
+        self.assertEqual(str(response_object['company_id']), hash_key_service.decode_key_with_environment(response_object['company_id_env_encode']))
+        response_object = json.loads(response.content)
+        self.assertTrue('account_email' in response_object and response_object['account_email'])
+        self.assertEqual(response_object['account_email'], email)
+        response_object = json.loads(response.content)
+        self.assertTrue('first_name' in response_object and response_object['first_name'])
+        response_object = json.loads(response.content)
+        self.assertTrue('last_name' in response_object and response_object['last_name'])
+        response_object = json.loads(response.content)
+        self.assertTrue('hourly_rate' in response_object and response_object['hourly_rate'])
+
+    def test_get_user_by_credential_bad_credential(self):
+        credential = {
+            'email': 'user3@benefitmy.com',
+            'password': 'badpassword'
+        }
+        response = self.client.post(
+            reverse('user_by_credential'),
+            json.dumps(credential),
+            content_type='application/json'
+        )
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 401)
+
+    def test_get_user_by_credential_no_credential(self):
+        credential = {
+            'email': 'user3@benefitmy.com',
+            'password': ''
+        }
+        response = self.client.post(
+            reverse('user_by_credential'),
+            json.dumps(credential),
+            content_type='application/json'
+        )
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 401)

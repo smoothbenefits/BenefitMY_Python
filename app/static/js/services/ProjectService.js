@@ -148,8 +148,14 @@ benefitmyService.factory('ProjectService',
 
       var mapPayableDomainModelToViewModel = function(domainModel){
           var viewModel = angular.copy(domainModel);
-          viewModel.startDate = moment(viewModel.dateStart).format(SHORT_DATE_FORMAT_STRING);
-          viewModel.endDate = moment(viewModel.dateEnd).format(SHORT_DATE_FORMAT_STRING);
+          viewModel.startDate = 
+            moment(viewModel.dateStart)
+              .add(moment().zone(), 'minutes')
+                .format(SHORT_DATE_FORMAT_STRING);
+          viewModel.endDate = 
+            moment(viewModel.dateEnd)
+              .add(moment().zone(), 'minutes')
+                .format(SHORT_DATE_FORMAT_STRING);
           return viewModel;
       };
 
