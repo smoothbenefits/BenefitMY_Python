@@ -70,7 +70,7 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
             domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
-            domainModel.manager = employeeProfileViewModel.manager.id;
+            domainModel.manager = employeeProfileViewModel.manager ? employeeProfileViewModel.manager.id : null;
 
             return domainModel;
         };

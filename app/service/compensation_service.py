@@ -121,7 +121,7 @@ class CompensationService(object):
                 continue
             elif comp_info.annual_base_salary and not comp_info.hourly_rate:
                 # We are in the full time employee case
-                if base:
+                if base and base.annual_base_salary:
                     comp_info.increase_percentage = (comp_info.annual_base_salary - base.annual_base_salary) /base.annual_base_salary * 100
             elif comp_info.hourly_rate and not comp_info.annual_base_salary:
                 # we are in the part time employee case
