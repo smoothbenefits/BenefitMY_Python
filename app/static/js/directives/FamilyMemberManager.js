@@ -37,6 +37,7 @@ BenefitMyApp.controller(
       member){
 
       $scope.member = member;
+      $scope.member.birth_date = moment($scope.member.birth_date).format(SHORT_DATE_FORMAT_STRING);
 
       $scope.ok = function () {
         $modalInstance.dismiss();

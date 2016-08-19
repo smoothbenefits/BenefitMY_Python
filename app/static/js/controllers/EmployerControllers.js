@@ -241,7 +241,7 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.syncBenefitStartDate = function(){
         if($scope.addUser.date_of_hire){
-          $scope.addUser.benefit_start_date = moment($scope.addUser.date_of_hire).format('MM/DD/YYYY');
+          $scope.addUser.benefit_start_date = $scope.addUser.date_of_hire;
         }
       };
 
