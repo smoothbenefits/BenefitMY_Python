@@ -132,9 +132,9 @@ benefitmyService.factory('ProjectService',
         var payable = {
           amount: 0,
           contractor: '',
-          updatedTime: moment(),
-          dateStart: moment(),
-          dateEnd: moment()
+          updatedTime: moment().toDate(),
+          dateStart: moment().startOf('day').toDate(),
+          dateEnd: moment().startOf('day').toDate()
         }
 
         return payable;
