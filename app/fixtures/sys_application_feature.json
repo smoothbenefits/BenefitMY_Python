@@ -131,5 +131,26 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 18
+  },
+  {
+    "fields": {
+      "feature": "WorkTimeSheet"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 19
+  },
+  {
+    "fields": {
+      "feature": "RangedTimeCard"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 20
+  },
+  {
+    "fields": {
+      "feature": "ProjectManagement"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 21
   }
 ]
