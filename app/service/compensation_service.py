@@ -30,7 +30,7 @@ class CompensationService(object):
         if not ascending:
             order = '-' + order
         try:
-            return EmployeeCompensation.objects.filter(person_id=self.person_id).order_by(order)
+            return EmployeeCompensation.objects.filter(person_id=self.person_id).order_by(order, 'id')
         except EmployeeCompensation.DoesNotExist:
             return None
 

@@ -1282,6 +1282,7 @@ var addEmployeeCompensationModalController = employersController.controller(
       $scope.isFullTime = EmployeeProfileService.isFullTimeEmploymentType(employeeProfile);
       var personId = employeeProfile.personId;
       var companyId = employeeProfile.companyId;
+      $scope.compensation = {};
 
       $scope.useHourlyRate = function() {
         return !$scope.isFullTime || $scope.getHourlyPaid;
