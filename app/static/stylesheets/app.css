@@ -292,3 +292,6 @@ table.benefit-table input.full-width{
     float:right;
     margin-bottom:10px;
 }
+.time-punch-card .in-progress{
+    background-color: #ffffcc;
+}
