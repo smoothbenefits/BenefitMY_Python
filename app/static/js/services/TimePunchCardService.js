@@ -115,13 +115,18 @@ benefitmyService.factory('TimePunchCardService',
 
             // Attach utility functions
             viewModel.getTimeRangeDisplayText = function() {
-                if (!this.start || !this.end) {
+                if (this.start && !this.end){
+                    return 'Started at ' + moment(this.start).format('hh:mm A');
+                }
+                else if (this.start && this.end){
+                    return moment(this.start).format('hh:mm A')
+                        + ' - '
+                        + moment(this.end).format('hh:mm A');
+                }
+                else{
                     return 'N/A';
                 }
-
-                return moment(this.start).format('hh:mm A')
-                    + ' - '
-                    + moment(this.end).format('hh:mm A');
+                
             };
 
             viewModel.getDuration = function(){
@@ -148,7 +153,7 @@ benefitmyService.factory('TimePunchCardService',
             domainModel.recordType = viewModel.recordType.name;
 
             // Delete this to avoid mongo db error
-            delete domainModel._id
+            delete domainModel._id;
 
             return domainModel;
         };
