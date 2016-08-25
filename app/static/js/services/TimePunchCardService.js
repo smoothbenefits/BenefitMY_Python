@@ -106,7 +106,6 @@ benefitmyService.factory('TimePunchCardService',
             // Map out the card attributes for front-end usage
             viewModel.attributes = mapAttributesDomainToViewModel(domainModel.attributes);
 
-
             // Map out the card type to one of the object defined in
             // PunchCardTypes above
             viewModel.recordType = _.find(punchCardTypesArray, function(cardType) {
@@ -170,7 +169,8 @@ benefitmyService.factory('TimePunchCardService',
                 'hourlyRate': {
                     type: AttributeTypes.HourlyRate,
                     value: null
-                }
+                },
+                'rest': []
             };
 
             if (attributesDomainModel && attributesDomainModel.length > 0) {
@@ -192,19 +192,20 @@ benefitmyService.factory('TimePunchCardService',
                                 result.hourlyRate.value = Number(domainAttr.value).toFixed(2);
                                 break;
                             default:
+                                result.rest.push(domainAttr);
                                 break;
                         }
                     }
                 }
             }
-
             return result;
         };
 
         var mapAttributesViewToDomainModel = function(attributesViewModel) {
             // Domain model of attributes is expected to be an array
             // Where view model of attributes we define it to be an object
-            //  holding attributes we care as properties
+            // holding attributes we care as properties
+
             var result = [];
 
             if (attributesViewModel) {
@@ -228,6 +229,10 @@ benefitmyService.factory('TimePunchCardService',
                         'value': attributesViewModel.hourlyRate.value
                     });
                 }
+
+                _.each(attributesViewModel.rest, function(rawAttribute){
+                    result.push(rawAttribute);
+                })
             }
 
             return result;
