@@ -28,10 +28,15 @@ BenefitMyApp.controller('TimePunchCardAdminIndividualDirectiveController', [
         };
 
         var setDateOfWeek = function(dateToSet){
-          $scope.dateOfWeek = dateToSet;
-          $scope.selectedWeek = getWeekFromDate();
-          $scope.selectedDate = 
-            $scope.selectedWeek.weekStartDate.toDate();
+          if(!$scope.currentDate ||
+             $scope.selectedDate &&
+             $scope.currentDate.format(SHORT_DATE_FORMAT_STRING) !== moment($scope.selectedDate).format(SHORT_DATE_FORMAT_STRING)){
+            $scope.dateOfWeek = dateToSet;
+            $scope.selectedWeek = getWeekFromDate();
+            $scope.selectedDate = 
+              $scope.selectedWeek.weekStartDate.toDate();
+            $scope.currentDate = moment($scope.selectedDate);
+          }
         };
 
         var validateEmployee = function(employee){
@@ -68,11 +73,7 @@ BenefitMyApp.controller('TimePunchCardAdminIndividualDirectiveController', [
           });
 
           $scope.$watch('selectedDate', function(){
-            if($scope.selectedDate &&
-               $scope.currentDate.format(SHORT_DATE_FORMAT_STRING) !== moment($scope.selectedDate).format(SHORT_DATE_FORMAT_STRING)){
-              setDateOfWeek($scope.selectedDate);
-              $scope.currentDate = moment($scope.selectedDate);
-            }
+            setDateOfWeek($scope.selectedDate);
           });
 
           $scope.$watch('selectedEmployee', function(employee){
