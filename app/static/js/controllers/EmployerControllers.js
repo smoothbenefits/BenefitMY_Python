@@ -241,7 +241,7 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.syncBenefitStartDate = function(){
         if($scope.addUser.date_of_hire){
-          $scope.addUser.benefit_start_date = moment($scope.addUser.date_of_hire).format('MM/DD/YYYY');
+          $scope.addUser.benefit_start_date = $scope.addUser.date_of_hire;
         }
       };
 
@@ -1282,6 +1282,7 @@ var addEmployeeCompensationModalController = employersController.controller(
       $scope.isFullTime = EmployeeProfileService.isFullTimeEmploymentType(employeeProfile);
       var personId = employeeProfile.personId;
       var companyId = employeeProfile.companyId;
+      $scope.compensation = {};
 
       $scope.useHourlyRate = function() {
         return !$scope.isFullTime || $scope.getHourlyPaid;

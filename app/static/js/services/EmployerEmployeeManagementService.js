@@ -45,7 +45,7 @@ benefitmyService.factory('EmployerEmployeeManagementService',
           "projected_hour_per_month": viewModel.projected_hour_per_month,
           "hourly_rate": viewModel.hourly_rate,
           // Use date of hire as compensation effective date
-          "effective_date": moment(viewModel.date_of_hire).format('YYYY-MM-DDThh:mm:ss'),
+          "effective_date": moment(viewModel.date_of_hire).startOf('day'),
           "increase_percentage": null
         };
 
