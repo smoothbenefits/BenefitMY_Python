@@ -68,7 +68,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
           var employeePromise = CompanyPersonnelsService.getCompanyEmployees($scope.company.id);
 
-          TimePunchCardService.GetPunchCardsByCompanyTimeRange($scope.company.id, $scope.selectedDisplayWeek.weekStartDate)
+          TimePunchCardService.GetAllPunchCardsByCompanyTimeRange($scope.company.id, $scope.selectedDisplayWeek.weekStartDate)
           .then(function(companyPunchCardsByEmployee) {
 
             // Expect companyPunchCardsByEmployee is an array of objects
@@ -96,9 +96,11 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
                   if (employeePunchCards && employeePunchCards.length > 0) {
                     var totalTimeInHour = TimePunchCardService.CalculateTotalHours(employeePunchCards);
+                    var isCheckedIn = TimePunchCardService.HasInProgressPunchCards(employeePunchCards);
                     // Get employee information from the first punch time
                     employeeTotalTimes.push({
                       employee: employeePunchCards[0].employee,
+                      isCheckedIn: isCheckedIn,
                       hours: totalTimeInHour.toFixed(2)
                     });
                   }
