@@ -310,14 +310,19 @@ benefitmyService.factory('TimePunchCardService',
             });
         };
 
-        var GetPunchCards = function(repoEndpoint, apiId, startDate, endDate){
+        var GetPunchCards = function(repoEndpoint, apiId, startDate, endDate, includeInProgress){
             var id = utilityService.getEnvAwareId(apiId);
+            var query = {
+              id: id,
+              start_date: startDate,
+              end_date: endDate
+            };
 
-            return repoEndpoint.query({
-                id: id,
-                start_date: startDate,
-                end_date: endDate
-            }).$promise.then(function(punchCards){
+            if (includeInProgress === true) {
+              query['includeall'] = 'true';
+            }
+
+            return repoEndpoint.query(query).$promise.then(function(punchCards){
                 var resultCards = [];
                 if (punchCards && punchCards.length > 0) {
                     _.each(punchCards, function(domainModel) {
@@ -377,29 +382,15 @@ benefitmyService.factory('TimePunchCardService',
                 });
         };
 
-        var GetPunchCardsByCompanyTimeRange = function(companyId, weekStartDate){
+        var GetPunchCardsByCompanyTimeRange = function(companyId, weekStartDate, includeInProgress){
           weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
           weekEndDateString = moment(weekStartDate).add(7, 'days').format(STORAGE_DATE_FORMAT_STRING);
           return GetPunchCards(
             TimePunchCardRepository.ByCompany,
             companyId,
             weekStartDateString,
-            weekEndDateString).then(function(punchCards){
-              var groupedPunchCards = _.groupBy(punchCards, function(card) {
-                return card.employee.personDescriptor;
-              });
-              return groupedPunchCards;
-            });
-        };
-
-        var GetAllPunchCardsByCompanyTimeRange = function(companyId, weekStartDate){
-          weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
-          weekEndDateString = moment(weekStartDate).add(7, 'days').format(STORAGE_DATE_FORMAT_STRING);
-          return GetPunchCards(
-            TimePunchCardRepository.AllByCompany,
-            companyId,
-            weekStartDateString,
-            weekEndDateString).then(function(punchCards){
+            weekEndDateString,
+            includeInProgress).then(function(punchCards){
               var groupedPunchCards = _.groupBy(punchCards, function(card) {
                 return card.employee.personDescriptor;
               });
@@ -467,7 +458,6 @@ benefitmyService.factory('TimePunchCardService',
           HasInProgressPunchCards: HasInProgressPunchCards,
           GetWeeklyPunchCardsByEmployeeUser: GetWeeklyPunchCardsByEmployeeUser,
           GetPunchCardsByCompanyTimeRange: GetPunchCardsByCompanyTimeRange,
-          GetAllPunchCardsByCompanyTimeRange: GetAllPunchCardsByCompanyTimeRange,
           GetAllPunchCardsByCompany: GetAllPunchCardsByCompany,
           GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser,
           FilteredCardsForTotalHours: FilteredCardsForTotalHours
