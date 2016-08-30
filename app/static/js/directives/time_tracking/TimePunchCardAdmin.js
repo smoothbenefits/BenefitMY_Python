@@ -96,11 +96,11 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
                   if (employeePunchCards && employeePunchCards.length > 0) {
                     var totalTimeInHour = TimePunchCardService.CalculateTotalHours(employeePunchCards);
-                    var isCheckedIn = TimePunchCardService.HasInProgressPunchCards(employeePunchCards);
+                    var isInProgress = TimePunchCardService.HasInProgressPunchCards(employeePunchCards);
                     // Get employee information from the first punch time
                     employeeTotalTimes.push({
                       employee: employeePunchCards[0].employee,
-                      isCheckedIn: isCheckedIn,
+                      isInProgress: isInProgress,
                       hours: totalTimeInHour.toFixed(2)
                     });
                   }

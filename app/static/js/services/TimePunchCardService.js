@@ -318,7 +318,7 @@ benefitmyService.factory('TimePunchCardService',
               end_date: endDate
             };
 
-            if (includeInProgress === true) {
+            if (includeInProgress) {
               query['includeall'] = 'true';
             }
 
@@ -413,7 +413,7 @@ benefitmyService.factory('TimePunchCardService',
 
           return _.filter(punchCards, function(card) {
             var cardType = card.recordType ? card.recordType.name : '';
-            return _.contains(includedRecordTypeNames, cardType) && !card.inProgress;
+            return _.contains(includedRecordTypeNames, cardType);
           });
         }
 
