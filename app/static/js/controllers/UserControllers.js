@@ -127,6 +127,7 @@ var userController = userControllers.controller('userController',
     UserService.getCurUserInfo().then(function(userInfo){
       $scope.curUser = userInfo.user;
       $scope.currentRoleList = userInfo.roles;
+      $scope.companyName = userInfo.currentRole.company.name;
       $scope.company_id = userInfo.currentRole.company.id;
 
       CompanyFeatureService.getDisabledCompanyFeatureByCompany($scope.company_id).then(function(features) {
