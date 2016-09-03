@@ -152,5 +152,12 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 21
+  },
+  {
+    "fields": {
+      "feature": "MobileProjectManagement"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 22
   }
 ]
