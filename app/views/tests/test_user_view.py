@@ -476,24 +476,28 @@ class UserViewTestCase(TestCase, ViewTestBase):
         hash_key_service = HashKeyService()
 
         response_object = json.loads(response.content)
-        self.assertTrue('user_id' in response_object and response_object['user_id'])
-        response_object = json.loads(response.content)
-        self.assertTrue('user_id_env_encode' in response_object and response_object['user_id_env_encode'])
-        self.assertEqual(str(response_object['user_id']), hash_key_service.decode_key_with_environment(response_object['user_id_env_encode']))
-        response_object = json.loads(response.content)
-        self.assertTrue('company_id' in response_object and response_object['company_id'])
-        response_object = json.loads(response.content)
-        self.assertTrue('company_id_env_encode' in response_object and response_object['company_id_env_encode'])
-        self.assertEqual(str(response_object['company_id']), hash_key_service.decode_key_with_environment(response_object['company_id_env_encode']))
-        response_object = json.loads(response.content)
-        self.assertTrue('account_email' in response_object and response_object['account_email'])
-        self.assertEqual(response_object['account_email'], email)
-        response_object = json.loads(response.content)
-        self.assertTrue('first_name' in response_object and response_object['first_name'])
-        response_object = json.loads(response.content)
-        self.assertTrue('last_name' in response_object and response_object['last_name'])
-        response_object = json.loads(response.content)
-        self.assertTrue('hourly_rate' in response_object and response_object['hourly_rate'])
+        self.assertTrue('user_info' in response_object)
+        user_info = response_object['user_info']
+        self.assertEqual(type(user_info), dict)
+        self.assertTrue('user_id' in user_info and user_info['user_id'])
+        self.assertTrue('user_id_env_encode' in user_info and user_info['user_id_env_encode'])
+        self.assertEqual(str(user_info['user_id']), hash_key_service.decode_key_with_environment(user_info['user_id_env_encode']))
+        self.assertTrue('account_email' in user_info and user_info['account_email'])
+        self.assertEqual(user_info['account_email'], email)
+        self.assertTrue('first_name' in user_info and user_info['first_name'])
+        self.assertTrue('last_name' in user_info and user_info['last_name'])
+        self.assertTrue('hourly_rate' in user_info and user_info['hourly_rate'])
+
+        self.assertTrue('company_info' in response_object)
+        company_info = response_object['company_info']
+        self.assertEqual(type(company_info), dict)
+        self.assertTrue('company_id' in company_info and company_info['company_id'])
+        self.assertTrue('company_id_env_encode' in company_info and company_info['company_id_env_encode'])
+        self.assertEqual(str(company_info['company_id']), hash_key_service.decode_key_with_environment(company_info['company_id_env_encode']))
+
+        self.assertTrue('app_features_info' in response_object)
+        app_features_info = response_object['app_features_info']
+        self.assertEqual(type(app_features_info), dict)
 
     def test_get_user_by_credential_bad_credential(self):
         credential = {
