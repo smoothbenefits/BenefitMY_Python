@@ -50,6 +50,7 @@
           <tr ng-repeat="employeeTimeCard in employeePunchCards | orderBy:'employee.lastName'">
             <td>
               <span>{{employeeTimeCard.employee.firstName}} {{employeeTimeCard.employee.lastName}}</span>
+              <span ng-if="employeeTimeCard.isInProgress" class="label label-warning">Checked-In</span>
             </td>
             <td>{{employeeTimeCard.hours}}</td>
             <td><span>

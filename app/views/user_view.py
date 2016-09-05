@@ -25,6 +25,11 @@ from app.service.hash_key_service import HashKeyService
 from app.service.account_creation_service import AccountCreationService
 from app.service.authentication_service import AuthenticationService
 from app.service.csrf_exempt_session_authentication import CsrfExemptSessionAuthentication
+from app.service.application_feature_service import (
+    ApplicationFeatureService,
+    APP_FEATURE_PROJECTMANAGEMENT,
+    APP_FEATURE_MOBILEPROJECTMANAGEMENT)
+from app.service.project_service import ProjectService
 from app.view_models.person_info import PersonInfo
 
 User = get_user_model()
@@ -146,23 +151,50 @@ class UserByCredentialView(APIView):
     def _get_user_data(self, user):
         result = {}
 
-        # User info 
-        result['user_id'] = user.id
-        result['user_id_env_encode'] = self.hash_key_service.encode_key_with_environment(user.id)
-        result['account_email'] = user.email
+        # User info
+        user_info = {}
 
-        # Company Info
-        company_users = CompanyUser.objects.filter(user=user.id)
-        if (len(company_users) > 0):
-            result['company_id'] = company_users[0].company_id
-            result['company_id_env_encode'] = self.hash_key_service.encode_key_with_environment(company_users[0].company_id)
+        ## Basic info
+        user_info['user_id'] = user.id
+        user_info['user_id_env_encode'] = self.hash_key_service.encode_key_with_environment(user.id)
+        user_info['account_email'] = user.email
 
-        # Person and Compensation Info
+        ## Person and Compensation Info
         persons = Person.objects.filter(user=user.id, relationship='self')
         if (len(persons) > 0):
             person_data = PersonInfo(persons[0])
-            result['first_name'] = person_data.first_name
-            result['last_name'] = person_data.last_name
-            result['hourly_rate'] = person_data.get_current_hourly_rate()
+            user_info['first_name'] = person_data.first_name
+            user_info['last_name'] = person_data.last_name
+            user_info['hourly_rate'] = person_data.get_current_hourly_rate()
+
+        result['user_info'] = user_info
+
+        # Company Info
+        company_info = {}
+
+        company_users = CompanyUser.objects.filter(user=user.id)
+        company_id = None
+        if (len(company_users) > 0):
+            company_user = company_users[0]
+            company_id = company_user.company_id
+            company_info['company_id'] = company_id
+            company_info['company_id_env_encode'] = self.hash_key_service.encode_key_with_environment(company_user.company_id)
+            if (company_user.company):
+                company_info['company_name'] = company_user.company.name
+
+        result['company_info'] = company_info
+
+        # Application Features
+        application_features = None
+        if (company_id):
+            application_feature_service = ApplicationFeatureService()
+            application_features = application_feature_service.get_complete_application_feature_status_by_company(company_id)
+            result['app_features_info'] = application_features
+
+        # Projects
+        if (application_features 
+            and application_features[APP_FEATURE_PROJECTMANAGEMENT]):
+            project_service = ProjectService()
+            result['project_list'] = project_service.get_projects_by_company(company_id, active_only=True)
 
         return result

@@ -125,7 +125,7 @@ benefitmyService.factory('TimePunchCardService',
                 else{
                     return 'N/A';
                 }
-                
+
             };
 
             viewModel.getDuration = function(){
@@ -310,14 +310,19 @@ benefitmyService.factory('TimePunchCardService',
             });
         };
 
-        var GetPunchCards = function(repoEndpoint, apiId, startDate, endDate){
+        var GetPunchCards = function(repoEndpoint, apiId, startDate, endDate, includeInProgress){
             var id = utilityService.getEnvAwareId(apiId);
+            var query = {
+              id: id,
+              start_date: startDate,
+              end_date: endDate
+            };
 
-            return repoEndpoint.query({
-                id: id,
-                start_date: startDate,
-                end_date: endDate
-            }).$promise.then(function(punchCards){
+            if (includeInProgress) {
+              query['includeall'] = 'true';
+            }
+
+            return repoEndpoint.query(query).$promise.then(function(punchCards){
                 var resultCards = [];
                 if (punchCards && punchCards.length > 0) {
                     _.each(punchCards, function(domainModel) {
@@ -333,7 +338,7 @@ benefitmyService.factory('TimePunchCardService',
         // More specifically, whenever "GetWeeklyPunchCardsByEmployeeUser"
         // is invoked and retrieved the list of cards for the employee
         // for that context, update this cache with the latest card logged
-        // in that result set. 
+        // in that result set.
         // This is because the main intention for this cache is to provide
         // a "prototype" to potentially save some re-type for card creation
         // in this selected week. So caching the latest card for the context
@@ -351,17 +356,17 @@ benefitmyService.factory('TimePunchCardService',
         };
 
         var GetWeeklyPunchCardsByEmployeeUser = function(employeeUser, weekStartDate, weekEndDate){
-            var weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
-            var weekEndDateString = moment(weekEndDate).format(STORAGE_DATE_FORMAT_STRING);
+          var weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
+          var weekEndDateString = moment(weekEndDate).format(STORAGE_DATE_FORMAT_STRING);
 
-            return GetPunchCards(
-                TimePunchCardRepository.ByEmployee,
-                employeeUser.id,
-                weekStartDateString,
-                weekEndDateString).then(function(punchCards) {
-                    CacheLatestPunchedCardForUserFromSet(employeeUser.id, punchCards);
-                    return MapPunchCardsToWeekdays(punchCards);
-                });
+          return GetPunchCards(
+            TimePunchCardRepository.ByEmployee,
+            employeeUser.id,
+            weekStartDateString,
+            weekEndDateString).then(function(punchCards) {
+              CacheLatestPunchedCardForUserFromSet(employeeUser.id, punchCards);
+              return MapPunchCardsToWeekdays(punchCards);
+            });
         };
 
         var GetAllPunchCardsByCompany = function(companyId){
@@ -377,19 +382,20 @@ benefitmyService.factory('TimePunchCardService',
                 });
         };
 
-        var GetPunchCardsByCompanyTimeRange = function(companyId, weekStartDate){
-            weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
-            weekEndDateString = moment(weekStartDate).add(7, 'days').format(STORAGE_DATE_FORMAT_STRING);
-            return GetPunchCards(
-                TimePunchCardRepository.ByCompany,
-                companyId,
-                weekStartDateString,
-                weekEndDateString).then(function(punchCards){
-                    var groupedPunchCards = _.groupBy(punchCards, function(card) {
-                      return card.employee.personDescriptor;
-                    });
-                    return groupedPunchCards;
-                });
+        var GetPunchCardsByCompanyTimeRange = function(companyId, weekStartDate, includeInProgress){
+          weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
+          weekEndDateString = moment(weekStartDate).add(7, 'days').format(STORAGE_DATE_FORMAT_STRING);
+          return GetPunchCards(
+            TimePunchCardRepository.ByCompany,
+            companyId,
+            weekStartDateString,
+            weekEndDateString,
+            includeInProgress).then(function(punchCards){
+              var groupedPunchCards = _.groupBy(punchCards, function(card) {
+                return card.employee.personDescriptor;
+              });
+              return groupedPunchCards;
+            });
         };
 
         var FilteredCardsForTotalHours = function(punchCards){
@@ -424,6 +430,12 @@ benefitmyService.factory('TimePunchCardService',
           return totalTimeInHour;
         };
 
+        var HasInProgressPunchCards = function(punchCards) {
+          return _.some(punchCards, function(card) {
+            return card.inProgress;
+          });
+        };
+
         var OrderPunchCardsByTime = function(punchCards) {
             return _.sortBy(punchCards, function(card) {
                 return card.start;
@@ -443,6 +455,7 @@ benefitmyService.factory('TimePunchCardService',
           SavePunchCard: SavePunchCard,
           DeletePunchCard: DeletePunchCard,
           CalculateTotalHours: CalculateTotalHours,
+          HasInProgressPunchCards: HasInProgressPunchCards,
           GetWeeklyPunchCardsByEmployeeUser: GetWeeklyPunchCardsByEmployeeUser,
           GetPunchCardsByCompanyTimeRange: GetPunchCardsByCompanyTimeRange,
           GetAllPunchCardsByCompany: GetAllPunchCardsByCompany,
