@@ -115,6 +115,10 @@ var employerHome = employersController.controller('employerHome',
     $scope.viewContractors = function(){
       $state.go('admin_contractor_manager');
     };
+
+    $scope.viewBrokers = function(companyId){
+      $location.path('/admin/broker/' + companyId);
+    }
   }
 ]);
 
