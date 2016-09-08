@@ -191,7 +191,7 @@
             }
             .dashboard-card {
                 float: left;
-                min-width: 300px;
+                min-width: 400px;
                 width: 25%;
                 padding-right: $gutter;
                 margin-bottom: $gutter;
@@ -205,6 +205,7 @@
                 .info-row {
                     border: $border;
                     border-bottom: none;
+                    min-height: 100px;
                     &:after {
                         content: "";
                         display: table;
@@ -240,10 +241,10 @@
                     padding-right: $gutter-sm;
                     h3 {
                         margin: 0 0 $gutter-xs;
-                        font-size: $size-lg;
+                        font-size: $size-md;
                     }
-                    p {
-                        font-size: 10px;
+                    .title {
+                        font-size: $size-md;
                     }
                 }
             }
