@@ -21,16 +21,15 @@
       <div class="col-xs-6"><a ng-click="viewEmployeeClick(company.id)">View</a></div>
     </div>
   </div><!-- / .dashboard-card -->
-  <div class="dashboard-card">
+  <div class="dashboard-card" ng-show="enabledFeatures.RangedTimeCard">
     <div class="info-row">
-      <div class="col-xs-4 img-col"><span class="flaticon-heart260"></span></div>
+      <div class="col-xs-4 img-col"><span class="flaticon-reminder5"></span></div>
       <div class="col-xs-8 info-col">
-        <p class="title">Benefits</p>
+        <p class="title">Time Attendance</p>
       </div>
     </div>
     <div class="action-row">
-      <div class="col-xs-6"><a ng-click="viewBenefitsClick(company.id)">View Benefits</a></div>
-      <div class="col-xs-6"><a ng-click="viewBenefitElection(company.id)">View Employee Selection</a></div>
+      <div class="col-xs-12"><a ng-click="viewTimePunchCards()">View</a></div>
     </div>
   </div><!-- / .dashboard-card -->
   <div class="dashboard-card" ng-hide="disabledFeatures.Timeoff">
@@ -45,15 +44,16 @@
       <div class="col-xs-6"><a ng-click="viewTimeOffQuota()">Quota</a></div>
     </div>
   </div><!-- / .dashboard-card -->
-  <div class="dashboard-card" ng-show="enabledFeatures.RangedTimeCard">
+  <div class="dashboard-card">
     <div class="info-row">
-      <div class="col-xs-4 img-col"><span class="flaticon-reminder5"></span></div>
+      <div class="col-xs-4 img-col"><span class="flaticon-heart260"></span></div>
       <div class="col-xs-8 info-col">
-        <p class="title">Time Attendance</p>
+        <p class="title">Benefits</p>
       </div>
     </div>
     <div class="action-row">
-      <div class="col-xs-12"><a ng-click="viewTimePunchCards()">View</a></div>
+      <div class="col-xs-6"><a ng-click="viewBenefitsClick(company.id)">View Benefits</a></div>
+      <div class="col-xs-6"><a ng-click="viewBenefitElection(company.id)">View Employee Selection</a></div>
     </div>
   </div><!-- / .dashboard-card -->
   <div class="dashboard-card">
@@ -78,7 +78,8 @@
       </div>
     </div>
     <div class="action-row">
-      <div class="col-xs-12"><a ng-click="viewVendors()">View</a></div>
+      <div class="col-xs-6"><a ng-click="viewVendors()">View</a></div>
+      <div class="col-xs-6"><a ng-click="viewBrokers(company.id)">Brokers</a></div>
     </div>
   </div><!-- / .dashboard-card -->
   <div class="dashboard-card" ng-show="enabledFeatures.ProjectManagement">
