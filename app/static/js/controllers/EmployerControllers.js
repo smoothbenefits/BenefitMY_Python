@@ -118,6 +118,10 @@ var employerHome = employersController.controller('employerHome',
 
     $scope.viewBrokers = function(companyId){
       $location.path('/admin/broker/' + companyId);
+    };
+
+    $scope.viewSupport = function(){
+      $state.go('appSupport');
     }
   }
 ]);

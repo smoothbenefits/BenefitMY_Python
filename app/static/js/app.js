@@ -643,6 +643,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/employee/hr/timepunchcards',
                 templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
                 controller: 'employeeManageTimePunchCardController'
+            }).
+            state('appSupport', {
+                url: '/support',
+                templateUrl: '/static/partials/help_center/app_help.html',
+                controller: 'appSupportController'
             });
      }
  ]);

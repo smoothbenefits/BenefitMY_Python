@@ -385,6 +385,22 @@
                     }
                 }
             }
+            table.support-container{
+                td{
+                    div{
+                        font-size: $size-md;
+                        float:left;
+                        height:100px;
+                        line-height:100px;
+                    }
+                    .flaticon{
+                        margin-right:30px;
+                        width: 50px;
+                        text-align:center;
+                        font-size: $size-lg;
+                    }
+                }
+            }
             .list-group {
                 .list-group-item {
                     border-radius: 0;
