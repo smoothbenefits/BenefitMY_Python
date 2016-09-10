@@ -52,7 +52,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
       return response;
     });
 
-    // Now start preparing all the data needed to pass to the 
+    // Now start preparing all the data needed to pass to the
     // the module directives
 
     $scope.showBenefitSection = function() {
@@ -65,7 +65,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
     $scope.showPayrollSection = function() {
         return $scope.showPayrollW4Section()
-            || $scope.showPayrollDirectDepositSection(); 
+            || $scope.showPayrollDirectDepositSection();
     };
 
     $scope.showPayrollW4Section = function() {
@@ -92,7 +92,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
     $scope.showProfileI9 = function() {
         return $scope.disabledFeatures
-            && !$scope.disabledFeatures.I9;  
+            && !$scope.disabledFeatures.I9;
     };
 
     $scope.viewProfileI9 = function() {
@@ -105,7 +105,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
     $scope.showTimeoff = function() {
         return $scope.disabledFeatures
-            && !$scope.disabledFeatures.Timeoff; 
+            && !$scope.disabledFeatures.Timeoff;
     };
 
     $scope.viewTimeoff = function() {
@@ -114,7 +114,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
     $scope.showWorkTimesheets = function() {
         return $scope.disabledFeatures
-            && !$scope.disabledFeatures.WorkTimeSheet; 
+            && !$scope.disabledFeatures.WorkTimeSheet;
     };
 
     $scope.viewWorkTimesheets = function() {
@@ -123,7 +123,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
 
     $scope.showTimePunchCards = function() {
         return $scope.enabledFeatures
-            && $scope.enabledFeatures.RangedTimeCard; 
+            && $scope.enabledFeatures.RangedTimeCard;
     };
 
     $scope.viewTimePunchCards = function() {
@@ -134,6 +134,10 @@ var employeeHome = employeeControllers.controller('employeeHome',
         return $scope.showTimeoff()
             || $scope.showWorkTimesheets()
             || $scope.showTimePunchCards();
+    };
+
+    $scope.viewEmployeeSupportPage = function() {
+      $state.go('employeeSupport');
     };
   }
 ]);
@@ -147,7 +151,7 @@ var employeeViewBenefits = employeeControllers.controller('employeeViewBenefits'
             $state,
             $stateParams,
             UserService) {
-    
+
      UserService.getCurUserInfo().then(function(userInfo){
        $scope.user = userInfo.user;
        $scope.company = userInfo.currentRole.company;
@@ -169,7 +173,7 @@ var employeeViewDocuments = employeeControllers.controller('employeeViewDocument
             $state,
             $stateParams,
             UserService) {
-    
+
      UserService.getCurUserInfo().then(function(userInfo){
        $scope.user = userInfo.user;
        $scope.company = userInfo.currentRole.company;
