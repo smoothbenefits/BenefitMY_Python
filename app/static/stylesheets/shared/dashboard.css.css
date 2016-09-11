@@ -15,86 +15,9 @@
   #dashboard-wrapper #header .drop-holder {
     height: 43px;
     padding: 10px; }
-#dashboard-wrapper #sidebar {
-  width: 270px;
-  height: 100vh;
-  background: #FBFBF7;
-  position: fixed;
-  z-index: 4;
-  top: 55px;
-  left: 0;
-  bottom: 0;
-  border-right: 1px solid #E9E7E2; }
-  #dashboard-wrapper #sidebar .nav-list li {
-    margin: 0 0 -1px; }
-    #dashboard-wrapper #sidebar .nav-list li .primary-nav {
-      height: 50px;
-      border-bottom: 1px solid #E9E7E2;
-      border-top: 1px solid #E9E7E2;
-      line-height: 50px;
-      padding: 0 20px;
-      font-weight: 500;
-      cursor: pointer;
-      position: relative; }
-      #dashboard-wrapper #sidebar .nav-list li .primary-nav button {
-        background: none;
-        border: none;
-        display: block;
-        margin: 0;
-        width: 100%;
-        padding: 0;
-        text-align: left;
-        outline: none; }
-      #dashboard-wrapper #sidebar .nav-list li .primary-nav:hover {
-        background: #FFF; }
-      #dashboard-wrapper #sidebar .nav-list li .primary-nav:after {
-        content: "";
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        border: 4px solid transparent;
-        border-top: 4px solid #151A1E;
-        opacity: 0.65; }
-      #dashboard-wrapper #sidebar .nav-list li .primary-nav.active:after {
-        border: 4px solid transparent;
-        border-bottom: 4px solid #151A1E;
-        margin-top: -4px; }
-      #dashboard-wrapper #sidebar .nav-list li .primary-nav .flaticon {
-        margin-right: 20px; }
-        #dashboard-wrapper #sidebar .nav-list li .primary-nav .flaticon:before {
-          margin: 0; }
-    #dashboard-wrapper #sidebar .nav-list li .sub-nav {
-      background: rgba(0, 0, 0, 0.02); }
-      #dashboard-wrapper #sidebar .nav-list li .sub-nav a {
-        display: block;
-        padding: 10px 20px 10px 60px;
-        font-size: 11px;
-        color: #58585B;
-        font-weight: 500; }
-        #dashboard-wrapper #sidebar .nav-list li .sub-nav a:hover {
-          background: #FFF;
-          text-decoration: none; }
-        #dashboard-wrapper #sidebar .nav-list li .sub-nav a.active {
-          background: #8CC63E;
-          color: #FFF; }
-#dashboard-wrapper #side-footer {
-  position: absolute;
-  bottom: 50px;
-  left: 0;
-  right: 0;
-  z-index: 3;
-  font-size: 11px;
-  padding: 20px; }
-  #dashboard-wrapper #side-footer .footer-nav {
-    color: #E5E8EA; }
-  #dashboard-wrapper #side-footer a {
-    color: #00ADEF; }
-  #dashboard-wrapper #side-footer .copyright {
-    color: #BBBDC0;
-    padding: 10px 0; }
 #dashboard-wrapper #content-wrapper {
   padding-top: 55px;
-  padding-left: 270px;
+  padding-left: 55px;
   position: relative;
   z-index: 1; }
   #dashboard-wrapper #content-wrapper .breadcrumb {
@@ -109,7 +32,7 @@
     #dashboard-wrapper #content-wrapper .breadcrumb a {
       color: #00ADEF; }
       #dashboard-wrapper #content-wrapper .breadcrumb a:after {
-        content: "»";
+        content: "┬╗";
         padding: 0 10px;
         color: #58585B; }
     #dashboard-wrapper #content-wrapper .breadcrumb span {
@@ -154,7 +77,7 @@
       margin-bottom: 10px; }
     #dashboard-wrapper #content-wrapper .content-body .dashboard-card {
       float: left;
-      min-width: 300px;
+      min-width: 400px;
       width: 25%;
       padding-right: 20px;
       margin-bottom: 20px; }
@@ -165,7 +88,8 @@
           color: #999; }
       #dashboard-wrapper #content-wrapper .content-body .dashboard-card .info-row {
         border: 1px solid #E9E7E2;
-        border-bottom: none; }
+        border-bottom: none;
+        min-height: 100px; }
         #dashboard-wrapper #content-wrapper .content-body .dashboard-card .info-row:after {
           content: "";
           display: table;
@@ -193,9 +117,9 @@
         padding-right: 10px; }
         #dashboard-wrapper #content-wrapper .content-body .dashboard-card .info-col h3 {
           margin: 0 0 6px;
-          font-size: 32px; }
-        #dashboard-wrapper #content-wrapper .content-body .dashboard-card .info-col p {
-          font-size: 10px; }
+          font-size: 21px; }
+        #dashboard-wrapper #content-wrapper .content-body .dashboard-card .info-col .title {
+          font-size: 21px; }
     #dashboard-wrapper #content-wrapper .content-body .form-holder {
       width: 100%;
       max-width: 520px;
