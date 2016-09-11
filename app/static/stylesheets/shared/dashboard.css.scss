@@ -22,7 +22,7 @@
     }
     #content-wrapper {
         padding-top: $header-height;
-        padding-left: $sidebar-width;
+        padding-left: $content-padding-left;
         position: relative;
         z-index: 1;
         .breadcrumb {

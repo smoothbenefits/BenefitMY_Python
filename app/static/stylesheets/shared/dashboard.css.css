@@ -32,7 +32,7 @@
     #dashboard-wrapper #content-wrapper .breadcrumb a {
       color: #00ADEF; }
       #dashboard-wrapper #content-wrapper .breadcrumb a:after {
-        content: "»";
+        content: "┬╗";
         padding: 0 10px;
         color: #58585B; }
     #dashboard-wrapper #content-wrapper .breadcrumb span {
@@ -202,16 +202,6 @@
       #dashboard-wrapper #content-wrapper .content-body table#time-picker tbody tr td button {
         height: 30px;
         padding: 5px 3px; }
-    #dashboard-wrapper #content-wrapper .content-body table.support-container td div {
-      font-size: 21px;
-      float: left;
-      height: 100px;
-      line-height: 100px; }
-    #dashboard-wrapper #content-wrapper .content-body table.support-container td .flaticon {
-      margin-right: 30px;
-      width: 50px;
-      text-align: center;
-      font-size: 32px; }
     #dashboard-wrapper #content-wrapper .content-body .list-group .list-group-item {
       border-radius: 0;
       padding: 20px;
