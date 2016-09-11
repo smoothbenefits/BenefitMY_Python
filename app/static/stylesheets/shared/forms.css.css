@@ -91,8 +91,7 @@ div.back {
     border: 1px solid #56A245;
     border-radius: 0; }
     .btn.green.inline {
-        font-weight: 400;
-    }
+      font-weight: 400; }
   .btn.red {
     background: #FF4D4D;
     color: #FFF;
