@@ -515,3 +515,9 @@ var Company1094CModalController = userControllers.controller('Company1094CModalC
     };
   }
 ]);
+
+var appSupportController = userControllers.controller('appSupportController', [
+  '$scope',
+  function($scope){
+  }
+]);

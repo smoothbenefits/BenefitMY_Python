@@ -291,11 +291,6 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
               templateUrl: '/static/partials/aca/aca_report_card.html',
               controller: 'employerAcaReport'
             }).
-            state('/admin/broker/add/:company_id', {
-                url: '/admin/broker/add/:company_id',
-                templateUrl:'/static/partials/add_broker.html',
-                controller:'employerUser'
-            }).
             state('/admin/broker/:company_id', {
                 url: '/admin/broker/:company_id',
                 templateUrl:'/static/partials/view_broker.html',
@@ -648,6 +643,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/employee/hr/timepunchcards',
                 templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
                 controller: 'employeeManageTimePunchCardController'
+            }).
+            state('appSupport', {
+                url: '/support',
+                templateUrl: '/static/partials/help_center/app_help.html',
+                controller: 'appSupportController'
             });
      }
  ]);

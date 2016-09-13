@@ -4,104 +4,69 @@ var employerHome = employersController.controller('employerHome',
   ['$scope',
   '$location',
   '$state',
-  'employerRepository',
-  'currentUser',
-  'clientListRepository',
+  'UserService',
   'TemplateService',
-  'benefitListRepository',
   'countRepository',
-  'documentTypeService',
-  'CompanyBenefitEnrollmentSummaryService',
+  'CompanyServiceProviderService',
+  'CompanyFeatureService',
   function ($scope,
             $location,
             $state,
-            employerRepository,
-            currentUser,
-            clientListRepository,
+            UserService,
             TemplateService,
-            benefitListRepository,
             countRepository,
-            documentTypeService,
-            CompanyBenefitEnrollmentSummaryService){
+            CompanyServiceProviderService,
+            CompanyFeatureService){
 
     $scope.employeeCount = 0;
-    $scope.brokerCount = 0;
-    $scope.benefitCount = 0;
-    $scope.benefitEnrollCount = 0;
     $scope.templateCount = 0;
+    $scope.vendorsCount = 0
 
-    var getWorkerCount = function(company){
-      countRepository.employeeCount.get({companyId:company.id})
+    var loadWorkerCount = function(companyId){
+      countRepository.employeeCount.get({companyId:companyId})
         .$promise.then(function(employeeCountResponse){
           $scope.employeeCount = employeeCountResponse.employees_count;
         });
-      countRepository.brokerCount.get({companyId:company.id})
+      countRepository.brokerCount.get({companyId:companyId})
         .$promise.then(function(brokerCountResponse){
           $scope.brokerCount = brokerCountResponse.brokers_count;
         });
     };
 
-    var getBenefitCount = function(company){
-      benefitListRepository.get({clientId:company.id})
-        .$promise.then(function(response){
-            var benefitNameArray = [];
-            _.each(response.benefits, function(benefit){
-              var name = _.find(benefitNameArray, function(bnf){
-                return bnf.benefit_plan.name == benefit.benefit_plan.name;
-              });
-              if(!name){
-                benefitNameArray.push(benefit);
-              }
-            });
-            $scope.benefitCount = _.size(benefitNameArray);
-        });
-    };
-
-    var getBenefitElectionCount = function(company){
-      CompanyBenefitEnrollmentSummaryService.getEnrollmentSummary(company.id)
-      .then(function(response){
-        $scope.benefitEnrollCount = response.completed.length;
+    var loadDocumentTemplatesCount = function(companyId){
+      TemplateService.getTemplateCount(companyId)
+      .then(function(templateCount){
+        $scope.templateCount = templateCount;
       });
     };
 
-    var userPromise = currentUser.get()
-      .$promise.then(function(response)
-         {
-            $scope.curUser = response.user;
-            return response.user;
-         }
-    );
-    var clientPromise = userPromise.then(function(user){
-      return clientListRepository.get({userId:user.id}).$promise;
+    var loadVendorsCount = function(companyId){
+      CompanyServiceProviderService.GetProvidersByCompany(companyId)
+      .then(function(serviceProviders){
+        $scope.vendorsCount = serviceProviders.length;
+      });
+    };
+
+    var loadCompanyFeatures = function(companyId){
+      CompanyFeatureService.getDisabledCompanyFeatureByCompany(companyId)
+      .then(function(features) {
+        $scope.disabledFeatures = features;
+      });
+
+      CompanyFeatureService.getEnabledCompanyFeatureByCompany(companyId)
+      .then(function(features) {
+        $scope.enabledFeatures = features;
+      });
+    };
+
+    UserService.getCurUserInfo()
+    .then(function(curUserInfo){
+      $scope.company = curUserInfo.currentRole.company;
+      loadWorkerCount($scope.company.id);
+      loadDocumentTemplatesCount($scope.company.id);
+      loadVendorsCount($scope.company.id);
+      loadCompanyFeatures($scope.company.id);
     });
-
-    clientPromise.then(function(clientListResponse){
-      _.every(clientListResponse.company_roles, function(company_role)
-        {
-          if(company_role.company_user_type === 'admin')
-          {
-            $scope.company = company_role.company;
-
-            getWorkerCount($scope.company);
-            getBenefitCount($scope.company);
-            TemplateService.getTemplateCount($scope.company.id)
-            .then(function(templateCount){
-              $scope.templateCount = templateCount;
-            });
-            getBenefitElectionCount($scope.company);
-          }
-        });
-    });
-
-    $scope.addBrokerClick = function(companyId)
-    {
-       $location.path('/admin/broker/add/'+ companyId);
-    }
-
-    $scope.viewBrokerClick = function(companyId)
-    {
-        $location.path('/admin/broker/' + companyId);
-    }
 
     $scope.viewBenefitsClick = function(companyId)
     {
@@ -122,18 +87,42 @@ var employerHome = employersController.controller('employerHome',
        $state.go('document_templates', {company_id: companyId});
     };
 
-    $scope.addDocumentTemplate = function(companyId){
-      $state.go('document_templates_edit', {company_id: companyId});
-    }
-
     $scope.viewBenefitElection = function(companyId)
     {
       $location.path('/admin/benefit/election/'+companyId);
+    };
+
+    $scope.viewTimeOffRequests = function(){
+      $state.go('admin_time_off');
+    };
+
+    $scope.viewTimeOffQuota = function(){
+      $state.go('admin_time_off_quotas');
+    };
+
+    $scope.viewTimePunchCards = function(){
+      $state.go('admin_timepunchcards');
+    };
+
+    $scope.viewVendors = function(){
+      $state.go('admin_service_provider');
     }
 
-    $scope.viewAcaReports = function(companyId) {
-      $state.go('aca_report', {company_id: companyId});
+    $scope.viewProjects = function(){
+      $state.go('admin_project_manager');
     };
+
+    $scope.viewContractors = function(){
+      $state.go('admin_contractor_manager');
+    };
+
+    $scope.viewBrokers = function(companyId){
+      $location.path('/admin/broker/' + companyId);
+    };
+
+    $scope.viewSupport = function(){
+      $state.go('appSupport');
+    }
   }
 ]);
 
