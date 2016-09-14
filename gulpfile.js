@@ -1,0 +1,31 @@
+'use strict';
+var gulp,
+    sass,
+    merge,
+    concat;
+
+//load dependencies
+gulp = require('gulp');
+sass = require('gulp-sass');
+merge = require('merge-stream');
+concat = require('gulp-concat');
+
+//define default task
+gulp.task('sass', function () {
+    var sassStream,
+        cssStream;
+
+    //select additional css files
+    cssStream = gulp.src(['./app/static/stylesheets/*.min.css', 'app.css', 'home.css', 'layout.css', 'angular-multi-select.css']);
+
+    //compile sass
+    sassStream = gulp.src('./app/static/stylesheets/**/*.scss')
+        .pipe(sass({
+            errLogToConsole: true
+        }));
+
+    //merge the two streams and concatenate their contents into a single file
+    return merge(sassStream, cssStream)
+        .pipe(concat('theapp.css'))
+        .pipe(gulp.dest('./app/static/stylesheets/'));
+});
