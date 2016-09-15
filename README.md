@@ -5,96 +5,75 @@ Please follow the following steps to start the app on your local machine
 
 1. Setup the virtual environment. Make sure you downloaded and installed the virtual environment wrapper tool (https://virtualenvwrapper.readthedocs.org/en/latest/)
  
-        ```sh
-  $ mkvirtualenv benefitmy
-  ```
+          $ mkvirtualenv benefitmy
 
-* Make sure you have npm installed
+2. Make sure you have npm installed
  
-        ```sh
-  $ sudo apt-get install npm
-  ```
+          $ sudo apt-get install npm
 
-* Install postgres (http://www.postgresql.org/download/macosx/) and then Create DB "Benefits_DB"
+3. Install postgres (http://www.postgresql.org/download/macosx/) and then Create DB "Benefits_DB"
  
-        ```sh
-  $ createuser postgres
-  $ createdb -O postgres -w Benefits_DB
-  ```
+          $ createuser postgres
+          $ createdb -O postgres -w Benefits_DB
 
-* Pip install
+4. Pip install
          
-        ```sh
-  $ pip install -r requirements.txt
-  ```
-* Install required pacakges through npm
+          $ pip install -r requirements.txt
  
-        ```sh
-  $ sudo npm install
-  ```
-
-* Get into the src directory and do
-
-         ```sh 
-  $ python manage.py makemigrations
-  $ python manage.py migrate
-  $ python syncdb`
-  ```
-
-* Load default test data
-
-         ```sh
-  $ python manage.py loaddata app/fixtures/*.json
-  ```
-
-* Make sure you reset the user table id sequence to be the latest in psql
+5. Install required pacakges through npm
  
-       ```sh SELECT setval('auth_user_id_seq', (SELECT MAX(id) from "auth_user"));```
+           $ sudo npm install
 
-* Compile SASS and Collect the static files into the correct staticfiles folder
+6. Get into the src directory and do
+ 
+           $ python manage.py makemigrations
+           $ python manage.py migrate
+           $ python syncdb
 
-          ```sh
-  $ gulp
-  ```
+7. Load default test data
 
-* Start django server
+         $ python manage.py loaddata app/fixtures/*.json
 
-         ```sh
-  $ python manage.py runserver
-  ```
-* Test api in your web browser by hitting
- `http://localhost:8000/api/v1/people/1/`
+8. Make sure you reset the user table id sequence to be the latest in psql
+ 
+         SELECT setval('auth_user_id_seq', (SELECT MAX(id) from "auth_user"));
+
+9. Compile SASS and Collect the static files into the correct staticfiles folder
+
+        $ gulp
+
+10. Start django server
+
+        $ python manage.py runserver
+
+11. Test api in your web browser by hitting
+ 
+         http://localhost:8000/api/v1/people/1/
 
 
 ### Run unit tests
 1. You can run unit tests by simply do 
 
-          ```sh 
-  $ python manage.py test
-  ```
+           $ python manage.py test
 
-* However, the above method is slow. You can leverage the pytest package to speed up your unit test run
+2. However, the above method is slow. You can leverage the pytest package to speed up your unit test run
 
-* To test with py.test, go to the project root and just do 
+3. To test with py.test, go to the project root and just do 
 
-         ```sh 
-  $ py.test app/
-  ```
+           $ py.test app/
 
-* If the database was not created or you had new migration, please run your test with 
+4. If the database was not created or you had new migration, please run your test with 
 
-         ```sh 
-  $ py.test --create-db app/
-  ```
+          $ py.test --create-db app/
 
-* You can also run the tests on multiple threads to speed it up even more. Execute the following to do multi-thread testing
 
-         ```sh
-  $ py.test -n <num_of_threads> app/
-  ```
+5. You can also run the tests on multiple threads to speed it up even more. Execute the following to do multi-thread testing
 
-* Again, if the test db needs to be regenerated, you can do
+          $ py.test -n <num_of_threads> app/
 
-         ```sh
-  $ py.test -n <num_of_threads> --create-db app/
-  ```
+
+6. Again, if the test db needs to be regenerated, you can do
+
+          $ py.test -n <num_of_threads> --create-db app/
+
+ 
