@@ -32,3 +32,5 @@ gulp.task('sass', function () {
         .pipe(gulp.dest('./app/static/stylesheets/'))
         .pipe(shell(['python manage.py collectstatic --noinput']));
 });
+
+gulp.task('default', ['sass']);
