@@ -18,7 +18,7 @@ gulp.task('sass', function () {
         cssStream;
 
     //select additional css files
-    cssStream = gulp.src(['./app/static/stylesheets/*.min.css', 'app.css', 'home.css', 'layout.css', 'angular-multi-select.css']);
+    cssStream = gulp.src(['./app/static/stylesheets/*.css']);
 
     //compile sass
     sassStream = gulp.src('./app/static/stylesheets/**/*.scss')
