@@ -4,7 +4,7 @@ BenefitMY_Python
 Please follow the following steps to start the app on your local machine
 
 1. Setup the virtual environment. Make sure you downloaded and installed the virtual environment wrapper tool (https://virtualenvwrapper.readthedocs.org/en/latest/)
-```sh
+ ```sh
   $ mkvirtualenv benefitmy
   ```
 * Make sure you have npm installed
