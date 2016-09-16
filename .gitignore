@@ -58,7 +58,6 @@ target/
 # Static folder
 staticfiles/
 *.*.css
-theapp.css
 *.css.css.map
 .sass-cache/
 *.js.coffee
