@@ -22,9 +22,7 @@ gulp.task('sass', function () {
 
     //compile sass
     sassStream = gulp.src('./app/static/stylesheets/**/*.scss')
-        .pipe(sass({
-            errLogToConsole: true
-        }));
+        .pipe(sass.sync().on('error', sass.logError));
 
     //merge the two streams and concatenate their contents into a single file
     return merge(sassStream, cssStream)
