@@ -199,11 +199,12 @@ th .editable-container{
 .inner-td-div{
     margin-bottom:10px;
 }
-.table-striped td{
+.table-striped td, 
+.table-striped th {
     border-left:solid 1px #e4e4e4;
 }
-.table-striped thead{
-    border-left:solid 1px #e4e4e4;
+.table-striped thead:last-child,
+.table-striped td:last-child{
     border-right:solid 1px #e4e4e4;
 }
 .table-sub-title{
