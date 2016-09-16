@@ -6,6 +6,7 @@ BenefitMyApp.directive('bmBenefitSelectionViewer', function() {
     '$window',
     '$attrs',
     '$controller',
+    'employeeBenefits',
     'FsaService',
     'BasicLifeInsuranceService',
     'SupplementalLifeInsuranceService',
@@ -19,6 +20,7 @@ BenefitMyApp.directive('bmBenefitSelectionViewer', function() {
       $window,
       $attrs,
       $controller,
+      employeeBenefits,
       FsaService,
       BasicLifeInsuranceService,
       SupplementalLifeInsuranceService,
@@ -31,6 +33,22 @@ BenefitMyApp.directive('bmBenefitSelectionViewer', function() {
 
       $scope.$watch('user', function(theUser) {
           if(theUser){
+
+              employeeBenefits.enroll().get({
+                userId: $scope.user.id,
+                companyId: $scope.company.id
+              }).$promise.then(function(response){
+                  $scope.benefits = response.benefits;
+                  $scope.benefitCount = response.benefits.length;
+              });
+
+              employeeBenefits.waive().query({
+                userId: $scope.user.id,
+                companyId: $scope.company.id
+              }) .$promise.then(function(waivedResponse){
+                  $scope.waivedBenefits = waivedResponse;
+              });
+
               // FSA election data
               FsaService.getFsaElectionForUser($scope.user.id, $scope.company.id).then(function(fsaPlan){
                 $scope.fsaElection = fsaPlan;
