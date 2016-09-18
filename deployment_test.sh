@@ -40,6 +40,9 @@ heroku run python manage.py loaddata app/fixtures/*.json --app $APP_NAME
 # update data with mirgration script for database
 sh ./data_migration.sh ./data_migration
 
+# Generate the stylesheet and collect static
+heroku run gulp
+
 # reapply worker
 heroku scale worker=$PREV_WORKERS --app $APP_NAME
 
