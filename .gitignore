@@ -57,6 +57,7 @@ target/
 
 # Static folder
 staticfiles/
+theapp.css
 *.*.css
 *.css.css.map
 .sass-cache/
