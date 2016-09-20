@@ -609,11 +609,7 @@ benefitmyDomainModelFactories.factory('CompanyFeatureRepository', ['$resource',
   function($resource) {
     return {
       CompanyFeatureByCompany: $resource(PREFIX + 'company_features/:companyId/', {companyId: '@company_id'}),
-      ByCompanyFeatureId: $resource(PREFIX + 'company_features/:id/', {id: '@id'}, {
-        update: {
-          method: 'PUT'
-        }
-      })
+      AllApplicationFeatureStatusByCompany: $resource(PREFIX + 'all_company_features/:companyId/', {companyId: '@company_id'}),
     };
   }
 ]);
