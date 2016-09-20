@@ -1,1 +1,1 @@
-web: gunicorn Smoothbenefits.wsgi --log-file -
+web: gulp; gunicorn Smoothbenefits.wsgi --log-file -
