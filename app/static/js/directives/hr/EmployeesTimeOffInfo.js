@@ -69,7 +69,7 @@ BenefitMyApp.controller('ConfigureModalController', [
             var modalInstance = $modal.open({
                 templateUrl: '/static/partials/timeoff/modal_edit_accrual_specs.html',
                 controller: 'ConfigureModalController',
-                size: 'md',
+                size: 'lg',
                 backdrop: 'static',
                 resolve: {
                   'employeeQuota': function() {
