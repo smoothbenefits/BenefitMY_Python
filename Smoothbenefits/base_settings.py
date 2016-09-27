@@ -261,6 +261,7 @@ PIPELINE_JS = {
             'js/directives/Edit1094c.js',
             'js/directives/GroupMemberLink.js',
             'js/directives/CompanyGroupSelection.js',
+            'js/directives/FileDownloadLink.js',
             'js/directives/hr/TimeOffManager.js',
             'js/directives/hr/TimeOffRequestView.js',
             'js/directives/hr/TimesheetReportDownloadView.js',
