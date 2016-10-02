@@ -11,7 +11,7 @@ class ActionTimeoffAccural(ActionBase):
     def __init__(self):
         super(ActionTimeoffAccural, self).__init__()
 
-    def execute(self, action_data):;
+    def execute(self, action_data):
         # Invoke the remote URL to trigger global timeoff accural
         r = self.messageing_service.publish_message_to_topic(
             settings.AMAZON_TIME_ACCURAL_TOPIC,
