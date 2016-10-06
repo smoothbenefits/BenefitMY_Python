@@ -2,42 +2,64 @@
   <h4 class="modal-title">Configure Employee Time Off</h4>
 </div>
 <div class="modal-body col-md-12">
-  <div class="form-holder col-md-10 col-md-offset-1">
+  <div class="form-holder col-md-12">
     <form name="form">
-      <div class="row">
-        <div class="col-md-4"><div class="form-label">Type</div></div>
-        <div class="col-md-4"><div class="form-label">Annual Target Hours</div></div>
-        <div class="col-md-4"><div class="form-label">Accrual Frequency</div></div>
-      </div>
-      <div class="row" ng-repeat="quotaInfo in timeoffQuota.quotaInfoCollection">
-        <ng-form name="subform_{{$index}}">
-            <div class="col-md-4">
-                <b>{{quotaInfo.timeoffType}}</b>
-            </div>
-            <div class="col-md-4">
-                <div class="textbox">
+      <table class="table table-striped">
+        <thead>
+          <th><span>Type</span></th>
+          <th><span>Annual Target hours</span></th>
+          <th><span>Accrual Frequency</span></th>
+          <th><span>Accrued Hours</span></th>
+          <th><span>Banked Hours</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="quotaInfo in timeoffQuota.quotaInfoCollection">
+            <td><b>{{quotaInfo.timeoffType}}</b></td>
+            <td>
+              <div class="textbox">
                     <input type="number"
                     min="0"
                     name="annualtargethours"
                     ng-model="quotaInfo.annualTargetHours"
                     ng-required="true">
-                    <div class="form-error-relative" ng-show="subform_{{$index}}.annualtargethours.$dirty && subform_{{$index}}.annualtargethours.$invalid">
-                      <span ng-show="subform_{{$index}}.annualtargethours.$error.required">Annual Target Hours field is required</span>
+                    <div class="form-error-relative" ng-show="form.annualtargethours.$dirty && form.annualtargethours.$invalid">
+                      <span ng-show="form.annualtargethours.$error.required">Annual Target Hours field is required</span>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
+              </td>
+              <td>
                 <div class="textbox">
                     <select name="accrualfrequency" ng-model="quotaInfo.accrualSpecs.accrualFrequency" ng-required="true" class="form-control">
                         <option ng-repeat="frequency in accrualFrequencyTypes">{{frequency}}</option> 
                     </select>
-                    <div class="form-validation-error" ng-show="subform_{{$index}}.accrualfrequency.$invalid">
-                        <span ng-show="subform_{{$index}}.accrualfrequency.$error.required">Accrual Frequency is a required field</span>
+                    <div class="form-validation-error" ng-show="form.accrualfrequency.$invalid">
+                        <span ng-show="form.accrualfrequency.$error.required">Accrual Frequency is a required field</span>
                     </div>
                 </div>
-            </div>
-        </ng-form>
-      </div>
+              </td>
+              <td>
+                <div class="textbox">
+                  <input type="number"
+                    name="accuredhours"
+                    ng-model="quotaInfo.accrualSpecs.accruedHours">
+                    <div class="form-error-relative" ng-show="form.accuredhours.$dirty && form.accuredhours.$invalid">
+                        Accrued hours not valid
+                    </div>
+                </div>
+              </td>
+              <td>
+                <div class="textbox">
+                  <input type="number"
+                    name="bankedhours"
+                    ng-model="quotaInfo.bankedHours">
+                    <div class="form-error-relative" ng-show="form.bankedhours.$dirty && form.bankedhours.$invalid">
+                        Banked hours not valid
+                    </div>
+                </div>
+              </td>
+          </tr>
+        </tbody>
+      </table>
     </form>
   </div>
 </div>
