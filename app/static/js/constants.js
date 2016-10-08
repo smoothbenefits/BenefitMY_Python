@@ -182,7 +182,7 @@ settings.constant('tabLayoutGlobalConfig', [
                 id: 1,
                 verbose_name: 'W4 Form',
                 name: 'w4',
-                active: true,
+                active: false,
                 state: 'employee_payroll.w4'
             },
             {
