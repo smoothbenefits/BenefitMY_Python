@@ -40,6 +40,29 @@ benefitmyService.factory('CompanyPersonnelsService',
             });
         };
 
+        var _GetPaginatedEmployees = function(employeeList, pageNum, pageSize){
+            var totalCount = employeeList.length;
+            var pagedList = employeeList;
+            var offset = 0;
+            var offsetEnd = pageSize * pageNum;
+            var totalPages = Math.ceil(totalCount/pageSize);
+
+            if(pageNum > totalPages){
+                pageNum = totalPages;
+            }
+            offset = (pageNum - 1) * pageSize;
+            offsetEnd = pageNum * pageSize;
+            if(offsetEnd > totalCount){
+                offsetEnd = totalCount;
+            }
+            pagedList = employeeList.slice(offset, offsetEnd);
+
+            return {
+                totalCount: totalCount,
+                list: pagedList,
+            };
+        };
+
         var getCompanyEmployees = function(companyId){
             employeeCollection = _.findWhere(personnels, {companyId: companyId});
             if(!employeeCollection){
@@ -53,6 +76,18 @@ benefitmyService.factory('CompanyPersonnelsService',
                 deferred.resolve(employeeCollection.employees);
                 return deferred.promise;
             }
+        };
+
+        var GetPaginatedEmployees = function(companyId, pageNum=1, pageSize=5){
+            return getCompanyEmployees(companyId)
+                .then(function(employees){
+                    return _GetPaginatedEmployees(
+                        _.sortBy(employees, function(emp){
+                            return emp.user.last_name;
+                        }),
+                        pageNum,
+                        pageSize);
+                });
         };
 
         var getCompanyBrokers = function(companyId){
@@ -86,7 +121,8 @@ benefitmyService.factory('CompanyPersonnelsService',
         return {
             getCompanyBrokers: getCompanyBrokers,
             getCompanyEmployees: getCompanyEmployees,
-            clearCache: clearCache
+            clearCache: clearCache,
+            GetPaginatedEmployees: GetPaginatedEmployees
         };
     }
 ]);
