@@ -23,7 +23,8 @@ benefitmyService.factory('TimeOffService',
         // frequency.
         var AccrualFrequency = {
             Monthly: 'Monthly',
-            Daily: 'Daily'
+            Daily: 'Daily',
+            Hourly: 'Hourly'
         };
 
         /**
@@ -52,7 +53,8 @@ benefitmyService.factory('TimeOffService',
         var getAvailableAccrualFrequecy = function() {
             return [
               AccrualFrequency.Monthly,
-              AccrualFrequency.Daily
+              AccrualFrequency.Daily,
+              AccrualFrequency.Hourly
             ];
         };
 
@@ -190,8 +192,8 @@ benefitmyService.factory('TimeOffService',
             return {
                 timeoffType: timeoffType,
                 bankedHours: 0.0,
-                annualTargetHours: 0.0,
                 accrualSpecs: {
+                    accrualRate: 0.0,
                     accrualFrequency: AccrualFrequency.Monthly,
                     accruedHours: 0.0
                 }
