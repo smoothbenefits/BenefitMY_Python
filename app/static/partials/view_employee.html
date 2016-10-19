@@ -1,12 +1,12 @@
 <div class="breadcrumb">
   <a ng-href="#/admin">Employer Dashboard</a>
-  <span>View Employee</span>
+  <span>{{currentStatus}} Employee</span>
 </div>
 
 <div class="content-header">
-  <h1>View Employee</h1>
-  <span class="general-info">You have total <b>{{employeeCount}}</b> employees</span>
-  <div class="cta"><span class="btn green" ng-click="addLink('employee')">Add Employee</span></div>
+  <h1>{{currentStatus}} Employees <a ng-click="toggleStatusForView()">Show {{getEmployeeStatusToShow()}} Employees</a> </h1>
+  <span class="general-info">You have total <b>{{paginatedEmployees.totalItems}}</b> employees</span>
+  <div class="cta" ng-if="showAddLink()"><span class="btn green" ng-click="addLink('employee')">Add Employee</span></div>
 </div><!-- / .content-header -->
 
 <div class="content-body">

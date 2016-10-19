@@ -59,6 +59,10 @@
                 color: $black-font;
                 margin: 0 0 $gutter-xs;
                 font-size: $size-md;
+                a{
+                    font-size: $size-sm;
+                    margin-left: $gutter-xs;
+                }
             }
             .general-info {
                 color: $gray-font;
