@@ -22,8 +22,8 @@
       <tbody>
         <tr ng-repeat="quotaInfo in quotaData.quotaInfoCollection">
           <td>{{quotaInfo.timeoffType}}</td>
-          <td>{{quotaInfo.accrualSpecs ? quotaInfo.accrualSpecs.accruedHours : ''}}</td>
-          <td>{{quotaInfo.bankedHours}}</td>
+          <td>{{quotaInfo.accrualSpecs ? quotaInfo.accrualSpecs.accruedHours.toFixed(1) : ''}}</td>
+          <td>{{quotaInfo.bankedHours.toFixed(1)}}</td>
         </tr>
       </tbody>
     </table>
