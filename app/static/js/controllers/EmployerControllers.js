@@ -154,9 +154,16 @@ var employerUser = employersController.controller('employerUser',
                         CompanyBenefitGroupService,
                         EmployeeProfileService){
       $scope.compId = $stateParams.company_id;
-      $scope.employees=[];
+      $scope.pages = [];
       $scope.brokers = [];
       $scope.templateFields = [];
+      $scope.paginatedEmployees = {
+        currentPage: 1,
+        pageSize: 25,
+        maxPaginationSize: 5,
+        list: [],
+        totalItems: 0
+      };
       $scope.employment_types = EmployerEmployeeManagementService.EmploymentTypes;
       $scope.addUser = {
         send_email:true,
@@ -166,7 +173,6 @@ var employerUser = employersController.controller('employerUser',
           return EmployerEmployeeManagementService.IsFullTimeEmploymentType(type);
         })
       };
-
       CompanyBenefitGroupService.GetCompanyBenefitGroupByCompany($scope.compId)
       .then(function(groups) {
         $scope.groups = groups;
@@ -175,6 +181,25 @@ var employerUser = employersController.controller('employerUser',
         }
       });
 
+      $scope.setPaginatedEmployees = function(){
+        CompanyPersonnelsService.GetPaginatedEmployees(
+          $scope.compId,
+          $scope.paginatedEmployees.currentPage,
+          $scope.paginatedEmployees.pageSize)
+        .then(function(employees){
+          $scope.paginatedEmployees.list = employees.list;
+          _.each($scope.paginatedEmployees.list, function(employee) {
+              DocumentService.getDocumentsToUserEntry(employee.user.id)
+              .then(function(docEntry) {
+                employee.docEntry = docEntry;
+              });
+          });
+          $scope.paginatedEmployees.totalItems = employees.totalCount;
+        });
+      };
+
+      $scope.setPaginatedEmployees();
+      
       $scope.updateSalaryType = function(employee) {
         if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
           $scope.isHourlyRate = false;
@@ -184,19 +209,6 @@ var employerUser = employersController.controller('employerUser',
           $scope.annualSalaryNotAvailable = true;
         }
       };
-
-      CompanyPersonnelsService.getCompanyEmployees($scope.compId)
-      .then(function(employees){
-          $scope.employees = employees;
-
-          // Populate document data for employees
-          _.each($scope.employees, function(employee) {
-              DocumentService.getDocumentsToUserEntry(employee.user.id)
-              .then(function(docEntry) {
-                  employee.docEntry = docEntry;
-              });
-          });
-      });
 
       CompanyPersonnelsService.getCompanyBrokers($scope.compId)
       .then(function(brokers){
@@ -211,7 +223,7 @@ var employerUser = employersController.controller('employerUser',
 
       var gotoUserView = function(userType){
         $location.path('/admin/' + userType + '/' + $scope.compId);
-      }
+      };
 
       $scope.validatePassword = function(password, passwordConfirm) {
         if (!password) {

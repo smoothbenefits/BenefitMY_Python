@@ -2,7 +2,7 @@
 
 test:
   pre:
-    - python manage.py collectstatic --noinput
+    - gulp
   override:
     - python manage.py test
 
@@ -19,4 +19,4 @@ deployment:
   beta:
     branch: beta
     commands:
-      - sh ./deployment.sh benefitmy-python-beta HEROKU_POSTGRESQL_OLIVE
+      - sh ./deployment.sh benefitmy-python-beta HEROKU_POSTGRESQL_AQUA
