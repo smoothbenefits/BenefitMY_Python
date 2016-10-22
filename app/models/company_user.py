@@ -17,5 +17,5 @@ USER_TYPE = ((USER_TYPE_EMPLOYEE, "employee"),
 class CompanyUser(models.Model):
     user = models.ForeignKey(AuthUser)
     company = models.ForeignKey(Company)
-    company_user_type = models.TextField(choices=USER_TYPE)
+    company_user_type = models.TextField(choices=USER_TYPE, db_index=True)
     new_employee = models.BooleanField(default=True)
