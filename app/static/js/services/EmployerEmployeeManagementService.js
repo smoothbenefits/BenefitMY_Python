@@ -33,6 +33,11 @@ benefitmyService.factory('EmployerEmployeeManagementService',
       }
     ];
 
+    var employeeStatus = {
+      "active": "Active",
+      "terminated": "Terminated"
+    };
+
     var isFullTimeEmploymentType = function(employmentType) {
       return employmentType.id === 1;
     };
@@ -154,7 +159,8 @@ benefitmyService.factory('EmployerEmployeeManagementService',
     return {
       EmploymentTypes : employmentTypes,
       IsFullTimeEmploymentType: isFullTimeEmploymentType,
-      AddNewEmployee : addNewEmployee
+      AddNewEmployee : addNewEmployee,
+      EmployeeStatus: employeeStatus
     };
   }
 ]);

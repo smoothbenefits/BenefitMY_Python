@@ -16,7 +16,7 @@ def user_login(request, info_message=None):
     if request.method == 'POST':
         # Gather the email and password provided by the user.
         # This information is obtained from the login form.
-        userEmail = request.POST['email']
+        userEmail = request.POST['email'].lower()
         password = request.POST['password']
 
         auth_result = AuthenticationService().login(userEmail, password, request)

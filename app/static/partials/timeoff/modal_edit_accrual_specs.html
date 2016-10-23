@@ -7,7 +7,7 @@
       <table class="table table-striped">
         <thead>
           <th><span>Type</span></th>
-          <th><span>Annual Target hours</span></th>
+          <th><span>Accrual Rate</span></th>
           <th><span>Accrual Frequency</span></th>
           <th><span>Accrued Hours</span></th>
           <th><span>Banked Hours</span></th>
@@ -19,11 +19,11 @@
               <div class="textbox">
                     <input type="number"
                     min="0"
-                    name="annualtargethours"
-                    ng-model="quotaInfo.annualTargetHours"
+                    name="accrualrate"
+                    ng-model="quotaInfo.accrualSpecs.accrualRate"
                     ng-required="true">
-                    <div class="form-error-relative" ng-show="form.annualtargethours.$dirty && form.annualtargethours.$invalid">
-                      <span ng-show="form.annualtargethours.$error.required">Annual Target Hours field is required</span>
+                    <div class="form-error-relative" ng-show="form.accrualrate.$dirty && accrualrate.$invalid">
+                      <span ng-show="form.annualtargethours.$error.required">Accrual Rate field is required</span>
                     </div>
                 </div>
               </td>
