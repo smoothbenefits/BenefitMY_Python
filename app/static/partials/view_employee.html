@@ -1,6 +1,6 @@
 <div class="breadcrumb">
   <a ng-href="#/admin">Employer Dashboard</a>
-  <span>{{currentStatus}} Employee</span>
+  <span>{{currentStatus}} Employees</span>
 </div>
 
 <div class="content-header">
@@ -39,7 +39,7 @@
       <tbody>
         <tr ng-if="paginatedEmployees.list.length==0">
           <td colspan="2" class="no-related-users">
-            There is no employee entered for this company
+            There are no {{currentStatus}} employees
           </td>
         </tr>
         <tr ng-repeat="employee in paginatedEmployees.list">
