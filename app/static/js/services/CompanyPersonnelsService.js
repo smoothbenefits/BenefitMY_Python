@@ -78,7 +78,7 @@ benefitmyService.factory('CompanyPersonnelsService',
             }
         };
 
-        var GetPaginatedEmployees = function(companyId, pageNum=1, pageSize=5, status="Active"){
+        var GetPaginatedEmployees = function(companyId, pageNum, pageSize, status){
 
             return $q.all([
                     getCompanyEmployees(companyId),
