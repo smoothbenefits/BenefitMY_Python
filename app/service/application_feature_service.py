@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 
 from app.models.company_user import CompanyUser, USER_TYPE_ADMIN, USER_TYPE_BROKER
 from app.models.company_features import CompanyFeatures
+from app.models.company import Company
 
 User = get_user_model()
 
@@ -15,7 +16,6 @@ APP_FEATURE_DENTALBENEFIT = 'DentalBenefit'
 APP_FEATURE_VISIONBENEFIT = 'VisionBenefit'
 APP_FEATURE_I9 = 'I9'
 APP_FEATURE_MANAGER = 'Manager'
-APP_FEATURE_DEPOSIT = 'Deposit'
 APP_FEATURE_BASICLIFE = 'BasicLife'
 APP_FEATURE_OPTIONALLIFE = 'OptionalLife'
 APP_FEATURE_STD = 'STD'
@@ -45,7 +45,6 @@ APP_FEATURES_DEFAULT_ENABLED = [
     APP_FEATURE_VISIONBENEFIT,
     APP_FEATURE_I9,
     APP_FEATURE_MANAGER,
-    APP_FEATURE_DEPOSIT,
     APP_FEATURE_BASICLIFE,
     APP_FEATURE_OPTIONALLIFE,
     APP_FEATURE_STD,
@@ -76,13 +75,29 @@ class ApplicationFeatureService(object):
         return self._get_company_list_with_feature_status(feature_name, True)
 
     def _get_company_list_with_feature_status(self, feature_name, feature_status):
-        company_list = []
+        default_status = None
+
+        if feature_name in APP_FEATURES_DEFAULT_ENABLED:
+            default_status = True
+
+        if feature_name in APP_FEATURES_DEFAULT_DISABLED:
+            default_status = False
+
+        company_mappings = {}
+
+        companies = Company.objects.all()
+        for company in companies:
+            company_mappings[company.id] = default_status
 
         company_features = self._get_company_features_by_feature_name(feature_name)
-        company_features = company_features.filter(feature_status=feature_status)
 
         for company_feature in company_features:
-            company_list.append(company_feature.company.id)
+            company_mappings[company_feature.company.id] = company_feature.feature_status
+
+        company_list = []
+        for company_id in company_mappings:
+            if (company_mappings[company_id] == feature_status):
+                company_list.append(company_id)
 
         return company_list
 

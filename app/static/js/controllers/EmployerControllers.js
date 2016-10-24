@@ -48,14 +48,9 @@ var employerHome = employersController.controller('employerHome',
     };
 
     var loadCompanyFeatures = function(companyId){
-      CompanyFeatureService.getDisabledCompanyFeatureByCompany(companyId)
-      .then(function(features) {
-        $scope.disabledFeatures = features;
-      });
-
-      CompanyFeatureService.getEnabledCompanyFeatureByCompany(companyId)
-      .then(function(features) {
-        $scope.enabledFeatures = features;
+      CompanyFeatureService.getAllApplicationFeatureStatusByCompany(companyId)
+      .then(function(allFeatureStatus) {
+        $scope.allFeatureStatus = allFeatureStatus;
       });
     };
 

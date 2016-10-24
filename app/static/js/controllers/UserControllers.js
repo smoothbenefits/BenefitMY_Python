@@ -130,13 +130,9 @@ var userController = userControllers.controller('userController',
       $scope.companyName = userInfo.currentRole.company.name;
       $scope.company_id = userInfo.currentRole.company.id;
 
-      CompanyFeatureService.getDisabledCompanyFeatureByCompany($scope.company_id).then(function(features) {
-        $scope.disabledFeatures = features;
-      });
-
-      CompanyFeatureService.getEnabledCompanyFeatureByCompany($scope.company_id)
-      .then(function(features) {
-        $scope.enabledFeatures = features;
+      CompanyFeatureService.getAllApplicationFeatureStatusByCompany($scope.company_id)
+      .then(function(allFeatureStatus) {
+        $scope.allFeatureStatus = allFeatureStatus;
       });
 
       EmployeeBenefitsAvailabilityService.getEmployeeAvailableBenefits(
