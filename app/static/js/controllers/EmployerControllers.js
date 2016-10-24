@@ -9,6 +9,7 @@ var employerHome = employersController.controller('employerHome',
   'countRepository',
   'CompanyServiceProviderService',
   'CompanyFeatureService',
+  'EmployerEmployeeManagementService',
   function ($scope,
             $location,
             $state,
@@ -16,14 +17,18 @@ var employerHome = employersController.controller('employerHome',
             TemplateService,
             countRepository,
             CompanyServiceProviderService,
-            CompanyFeatureService){
+            CompanyFeatureService,
+            EmployerEmployeeManagementService){
 
     $scope.employeeCount = 0;
     $scope.templateCount = 0;
     $scope.vendorsCount = 0
 
     var loadWorkerCount = function(companyId){
-      countRepository.employeeCount.get({companyId:companyId})
+      countRepository.employeeCount.get({
+        companyId:companyId,
+        status:EmployerEmployeeManagementService.EmployeeStatus.active
+      })
         .$promise.then(function(employeeCountResponse){
           $scope.employeeCount = employeeCountResponse.employees_count;
         });
@@ -168,6 +173,7 @@ var employerUser = employersController.controller('employerUser',
           return EmployerEmployeeManagementService.IsFullTimeEmploymentType(type);
         })
       };
+      $scope.currentStatus = EmployerEmployeeManagementService.EmployeeStatus.active;
       CompanyBenefitGroupService.GetCompanyBenefitGroupByCompany($scope.compId)
       .then(function(groups) {
         $scope.groups = groups;
@@ -180,7 +186,8 @@ var employerUser = employersController.controller('employerUser',
         CompanyPersonnelsService.GetPaginatedEmployees(
           $scope.compId,
           $scope.paginatedEmployees.currentPage,
-          $scope.paginatedEmployees.pageSize)
+          $scope.paginatedEmployees.pageSize,
+          $scope.currentStatus)
         .then(function(employees){
           $scope.paginatedEmployees.list = employees.list;
           _.each($scope.paginatedEmployees.list, function(employee) {
@@ -192,8 +199,6 @@ var employerUser = employersController.controller('employerUser',
           $scope.paginatedEmployees.totalItems = employees.totalCount;
         });
       };
-
-      $scope.setPaginatedEmployees();
       
       $scope.updateSalaryType = function(employee) {
         if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
@@ -298,7 +303,32 @@ var employerUser = employersController.controller('employerUser',
 
       $scope.hasNoBenefitGroup = function(){
         return !$scope.groups || $scope.groups.length <= 0;
-      }
+      };
+
+      //Employee status functions
+      var toggleEmployeeStatus = function(statusToToggle){
+        if (statusToToggle == EmployerEmployeeManagementService.EmployeeStatus.active){
+          return EmployerEmployeeManagementService.EmployeeStatus.terminated;
+        }
+        else{
+          return EmployerEmployeeManagementService.EmployeeStatus.active;
+        }
+      };
+
+      $scope.toggleStatusForView = function(){
+        $scope.currentStatus = toggleEmployeeStatus($scope.currentStatus);
+        $scope.setPaginatedEmployees();
+      };
+
+      $scope.getEmployeeStatusToShow = function(){
+        return toggleEmployeeStatus($scope.currentStatus);
+      };
+
+      $scope.showAddLink = function(){
+        return $scope.currentStatus == EmployerEmployeeManagementService.EmployeeStatus.active;
+      };
+
+      $scope.setPaginatedEmployees();
   }
 ]);
 
