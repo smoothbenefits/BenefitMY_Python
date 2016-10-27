@@ -125,9 +125,13 @@ var employerHome = employersController.controller('employerHome',
       $location.path('/admin/broker/' + companyId);
     };
 
+    $scope.viewReports = function(){
+      $state.go('admin_reports');
+    };
+
     $scope.viewSupport = function(){
       $state.go('appSupport');
-    }
+    };
   }
 ]);
 
@@ -1431,13 +1435,6 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
       $location.path('/admin');
     };
 
-    $scope.exportCompanyEmployeeSummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryExcelUrl(company_id);
-    $scope.exportCompanyEmployeeDirectDepositUrl = CompanyEmployeeSummaryService.getCompanyEmployeeDirectDepositExcelUrl(company_id);
-    $scope.exportCompanyEmployeeLifeBeneficiarySummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl(company_id);
-    $scope.exportCompanyBenefitsBillingSummaryUrl = CompanyEmployeeSummaryService.getCompanyBenefitsBillingReportExcelUrl(company_id);
-    $scope.exportCompanyEmployeeSummaryPdfUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryPdfUrl(company_id);
-    $scope.companyHphcExcelUrl = CompanyEmployeeSummaryService.getCompanyHphcExcelUrl(company_id);
-
     $scope.getEmployee1095cUrl = function(employeeUserId) {
         return CompanyEmployeeSummaryService.getEmployee1095cUrl(employeeUserId);
     };
@@ -2101,5 +2098,27 @@ var employerManageProjectPayable = employersController.controller('employerManag
     });
 
     
+  }
+]);
+
+var employerViewReports = employersController.controller('employerViewReports',
+  ['$scope',
+  '$state',
+  'UserService',
+  'CompanyEmployeeSummaryService',
+  function($scope, $state, UserService, CompanyEmployeeSummaryService) {
+    UserService.getCurUserInfo()
+    .then(function(curUserInfo){
+      var company = curUserInfo.currentRole.company;
+      $scope.exportCompanyEmployeeSummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryExcelUrl(company.id);
+      $scope.exportCompanyEmployeeDirectDepositUrl = CompanyEmployeeSummaryService.getCompanyEmployeeDirectDepositExcelUrl(company.id);
+      $scope.exportCompanyEmployeeLifeBeneficiarySummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl(company.id);
+      $scope.exportCompanyBenefitsBillingSummaryUrl = CompanyEmployeeSummaryService.getCompanyBenefitsBillingReportExcelUrl(company.id);
+      $scope.exportCompanyEmployeeSummaryPdfUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryPdfUrl(company.id);
+      $scope.companyHphcExcelUrl = CompanyEmployeeSummaryService.getCompanyHphcExcelUrl(company.id);
+    });
+    $scope.backToDashboard = function(){
+      $state.go('/admin');
+    };
   }
 ]);
