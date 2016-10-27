@@ -68,6 +68,24 @@ var employerHome = employersController.controller('employerHome',
       loadCompanyFeatures($scope.company.id);
     });
 
+    $scope.rangedTimeCardEnabled = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.RangedTimeCard);
+    };
+
+    $scope.timeoffEnabled = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.Timeoff);
+    };
+
+    $scope.projectManagementEnabled = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.ProjectManagement);
+    };
+
     $scope.viewBenefitsClick = function(companyId)
     {
        $location.path('/admin/benefits/'+ companyId);

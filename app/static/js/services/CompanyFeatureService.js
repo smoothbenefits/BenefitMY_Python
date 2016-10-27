@@ -40,8 +40,8 @@ benefitmyService.factory(
         if (appFeatureStatusByCompanyIdCache[companyId]) {
             deferred.resolve(appFeatureStatusByCompanyIdCache[companyId]);
         } else {
-            CompanyFeatureRepository.AllApplicationFeatureStatusByCompany.query({companyId: companyId})
-            .$promise.then({
+            CompanyFeatureRepository.AllApplicationFeatureStatusByCompany.get({companyId: companyId})
+            .$promise.then(
                 function(appFeatureStatus) {
                     // Attach the needed utility method onto the object
                     appFeatureStatus.isFeatureEnabled = function(appFeatureName) {
@@ -53,12 +53,13 @@ benefitmyService.factory(
                         // the feature is on if server does not spell for it
                         return true;
                     };
+                    appFeatureStatusByCompanyIdCache[companyId] = appFeatureStatus;
                     deferred.resolve(appFeatureStatus);
                 },
                 function(errors) {
                     deferred.reject(errors);
                 }
-            });
+            );
         }
 
         return deferred.promise;

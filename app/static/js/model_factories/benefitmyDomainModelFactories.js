@@ -608,7 +608,7 @@ benefitmyDomainModelFactories.factory('PersonBenefitEnrollmentRepository', ['$re
 benefitmyDomainModelFactories.factory('CompanyFeatureRepository', ['$resource',
   function($resource) {
     return {
-      AllApplicationFeatureStatusByCompany: $resource(PREFIX + 'all_company_features/:companyId/', {companyId: '@company_id'}),
+      AllApplicationFeatureStatusByCompany: $resource(PREFIX + 'all_company_features/:companyId/', {companyId: '@company_id'})
     };
   }
 ]);

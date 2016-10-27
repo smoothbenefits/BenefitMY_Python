@@ -69,11 +69,15 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showPayrollW4Section = function() {
-        return $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4);
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.W4);
     };
 
     $scope.showPayrollDirectDepositSection = function() {
-        return $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.DD);
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.DD);
     };
 
     $scope.viewPayrollW4 = function() {
@@ -89,7 +93,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showProfileI9 = function() {
-        return $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.I9);
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.I9);
     };
 
     $scope.viewProfileI9 = function() {
@@ -101,7 +107,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showTimeoff = function() {
-        return $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.Timeoff);
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.Timeoff);
     };
 
     $scope.viewTimeoff = function() {
@@ -109,7 +117,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showWorkTimesheets = function() {
-        return $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.WorkTimeSheet);
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.WorkTimeSheet);
     };
 
     $scope.viewWorkTimesheets = function() {
@@ -117,8 +127,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showTimePunchCards = function() {
-        return $scope.allFeatureStatus
-            && $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.RangedTimeCard);
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.RangedTimeCard);
     };
 
     $scope.viewTimePunchCards = function() {
@@ -2026,6 +2037,12 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.benefit_type = 'Supplemental Life Insurance';
+
+        $scope.isAdadEnabled = function() {
+            return $scope.allFeatureStatus 
+                && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.ADAD);
+        };
 
     }]);
 
