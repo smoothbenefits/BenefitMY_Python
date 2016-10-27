@@ -20,7 +20,7 @@ class TestApplicationFeatureService(TestCase):
 
         result = service.get_company_list_with_feature_enabled('RangedTimeCard')
         self.assertEqual(type(result), list)
-        self.assertEqual(len(result), 1)
+        self.assertEqual(len(result), 4)
 
     def test_get_company_list_with_feature_disabled(self):
         service = ApplicationFeatureService()
