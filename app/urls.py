@@ -159,7 +159,9 @@ from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
 from app.views.direct_deposit_view import DirectDepositView
-from app.views.company_features_view import CompanyFeaturesView
+from app.views.company_features_view import (
+    CompanyFeaturesView,
+    CompleteCompanyApplicationFeaturesView)
 from app.views.company_group_view import CompanyGroupView
 from app.views.company_group_member_view import (
     CompanyGroupMemberView,
@@ -354,6 +356,7 @@ urlpatterns = patterns('app.views',
 
     # Company features api
     url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
+    url(r'^%s/all_company_features/(?P<company_id>\w+)/?$' % PREFIX, CompleteCompanyApplicationFeaturesView.as_view(), name='all_company_features_api'),
 
     # Company groups api
     url(r'^%s/company/(?P<company_id>\w+)/groups/?$' % PREFIX, CompanyGroupView.as_view(), name='company_group_by_company_api'),

@@ -53,14 +53,9 @@ var employerHome = employersController.controller('employerHome',
     };
 
     var loadCompanyFeatures = function(companyId){
-      CompanyFeatureService.getDisabledCompanyFeatureByCompany(companyId)
-      .then(function(features) {
-        $scope.disabledFeatures = features;
-      });
-
-      CompanyFeatureService.getEnabledCompanyFeatureByCompany(companyId)
-      .then(function(features) {
-        $scope.enabledFeatures = features;
+      CompanyFeatureService.getAllApplicationFeatureStatusByCompany(companyId)
+      .then(function(allFeatureStatus) {
+        $scope.allFeatureStatus = allFeatureStatus;
       });
     };
 
@@ -72,6 +67,24 @@ var employerHome = employersController.controller('employerHome',
       loadVendorsCount($scope.company.id);
       loadCompanyFeatures($scope.company.id);
     });
+
+    $scope.rangedTimeCardEnabled = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.RangedTimeCard);
+    };
+
+    $scope.timeoffEnabled = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.Timeoff);
+    };
+
+    $scope.projectManagementEnabled = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.ProjectManagement);
+    };
 
     $scope.viewBenefitsClick = function(companyId)
     {
