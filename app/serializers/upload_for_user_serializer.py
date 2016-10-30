@@ -1,19 +1,17 @@
 from rest_framework import serializers
-from app.models.upload_audience import UploadAudience
+from app.models.upload_for_user import UploadForUser
 from hash_pk_serializer_base import HashPkSerializerBase
 from custom_fields.hash_field import HashField
 from app.serializers.upload_serializer import UploadPostSerializer, UploadSerializer
-from app.serializers.company_serializer import ShallowCompanySerializer
 
 
-class UploadAudienceSerializer(HashPkSerializerBase):
+class UploadForUserSerializer(HashPkSerializerBase):
     user_for = HashField(source="user_for.id")
-    company = ShallowCompanySerializer()
     upload = UploadSerializer()
     class Meta:
-        model = UploadAudience
+        model = UploadForUser
 
 
-class UploadAudiencePostSerializer(HashPkSerializerBase):
+class UploadForUserPostSerializer(HashPkSerializerBase):
     class Meta:
-        model = UploadAudience
+        model = UploadForUser

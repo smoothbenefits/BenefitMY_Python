@@ -2,19 +2,17 @@
   {
     "fields": {
       "user_for": 3,
-      "company": 1,
       "upload": 5
     },
-    "model": "app.uploadaudience",
+    "model": "app.uploadforuser",
     "pk": 1
   },
   {
     "fields": {
-      "user_for": null,
-      "company": 1,
+      "user_for": 4,
       "upload": 6
     },
-    "model": "app.uploadaudience",
+    "model": "app.uploadforuser",
     "pk": 2
   }
 ]
