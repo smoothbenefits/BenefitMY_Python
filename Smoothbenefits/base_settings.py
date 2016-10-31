@@ -82,6 +82,8 @@ AUTHENTICATION_BACKENDS = (
 
 ENCRYPTED_FIELDS_KEYDIR = 'fieldkeys'
 
+# AWS settings
+AMAZON_DEFAULT_REGION = 'us-west-2'
 
 # Session expiration settings
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

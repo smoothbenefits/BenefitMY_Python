@@ -57,3 +57,5 @@ AMAZON_S3_UPLOAD_POLICY= {
         {"x-amz-server-side-encryption": "AES256"},
     ]
 }
+
+AMAZON_TIME_ACCURAL_TOPIC = 'arn:aws:sns:us-west-2:726981589053:stg-time-accural'
