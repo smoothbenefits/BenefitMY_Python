@@ -196,20 +196,10 @@
           ng-model="addUser.password_confirm"
           ng-required="!addUser.send_email"
           ng-change="validatePassword(addUser.password, addUser.password_confirm)">
-          <div class="form-error" ng-hide="validatePassword(addUser.password, addUser.password_confirm)">
-            <span>{{passwordValidationError}}</span>
+          <div class="form-error" ng-show="form.employee_password.$dirty && form.employee_password_confirm.$dirty">
+            <span ng-show="!validatePassword(addUser.password, addUser.password_confirm)">{{passwordValidationError}}</span>
           </div>
         </div>
-      </div>
-
-      <div class="checkbox">
-        <label>
-          <input type="checkbox"
-          name="is_employee_new"
-          ng-model="addUser.new_employee"
-          ng-require="false">
-          New Employee
-        </label>
       </div>
       <div class="checkbox">
         <label>
