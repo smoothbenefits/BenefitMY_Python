@@ -188,7 +188,7 @@ var employerUser = employersController.controller('employerUser',
       };
       $scope.employment_types = EmployerEmployeeManagementService.EmploymentTypes;
       $scope.addUser = {
-        send_email:false,
+        send_email:true,
         new_employee:true,
         create_docs:true,
         employment_type: _.findWhere($scope.employment_types, function(type) {
