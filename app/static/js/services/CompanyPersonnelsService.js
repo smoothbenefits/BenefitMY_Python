@@ -93,7 +93,19 @@ benefitmyService.factory('CompanyPersonnelsService',
                         employee.profile = foundProfile;
                     });
                     var filteredEmployees = _.filter(employees, function(employee){
-                        return employee.profile && employee.profile.employment_status == status;
+
+                      // Do not read from EmployerEmployeeManagementService directly
+                      // to avoid circular dependencies.
+                      // Constant values should be defined separately.
+                        if (status === 'Active') {
+                            if (!employee.profile) {
+                              return true;
+                            } else {
+                              return employee.profile.employment_status == status
+                            }
+                        } else {
+                            return employee.profile && employee.profile.employment_status == status;
+                        }
                     });
                     return _GetPaginatedEmployees(
                         _.sortBy(filteredEmployees, function(emp){
