@@ -78,7 +78,7 @@ benefitmyService.factory('CompanyPersonnelsService',
             }
         };
 
-        var GetPaginatedEmployees = function(companyId, pageNum, pageSize, status){
+        var GetPaginatedEmployees = function(companyId, pageNum, pageSize, showTerminated){
 
             return $q.all([
                     getCompanyEmployees(companyId),
@@ -97,15 +97,12 @@ benefitmyService.factory('CompanyPersonnelsService',
                       // Do not read from EmployerEmployeeManagementService directly
                       // to avoid circular dependencies.
                       // Constant values should be defined separately.
-                        if (status === 'Active') {
-                            if (!employee.profile) {
-                              return true;
-                            } else {
-                              return employee.profile.employment_status == status
-                            }
-                        } else {
-                            return employee.profile && employee.profile.employment_status == status;
-                        }
+                      var TERMINATED_STATUS = 'Terminated';
+                      if (showTerminated) {
+                        return employee.profile && employee.profile.employment_status == TERMINATED_STATUS;
+                      }
+
+                      return !employee.profile || employee.profile.employment_status != TERMINATED_STATUS;
                     });
                     return _GetPaginatedEmployees(
                         _.sortBy(filteredEmployees, function(emp){
