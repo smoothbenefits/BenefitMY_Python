@@ -193,8 +193,7 @@ class AccountCreationService(object):
             result.append_issue(
                 "Missing necessary information for account creation"
             )
-        # Cast the email all to lower case because our data model only accept that lower case
-        account_info.email = account_info.email.lower()
+        account_info.email = account_info.email
 
         if (account_info.send_email and account_info.password):
             result.append_issue(
