@@ -44,6 +44,6 @@ class FormLienWaiverView(ReportExportViewBase):
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="lien_waiver_form.pdf"'
         formService = PDFFormFillService()
-        formService.fill_form('PDF/COI/lien_waiver_form_generic.pdf', fields, response)
+        response.write(formService.fill_form('PDF/COI/lien_waiver_form_generic.pdf', fields))
 
         return response
