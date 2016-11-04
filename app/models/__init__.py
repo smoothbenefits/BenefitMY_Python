@@ -73,7 +73,7 @@ from company_features import CompanyFeatures
 from company_group import CompanyGroup
 from company_group_member import CompanyGroupMember
 from upload import Upload
-from upload_audience import UploadAudience
+from upload_for_user import UploadForUser
 from upload_application_feature import UploadApplicationFeature
 
 from sys_application_feature import SysApplicationFeature

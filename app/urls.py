@@ -205,7 +205,7 @@ from app.views.upload import (UserUploadView,
                               UploadView,
                               get_company_uploads)
 from app.views.upload_application_feature_view import UploadApplicationFeatureView
-from app.views.upload_audience_view import UploadAudienceByCompanyView
+from app.views.upload_for_user_view import UploadForUserView
 
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
 
@@ -607,9 +607,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/upload/application_features/(?P<pk>\w+)/(?P<feature_id>\w+)/?$' % PREFIX,
         UploadApplicationFeatureView.as_view(),
         name='uploads_application_feature_api'),
-    url(r'^%s/upload/audience/(?P<comp_id>\w+)/?$' % PREFIX,
-        UploadAudienceByCompanyView.as_view(),
-        name='upload_audience_api'),
+    url(r'^%s/users/(?P<user_id>\w+)/uploads_for/?$' % PREFIX,
+        UploadForUserView.as_view(),
+        name='upload_for_user_api'),
 
     url(r'^%s/employee_profile/(?P<pk>\w+)/?$' % PREFIX,
         EmployeeProfileView.as_view(),

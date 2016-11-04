@@ -7,7 +7,7 @@ BenefitMyApp.directive('bmuploadmanager',
         fileUploaded: '&',
         fileDeleted: '&'
       },
-      templateUrl: '/static/partials/common/directive_upload_manager.html',
+      templateUrl: '/static/partials/upload/directive_upload_manager.html',
       controller: ['$scope',
                    '$timeout',
                    '$attrs',

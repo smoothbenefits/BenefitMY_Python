@@ -319,8 +319,8 @@ var employerUser = employersController.controller('employerUser',
         $location.path('/admin/employee_detail/' + $scope.compId).search({'eid': employee.user.id});
       };
 
-      $scope.uploadLink = function(employeeId){
-        $state.go('admin_employee_uploads', {company_id:$scope.compId, employee_id:employeeId});
+      $scope.fileCabinet = function(employeeId){
+        $state.go('admin_employee_files', {company_id:$scope.compId, employee_id:employeeId});
       };
 
       $scope.hasNoBenefitGroup = function(){
@@ -1499,30 +1499,6 @@ var employerBenefitsSelected = employersController.controller('employerBenefitsS
     };
 }]);
 
-var employerViewUploads = employersController.controller('employerViewUploads', [
-  '$scope',
-  '$stateParams',
-  'UploadService',
-  'users',
-  function($scope,
-           $stateParams,
-           UploadService,
-           users){
-    $scope.compId = $stateParams.company_id;
-    $scope.uploads = [];
-    UploadService.getEmployeeUploads($scope.compId, $stateParams.employee_id)
-    .then(function(resp){
-      $scope.uploads = resp;
-    }, function(err){
-      alert(err);
-    });
-    users.get({userId:$stateParams.employee_id})
-    .$promise.then(function(resp){
-      $scope.employee = resp.user;
-    });
-  }
-]);
-
 var employerEmployeeSelected = employersController.controller('employerEmployeeSelected', [
   '$scope',
   '$location',
@@ -2134,4 +2110,26 @@ var employerViewReports = employersController.controller('employerViewReports',
       $state.go('/admin');
     };
   }
+]);
+
+var employerViewEmployeeFiles = employersController.controller('employerViewEmployeeFiles',
+  ['$scope',
+    '$state',
+    '$stateParams',
+    'UploadService',
+    'users',
+    function($scope, $state, $stateParams, UploadService, users){
+      $scope.compId = $stateParams.company_id;
+      $scope.uploads = [];
+      UploadService.getEmployeeUploads($scope.compId, $stateParams.employee_id)
+      .then(function(resp){
+        $scope.uploads = resp;
+      }, function(err){
+        alert(err);
+      });
+      users.get({userId:$stateParams.employee_id})
+      .$promise.then(function(resp){
+        $scope.employee = resp.user;
+      });
+    }
 ]);

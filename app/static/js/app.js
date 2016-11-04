@@ -399,10 +399,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/company_employee_selection.html',
                 controller:'employerEmployeeSelected'
             }).
-            state('admin_employee_uploads',{
-                url: '/admin/:company_id/employee/:employee_id/uploads',
-                templateUrl: '/static/partials/view_employee_uploads.html',
-                controller: 'employerViewUploads'
+            state('admin_employee_files',{
+                url: '/admin/:company_id/employee/:employee_id/files',
+                templateUrl: '/static/partials/upload/employee_files.html',
+                controller: 'employerViewEmployeeFiles'
             }).
             state('admin_time_off', {
               url: '/admin/hr/timeoff',
@@ -628,7 +628,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('employeeUploads', {
                 url:'/employee/uploads',
-                templateUrl:'/static/partials/manage_uploads.html'
+                templateUrl:'/static/partials/upload/manage_uploads.html'
             }).
             state('employeeSupport', {
               url: '/employee/support',

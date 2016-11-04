@@ -68,6 +68,6 @@ python manage.py loaddata app\fixtures\sys_benefit_update_reason.json
 python manage.py loaddata app\fixtures\sys_benefit_update_reason_category.json
 python manage.py loaddata app\fixtures\upload.json
 python manage.py loaddata app\fixtures\upload_application_feature.json
-python manage.py loaddata app\fixtures\upload_audience.json
+python manage.py loaddata app\fixtures\upload_for_user.json
 python manage.py loaddata app\fixtures\user_bank_account.json
 python manage.py loaddata app\fixtures\waived_benefit.json
