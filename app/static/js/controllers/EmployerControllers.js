@@ -26,8 +26,7 @@ var employerHome = employersController.controller('employerHome',
 
     var loadWorkerCount = function(companyId){
       countRepository.employeeCount.get({
-        companyId:companyId,
-        status:EmployerEmployeeManagementService.EmployeeStatus.active
+        companyId:companyId
       })
         .$promise.then(function(employeeCountResponse){
           $scope.employeeCount = employeeCountResponse.employees_count;
@@ -195,7 +194,7 @@ var employerUser = employersController.controller('employerUser',
           return EmployerEmployeeManagementService.IsFullTimeEmploymentType(type);
         })
       };
-      $scope.currentStatus = EmployerEmployeeManagementService.EmployeeStatus.active;
+      $scope.showTerminated = false;
       CompanyBenefitGroupService.GetCompanyBenefitGroupByCompany($scope.compId)
       .then(function(groups) {
         $scope.groups = groups;
@@ -209,7 +208,7 @@ var employerUser = employersController.controller('employerUser',
           $scope.compId,
           $scope.paginatedEmployees.currentPage,
           $scope.paginatedEmployees.pageSize,
-          $scope.currentStatus)
+          $scope.showTerminated)
         .then(function(employees){
           $scope.paginatedEmployees.list = employees.list;
           _.each($scope.paginatedEmployees.list, function(employee) {
@@ -221,7 +220,7 @@ var employerUser = employersController.controller('employerUser',
           $scope.paginatedEmployees.totalItems = employees.totalCount;
         });
       };
-      
+
       $scope.updateSalaryType = function(employee) {
         if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
           $scope.isHourlyRate = false;
@@ -328,26 +327,20 @@ var employerUser = employersController.controller('employerUser',
       };
 
       //Employee status functions
-      var toggleEmployeeStatus = function(statusToToggle){
-        if (statusToToggle == EmployerEmployeeManagementService.EmployeeStatus.active){
-          return EmployerEmployeeManagementService.EmployeeStatus.terminated;
-        }
-        else{
-          return EmployerEmployeeManagementService.EmployeeStatus.active;
-        }
-      };
-
       $scope.toggleStatusForView = function(){
-        $scope.currentStatus = toggleEmployeeStatus($scope.currentStatus);
+        $scope.showTerminated = !$scope.showTerminated;
         $scope.setPaginatedEmployees();
       };
 
       $scope.getEmployeeStatusToShow = function(){
-        return toggleEmployeeStatus($scope.currentStatus);
+        if ($scope.showTerminated) {
+          return EmployerEmployeeManagementService.EmployeeStatus.terminated;
+        }
+        return EmployerEmployeeManagementService.EmployeeStatus.active;
       };
 
       $scope.showAddLink = function(){
-        return $scope.currentStatus == EmployerEmployeeManagementService.EmployeeStatus.active;
+        return $scope.showTerminated == false;
       };
 
       $scope.setPaginatedEmployees();
@@ -1729,7 +1722,7 @@ var employerAdminIndividualTimePunchCards = employersController.controller('empl
           .then(function(employee){
             $scope.user = employee;
             $scope.pageTitle = 'Time punch cards for ' + employee.first_name + ' ' + employee.last_name;
-          });  
+          });
         } else {
           CompanyPersonnelsService.getCompanyEmployees($scope.company.id)
             .then(function(employees){
@@ -1746,7 +1739,7 @@ var employerAdminIndividualTimePunchCards = employersController.controller('empl
         }
       });
     };
-    
+
     $scope.backToDashboard = function(){
       $state.go('/');
     };
@@ -2086,7 +2079,7 @@ var employerManageProjectPayable = employersController.controller('employerManag
       $scope.project = project;
     });
 
-    
+
   }
 ]);
 
