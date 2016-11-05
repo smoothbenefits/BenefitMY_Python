@@ -9,7 +9,7 @@ var employerHome = employersController.controller('employerHome',
   'countRepository',
   'CompanyServiceProviderService',
   'CompanyFeatureService',
-  'EmployerEmployeeManagementService',
+  'EmploymentStatuses',
   function ($scope,
             $location,
             $state,
@@ -18,7 +18,7 @@ var employerHome = employersController.controller('employerHome',
             countRepository,
             CompanyServiceProviderService,
             CompanyFeatureService,
-            EmployerEmployeeManagementService){
+            EmploymentStatuses){
 
     $scope.employeeCount = 0;
     $scope.templateCount = 0;
@@ -161,6 +161,7 @@ var employerUser = employersController.controller('employerUser',
    'EmployerEmployeeManagementService',
    'CompanyBenefitGroupService',
    'EmployeeProfileService',
+   'EmploymentStatuses',
   function employerUser($scope,
                         $state,
                         $stateParams,
@@ -173,7 +174,8 @@ var employerUser = employersController.controller('employerUser',
                         CompensationService,
                         EmployerEmployeeManagementService,
                         CompanyBenefitGroupService,
-                        EmployeeProfileService){
+                        EmployeeProfileService,
+                        EmploymentStatuses){
       $scope.compId = $stateParams.company_id;
       $scope.pages = [];
       $scope.brokers = [];
@@ -194,7 +196,8 @@ var employerUser = employersController.controller('employerUser',
           return EmployerEmployeeManagementService.IsFullTimeEmploymentType(type);
         })
       };
-      $scope.showTerminated = false;
+
+      $scope.currentStatus = EmploymentStatuses.active;
       CompanyBenefitGroupService.GetCompanyBenefitGroupByCompany($scope.compId)
       .then(function(groups) {
         $scope.groups = groups;
@@ -208,7 +211,7 @@ var employerUser = employersController.controller('employerUser',
           $scope.compId,
           $scope.paginatedEmployees.currentPage,
           $scope.paginatedEmployees.pageSize,
-          $scope.showTerminated)
+          $scope.currentStatus)
         .then(function(employees){
           $scope.paginatedEmployees.list = employees.list;
           _.each($scope.paginatedEmployees.list, function(employee) {
@@ -327,20 +330,27 @@ var employerUser = employersController.controller('employerUser',
       };
 
       //Employee status functions
+      var toggleEmployeeStatus = function(statusToToggle) {
+        if (statusToToggle === EmploymentStatuses.active) {
+          return EmploymentStatuses.terminated;
+        }
+
+        return EmploymentStatuses.active;
+      };
+
       $scope.toggleStatusForView = function(){
-        $scope.showTerminated = !$scope.showTerminated;
+        var nextStatus;
+        if (statusToToggle === EmploymentStatuses.active) {
+          nextStatus = EmploymentStatuses.terminated;
+        }
+
+        nextStatus = EmploymentStatuses.active;
+        $scope.currentStatus = nextStatus;
         $scope.setPaginatedEmployees();
       };
 
-      $scope.getEmployeeStatusToShow = function(){
-        if ($scope.showTerminated) {
-          return EmployerEmployeeManagementService.EmployeeStatus.terminated;
-        }
-        return EmployerEmployeeManagementService.EmployeeStatus.active;
-      };
-
       $scope.showAddLink = function(){
-        return $scope.showTerminated == false;
+        return $scope.currentStatus == EmploymentStatuses.active;
       };
 
       $scope.setPaginatedEmployees();

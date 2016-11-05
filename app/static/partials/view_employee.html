@@ -4,7 +4,7 @@
 </div>
 
 <div class="content-header">
-  <h1>{{currentStatus}} Employees <a ng-click="toggleStatusForView()">Show {{getEmployeeStatusToShow()}} Employees</a> </h1>
+  <h1>{{currentStatus}} Employees <a ng-click="toggleStatusForView()">Show {{currentStatus}} Employees</a> </h1>
   <span class="general-info">You have total <b>{{paginatedEmployees.totalItems}}</b> employees</span>
   <div class="cta" ng-if="showAddLink()"><span class="btn green" ng-click="addLink('employee')">Add Employee</span></div>
 </div><!-- / .content-header -->
