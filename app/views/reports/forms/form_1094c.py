@@ -51,7 +51,7 @@ class Form1094CView(ReportExportViewBase):
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="' + file_name_prefix  +'_1094-C.pdf"'
         formService = PDFFormFillService()
-        response.write(formService.fill_form('PDF/1094c.pdf', fields))
+        formService.fill_form_to_stream('PDF/1094c.pdf', fields, response)
 
         return response
 

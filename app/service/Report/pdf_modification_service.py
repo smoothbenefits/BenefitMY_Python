@@ -13,8 +13,8 @@ class PdfModificationService(object):
         original_pdf_stream,
         target_page_number,
         image_stream,
-        x_in_inch,
-        y_in_inch,
+        left_in_inch,
+        bottom_in_inch,
         width_in_inch,
         height_in_inch,
         output_stream):
@@ -23,8 +23,8 @@ class PdfModificationService(object):
             (lambda canvas: self._draw_image_on_canvas(
                 canvas,
                 image_stream,
-                x_in_inch,
-                y_in_inch,
+                left_in_inch,
+                bottom_in_inch,
                 width_in_inch,
                 height_in_inch
             )),
@@ -35,15 +35,15 @@ class PdfModificationService(object):
         self,
         canvas,
         image_stream,
-        x_in_inch,
-        y_in_inch,
+        left_in_inch,
+        bottom_in_inch,
         width_in_inch,
         height_in_inch):
         image = ImageReader(image_stream)
         canvas.drawImage(
             image,
-            x_in_inch * inch,
-            y_in_inch * inch,
+            left_in_inch * inch,
+            bottom_in_inch * inch,
             width_in_inch * inch,
             height_in_inch * inch,
             preserveAspectRatio=True,
@@ -54,12 +54,12 @@ class PdfModificationService(object):
         original_pdf_stream,
         target_page_number,
         text,
-        x_in_inch,
-        y_in_inch,
+        left_in_inch,
+        bottom_in_inch,
         output_stream):
         self._merge_canvas_to_pdf(
             original_pdf_stream,
-            (lambda canvas: canvas.drawString(x_in_inch*inch, y_in_inch*inch, text)),
+            (lambda canvas: canvas.drawString(left_in_inch*inch, bottom_in_inch*inch, text)),
             target_page_number,
             output_stream)
         
