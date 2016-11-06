@@ -7,20 +7,12 @@ from reportlab.lib.utils import ImageReader
 
 
 class PdfModificationService(object):
-    
-    def place_image_fake(self, pdf_file_path, image_file_path, output_stream):
-        a = Image.open(image_file_path)  
-        a.drawHeight = 0.3*inch
-        a.drawWidth = 2*inch
-        c = canvas.Canvas(output_stream, pagesize=letter)
-        c.save()
-        return None
 
     def place_image(
         self,
         original_pdf_stream,
         target_page_number,
-        image_file_path,
+        image_stream,
         x_in_inch,
         y_in_inch,
         width_in_inch,
@@ -30,7 +22,7 @@ class PdfModificationService(object):
             original_pdf_stream,
             (lambda canvas: self._draw_image_on_canvas(
                 canvas,
-                image_file_path,
+                image_stream,
                 x_in_inch,
                 y_in_inch,
                 width_in_inch,
@@ -42,12 +34,12 @@ class PdfModificationService(object):
     def _draw_image_on_canvas(
         self,
         canvas,
-        image_file_path,
+        image_stream,
         x_in_inch,
         y_in_inch,
         width_in_inch,
         height_in_inch):
-        image = ImageReader(open(image_file_path, 'rb'))
+        image = ImageReader(image_stream)
         canvas.drawImage(
             image,
             x_in_inch * inch,
