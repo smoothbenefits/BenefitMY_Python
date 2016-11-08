@@ -1,8 +1,8 @@
 DO $$
 BEGIN
 
-UPDATE app_employeeprofile SET employment_type = 'Active'
-WHERE employment_type IS NULL;
+UPDATE app_employeeprofile SET employment_status = 'Active'
+WHERE employment_status IS NULL;
 
 END
 $$

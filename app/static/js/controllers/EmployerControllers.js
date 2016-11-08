@@ -9,7 +9,6 @@ var employerHome = employersController.controller('employerHome',
   'countRepository',
   'CompanyServiceProviderService',
   'CompanyFeatureService',
-  'EmploymentStatuses',
   function ($scope,
             $location,
             $state,
@@ -17,8 +16,7 @@ var employerHome = employersController.controller('employerHome',
             TemplateService,
             countRepository,
             CompanyServiceProviderService,
-            CompanyFeatureService,
-            EmploymentStatuses){
+            CompanyFeatureService){
 
     $scope.employeeCount = 0;
     $scope.templateCount = 0;
