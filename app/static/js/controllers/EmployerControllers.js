@@ -9,7 +9,6 @@ var employerHome = employersController.controller('employerHome',
   'countRepository',
   'CompanyServiceProviderService',
   'CompanyFeatureService',
-  'EmployerEmployeeManagementService',
   function ($scope,
             $location,
             $state,
@@ -17,8 +16,7 @@ var employerHome = employersController.controller('employerHome',
             TemplateService,
             countRepository,
             CompanyServiceProviderService,
-            CompanyFeatureService,
-            EmployerEmployeeManagementService){
+            CompanyFeatureService){
 
     $scope.employeeCount = 0;
     $scope.templateCount = 0;
@@ -26,8 +24,7 @@ var employerHome = employersController.controller('employerHome',
 
     var loadWorkerCount = function(companyId){
       countRepository.employeeCount.get({
-        companyId:companyId,
-        status:EmployerEmployeeManagementService.EmployeeStatus.active
+        companyId:companyId
       })
         .$promise.then(function(employeeCountResponse){
           $scope.employeeCount = employeeCountResponse.employees_count;
@@ -162,6 +159,7 @@ var employerUser = employersController.controller('employerUser',
    'EmployerEmployeeManagementService',
    'CompanyBenefitGroupService',
    'EmployeeProfileService',
+   'EmploymentStatuses',
   function employerUser($scope,
                         $state,
                         $stateParams,
@@ -174,7 +172,8 @@ var employerUser = employersController.controller('employerUser',
                         CompensationService,
                         EmployerEmployeeManagementService,
                         CompanyBenefitGroupService,
-                        EmployeeProfileService){
+                        EmployeeProfileService,
+                        EmploymentStatuses){
       $scope.compId = $stateParams.company_id;
       $scope.pages = [];
       $scope.brokers = [];
@@ -195,7 +194,8 @@ var employerUser = employersController.controller('employerUser',
           return EmployerEmployeeManagementService.IsFullTimeEmploymentType(type);
         })
       };
-      $scope.currentStatus = EmployerEmployeeManagementService.EmployeeStatus.active;
+
+      $scope.currentStatus = EmploymentStatuses.active;
       CompanyBenefitGroupService.GetCompanyBenefitGroupByCompany($scope.compId)
       .then(function(groups) {
         $scope.groups = groups;
@@ -221,7 +221,7 @@ var employerUser = employersController.controller('employerUser',
           $scope.paginatedEmployees.totalItems = employees.totalCount;
         });
       };
-      
+
       $scope.updateSalaryType = function(employee) {
         if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
           $scope.isHourlyRate = false;
@@ -328,26 +328,27 @@ var employerUser = employersController.controller('employerUser',
       };
 
       //Employee status functions
-      var toggleEmployeeStatus = function(statusToToggle){
-        if (statusToToggle == EmployerEmployeeManagementService.EmployeeStatus.active){
-          return EmployerEmployeeManagementService.EmployeeStatus.terminated;
+      var toggleEmployeeStatus = function(statusToToggle) {
+        if (statusToToggle === EmploymentStatuses.active) {
+          return EmploymentStatuses.terminated;
         }
-        else{
-          return EmployerEmployeeManagementService.EmployeeStatus.active;
-        }
+
+        return EmploymentStatuses.active;
       };
 
       $scope.toggleStatusForView = function(){
-        $scope.currentStatus = toggleEmployeeStatus($scope.currentStatus);
+        var nextStatus;
+        if (statusToToggle === EmploymentStatuses.active) {
+          nextStatus = EmploymentStatuses.terminated;
+        }
+
+        nextStatus = EmploymentStatuses.active;
+        $scope.currentStatus = nextStatus;
         $scope.setPaginatedEmployees();
       };
 
-      $scope.getEmployeeStatusToShow = function(){
-        return toggleEmployeeStatus($scope.currentStatus);
-      };
-
       $scope.showAddLink = function(){
-        return $scope.currentStatus == EmployerEmployeeManagementService.EmployeeStatus.active;
+        return $scope.currentStatus == EmploymentStatuses.active;
       };
 
       $scope.setPaginatedEmployees();
@@ -1729,7 +1730,7 @@ var employerAdminIndividualTimePunchCards = employersController.controller('empl
           .then(function(employee){
             $scope.user = employee;
             $scope.pageTitle = 'Time punch cards for ' + employee.first_name + ' ' + employee.last_name;
-          });  
+          });
         } else {
           CompanyPersonnelsService.getCompanyEmployees($scope.company.id)
             .then(function(employees){
@@ -1746,7 +1747,7 @@ var employerAdminIndividualTimePunchCards = employersController.controller('empl
         }
       });
     };
-    
+
     $scope.backToDashboard = function(){
       $state.go('/');
     };
@@ -2086,7 +2087,7 @@ var employerManageProjectPayable = employersController.controller('employerManag
       $scope.project = project;
     });
 
-    
+
   }
 ]);
 
