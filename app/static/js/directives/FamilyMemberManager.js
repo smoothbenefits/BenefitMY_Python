@@ -139,7 +139,8 @@ BenefitMyApp.controller(
     restrict: 'E',
     scope: {
     	employee: '=',
-    	editorUserId: '=?'
+      viewTitle: '@',
+    	editorUserId: '=?',
     },
     templateUrl: '/static/partials/family_management/directive_main.html',
     controller: controller
