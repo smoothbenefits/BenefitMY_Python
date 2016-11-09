@@ -578,7 +578,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('employee_family', {
                 url: '/employee/family/:employeeId?',
-                templateUrl: '/static/partials/family_management/base.html',
+                templateUrl: '/static/partials/family_management/benefit_selection_management.html',
                 controller: 'employeeFamilyController'
             }).
             state('/employee/signup/:signup_number', {
