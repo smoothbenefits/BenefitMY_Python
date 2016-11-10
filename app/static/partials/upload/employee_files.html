@@ -1,0 +1,68 @@
+<div class="breadcrumb">
+  <a ng-href="#/admin">Employer Dashboard</a>
+  <a ng-href="#/admin/employee/{{compId}}">View Employees</a>
+  <span>Employee Files</span>
+</div>
+
+<div class="content-header">
+  <h1>File Cabinet of {{employee.first_name}} {{employee.last_name}}</h1>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="row">
+    <div class="panel">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Employer Managed Files <span class="label label-info">Not Visible to Employee</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <bm-upload-for-user-manager
+          upload-type="Manager"
+          for-user-id="{{employee.id}}"
+        >
+        </bm-upload-for-user-manager>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="panel" ng-show="uploads.length > 0">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Uploads by {{employee.first_name}} {{employee.last_name}}
+        </div>
+      </div>
+      <div class="panel-body">
+        <table class="table table-striped table-responsive">
+          <thead>
+            <tr>
+              <th><span>Type</span></th>
+              <th><span>Upload Area</span></th>
+              <th><span>Name</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="file in uploads | orderBy:'+upload_type'">
+              <td class="file-icon" style="text-align:center">
+                <div ng-class="file.file_type.replace('/', '-')">&nbsp;</div>
+              </td>
+              <td width="180" style="text-align:center">{{file.upload_type}}</td>
+              <td width="250" style="text-align:center"><a ng-href="{{file.S3}}" target="_blank">{{file.file_name}}</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel" ng-show="uploads.length <= 0">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          Uploads by {{employee.first_name}} {{employee.last_name}}
+        </h4>
+      </div>
+      <div class="panel-body">
+        No upload exists.
+      </div>
+    </div>
+  </div>
+  <div class="back"><a ng-href="#/admin/employee/{{compId}}">&laquo; Back</a></div>
+</div>

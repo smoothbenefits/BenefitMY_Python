@@ -9,7 +9,7 @@ from rest_framework import status
 from app.models.upload import Upload
 from app.models.company_user import CompanyUser, USER_TYPE
 from app.models.upload_application_feature import UploadApplicationFeature
-from app.models.upload_audience import UploadAudience
+from app.models.upload_for_user import UploadForUser
 from app.serializers.upload_serializer import UploadSerializer, UploadPostSerializer
 from app.service.amazon_s3_auth import AmazonS3AuthService
 
@@ -70,7 +70,7 @@ class UploadView(APIView):
         auth = _amazon_auth_service.get_s3_request_auth("DELETE", "", file_path, cur_time)
         if upload:
             self._delete_from_upload_dependent(UploadApplicationFeature, upload.id)
-            self._delete_from_upload_dependent(UploadAudience, upload.id)
+            self._delete_from_upload_dependent(UploadForUser, upload.id)
             upload.delete()
             return Response({'auth':auth, 'S3':s3, 'time': cur_time})
         return Response(status=status.HTTP_404_NOT_FOUND)

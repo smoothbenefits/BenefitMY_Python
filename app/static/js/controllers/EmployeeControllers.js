@@ -69,13 +69,15 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showPayrollW4Section = function() {
-        return $scope.disabledFeatures
-            && !$scope.disabledFeatures.W4;
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.W4);
     };
 
     $scope.showPayrollDirectDepositSection = function() {
-        return $scope.disabledFeatures
-            && !$scope.disabledFeatures.DD;
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.DD);
     };
 
     $scope.viewPayrollW4 = function() {
@@ -91,8 +93,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showProfileI9 = function() {
-        return $scope.disabledFeatures
-            && !$scope.disabledFeatures.I9;
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.I9);
     };
 
     $scope.viewProfileI9 = function() {
@@ -104,8 +107,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showTimeoff = function() {
-        return $scope.disabledFeatures
-            && !$scope.disabledFeatures.Timeoff;
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.Timeoff);
     };
 
     $scope.viewTimeoff = function() {
@@ -113,8 +117,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showWorkTimesheets = function() {
-        return $scope.disabledFeatures
-            && !$scope.disabledFeatures.WorkTimeSheet;
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.WorkTimeSheet);
     };
 
     $scope.viewWorkTimesheets = function() {
@@ -122,8 +127,9 @@ var employeeHome = employeeControllers.controller('employeeHome',
     };
 
     $scope.showTimePunchCards = function() {
-        return $scope.enabledFeatures
-            && $scope.enabledFeatures.RangedTimeCard;
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.RangedTimeCard);
     };
 
     $scope.viewTimePunchCards = function() {
@@ -460,24 +466,24 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
              tabLayoutGlobalConfig,
              UserService,
              CompanyFeatureService){
-    var disabledFeaturesPromise = UserService.getCurUserInfo().then(function(userInfo) {
+    var companyFeaturesPromise = UserService.getCurUserInfo().then(function(userInfo) {
         var company = userInfo.currentRole.company;
-        return CompanyFeatureService.getDisabledCompanyFeatureByCompany(company.id);
+        return CompanyFeatureService.getAllApplicationFeatureStatusByCompany(company.id);
     });
 
-    disabledFeaturesPromise.then(function(disabledFeatures) {
+    companyFeaturesPromise.then(function(allFeatureStatus) {
         UserService.isCurrentUserNewEmployee().then(
             function(isNewEmployee) {
                 var section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_onboard'});
                 $scope.tabs = section.tabs;
                 if (!isNewEmployee
-                    || (disabledFeatures && disabledFeatures.I9)) {
+                    || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.I9)) {
                     $scope.tabs = _.reject($scope.tabs, function(tab) {
                         return tab.name == 'employment';
                     });
                 }
                 if (!isNewEmployee
-                    || (disabledFeatures && disabledFeatures.W4)) {
+                    || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
                     $scope.tabs = _.reject($scope.tabs, function(tab) {
                         return tab.name == 'tax';
                     });
@@ -1801,8 +1807,8 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
                     && $scope.supplementalLifeInsurancePlan.spousePlanCondition.name === 'Tobacco';
             });
 
-            CompanyFeatureService.getEnabledCompanyFeatureByCompany(company.id).then(function(features) {
-                $scope.enabledFeatures = features;
+            CompanyFeatureService.getAllApplicationFeatureStatusByCompany(company.id).then(function(allFeatureStatus) {
+                $scope.allFeatureStatus = allFeatureStatus;
             });
           });
         });
@@ -2031,6 +2037,12 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
         };
 
         $scope.benefit_type = 'Supplemental Life Insurance';
+
+        $scope.isAdadEnabled = function() {
+            return $scope.allFeatureStatus 
+                && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.ADAD);
+        };
 
     }]);
 

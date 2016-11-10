@@ -193,8 +193,7 @@ class AccountCreationService(object):
             result.append_issue(
                 "Missing necessary information for account creation"
             )
-        # Cast the email all to lower case because our data model only accept that lower case
-        account_info.email = account_info.email.lower()
+        account_info.email = account_info.email
 
         if (account_info.send_email and account_info.password):
             result.append_issue(
@@ -295,10 +294,10 @@ class AccountCreationService(object):
                     account_result.append_issue(
                         'The email specificed is also used on another account in this batch'
                     )
-                    
+
                 # Check whether the account has manager info specified
                 # and if so, check the validity of the manager info
-                if (account_info.manager_first_name 
+                if (account_info.manager_first_name
                     and account_info.manager_last_name):
                     manager_full_name = account_info.manager_first_name + account_info.manager_last_name
                     if (manager_full_name not in employee_names):
@@ -387,8 +386,6 @@ class AccountCreationService(object):
             'start_date': account_info.start_date,
             'benefit_start_date': account_info.benefit_start_date
         }
-        if (account_info.start_date <= datetime.date(datetime.now())):
-            profile_data['employment_status'] = EMPLYMENT_STATUS_ACTIVE
 
         if (account_info.compensation_info.annual_base_salary is not None):
             profile_data['annual_base_salary'] = account_info.compensation_info.annual_base_salary

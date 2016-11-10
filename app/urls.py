@@ -159,7 +159,9 @@ from app.views.util_view import send_onboard_email
 from app.views.user_settings_view import SettingView
 
 from app.views.direct_deposit_view import DirectDepositView
-from app.views.company_features_view import CompanyFeaturesView
+from app.views.company_features_view import (
+    CompanyFeaturesView,
+    CompleteCompanyApplicationFeaturesView)
 from app.views.company_group_view import CompanyGroupView
 from app.views.company_group_member_view import (
     CompanyGroupMemberView,
@@ -198,12 +200,13 @@ from app.views.reports.integration.company_hphc_excel import CompanyHphcExcelVie
 from app.views.reports.forms.form_1095c import Form1095CView
 from app.views.reports.forms.form_1094c import Form1094CView
 from app.views.reports.forms.COI.form_lien_waiver import FormLienWaiverView
+from app.views.reports.forms.form_i9 import FormI9View
 
 from app.views.upload import (UserUploadView,
                               UploadView,
                               get_company_uploads)
 from app.views.upload_application_feature_view import UploadApplicationFeatureView
-from app.views.upload_audience_view import UploadAudienceByCompanyView
+from app.views.upload_for_user_view import UploadForUserView
 
 from app.views.data_modification.company_user_data_modification import CompanyUsersDataModificationSummaryView
 
@@ -334,6 +337,8 @@ urlpatterns = patterns('app.views',
     url(r'^%s/users/(?P<pk>\w+)/forms/1095c/?$' % PREFIX, Form1095CView.as_view(), name='employee_1095_c_form_api'),
     url(r'^%s/company/(?P<pk>\w+)/forms/1094c/?$' % PREFIX, Form1094CView.as_view(), name='company_1094_c_form_api'),
     
+    url(r'^%s/users/(?P<pk>\w+)/forms/i9/?$' % PREFIX, FormI9View.as_view(), name='employee_i9_form_api'),
+
     url(r'^%s/company/(?P<company_id>\w+)/contractors/(?P<contractor_id>\w+)/forms/lien_waiver/?$' % PREFIX, FormLienWaiverView.as_view(), name='coi_lien_waiver_form_api'),
 
     url(r'^%s/companies/(?P<pk>\w+)/users/modification_summary/?$' % PREFIX, CompanyUsersDataModificationSummaryView.as_view()),
@@ -354,6 +359,7 @@ urlpatterns = patterns('app.views',
 
     # Company features api
     url(r'^%s/company_features/(?P<pk>\w+)/?$' % PREFIX, CompanyFeaturesView.as_view(), name='company_features_api'),
+    url(r'^%s/all_company_features/(?P<company_id>\w+)/?$' % PREFIX, CompleteCompanyApplicationFeaturesView.as_view(), name='all_company_features_api'),
 
     # Company groups api
     url(r'^%s/company/(?P<company_id>\w+)/groups/?$' % PREFIX, CompanyGroupView.as_view(), name='company_group_by_company_api'),
@@ -604,9 +610,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/upload/application_features/(?P<pk>\w+)/(?P<feature_id>\w+)/?$' % PREFIX,
         UploadApplicationFeatureView.as_view(),
         name='uploads_application_feature_api'),
-    url(r'^%s/upload/audience/(?P<comp_id>\w+)/?$' % PREFIX,
-        UploadAudienceByCompanyView.as_view(),
-        name='upload_audience_api'),
+    url(r'^%s/users/(?P<user_id>\w+)/uploads_for/?$' % PREFIX,
+        UploadForUserView.as_view(),
+        name='upload_for_user_api'),
 
     url(r'^%s/employee_profile/(?P<pk>\w+)/?$' % PREFIX,
         EmployeeProfileView.as_view(),

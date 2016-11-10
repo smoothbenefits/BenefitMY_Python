@@ -7,6 +7,7 @@ from app.models.company_features import CompanyFeatures
 from app.serializers.company_features_serializer import (
     CompanyFeaturesSerializer,
     CompanyFeaturesPostSerializer)
+from app.service.application_feature_service import ApplicationFeatureService
 
 
 class CompanyFeaturesView(APIView):
@@ -40,3 +41,9 @@ class CompanyFeaturesView(APIView):
         f = self._get_object(pk)
         f.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CompleteCompanyApplicationFeaturesView(APIView):
+    def get(self, request, company_id, format=None):
+        appFeatureService = ApplicationFeatureService()
+        complete_features = appFeatureService.get_complete_application_feature_status_by_company(company_id)
+        return Response(complete_features)

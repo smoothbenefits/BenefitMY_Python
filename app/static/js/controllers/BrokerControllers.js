@@ -789,13 +789,15 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
    'SupplementalLifeInsuranceService',
    'UserService',
    'envService',
+   'CompanyFeatureService',
    function($scope,
             $state,
             $stateParams,
             $controller,
             SupplementalLifeInsuranceService,
             UserService,
-            envService){
+            envService,
+            CompanyFeatureService){
 
     // Inherite scope from base
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
@@ -804,6 +806,10 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
 
     SupplementalLifeInsuranceService.getBlankPlanForCompany($scope.companyId).then(function(blankCompanyPlan) {
         $scope.newPlan = blankCompanyPlan;
+    });
+
+    CompanyFeatureService.getAllApplicationFeatureStatusByCompany($scope.companyId).then(function(allFeatureStatus) {
+        $scope.allFeatureStatus = allFeatureStatus;
     });
 
     $scope.isProd = envService.get() == 'production';
@@ -841,6 +847,12 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
 
               $scope.showMessageWithOkayOnly('Failed', failureMessage);
             });
+    };
+
+    $scope.isAdadEnabled = function() {
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.ADAD);
     };
    }
   ]);

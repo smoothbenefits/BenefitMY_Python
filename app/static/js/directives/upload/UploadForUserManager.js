@@ -1,4 +1,4 @@
-BenefitMyApp.directive('bmUploadAppFeatureManager', 
+BenefitMyApp.directive('bmUploadForUserManager', 
   function() {
     return {
       restrict: 'E',
@@ -8,7 +8,7 @@ BenefitMyApp.directive('bmUploadAppFeatureManager',
         viewMode: '@',
         viewTitle: '@'
       },
-      templateUrl: '/static/partials/common/directive_upload_app_feature.html',
+      templateUrl: '/static/partials/upload/directive_upload_for_user.html',
       controller: ['$scope',
                    '$timeout',
                    '$attrs',
@@ -19,10 +19,10 @@ BenefitMyApp.directive('bmUploadAppFeatureManager',
                    UploadService) {
 
             var init = function(){
-              if($attrs.featureId && $attrs.uploadType){
-                $attrs.$observe('featureId', function(){
-                  $scope.featureId = $attrs.featureId;
-                  UploadService.getUploadsByFeature($scope.featureId, $attrs.uploadType)
+              if($attrs.forUserId){
+                $attrs.$observe('forUserId', function(){
+                  $scope.forUserId = $attrs.forUserId;
+                  UploadService.getUploadsForUser($attrs.forUserId)
                   .then(function(resp){
                     $scope.uploadedFiles = resp;
                   });
@@ -36,8 +36,8 @@ BenefitMyApp.directive('bmUploadAppFeatureManager',
             };
 
             $scope.fileUploaded = function(uploadedFile, featureId){
-              if(featureId && $attrs.uploadType){
-                UploadService.SetUploadApplicationFeature(uploadedFile.id, $attrs.uploadType, featureId)
+              if($attrs.forUserId){
+                UploadService.setUploadForUser(uploadedFile.id, $scope.forUserId)
                   .then(function(){
                     $scope.uploadedFiles.unshift(uploadedFile);
                   }, function(error){

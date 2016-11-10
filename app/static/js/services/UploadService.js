@@ -171,6 +171,33 @@ benefitmyService.factory('UploadService',
       return deferred.promise;
     };
 
+    var getUploadsForUser = function(userFor){
+      return UploadRepository.uploadForUser.query(
+        {userId: userFor})
+        .$promise.then(function(resp){
+          var files = [];
+          if(resp.length > 0){
+            _.each(resp, function(uploadItem){
+              files.push(uploadItem.upload);
+            });
+          }
+          return files;
+        });
+    };
+
+    var setUploadForUser = function(uploadFileId, userFor){
+      return UploadRepository.uploadForUser.save(
+        {userId: userFor},
+        {upload: uploadFileId}
+      ).$promise.then(function(resp){
+          return resp;
+        },
+        function(errorResponse){
+          return errorResponse;
+        }
+      );
+    };
+
     var deleteFile = function(id){
         var deferred = $q.defer();
         UploadRepository.upload.delete({pk:id})
@@ -208,7 +235,9 @@ benefitmyService.factory('UploadService',
         deleteFile: deleteFile,
         getEmployeeUploads: getEmployeeUploads,
         SetUploadApplicationFeature: SetUploadApplicationFeature,
-        getUploadsByFeature: getUploadsByFeature
+        getUploadsByFeature: getUploadsByFeature,
+        getUploadsForUser: getUploadsForUser,
+        setUploadForUser: setUploadForUser
     };
    }
 ]);
