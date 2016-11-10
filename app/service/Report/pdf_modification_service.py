@@ -11,59 +11,50 @@ class PdfModificationService(object):
     def place_image(
         self,
         original_pdf_stream,
-        target_page_number,
         image_stream,
-        left_in_inch,
-        bottom_in_inch,
-        width_in_inch,
-        height_in_inch,
+        image_placements,
         output_stream):
         self._merge_canvas_to_pdf(
             original_pdf_stream,
             (lambda canvas: self._draw_image_on_canvas(
                 canvas,
                 image_stream,
-                left_in_inch,
-                bottom_in_inch,
-                width_in_inch,
-                height_in_inch
+                image_placements
             )),
-            target_page_number,
             output_stream)
 
     def _draw_image_on_canvas(
         self,
         canvas,
         image_stream,
-        left_in_inch,
-        bottom_in_inch,
-        width_in_inch,
-        height_in_inch):
-        image = ImageReader(image_stream)
-        canvas.drawImage(
-            image,
-            left_in_inch * inch,
-            bottom_in_inch * inch,
-            width_in_inch * inch,
-            height_in_inch * inch,
-            preserveAspectRatio=True,
-            mask='auto')
+        image_placements):
 
-    def place_text(
-        self,
-        original_pdf_stream,
-        target_page_number,
-        text,
-        left_in_inch,
-        bottom_in_inch,
-        output_stream):
-        self._merge_canvas_to_pdf(
-            original_pdf_stream,
-            (lambda canvas: canvas.drawString(left_in_inch*inch, bottom_in_inch*inch, text)),
-            target_page_number,
-            output_stream)
+        # Read in the image to place
+        image = ImageReader(image_stream)
+
+        # Sorts the placements by page number
+        sorted_placements = sorted(image_placements, key=lambda placement: placement.page_number)
+
+        # Now for each of the placement, place the image
+        current_page = 1
+        for image_placement in sorted_placements:
+
+            # Adding page to canvas until got to the page to place the 
+            # next placement
+            while(current_page < image_placement.page_number):
+                canvas.showPage()
+                current_page = current_page + 1
+
+            canvas.drawImage(
+                image,
+                image_placement.left_in_inch * inch,
+                image_placement.bottom_in_inch * inch,
+                image_placement.width_in_inch * inch,
+                image_placement.height_in_inch * inch,
+                preserveAspectRatio=True,
+                mask='auto')
         
-    def _merge_canvas_to_pdf(self, original_pdf_stream, canvas_operation, target_page_number, output_stream):
+    def _merge_canvas_to_pdf(self, original_pdf_stream, canvas_operation, output_stream):
         
         # Create a PDF canvas to hold the target drawing to be merged
         # on to the original
@@ -92,9 +83,23 @@ class PdfModificationService(object):
         #  * For other pages, simply add them as is to the new PDF
         for page_index in range(0, original_pdf.numPages):    
             page = original_pdf.getPage(page_index)
-            if (page_index == target_page_number - 1):
-                page.mergePage(source_pdf.getPage(0))
+            if (page_index < source_pdf.numPages):
+                page.mergePage(source_pdf.getPage(page_index))
             output_pdf.addPage(page)
 
         # Finally, write the result PDF to the given output stream
         output_pdf.write(output_stream)
+
+
+''' A class representing an image placement(bounds) on PDF
+
+    Note: Per PDF convention, the x and y identifies the *bottom left* corner
+              of the signature area.
+''' 
+class ImagePlacement(object):
+    def __init__(self, page_number, left_in_inch, bottom_in_inch, width_in_inch, height_in_inch):
+        self.page_number = page_number
+        self.left_in_inch = left_in_inch
+        self.bottom_in_inch = bottom_in_inch
+        self.width_in_inch = width_in_inch
+        self.height_in_inch = height_in_inch

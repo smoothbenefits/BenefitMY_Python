@@ -7,7 +7,10 @@ from django.contrib.auth import get_user_model
 
 from app.models.signature import Signature
 from app.service.Report.pdf_form_fill_service import PDFFormFillService
-from app.service.signature_service import SignatureService
+from app.service.signature_service import (
+    SignatureService,
+    PdfFormSignaturePlacements
+)
 from ..report_export_view_base import ReportExportViewBase
 from app.factory.report_view_model_factory import ReportViewModelFactory
 from datetime import date, timedelta
@@ -22,7 +25,8 @@ class FormI9View(ReportExportViewBase):
 
         # Populate the form fields
         fields = {
-            'form1[0].#subform[6].FamilyName[0]': 'Alibaba'
+            'form1[0].#subform[6].FamilyName[0]': 'Zhang',
+            'form1[0].#subform[6].GivenName[0]': 'Alibaba'
         }
 
         output_file_name_prefix = 'test'
@@ -40,11 +44,7 @@ class FormI9View(ReportExportViewBase):
         sign_success = signature_service.sign_pdf_stream(
             pk,
             pdf_stream,
-            7,
-            1.766666667,
-            3.133333333,
-            3.9,
-            0.3,
+            PdfFormSignaturePlacements.Form_I9,
             response
         )
 
