@@ -5,17 +5,22 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from app.models.signature import Signature
-from app.service.Report.pdf_modification_service import PdfModificationService
+from app.service.Report.pdf_modification_service import (
+    PdfModificationService,
+    ImagePlacement
+)
 
 User = get_user_model()
 
+
+# Define 
 
 class SignatureService(object):
 
     ''' Get an image stream (in StringIO) contains the users' signature
         if exists and can be successfully read into an image. Or returns None.
     ''' 
-    def get_user_signature_image_stream(self, user_id):
+    def _get_user_signature_image_stream(self, user_id):
         try :
             user_signature_list = Signature.objects.filter(user=user_id)
             if len(user_signature_list) > 0: 
@@ -44,20 +49,16 @@ class SignatureService(object):
         StringIO) with the signature with the given user_id if found.
         Return True if signature was applied successfully, False otherwise.
 
-        Note: Per PDF convention, the x and y identifies the *bottom left* corner
-              of the signature area.
+        The signature would be placed for all specified placements in the list
+        passed in.
     '''
     def sign_pdf_stream(
         self,
         user_id,
         pdf_stream,
-        page_num,
-        left_in_inch,
-        bottom_in_inch,
-        width_in_inch,
-        height_in_inch,
+        signature_placements,
         output_stream):
-        signature_image_stream = self.get_user_signature_image_stream(user_id)
+        signature_image_stream = self._get_user_signature_image_stream(user_id)
         if (signature_image_stream):
             # Utilize the PDF modification service to place the signature 
             # onto the form
@@ -66,14 +67,20 @@ class SignatureService(object):
             # Place the signature image onto the PDF form
             pdf_modification_service.place_image(
                 pdf_stream,
-                page_num,
                 signature_image_stream,
-                left_in_inch,
-                bottom_in_inch,
-                width_in_inch,
-                height_in_inch,
+                signature_placements,
                 output_stream)
 
             return True
 
         return False
+
+
+''' A class to hold constants representing the pre-identified list
+    of placements for signature onto various of PDF forms
+'''
+class PdfFormSignaturePlacements(object):
+
+    Form_I9 = [
+        ImagePlacement(7, 1.766666667, 3.133333333, 3.9, 0.3)
+    ]
