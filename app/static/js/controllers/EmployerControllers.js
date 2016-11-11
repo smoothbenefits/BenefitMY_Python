@@ -9,6 +9,7 @@ var employerHome = employersController.controller('employerHome',
   'countRepository',
   'CompanyServiceProviderService',
   'CompanyFeatureService',
+  'EmploymentStatuses',
   function ($scope,
             $location,
             $state,
@@ -16,7 +17,8 @@ var employerHome = employersController.controller('employerHome',
             TemplateService,
             countRepository,
             CompanyServiceProviderService,
-            CompanyFeatureService){
+            CompanyFeatureService,
+            EmploymentStatuses){
 
     $scope.employeeCount = 0;
     $scope.templateCount = 0;
@@ -24,7 +26,8 @@ var employerHome = employersController.controller('employerHome',
 
     var loadWorkerCount = function(companyId){
       countRepository.employeeCount.get({
-        companyId:companyId
+        companyId:companyId,
+        status:EmploymentStatuses.active
       })
         .$promise.then(function(employeeCountResponse){
           $scope.employeeCount = employeeCountResponse.employees_count;
@@ -336,14 +339,11 @@ var employerUser = employersController.controller('employerUser',
         return EmploymentStatuses.active;
       };
 
-      $scope.toggleStatusForView = function(){
-        var nextStatus;
-        if (statusToToggle === EmploymentStatuses.active) {
-          nextStatus = EmploymentStatuses.terminated;
-        }
+      $scope.nextStatus = toggleEmployeeStatus($scope.currentStatus);
 
-        nextStatus = EmploymentStatuses.active;
-        $scope.currentStatus = nextStatus;
+      $scope.toggleStatusForView = function(){
+        $scope.currentStatus = $scope.nextStatus;
+        $scope.nextStatus = toggleEmployeeStatus($scope.nextStatus);
         $scope.setPaginatedEmployees();
       };
 
