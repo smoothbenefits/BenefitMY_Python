@@ -23,7 +23,7 @@ class UserCompanyTestCase(TestCase, ViewTestBase):
 
 
 class CompanyUsersTestCase(TestCase, ViewTestBase):
-    fixtures = ['34_company_user', '49_period_definition', '10_company', '23_auth_user']
+    fixtures = ['34_company_user', '49_period_definition', '10_company', '23_auth_user', '24_person', 'employee_profile']
 
     def test_get_company_users(self):
         response = self.client.get(reverse('company_users_api',
@@ -60,6 +60,13 @@ class CompanyUsersTestCase(TestCase, ViewTestBase):
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
         self.assertEqual(result['employees_count'], 0)
+
+        response = self.client.get(reverse('company_employee_count',
+                                   kwargs={'pk': self.normalize_key(1)}) + '?status=Active')
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(result['employees_count'], 1)
 
 
     def test_get_company_broker_count(self):
