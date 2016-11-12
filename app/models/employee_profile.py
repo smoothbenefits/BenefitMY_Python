@@ -35,7 +35,7 @@ class EmployeeProfile(models.Model):
                                        null=True, blank=True)
 
     employment_status = models.CharField(max_length=20, choices=EMPLOYMENT_STATUS,
-                                         null=True, blank=True)
+                                         default=EMPLYMENT_STATUS_ACTIVE)
 
     pay_rate = models.ForeignKey(SysPeriodDefinition,
                                  related_name="employee_profile_pay_rate",

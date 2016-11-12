@@ -21,7 +21,7 @@
       <div class="col-xs-6"><a ng-click="viewEmployeeClick(company.id)">View</a></div>
     </div>
   </div><!-- / .dashboard-card -->
-  <div class="dashboard-card" ng-show="enabledFeatures.RangedTimeCard">
+  <div class="dashboard-card" ng-show="rangedTimeCardEnabled()">
     <div class="info-row">
       <div class="col-xs-4 img-col"><span class="flaticon-reminder5"></span></div>
       <div class="col-xs-8 info-col">
@@ -32,7 +32,7 @@
       <div class="col-xs-12"><a ng-click="viewTimePunchCards()">View</a></div>
     </div>
   </div><!-- / .dashboard-card -->
-  <div class="dashboard-card" ng-hide="disabledFeatures.Timeoff">
+  <div class="dashboard-card" ng-show="timeoffEnabled()">
     <div class="info-row">
       <div class="col-xs-4 img-col"><span class="flaticon-file46"></span></div>
       <div class="col-xs-8 info-col">
@@ -82,7 +82,7 @@
       <div class="col-xs-6"><a ng-click="viewBrokers(company.id)">Brokers</a></div>
     </div>
   </div><!-- / .dashboard-card -->
-  <div class="dashboard-card" ng-show="enabledFeatures.ProjectManagement">
+  <div class="dashboard-card" ng-show="projectManagementEnabled()">
     <div class="info-row">
       <div class="col-xs-4 img-col"><span class="flaticon-circular177"></span></div>
       <div class="col-xs-8 info-col">
@@ -94,6 +94,17 @@
       <div class="col-xs-6"><a ng-click="viewProjects()">Projects</a></div>
     </div>
   </div>
+  <div class="dashboard-card">
+    <div class="info-row">
+      <div class="col-xs-4 img-col"><span class="flaticon-book163"></span></div>
+      <div class="col-xs-8 info-col">
+        <p class="title">Reports</p>
+      </div>
+    </div>
+    <div class="action-row">
+      <div class="col-xs-12"><a ng-click="viewReports()">View</a></div>
+    </div>
+  </div><!-- / .dashboard-card -->
   <div class="dashboard-card">
     <div class="info-row">
       <div class="col-xs-4 img-col"><span class="flaticon-cellphone51"></span></div>

@@ -4,7 +4,7 @@
 </div>
 
 <div class="content-header">
-  <h1>{{currentStatus}} Employees <a ng-click="toggleStatusForView()">Show {{getEmployeeStatusToShow()}} Employees</a> </h1>
+  <h1>{{currentStatus}} Employees <a ng-click="toggleStatusForView()">Show {{nextStatus}} Employees</a> </h1>
   <span class="general-info">You have total <b>{{paginatedEmployees.totalItems}}</b> employees</span>
   <div class="cta" ng-if="showAddLink()"><span class="btn green" ng-click="addLink('employee')">Add Employee</span></div>
 </div><!-- / .content-header -->
@@ -48,8 +48,8 @@
           <td>
             <span class="btn inline" ng-if="employee.docEntry.hasDocument()" ng-click="documentLink(employee.user.id, employee.docEntry)" ng-class="{green:employee.docEntry.isAllSigned()}">View documents</span>
             <span class="btn inline" ng-if="!employee.docEntry.hasDocument()" ng-click="documentLink(employee.user.id, employee.docEntry)">Create documents</span>
-            <span class="btn inline doc-buttons" ng-click="uploadLink(employee.user.id)">
-              Uploads
+            <span class="btn inline doc-buttons" ng-click="fileCabinet(employee.user.id)">
+              File Cabinet
             </span>
           </td>
         </tr>

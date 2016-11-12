@@ -78,16 +78,21 @@
     </div>
   </div><!-- / .dashboard-card -->
 
-  <div class="dashboard-card" ng-if="showProfileI9()">
+  <div class="dashboard-card">
     <div class="info-row">
       <div class="col-xs-4 img-col"><span class="flaticon-user135"></span></div>
       <div class="col-xs-8 info-col">
         <h4>My Profile</h4>
       </div>
     </div>
-    <div class="action-row">
+    <div class="action-row" ng-show="hasBenefits">
       <div class="col-xs-6"><a ng-click="gotoSettings()">Self</a></div>
-      <div class="col-xs-6"><a ng-click="goToFunctionalView('/employee/family/')">Family</a></div>
+      <div class="col-xs-6">
+        <a ng-click="goToFunctionalView('/employee/family/')">Family</a>
+      </div>
+    </div>
+    <div class="action-row" ng-hide="hasBenefits">
+      <div class="col-xs-12"><a ng-click="gotoSettings()">View</a></div>
     </div>
   </div><!-- / .dashboard-card -->
 

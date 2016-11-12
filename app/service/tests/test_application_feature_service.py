@@ -14,18 +14,13 @@ class TestApplicationFeatureService(TestCase):
 
         result = service.get_company_list_with_feature_enabled('FSA')
         self.assertEqual(type(result), list)
-        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result), 4)
         self.assertIn(1, result)
         self.assertIn(2, result)
 
-        result = service.get_company_list_with_feature_enabled('DD')
+        result = service.get_company_list_with_feature_enabled('RangedTimeCard')
         self.assertEqual(type(result), list)
-        self.assertEqual(len(result), 1)
-        self.assertIn(1, result)
-
-        result = service.get_company_list_with_feature_enabled('BasicLife')
-        self.assertEqual(type(result), list)
-        self.assertEqual(len(result), 0)
+        self.assertEqual(len(result), 4)
 
     def test_get_company_list_with_feature_disabled(self):
         service = ApplicationFeatureService()

@@ -23,8 +23,11 @@
   The file has been deleted successfully
 </div>
 <div class="table-sub-title" ng-if="uploadManager.viewTitle">{{uploadManager.viewTitle}}</div>
-<div id="upload_display_table" class="table-responsive table-holder table" ng-if="uploadManager.viewMode == 'table'" ng-show="uploadManager.uploadedFiles.length>0 || uploadManager.inProgress">
-  <table class="table table-striped">
+<div id="upload_display_table"
+  ng-if="uploadManager.viewMode == 'table'"
+  ng-show="uploadManager.uploadedFiles.length>0 || uploadManager.inProgress"
+>
+  <table class="table table-striped table-responsive">
     <thead>
       <tr>
         <th ng-hide="uploadManager.hideTypeColumn"><span>Type</span></th>
@@ -54,8 +57,11 @@
     </tbody>
   </table>
 </div>
-<div id="no_upload_display_table" class="table-responsive table-holder table" ng-if="uploadManager.viewMode == 'table'" ng-show="uploadManager.uploadedFiles.length==0 && !uploadManager.inProgress">
-  <table class="table table-striped">
+<div id="no_upload_display_table"
+  ng-if="uploadManager.viewMode == 'table'"
+  ng-show="uploadManager.uploadedFiles.length==0 && !uploadManager.inProgress"
+>
+  <table class="table table-striped table-responsive">
     <thead>
       <tr>
         <th><span></span></th>
@@ -70,7 +76,10 @@
     </tbody>
   </table>
 </div>
-<ul id="upload_display_list" ng-if="uploadManager.viewMode == 'list'" ng-show="uploadManager.uploadedFiles.length>0">
+<ul id="upload_display_list"
+  ng-if="uploadManager.viewMode == 'list'"
+  ng-show="uploadManager.uploadedFiles.length>0"
+>
   <li ng-repeat="file in uploadManager.uploadedFiles |orderBy:'-uploaded_at'">
     <a 
       href="javascript:void(0)"

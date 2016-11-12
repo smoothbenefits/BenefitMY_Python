@@ -399,10 +399,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/company_employee_selection.html',
                 controller:'employerEmployeeSelected'
             }).
-            state('admin_employee_uploads',{
-                url: '/admin/:company_id/employee/:employee_id/uploads',
-                templateUrl: '/static/partials/view_employee_uploads.html',
-                controller: 'employerViewUploads'
+            state('admin_employee_files',{
+                url: '/admin/:company_id/employee/:employee_id/files',
+                templateUrl: '/static/partials/upload/employee_files.html',
+                controller: 'employerViewEmployeeFiles'
             }).
             state('admin_time_off', {
               url: '/admin/hr/timeoff',
@@ -459,6 +459,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/admin/projects/:projectId/payables',
                 templateUrl: '/static/partials/contractor/project_payable_base.html',
                 controller: 'employerManageProjectPayable'
+            }).
+            state('admin_reports', {
+                url: '/admin/reports',
+                templateUrl: '/static/partials/view_reports.html',
+                controller: 'employerViewReports'
             }).
             state('/employee',{
                 url: '/employee',
@@ -573,7 +578,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('employee_family', {
                 url: '/employee/family/:employeeId?',
-                templateUrl: '/static/partials/family_management/base.html',
+                templateUrl: '/static/partials/family_management/benefit_selection_management.html',
                 controller: 'employeeFamilyController'
             }).
             state('/employee/signup/:signup_number', {
@@ -623,7 +628,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('employeeUploads', {
                 url:'/employee/uploads',
-                templateUrl:'/static/partials/manage_uploads.html'
+                templateUrl:'/static/partials/upload/manage_uploads.html'
             }).
             state('employeeSupport', {
               url: '/employee/support',

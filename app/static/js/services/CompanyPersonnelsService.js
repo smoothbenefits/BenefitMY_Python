@@ -93,8 +93,9 @@ benefitmyService.factory('CompanyPersonnelsService',
                         employee.profile = foundProfile;
                     });
                     var filteredEmployees = _.filter(employees, function(employee){
-                        return employee.profile && employee.profile.employment_status == status;
+                      return employee.profile && employee.profile.employment_status == status;
                     });
+                    
                     return _GetPaginatedEmployees(
                         _.sortBy(filteredEmployees, function(emp){
                             return emp.user.last_name;
