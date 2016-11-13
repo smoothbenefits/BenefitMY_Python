@@ -53,7 +53,7 @@ benefitmyService.factory(
         routing: '',
         account: '',
         amount: 0,
-        percentage: 0,
+        percentage: 100,
         remainder_of_all: false
       };
 
@@ -97,10 +97,10 @@ benefitmyService.factory(
       viewModel.amount = Number(account.amount);
       viewModel.percentage = Number(account.percentage);
       if (account.remainder_of_all){
-        viewModel.remainder_of_all = 'Yes';
+        viewModel.remainder_of_all_readable = 'Yes';
       }
       else{
-        viewModel.remainder_of_all = 'No';
+        viewModel.remainder_of_all_readable = 'No';
       }
       return viewModel;
     };
