@@ -29,7 +29,7 @@ git push heroku $CIRCLE_SHA1:master
 heroku config:set DJANGO_SETTINGS_MODULE=Smoothbenefits.$APP_NAME-settings --app $APP_NAME
 
 # run database migrations if needed and restart background workers once finished
-heroku run python manage.py migrate --app $APP_NAME
+heroku run python manage.py migrate --app $APP_NAME --noinput
 
 # update data with mirgration script for database
 sh ./data_migration.sh ./data_migration
