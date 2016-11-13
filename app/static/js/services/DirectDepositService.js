@@ -96,6 +96,7 @@ benefitmyService.factory(
       viewModel.direct_deposit_id = account.id;
       viewModel.amount = Number(account.amount);
       viewModel.percentage = Number(account.percentage);
+      viewModel.remainder_of_all = account.remainder_of_all;
       if (account.remainder_of_all){
         viewModel.remainder_of_all_readable = 'Yes';
       }
