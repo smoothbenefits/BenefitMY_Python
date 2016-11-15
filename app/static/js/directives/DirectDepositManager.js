@@ -43,20 +43,12 @@ BenefitMyApp.directive('bmDirectDepositManager', function() {
         return deferred.promise;
       };
 
-      $scope.resetAmountAndPercent = function(account){
-        if(account.remainder_of_all){
-          account.amount = 0;
-          account.percentage = 0;
-        }
-        return account.remainder_of_all;
-      };
-
       $scope.amountDisabled = function(account){
-        return account.remainder_of_all || (account.percentage && account.percentage != 0);
+        return account.percentage && account.percentage != 0;
       };
 
       $scope.percentageDisabled = function(account){
-        return account.remainder_of_all || (account.amount && account.amount != 0);
+        return account.amount && account.amount != 0;
       };
 
       $scope.cancel = function() {
