@@ -86,3 +86,13 @@ class PersonInfo(object):
         if (result):
             result = round(result, 2)
         return result
+
+    def get_ssn_tokenized(self):
+        if (not self.ssn):
+            return None
+
+        return [
+            self.ssn[:3],
+            self.ssn[3:5],
+            self.ssn[5:]
+        ]

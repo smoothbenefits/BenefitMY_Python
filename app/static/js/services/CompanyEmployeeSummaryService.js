@@ -77,6 +77,10 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
         var reportUrl = API_PREFIX_V2 + '/companies/' + companyId + '/time_punch_card_excel';
         reportUrl += moment(weekStartDate).format('/YYYY/M/DD');
         return reportUrl;
+      },
+
+      getEmployeeI9FormUrl : function(employeeUserId) {
+        return API_PREFIX + '/users/' + employeeUserId + '/forms/i9';
       }
     };
   }
