@@ -9,7 +9,7 @@
         <div class="textbox">
           <select name="type" ng-model="timeoff.type" ng-required="true" class="form-control">
             <option style="display:none" value="">select a type</option>
-            <option ng-repeat="type in timeoffTypes">{{type}}</option> 
+            <option ng-repeat="type in timeoffTypes">{{type}}</option>
           </select>
           <div class="form-validation-error" ng-show="form.type.$invalid">
             <span ng-show="form.type.$error.required">Request type is a required field</span>
@@ -17,7 +17,7 @@
         </div>
       </li></ul>
 
-      <div class="form-label">Starting Date</div>
+      <div class="form-label">Starting Date (m/d/yyyy)</div>
       <div class="datebox">
         <bm-date-picker model="timeoff.starting_date"
         required="true"
