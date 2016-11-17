@@ -298,7 +298,7 @@ var employerUser = employersController.controller('employerUser',
         .then(function(response) {
           gotoUserView(userType);
         }, function(error) {
-          alert('Failed to add a new employee.');
+          alert('Failed to add a new employee.' + error);
         });
       };
 
