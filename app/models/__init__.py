@@ -101,3 +101,4 @@ from workers_comp.employee_phraseology import EmployeePhraseology
 from onboarding.user_onboarding_step_state import UserOnboardingStepState
 from system.email_block_list import EmailBlockList
 from company_service_provider import CompanyServiceProvider
+from open_enrollment_definition import OpenEnrollmentDefinition

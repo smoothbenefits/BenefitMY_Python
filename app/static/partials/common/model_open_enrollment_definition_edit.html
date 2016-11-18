@@ -1,0 +1,60 @@
+<div class="modal-header" ng-init="init()">
+  <h4 class="modal-title">Edit the Open Enrollment Information</h4>
+</div>
+<div class="modal-body">
+  <div class="row">
+  <div class="col-sm-8 col-sm-offset-2">
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="form-label">Start Month</div>
+        <div class="select-box">
+          <select ng-model="definition.start_month"
+            name="openEnrollmentStartMonth"
+            ng-options="month.name for month in monthsInYear track by month.id"
+            class="form-control">
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="form-label">Start Day</div>
+        <div class="select-box">
+          <select ng-model="definition.start_day"
+            name="openEnrollmentStartDay"
+            ng-options="day for day in daysInMonth"
+            class="form-control">
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="form-label">End Month</div>
+        <div class="select-box">
+          <select ng-model="definition.end_month"
+            name="openEnrollmentEndMonth"
+            ng-options="month.name for month in monthsInYear track by month.id"
+            class="form-control">
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="form-label">End Day</div>
+        <div class="textbox">
+          <select ng-model="definition.end_day"
+              name="openEnrollmentEndDay"
+              ng-options="day for day in daysInMonth"
+              class="form-control">
+            </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-info" ng-click="save()" style="width: 20%">Save</button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+  </div>
+</div>
