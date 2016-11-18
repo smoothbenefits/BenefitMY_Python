@@ -13,5 +13,11 @@ class Company(models.Model):
 
     offer_of_coverage_code = models.CharField(max_length=10, null=True, blank=True)
 
+    open_enrollment_month = models.IntegerField(null=True, blank=True)
+
+    open_enrollment_day = models.IntegerField(null=True, blank=True)
+
+    open_enrollment_length_in_days = models.IntegerField(null=True, blank=True)
+
     def __str__(self):
         return self.name

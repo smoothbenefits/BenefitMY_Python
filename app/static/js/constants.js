@@ -248,3 +248,54 @@ settings.constant('EmploymentStatuses',{
     terminated: 'Terminated',
     onLeave:'OnLeave'
 });
+
+settings.constant('MonthsInYear',[
+    {
+        id: 0,
+        name: moment().month(0).format("MMMM")
+    },
+    {
+        id: 1,
+        name: moment().month(1).format("MMMM")
+    },
+    {
+        id: 2,
+        name: moment().month(2).format("MMMM")
+    },
+    {
+        id: 3,
+        name: moment().month(3).format("MMMM")
+    },
+    {
+        id: 4,
+        name: moment().month(4).format("MMMM")
+    },
+    {
+        id: 5,
+        name: moment().month(5).format("MMMM")
+    },
+    {
+        id: 6,
+        name: moment().month(6).format("MMMM")
+    },
+    {
+        id: 7,
+        name: moment().month(7).format("MMMM")
+    },
+    {
+        id: 8,
+        name: moment().month(8).format("MMMM")
+    },
+    {
+        id: 9,
+        name: moment().month(9).format("MMMM")
+    },
+    {
+        id: 10,
+        name: moment().month(10).format("MMMM")
+    },
+    {
+        id: 11,
+        name: moment().month(11).format("MMMM")
+    }
+])

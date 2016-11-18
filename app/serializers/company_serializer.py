@@ -17,7 +17,10 @@ class ShallowCompanySerializer(HashPkSerializerBase):
         fields = ('id',
                   'name',
                   'pay_period_definition',
-                  'ein')
+                  'ein',
+                  'open_enrollment_month',
+                  'open_enrollment_day',
+                  'open_enrollment_length_in_days')
 
 class CompanySerializer(HashPkSerializerBase):
 
@@ -33,7 +36,10 @@ class CompanySerializer(HashPkSerializerBase):
                   'pay_period_definition',
                   'contacts',
                   'addresses',
-                  'ein')
+                  'ein',
+                  'open_enrollment_month',
+                  'open_enrollment_day',
+                  'open_enrollment_length_in_days')
 
 class CompanyPostSerializer(HashPkSerializerBase):
 
@@ -48,4 +54,7 @@ class CompanyPostSerializer(HashPkSerializerBase):
                   'pay_period_definition',
                   'contacts',
                   'addresses',
-                  'ein')
+                  'ein',
+                  'open_enrollment_month',
+                  'open_enrollment_day',
+                  'open_enrollment_length_in_days')

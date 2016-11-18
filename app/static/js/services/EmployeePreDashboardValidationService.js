@@ -72,6 +72,15 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
       return true;
     };
 
+    var inOpenEnrollmentPeriod = function(openEnrollmentMonth, openEnrollmentDay, openEnrollmentLength){
+      if(!openEnrollmentMonth || !openEnrollmentDay || !openEnrollmentLength){
+        return false;
+      }
+      var testDateStart = moment().month(openEnrollmentMonth).date(openEnrollmentDay);
+      var testDateEnd = testDateStart.add(openEnrollmentLength, 'd');
+      return moment().isBefore(testDateEnd) && moment().isAfter(testDateStart);
+    };
+
     var validateBasicInfo = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
       //step one (basic info) validation
       PersonService.getSelfPersonInfo(employeeId)
@@ -121,7 +130,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     var validateW4Info = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
       if (!isNewEmployee 
         || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
-        // Skip I-9 validation if this is not a new employee
+        // Skip W-4 validation if this is not a new employee
         succeeded();
       } 
       else {
@@ -207,20 +216,30 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         UserService.getCurUserInfo().then(
             function(userInfo) {
                 var company = userInfo.currentRole.company;
-
-                BenefitSummaryService.getBenefitEnrollmentByUser(employeeId, company.id).then(
-                    function(enrollmentSummary) {
-                        if (enrollmentSummary.allEnrollmentsCompleted) {
-                            succeeded();
-                        }
-                        else {
-                            failed();
-                        }
-                    },
-                    function(errors) {
-                        failed();
-                    }
-                );
+                if (
+                    !isNewEmployee && 
+                    !inOpenEnrollmentPeriod(
+                      company.open_enrollment_month,
+                      company.open_enrollment_day,
+                      company.open_enrollment_length_in_days)
+                   ){
+                  succeeded();
+                }
+                else{
+                  BenefitSummaryService.getBenefitEnrollmentByUser(employeeId, company.id).then(
+                      function(enrollmentSummary) {
+                          if (enrollmentSummary.allEnrollmentsCompleted) {
+                              succeeded();
+                          }
+                          else {
+                              failed();
+                          }
+                      },
+                      function(errors) {
+                          failed();
+                      }
+                  );
+                }
             },
             function(errors) {
                 failed();

@@ -1,8 +1,8 @@
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('CompanyService',
-   ['$q', 'companyRepository', 'CompanyUserDetailRepository',
-   function($q, companyRepository, CompanyUserDetailRepository){
+   ['$q', 'companyRepository', 'CompanyUserDetailRepository', 'MonthsInYear',
+   function($q, companyRepository, CompanyUserDetailRepository, MonthsInYear){
 
       var convertEinFromRaw = function(rawEin) {
         return rawEin.substring(0, 2) + '-' + rawEin.substring(2);
@@ -22,6 +22,9 @@ benefitmyService.factory('CompanyService',
         viewModel.company.id = domainModel.id;
         viewModel.company.name = domainModel.name;
         viewModel.company.ein = convertEinToRaw(domainModel.ein);
+        viewModel.open_enrollment_month = _.findWhere(MonthsInYear,{id: domainModel.open_enrollment_month});
+        viewModel.open_enrollment_day = domainModel.open_enrollment_day;
+        viewModel.open_enrollment_length_in_days = domainModel.open_enrollment_length_in_days;
 
         viewModel.payPeriod = domainModel.pay_period_definition;
 
@@ -69,10 +72,14 @@ benefitmyService.factory('CompanyService',
         apiClient.ein = convertEinFromRaw(viewModel.company.ein);
 
         apiClient.pay_period_definition = viewModel.payPeriod.id;
+        apiClient.open_enrollment_month = viewModel.open_enrollment_month ? viewModel.open_enrollment_month.id : null;
+        apiClient.open_enrollment_day = viewModel.open_enrollment_day;
+        apiClient.open_enrollment_length_in_days = viewModel.open_enrollment_length_in_days;
         var apiContact = {};
         apiContact.first_name = viewModel.contact.first_name;
         apiContact.last_name = viewModel.contact.last_name;
         apiContact.email = viewModel.contact.email;
+        apiContact.password = viewModel.contact.password;
         apiContact.person_type = 'primary_contact';
         apiContact.user = viewModel.contact.user_id;
         apiContact.relationship = viewModel.contact.relationship;
@@ -92,15 +99,17 @@ benefitmyService.factory('CompanyService',
         apiClient.addresses.push(apiAddress);
 
         // default_benefit_group is a semicolon delimited string
-        var groups = [];
-        _.each(viewModel.default_benefit_group.split(";"), function(group) {
-          var groupName = group.trim();
-          // Remove empty group names
-          if (groupName) {
-            groups.push(groupName);
-          }
-        });
-        apiClient.default_benefit_groups = groups;
+        if(viewModel.default_benefit_group){
+          var groups = [];
+          _.each(viewModel.default_benefit_group.split(";"), function(group) {
+            var groupName = group.trim();
+            // Remove empty group names
+            if (groupName) {
+              groups.push(groupName);
+            }
+          });
+          apiClient.default_benefit_groups = groups;
+        }
 
         return apiClient;
       };
@@ -115,7 +124,9 @@ benefitmyService.factory('CompanyService',
           return { isValid: false, message: "EIN should be 9 digits long." };
         }
 
-        if (!viewModel.default_benefit_group.trim()) {
+        if ( !viewModel.company.id &&
+             !(viewModel.default_benefit_group && viewModel.default_benefit_group.trim())
+           ) {
           return { isValid: false, message: "Benefit group is required."};
         }
 

@@ -7,13 +7,15 @@ BenefitMyApp.directive('bmCompanyInfoEditor', function() {
     '$attrs',
     'CompanyService',
     'PeriodDefinitionRepository',
+    'MonthsInYear',
     function CompanyInfoEditorDirectiveController(
       $scope,
       $location,
       $window,
       $attrs,
       CompanyService,
-      PeriodDefinitionRepository) {
+      PeriodDefinitionRepository,
+      MonthsInYear) {
 
         $scope.client = {};
 
@@ -26,6 +28,13 @@ BenefitMyApp.directive('bmCompanyInfoEditor', function() {
         PeriodDefinitionRepository.query().$promise.then(function(payPeriods){
           $scope.payPeriods = payPeriods;
         });
+
+        $scope.monthsInYear = MonthsInYear;
+        var day = 1;
+        $scope.daysInMonth = [];
+        while(day <= moment().month(0).daysInMonth()){
+          $scope.daysInMonth.push(day++);
+        }
 
         // Define a default behavior when no function parameter is given
         if (!$attrs.exitView) {
