@@ -2119,7 +2119,8 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
     '$stateParams',
     'UploadService',
     'users',
-    function($scope, $state, $stateParams, UploadService, users){
+    'CompanyEmployeeSummaryService',
+    function($scope, $state, $stateParams, UploadService, users, CompanyEmployeeSummaryService){
       $scope.compId = $stateParams.company_id;
       $scope.uploads = [];
       UploadService.getEmployeeUploads($scope.compId, $stateParams.employee_id)
@@ -2132,5 +2133,7 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
       .$promise.then(function(resp){
         $scope.employee = resp.user;
       });
+
+      $scope.employeeI9DownloadUrl = CompanyEmployeeSummaryService.getEmployeeI9FormUrl($stateParams.employee_id);
     }
 ]);
