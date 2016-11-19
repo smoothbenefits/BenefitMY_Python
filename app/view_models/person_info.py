@@ -66,6 +66,9 @@ class PersonInfo(object):
                 full_address = full_address + ', ' + self.address2
         return full_address
 
+    def get_city_state_zipcode(self):
+        return self.city + ', ' + self.state + ' ' + self.zipcode
+
     def get_country_and_zipcode(self):
         result = None
         if (self.country is not None):

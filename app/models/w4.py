@@ -3,6 +3,11 @@ import reversion
 from django.db import models
 from app.custom_authentication import AuthUser
 
+W4_MARRIAGE_STATUS_SINGLE = 0
+W4_MARRIAGE_STATUS_MARRIED = 2
+W4_MARRIAGE_STATUS_MARRIED_HIGH_SINGLE = 1
+
+
 @reversion.register
 class W4(models.Model):
     marriage = models.IntegerField()

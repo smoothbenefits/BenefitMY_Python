@@ -84,3 +84,7 @@ class PdfFormSignaturePlacements(object):
     Form_I9 = [
         ImagePlacement(7, 1.766666667, 3.133333333, 3.9, 0.3)
     ]
+
+    Form_W4 = [
+        ImagePlacement(1, 2.7, 0.85, 3.36666667, 0.35)
+    ]

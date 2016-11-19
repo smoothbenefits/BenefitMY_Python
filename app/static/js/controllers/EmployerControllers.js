@@ -2135,5 +2135,6 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
       });
 
       $scope.employeeI9DownloadUrl = CompanyEmployeeSummaryService.getEmployeeI9FormUrl($stateParams.employee_id);
+      $scope.employeeW4DownloadUrl = CompanyEmployeeSummaryService.getEmployeeW4FormUrl($stateParams.employee_id);
     }
 ]);
