@@ -8,12 +8,12 @@ from app.models.employment_authorization import (
 class EmployeeI9Data(object):
 
     def __init__(self, employee_authorization):
+        self.citizen_data = None
+        self.non_citizen_data = None
+        self.perm_resident_data = None
+        self.authorized_worker_data = None
+            
         if (employee_authorization):
-            self.citizen_data = None
-            self.non_citizen_data = None
-            self.perm_resident_data = None
-            self.authorized_worker_data = None
-
             if (employee_authorization.worker_type == WORKER_TYPE_CITIZEN):
                 self.citizen_data = {}
             elif(employee_authorization.worker_type == WORKER_TYPE_NONCITIZEN):

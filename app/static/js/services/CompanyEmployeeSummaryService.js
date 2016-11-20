@@ -81,6 +81,10 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
 
       getEmployeeI9FormUrl : function(employeeUserId) {
         return API_PREFIX + '/users/' + employeeUserId + '/forms/i9';
+      },
+
+      getEmployeeW4FormUrl : function(employeeUserId) {
+        return API_PREFIX + '/users/' + employeeUserId + '/forms/w4';
       }
     };
   }
