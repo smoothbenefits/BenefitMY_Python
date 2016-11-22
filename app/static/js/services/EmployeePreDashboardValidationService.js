@@ -143,8 +143,9 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     };
 
     var validateDirectDeposit = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
-      if (!allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.DD)) {
-        // Skip if the feature is disabled
+      if (!isNewEmployee ||
+          !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.DD)) {
+        // Skip if the feature is disabled or it's an existing employee
         succeeded();
       } 
       else {
@@ -204,6 +205,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     };
 
     var validateBenefitEnrollments = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed) {
+      if(isNewEmployee){  
         UserService.getCurUserInfo().then(
             function(userInfo) {
                 var company = userInfo.currentRole.company;
@@ -226,6 +228,9 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                 failed();
             }
         );
+      } else {
+        succeeded();
+      }
     };
 
     return {
