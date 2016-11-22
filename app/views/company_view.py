@@ -43,7 +43,7 @@ class CompanyView(APIView):
 
         if contact_size:
             primary_contact = request.DATA['contacts'][0]
-            u = User.objects.create_user(primary_contact['email'], 'temp')
+            u = User.objects.create_user(primary_contact['email'], primary_contact.get('password', 'temp'))
             if u and primary_contact['first_name'] and primary_contact['last_name']:
                 u.first_name = primary_contact['first_name']
                 u.last_name = primary_contact['last_name']
