@@ -107,6 +107,7 @@ var userController = userControllers.controller('userController',
    'EmployeeBenefitsAvailabilityService',
    'BenefitUpdateReasonService',
    'EmployeeProfileService',
+   'BenefitsEnrollmentConfigurations',
   function userController($scope,
                           $http,
                           $location,
@@ -119,7 +120,8 @@ var userController = userControllers.controller('userController',
                           BrowserDetectionService,
                           EmployeeBenefitsAvailabilityService,
                           BenefitUpdateReasonService,
-                          EmployeeProfileService) {
+                          EmployeeProfileService,
+                          BenefitsEnrollmentConfigurations) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var roleTypeDictionary = {
@@ -306,7 +308,7 @@ var userController = userControllers.controller('userController',
                 var diffInDays = dateDiff.asDays();
 
                 // Only ask for a reason if not in the "new employee" period
-                return !(diffInDays >= 0 && diffInDays <= 30.0);
+                return !(diffInDays >= 0 && diffInDays <= BenefitsEnrollmentConfigurations.updateReasonExemptPeriodInDays);
             });
         });
     };
