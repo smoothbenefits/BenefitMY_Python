@@ -248,3 +248,7 @@ settings.constant('EmploymentStatuses',{
     terminated: 'Terminated',
     onLeave:'OnLeave'
 });
+
+settings.constant('BenefitsEnrollmentConfigurations', {
+    updateReasonExemptPeriodInDays: 30.0
+});
