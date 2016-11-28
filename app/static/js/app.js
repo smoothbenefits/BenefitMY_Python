@@ -277,6 +277,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/company_employee_selection.html',
                 controller: 'brokerEmployeeEnrollmentController'
             }).
+            state('broker_company_reports', {
+                url: '/broker/reports/:company_id',
+                templateUrl: '/static/partials/view_reports.html',
+                controller: 'brokerViewCompanyReportsController'
+            }).
             state('/', {
                 url: '/',
                 template: '',
