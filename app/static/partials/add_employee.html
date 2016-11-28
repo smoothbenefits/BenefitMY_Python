@@ -120,6 +120,8 @@
         <div class="textbox input-group">
           <span class="input-group-addon">$</span>
           <input type="number"
+            min="0"
+            step="any"
             name="employee_salary"
             ng-model="addUser.annual_base_salary"
             ng-required="isFullTime(addUser)" />
@@ -135,6 +137,7 @@
           <span class="input-group-addon">$</span>
           <input type="number"
             min="0"
+            step="any"
             name="hourly_rate"
             ng-model="addUser.hourly_rate"
             ng-required="!isFullTime(addUser)" />
@@ -146,6 +149,7 @@
         <div class="textbox input-group">
           <input type="number"
             min="0"
+            step="any"
             name="projected_hour_per_month"
             ng-model="addUser.projected_hour_per_month"
             ng-required="!isFullTime(addUser)" />
