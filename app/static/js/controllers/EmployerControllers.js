@@ -1327,11 +1327,14 @@ var addEmployeeCompensationModalController = employersController.controller(
              currentSalary){
 
       $scope.errorMessage = null;
-      $scope.currentSalary = Number(currentSalary);
+      $scope.compensation = {};
+      if (currentSalary){
+        $scope.currentSalary = Number(currentSalary);
+        $scope.compensation.salary = $scope.currentSalary;
+      }
       $scope.isFullTime = EmployeeProfileService.isFullTimeEmploymentType(employeeProfile);
       var personId = employeeProfile.personId;
       var companyId = employeeProfile.companyId;
-      $scope.compensation = {};
 
       $scope.useHourlyRate = function() {
         return !$scope.isFullTime || $scope.getHourlyPaid;
@@ -1362,6 +1365,10 @@ var addEmployeeCompensationModalController = employersController.controller(
           $scope.errorMessage = "Error occurred during saving operation. Please verify " +
             "all the information enterred are valid. Message: " + error;
         });
+      };
+
+      $scope.isNumber = function(target){
+        return _.isNumber(target);
       };
     }
   ]);
@@ -2119,7 +2126,8 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
     '$stateParams',
     'UploadService',
     'users',
-    function($scope, $state, $stateParams, UploadService, users){
+    'CompanyEmployeeSummaryService',
+    function($scope, $state, $stateParams, UploadService, users, CompanyEmployeeSummaryService){
       $scope.compId = $stateParams.company_id;
       $scope.uploads = [];
       UploadService.getEmployeeUploads($scope.compId, $stateParams.employee_id)
@@ -2132,5 +2140,8 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
       .$promise.then(function(resp){
         $scope.employee = resp.user;
       });
+
+      $scope.employeeI9DownloadUrl = CompanyEmployeeSummaryService.getEmployeeI9FormUrl($stateParams.employee_id);
+      $scope.employeeW4DownloadUrl = CompanyEmployeeSummaryService.getEmployeeW4FormUrl($stateParams.employee_id);
     }
 ]);

@@ -4,10 +4,15 @@ from django.db import models
 from signature import Signature
 from app.custom_authentication import AuthUser
 
-WORKER_TYPE = (("Citizen", "Citizen"),
-               ("Noncitizen", "Noncitizen"),
-               ("PResident", "PResident"),
-               ("Aaw", "Aaw"))
+WORKER_TYPE_CITIZEN = "Citizen"
+WORKER_TYPE_NONCITIZEN = "Noncitizen"
+WORKER_TYPE_PERM_RESIDENT = "PResident"
+WORKER_TYPE_AAW = "Aaw"
+
+WORKER_TYPE = ((WORKER_TYPE_CITIZEN, WORKER_TYPE_CITIZEN),
+               (WORKER_TYPE_NONCITIZEN, WORKER_TYPE_NONCITIZEN),
+               (WORKER_TYPE_PERM_RESIDENT, WORKER_TYPE_PERM_RESIDENT),
+               (WORKER_TYPE_AAW, WORKER_TYPE_AAW))
 
 @reversion.register
 class EmploymentAuthorization(models.Model):

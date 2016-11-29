@@ -5,11 +5,15 @@ from app.models.aca.employee_1095_c import Employee1095C
 from app.models.aca.company_1095_c import Company1095C, PERIODS
 from app.models.aca.company_1094_c_member_info import Company1094CMemberInfo
 from app.models.aca.company_1094_c_monthly_member_info import Company1094CMonthlyMemberInfo
+from app.models.employment_authorization import EmploymentAuthorization
+from app.models.w4 import W4
 
 from app.view_models.person_info import PersonInfo
 from app.view_models.company_info import CompanyInfo
 from app.view_models.report.employee_1095_c_data import Employee1095CData
 from app.view_models.report.company_1094_c_data import Company1094CData
+from app.view_models.report.employee_i9_data import EmployeeI9Data
+from app.view_models.report.employee_w4_data import EmployeeW4Data
 from django.http import Http404
 
 
@@ -32,6 +36,12 @@ class ReportViewModelFactory(object):
 
     def get_company_1094_c_data(self, company_id):
         return self._get_company_1094_c_data(company_id)
+
+    def get_employee_i9_data(self, user_id):
+        return self._get_employee_i9_data(user_id)
+
+    def get_employee_w4_data(self, user_id):
+        return self._get_employee_w4_data(user_id)
 
     def _get_person_by_user(self, user_id):
         person_model = None
@@ -67,6 +77,32 @@ class ReportViewModelFactory(object):
             employee_1095c_collection.append(employee_1095c_data)
 
         return employee_1095c_collection
+
+    def _get_employee_i9_data(self, user_id):
+        i9_model = None
+
+        try:
+            i9_model = EmploymentAuthorization.objects.get(user=user_id)
+        except EmploymentAuthorization.DoesNotExist:
+            i9_model = None
+
+        if not i9_model:
+            return None
+
+        return EmployeeI9Data(i9_model)
+
+    def _get_employee_w4_data(self, user_id):
+        w4_model = None
+
+        try:
+            w4_model = W4.objects.get(user=user_id)
+        except W4.DoesNotExist:
+            w4_model = None
+
+        if not w4_model:
+            return None
+
+        return EmployeeW4Data(w4_model)
 
     def _get_company_1094_c_data(self, company_id):
         member_info = None

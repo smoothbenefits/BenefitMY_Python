@@ -803,3 +803,13 @@ benefitmyDomainModelFactories.factory('PhraseologyRepository', ['$resource',
     }
   }
 ]);
+
+benefitmyDomainModelFactories.factory('OpenEnrollmentDefinitionRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'companies/:comp_id/open_enrollment', {comp_id: '@comp_id'}, {
+        update: { method: 'PUT' }
+      })
+    }
+  }
+]);

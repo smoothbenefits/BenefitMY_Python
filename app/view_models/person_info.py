@@ -66,6 +66,9 @@ class PersonInfo(object):
                 full_address = full_address + ', ' + self.address2
         return full_address
 
+    def get_city_state_zipcode(self):
+        return self.city + ', ' + self.state + ' ' + self.zipcode
+
     def get_country_and_zipcode(self):
         result = None
         if (self.country is not None):
@@ -86,3 +89,13 @@ class PersonInfo(object):
         if (result):
             result = round(result, 2)
         return result
+
+    def get_ssn_tokenized(self):
+        if (not self.ssn):
+            return None
+
+        return [
+            self.ssn[:3],
+            self.ssn[3:5],
+            self.ssn[5:]
+        ]

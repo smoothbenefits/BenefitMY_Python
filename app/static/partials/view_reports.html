@@ -19,7 +19,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr ng-if="exportCompanyEmployeeSummaryUrl">
             <td>Employee Benefits Selections</td>
             <td>
                 <div>This excel report contains the benefits selections every employees has made in your company.</div>
@@ -27,17 +27,17 @@
             </td>
             <td><bm-file-download-link link-name="Download" link-href="exportCompanyEmployeeSummaryUrl"></bm-file-download-link></td>
           </tr>
-          <tr>
+          <tr ng-if="exportCompanyEmployeeDirectDepositUrl">
             <td>Direct Deposit Report</td>
             <td>This excel report contains direct deposit information entered by all of your employees</td>
             <td><bm-file-download-link link-name="Download" link-href="exportCompanyEmployeeDirectDepositUrl"></bm-file-download-link></td>
           </tr>
-          <tr>
+          <tr ng-if="exportCompanyEmployeeLifeBeneficiarySummaryUrl">
             <td>Life Insurance Beneficiaries</td>
             <td>This excel report contains beneficiary information for each employees who made life insurance elections</td>
             <td><bm-file-download-link link-name="Download" link-href="exportCompanyEmployeeLifeBeneficiarySummaryUrl"></bm-file-download-link></td>
           </tr>
-          <tr>
+          <tr ng-if="exportCompanyEmployeeSummaryPdfUrl">
             <td>Employee Summary</td>
             <td>
                 <div>This PDF report contains basic information for every employee in your company.</div>

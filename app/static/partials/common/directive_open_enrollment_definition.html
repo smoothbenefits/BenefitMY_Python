@@ -1,0 +1,22 @@
+<div class="panel panel-info" ng-init="init()">
+  <div class="panel-heading">
+    <div class="row">
+    <div class="panel-title pull-left">OPEN ENROLLMENT INFORMATION</div>
+    <div class="cta pull-right"><a ng-click="editOpenEnrollment()" class="btn green">Edit</a></div>
+    <div class="cta pull-right">
+        <a class="btn red"
+            ng-if="openEnrollment"
+            ng-click="deleteOpenEnrollment()"
+            href="javascript:void(0);"
+            confirm="Delete the Open Enrollment Period?">Delete</a>
+    </div>
+    </div>
+  </div>
+  <div class="panel-body" ng-if="openEnrollment">
+    <p><b>Starts at:</b> {{openEnrollment.start_month.name}} {{openEnrollment.start_day}}</p>
+    <p><b>Ends at:</b> {{openEnrollment.end_month.name}} {{openEnrollment.end_day}}</p>
+  </div>
+  <div class="panel-body" ng-if="!openEnrollment">
+    <p>There are no Open Enrollment Period defined. <a ng-click="editOpenEnrollment()">Click Here</a> to define it.</p>
+  </div>
+</div>

@@ -44,13 +44,13 @@
       <div class="row">
         <div class="form-label">Manager</div>
         <div class="textbox">
-          <input type="text" 
+          <input type="text"
             ng-model="employeeProfileModel.manager"
-            placeholder="Start typing the name of an employee..." 
+            placeholder="Start typing the name of an employee..."
             ng-required="false"
             name="employeeProfileModel.manager"
             typeahead="manager as manager.first_name + ' ' + manager.last_name for manager in getEmployees($viewValue)"
-            autocomplete="off" 
+            autocomplete="off"
             class="form-control"></select>
             <div class="form-inline-error" ng-show="managerInvalid(employeeProfileModel.manager)">
               <span>The manager you selected is an invalid candidate!</span>
@@ -58,7 +58,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="form-label">Employment Start Date</div>
+        <div class="form-label">Employment Start Date (m/d/yyyy)</div>
         <div class="datebox">
           <bm-date-picker model="employeeProfileModel.startDate"
           required="false"
@@ -71,7 +71,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="form-label">Employment End Date</div>
+        <div class="form-label">Employment End Date (m/d/yyyy)</div>
         <div class="datebox">
           <bm-date-picker model="employeeProfileModel.endDate"
           required="false"
@@ -84,7 +84,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="form-label">Benefit Start Date</div>
+        <div class="form-label">Benefit Start Date (m/d/yyyy)</div>
         <div class="datebox">
           <bm-date-picker model="employeeProfileModel.benefitStartDate"
           required="true"

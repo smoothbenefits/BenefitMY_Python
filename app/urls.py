@@ -72,6 +72,7 @@ from app.views.signature_view import (SignatureByUserView, SignatureView)
 from app.views.health_benefits.benefit_details_view import (
     BenefitDetailsView,
     delete_benefit_details)
+from app.views.open_enrollment_definition_view import OpenEnrollmentDefinitionByCompanyView
 
 #Basic Life
 from app.views.insurance.company_life_insurance_plan_view import \
@@ -201,6 +202,7 @@ from app.views.reports.forms.form_1095c import Form1095CView
 from app.views.reports.forms.form_1094c import Form1094CView
 from app.views.reports.forms.COI.form_lien_waiver import FormLienWaiverView
 from app.views.reports.forms.form_i9 import FormI9View
+from app.views.reports.forms.form_w4 import FormW4View
 
 from app.views.upload import (UserUploadView,
                               UploadView,
@@ -333,11 +335,12 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/role/(?P<role_type>\w+)/?$' % PREFIX, CompanyUserDetailView.as_view(), name='company_user_details_api'),
 
     url(r'^%s/companies/(?P<pk>\w+)/hphc/excel/?$' % PREFIX, CompanyHphcExcelView.as_view(), name='company_hphc_excel_api'),
-
+    url(r'^%s/companies/(?P<comp_id>\w+)/open_enrollment/?$' % PREFIX, OpenEnrollmentDefinitionByCompanyView.as_view(), name='company_open_enrollment_api'),
     url(r'^%s/users/(?P<pk>\w+)/forms/1095c/?$' % PREFIX, Form1095CView.as_view(), name='employee_1095_c_form_api'),
     url(r'^%s/company/(?P<pk>\w+)/forms/1094c/?$' % PREFIX, Form1094CView.as_view(), name='company_1094_c_form_api'),
     
     url(r'^%s/users/(?P<pk>\w+)/forms/i9/?$' % PREFIX, FormI9View.as_view(), name='employee_i9_form_api'),
+    url(r'^%s/users/(?P<pk>\w+)/forms/w4/?$' % PREFIX, FormW4View.as_view(), name='employee_w4_form_api'),
 
     url(r'^%s/company/(?P<company_id>\w+)/contractors/(?P<contractor_id>\w+)/forms/lien_waiver/?$' % PREFIX, FormLienWaiverView.as_view(), name='coi_lien_waiver_form_api'),
 

@@ -74,6 +74,9 @@
             }
         }
         .content-body {
+            .cta{
+                margin-left:$gutter-xs;
+            }
             padding: $gutter;
             padding-top: 0;
             h2 {

@@ -488,6 +488,12 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
                         return tab.name == 'tax';
                     });
                 }
+                if (!isNewEmployee
+                    || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.DD)) {
+                    $scope.tabs = _.reject($scope.tabs, function(tab) {
+                        return tab.name == 'direct_deposit';
+                    });
+                }
             }
         );
     });
