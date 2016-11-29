@@ -6,6 +6,22 @@ from django.contrib.auth.models import (
 
 class AuthUserManager(BaseUserManager):
 
+    ''' Override this method from the BaseUserManager to
+        overcome the default implementation that assumes
+        case-sensitivity on username/email lookup.
+
+        Django refuses to fix this due to backward compatibility concerns.
+        Though as of Django 1.5, with the support of iexact derivative, the
+        below workaround became possible
+
+        See more details:
+          * http://stackoverflow.com/questions/13190758/django-case-insensitive-matching-of-username-from-auth-user
+          * https://code.djangoproject.com/ticket/2273#comment:12
+          * https://djangosnippets.org/snippets/1368/
+    '''
+    def get_by_natural_key(self, email):
+        return self.get(email__iexact=email)
+
     def create_user(self, email, password=None):
         """
         Creates and saves a User with the given email and password.
