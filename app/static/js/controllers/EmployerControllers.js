@@ -1327,11 +1327,14 @@ var addEmployeeCompensationModalController = employersController.controller(
              currentSalary){
 
       $scope.errorMessage = null;
-      $scope.currentSalary = Number(currentSalary);
+      $scope.compensation = {};
+      if (currentSalary){
+        $scope.currentSalary = Number(currentSalary);
+        $scope.compensation.salary = $scope.currentSalary;
+      }
       $scope.isFullTime = EmployeeProfileService.isFullTimeEmploymentType(employeeProfile);
       var personId = employeeProfile.personId;
       var companyId = employeeProfile.companyId;
-      $scope.compensation = {};
 
       $scope.useHourlyRate = function() {
         return !$scope.isFullTime || $scope.getHourlyPaid;
@@ -1362,6 +1365,10 @@ var addEmployeeCompensationModalController = employersController.controller(
           $scope.errorMessage = "Error occurred during saving operation. Please verify " +
             "all the information enterred are valid. Message: " + error;
         });
+      };
+
+      $scope.isNumber = function(target){
+        return _.isNumber(target);
       };
     }
   ]);

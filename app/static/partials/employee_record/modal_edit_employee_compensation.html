@@ -30,7 +30,7 @@
               type="number"
               name="salary"
               ng-model="compensation.salary"
-              ng-disabled="_.isNumber(compensation.increasePercentage)" />
+              ng-disabled="isNumber(compensation.increasePercentage)" />
           </div>
           <div class="form-error-relative" ng-show="form.salary.$invalid">Annual base salary is invalid</div>
         </div>
@@ -47,7 +47,7 @@
                    step="any"
                    name="percentage"
                    ng-model="compensation.increasePercentage"
-                   ng-disabled="_.isNumber(compensation.salary) || !currentSalary" />
+                   ng-disabled="isNumber(compensation.salary) || !currentSalary" />
             <span class="input-group-addon"> %</span>
           </div>
           <div class="form-error-relative" ng-show="form.percentage.$invalid">
