@@ -101,7 +101,7 @@ class UsersView(APIView):
         result = account_service.execute_creation(account_info)
 
         if (result.has_issue()):
-            return Response(result.issues, status=status.HTTP_400_BAD_REQUEST)
+            return Response(result.serialize_issues(), status=status.HTTP_400_BAD_REQUEST)
 
         # construct data back to consumer
         result_account_info = result.output_data
