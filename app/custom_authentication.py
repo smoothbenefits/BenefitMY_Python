@@ -19,8 +19,8 @@ class AuthUserManager(BaseUserManager):
           * https://code.djangoproject.com/ticket/2273#comment:12
           * https://djangosnippets.org/snippets/1368/
     '''
-    def get_by_natural_key(self, email):
-        return self.get(email__iexact=email)
+    # def get_by_natural_key(self, email):
+    #     return self.get(email__iexact=email)
 
     def create_user(self, email, password=None):
         """
