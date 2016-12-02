@@ -181,7 +181,6 @@ var benefitsController = brokersControllers.controller(
       $scope.showAddBenefitButton = true;
       $scope.benefitDeletable = true;
 
-
       companyRepository.get({clientId: $stateParams.clientId})
       .$promise.then(function(company){
         $scope.company = company;

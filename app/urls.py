@@ -72,6 +72,7 @@ from app.views.signature_view import (SignatureByUserView, SignatureView)
 from app.views.health_benefits.benefit_details_view import (
     BenefitDetailsView,
     delete_benefit_details)
+from app.views.open_enrollment_definition_view import OpenEnrollmentDefinitionByCompanyView
 
 #Basic Life
 from app.views.insurance.company_life_insurance_plan_view import \
@@ -334,7 +335,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<pk>\w+)/role/(?P<role_type>\w+)/?$' % PREFIX, CompanyUserDetailView.as_view(), name='company_user_details_api'),
 
     url(r'^%s/companies/(?P<pk>\w+)/hphc/excel/?$' % PREFIX, CompanyHphcExcelView.as_view(), name='company_hphc_excel_api'),
-
+    url(r'^%s/companies/(?P<comp_id>\w+)/open_enrollment/?$' % PREFIX, OpenEnrollmentDefinitionByCompanyView.as_view(), name='company_open_enrollment_api'),
     url(r'^%s/users/(?P<pk>\w+)/forms/1095c/?$' % PREFIX, Form1095CView.as_view(), name='employee_1095_c_form_api'),
     url(r'^%s/company/(?P<pk>\w+)/forms/1094c/?$' % PREFIX, Form1094CView.as_view(), name='company_1094_c_form_api'),
     
