@@ -1,6 +1,6 @@
 This is the currently working apis
 
-Get:
+Get: 
 
 /api/v1/people/#/                        
 /api/v1/benefit_types/              
