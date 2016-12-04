@@ -24,5 +24,6 @@ class AdvantagePayrollClientSetupCsvTestCase(TestCase, ViewTestBase):
                                                kwargs={'company_id': self.normalize_key(1)}))
             self.assertIsNotNone(response)
             self.assertEqual(response.status_code, 200)
+            self.assertEqual(response['content-type'], 'text/csv')
         else:
             self.assertFalse("login failed!")
