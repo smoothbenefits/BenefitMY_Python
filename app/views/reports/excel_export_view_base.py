@@ -54,3 +54,14 @@ class ExcelExportViewBase(ReportExportViewBase):
         self._current_row = self._current_row + 1
         self._current_column = 0
         return
+
+    ''' Sadly Python does not support the ++ operator, or else we don't need        
+         this below helper to keep track of the next column number for writing     
+         individule field      
+     '''       
+    def _write_field(self, excelSheet, row_num, col_num, value, value_format=None):       
+        if (value_format):        
+            excelSheet.write(row_num, col_num, value, value_format)       
+        else:     
+            excelSheet.write(row_num, col_num, value)     
+        return col_num + 1

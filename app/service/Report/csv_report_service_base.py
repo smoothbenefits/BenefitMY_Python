@@ -14,17 +14,12 @@ class CsvReportServiceBase(ReportServiceBase):
         for row in self._rows:
             writer.writerow(row)
 
-        return
-
     def _write_cell(self, value):
         self._rows[-1].append(value)
-        return
 
     def _skip_cells(self, num_cells):
         for i in range(num_cells):
             self._write_cell('')
-        return
 
     def _next_row(self):
         self._rows.append([])
-        return
