@@ -73,6 +73,7 @@ benefitmyService.factory('CompanyService',
         apiContact.first_name = viewModel.contact.first_name;
         apiContact.last_name = viewModel.contact.last_name;
         apiContact.email = viewModel.contact.email;
+        apiContact.password = viewModel.contact.password;
         apiContact.person_type = 'primary_contact';
         apiContact.user = viewModel.contact.user_id;
         apiContact.relationship = viewModel.contact.relationship;
@@ -92,15 +93,17 @@ benefitmyService.factory('CompanyService',
         apiClient.addresses.push(apiAddress);
 
         // default_benefit_group is a semicolon delimited string
-        var groups = [];
-        _.each(viewModel.default_benefit_group.split(";"), function(group) {
-          var groupName = group.trim();
-          // Remove empty group names
-          if (groupName) {
-            groups.push(groupName);
-          }
-        });
-        apiClient.default_benefit_groups = groups;
+        if(viewModel.default_benefit_group){
+          var groups = [];
+          _.each(viewModel.default_benefit_group.split(";"), function(group) {
+            var groupName = group.trim();
+            // Remove empty group names
+            if (groupName) {
+              groups.push(groupName);
+            }
+          });
+          apiClient.default_benefit_groups = groups;
+        }
 
         return apiClient;
       };
@@ -115,7 +118,9 @@ benefitmyService.factory('CompanyService',
           return { isValid: false, message: "EIN should be 9 digits long." };
         }
 
-        if (!viewModel.default_benefit_group.trim()) {
+        if ( !viewModel.company.id &&
+             !(viewModel.default_benefit_group && viewModel.default_benefit_group.trim())
+           ) {
           return { isValid: false, message: "Benefit group is required."};
         }
 

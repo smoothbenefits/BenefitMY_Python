@@ -12,9 +12,9 @@
         <div class="checkbox">
           <label>
             <input type="checkbox"
-            name="get_hourly_paid"
-            ng-model="getHourlyPaid"
-            ng-disabled="!isFullTime">
+              name="get_hourly_paid"
+              ng-model="getHourlyPaid"
+              ng-disabled="!isFullTime">
             The Employee receives hourly paid
           </label>
         </div>
@@ -24,11 +24,13 @@
           <div class="form-label">Annual Base Salary</div>
           <div class="textbox input-group">
             <span class="input-group-addon">$</span>
-            <input min="0"
-                   type="number"
-                   name="salary"
-                   ng-model="compensation.salary"
-                   ng-disabled="_.isNumber(compensation.increasePercentage)" />
+            <input
+              min="0"
+              step="any"
+              type="number"
+              name="salary"
+              ng-model="compensation.salary"
+              ng-disabled="isNumber(compensation.increasePercentage)" />
           </div>
           <div class="form-error-relative" ng-show="form.salary.$invalid">Annual base salary is invalid</div>
         </div>
@@ -42,9 +44,10 @@
           <div class="textbox input-group">
             <input type="number"
                    min="0"
+                   step="any"
                    name="percentage"
                    ng-model="compensation.increasePercentage"
-                   ng-disabled="_.isNumber(compensation.salary) || !currentSalary" />
+                   ng-disabled="isNumber(compensation.salary) || !currentSalary" />
             <span class="input-group-addon"> %</span>
           </div>
           <div class="form-error-relative" ng-show="form.percentage.$invalid">
@@ -60,10 +63,12 @@
           <div class="form-label">Hourly Rate</div>
           <div class="textbox input-group">
             <span class="input-group-addon">$</span>
-            <input min="0"
-                   type="number"
-                   name="hourly_rate"
-                   ng-model="compensation.hourly_rate" />
+            <input
+              type="number"
+              min="0"
+              step="any"     
+              name="hourly_rate"
+              ng-model="compensation.hourly_rate" />
           </div>
           <div class="form-error-relative" ng-show="form.hourly_rate.$invalid">Hourly rate is invalid</div>
         </div>
@@ -75,10 +80,12 @@
         <div class="col-md-6">
           <div class="form-label">Projected Hour per Month</div>
           <div class="textbox input-group">
-            <input type="number"
-                   min="0"
-                   name="projectedHour"
-                   ng-model="compensation.projected_hour_per_month" />
+            <input
+              type="number"
+              step="any"
+              min="0"
+              name="projectedHour"
+              ng-model="compensation.projected_hour_per_month" />
             <span class="input-group-addon"> hour/month</span>
           </div>
           <div class="form-error-relative" ng-show="form.projectedHour.$invalid">
@@ -87,7 +94,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="form-label">Effective Date</div>
+        <div class="form-label">Effective Date (m/d/yyyy)</div>
         <div class="datebox">
           <bm-date-picker model="compensation.effective_date"
           required="true"

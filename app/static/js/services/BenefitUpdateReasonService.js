@@ -52,10 +52,31 @@ benefitmyService.factory('BenefitUpdateReasonService',
             deferred.resolve(_benefitUpdateReasons);
          }
          return deferred.promise;
-      }
+      }; 
+
+      var getReasonByName = function(reasonName) {
+          return getAllReasons().then(
+            function(allReasons) {
+                return _(allReasons)
+                    .chain()
+                    .pluck('reasons')
+                    .flatten()
+                    .find(function(reason) { 
+                        return reason.name.trim().toLowerCase() === reasonName.trim().toLowerCase(); 
+                    })
+                    .value();
+            }
+          );
+      };
+
+      var getNewHireReason = function() {
+          return getReasonByName('new hire');
+      };
 
       return{
-         getAllReasons: getAllReasons
+         getAllReasons: getAllReasons,
+         getReasonByName: getReasonByName,
+         getNewHireReason : getNewHireReason
       }
    }
 ]);

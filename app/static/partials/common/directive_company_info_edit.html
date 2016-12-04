@@ -52,6 +52,16 @@
           <span ng-show="form.contact_email.$error.email">This is not a valid email.</span>
         </div>
       </div>
+      <div class="form-label" ng-if="isNewCompany()">Password of Contact*</div>
+      <div class="textbox" ng-if="isNewCompany()">
+        <input type="password"
+        name="contact_password"
+        ng-model="client.contact.password"
+        ng-required="true">
+        <div class="form-error" ng-show="form.contact_password.$dirty && form.contact_password.$invalid">
+          <span ng-show="form.contact_password.$error.required">Password field is required</span>
+        </div>
+      </div>
       <div class="form-label">Pay Period*</div>
       <div class="select-box">
         <select ng-model="client.payPeriod"
@@ -64,7 +74,6 @@
           <span ng-show="form.payPeriod.$error.required">Pay Period Selection is required</span>
         </div>
       </div>
-
       <div class="row">
         <div class="col-sm-6">
           <div class="form-label">Phone number of the contact*</div>

@@ -105,6 +105,9 @@ var userController = userControllers.controller('userController',
    'CompanyFeatureService',
    'BrowserDetectionService',
    'EmployeeBenefitsAvailabilityService',
+   'BenefitUpdateReasonService',
+   'EmployeeProfileService',
+   'BenefitsEnrollmentConfigurations',
   function userController($scope,
                           $http,
                           $location,
@@ -115,7 +118,10 @@ var userController = userControllers.controller('userController',
                           CompanyEmployeeSummaryService,
                           CompanyFeatureService,
                           BrowserDetectionService,
-                          EmployeeBenefitsAvailabilityService) {
+                          EmployeeBenefitsAvailabilityService,
+                          BenefitUpdateReasonService,
+                          EmployeeProfileService,
+                          BenefitsEnrollmentConfigurations) {
     $scope.roleArray = [];
     $scope.currentRoleList = [];
     var roleTypeDictionary = {
@@ -286,24 +292,62 @@ var userController = userControllers.controller('userController',
         $state.go('employee_view_benefits');
     };
 
+    var shouldAskBenefitUpdateReason = function(employeeId) {
+        return UserService.isCurrentUserNewEmployee().then(function(isNewEmployee) {
+            if (!isNewEmployee) {
+                return true;
+            }
+
+            return EmployeeProfileService.getEmployeeProfileForCompanyUser($scope.company_id, employeeId).then(function(employeeProfile) {
+                if (!employeeProfile.benefitStartDate) {
+                    return true;
+                }
+
+                // Compute the diff of current time to the benefit start date
+                var dateDiff = moment.duration(moment().diff(employeeProfile.benefitStartDate));
+                var diffInDays = dateDiff.asDays();
+
+                // Only ask for a reason if not in the "new employee" period
+                return !(diffInDays >= 0 && diffInDays <= BenefitsEnrollmentConfigurations.updateReasonExemptPeriodInDays);
+            });
+        });
+    };
+
     $scope.startModifyBenefit = function() {
         // Show a modal dialog to take in the reason
         var curRole = $scope.getCurRoleFromPath();
         if(curRole)
         {
             var id = getIdByRole(curRole);
-            var modalInstance = $modal.open({
-                templateUrl: '/static/partials/benefit_selection/modal_pre_benefit_selection.html',
-                controller: 'preBenefitSelectionModalController',
-                size: 'md',
-                backdrop: 'static'
-              });
+            shouldAskBenefitUpdateReason(id).then(function(shouldAsk) {
+                if (!shouldAsk) {
+                    BenefitUpdateReasonService.getNewHireReason().then(function(reason){
+                        // Construct a full benefit update reason modal expected
+                        // by the downstream code
+                        var updateReason = {
+                            selectedReason: reason
+                        };
 
-            modalInstance.result.then(function(reason){
-                // Now proceed to the modify benefit view
-                $state.go('employee_benefit_signup',
-                    { employee_id: id,
-                      updateReason: reason });
+                        // Now proceed to the modify benefit view
+                        $state.go('employee_benefit_signup',
+                            { employee_id: id,
+                              updateReason: updateReason });
+                    });
+                } else {
+                    var modalInstance = $modal.open({
+                        templateUrl: '/static/partials/benefit_selection/modal_pre_benefit_selection.html',
+                        controller: 'preBenefitSelectionModalController',
+                        size: 'md',
+                        backdrop: 'static'
+                      });
+
+                    modalInstance.result.then(function(reason){
+                        // Now proceed to the modify benefit view
+                        $state.go('employee_benefit_signup',
+                            { employee_id: id,
+                              updateReason: reason });
+                    });
+                }
             });
         }
     };
