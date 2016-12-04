@@ -13,7 +13,7 @@ class AdvantagePayrollClientSetupCsvView(ReportExportViewBase):
     def get(self, request, company_id, format=None):
         csv_service = AdvantagePayrollCompanySetupCsvService()
 
-        response = HttpResponse(content_type='text/cvs')
+        response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=client_setup.csv'
         
         csv_service.get_report(company_id, response)
