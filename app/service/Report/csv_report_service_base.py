@@ -5,6 +5,7 @@ from report_service_base import ReportServiceBase
 
 class CsvReportServiceBase(ReportServiceBase):
     def __init__(self):
+        super(CsvReportServiceBase, self).__init__()
         self._rows = []
         self._rows.append([])
 

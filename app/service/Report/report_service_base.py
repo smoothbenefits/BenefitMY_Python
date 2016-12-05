@@ -65,8 +65,7 @@ class ReportServiceBase(object):
 
         return company_model
 
-    @staticmethod
-    def get_date_string(date):
+    def _get_date_string(self, date):
         if date:
             try:
                 return date.strftime("%m/%d/%Y")
