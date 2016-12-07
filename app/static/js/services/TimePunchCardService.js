@@ -117,8 +117,20 @@ benefitmyService.factory('TimePunchCardService',
                 return cardType.name == domainModel.recordType;
             });
 
+            if(_.isUndefined(viewModel.inHours)){
+                viewModel.inHours = 0;
+            }
+
+            if(viewModel.inHours){
+                viewModel.hours = moment(viewModel.end).diff(moment(viewModel.start), 'hours');
+            }
+
             // Attach utility functions
             viewModel.getTimeRangeDisplayText = function() {
+                if(this.inHours){
+                    return this.hours + ' hours';
+                }
+
                 if (this.start && !this.end){
                     return 'Started at ' + moment(this.start).format('hh:mm A');
                 }
@@ -278,6 +290,7 @@ benefitmyService.factory('TimePunchCardService',
               'date': date,
               'start': getDefaultStartTime(date),
               'end': getDefaultEndTime(date),
+              'inHours': 0,
               'attributes': []
             };
 
@@ -483,7 +496,8 @@ benefitmyService.factory('TimePunchCardService',
           GetPunchCardsByCompanyTimeRange: GetPunchCardsByCompanyTimeRange,
           GetAllPunchCardsByCompany: GetAllPunchCardsByCompany,
           GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser,
-          FilteredCardsForTotalHours: FilteredCardsForTotalHours
+          FilteredCardsForTotalHours: FilteredCardsForTotalHours,
+          getDefaultStartTime: getDefaultStartTime
         };
     }
 ]);
