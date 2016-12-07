@@ -125,6 +125,10 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
                                     users_id,
                                     company_info.company_id)
 
+        if (not employee_profile_info):
+            self._skip_cells(10)
+            return
+
         # Profile
         self._write_cell(self._get_date_string(employee_profile_info.hire_date))
         self._write_cell(self._get_pay_cycle_code(employee_profile_info.pay_cycle))
