@@ -117,10 +117,6 @@ benefitmyService.factory('TimePunchCardService',
                 return cardType.name == domainModel.recordType;
             });
 
-            if(_.isUndefined(viewModel.inHours)){
-                viewModel.inHours = 0;
-            }
-
             if(viewModel.inHours){
                 viewModel.hours = moment(viewModel.end).diff(moment(viewModel.start), 'hours');
             }
@@ -290,7 +286,7 @@ benefitmyService.factory('TimePunchCardService',
               'date': date,
               'start': getDefaultStartTime(date),
               'end': getDefaultEndTime(date),
-              'inHours': 0,
+              'inHours': false,
               'attributes': []
             };
 
