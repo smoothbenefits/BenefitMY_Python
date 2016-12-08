@@ -70,3 +70,4 @@ class EmployeeEmploymentProfileInfo(object):
         if (not annual_salary):
             return annual_salary
         return float(annual_salary) / 12.0 * pay_period_definition.month_factor
+    
