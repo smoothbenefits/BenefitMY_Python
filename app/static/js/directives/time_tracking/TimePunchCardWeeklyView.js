@@ -30,6 +30,13 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
     $scope.allStates = UsStateService.GetAllStates();
 
+    $scope.$watch('punchCard.hours', function(hours){
+      if(hours){
+        $scope.punchCard.start = TimePunchCardService.getDefaultStartTime();
+        $scope.punchCard.end = moment(TimePunchCardService.getDefaultStartTime()).add(hours, 'h');
+      }
+    });
+
     ProjectService.GetProjectsByCompany(companyId).then(function(projects) {
         $scope.allProjects = projects;
     });
@@ -58,7 +65,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         return !attribute.type.adminOnly || $scope.adminView;
     };
 
-    $scope.isTimeRangeVisisble = function() {
+    $scope.isTimeVisisble = function() {
         return $scope.punchCard.recordType
             && $scope.punchCard.recordType.behavior.timeRangeOn;
     };
@@ -73,7 +80,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         return false;
       }
 
-      if ($scope.isTimeRangeVisisble()
+      if ($scope.isTimeVisisble()
             && !moment($scope.punchCard.start).isBefore(moment($scope.punchCard.end))) {
         return false;
       }
