@@ -4,7 +4,6 @@ from StringIO import StringIO
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 
-from report_service_base import ReportServiceBase
 from pdf_report_service_base import PdfReportServiceBase
 
 from app.models.company import Company
@@ -513,7 +512,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 self._write_line_uniform_width([
                     document.name,
                     'Signed' if document.signature is not None else 'Not Signed',
-                    ReportServiceBase.get_date_string(document.signature.created_at) if document.signature is not None else ''
+                    self._get_date_string(document.signature.created_at) if document.signature is not None else ''
                 ],
                 [0.6, 0.2, 0.2])
 

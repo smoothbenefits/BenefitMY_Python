@@ -5,6 +5,7 @@ class PersonInfo(object):
     first_name = ''
     last_name = ''
     birth_date = ''
+    gender = ''
     ssn = ''
     email = ''
     phones = []
@@ -29,6 +30,7 @@ class PersonInfo(object):
 
             self.ssn = person_model.ssn
             self.birth_date = person_model.birth_date
+            self.gender = person_model.gender
 
             if (person_model.email):
                 self.email = person_model.email

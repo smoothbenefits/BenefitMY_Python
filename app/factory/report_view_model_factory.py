@@ -10,6 +10,7 @@ from app.models.w4 import W4
 
 from app.view_models.person_info import PersonInfo
 from app.view_models.company_info import CompanyInfo
+from app.view_models.employee_employment_profile_info import EmployeeEmploymentProfileInfo
 from app.view_models.report.employee_1095_c_data import Employee1095CData
 from app.view_models.report.company_1094_c_data import Company1094CData
 from app.view_models.report.employee_i9_data import EmployeeI9Data
@@ -30,6 +31,14 @@ class ReportViewModelFactory(object):
 
     def get_employee_company_info(self, employee_user_id):
         return CompanyInfo(self._get_company_by_user(employee_user_id))
+
+    def get_employee_employment_profile_data(self, employee_user_id, company_id):
+        person_model = self._get_person_by_user(employee_user_id)
+
+        if (not person_model): 
+            return None
+
+        return EmployeeEmploymentProfileInfo(person_model, company_id)
 
     def get_employee_1095_c_data(self, employee_user_id, company_id):
         return self._get_employee_1095_c_data_collection(employee_user_id, company_id)
