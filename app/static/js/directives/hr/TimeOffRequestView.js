@@ -83,6 +83,14 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
               $scope.employeeProfile.manager = admins[0];
               $scope.employeeProfile.manager.userId = $scope.employeeProfile.manager.id;
               $scope.employeeProfile.manager.isHr = true;
+
+              // Use the HR's person profile email for timeoff request communication
+              PersonService.getSelfPersonInfo($scope.employeeProfile.manager.userId)
+                .then(function(person) {
+                  if (person) {
+                    $scope.employeeProfile.manager.email = person.email;
+                  }
+                });
             });
           } else {
             PersonService.getSelfPersonInfoByPersonId(manager.person)
