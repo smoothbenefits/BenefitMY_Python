@@ -33,6 +33,7 @@ class AccountCreationService(object):
     FIELD_LAST_NAME = 'last_name'
     FIELD_EMAIL = 'email'
     FIELD_PASSWORD = 'password'
+    FIELD_EMPLOYEE_NUMBER = 'employee_number'
     FIELD_EMPLOYMENT_TYPE = 'employment_type'
     FIELD_ANNUAL_BASE_SALARY = 'annual_base_salary'
     FIELD_HOURLY_RATE = 'hourly_rate'
@@ -49,6 +50,7 @@ class AccountCreationService(object):
         FIELD_LAST_NAME,
         FIELD_EMAIL,
         FIELD_PASSWORD,
+        FIELD_EMPLOYEE_NUMBER,
         FIELD_EMPLOYMENT_TYPE,
         FIELD_ANNUAL_BASE_SALARY,
         FIELD_HOURLY_RATE,
@@ -114,6 +116,7 @@ class AccountCreationService(object):
                     'employment_type': self._get_field_value(tokens, self.FIELD_EMPLOYMENT_TYPE),
                     'email': self._get_field_value(tokens, self.FIELD_EMAIL),
                     'password': self._get_field_value(tokens, self.FIELD_PASSWORD),
+                    'employee_number': self._get_field_value(tokens, self.FIELD_EMPLOYEE_NUMBER),
                     'company_user_type': USER_TYPE_EMPLOYEE,
                     'send_email': batch_account_raw_data.send_email,
                     'new_employee': False,
