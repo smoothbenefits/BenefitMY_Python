@@ -9,6 +9,15 @@
   <div class="form-holder col-md-10 col-md-offset-1">
     <form name="form">
       <div class="row">
+        <div class="form-label">Employee Number</div>
+        <div class="textbox">
+          <input type="text"
+          name="employee-number"
+          ng-model="employeeProfileModel.employeeNumber"
+          ng-required="false" />
+        </div>
+      </div>
+      <div class="row">
         <div class="form-label">Job Title</div>
         <div class="textbox">
           <input type="text"

@@ -384,7 +384,7 @@ class AccountCreationService(object):
             'person': person_id,
             'company': account_info.company_id,
             'start_date': account_info.start_date,
-            'benefit_start_date': account_info.benefit_start_date
+            'benefit_start_date': account_info.benefit_start_date,
         }
 
         if (account_info.compensation_info.annual_base_salary is not None):
@@ -395,6 +395,9 @@ class AccountCreationService(object):
 
         if (account_info.manager_id):
             profile_data['manager'] = account_info.manager_id
+
+        if (account_info.employee_number):
+            profile_data['employee_number'] = account_info.employee_number
 
         profile_serializer = EmployeeProfilePostSerializer(data=profile_data)
 
