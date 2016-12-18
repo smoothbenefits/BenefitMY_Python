@@ -73,6 +73,7 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'Gender')
         col_num = self._write_field(excelSheet, 0, col_num, 'Birth Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Med PCP NO.')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Employee NO.')
         col_num = self._write_field(excelSheet, 0, col_num, 'Date of Hire')
         col_num = self._write_field(excelSheet, 0, col_num, 'Benefit Start Date')
         col_num = self._write_field(excelSheet, 0, col_num, 'Annual Salary')
@@ -309,6 +310,8 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
         if person_model:
             employee_profiles = EmployeeProfile.objects.filter(person=person_model)
             if len(employee_profiles) > 0:
+                col_num = self._write_field(excelSheet, row_num, col_num, employee_profiles[0].employee_number)
+                
                 if employee_profiles[0].start_date:
                     col_num = self._write_field(excelSheet, row_num, col_num, ReportExportViewBase.get_date_string(employee_profiles[0].start_date))
                 else:
@@ -324,9 +327,9 @@ class CompanyUsersFullSummaryExcelExportView(ExcelExportViewBase):
                 col_num = self._write_field(excelSheet, row_num, col_num, employee_profiles[0].employment_status)
                 return col_num
 
-            return col_num + 3
+            return col_num + 6
 
-        return col_num + 3
+        return col_num + 6
 
     def _write_employee_group_info(self, employee_user_id, excelSheet, row_num, col_num):
         if employee_user_id:
