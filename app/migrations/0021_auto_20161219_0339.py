@@ -17,4 +17,8 @@ class Migration(migrations.Migration):
             field=models.TextField(null=True, blank=True),
             preserve_default=True,
         ),
+        migrations.AlterUniqueTogether(
+            name='employeeprofile',
+            unique_together=set([('person', 'company'), ('employee_number', 'company')]),
+        ),
     ]

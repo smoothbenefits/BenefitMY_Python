@@ -64,4 +64,4 @@ class EmployeeProfile(models.Model):
     employee_number = models.TextField(blank=True, null=True)
 
     class Meta:
-        unique_together = ('person', 'company')
+        unique_together = (('person', 'company'), ('employee_number', 'company'))

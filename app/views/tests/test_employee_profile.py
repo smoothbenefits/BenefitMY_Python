@@ -136,6 +136,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "employment_type": "PartTime",
             "employment_status": "Terminated",
             "manager": 2,
+            "employee_number": "ABC-999999"
         }
         response = self.client.post(reverse('employee_profile_api',
                                            kwargs={'pk': self.normalize_key(sys.maxint)}),
@@ -155,6 +156,7 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['end_date'], "2008-06-01")
         self.assertEqual(result['employment_type'], "PartTime")
         self.assertEqual(result['employment_status'], "Terminated"),
+        self.assertEqual(result['employee_number'], "ABC-999999"),
         self.assertIsNotNone(result['manager'])
         manager = result['manager']
         self.assertEqual(manager['id'], self.normalize_key(2))
@@ -253,6 +255,27 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
 
+    def test_post_employee_profile_duplicate_company_employee_number_failure(self):
+        post_data = {
+            "person": self.normalize_key(1),
+            "company": self.normalize_key(1),
+            "job_title": "Broker",
+            "annual_base_salary": "40022.00",
+            "start_date": "2008-03-01",
+            "benefit_start_date": '2008-03-22',
+            "end_date": "2008-06-01",
+            "employment_type": "PartTime",
+            "employment_status": "Terminated",
+            "employee_number": "ABC-012345"
+        }
+        response = self.client.post(reverse('employee_profile_api',
+                                           kwargs={'pk': self.normalize_key(sys.maxint)}),
+                                    data=json.dumps(post_data),
+                                    content_type='application/json')
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 400)
+
     def test_put_employee_profile_success(self):
         post_data = {
             "id": self.normalize_key(1),
@@ -266,7 +289,8 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
             "end_date": None,
             "employment_type": "FullTime",
             "employment_status": "Active",
-            "manager": None
+            "manager": None,
+            "employee_number": "ABC-999999"
         }
         response = self.client.put(reverse('employee_profile_api',
                                            kwargs={'pk': self.normalize_key(1)}),
@@ -291,6 +315,31 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['employment_type'], "FullTime")
         self.assertEqual(result['employment_status'], "Active")
         self.assertEqual(result['manager'], None)
+        self.assertEqual(result['employee_number'], "ABC-999999")
+
+    def test_put_employee_profile_duplicate_company_employee_number_failure(self):
+        post_data = {
+            "id": self.normalize_key(1),
+            "person": self.normalize_key(4),
+            "company": self.normalize_key(1),
+            "pay_rate": self.normalize_key(1),
+            "job_title": "Senior Broker",
+            "annual_base_salary": "140022.00",
+            "start_date": "2010-03-01",
+            "benefit_start_date": '2010-03-22',
+            "end_date": None,
+            "employment_type": "FullTime",
+            "employment_status": "Active",
+            "manager": None,
+            "employee_number": "ABC-012345"
+        }
+        response = self.client.post(reverse('employee_profile_api',
+                                           kwargs={'pk': self.normalize_key(sys.maxint)}),
+                                    data=json.dumps(post_data),
+                                    content_type='application/json')
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 400)
 
     def test_delete_employee_profile_success(self):
         response = self.client.delete(reverse('employee_profile_api',
