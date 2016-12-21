@@ -102,10 +102,18 @@ benefitmyService.factory('EmployeeProfileService',
             });
         };
 
+        var searchEmployeesByEmployeeNumber = function(employeeNumber) {
+            return _.filter(_cachedEmployeeProfiles, function(employee) {
+              return employee.employee_number && employeeNumber
+                && employee.employee_number.toLowerCase() == employeeNumber.toLowerCase();
+            });
+        };
+
         return {
             isFullTimeEmploymentType: isFullTimeEmploymentType,
             initializeCompanyEmployees: initializeCompanyEmployees,
             searchEmployees: searchEmployees,
+            searchEmployeesByEmployeeNumber: searchEmployeesByEmployeeNumber,
 
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();
@@ -198,7 +206,9 @@ benefitmyService.factory('EmployeeProfileService',
                 });
 
                 return deferred.promise;
-            }
+            }, 
+
+
         };
     }
 ]);
