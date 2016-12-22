@@ -2127,7 +2127,8 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
     'UploadService',
     'users',
     'CompanyEmployeeSummaryService',
-    function($scope, $state, $stateParams, UploadService, users, CompanyEmployeeSummaryService){
+    'CompanyFeatureService',
+    function($scope, $state, $stateParams, UploadService, users, CompanyEmployeeSummaryService, CompanyFeatureService){
       $scope.compId = $stateParams.company_id;
       $scope.uploads = [];
       UploadService.getEmployeeUploads($scope.compId, $stateParams.employee_id)
@@ -2141,7 +2142,28 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
         $scope.employee = resp.user;
       });
 
+      CompanyFeatureService.getAllApplicationFeatureStatusByCompany($scope.compId).then(function(allFeatureStatus) {
+        $scope.allFeatureStatus = allFeatureStatus;
+      });
+
       $scope.employeeI9DownloadUrl = CompanyEmployeeSummaryService.getEmployeeI9FormUrl($stateParams.employee_id);
       $scope.employeeW4DownloadUrl = CompanyEmployeeSummaryService.getEmployeeW4FormUrl($stateParams.employee_id);
+
+      $scope.showEmployeeW4FormDownload = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.W4);
+      };
+
+      $scope.showEmployeeI9FormDownload = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.I9);
+      };
+
+      $scope.showEmployeeFormsSection = function() {
+        return $scope.showEmployeeI9FormDownload()
+            || $scope.showEmployeeW4FormDownload();
+      };
     }
 ]);
