@@ -35,6 +35,10 @@ class FormI9View(ReportExportViewBase):
 
         ssn_tokenized = person_info.get_ssn_tokenized()
 
+        birth_date_text = ''
+        if (person_info.birth_date):
+            birth_date_text = person_info.birth_date.strftime('%m/%d/%Y')
+
         # Populate the form fields
         fields = {
             'form1[0].#subform[6].FamilyName[0]': person_info.last_name,
@@ -44,7 +48,7 @@ class FormI9View(ReportExportViewBase):
             'form1[0].#subform[6].CityOrTown[0]': person_info.city,
             'form1[0].#subform[6].State[0]': person_info.state,
             'form1[0].#subform[6].ZipCode[0]': person_info.zipcode,
-            'form1[0].#subform[6].DateOfBirth[0]': person_info.birth_date.strftime('%m/%d/%Y'),
+            'form1[0].#subform[6].DateOfBirth[0]': birth_date_text,
             'form1[0].#subform[6].SocialSecurityNumber1[0]': ssn_tokenized[0],
             'form1[0].#subform[6].SocialSecurityNumber2[0]': ssn_tokenized[1],
             'form1[0].#subform[6].SocialSecurityNumber3[0]': ssn_tokenized[2],

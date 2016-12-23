@@ -28,9 +28,14 @@ class PersonInfo(object):
             elif (person_model.user.last_name):
                 self.last_name = person_model.user.last_name
 
-            self.ssn = person_model.ssn
-            self.birth_date = person_model.birth_date
-            self.gender = person_model.gender
+            if (person_model.ssn):
+                self.ssn = person_model.ssn
+
+            if (person_model.birth_date):
+                self.birth_date = person_model.birth_date
+
+            if (person_model.gender):
+                self.gender = person_model.gender
 
             if (person_model.email):
                 self.email = person_model.email
@@ -94,7 +99,11 @@ class PersonInfo(object):
 
     def get_ssn_tokenized(self):
         if (not self.ssn):
-            return None
+            return [
+                '',
+                '',
+                ''
+            ]
 
         return [
             self.ssn[:3],
