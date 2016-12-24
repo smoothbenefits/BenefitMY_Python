@@ -144,7 +144,7 @@ benefitmyService.factory('EmployerEmployeeManagementService',
       }).catch(function(error) {
         result.added = false;
         result.sentEmail = false;
-        result.message = error;
+        result.messages = error.data;
         deferred.reject(result);
       });
 
