@@ -9,6 +9,18 @@
   <div class="form-holder col-md-10 col-md-offset-1">
     <form name="form">
       <div class="row">
+        <div class="form-label">Employee Number</div>
+        <div class="textbox">
+          <input type="text"
+          name="employee-number"
+          ng-model="employeeProfileModel.employeeNumber"
+          ng-required="false" />
+          <div class="form-inline-error" ng-show="!isEmployeeNumberValid(employeeProfileModel.employeeNumber)">
+            <span>Employee number is invalid. A common reason is that the number is already associated with another employee.</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
         <div class="form-label">Job Title</div>
         <div class="textbox">
           <input type="text"

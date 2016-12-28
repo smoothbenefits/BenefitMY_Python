@@ -12,7 +12,8 @@
       "company": 1,
       "annual_base_salary": "140000.00",
       "employment_type": "FullTime",
-      "manager": 2
+      "manager": 2,
+      "employee_number": "ABC-012345"
     },
     "model": "app.employeeprofile",
     "pk": 1

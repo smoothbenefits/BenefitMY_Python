@@ -284,8 +284,20 @@ var employerUser = employersController.controller('employerUser',
         return !_.isEmpty(manager) && _.isString(manager);
       };
 
+      $scope.isEmployeeNumberValid = function(employeeNumber) {
+        // Allow empty/null employee number
+        if (!employeeNumber) {
+            return true;
+        }
+
+        var matchEmployeeProfiles = EmployeeProfileService.searchEmployeesByEmployeeNumber(employeeNumber);
+        return matchEmployeeProfiles.length <= 0;
+      };
+
       $scope.createUserInvalid = function(){
-        return $scope.hasNoBenefitGroup() || $scope.managerInvalid($scope.addUser.managerSelected);
+        return $scope.hasNoBenefitGroup() 
+            || $scope.managerInvalid($scope.addUser.managerSelected)
+            || !$scope.isEmployeeNumberValid($scope.addUser.employee_number);
       };
 
       $scope.createUser = function(userType) {
@@ -1295,16 +1307,31 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
         });
       };
 
-      $scope.managerInvalid = function(manager){
+      $scope.managerInvalid = function(manager) {
         return !_.isEmpty(manager) && _.isString(manager);
       };
 
-      $scope.invalidToSave = function(){
-        return $scope.form.$invalid || $scope.managerInvalid($scope.employeeProfileModel.manager);
+      $scope.invalidToSave = function() {
+        return $scope.form.$invalid 
+            || $scope.managerInvalid($scope.employeeProfileModel.manager)
+            || !$scope.isEmployeeNumberValid($scope.employeeProfileModel.employeeNumber);
       }
 
-      $scope.updateEndDate = function(){
+      $scope.updateEndDate = function() {
         $scope.employeeProfileModel.endDate = null;
+      };
+
+      $scope.isEmployeeNumberValid = function(employeeNumber) {
+        // Allow empty/null employee number
+        if (!employeeNumber) {
+            return true;
+        }
+
+        var matchEmployeeProfiles = EmployeeProfileService.searchEmployeesByEmployeeNumber(employeeNumber);
+        var hasConflicts = _.some(matchEmployeeProfiles, function(employeeProfile) {
+            return employeeProfile.id != $scope.employeeProfileModel.id;
+        });
+        return !hasConflicts;
       };
     }
   ]);

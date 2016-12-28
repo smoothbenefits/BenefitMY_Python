@@ -29,6 +29,7 @@ benefitmyService.factory('EmployeeProfileService',
             viewModel.personId = employeeProfileDomainModel.person;
             viewModel.companyId = employeeProfileDomainModel.company;
             viewModel.lastUpdateDateTime = moment(employeeProfileDomainModel.updated_at).format(DATE_FORMAT_STRING);
+            viewModel.employeeNumber = employeeProfileDomainModel.employee_number;
             viewModel.manager = employeeProfileDomainModel.manager;
             // TODO:
             // The below logic is quite cumbersome, but just to get the view model
@@ -70,6 +71,7 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
             domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
+            domainModel.employee_number = employeeProfileViewModel.employeeNumber;
             domainModel.manager = employeeProfileViewModel.manager ? employeeProfileViewModel.manager.id : null;
 
             return domainModel;
@@ -100,10 +102,18 @@ benefitmyService.factory('EmployeeProfileService',
             });
         };
 
+        var searchEmployeesByEmployeeNumber = function(employeeNumber) {
+            return _.filter(_cachedEmployeeProfiles, function(employee) {
+              return employee.employee_number && employeeNumber
+                && employee.employee_number.toLowerCase() == employeeNumber.toLowerCase();
+            });
+        };
+
         return {
             isFullTimeEmploymentType: isFullTimeEmploymentType,
             initializeCompanyEmployees: initializeCompanyEmployees,
             searchEmployees: searchEmployees,
+            searchEmployeesByEmployeeNumber: searchEmployeesByEmployeeNumber,
 
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();
@@ -196,7 +206,9 @@ benefitmyService.factory('EmployeeProfileService',
                 });
 
                 return deferred.promise;
-            }
+            }, 
+
+
         };
     }
 ]);
