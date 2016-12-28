@@ -348,7 +348,7 @@ class AccountCreationService(object):
         User.objects.create_user(account_info.email, password)
         if not userManager.user_exists(account_info.email):
             raise Exception(
-                "Failed to create user account"
+                "Failed to create user account due to missing manager information"
             )
 
         user = userManager.get_user(account_info.email)

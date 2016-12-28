@@ -21,3 +21,9 @@ class OperationResult(object):
 
     def has_issue(self):
         return not len(self.issues) <= 0
+
+    def serialize_issues(self):
+        serialized = []
+        for issue in self.issues:
+            serialized.append(issue.__dict__)
+        return serialized
