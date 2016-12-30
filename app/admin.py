@@ -5,8 +5,16 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from app.custom_authentication import AuthUser
-from app.models import Company, CompanyUser, Person, SysPeriodDefinition, \
-    SysApplicationFeature, CompanyFeatures
+from app.models import (
+    Company,
+    CompanyUser,
+    Person,
+    SysPeriodDefinition,
+    SysApplicationFeature,
+    CompanyFeatures,
+    IntegrationProvider,
+    CompanyIntegrationProvider
+)
 from app.models.system.email_block_list import EmailBlockList
 
 
@@ -112,6 +120,14 @@ class EmailBlockListAdmin(admin.ModelAdmin):
     list_display=('email_block_feature', 'user')
     fields=['email_block_feature', 'user']
 
+class IntegrationProviderAdmin(admin.ModelAdmin):
+    list_display=('name', 'service_type')
+    fields=['name', 'service_type']
+
+class CompanyIntegrationProviderAdmin(admin.ModelAdmin):
+    list_display=('company', 'integration_provider', 'company_external_id')
+    fields=['company', 'integration_provider', 'company_external_id']
+
 
 # Now register the new UserAdmin...
 admin.site.register(AuthUser, AuthUserAdmin)
@@ -122,6 +138,8 @@ admin.site.register(CompanyFeatures, CompanyFeatureAdmin)
 admin.site.register(SysPeriodDefinition, SysPeriodDefinitionAdmin)
 admin.site.register(SysApplicationFeature, SysApplicationFeatureAdmin)
 admin.site.register(EmailBlockList, EmailBlockListAdmin)
+admin.site.register(IntegrationProvider, IntegrationProviderAdmin)
+admin.site.register(CompanyIntegrationProvider, CompanyIntegrationProviderAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
