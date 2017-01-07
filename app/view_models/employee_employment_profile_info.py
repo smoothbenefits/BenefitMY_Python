@@ -23,6 +23,7 @@ class EmployeeEmploymentProfileInfo(object):
             except EmployeeProfile.DoesNotExist:
                 pass
 
+        self.employee_number = ''
         self.hire_date = ''
         self.pay_cycle = ''
         self.employment_status = ''
@@ -33,6 +34,7 @@ class EmployeeEmploymentProfileInfo(object):
         self.current_pay_period_salary = ''
 
         if (self._employee_profile_model):
+            self.employee_number = self._employee_profile_model.employee_number
             self.hire_date = self._employee_profile_model.start_date
             self.pay_cycle = self._employee_profile_model.company.pay_period_definition.name
             self.employment_status = self._employee_profile_model.employment_status
