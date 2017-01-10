@@ -64,6 +64,10 @@ class TimePunchCardService(object):
 
             if (card.card_type == PUNCH_CARD_TYPE_PERSONAL_LEAVE):
                 result_dict[card.user_id].unpaid_hours += card.get_punch_card_hours()
+            elif(card.card_type == PUNCH_CARD_TYPE_COMPANY_HOLIDAY):
+                # For now, since by design we don't track a start and end time for
+                # company holiday cards, assume a 8 hours counted towards paid hours
+                result_dict[card.user_id].paid_hours += 8.0
             else:
                 result_dict[card.user_id].paid_hours += card.get_punch_card_hours()
 

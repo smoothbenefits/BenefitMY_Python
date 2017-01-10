@@ -1,3 +1,4 @@
+from datetime import date
 from app.models.employee_profile import EmployeeProfile
 
 from app.service.compensation_service import (
@@ -25,6 +26,7 @@ class EmployeeEmploymentProfileInfo(object):
 
         self.employee_number = ''
         self.hire_date = ''
+        self.end_date =''
         self.pay_cycle = ''
         self.employment_status = ''
         self.projected_hours_per_pay_cycle = ''
@@ -36,6 +38,7 @@ class EmployeeEmploymentProfileInfo(object):
         if (self._employee_profile_model):
             self.employee_number = self._employee_profile_model.employee_number
             self.hire_date = self._employee_profile_model.start_date
+            self.end_date = self._employee_profile_model.end_date
             self.pay_cycle = self._employee_profile_model.company.pay_period_definition.name
             self.employment_status = self._employee_profile_model.employment_status
 
@@ -72,3 +75,22 @@ class EmployeeEmploymentProfileInfo(object):
         if (not annual_salary):
             return annual_salary
         return float(annual_salary) / 12.0 * pay_period_definition.month_factor
+
+    ''' Check if employee is active, at least partially, during the specified
+        time period.
+        The period_start and period_end are expected to be datetime objects
+    '''
+    def is_employee_active(self, period_start, period_end):
+        # just return some dumb assumption for inputs not sufficient 
+        # for determination
+        if (not self.hire_date):
+            return False
+
+        # Compute the 2 date diffs to see if employee active period
+        # overlaps the given time period to check
+        # The 2 time range overlaps if the below 2 statements hold altogether
+        #  * employee_start_date <= period_end
+        #  * employee_end_date >= period_start
+        return ((self.hire_date <= period_end)
+            and (not self.end_date or self.end_date >= period_start))
+    

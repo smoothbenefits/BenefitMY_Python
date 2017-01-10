@@ -15,7 +15,6 @@ from app.factory.report_view_model_factory import ReportViewModelFactory
 
 from app.service.time_punch_card_service import TimePunchCardService
 from app.service.Report.csv_report_service_base import CsvReportServiceBase
-from app.service.date_time_service import DateTimeService
 
 User = get_user_model()
 
@@ -26,7 +25,7 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         * The expectation for this export is weekly
         * Though salary rate exported here is per pay period
         * Personal Leave is the only card type that does not count towards hours reported
-        * Company Holiday is counted as 0 as we don't capture start and end
+        * Company Holiday is counted as 8 hours
         * Only export employee's who is at least partially active in the period
         * The report does not try to prorate if employee was terminated during the period. 
     '''
@@ -35,38 +34,39 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         super(AdvantagePayrollPeriodExportCsvService, self).__init__()
         self.view_model_factory = ReportViewModelFactory()
         self.time_punch_card_service = TimePunchCardService()
-        self.date_time_service = DateTimeService()
 
-    def get_report(self, company_id, outputStream):
-        self._write_company(company_id)
+    def get_report(self, company_id, period_start, period_end, outputStream):
+        self._write_company(company_id, period_start, period_end)
         self._save(outputStream)
 
-    def _write_company(self, company_id):
+    def _write_company(self, company_id, period_start, period_end):
         users_id = self._get_all_employee_user_ids_for_company(company_id)
 
-        # Get the time tracking data for the company
-        # For now assume the report time period is the current week
-        today = date.today()
-        week_range = self.date_time_service.get_week_range_by_date(today)
+        # Get the time tracking data for the company, for the date period
+        # specified
         employees_reported_hours = self.time_punch_card_service.get_company_users_reported_hours_by_date_range(
-            company_id, week_range[0], week_range[1])
+            company_id, period_start, period_end)
 
         # For each of them, write out his/her information
         for i in range(len(users_id)):
-            self._write_employee(users_id[i], company_id, employees_reported_hours)
-
-    def _write_employee(self, employee_user_id, company_id, employees_reported_hours):
-        person_info = self.view_model_factory.get_employee_person_info(employee_user_id)
-        employee_profile_info = self.view_model_factory.get_employee_employment_profile_data(
+            employee_user_id = users_id[i]
+            employee_profile_info = self.view_model_factory.get_employee_employment_profile_data(
                                     employee_user_id,
                                     company_id)
 
-        export_data = self._get_export_data(
-            employee_user_id,
-            person_info,
-            employee_profile_info,
-            employees_reported_hours)
+            # Only report if the employee was, at least partially, active during the 
+            # report period.
+            if (employee_profile_info and 
+                employee_profile_info.is_employee_active(period_start, period_end)):
+                person_info = self.view_model_factory.get_employee_person_info(employee_user_id)
+                export_data = self._get_export_data(
+                    employee_user_id,
+                    person_info,
+                    employee_profile_info,
+                    employees_reported_hours)
+                self._write_employee(export_data)
 
+    def _write_employee(self, export_data):
         self._write_cell(export_data['employee_number'])
         self._write_cell(export_data['full_name'])
         self._write_cell(export_data['pay_type_code'])
