@@ -30,7 +30,7 @@ benefitmyService.factory('WorkersCompService',
             return deferred.promise;
         };
 
-        var GetCompanyDepartments = function(companyId) {
+        var GetCompanyPhraseologies = function(companyId) {
             return PhraseologyRepository.CompanyPhraseologysByCompany.query({companyId:companyId})
                 .$promise.then(
                     function(companyPhraseologys) {
@@ -40,36 +40,36 @@ benefitmyService.factory('WorkersCompService',
         };
 
         /**
-            This is a utility method to help getting a list of company departments
-            while also ensure that the given phraseology presents in the list. 
-            If the phraseology does not link to any of the existing department 
-            definitions, mock out a department definition on the fly and include it
+            This is a utility method to help getting a list of company phraseologies
+            while also ensure that the given phraseology presents in the list.
+            If the phraseology does not link to any of the existing phraseology
+            definitions, mock out a phraeology definition on the fly and include it
             in the resultant list.
-            The main use case for this is to ensure that employees' phraseology 
-            assignment can be cannonically represented in places where a department 
+            The main use case for this is to ensure that employees' phraseology
+            assignment can be cannonically represented in places where a phraeology
             definition is assumed.
         */
-        var GetCompanyDepartmentsIncludePhraseology = function(companyId, phraseologyToEnsure) {
+        var GetCompanyPhraseologiesWithPredefinedPhraseology = function(companyId, phraseologyToEnsure) {
             if(!phraseologyToEnsure) {
-                return GetCompanyDepartments(companyId);
+                return GetCompanyPhraseologies(companyId);
             } else {
-                return GetCompanyDepartments(companyId).then(function(departments) {
-                    var found = _.some(departments, function(department) {
-                        return department.phraseology.id == phraseologyToEnsure.id;
+                return GetCompanyPhraseologies(companyId).then(function(phraseologies) {
+                    var found = _.some(phraseologies, function(phraseology) {
+                        return phraseology.phraseology.id == phraseologyToEnsure.id;
                     });
 
                     if (!found) {
-                        // Construct a department from the given phraseology and
+                        // Construct a company phraseology from the given phraseology and
                         // insert into the list
-                        var insertDepartment = {
+                        var insertPhraseology = {
                             company: companyId,
                             description: phraseologyToEnsure.phraseology,
                             phraseology: phraseologyToEnsure
                         };
-                        departments.push(insertDepartment);
+                        phraseologies.push(insertPhraseology);
                     }
 
-                    return departments;
+                    return phraseologies;
                 })
             }
         };
@@ -83,7 +83,7 @@ benefitmyService.factory('WorkersCompService',
 
         var SaveCompanyPhraseology = function(companyPhraseology) {
             var domainSaveModel = mapCompanyPhraseologyToDomainSaveModel(companyPhraseology);
-            
+
             if (domainSaveModel.id) {
                 return PhraseologyRepository.CompanyPhraseologyById.update({id:domainSaveModel.id}, domainSaveModel)
                 .$promise.then(function(resultCompanyPhraseology) {
@@ -97,7 +97,7 @@ benefitmyService.factory('WorkersCompService',
             }
         };
 
-        var GetBlankCompanyDepartmentByCompany = function(company) {
+        var GetBlankCompanyPhraseologyByCompany = function(company) {
             return {
                 company: company.id
             };
@@ -140,7 +140,7 @@ benefitmyService.factory('WorkersCompService',
 
         var SaveEmployeePhraseology = function(employeePhraseology) {
             var domainSaveModel = mapEmployeePhraseologyToDomainSaveModel(employeePhraseology);
-            
+
             if (domainSaveModel.id) {
                 return PhraseologyRepository.EmployeePhraseologyById.update({id:domainSaveModel.id}, domainSaveModel)
                 .$promise.then(function(resultEmployeePhraseology) {
@@ -170,9 +170,9 @@ benefitmyService.factory('WorkersCompService',
 
         return {
             GetAllPhraseologys: GetAllPhraseologys,
-            GetCompanyDepartments: GetCompanyDepartments,
-            GetCompanyDepartmentsIncludePhraseology: GetCompanyDepartmentsIncludePhraseology,
-            GetBlankCompanyDepartmentByCompany: GetBlankCompanyDepartmentByCompany,
+            GetCompanyPhraseologies: GetCompanyPhraseologies,
+            GetCompanyPhraseologiesWithPredefinedPhraseology: GetCompanyPhraseologiesWithPredefinedPhraseology,
+            GetBlankCompanyPhraseologyByCompany: GetBlankCompanyPhraseologyByCompany,
             DeleteCompanyPhraseology: DeleteCompanyPhraseology,
             SaveCompanyPhraseology: SaveCompanyPhraseology,
             GetEmployeePhraseologys: GetEmployeePhraseologys,

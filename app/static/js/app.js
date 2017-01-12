@@ -435,10 +435,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'employerAdminIndividualTimePunchCards',
                 params: {startDate: null}
             }).
-            state('admin_departments', {
-              url: '/admin/hr/departments',
-              templateUrl: '/static/partials/workers_comp/departments_base.html',
-              controller: 'employerViewDepartments'
+            state('admin_phraseologies', {
+              url: '/admin/hr/phraseologies',
+              templateUrl: '/static/partials/workers_comp/phraseologies_base.html',
+              controller: 'employerViewPhraseologies'
             }).
             state('admin_service_provider', {
               url: '/admin/service_provider',

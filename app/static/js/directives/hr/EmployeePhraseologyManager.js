@@ -1,36 +1,36 @@
-BenefitMyApp.controller('EmployeeDepartmentModalController', [
+BenefitMyApp.controller('EmployeePhraseologyModalController', [
   '$scope',
-  '$modalInstance', 
+  '$modalInstance',
   'WorkersCompService',
-  'companyDepartments',
+  'companyPhraseologies',
   'employeePersonId',
-  'employeePhraseology', 
-  function($scope, 
+  'employeePhraseology',
+  function($scope,
            $modalInstance,
            WorkersCompService,
-           companyDepartments,
+           companyPhraseologies,
            employeePersonId,
            employeePhraseology){
 
-    $scope.modalHeader = 'Change Employee Department Assignment';
+    $scope.modalHeader = 'Change Employee Phraseology Assignment';
 
     // Set the model object in focus
     // For now, we only allow reassignment. i.e. create new
     // records and not update existing ones
     $scope.contextEmployeePhraseology = WorkersCompService.GetBlankEmployeePhraseologyByEmployeePerson(employeePersonId);
 
-    $scope.companyDepartments = companyDepartments;
+    $scope.companyPhraseologies = companyPhraseologies;
 
     if (employeePhraseology) {
-        // Find the phraseology from the company departments dropdown
+        // Find the phraseology from the company phraseologies dropdown
         // This is the workaround to get the dropdown selection
         // properly initialized. Due to Angular not working properly
         // when select as and track by used together.
-        var currentDepartment = _.find($scope.companyDepartments, function(department) {
-            return department.phraseology.id == employeePhraseology.phraseology.id;
+        var currentPhraseology = _.find($scope.companyPhraseologies, function(phraseology) {
+            return phraseology.phraseology.id == employeePhraseology.phraseology.id;
         });
 
-        $scope.contextEmployeePhraseology.phraseology = currentDepartment.phraseology;
+        $scope.contextEmployeePhraseology.phraseology = currentPhraseology.phraseology;
     }
 
     $scope.cancel = function() {
@@ -50,7 +50,7 @@ BenefitMyApp.controller('EmployeeDepartmentModalController', [
     }
 
     // Check whether the current state is valid for saving.
-    // 
+    //
     $scope.isValidToSave = function() {
         return !$scope.form.$invalid
             && $scope.contextEmployeePhraseology
@@ -58,7 +58,7 @@ BenefitMyApp.controller('EmployeeDepartmentModalController', [
             && $scope.contextEmployeePhraseology.phraseology.id;
     };
   }
-]).controller('EmployeeDepartmentManagerDirectiveController', [
+]).controller('EmployeePhraseologyManagerDirectiveController', [
   '$scope',
   '$state',
   '$modal',
@@ -83,41 +83,41 @@ BenefitMyApp.controller('EmployeeDepartmentModalController', [
                 $scope.employeePhraseology = activePhraseology;
                 var phraseologyToEnsure = $scope.employeePhraseology
                                          ? $scope.employeePhraseology.phraseology
-                                         : null;  
-                WorkersCompService.GetCompanyDepartmentsIncludePhraseology(companyId, phraseologyToEnsure)
-                    .then(function(companyDepartments) {
-                        $scope.companyDepartments = companyDepartments;
-                        
-                        refreshDepartmentInfoForDisplay();
+                                         : null;
+                WorkersCompService.GetCompanyPhraseologiesWithPredefinedPhraseology(companyId, phraseologyToEnsure)
+                    .then(function(companyPhraseologies) {
+                        $scope.companyPhraseologies = companyPhraseologies;
+
+                        refreshPhraseologyInfoForDisplay();
                     });
             });
         }
     });
 
-    // Refresh the department information for display
+    // Refresh the phraseology information for display
     // based on the current data in scope context.
-    var refreshDepartmentInfoForDisplay = function() {
-        $scope.departmentInfo = getDepartmentInfoForDisplay(
-                        $scope.companyDepartments,
+    var refreshPhraseologyInfoForDisplay = function() {
+        $scope.phraseologyInfo = getPhraseologyInfoForDisplay(
+                        $scope.companyPhraseologies,
                         $scope.employeePhraseology
                     );
     };
 
-    // Extract data from the employee phraseology and company departments data
+    // Extract data from the employee phraseology and company phraseologies data
     // to compose a view model that is friendly for display
-    var getDepartmentInfoForDisplay = function(companyDepartments, employeePhraseology) {
+    var getPhraseologyInfoForDisplay = function(companyPhraseologies, employeePhraseology) {
         var result = {
             description: 'N/A',
             phraseology: 'N/A'
         };
 
-        if (employeePhraseology && companyDepartments) {
-            var employeeCompanyDepartment = _.find(companyDepartments, function(department) {
-                                                return department.phraseology.id == employeePhraseology.phraseology.id;
+        if (employeePhraseology && companyPhraseologies) {
+            var employeeCompanyPhraseology = _.find(companyPhraseologies, function(phraseology) {
+                                                return phraseology.phraseology.id == employeePhraseology.phraseology.id;
                                             });
-            if (employeeCompanyDepartment) {
-                result.description = employeeCompanyDepartment.description;
-                result.phraseology = employeeCompanyDepartment.phraseology.phraseology;
+            if (employeeCompanyPhraseology) {
+                result.description = employeeCompanyPhraseology.description;
+                result.phraseology = employeeCompanyPhraseology.phraseology.phraseology;
             }
         }
 
@@ -126,13 +126,13 @@ BenefitMyApp.controller('EmployeeDepartmentModalController', [
 
     $scope.openEditModal = function() {
         var modalInstance = $modal.open({
-            templateUrl: '/static/partials/workers_comp/modal_edit_employee_department.html',
-            controller: 'EmployeeDepartmentModalController',
+            templateUrl: '/static/partials/workers_comp/modal_edit_employee_phraseology.html',
+            controller: 'EmployeePhraseologyModalController',
             backdrop: 'static',
             size: 'md',
             resolve: {
-                companyDepartments: function() {
-                    return $scope.companyDepartments;
+                companyPhraseologies: function() {
+                    return $scope.companyPhraseologies;
                 },
                 employeePersonId: function() {
                     return $scope.employeePersonId;
@@ -145,11 +145,11 @@ BenefitMyApp.controller('EmployeeDepartmentModalController', [
 
         modalInstance.result.then(function(resultEmployeePhraseology){
             if (resultEmployeePhraseology){
-              var successMessage = "Your change to the department has been successfully saved.";
+              var successMessage = "Your change has been successfully saved.";
               $scope.showMessageWithOkayOnly('Success', successMessage);
 
               $scope.employeePhraseology = resultEmployeePhraseology;
-              refreshDepartmentInfoForDisplay();
+              refreshPhraseologyInfoForDisplay();
             } else{
               var message = 'Failed to save the changes. Please try again later.';
               $scope.showMessageWithOkayOnly('Error', message);
@@ -157,7 +157,7 @@ BenefitMyApp.controller('EmployeeDepartmentModalController', [
         });
     };
   }
-]).directive('bmEmployeeDepartmentManager', function(){
+]).directive('bmEmployeePhraseologyManager', function(){
 
     return {
         restrict: 'E',
@@ -165,7 +165,7 @@ BenefitMyApp.controller('EmployeeDepartmentModalController', [
             companyId: '=',
             employeePersonId: '='
         },
-        templateUrl: '/static/partials/workers_comp/directive_employee_department_manager.html',
-        controller: 'EmployeeDepartmentManagerDirectiveController'
+        templateUrl: '/static/partials/workers_comp/directive_employee_phraseology_manager.html',
+        controller: 'EmployeePhraseologyManagerDirectiveController'
       };
 });

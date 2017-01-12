@@ -1805,7 +1805,7 @@ var employerAdminIndividualTimePunchCards = employersController.controller('empl
   }
 ]);
 
-var employerViewDepartments = employersController.controller('employerViewDepartments', [
+var employerViewPhraseologies = employersController.controller('employerViewPhraseologies', [
     '$scope',
     '$state',
     '$stateParams',
