@@ -12,17 +12,17 @@ from app.service.date_time_service import DateTimeService
 
 class AdvantagePayrollPeriodExportCsvView(ReportExportViewBase):
 
-    def get(self, request, company_id, format=None):
+    def get(self, request, company_id,
+        from_year, from_month, from_day,
+        to_year, to_month, to_day, format=None):
+        period_start = date(year=int(from_year), month=int(from_month), day=int(from_day))
+        period_end = date(year=int(to_year), month=int(to_month), day=int(to_day))
+
         csv_service = AdvantagePayrollPeriodExportCsvService()
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=period_data_export.csv'
-        
-        # For now assume the report time period is the current week
-        date_time_service = DateTimeService()
-        today = date.today()
-        time_range = date_time_service.get_week_range_by_date(today)
 
-        csv_service.get_report(company_id, time_range[0], time_range[1], response)
+        csv_service.get_report(company_id, period_start, period_end, response)
 
         return response
