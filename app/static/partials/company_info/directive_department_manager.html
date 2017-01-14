@@ -1,0 +1,34 @@
+<div class="content-header">
+  <h1>Manage Departments</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="openEditModal()">Add A New Department</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Add A New Department</span> button to create a new department</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="panel">
+    <div class="panel-heading">
+      Departments
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Name</span></th>
+          <th><span>Description</span></th>
+          <th><span>Action</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="department in companyDepartments">
+            <td><a ng-click="openEditModal(department)">{{department.department}}</a></td>
+            <td>{{department.description}}</td>
+            <td>
+                <span class="btn inline" confirm="{{deleteConfirmMsg}}" ng-click="deleteDepartment(department)">Delete</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

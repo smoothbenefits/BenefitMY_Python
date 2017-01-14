@@ -139,7 +139,11 @@ var employerHome = employersController.controller('employerHome',
     };
 
     $scope.viewReports = function(){
-      $state.go('admin_reports');
+      $location.path('/admin/company/' + companyId);
+    };
+
+    $scope.viewCompanyInfo = function() {
+      $state.go('admin_company_info');
     };
 
     $scope.viewSupport = function(){
@@ -295,7 +299,7 @@ var employerUser = employersController.controller('employerUser',
       };
 
       $scope.createUserInvalid = function(){
-        return $scope.hasNoBenefitGroup() 
+        return $scope.hasNoBenefitGroup()
             || $scope.managerInvalid($scope.addUser.managerSelected)
             || !$scope.isEmployeeNumberValid($scope.addUser.employee_number);
       };
@@ -1271,6 +1275,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
   ['$scope',
    '$modal',
    '$modalInstance',
+   'CompanyDepartmentService',
    'EmployeeProfileService',
    'employeeProfileModel',
    'companyId',
@@ -1278,6 +1283,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
     function($scope,
              $modal,
              $modalInstance,
+             CompanyDepartmentService,
              EmployeeProfileService,
              employeeProfileModel,
              companyId,
@@ -1292,6 +1298,9 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
             return status === EmploymentStatuses.terminated;
           }
         );
+
+      CompanyDepartmentService.GetCompanyDepartments(companyId)
+      .then(companyDepartments => { $scope.companyDepartments = companyDepartments; });
 
       EmployeeProfileService.initializeCompanyEmployees(companyId);
 
@@ -1316,7 +1325,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
       };
 
       $scope.invalidToSave = function() {
-        return $scope.form.$invalid 
+        return $scope.form.$invalid
             || $scope.managerInvalid($scope.employeeProfileModel.manager)
             || !$scope.isEmployeeNumberValid($scope.employeeProfileModel.employeeNumber);
       }
@@ -2196,5 +2205,14 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
         return $scope.showEmployeeI9FormDownload()
             || $scope.showEmployeeW4FormDownload();
       };
+    }
+]);
+
+var employerCompanyInfoController = employersController.controller('EmployerCompanyInfoController',
+  ['$scope',
+    '$state',
+    '$stateParams',
+    function($scope, $state, $stateParams){
+      $scope.companyId = $stateParams.company_id;
     }
 ]);

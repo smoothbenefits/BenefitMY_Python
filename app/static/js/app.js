@@ -312,6 +312,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl:'/static/partials/add_employee.html',
                 controller:'employerUser'
             }).
+            state('admin_company_info', {
+                url: '/admin/company/:company_id',
+                templateUrl: '/static/partials/company_info/company_info_base.html',
+                controller: 'EmployerCompanyInfoController'
+            }).
             state('batch_add_employees', {
                 url: '/admin/employee/batch_add/:company_id',
                 templateUrl:'/static/partials/batch_employee_addition/main.html',

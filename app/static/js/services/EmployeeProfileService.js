@@ -6,8 +6,8 @@ benefitmyService.factory('EmployeeProfileService',
     'EmployeeManagementEmployeeTerminationRepository',
     'PersonService',
     function (
-        $q, 
-        EmployeeProfileRepository, 
+        $q,
+        EmployeeProfileRepository,
         EmployeeManagementEmployeeTerminationRepository,
         PersonService){
         var isFullTimeEmploymentType = function(employeeProfile) {
@@ -24,6 +24,7 @@ benefitmyService.factory('EmployeeProfileService',
 
             viewModel.id = employeeProfileDomainModel.id;
             viewModel.jobTitle = employeeProfileDomainModel.job_title;
+            viewModel.department = employeeProfileDomainModel.department.department;
             viewModel.employmentType = employeeProfileDomainModel.employment_type;
             viewModel.employmentStatus = employeeProfileDomainModel.employment_status;
             viewModel.personId = employeeProfileDomainModel.person;
@@ -190,7 +191,7 @@ benefitmyService.factory('EmployeeProfileService',
                 };
 
                 return deferred.promise;
-            }, 
+            },
 
             terminateEmployee: function(terminationData) {
                 var domainModel = mapTerminationViewToDomainModel(terminationData);
@@ -206,7 +207,7 @@ benefitmyService.factory('EmployeeProfileService',
                 });
 
                 return deferred.promise;
-            }, 
+            },
 
 
         };

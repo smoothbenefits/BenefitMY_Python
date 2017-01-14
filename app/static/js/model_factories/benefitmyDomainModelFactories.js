@@ -798,8 +798,19 @@ benefitmyDomainModelFactories.factory('PhraseologyRepository', ['$resource',
       CompanyPhraseologysByCompany: $resource(PREFIX + 'company/:companyId/phraseologys', {companyId: '@companyId'}),
       EmployeePhraseologyById: $resource(PREFIX + 'employee_phraseologys/:id', {id: '@id'}, {
         update: { method: 'PUT' }
-      }), 
+      }),
       EmployeePhraseologysByPerson: $resource(PREFIX + 'person/:personId/phraseologys', {personId: '@personId'})
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('DepartmentRepository', ['$resource',
+  function($resource) {
+    return {
+      CompanyDepartmentById: $resource(PREFIX + 'company_departments/:id', {id: '@id'}, {
+        update: { method: 'PUT' }
+      }),
+      CompanyDepartmentsByCompany: $resource(PREFIX + 'company/:companyId/departments', {companyId: '@companyId'})
     }
   }
 ]);
