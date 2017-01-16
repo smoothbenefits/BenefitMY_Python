@@ -4,7 +4,7 @@ from app.models.company_user import (CompanyUser, USER_TYPE_EMPLOYEE)
 from app.models.person import (Person, SELF)
 from app.models.employee_profile import (
     EmployeeProfile,
-    EMPLYMENT_STATUS_TERMINATED)
+    EMPLOYMENT_STATUS_TERMINATED)
 from app.service.user_enrollment_summary_service import(
     UserEnrollmentSummaryService,
     COMPLETED,
@@ -44,7 +44,7 @@ class TriggerNotCompleteEnrollmentBase(TriggerCompanyUserBase):
             # skip if the user
             #   - is not an active employee
             #   - or is not a new employee
-            if (employee_profile.employment_status == EMPLYMENT_STATUS_TERMINATED
+            if (employee_profile.employment_status == EMPLOYMENT_STATUS_TERMINATED
                 or not company_user.new_employee):
                 continue
 

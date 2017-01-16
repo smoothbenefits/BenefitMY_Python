@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 
 from app.models.employee_profile import (
     EmployeeProfile,
-    EMPLYMENT_STATUS_TERMINATED)
+    EMPLOYMENT_STATUS_TERMINATED)
 from app.dtos.operation_result import OperationResult
 from app.service.send_email_service import SendEmailService
 from app.service.Report.company_employee_benefit_pdf_report_service import \
@@ -30,7 +30,7 @@ class EmployeeManagementService(object):
 
         employee_profile = employee_profiles[0]
         employee_profile.end_date = termination_data.end_date
-        employee_profile.employment_status = EMPLYMENT_STATUS_TERMINATED
+        employee_profile.employment_status = EMPLOYMENT_STATUS_TERMINATED
         employee_profile.save()
 
         result.set_output_data(employee_profile)

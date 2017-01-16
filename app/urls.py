@@ -268,6 +268,8 @@ from app.views.workers_comp.employee_phraseology_view import (
 # Advatage Payroll
 from app.views.reports.integration.advantage_payroll.advantage_payroll_client_setup_csv \
     import AdvantagePayrollClientSetupCsvView
+from app.views.reports.integration.advantage_payroll.advantage_payroll_period_export_csv \
+    import AdvantagePayrollPeriodExportCsvView
 
 PREFIX = "api/v1"
 PREFIX_V2 = "api/v2"
@@ -722,6 +724,7 @@ urlpatterns = patterns('app.views',
 
     # Advantage Payroll
     url(r'^%s/companies/(?P<company_id>\w+)/advantage_payroll/setup_csv?$' % PREFIX, AdvantagePayrollClientSetupCsvView.as_view(), name='company_advantage_payroll_setup_csv_api'),
+    url(r'^%s/companies/(?P<company_id>\w+)/advantage_payroll/period_export_csv/from/(?P<from_year>\d+)/(?P<from_month>\d+)/(?P<from_day>\d+)/to/(?P<to_year>\d+)/(?P<to_month>\d+)/(?P<to_day>\d+)/?$' % PREFIX, AdvantagePayrollPeriodExportCsvView.as_view(), name='company_advantage_payroll_period_export_csv_api'),
 
     # Logging
     url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api")

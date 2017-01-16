@@ -14,11 +14,11 @@ PER_DIEM = 'PerDiem'
 
 EMPLOYMENT_TYPES = ([(item, item) for item in [FULL_TIME, PART_TIME, CONTRACTOR, INTERN, PER_DIEM]])
 
-EMPLYMENT_STATUS_ACTIVE = 'Active'
-EMPLYMENT_STATUS_PROSPECTIVE = 'Prospective'
-EMPLYMENT_STATUS_TERMINATED = 'Terminated'
-EMPLYMENT_STATUS_ONLEAVE = 'OnLeave'
-EMPLOYMENT_STATUS = ([(item, item) for item in [EMPLYMENT_STATUS_ACTIVE,EMPLYMENT_STATUS_PROSPECTIVE,EMPLYMENT_STATUS_TERMINATED,EMPLYMENT_STATUS_ONLEAVE]])
+EMPLOYMENT_STATUS_ACTIVE = 'Active'
+EMPLOYMENT_STATUS_PROSPECTIVE = 'Prospective'
+EMPLOYMENT_STATUS_TERMINATED = 'Terminated'
+EMPLOYMENT_STATUS_ONLEAVE = 'OnLeave'
+EMPLOYMENT_STATUS = ([(item, item) for item in [EMPLOYMENT_STATUS_ACTIVE,EMPLOYMENT_STATUS_PROSPECTIVE,EMPLOYMENT_STATUS_TERMINATED,EMPLOYMENT_STATUS_ONLEAVE]])
 
 @reversion.register
 class EmployeeProfile(models.Model):
@@ -35,7 +35,7 @@ class EmployeeProfile(models.Model):
                                        null=True, blank=True)
 
     employment_status = models.CharField(max_length=20, choices=EMPLOYMENT_STATUS,
-                                         default=EMPLYMENT_STATUS_ACTIVE)
+                                         default=EMPLOYMENT_STATUS_ACTIVE)
 
     pay_rate = models.ForeignKey(SysPeriodDefinition,
                                  related_name="employee_profile_pay_rate",
