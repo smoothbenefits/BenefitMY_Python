@@ -42,7 +42,7 @@ class ReportExportViewBase(APIView):
 
 
     def _get_max_dependents_count(self, company_id):
-        users_id = self._get_all_employee_user_ids_for_company(company_id)
+        user_ids = self._get_all_employee_user_ids_for_company(company_id)
         persons = Person.objects.filter(user__in=users_id).exclude(relationship='self').exclude(relationship='spouse')
 
         # persons.groupby('user').count('pk').max()

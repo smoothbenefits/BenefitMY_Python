@@ -80,7 +80,7 @@ class EmployeeEmploymentProfileInfo(object):
         time period.
         The period_start and period_end are expected to be datetime objects
     '''
-    def is_employee_active(self, period_start, period_end):
+    def is_employee_active_anytime_in_time_period(self, period_start, period_end):
         # just return some dumb assumption for inputs not sufficient 
         # for determination
         if (not self.hire_date):

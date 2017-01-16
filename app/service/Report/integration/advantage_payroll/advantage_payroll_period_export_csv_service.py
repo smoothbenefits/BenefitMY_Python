@@ -3,8 +3,8 @@ from datetime import date
 from django.contrib.auth import get_user_model
 
 from app.models.employee_profile import (
-    EMPLYMENT_STATUS_ACTIVE,
-    EMPLYMENT_STATUS_TERMINATED
+    EMPLOYMENT_STATUS_ACTIVE,
+    EMPLOYMENT_STATUS_TERMINATED
 )
 from app.service.compensation_service import (
     PAY_TYPE_HOURLY,
@@ -40,7 +40,7 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         self._save(outputStream)
 
     def _write_company(self, company_id, period_start, period_end):
-        users_id = self._get_all_employee_user_ids_for_company(company_id)
+        user_ids = self._get_all_employee_user_ids_for_company(company_id)
 
         # Get the time tracking data for the company, for the date period
         # specified
@@ -57,7 +57,7 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
             # Only report if the employee was, at least partially, active during the 
             # report period.
             if (employee_profile_info and 
-                employee_profile_info.is_employee_active(period_start, period_end)):
+                employee_profile_info.is_employee_active_anytime_in_time_period(period_start, period_end)):
                 person_info = self.view_model_factory.get_employee_person_info(employee_user_id)
                 export_data = self._get_export_data(
                     employee_user_id,

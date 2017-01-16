@@ -66,7 +66,7 @@ class CompanyUsersBenefitsBillingExcelExportView(ExcelExportViewBase):
         return
 
     def _write_company(self, company_id, excelSheet):
-        users_id = self._get_all_employee_user_ids_for_company(company_id)
+        user_ids = self._get_all_employee_user_ids_for_company(company_id)
 
         # For each of them, write out his/her information
         for i in range(len(users_id)):

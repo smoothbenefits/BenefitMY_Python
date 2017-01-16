@@ -12,8 +12,8 @@ from app.models.sys_period_definition import (
     PERIOD_MONTHLY
 )
 from app.models.employee_profile import (
-    EMPLYMENT_STATUS_ACTIVE,
-    EMPLYMENT_STATUS_TERMINATED
+    EMPLOYMENT_STATUS_ACTIVE,
+    EMPLOYMENT_STATUS_TERMINATED
 )
 from app.service.compensation_service import (
     PAY_TYPE_HOURLY,
@@ -78,7 +78,7 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._write_cell('SITCODE')
 
     def _write_company(self, company_id):
-        users_id = self._get_all_employee_user_ids_for_company(company_id)
+        user_ids = self._get_all_employee_user_ids_for_company(company_id)
 
         # For each of them, write out his/her information
         for i in range(len(users_id)):
@@ -188,9 +188,9 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
             return ''
 
     def _get_employment_status_code(self, employment_status):
-        if (employment_status == EMPLYMENT_STATUS_ACTIVE):
+        if (employment_status == EMPLOYMENT_STATUS_ACTIVE):
             return 'A'
-        elif (employment_status == EMPLYMENT_STATUS_TERMINATED):
+        elif (employment_status == EMPLOYMENT_STATUS_TERMINATED):
             return 'T'
         else:
             return ''
