@@ -23,8 +23,8 @@ class ReportServiceBase(object):
 
 
     def _get_max_dependents_count(self, company_id):
-        users_id = self._get_all_employee_user_ids_for_company(company_id)
-        persons = Person.objects.filter(user__in=users_id).exclude(relationship='self').exclude(relationship='spouse')
+        user_ids = self._get_all_employee_user_ids_for_company(company_id)
+        persons = Person.objects.filter(user__in=user_ids).exclude(relationship='self').exclude(relationship='spouse')
 
         # persons.groupby('user').count('pk').max()
         max_dependents = persons.values('user').annotate(num_dependents=Count('pk')).aggregate(max=Max('num_dependents'))
@@ -48,13 +48,13 @@ class ReportServiceBase(object):
 
     def _get_all_employee_user_ids_for_company(self, company_id):
         # Get all employees for the company
-        users_id = []
+        user_ids = []
         users = CompanyUser.objects.filter(company=company_id,
                                            company_user_type='employee')
         for user in users:
-            users_id.append(user.user_id)
+            user_ids.append(user.user_id)
 
-        return users_id
+        return user_ids
 
     def _get_company_by_user(self, user_id):
         company_model = None

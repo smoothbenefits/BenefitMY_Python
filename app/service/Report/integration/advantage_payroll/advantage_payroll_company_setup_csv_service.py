@@ -12,8 +12,8 @@ from app.models.sys_period_definition import (
     PERIOD_MONTHLY
 )
 from app.models.employee_profile import (
-    EMPLYMENT_STATUS_ACTIVE,
-    EMPLYMENT_STATUS_TERMINATED
+    EMPLOYMENT_STATUS_ACTIVE,
+    EMPLOYMENT_STATUS_TERMINATED
 )
 from app.service.compensation_service import (
     PAY_TYPE_HOURLY,
@@ -78,11 +78,11 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._write_cell('SITCODE')
 
     def _write_company(self, company_id):
-        users_id = self._get_all_employee_user_ids_for_company(company_id)
+        user_ids = self._get_all_employee_user_ids_for_company(company_id)
 
         # For each of them, write out his/her information
-        for i in range(len(users_id)):
-            self._write_employee(users_id[i], company_id)
+        for i in range(len(user_ids)):
+            self._write_employee(user_ids[i], company_id)
 
     def _write_employee(self, employee_user_id, company_id):
         company_info = self.view_model_factory.get_company_info(company_id)
@@ -120,9 +120,9 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._write_cell(person_info.state)
         self._write_cell(person_info.zipcode)
 
-    def _write_employee_employment_profile_info(self, users_id, company_info):
+    def _write_employee_employment_profile_info(self, user_ids, company_info):
         employee_profile_info = self.view_model_factory.get_employee_employment_profile_data(
-                                    users_id,
+                                    user_ids,
                                     company_info.company_id)
 
         if (not employee_profile_info):
@@ -188,9 +188,9 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
             return ''
 
     def _get_employment_status_code(self, employment_status):
-        if (employment_status == EMPLYMENT_STATUS_ACTIVE):
+        if (employment_status == EMPLOYMENT_STATUS_ACTIVE):
             return 'A'
-        elif (employment_status == EMPLYMENT_STATUS_TERMINATED):
+        elif (employment_status == EMPLOYMENT_STATUS_TERMINATED):
             return 'T'
         else:
             return ''

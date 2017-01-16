@@ -6,7 +6,7 @@ from app.models.company import Company
 from app.custom_authentication import AuthUserManager
 from app.models.person import (Person, SELF)
 from app.models.employee_profile import FULL_TIME, PART_TIME, CONTRACTOR, \
-    INTERN, PER_DIEM, EMPLYMENT_STATUS_ACTIVE
+    INTERN, PER_DIEM, EMPLOYMENT_STATUS_ACTIVE
 from app.models.company_user import USER_TYPE_EMPLOYEE
 from app.models.company_group import CompanyGroup
 from app.models.employee_profile import EmployeeProfile
