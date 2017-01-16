@@ -97,8 +97,8 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         user_ids = self._get_all_employee_user_ids_for_company(company.id)
 
         # For each of them, write out his/her information
-        for i in range(len(users_id)):
-            user_id = users_id[i]
+        for i in range(len(user_ids)):
+            user_id = user_ids[i]
             row_num = self._write_employee(company, week_start_date, user_id, excelSheet, row_num, self._get_user_timesheet(user_id, submitted_sheets))
 
         return row_num

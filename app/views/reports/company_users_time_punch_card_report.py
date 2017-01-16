@@ -56,7 +56,7 @@ User = get_user_model()
 class CompanyUsersTimePunchCardWeeklyReportView(ExcelExportViewBase):
 
     user_id_name_cache = {}
-    users_id_collection = None
+    user_ids_collection = None
 
     def _empty_employee_entry(self):
         record_entry = {}
@@ -106,7 +106,7 @@ class CompanyUsersTimePunchCardWeeklyReportView(ExcelExportViewBase):
     def _new_entries_by_record_type(self):
         entries_by_record_type = {}
         record_type_entry_template = {}
-        for user_id in self.users_id_collection:
+        for user_id in self.user_ids_collection:
             record_type_entry_template[user_id] = self._empty_employee_entry()
 
         for record_type in RECORD_TYPES:
@@ -232,8 +232,8 @@ class CompanyUsersTimePunchCardWeeklyReportView(ExcelExportViewBase):
         week_end_date = week_start_date + timedelta(7)
         
         self._init()
-        self.users_id_collection = self._get_all_employee_user_ids_for_company(pk)
-        for user_id in self.users_id_collection:
+        self.user_ids_collection = self._get_all_employee_user_ids_for_company(pk)
+        for user_id in self.user_ids_collection:
             self._build_user_id_name_cache(user_id, comp)
 
         time_tracking_service = TimeTrackingService()

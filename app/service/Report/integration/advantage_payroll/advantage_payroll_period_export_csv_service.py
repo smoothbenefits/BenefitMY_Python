@@ -48,8 +48,8 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
             company_id, period_start, period_end)
 
         # For each of them, write out his/her information
-        for i in range(len(users_id)):
-            employee_user_id = users_id[i]
+        for i in range(len(user_ids)):
+            employee_user_id = user_ids[i]
             employee_profile_info = self.view_model_factory.get_employee_employment_profile_data(
                                     employee_user_id,
                                     company_id)

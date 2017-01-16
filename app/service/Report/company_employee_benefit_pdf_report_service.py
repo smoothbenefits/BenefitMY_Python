@@ -59,8 +59,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         user_ids = self._get_all_employee_user_ids_for_company(company_id)
 
         # For each of them, write out his/her information
-        for i in range(len(users_id)):
-            self._write_employee(users_id[i], company_id)
+        for i in range(len(user_ids)):
+            self._write_employee(user_ids[i], company_id)
 
         return
 
