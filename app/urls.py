@@ -265,7 +265,10 @@ from app.views.workers_comp.employee_phraseology_view import (
 
 # Integrations
 
-# Advatage Payroll
+# # Common
+from app.views.integration.company_integration_provider_view import CompanyIntegrationProvidersByCompanyView
+
+# # Advatage Payroll
 from app.views.reports.integration.advantage_payroll.advantage_payroll_client_setup_csv \
     import AdvantagePayrollClientSetupCsvView
 
@@ -720,7 +723,10 @@ urlpatterns = patterns('app.views',
 
     # Integration
 
-    # Advantage Payroll
+    # # Common
+    url(r'^%s/companies/(?P<company_id>\w+)/integration_providers?$' % PREFIX, CompanyIntegrationProvidersByCompanyView.as_view(), name='company_integration_providers_api'),
+
+    # #Advantage Payroll
     url(r'^%s/companies/(?P<company_id>\w+)/advantage_payroll/setup_csv?$' % PREFIX, AdvantagePayrollClientSetupCsvView.as_view(), name='company_advantage_payroll_setup_csv_api'),
 
     # Logging
