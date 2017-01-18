@@ -29,9 +29,9 @@ benefitmyService.factory('CompanyDepartmentService',
             }
         };
 
-        var GetBlankCompanyDepartmentByCompany = function(company) {
+        var GetBlankCompanyDepartmentByCompanyId = function(companyId) {
             return {
-                company: company.id
+                company: companyId
             };
         };
 
@@ -40,10 +40,8 @@ benefitmyService.factory('CompanyDepartmentService',
         };
 
         return {
-            GetAllDepartments: GetAllDepartments,
-            GetCompanyPhraseologies: GetCompanyPhraseologies,
-            GetCompanyPhraseologiesWithPredefinedDepartment: GetCompanyPhraseologiesWithPredefinedDepartment,
-            GetBlankCompanyDepartmentByCompany: GetBlankCompanyDepartmentByCompany,
+            GetCompanyDepartments: GetCompanyDepartments,
+            GetBlankCompanyDepartmentByCompanyId: GetBlankCompanyDepartmentByCompanyId,
             DeleteCompanyDepartment: DeleteCompanyDepartment,
             SaveCompanyDepartment: SaveCompanyDepartment
         };

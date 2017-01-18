@@ -26,16 +26,12 @@ BenefitMyApp.controller('PhraseologyModalController', [
     // edit (vs creation) mode
     $scope.editMode = phraseology;
 
-    $scope.modalHeader = $scope.editMode
-        ? 'Edit Worker''s Comp Department (Phraseology) Info'
-        : 'Create a New Worker''s Comp Department (Phraseology)';
+    $scope.modalHeader = $scope.editMode ? "Edit Worker's Comp Department (Phraseology) Info" : "Create a New Worker's Comp Department (Phraseology)";
 
     // Set the model object in focus
     // If in edit mode, use the model passed in.
     // Else use a blank model created from the service
-    $scope.contextPhraseology = $scope.editMode
-        ? phraseology
-        : WorkersCompService.GetBlankCompanyPhraseologyByCompany(company);
+    $scope.contextPhraseology = $scope.editMode ? phraseology : WorkersCompService.GetBlankCompanyPhraseologyByCompany(company);
 
     $scope.cancel = function() {
         $modalInstance.dismiss();

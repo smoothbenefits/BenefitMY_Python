@@ -2,12 +2,12 @@ BenefitMyApp.controller('DepartmentModalController', [
   '$scope',
   '$modalInstance',
   'CompanyDepartmentService',
-  'company',
+  'companyId',
   'department',
   function($scope,
            $modalInstance,
            CompanyDepartmentService,
-           company,
+           companyId,
            department){
 
     // When a model is passed in, it means we are in
@@ -22,8 +22,8 @@ BenefitMyApp.controller('DepartmentModalController', [
     // If in edit mode, use the model passed in.
     // Else use a blank model created from the service
     $scope.contextDepartment = $scope.editMode
-        ? phraseology
-        : CompanyDepartmentService.GetBlankCompanyDepartmentByCompany(company);
+        ? department
+        : CompanyDepartmentService.GetBlankCompanyDepartmentByCompanyId(companyId);
 
     $scope.cancel = function() {
         $modalInstance.dismiss();
@@ -71,6 +71,10 @@ BenefitMyApp.controller('DepartmentModalController', [
         }
     });
 
+    $scope.hasDepartments = function() {
+      return $scope.companyDepartments && $scope.companyDepartments.length > 0;
+    };
+
     $scope.openEditModal = function(department) {
         var modalInstance = $modal.open({
             templateUrl: '/static/partials/company_info/modal_edit_department.html',
@@ -78,8 +82,8 @@ BenefitMyApp.controller('DepartmentModalController', [
             backdrop: 'static',
             size: 'md',
             resolve: {
-                company: function() {
-                    return $scope.company;
+                companyId: function() {
+                    return $scope.companyId;
                 },
                 department: function() {
                     return angular.copy(department);

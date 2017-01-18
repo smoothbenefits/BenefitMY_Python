@@ -139,11 +139,11 @@ var employerHome = employersController.controller('employerHome',
     };
 
     $scope.viewReports = function(){
-      $location.path('/admin/company/' + companyId);
+      $state.go('admin_reports');
     };
 
     $scope.viewCompanyInfo = function() {
-      $state.go('admin_company_info');
+      $location.path('/admin/company/' + $scope.company.id);
     };
 
     $scope.viewSupport = function(){
@@ -2214,5 +2214,7 @@ var employerCompanyInfoController = employersController.controller('EmployerComp
     '$stateParams',
     function($scope, $state, $stateParams){
       $scope.companyId = $stateParams.company_id;
+
+      $scope.departmentInfoExpanded = true;
     }
 ]);
