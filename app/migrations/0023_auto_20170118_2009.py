@@ -25,6 +25,10 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.AlterUniqueTogether(
+            name='companydepartment',
+            unique_together=set([('company', 'department')]),
+        ),
         migrations.AddField(
             model_name='employeeprofile',
             name='department',
