@@ -56,6 +56,7 @@ class EmployeeProfile(models.Model):
     department = models.ForeignKey(CompanyDepartment,
                                    blank=True,
                                    null=True,
+                                   on_delete=models.SET_NULL,
                                    related_name="employee_profile_company_department")
 
     created_at = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now)
