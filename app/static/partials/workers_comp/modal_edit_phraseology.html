@@ -6,24 +6,24 @@
     <form name="form">
       <div class="form-label">Workers' Comp Phraseology</div>
       <div class="textbox">
-          <input type="text" 
-            ng-model="contextDepartment.phraseology"
-            placeholder="Start typing the phraseology" 
+          <input type="text"
+            ng-model="contextPhraseology.phraseology"
+            placeholder="Start typing the phraseology"
             ng-required="true"
             name="phraseology"
             typeahead="phraseology as phraseology.phraseology for phraseology in searchPhraseologys($viewValue)"
-            autocomplete="off" 
+            autocomplete="off"
             class="form-control">
           <div class="form-validation-error" ng-show="form.phraseology.$dirty && form.phraseology.$invalid">
             <span ng-show="form.phraseology.$error.required">Phraseology is a required field</span>
           </div>
       </div>
 
-      <div class="form-label">Department Description</div>
+      <div class="form-label">Worker's Comp Department (Phraseology) Description</div>
       <div class="textbox">
         <input type="text"
           name="description"
-          ng-model="contextDepartment.description"
+          ng-model="contextPhraseology.description"
           ng-required="true"/>
         <div class="form-validation-error" ng-show="form.description.$dirty && form.description.$invalid">
             <span ng-show="form.description.$error.required">Description field is required</span>
