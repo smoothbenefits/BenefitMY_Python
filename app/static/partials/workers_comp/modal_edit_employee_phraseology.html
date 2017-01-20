@@ -4,20 +4,20 @@
 <div class="modal-body col-md-12">
   <div class="form-holder col-md-10 col-md-offset-1">
     <form name="form">
-      <div class="form-label"><b>Department</b></div>
+      <div class="form-label"><b>Worker's Comp Department (Phraseology)</b></div>
       <div class="select-box">
         <select
-          name="department"
+          name="phraseology"
           ng-model="contextEmployeePhraseology.phraseology"
           ng-required="true"
-          ng-options="department.phraseology as department.description for department in companyDepartments"
+          ng-options="phraseology.phraseology as phraseology.description for phraseology in companyPhraseologies"
           class="form-control">
         </select>
-        <div class="form-validation-error" ng-show="form.department.$dirty && form.department.$invalid">
-            <span ng-show="form.department.$invalid">Please select a Department</span>
+        <div class="form-validation-error" ng-show="form.phraseology.$dirty && form.phraseology.$invalid">
+            <span ng-show="form.phraseology.$invalid">Please select a Worker's Comp Department (Phraseology)</span>
         </div>
       </div>
-      <div class="form-label"><b>Workers' Comp Phraseology</b></div>
+      <div class="form-label"><b>Workers' Comp Department (Phraseology)</b></div>
       <div>{{contextEmployeePhraseology.phraseology.phraseology}}</div>
     </form>
   </div>

@@ -6,7 +6,7 @@ from app.models.company import Company
 from app.custom_authentication import AuthUserManager
 from app.models.person import (Person, SELF)
 from app.models.employee_profile import FULL_TIME, PART_TIME, CONTRACTOR, \
-    INTERN, PER_DIEM, EMPLYMENT_STATUS_ACTIVE
+    INTERN, PER_DIEM, EMPLOYMENT_STATUS_ACTIVE
 from app.models.company_user import USER_TYPE_EMPLOYEE
 from app.models.company_group import CompanyGroup
 from app.models.employee_profile import EmployeeProfile
@@ -33,6 +33,7 @@ class AccountCreationService(object):
     FIELD_LAST_NAME = 'last_name'
     FIELD_EMAIL = 'email'
     FIELD_PASSWORD = 'password'
+    FIELD_EMPLOYEE_NUMBER = 'employee_number'
     FIELD_EMPLOYMENT_TYPE = 'employment_type'
     FIELD_ANNUAL_BASE_SALARY = 'annual_base_salary'
     FIELD_HOURLY_RATE = 'hourly_rate'
@@ -49,6 +50,7 @@ class AccountCreationService(object):
         FIELD_LAST_NAME,
         FIELD_EMAIL,
         FIELD_PASSWORD,
+        FIELD_EMPLOYEE_NUMBER,
         FIELD_EMPLOYMENT_TYPE,
         FIELD_ANNUAL_BASE_SALARY,
         FIELD_HOURLY_RATE,
@@ -114,6 +116,7 @@ class AccountCreationService(object):
                     'employment_type': self._get_field_value(tokens, self.FIELD_EMPLOYMENT_TYPE),
                     'email': self._get_field_value(tokens, self.FIELD_EMAIL),
                     'password': self._get_field_value(tokens, self.FIELD_PASSWORD),
+                    'employee_number': self._get_field_value(tokens, self.FIELD_EMPLOYEE_NUMBER),
                     'company_user_type': USER_TYPE_EMPLOYEE,
                     'send_email': batch_account_raw_data.send_email,
                     'new_employee': False,
@@ -345,7 +348,7 @@ class AccountCreationService(object):
         User.objects.create_user(account_info.email, password)
         if not userManager.user_exists(account_info.email):
             raise Exception(
-                "Failed to create user account"
+                "Failed to create user account due to missing manager information"
             )
 
         user = userManager.get_user(account_info.email)
@@ -384,7 +387,7 @@ class AccountCreationService(object):
             'person': person_id,
             'company': account_info.company_id,
             'start_date': account_info.start_date,
-            'benefit_start_date': account_info.benefit_start_date
+            'benefit_start_date': account_info.benefit_start_date,
         }
 
         if (account_info.compensation_info.annual_base_salary is not None):
@@ -395,6 +398,9 @@ class AccountCreationService(object):
 
         if (account_info.manager_id):
             profile_data['manager'] = account_info.manager_id
+
+        if (account_info.employee_number):
+            profile_data['employee_number'] = account_info.employee_number
 
         profile_serializer = EmployeeProfilePostSerializer(data=profile_data)
 

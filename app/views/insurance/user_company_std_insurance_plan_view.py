@@ -47,22 +47,22 @@ class UserCompanyStdInsuranceView(APIView):
 
 class CompanyUsersStdInsuranceView(APIView):
     """ benefit for all employees in a company """
-    def _get_users_id(self, pk):
-        users_id = []
+    def _get_user_ids(self, pk):
+        user_ids = []
         users = CompanyUser.objects.filter(company=pk,
                                            company_user_type='employee')
         for user in users:
-            users_id.append(user.user_id)
-        return users_id
+            user_ids.append(user.user_id)
+        return user_ids
 
-    def _get_objects(self, users_id):
+    def _get_objects(self, user_ids):
         try:
-            return UserCompanyStdInsurancePlan.objects.filter(user__in=users_id)
+            return UserCompanyStdInsurancePlan.objects.filter(user__in=user_ids)
         except UserCompanyStdInsurancePlan.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        users_id = self._get_users_id(pk)
-        plans = self._get_objects(users_id)
+        user_ids = self._get_user_ids(pk)
+        plans = self._get_objects(user_ids)
         serializer = UserCompanyStdInsuranceSerializer(plans, many=True)
         return Response(serializer.data)

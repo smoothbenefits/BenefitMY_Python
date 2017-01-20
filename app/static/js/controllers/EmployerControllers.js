@@ -142,6 +142,10 @@ var employerHome = employersController.controller('employerHome',
       $state.go('admin_reports');
     };
 
+    $scope.viewCompanyInfo = function() {
+      $location.path('/admin/company/' + $scope.company.id);
+    };
+
     $scope.viewSupport = function(){
       $state.go('appSupport');
     };
@@ -284,8 +288,20 @@ var employerUser = employersController.controller('employerUser',
         return !_.isEmpty(manager) && _.isString(manager);
       };
 
+      $scope.isEmployeeNumberValid = function(employeeNumber) {
+        // Allow empty/null employee number
+        if (!employeeNumber) {
+            return true;
+        }
+
+        var matchEmployeeProfiles = EmployeeProfileService.searchEmployeesByEmployeeNumber(employeeNumber);
+        return matchEmployeeProfiles.length <= 0;
+      };
+
       $scope.createUserInvalid = function(){
-        return $scope.hasNoBenefitGroup() || $scope.managerInvalid($scope.addUser.managerSelected);
+        return $scope.hasNoBenefitGroup()
+            || $scope.managerInvalid($scope.addUser.managerSelected)
+            || !$scope.isEmployeeNumberValid($scope.addUser.employee_number);
       };
 
       $scope.createUser = function(userType) {
@@ -298,7 +314,11 @@ var employerUser = employersController.controller('employerUser',
         .then(function(response) {
           gotoUserView(userType);
         }, function(error) {
-          alert('Failed to add a new employee.');
+          var warnings = '';
+          _.each(error.messages, function(message) {
+            warnings = warnings + '  - ' + message.message + '.\n';
+          });
+          alert('Failed to add a new employee. \n\n' + warnings);
         });
       };
 
@@ -1255,6 +1275,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
   ['$scope',
    '$modal',
    '$modalInstance',
+   'CompanyDepartmentService',
    'EmployeeProfileService',
    'employeeProfileModel',
    'companyId',
@@ -1262,6 +1283,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
     function($scope,
              $modal,
              $modalInstance,
+             CompanyDepartmentService,
              EmployeeProfileService,
              employeeProfileModel,
              companyId,
@@ -1276,6 +1298,11 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
             return status === EmploymentStatuses.terminated;
           }
         );
+
+      CompanyDepartmentService.GetCompanyDepartments(companyId)
+      .then(function (companyDepartments) { 
+        $scope.companyDepartments = companyDepartments; 
+      });
 
       EmployeeProfileService.initializeCompanyEmployees(companyId);
 
@@ -1295,16 +1322,31 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
         });
       };
 
-      $scope.managerInvalid = function(manager){
+      $scope.managerInvalid = function(manager) {
         return !_.isEmpty(manager) && _.isString(manager);
       };
 
-      $scope.invalidToSave = function(){
-        return $scope.form.$invalid || $scope.managerInvalid($scope.employeeProfileModel.manager);
+      $scope.invalidToSave = function() {
+        return $scope.form.$invalid
+            || $scope.managerInvalid($scope.employeeProfileModel.manager)
+            || !$scope.isEmployeeNumberValid($scope.employeeProfileModel.employeeNumber);
       }
 
-      $scope.updateEndDate = function(){
+      $scope.updateEndDate = function() {
         $scope.employeeProfileModel.endDate = null;
+      };
+
+      $scope.isEmployeeNumberValid = function(employeeNumber) {
+        // Allow empty/null employee number
+        if (!employeeNumber) {
+            return true;
+        }
+
+        var matchEmployeeProfiles = EmployeeProfileService.searchEmployeesByEmployeeNumber(employeeNumber);
+        var hasConflicts = _.some(matchEmployeeProfiles, function(employeeProfile) {
+            return employeeProfile.id != $scope.employeeProfileModel.id;
+        });
+        return !hasConflicts;
       };
     }
   ]);
@@ -1774,7 +1816,7 @@ var employerAdminIndividualTimePunchCards = employersController.controller('empl
   }
 ]);
 
-var employerViewDepartments = employersController.controller('employerViewDepartments', [
+var employerViewPhraseologies = employersController.controller('employerViewPhraseologies', [
     '$scope',
     '$state',
     '$stateParams',
@@ -2127,7 +2169,8 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
     'UploadService',
     'users',
     'CompanyEmployeeSummaryService',
-    function($scope, $state, $stateParams, UploadService, users, CompanyEmployeeSummaryService){
+    'CompanyFeatureService',
+    function($scope, $state, $stateParams, UploadService, users, CompanyEmployeeSummaryService, CompanyFeatureService){
       $scope.compId = $stateParams.company_id;
       $scope.uploads = [];
       UploadService.getEmployeeUploads($scope.compId, $stateParams.employee_id)
@@ -2141,7 +2184,39 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
         $scope.employee = resp.user;
       });
 
+      CompanyFeatureService.getAllApplicationFeatureStatusByCompany($scope.compId).then(function(allFeatureStatus) {
+        $scope.allFeatureStatus = allFeatureStatus;
+      });
+
       $scope.employeeI9DownloadUrl = CompanyEmployeeSummaryService.getEmployeeI9FormUrl($stateParams.employee_id);
       $scope.employeeW4DownloadUrl = CompanyEmployeeSummaryService.getEmployeeW4FormUrl($stateParams.employee_id);
+
+      $scope.showEmployeeW4FormDownload = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.W4);
+      };
+
+      $scope.showEmployeeI9FormDownload = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                CompanyFeatureService.AppFeatureNames.I9);
+      };
+
+      $scope.showEmployeeFormsSection = function() {
+        return $scope.showEmployeeI9FormDownload()
+            || $scope.showEmployeeW4FormDownload();
+      };
+    }
+]);
+
+var employerCompanyInfoController = employersController.controller('EmployerCompanyInfoController',
+  ['$scope',
+    '$state',
+    '$stateParams',
+    function($scope, $state, $stateParams){
+      $scope.companyId = $stateParams.company_id;
+
+      $scope.departmentInfoExpanded = true;
     }
 ]);

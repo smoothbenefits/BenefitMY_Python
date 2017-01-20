@@ -97,10 +97,28 @@
           <ul class="list-group">
             <li class="list-group-item">
               <h4 class="col-md-5">
+                Employee Number
+              </h4>
+              <div class="col-md-7">
+                {{employee.employeeProfile.employeeNumber}}
+              </div>
+              <div style="clear:both"></div>
+            </li>
+            <li class="list-group-item">
+              <h4 class="col-md-5">
                 Job Title
               </h4>
               <div class="col-md-7">
                 {{employee.employeeProfile.jobTitle}}
+              </div>
+              <div style="clear:both"></div>
+            </li>
+            <li class="list-group-item">
+              <h4 class="col-md-5">
+                Department
+              </h4>
+              <div class="col-md-7">
+                {{employee.employeeProfile.department}}
               </div>
               <div style="clear:both"></div>
             </li>
@@ -323,7 +341,10 @@
           </ul>
         </div>
       </div>
-      <bm-employee-department-manager ng-if="employee.employeeProfile.personId" employee-person-id="employee.employeeProfile.personId" company-id="employee.employeeProfile.companyId"></bm-employee-department-manager>
+      <bm-employee-phraseology-manager ng-if="employee.employeeProfile.personId"
+                                       employee-person-id="employee.employeeProfile.personId"
+                                       company-id="employee.employeeProfile.companyId">
+      </bm-employee-phraseology-manager>
     </div>
   </div>
 

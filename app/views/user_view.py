@@ -45,27 +45,27 @@ def get_user_response_object(user, company_id=None):
         company_role_serializer = CompanyRoleSerializer(company_user)
         result['company_role'] = company_role_serializer.data
     else:
-        company_users = CompanyUser.objects.filter(user=user.id) 
+        company_users = CompanyUser.objects.filter(user=user.id)
         roles = []
         for q in company_users:
             if q.company_user_type not in roles:
                 comp_role = CompanyRoleSerializer(q)
                 roles.append(comp_role.data)
         result['roles'] = roles
-    
+
     persons = Person.objects.filter(user=user.id, relationship='self')
     if (len(persons) > 0):
         person_serializer = PersonSerializer(persons[0])
         result['person'] = person_serializer.data
-        
+
         try:
             profile = EmployeeProfile.objects.get(person=persons[0].id)
             profile_serializer = EmployeeProfileSerializer(profile)
             result['profile'] = profile_serializer.data
         except EmployeeProfile.DoesNotExist:
             pass
-        
-    
+
+
     return result
 
 
@@ -101,7 +101,7 @@ class UsersView(APIView):
         result = account_service.execute_creation(account_info)
 
         if (result.has_issue()):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(result.serialize_issues(), status=status.HTTP_400_BAD_REQUEST)
 
         # construct data back to consumer
         result_account_info = result.output_data
@@ -192,7 +192,7 @@ class UserByCredentialView(APIView):
             result['app_features_info'] = application_features
 
         # Projects
-        if (application_features 
+        if (application_features
             and application_features[APP_FEATURE_PROJECTMANAGEMENT]):
             project_service = ProjectService()
             result['project_list'] = project_service.get_projects_by_company(company_id, active_only=True)

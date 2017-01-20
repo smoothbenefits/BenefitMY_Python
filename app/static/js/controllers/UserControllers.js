@@ -264,8 +264,8 @@ var userController = userControllers.controller('userController',
       $state.go('admin_time_off_quotas');
     };
 
-    $scope.viewDepartmentInfo = function(){
-      $state.go('admin_departments');
+    $scope.viewPhraseologyInfo = function(){
+      $state.go('admin_phraseologies');
     };
 
     $scope.viewServiceProvider = function() {
