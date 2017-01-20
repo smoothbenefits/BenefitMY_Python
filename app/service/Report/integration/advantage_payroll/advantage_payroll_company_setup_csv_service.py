@@ -133,7 +133,7 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._write_cell(self._get_date_string(employee_profile_info.hire_date))
         self._write_cell(self._get_pay_cycle_code(employee_profile_info.pay_cycle))
 
-        # [TODO]: For now, skip the phraseology info
+        # [TODO]: For now, skip the department info
         self._skip_cells(1)
         self._write_cell(self._get_employment_status_code(employee_profile_info.employment_status))
 
@@ -216,4 +216,4 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
     #  * Missing State tax witholding data
     #  * W4 missing handling of exempt selection
     #  * If W4 selects "married but withold at a higher single rate", what to fill
-    #  * What do we fill into the "Phraseology" field
+    #  * What do we fill into the "Department" field

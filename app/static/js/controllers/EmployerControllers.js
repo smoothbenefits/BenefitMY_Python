@@ -1300,7 +1300,9 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
         );
 
       CompanyDepartmentService.GetCompanyDepartments(companyId)
-      .then(companyDepartments => { $scope.companyDepartments = companyDepartments; });
+      .then(function (companyDepartments) { 
+        $scope.companyDepartments = companyDepartments; 
+      });
 
       EmployeeProfileService.initializeCompanyEmployees(companyId);
 
