@@ -84,11 +84,11 @@ class CompanyHphcExcelView(ExcelExportViewBase):
         self._write_cell('PLAN OPTION')
 
     def _write_company(self, company_id):
-        users_id = self._get_all_employee_user_ids_for_company(company_id)
+        user_ids = self._get_all_employee_user_ids_for_company(company_id)
 
         # For each of them, write out his/her information
-        for i in range(len(users_id)):
-            self._write_employee(users_id[i])
+        for i in range(len(user_ids)):
+            self._write_employee(user_ids[i])
 
         return
 

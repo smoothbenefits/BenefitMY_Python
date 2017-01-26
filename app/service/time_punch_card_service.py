@@ -5,6 +5,7 @@ from app.service.hash_key_service import HashKeyService
 from app.service.web_request_service import WebRequestService
 
 from app.view_models.time_tracking.time_punch_card import TimePunchCard
+from app.view_models.time_tracking.reported_hours import ReportedHours
 
 User = get_user_model()
 
@@ -43,3 +44,31 @@ class TimePunchCardService(object):
             user_punch_cards.append(TimePunchCard(entry))
 
         return user_punch_cards
+
+    def get_company_users_reported_hours_by_date_range(
+        self,
+        company_id,
+        start_date,
+        end_date
+    ):
+        user_punch_cards = self.get_company_users_time_punch_cards_by_date_range(
+                company_id,
+                start_date,
+                end_date)
+
+        result_dict = {}
+
+        for card in user_punch_cards:
+            if (card.user_id not in result_dict):
+                result_dict[card.user_id] = ReportedHours()
+
+            if (card.card_type == PUNCH_CARD_TYPE_PERSONAL_LEAVE):
+                result_dict[card.user_id].unpaid_hours += card.get_punch_card_hours()
+            elif(card.card_type == PUNCH_CARD_TYPE_COMPANY_HOLIDAY):
+                # For now, since by design we don't track a start and end time for
+                # company holiday cards, assume a 8 hours counted towards paid hours
+                result_dict[card.user_id].paid_hours += 8.0
+            else:
+                result_dict[card.user_id].paid_hours += card.get_punch_card_hours()
+
+        return result_dict

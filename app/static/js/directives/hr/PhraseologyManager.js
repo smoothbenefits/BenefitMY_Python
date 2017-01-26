@@ -1,19 +1,19 @@
-BenefitMyApp.controller('DepartmentModalController', [
+BenefitMyApp.controller('PhraseologyModalController', [
   '$scope',
-  '$modalInstance', 
+  '$modalInstance',
   'WorkersCompService',
   'company',
-  'department', 
-  function($scope, 
+  'phraseology',
+  function($scope,
            $modalInstance,
            WorkersCompService,
            company,
-           department){
+           phraseology){
     WorkersCompService.GetAllPhraseologys().then(function(allPhraseologys) {
         $scope.allPhraseologys = allPhraseologys;
     });
 
-    // Perform search based on text term. 
+    // Perform search based on text term.
     // This is to support filtering on typeahead
     $scope.searchPhraseologys = function(term){
         var lowerTerm = term.toLowerCase();
@@ -24,25 +24,23 @@ BenefitMyApp.controller('DepartmentModalController', [
 
     // When a model is passed in, it means we are in
     // edit (vs creation) mode
-    $scope.editMode = department;
+    $scope.editMode = phraseology;
 
-    $scope.modalHeader = $scope.editMode ? 'Edit Department Info' : 'Create a New Department';
+    $scope.modalHeader = $scope.editMode ? "Edit Worker's Comp Department (Phraseology) Info" : "Create a New Worker's Comp Department (Phraseology)";
 
     // Set the model object in focus
     // If in edit mode, use the model passed in.
     // Else use a blank model created from the service
-    $scope.contextDepartment = $scope.editMode 
-        ? department
-        : WorkersCompService.GetBlankCompanyDepartmentByCompany(company);
+    $scope.contextPhraseology = $scope.editMode ? phraseology : WorkersCompService.GetBlankCompanyPhraseologyByCompany(company);
 
     $scope.cancel = function() {
         $modalInstance.dismiss();
     };
 
     $scope.save = function() {
-        WorkersCompService.SaveCompanyPhraseology($scope.contextDepartment).then(
-            function(resultDepartment) {
-                $modalInstance.close(resultDepartment);
+        WorkersCompService.SaveCompanyPhraseology($scope.contextPhraseology).then(
+            function(resultPhraseology) {
+                $modalInstance.close(resultPhraseology);
             },
             function(errors) {
                 $modalInstance.close(null);
@@ -51,14 +49,14 @@ BenefitMyApp.controller('DepartmentModalController', [
     }
 
     // Check whether the current state is valid for saving.
-    // 
+    //
     $scope.isValidToSave = function() {
         return !$scope.form.$invalid
-            && $scope.contextDepartment.phraseology
-            && $scope.contextDepartment.phraseology.id;
+            && $scope.contextPhraseology.phraseology
+            && $scope.contextPhraseology.phraseology.id;
     };
   }
-]).controller('DepartmentManagerDirectiveController', [
+]).controller('PhraseologyManagerDirectiveController', [
   '$scope',
   '$state',
   '$modal',
@@ -75,31 +73,31 @@ BenefitMyApp.controller('DepartmentModalController', [
 
     $scope.$watch('company', function(company) {
         if(company){
-            WorkersCompService.GetCompanyDepartments(company.id).then(function(companyDepartments) {
-                $scope.companyDepartments = companyDepartments;
+            WorkersCompService.GetCompanyPhraseologies(company.id).then(function(companyPhraseologies) {
+                $scope.companyPhraseologies = companyPhraseologies;
             });
         }
     });
 
-    $scope.openEditModal = function(department) {
+    $scope.openEditModal = function(phraseology) {
         var modalInstance = $modal.open({
-            templateUrl: '/static/partials/workers_comp/modal_edit_department.html',
-            controller: 'DepartmentModalController',
+            templateUrl: '/static/partials/workers_comp/modal_edit_phraseology.html',
+            controller: 'PhraseologyModalController',
             backdrop: 'static',
             size: 'md',
             resolve: {
                 company: function() {
                     return $scope.company;
                 },
-                department: function() {
-                    return angular.copy(department);
+                phraseology: function() {
+                    return angular.copy(phraseology);
                 }
             }
         });
 
-        modalInstance.result.then(function(resultDepartment){
-            if (resultDepartment){
-              var successMessage = "Your change to the department has been successfully saved.";
+        modalInstance.result.then(function(resultPhraseology){
+            if (resultPhraseology){
+              var successMessage = "Your change has been successfully saved.";
 
               $scope.showMessageWithOkayOnly('Success', successMessage);
             } else{
@@ -111,23 +109,23 @@ BenefitMyApp.controller('DepartmentModalController', [
         });
     };
 
-    $scope.deleteConfirmMsg = 'Are you sure you want to delete this department setup?';
-  
-    $scope.deleteDepartment = function(department) {
-        WorkersCompService.DeleteCompanyPhraseology(department)
+    $scope.deleteConfirmMsg = 'Are you sure you want to delete this phraseology setup?';
+
+    $scope.deletePhraseology = function(phraseology) {
+        WorkersCompService.DeleteCompanyPhraseology(phraseology)
         .then(function(response) {
             $state.reload();
         });
     };
   }
-]).directive('bmDepartmentManager', function(){
+]).directive('bmPhraseologyManager', function(){
 
     return {
         restrict: 'E',
         scope: {
             company: '='
         },
-        templateUrl: '/static/partials/workers_comp/directive_department_manager.html',
-        controller: 'DepartmentManagerDirectiveController'
+        templateUrl: '/static/partials/workers_comp/directive_phraseology_manager.html',
+        controller: 'PhraseologyManagerDirectiveController'
       };
 });

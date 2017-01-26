@@ -348,7 +348,9 @@ class UserViewTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.content, '')
+        issues = json.loads(response.content)
+        self.assertEqual(type(issues), list)
+        self.assertTrue(len(issues) > 0)
 
     def test_user_create_person_created(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})

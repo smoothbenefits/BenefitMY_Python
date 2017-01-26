@@ -9,6 +9,18 @@
   <div class="form-holder col-md-10 col-md-offset-1">
     <form name="form">
       <div class="row">
+        <div class="form-label">Employee Number</div>
+        <div class="textbox">
+          <input type="text"
+          name="employee-number"
+          ng-model="employeeProfileModel.employeeNumber"
+          ng-required="false" />
+          <div class="form-inline-error" ng-show="!isEmployeeNumberValid(employeeProfileModel.employeeNumber)">
+            <span>Employee number is invalid. A common reason is that the number is already associated with another employee.</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
         <div class="form-label">Job Title</div>
         <div class="textbox">
           <input type="text"
@@ -18,6 +30,16 @@
           <div class="form-inline-error" ng-show="form.job-title.$dirty && form.job-title.$invalid">
             <span ng-show="form.job_title.$error.required">Job Title is required</span>
           </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-label">Department</div>
+        <div class="textbox">
+          <select ng-model="employeeProfileModel.department"
+          ng-required="false"
+          name="employeeProfileModel.department"
+          ng-options="department.department for department in companyDepartments"
+          class="form-control"></select>
         </div>
       </div>
       <div class="row">

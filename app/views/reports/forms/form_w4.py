@@ -47,18 +47,20 @@ class FormW4View(ReportExportViewBase):
             'topmostSubform[0].Page1[0].Line1[0].f1_11_0_[0]': person_info.get_full_street_address(),
             'topmostSubform[0].Page1[0].Line1[0].f1_12_0_[0]': person_info.get_city_state_zipcode(),
             'topmostSubform[0].Page1[0].f1_13_0_[0]': person_info.ssn,
-            'topmostSubform[0].Page1[0].f1_14_0_[0]': w4_info.total_points,
-            'topmostSubform[0].Page1[0].f1_15_0_[0]': w4_info.extra_amount,
             'topmostSubform[0].Page1[0].f1_17_0_[0]': employer_line,
             'topmostSubform[0].Page1[0].f1_19_0_[0]': company_info.ein
         }
 
-        if (w4_info.marriage_status == W4_MARRIAGE_STATUS_SINGLE):
-            fields['topmostSubform[0].Page1[0].c1_01[0]'] = '1'
-        elif(w4_info.marriage_status == W4_MARRIAGE_STATUS_MARRIED):
-            fields['topmostSubform[0].Page1[0].c1_01[1]'] = '2'
-        elif(w4_info.marriage_status == W4_MARRIAGE_STATUS_MARRIED_HIGH_SINGLE):
-            fields['topmostSubform[0].Page1[0].c1_01[2]'] = '3'
+        if (w4_info):
+            fields['topmostSubform[0].Page1[0].f1_14_0_[0]'] = w4_info.total_points
+            fields['topmostSubform[0].Page1[0].f1_15_0_[0]'] = w4_info.extra_amount
+
+            if (w4_info.marriage_status == W4_MARRIAGE_STATUS_SINGLE):
+                fields['topmostSubform[0].Page1[0].c1_01[0]'] = '1'
+            elif(w4_info.marriage_status == W4_MARRIAGE_STATUS_MARRIED):
+                fields['topmostSubform[0].Page1[0].c1_01[1]'] = '2'
+            elif(w4_info.marriage_status == W4_MARRIAGE_STATUS_MARRIED_HIGH_SINGLE):
+                fields['topmostSubform[0].Page1[0].c1_01[2]'] = '3'
 
         file_name_prefix = ''
         full_name = person_info.get_full_name()

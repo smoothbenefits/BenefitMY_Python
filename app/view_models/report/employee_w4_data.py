@@ -1,9 +1,9 @@
 class EmployeeW4Data(object):
 
     def __init__(self, employee_w4):
-        self.total_points = None
-        self.extra_amount = None
-        self.marriage_status = None
+        self.total_points = ''
+        self.extra_amount = ''
+        self.marriage_status = ''
 
         if (employee_w4):
             self.total_points = employee_w4.user_defined_points

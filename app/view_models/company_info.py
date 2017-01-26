@@ -14,6 +14,7 @@ class CompanyInfo(object):
 
     def __init__(self, company_model):
         if (company_model):
+            self.company_id = company_model.id
             self.company_name = company_model.name
             self.ein = company_model.ein
             self.offer_of_coverage_code = company_model.offer_of_coverage_code

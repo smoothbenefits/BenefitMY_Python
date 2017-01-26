@@ -4,7 +4,6 @@ from StringIO import StringIO
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 
-from report_service_base import ReportServiceBase
 from pdf_report_service_base import PdfReportServiceBase
 
 from app.models.company import Company
@@ -57,11 +56,11 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._save()
 
     def _write_company(self, company_id):
-        users_id = self._get_all_employee_user_ids_for_company(company_id)
+        user_ids = self._get_all_employee_user_ids_for_company(company_id)
 
         # For each of them, write out his/her information
-        for i in range(len(users_id)):
-            self._write_employee(users_id[i], company_id)
+        for i in range(len(user_ids)):
+            self._write_employee(user_ids[i], company_id)
 
         return
 
@@ -139,13 +138,16 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         meta_info = []
         width_array = []
         if employee_profile:
+            if (employee_profile.employee_number):
+                meta_info.append("Employee NO.: {}".format(employee_profile.employee_number))
+                width_array.append(0.3)
             meta_info.append("Type: {}".format(employee_profile.employment_type))
-            width_array.append(0.3)
+            width_array.append(0.2)
             meta_info.append("Status: {}".format(employee_profile.employment_status))
-            width_array.append(0.3)
+            width_array.append(0.2)
         if company_group:
             meta_info.append("Group: {}".format(company_group.name))
-            width_array.append(0.3)
+            width_array.append(0.2)
 
         if meta_info:
             self._write_line_uniform_width(meta_info, width_array)
@@ -513,7 +515,7 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 self._write_line_uniform_width([
                     document.name,
                     'Signed' if document.signature is not None else 'Not Signed',
-                    ReportServiceBase.get_date_string(document.signature.created_at) if document.signature is not None else ''
+                    self._get_date_string(document.signature.created_at) if document.signature is not None else ''
                 ],
                 [0.6, 0.2, 0.2])
 
