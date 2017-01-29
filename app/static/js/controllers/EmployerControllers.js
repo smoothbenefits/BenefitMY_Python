@@ -10,6 +10,7 @@ var employerHome = employersController.controller('employerHome',
   'CompanyServiceProviderService',
   'CompanyFeatureService',
   'EmploymentStatuses',
+  'IntegrationProviderService',
   function ($scope,
             $location,
             $state,
@@ -18,7 +19,8 @@ var employerHome = employersController.controller('employerHome',
             countRepository,
             CompanyServiceProviderService,
             CompanyFeatureService,
-            EmploymentStatuses){
+            EmploymentStatuses,
+            IntegrationProviderService){
 
     $scope.employeeCount = 0;
     $scope.templateCount = 0;
@@ -59,6 +61,13 @@ var employerHome = employersController.controller('employerHome',
       });
     };
 
+    var loadCompanyIntegrationProviders = function(companyId) {
+        IntegrationProviderService.getIntegrationProvidersByCompany(companyId)
+        .then(function(integrationProviders) {
+            $scope.integrationProviders = integrationProviders;
+        });
+    };
+
     UserService.getCurUserInfo()
     .then(function(curUserInfo){
       $scope.company = curUserInfo.currentRole.company;
@@ -66,6 +75,7 @@ var employerHome = employersController.controller('employerHome',
       loadDocumentTemplatesCount($scope.company.id);
       loadVendorsCount($scope.company.id);
       loadCompanyFeatures($scope.company.id);
+      loadCompanyIntegrationProviders($scope.company.id);
     });
 
     $scope.rangedTimeCardEnabled = function() {
@@ -143,6 +153,15 @@ var employerHome = employersController.controller('employerHome',
     };
 
     $scope.viewSupport = function(){
+      $state.go('appSupport');
+    };
+
+    $scope.payrollServiceEnabled = function() {
+      return $scope.integrationProviders 
+        && $scope.integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll];
+    };
+
+    $scope.viewPayrollServices = function() {
       $state.go('appSupport');
     };
   }
