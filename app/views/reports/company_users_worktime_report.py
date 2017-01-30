@@ -30,7 +30,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, 0, col_num, 'First Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Last Name')
         col_num = self._write_field(excelSheet, 0, col_num, 'Employment Status')
-        col_num = self._write_field(excelSheet, 0, col_num, 'Department')
+        col_num = self._write_field(excelSheet, 0, col_num, 'Worker Comp Phraseology')
         col_num = self._write_field(excelSheet, 0, col_num, 'State')
         col_num = self._write_field(excelSheet, 0, col_num, 'Payroll Frequency')
         col_num = self._write_field(excelSheet, 0, col_num, 'Regular Hours')
@@ -66,13 +66,13 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         return person, profile
 
-    def _get_employee_department_code_in_effect(self, employee_person_id, week_start_date):
+    def _get_employee_phraseology_code_in_effect(self, employee_person_id, week_start_date):
         employee_phraseology = EmployeePhraseology.objects.filter(employee_person=employee_person_id).order_by('-start_date')
 
         if not employee_phraseology or len(employee_phraseology) <= 0:
             return None
 
-        # Check if employee's department code is in effect
+        # Check if employee's phraseology code is in effect
         for phraseology in employee_phraseology:
             # if end date not available, put it way into the future
             if not phraseology.end_date:
@@ -90,7 +90,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
             else:
                 return latest.phraseology.phraseology
 
-        # No department code in effect for the employee in current week
+        # No phraseology code in effect for the employee in current week
         return None
 
     def _write_company(self, row_num, company, week_start_date, excelSheet, submitted_sheets):
@@ -118,7 +118,7 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
         col_num = self._write_field(excelSheet, row_num, col_num, week_start_date.strftime('%m/%d/%Y'))
         col_num = self._write_person_name_info(person, excelSheet, row_num, col_num, employee_user_id)
         col_num = self._write_profile_info(profile, excelSheet, row_num, col_num)
-        col_num = self._write_person_workers_comp_department(person, excelSheet, week_start_date, row_num, col_num)
+        col_num = self._write_person_workers_comp_phraseology(person, excelSheet, week_start_date, row_num, col_num)
         col_num = self._write_state_info(timecard, excelSheet, row_num, col_num)
         col_num = self._write_field(excelSheet, row_num, col_num, company.pay_period_definition.name if company.pay_period_definition else '')
         col_num = self._write_week_total(timecard, profile, excelSheet, row_num, col_num)
@@ -158,13 +158,13 @@ class CompanyUsersWorktimeWeeklyReportView(ExcelExportViewBase):
 
         return col_num
 
-    def _write_person_workers_comp_department(self, person, excelSheet, week_start_date, row_num, col_num):
+    def _write_person_workers_comp_phraseology(self, person, excelSheet, week_start_date, row_num, col_num):
         if not person:
             col_num = self._write_field(excelSheet, row_num, col_num, 'N/A')
         else:
-            department = self._get_employee_department_code_in_effect(person.id, week_start_date)
-            if department:
-                col_num = self._write_field(excelSheet, row_num, col_num, department)
+            phraseology = self._get_employee_phraseology_code_in_effect(person.id, week_start_date)
+            if phraseology:
+                col_num = self._write_field(excelSheet, row_num, col_num, phraseology)
             else:
                 col_num = self._write_field(excelSheet, row_num, col_num, 'N/A')
         return col_num

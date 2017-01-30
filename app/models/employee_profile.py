@@ -4,6 +4,7 @@ import reversion
 from django.db import models
 from person import Person
 from company import Company
+from company_department import CompanyDepartment
 from sys_period_definition import SysPeriodDefinition
 
 FULL_TIME = 'FullTime'
@@ -51,6 +52,12 @@ class EmployeeProfile(models.Model):
     company = models.ForeignKey(Company,
                                 default=0,
                                 related_name="employee_profile_company")
+
+    department = models.ForeignKey(CompanyDepartment,
+                                   blank=True,
+                                   null=True,
+                                   on_delete=models.SET_NULL,
+                                   related_name="employee_profile_company_department")
 
     created_at = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now)
 

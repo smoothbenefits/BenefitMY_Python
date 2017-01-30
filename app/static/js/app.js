@@ -312,6 +312,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl:'/static/partials/add_employee.html',
                 controller:'employerUser'
             }).
+            state('admin_company_info', {
+                url: '/admin/company/:company_id',
+                templateUrl: '/static/partials/company_info/company_info_base.html',
+                controller: 'EmployerCompanyInfoController'
+            }).
             state('batch_add_employees', {
                 url: '/admin/employee/batch_add/:company_id',
                 templateUrl:'/static/partials/batch_employee_addition/main.html',
@@ -435,10 +440,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'employerAdminIndividualTimePunchCards',
                 params: {startDate: null}
             }).
-            state('admin_departments', {
-              url: '/admin/hr/departments',
-              templateUrl: '/static/partials/workers_comp/departments_base.html',
-              controller: 'employerViewDepartments'
+            state('admin_phraseologies', {
+              url: '/admin/hr/phraseologies',
+              templateUrl: '/static/partials/workers_comp/phraseologies_base.html',
+              controller: 'employerViewPhraseologies'
             }).
             state('admin_service_provider', {
               url: '/admin/service_provider',

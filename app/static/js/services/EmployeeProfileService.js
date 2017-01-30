@@ -6,8 +6,8 @@ benefitmyService.factory('EmployeeProfileService',
     'EmployeeManagementEmployeeTerminationRepository',
     'PersonService',
     function (
-        $q, 
-        EmployeeProfileRepository, 
+        $q,
+        EmployeeProfileRepository,
         EmployeeManagementEmployeeTerminationRepository,
         PersonService){
         var isFullTimeEmploymentType = function(employeeProfile) {
@@ -31,6 +31,13 @@ benefitmyService.factory('EmployeeProfileService',
             viewModel.lastUpdateDateTime = moment(employeeProfileDomainModel.updated_at).format(DATE_FORMAT_STRING);
             viewModel.employeeNumber = employeeProfileDomainModel.employee_number;
             viewModel.manager = employeeProfileDomainModel.manager;
+
+            if (employeeProfileDomainModel.department && employeeProfileDomainModel.department.department) {
+                viewModel.department = employeeProfileDomainModel.department.department;
+            } else {
+                viewModel.department = "";
+            }
+
             // TODO:
             // The below logic is quite cumbersome, but just to get the view model
             // working with angular's "date" input type...
@@ -70,6 +77,7 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.employment_status = employeeProfileViewModel.employmentStatus;
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
+            domainModel.department = employeeProfileViewModel.department.id;
             domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
             domainModel.employee_number = employeeProfileViewModel.employeeNumber;
             domainModel.manager = employeeProfileViewModel.manager ? employeeProfileViewModel.manager.id : null;
@@ -190,7 +198,7 @@ benefitmyService.factory('EmployeeProfileService',
                 };
 
                 return deferred.promise;
-            }, 
+            },
 
             terminateEmployee: function(terminationData) {
                 var domainModel = mapTerminationViewToDomainModel(terminationData);
@@ -206,7 +214,7 @@ benefitmyService.factory('EmployeeProfileService',
                 });
 
                 return deferred.promise;
-            }, 
+            },
 
 
         };

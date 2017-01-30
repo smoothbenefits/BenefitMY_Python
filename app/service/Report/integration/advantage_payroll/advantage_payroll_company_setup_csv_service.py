@@ -39,7 +39,7 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._save(outputStream)
 
     def _write_headers(self):
-        
+
         # IDs
         self._write_cell('CLTNO')
         self._write_cell('EMPNO')
@@ -95,7 +95,7 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         #   - CLTNO: Clint number registered with Advantage Payroll
         self._skip_cells(1)
 
-        # [TODO]: For now, use our internal user ID as the acting EMPNO 
+        # [TODO]: For now, use our internal user ID as the acting EMPNO
         #         i.e. Employee number. Until we have that in our system
         self._write_cell(employee_user_id)
 
@@ -132,7 +132,7 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         # Profile
         self._write_cell(self._get_date_string(employee_profile_info.hire_date))
         self._write_cell(self._get_pay_cycle_code(employee_profile_info.pay_cycle))
-        
+
         # [TODO]: For now, skip the department info
         self._skip_cells(1)
         self._write_cell(self._get_employment_status_code(employee_profile_info.employment_status))
@@ -200,7 +200,7 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
             return 'H'
         elif (employee_pay_type == PAY_TYPE_SALARY):
             return 'S'
-        else: 
+        else:
             return ''
 
     def _normalize_decimal_number(self, decimal_number):

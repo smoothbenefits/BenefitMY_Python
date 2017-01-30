@@ -33,6 +33,16 @@
         </div>
       </div>
       <div class="row">
+        <div class="form-label">Department</div>
+        <div class="textbox">
+          <select ng-model="employeeProfileModel.department"
+          ng-required="false"
+          name="employeeProfileModel.department"
+          ng-options="department.department for department in companyDepartments"
+          class="form-control"></select>
+        </div>
+      </div>
+      <div class="row">
         <div class="form-label">Employment Type</div>
         <div class="textbox">
           <select ng-model="employeeProfileModel.employmentType"

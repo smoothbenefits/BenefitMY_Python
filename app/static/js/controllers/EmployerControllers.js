@@ -152,6 +152,10 @@ var employerHome = employersController.controller('employerHome',
       $state.go('admin_reports');
     };
 
+    $scope.viewCompanyInfo = function() {
+      $location.path('/admin/company/' + $scope.company.id);
+    };
+
     $scope.viewSupport = function(){
       $state.go('appSupport');
     };
@@ -324,7 +328,7 @@ var employerUser = employersController.controller('employerUser',
       };
 
       $scope.createUserInvalid = function(){
-        return $scope.hasNoBenefitGroup() 
+        return $scope.hasNoBenefitGroup()
             || $scope.managerInvalid($scope.addUser.managerSelected)
             || !$scope.isEmployeeNumberValid($scope.addUser.employee_number);
       };
@@ -1300,6 +1304,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
   ['$scope',
    '$modal',
    '$modalInstance',
+   'CompanyDepartmentService',
    'EmployeeProfileService',
    'employeeProfileModel',
    'companyId',
@@ -1307,6 +1312,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
     function($scope,
              $modal,
              $modalInstance,
+             CompanyDepartmentService,
              EmployeeProfileService,
              employeeProfileModel,
              companyId,
@@ -1321,6 +1327,11 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
             return status === EmploymentStatuses.terminated;
           }
         );
+
+      CompanyDepartmentService.GetCompanyDepartments(companyId)
+      .then(function (companyDepartments) { 
+        $scope.companyDepartments = companyDepartments; 
+      });
 
       EmployeeProfileService.initializeCompanyEmployees(companyId);
 
@@ -1345,7 +1356,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
       };
 
       $scope.invalidToSave = function() {
-        return $scope.form.$invalid 
+        return $scope.form.$invalid
             || $scope.managerInvalid($scope.employeeProfileModel.manager)
             || !$scope.isEmployeeNumberValid($scope.employeeProfileModel.employeeNumber);
       }
@@ -1834,7 +1845,7 @@ var employerAdminIndividualTimePunchCards = employersController.controller('empl
   }
 ]);
 
-var employerViewDepartments = employersController.controller('employerViewDepartments', [
+var employerViewPhraseologies = employersController.controller('employerViewPhraseologies', [
     '$scope',
     '$state',
     '$stateParams',
@@ -2257,4 +2268,15 @@ var employerCompanyPayrollIntegrationController = employersController.controller
       $state.go('/admin');
     };
   }
+]);
+
+var employerCompanyInfoController = employersController.controller('EmployerCompanyInfoController',
+  ['$scope',
+    '$state',
+    '$stateParams',
+    function($scope, $state, $stateParams){
+      $scope.companyId = $stateParams.company_id;
+
+      $scope.departmentInfoExpanded = true;
+    }
 ]);

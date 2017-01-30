@@ -263,6 +263,11 @@ from app.views.workers_comp.employee_phraseology_view import (
     EmployeePhraseologyView,
     EmployeePhraseologyByEmployeePersonView)
 
+# Company Metadata
+from app.views.company_department_view import (
+    CompanyDepartmentView,
+    CompanyDepartmentByCompanyView)
+
 # Integrations
 
 # # Common
@@ -349,7 +354,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<comp_id>\w+)/open_enrollment/?$' % PREFIX, OpenEnrollmentDefinitionByCompanyView.as_view(), name='company_open_enrollment_api'),
     url(r'^%s/users/(?P<pk>\w+)/forms/1095c/?$' % PREFIX, Form1095CView.as_view(), name='employee_1095_c_form_api'),
     url(r'^%s/company/(?P<pk>\w+)/forms/1094c/?$' % PREFIX, Form1094CView.as_view(), name='company_1094_c_form_api'),
-    
+
     url(r'^%s/users/(?P<pk>\w+)/forms/i9/?$' % PREFIX, FormI9View.as_view(), name='employee_i9_form_api'),
     url(r'^%s/users/(?P<pk>\w+)/forms/w4/?$' % PREFIX, FormW4View.as_view(), name='employee_w4_form_api'),
 
@@ -722,6 +727,14 @@ urlpatterns = patterns('app.views',
         EmployeePhraseologyView.as_view(), name='employee_phraseology_post_api'),
     url(r'^%s/person/(?P<person_id>\w+)/phraseologys/?$' % PREFIX,
         EmployeePhraseologyByEmployeePersonView.as_view(), name='employee_phraseology_by_person_api'),
+
+    # Company Metadata
+    url(r'^%s/company_departments/(?P<pk>\w+)/?$' % PREFIX,
+        CompanyDepartmentView.as_view(), name='company_department_api'),
+    url(r'^%s/company_departments/?$' % PREFIX,
+        CompanyDepartmentView.as_view(), name='company_department_post_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/departments/?$' % PREFIX,
+        CompanyDepartmentByCompanyView.as_view(), name='company_department_by_company_api'),
 
     # Integration
 
