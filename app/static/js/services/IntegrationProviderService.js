@@ -64,19 +64,12 @@ benefitmyService.factory('IntegrationProviderService',
             return deferred.promise;
         };
 
-        var companyHasIntegrationProviderByServiceType = function(companyId, serviceType) {
-            return getIntegrationProvidersByCompany(companyId).then(function(providers) {
-                return providers && providers[serviceType];
-            });
-        };
-
         return {
             
             IntegrationProviderServiceTypes: IntegrationProviderServiceTypes,
             IntegrationProviderNames: IntegrationProviderNames,
 
-            getIntegrationProvidersByCompany: getIntegrationProvidersByCompany,
-            companyHasIntegrationProviderByServiceType: companyHasIntegrationProviderByServiceType
+            getIntegrationProvidersByCompany: getIntegrationProvidersByCompany
         };
     }
 ]);

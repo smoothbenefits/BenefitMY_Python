@@ -157,12 +157,22 @@ var employerHome = employersController.controller('employerHome',
     };
 
     $scope.payrollServiceEnabled = function() {
-      return $scope.integrationProviders 
-        && $scope.integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll];
+      var payrollProvider = null;
+
+      if ($scope.integrationProviders 
+        && $scope.integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll]) {
+        payrollProvider = $scope.integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll];
+      }
+
+      if (payrollProvider) {
+        return payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll;
+      }
+
+      return false;
     };
 
     $scope.viewPayrollServices = function() {
-      $state.go('appSupport');
+      $state.go('payrollProviderView');
     };
   }
 ]);
@@ -2216,4 +2226,35 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
             || $scope.showEmployeeW4FormDownload();
       };
     }
+]);
+
+var employerCompanyPayrollIntegrationController = employersController.controller('employerCompanyPayrollIntegrationController', [
+  '$scope', '$state', 'UserService', 'IntegrationProviderService',
+  function($scope, $state, UserService, IntegrationProviderService) {
+    var loadCompanyPayrollProvider = function(companyId) {
+        IntegrationProviderService.getIntegrationProvidersByCompany(companyId)
+        .then(function(integrationProviders) {
+            if (integrationProviders) {
+                $scope.payrollProvider = integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll];
+            }
+        });
+    };
+
+    UserService.getCurUserInfo().then(function(curUserInfo){
+      $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+      $scope.company = curUserInfo.currentRole.company;
+      loadCompanyPayrollProvider($scope.company.id);
+    });
+
+    // Whether to show the dedicated view for Advantage Payroll
+    $scope.showAdvantagePayrollView = function() {
+        return $scope.payrollProvider 
+            && $scope.payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll;
+    };
+
+    $scope.pageTitle = "Payroll Services";
+    $scope.backToDashboard = function() {
+      $state.go('/admin');
+    };
+  }
 ]);
