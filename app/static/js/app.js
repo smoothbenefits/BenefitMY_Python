@@ -666,7 +666,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'appSupportController'
             }).
             state('payrollProviderView', {
-              url: '/admin/payroll_provider',
+              url: '/admin/payroll_services/:company_id',
               templateUrl: '/static/partials/payroll_integration/main.html',
               controller: 'employerCompanyPayrollIntegrationController'
             });

@@ -1,16 +1,68 @@
-BenefitMyApp.controller('AdvantagePayrollViewDirectiveController', [
+BenefitMyApp.controller('PeriodReportModalController', [
+  '$scope',
+  '$modalInstance',
+  'AdvantagePayrollService',
+  'companyId',
+  function($scope,
+           $modalInstance,
+           AdvantagePayrollService,
+           companyId){
+
+    $scope.inputModel = {
+        startDate: '2017-01-01',
+        endDate: '2017-01-30'
+    };
+
+    $scope.isValidToDownload = function() {
+        return true;
+    };
+
+    $scope.getDownloadLink = function() {
+        return AdvantagePayrollService.getTimeTrackingReportCsvUrl(
+            companyId,
+            $scope.inputModel.startDate,
+            $scope.inputModel.endDate
+        );
+    };
+
+    $scope.close = function() {
+        $modalInstance.close();
+    };
+
+    $scope.cancel = function() {
+        $modalInstance.dismiss();
+    };
+  }
+]).controller('AdvantagePayrollViewDirectiveController', [
   '$scope',
   '$state',
   '$modal',
   '$controller',
+  'AdvantagePayrollService',
   function($scope,
            $state,
            $modal,
-           $controller){
+           $controller,
+           AdvantagePayrollService) {
 
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
 
+    $scope.allEmployeesSetupCsvDownloadLink = AdvantagePayrollService.getAllEmployeesPayrollSertupDataCsvUrl($scope.companyId);
+    
+    $scope.openPeriodExportModal = function() {
+        $modal.open({
+            templateUrl: '/static/partials/payroll_integration/modal_advantage_payroll_period_export.html',
+            controller: 'PeriodReportModalController',
+            backdrop: 'static',
+            size: 'md',
+            resolve: {
+                companyId: function() {
+                    return $scope.companyId;
+                }
+            }
+        });
+    };
   }
 ]).directive('bmAdvantagePayrollView', function(){
 

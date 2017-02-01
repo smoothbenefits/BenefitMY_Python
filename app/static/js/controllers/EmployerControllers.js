@@ -176,7 +176,9 @@ var employerHome = employersController.controller('employerHome',
     };
 
     $scope.viewPayrollServices = function() {
-      $state.go('payrollProviderView');
+      $state.go('payrollProviderView', {
+            company_id: $scope.company.id
+      });
     };
   }
 ]);
@@ -2240,8 +2242,8 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
 ]);
 
 var employerCompanyPayrollIntegrationController = employersController.controller('employerCompanyPayrollIntegrationController', [
-  '$scope', '$state', 'UserService', 'IntegrationProviderService',
-  function($scope, $state, UserService, IntegrationProviderService) {
+  '$scope', '$state', '$stateParams', 'IntegrationProviderService',
+  function($scope, $state, $stateParams, IntegrationProviderService) {
     var loadCompanyPayrollProvider = function(companyId) {
         IntegrationProviderService.getIntegrationProvidersByCompany(companyId)
         .then(function(integrationProviders) {
@@ -2251,11 +2253,8 @@ var employerCompanyPayrollIntegrationController = employersController.controller
         });
     };
 
-    UserService.getCurUserInfo().then(function(curUserInfo){
-      $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
-      $scope.company = curUserInfo.currentRole.company;
-      loadCompanyPayrollProvider($scope.company.id);
-    });
+    $scope.companyId = $stateParams.company_id;
+    loadCompanyPayrollProvider($scope.companyId);
 
     // Whether to show the dedicated view for Advantage Payroll
     $scope.showAdvantagePayrollView = function() {
