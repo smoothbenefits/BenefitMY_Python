@@ -10,7 +10,7 @@ from django.db import transaction
 from django.contrib.auth import get_user_model
 from app.models.company_user import CompanyUser
 from app.models.company import Company
-from app.custom_authentication import AuthUserManager
+from app.custom_authentication import AuthUserManager, AuthUser
 from app.models.person import Person
 from app.models.employee_profile import EmployeeProfile
 from app.serializers.person_serializer import PersonSerializer, PersonSimpleSerializer
@@ -122,6 +122,54 @@ class CurrentUserView(APIView):
         result = get_user_response_object(curUser)
 
         return Response(result)
+
+
+class UserCredentialView(APIView):
+
+    hash_key_service = HashKeyService()
+
+    '''
+    This is the view to allow one user to change the password of another user.
+    For now, password can be changed by the user him/herself or his/her admin.
+    '''
+    def put(self, request, format=None):
+
+        encoded_initiator = request.DATA.get('initiator')
+        encoded_target = request.DATA.get('target')
+        decoded_initiator = hash_key_service.decode_key(encoded_initiator)
+        decoded_target = hash_key_service.decode_key(encoded_target)
+
+        if (!is_credential_update_allowed(decoded_target, decoded_initiator)):
+            return HttpResponse(401)
+
+        new_password = request.DATA.get('password')
+        user = AuthUser.objects.get(pk=decoded_target)
+        user.set_password(new_password)
+        user.save()
+        return HttpResponse(200)
+
+
+    def is_credential_update_allowed(self, target, initiator):
+
+        if (target == initiator):
+            return True
+
+        target_company_users = CompanyUser.objects.filter(user=target)
+        target_company_id = None
+        if (len(target_company_users) > 0):
+            target_company_id = target_company_users[0].company_id
+
+        initiator_company_users = CompanyUser.objects.filter(user=initiator)
+        initiator_company_id = None
+        if (len(initiator_company_users) > 0):
+            for initiator_company_user in initiator_company_users:
+                if (initiator_company_user.company_user_type == 'Admin'):
+                    initiator_company_id = initiator_company_user.company_id
+
+        if (initiator_company_id == target_company_id and initiator_company_id):
+            return True
+
+        return False
 
 
 class UserByCredentialView(APIView):
