@@ -9,12 +9,16 @@ BenefitMyApp.controller('PeriodReportModalController', [
            companyId){
 
     $scope.inputModel = {
-        startDate: '2017-01-01',
-        endDate: '2017-01-30'
+        startDate: moment().format('M/D/YYYY'),
+        endDate: moment().format('M/D/YYYY')
     };
 
     $scope.isValidToDownload = function() {
-        return true;
+        var startDate = moment($scope.inputModel.startDate);
+        var endDate = moment($scope.inputModel.endDate);
+        return startDate.isValid()
+            && endDate.isValid()
+            && startDate <= endDate;
     };
 
     $scope.getDownloadLink = function() {

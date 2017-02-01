@@ -4,17 +4,28 @@
 <div class="modal-body col-md-12">
   <div class="form-holder col-md-10 col-md-offset-1">
     <form name="form">
-      <div class="form-label">Department Name*</div>
-      <div class="textbox">
-          <input type="text"
-            ng-model="inputModel.department"
-            placeholder="Start typing the department name"
-            name="department"
-            class="form-control">
-          <div class="form-validation-error" ng-show="form.department.$dirty && form.department.$invalid">
-            <span ng-show="form.department.$error.required">Department name is a required field</span>
+        <div class="col-md-6">
+          <div class="form-label">Start Date (m/d/yyyy)</div>
+          <div class="textbox">
+            <bm-date-picker
+              model="inputModel.startDate"
+              ng-required="true"
+              name="start_date"
+              fieldname="'start_date'"
+              dirty="form.start_date.$dirty" />
           </div>
-      </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-label">End Date (m/d/yyyy)</div>
+          <div class="textbox">
+            <bm-date-picker
+              model="inputModel.endDate"
+              ng-required="true"
+              name="end_date"
+              fieldname="'end_date'"
+              dirty="form.end_date.$dirty" />
+          </div>
+        </div>
     </form>
   </div>
 </div>
