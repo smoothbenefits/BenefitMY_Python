@@ -1,22 +1,25 @@
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('UserCredentialService',
-  ['UserCredentialRepository',
-  function (UserCredentialRepository){
+  ['UserCredentialRepository', '$q',
+  function (UserCredentialRepository, $q){
 
     var UpdateUserCredential = function (target, newPassword) {
+      var deferred = $q.defer();
 
       var request = {
         'target': target,
         'password': newPassword
       };
 
-      return UserCredentialRepository.update({}, request).$promise
+      UserCredentialRepository.update({}, request).$promise
       .then(function (response) {
-        return response;
+        deferred.resolve(response);
       }, function (error) {
-        return error;
+        deferred.reject(error);
       });
+
+      return deferred.promise;
     };
 
     return {
