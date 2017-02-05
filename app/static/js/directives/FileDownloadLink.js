@@ -3,11 +3,13 @@ BenefitMyApp.directive('bmFileDownloadLink',
     var controller = [
       '$scope',
       '$http',
+      '$attrs',
       'FileSaver',
       'Blob',
       function FamilyMemberManagerDirectiveController(
         $scope,
         $http,
+        $attrs,
         FileSaver,
         Blob) {
 
@@ -41,6 +43,11 @@ BenefitMyApp.directive('bmFileDownloadLink',
                 });
             }
           }
+
+          // Invoke callback if specified
+          if ('onFinish' in $attrs) {
+            $scope.onFinish();
+          }
         };
       }
     ];
@@ -48,7 +55,9 @@ BenefitMyApp.directive('bmFileDownloadLink',
       restrict:'E',
       scope:{
           linkHref: '=',
-          linkName: '@'
+          linkName: '@',
+          usePlainTextStyle: '@',
+          onFinish: '&'
       },
       templateUrl: '/static/partials/common/directive_file_download_link.html',
       controller: controller

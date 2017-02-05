@@ -824,3 +824,11 @@ benefitmyDomainModelFactories.factory('OpenEnrollmentDefinitionRepository', ['$r
     }
   }
 ]);
+
+benefitmyDomainModelFactories.factory('IntegrationProvideRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'companies/:companyId/integration_providers', {companyId: '@companyId'})
+    }
+  }
+]);

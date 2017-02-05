@@ -10,6 +10,7 @@ var employerHome = employersController.controller('employerHome',
   'CompanyServiceProviderService',
   'CompanyFeatureService',
   'EmploymentStatuses',
+  'IntegrationProviderService',
   function ($scope,
             $location,
             $state,
@@ -18,7 +19,8 @@ var employerHome = employersController.controller('employerHome',
             countRepository,
             CompanyServiceProviderService,
             CompanyFeatureService,
-            EmploymentStatuses){
+            EmploymentStatuses,
+            IntegrationProviderService){
 
     $scope.employeeCount = 0;
     $scope.templateCount = 0;
@@ -59,6 +61,13 @@ var employerHome = employersController.controller('employerHome',
       });
     };
 
+    var loadCompanyIntegrationProviders = function(companyId) {
+        IntegrationProviderService.getIntegrationProvidersByCompany(companyId)
+        .then(function(integrationProviders) {
+            $scope.integrationProviders = integrationProviders;
+        });
+    };
+
     UserService.getCurUserInfo()
     .then(function(curUserInfo){
       $scope.company = curUserInfo.currentRole.company;
@@ -66,6 +75,7 @@ var employerHome = employersController.controller('employerHome',
       loadDocumentTemplatesCount($scope.company.id);
       loadVendorsCount($scope.company.id);
       loadCompanyFeatures($scope.company.id);
+      loadCompanyIntegrationProviders($scope.company.id);
     });
 
     $scope.rangedTimeCardEnabled = function() {
@@ -148,6 +158,27 @@ var employerHome = employersController.controller('employerHome',
 
     $scope.viewSupport = function(){
       $state.go('appSupport');
+    };
+
+    $scope.payrollServiceEnabled = function() {
+      var payrollProvider = null;
+
+      if ($scope.integrationProviders 
+        && $scope.integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll]) {
+        payrollProvider = $scope.integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll];
+      }
+
+      if (payrollProvider) {
+        return payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll;
+      }
+
+      return false;
+    };
+
+    $scope.viewPayrollServices = function() {
+      $state.go('payrollProviderView', {
+            company_id: $scope.company.id
+      });
     };
   }
 ]);
@@ -2208,6 +2239,34 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
             || $scope.showEmployeeW4FormDownload();
       };
     }
+]);
+
+var employerCompanyPayrollIntegrationController = employersController.controller('employerCompanyPayrollIntegrationController', [
+  '$scope', '$state', '$stateParams', 'IntegrationProviderService',
+  function($scope, $state, $stateParams, IntegrationProviderService) {
+    var loadCompanyPayrollProvider = function(companyId) {
+        IntegrationProviderService.getIntegrationProvidersByCompany(companyId)
+        .then(function(integrationProviders) {
+            if (integrationProviders) {
+                $scope.payrollProvider = integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll];
+            }
+        });
+    };
+
+    $scope.companyId = $stateParams.company_id;
+    loadCompanyPayrollProvider($scope.companyId);
+
+    // Whether to show the dedicated view for Advantage Payroll
+    $scope.showAdvantagePayrollView = function() {
+        return $scope.payrollProvider 
+            && $scope.payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll;
+    };
+
+    $scope.pageTitle = "Payroll Services";
+    $scope.backToDashboard = function() {
+      $state.go('/admin');
+    };
+  }
 ]);
 
 var employerCompanyInfoController = employersController.controller('EmployerCompanyInfoController',
