@@ -526,3 +526,31 @@ class UserViewTestCase(TestCase, ViewTestBase):
         )
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 401)
+
+    def test_update_user_credential(self):
+        update_request = {
+            'target': 3,
+            'password': 'fortest'
+        }
+        response = self.client.put(
+            reverse('user_credential'),
+            json.dumps(update_request),
+            content_type='application/json'
+        )
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+
+        credential = {
+            'email': 'user3@benefitmy.com',
+            'password': 'fortest'
+        }
+        response = self.client.post(
+            reverse('user_by_credential'),
+            json.dumps(credential),
+            content_type='application/json'
+        )
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        
+        response_object = json.loads(response.content)
+        self.assertTrue('user_info' in response_object)

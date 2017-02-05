@@ -345,6 +345,14 @@
                                        employee-person-id="employee.employeeProfile.personId"
                                        company-id="employee.employeeProfile.companyId">
       </bm-employee-phraseology-manager>
+      <div class="panel">
+        <div class="panel-heading" ng-click="ResetPasswordExpanded = !ResetPasswordExpanded">
+          <b class="clickable"><span class="fa fa-toggle-down"></span>  Reset Password</b>
+        </div>
+        <div class="panel-body" collapse="!ResetPasswordExpanded">
+          <bm-credential-update target="employeeUserId" />
+        </div>
+      </div>
     </div>
   </div>
 

@@ -1081,6 +1081,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
 
     var compId = $stateParams.company_id;
     var employeeId = $stateParams.eid;
+    $scope.employeeUserId = employeeId;
     $scope.isBroker = false;
     $scope.employee = {};
     $scope.showEditButton = false;
@@ -1300,8 +1301,8 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
         );
 
       CompanyDepartmentService.GetCompanyDepartments(companyId)
-      .then(function (companyDepartments) { 
-        $scope.companyDepartments = companyDepartments; 
+      .then(function (companyDepartments) {
+        $scope.companyDepartments = companyDepartments;
       });
 
       EmployeeProfileService.initializeCompanyEmployees(companyId);
