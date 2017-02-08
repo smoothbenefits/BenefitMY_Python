@@ -28,6 +28,7 @@ class FormI9View(ReportExportViewBase):
         person_info = model_factory.get_employee_person_info(employee_user_id)
         company_info = model_factory.get_employee_company_info(employee_user_id)
         i9_info = model_factory.get_employee_i9_data(employee_user_id)
+        employee_profile_info = model_factory.get_employee_employment_profile_data(employee_user_id, company_info.company_id)
 
         phone_number = 'N/A'
         if (len(person_info.phones)) > 0:
@@ -41,34 +42,38 @@ class FormI9View(ReportExportViewBase):
 
         # Populate the form fields
         fields = {
-            'form1[0].#subform[6].FamilyName[0]': person_info.last_name,
-            'form1[0].#subform[6].GivenName[0]': person_info.first_name,
-            'form1[0].#subform[6].OtherNamesUsed[0]': 'N/A',
-            'form1[0].#subform[6].StreetNumberName[0]': person_info.get_full_street_address(),
-            'form1[0].#subform[6].CityOrTown[0]': person_info.city,
-            'form1[0].#subform[6].State[0]': person_info.state,
-            'form1[0].#subform[6].ZipCode[0]': person_info.zipcode,
-            'form1[0].#subform[6].DateOfBirth[0]': birth_date_text,
-            'form1[0].#subform[6].SocialSecurityNumber1[0]': ssn_tokenized[0],
-            'form1[0].#subform[6].SocialSecurityNumber2[0]': ssn_tokenized[1],
-            'form1[0].#subform[6].SocialSecurityNumber3[0]': ssn_tokenized[2],
-            'form1[0].#subform[6].email[0]': person_info.email,
-            'form1[0].#subform[6].TelephoneNumber[0]': phone_number
+            'employee_last_name': person_info.last_name,
+            'employee_first_name': person_info.first_name,
+            'employee_other_last_name': 'N/A',
+            'employee_address': person_info.get_full_street_address(),
+            'employee_city': person_info.city,
+            'employee_state': person_info.state,
+            'employee_zip_code': person_info.zipcode,
+            'employee_birth_date': birth_date_text,
+            'employee_ssn_1': ssn_tokenized[0],
+            'employee_ssn_2': ssn_tokenized[1],
+            'employee_ssn_3': ssn_tokenized[2],
+            'employee_email': person_info.email,
+            'employee_phone': phone_number
         }
 
+        s2_employee_status = ''
+
         if (i9_info):
-            fields['form1[0].#subform[6].DateofSignaturebyEmployee[0]'] = i9_info.signature_date
-            
+
             if (i9_info.citizen_data is not None):
-                fields['form1[0].#subform[6].Checkbox1a[0]'] = 'Y'
+                fields['employee_status_citizen'] = 'Yes'
+                s2_employee_status = 1
             elif (i9_info.non_citizen_data is not None):
-                fields['form1[0].#subform[6].Checkbox1b[0]'] = 'Y'
+                fields['employee_status_non_citizen'] = 'Yes'
+                s2_employee_status = 2
             elif (i9_info.perm_resident_data is not None):
-                fields['form1[0].#subform[6].Checkbox1c[0]'] = 'Y'
-                fields['form1[0].#subform[6].AlienNumber[0]'] = i9_info.perm_resident_data['uscis_number']
+                fields['employee_status_perm'] = 'Yes'
+                fields['employee_perm_uscis_number'] = i9_info.perm_resident_data['uscis_number']
+                s2_employee_status = 3
             elif (i9_info.authorized_worker_data is not None):
-                fields['form1[0].#subform[6].Checkbox1d[0]'] = 'Y'
-                fields['form1[0].#subform[6].ExpirationDate[0]'] = i9_info.authorized_worker_data['expiration_date']
+                fields['employee_status_alien'] = 'Yes'
+                fields['employee_authorization_expire_date'] = i9_info.authorized_worker_data['expiration_date']
                 uscis_number = ''
                 i94_number = ''
                 passport_number = ''
@@ -79,10 +84,27 @@ class FormI9View(ReportExportViewBase):
                     i94_number = i9_info.authorized_worker_data['i94_number']
                     passport_number = i9_info.authorized_worker_data['passport_number']
                     country_of_issuance = i9_info.authorized_worker_data['country_of_issuance'] 
-                fields['form1[0].#subform[6].AlienNumber[1]'] = uscis_number
-                fields['form1[0].#subform[6].I94Number[0]'] = i94_number
-                fields['form1[0].#subform[6].PassportNumber[0]'] = passport_number
-                fields['form1[0].#subform[6].CountryOfIssuance[0]'] = country_of_issuance
+                fields['employee_alien_uscis_number'] = uscis_number
+                fields['employee_alien_i94'] = i94_number
+                fields['employee_alien_passport'] = passport_number
+                fields['employee_alien_passport_country'] = country_of_issuance
+                s2_employee_status = 4
+
+        # Section 2
+        fields['s2_employee_last_name'] = person_info.last_name
+        fields['s2_employee_first_name'] = person_info.first_name
+        fields['s2_employee_status'] = s2_employee_status
+
+        if (company_info):
+            fields['employer_company_name'] = company_info.company_name
+            fields['employer_company_address'] = company_info.get_full_street_address()
+            fields['employer_company_city'] = company_info.city
+            fields['employer_company_state'] = company_info.state
+            fields['employer_company_zip_code'] = company_info.zipcode
+
+        if (employee_profile_info):
+            if (employee_profile_info.hire_date):
+                fields['employment_start_date'] = employee_profile_info.hire_date.strftime('%m/%d/%Y')
 
         file_name_prefix = ''
         full_name = person_info.get_full_name()
@@ -96,17 +118,6 @@ class FormI9View(ReportExportViewBase):
         formService = PDFFormFillService()
         pdf_stream = formService.get_filled_form_stream('PDF/i-9.pdf', fields)
 
-        # Now utilize the signature service to apply the user's signature
-        # if applicable
-        signature_service = SignatureService()
-        sign_success = signature_service.sign_pdf_stream(
-            pk,
-            pdf_stream,
-            PdfFormSignaturePlacements.Form_I9,
-            response
-        )
-
-        if (not sign_success):
-            response.write(pdf_stream.read())
+        response.write(pdf_stream.read())
 
         return response

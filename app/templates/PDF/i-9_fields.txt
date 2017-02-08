@@ -1,526 +1,198 @@
 ---
 FieldType: Text
-FieldName: form1[0].#subform[6].AlienNumber[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. I attest, under penalty of perjury, that I am: A lawful permanent resident (Alien Registration Number/USCIS Number). Enter Alien Registration Number/USCIS Number.
-FieldFlags: 25165824
-FieldJustification: Left
-FieldMaxLength: 9
----
-FieldType: Text
-FieldName: form1[0].#subform[6].TelephoneNumber[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter Telephone Number.
+FieldName: employee_last_name
 FieldFlags: 0
 FieldJustification: Left
-FieldMaxLength: 10
 ---
 FieldType: Text
-FieldName: form1[0].#subform[6].MiddleInitial[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter Middle Initial.
+FieldName: employee_first_name
 FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_other_last_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_address
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_apt_number
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_city
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_state
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_zip_code
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_middle_initial
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_birth_date
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_email
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_phone
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Button
+FieldName: employee_status_citizen
+FieldFlags: 0
+FieldValue: Off
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Button
+FieldName: employee_status_non_citizen
+FieldFlags: 0
+FieldValue: Off
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Button
+FieldName: employee_status_perm
+FieldFlags: 0
+FieldValue: Off
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Button
+FieldName: employee_status_alien
+FieldFlags: 0
+FieldValue: Off
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Text
+FieldName: employee_perm_uscis_number
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_authorization_expire_date
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_alien_uscis_number
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_alien_i94
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_alien_passport
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_alien_passport_country
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Button
+FieldName: preparer_yes
+FieldFlags: 0
+FieldValue: Off
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Text
+FieldName: s2_employee_last_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: s2_employee_first_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: s2_employee_middle_initial
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: s2_employee_status
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employer_company_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employer_company_address
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employer_company_city
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employer_company_state
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employer_company_zip_code
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_ssn_1
+FieldFlags: 16777216
 FieldJustification: Left
 FieldMaxLength: 3
 ---
 FieldType: Text
-FieldName: form1[0].#subform[6].FamilyName[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter Last Name (Family Name).
-FieldFlags: 0
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[6].GivenName[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter First Name (Given Name).
-FieldFlags: 0
-FieldJustification: Left
-FieldMaxLength: 18
----
-FieldType: Text
-FieldName: form1[0].#subform[6].OtherNamesUsed[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter Other Names Used (if any).
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[6].StreetNumberName[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter Address (Street Number and Name). 
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 33
----
-FieldType: Text
-FieldName: form1[0].#subform[6].AptNumber[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter Apartment Number.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 8
----
-FieldType: Text
-FieldName: form1[0].#subform[6].CityOrTown[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter City or Town.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Choice
-FieldName: form1[0].#subform[6].State[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Select State from list of States.
-FieldFlags: 67239936
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[6].DateOfBirth[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Date of Birth. Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[6].EmployeeSignature[0]
-FieldNameAlt:  Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. Signature of Employee. Original Signature
-FieldFlags: 1
-FieldJustification: Left
-FieldMaxLength: 1
----
-FieldType: Text
-FieldName: form1[0].#subform[6].DateofSignaturebyEmployee[0]
-FieldNameAlt:  Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. Date of Signature. Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[6].DateofSignature[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Preparer and/or Translator Certification. I attest, under penalty of perjury, that I have assisted in the completion of this form and that to the best of my knowledge the information is true and correct. Date of Signature. Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[6].Signature[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Preparer and/or Translator Certification. I attest, under penalty of perjury, that I have assisted in the completion of this form and that to the best of my knowledge the information is true and correct. Signature of Preparer or Translator
-FieldFlags: 1
-FieldJustification: Left
-FieldMaxLength: 1
----
-FieldType: Text
-FieldName: form1[0].#subform[6].StreetNumberName[1]
-FieldNameAlt: Section 1. Employee Information and Attestation. Preparer and/or Translator Certification. I attest, under penalty of perjury, that I have assisted in the completion of this form and that to the best of my knowledge the information is true and correct. Enter Address (Street Number and Name).
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 40
----
-FieldType: Text
-FieldName: form1[0].#subform[6].CityOrTown[1]
-FieldNameAlt: Section 1. Employee Information and Attestation. Preparer and/or Translator Certification. I attest, under penalty of perjury, that I have assisted in the completion of this form and that to the best of my knowledge the information is true and correct. Enter City or Town.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[6].LastName[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Preparer and/or Translator Certification. I attest, under penalty of perjury, that I have assisted in the completion of this form and that to the best of my knowledge the information is true and correct. Enter Last Name (Family Name).
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 50
----
-FieldType: Text
-FieldName: form1[0].#subform[6].FirstName[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Preparer and/or Translator Certification. I attest, under penalty of perjury, that I have assisted in the completion of this form and that to the best of my knowledge the information is true and correct. Enter First Name (Given Name).
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 40
----
-FieldType: Button
-FieldName: form1[0].#subform[6].Checkbox1a[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. I attest, under penalty of perjury, that I am: Check  A citizen of the United States     
-FieldFlags: 0
-FieldValue: Off
-FieldJustification: Left
-FieldStateOption: Off
-FieldStateOption: Y
----
-FieldType: Button
-FieldName: form1[0].#subform[6].Checkbox1b[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. I attest, under penalty of perjury, that I am: Check A noncitizen national of the United States (See instructions).
-FieldFlags: 0
-FieldValue: Off
-FieldJustification: Left
-FieldStateOption: Off
-FieldStateOption: Y
----
-FieldType: Button
-FieldName: form1[0].#subform[6].Checkbox1c[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. I attest, under penalty of perjury, that I am: Check A lawful permanent resident (Alien Registration Number/USCIS Number):    
-FieldFlags: 0
-FieldValue: Off
-FieldJustification: Left
-FieldStateOption: Off
-FieldStateOption: Y
----
-FieldType: Button
-FieldName: form1[0].#subform[6].Checkbox1d[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. I attest, under penalty of perjury, that I am: Check An alien authorized to work until (expiration date, if applicable, mm/dd/yyyy).
-FieldFlags: 0
-FieldValue: Off
-FieldJustification: Left
-FieldStateOption: Off
-FieldStateOption: Y
----
-FieldType: Text
-FieldName: form1[0].#subform[6].AlienNumber[1]
-FieldNameAlt: Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. 1. Enter Alien Registration Number/USCIS Number.
-FieldFlags: 25165824
-FieldJustification: Left
-FieldMaxLength: 9
----
-FieldType: Text
-FieldName: form1[0].#subform[6].I94Number[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. 2. Enter Form I-94 Admission Number.
-FieldFlags: 25165824
-FieldJustification: Left
-FieldMaxLength: 11
----
-FieldType: Text
-FieldName: form1[0].#subform[6].PassportNumber[0]
-FieldNameAlt:  Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. If you obtained your admission number from CBP in connection with your arrival in the United States, include the following: Enter Foreign Passport Number.
-FieldFlags: 0
-FieldJustification: Left
-FieldMaxLength: 36
----
-FieldType: Text
-FieldName: form1[0].#subform[6].email[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter E-mail Address.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[6].SocialSecurityNumber1[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. U.S. Social Security Number. Enter first 3 digits.
-FieldFlags: 25165824
-FieldJustification: Left
-FieldMaxLength: 3
----
-FieldType: Text
-FieldName: form1[0].#subform[6].SocialSecurityNumber2[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. U.S. Social Security Number. Enter next 2 digits.
-FieldFlags: 25165824
+FieldName: employee_ssn_2
+FieldFlags: 16777216
 FieldJustification: Left
 FieldMaxLength: 2
 ---
 FieldType: Text
-FieldName: form1[0].#subform[6].SocialSecurityNumber3[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter U.S. Social Security Number. Enter the last 4 digits of SSN.
-FieldFlags: 25165824
+FieldName: employee_ssn_3
+FieldFlags: 16777216
 FieldJustification: Left
 FieldMaxLength: 4
 ---
 FieldType: Text
-FieldName: form1[0].#subform[6].ExpirationDate[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. I attest, under penalty of perjury, that I am: An alien authorized to work until (expiration date, if applicable, mm/dd/yyyy). Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Choice
-FieldName: form1[0].#subform[6].CountryOfIssuance[0]
-FieldNameAlt:  Section 1. Employee Information and Attestation. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form. If you obtained your admission number from CBP in connection with your arrival in the United States, include the following: Select Country of Issuance from the drop down menu provided.
-FieldFlags: 67502080
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[6].ZipCode[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Enter Zip Code.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[6].ZipCode[1]
-FieldNameAlt: Section 1. Employee Information and Attestation. Preparer and/or Translator Certification. I attest, under penalty of perjury, that I have assisted in the completion of this form and that to the best of my knowledge the information is true and correct. Enter Zip Code.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Choice
-FieldName: form1[0].#subform[6].State_Preparer[0]
-FieldNameAlt: Section 1. Employee Information and Attestation. Preparer and/or Translator Certification. I attest, under penalty of perjury, that I have assisted in the completion of this form and that to the best of my knowledge the information is true and correct. Select State from list of States.
-FieldFlags: 67239936
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].Section3_Signature[0]
-FieldNameAlt: Section 3. Reverification and Rehires. I attest, under penalty of perjury, that to the best of my knowledge, this employee is authorized to work in the United States, and if the employee presented document(s), the document(s) I have examined appear to be genuine and to relate to the individual. Signature of Employer or Authorized Representative.
-FieldFlags: 1
-FieldJustification: Left
-FieldMaxLength: 1
----
-FieldType: Text
-FieldName: form1[0].#subform[7].EmployeeName[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Enter Employee Last Name, First Name and Middle Initial from Section 1. 
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 50
----
-FieldType: Text
-FieldName: form1[0].#subform[7].FirstDayOfWork[0]
-FieldNameAlt: ection 2. Employer or Authorized Representative Review and Verification. Certification. The employee's first day of employment Date. Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].DateofSignature[1]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Certification. Date of Signature. Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].StreetNumberName[2]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Certification. Enter Employer's Business or Organization Address. (Street Number and Name).
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 60
----
-FieldType: Choice
-FieldName: form1[0].#subform[7].State[1]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Certification. Select State from list of States.
-FieldFlags: 67239936
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].CityOrTown[2]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Certification. Enter City or Town.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].FamilyName[1]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Certification. Enter Last Name (Family Name).
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].GivenName[1]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Certification. Enter First Name (Given Name).
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 20
----
-FieldType: Text
-FieldName: form1[0].#subform[7].Title[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Certification. Enter Title of Employer or Authorized Representative.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 40
----
-FieldType: Text
-FieldName: form1[0].#subform[7].DateofRehire[0]
-FieldNameAlt: Section 3. Reverification and Rehires. B. Date of Rehire. Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].DocumentTitle[0]
-FieldNameAlt: Section 3. Reverification and Rehires. C.  If employee's previous grant of employment authorization has expired, provide the information for the document from List A or List C the employee presented that establishes current employment authorization in the space provided below. Enter Document Title. 
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 40
----
-FieldType: Text
-FieldName: form1[0].#subform[7].DocumentNumber[0]
-FieldNameAlt: Section 3. Reverification and Rehires. C.  If employee's previous grant of employment authorization has expired, provide the information for the document from List A or List C the employee presented that establishes current employment authorization in the space provided below. Enter Document Number.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].GivenName[2]
-FieldNameAlt: Section 3. Reverification and Rehires. A. New Name (if applicable). Enter First Name (Given Name).
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 25
----
-FieldType: Text
-FieldName: form1[0].#subform[7].FamilyName[2]
-FieldNameAlt: Section 3. Reverification and Rehires. A. New Name (if applicable). Enter Last Name (Family Name).
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 40
----
-FieldType: Text
-FieldName: form1[0].#subform[7].MiddleInitial[1]
-FieldNameAlt: Section 3. Reverification and Rehires. A. New Name (if applicable). Enter Middle Initial.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 4
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListC_IssuingAuthority[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List C. Employment Authorization. Enter Issuing Authority.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListC_DocumentNumber1[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List C. Employment Authorization. Enter Document Number.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListC_DocumentTitle[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List C. Employment Authorization. Enter Document Title.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListB_DocumentTitle[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List B. Identity. Enter Document Title.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListBDocumentNumber1[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List B. Identity. Enter Document Number.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListB_IssuingAuthority[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List B. Identity. Enter Issuing Authority.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListB_IssuingAuthority[1]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Enter Issuing Authority.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListADocumentNumber1[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Enter Issuing Authority.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListADocumentNumber1[1]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Enter Document Number.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListA_DocumentTitle[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Enter Document Title.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListC_ExpirationDate[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List C. Employment Authorization. Expiration Date (if any). Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListBExpirationDate[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List B. Identity. Expiration Date (if any). Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ExpirationDate[1]
-FieldNameAlt: Section 3. Reverification and Rehires. C.  If employee's previous grant of employment authorization has expired, provide the information for the document from List A or List C the employee presented that establishes current employment authorization in the space provided below. Expiration Date (if any). Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 0
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListA_DocumentTitle[1]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Enter Document Title.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListA_DocumentTitle[2]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Enter Document Title.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListADocumentNumber1[2]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Enter Issuing Authority.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListADocumentNumber1[3]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Enter Document Number.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListADocumentNumber1[4]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Enter Document Number.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 30
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListAExpirationDate_3[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Expiration Date (if any). Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListAExpirationDate_2[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Expiration Date (if any). Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ListAExpirationDate_1[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. List A. Identity and Employment Authorization. Expiration Date (if any). Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].DateofSignature[2]
-FieldNameAlt: Section 3. Reverification and Rehires. I attest, under penalty of perjury, that to the best of my knowledge, this employee is authorized to work in the United States, and if the employee presented document(s), the document(s) I have examined appear to be genuine and to relate to the individual. Date of Signature. Enter 2 digit month, 2 digit day and 4 digit year.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].EmployerBusinessOfOrgName[0]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Certification. Enter Employer's Business or Organization Name.
-FieldFlags: 8388608
-FieldJustification: Left
-FieldMaxLength: 40
----
-FieldType: Text
-FieldName: form1[0].#subform[7].EmployerOrAuthRepName[0]
-FieldNameAlt: Section 3. Reverification and Rehires. I attest, under penalty of perjury, that to the best of my knowledge, this employee is authorized to work in the United States, and if the employee presented document(s), the document(s) I have examined appear to be genuine and to relate to the individual. Print Name of Employer or Authorized Representative.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].ZipCode[2]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Certification. Enter Zip Code.
-FieldFlags: 8388608
-FieldJustification: Left
----
-FieldType: Text
-FieldName: form1[0].#subform[7].Signature[1]
-FieldNameAlt: Section 2. Employer or Authorized Representative Review and Verification. Certification. Signature of Employer or Authorized Representative.
-FieldFlags: 1
-FieldJustification: Left
-FieldMaxLength: 1
----
-FieldType: 
-FieldName: form1[0]
+FieldName: employment_start_date
 FieldFlags: 0
 FieldJustification: Left
