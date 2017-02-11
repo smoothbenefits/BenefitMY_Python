@@ -63,46 +63,64 @@ benefitmyService.factory('CompanyPersonnelsService',
             };
         };
 
-        var getCompanyEmployees = function(companyId){
+        var _filterEmployeeListByEmploymentStatus = function(employeeList, companyId, filterEmploymentStatus) {
+            var deferred = $q.defer();
+
+            // Filter status not specified, just return original list
+            if (!filterEmploymentStatus) {
+                deferred.resolve(employeeList);
+            }
+
+            EmployeeProfileService.initializeCompanyEmployees(companyId)
+            .then(function(employeeProfiles) {
+                _.each(employeeList, function(employee){
+                    var foundProfile = _.find(employeeProfiles, function(profile){
+                        return profile.person.user == employee.user.id;
+                    });
+                    employee.profile = foundProfile;
+                });
+                var filteredEmployees = _.filter(employeeList, function(employee){
+                  return employee.profile && employee.profile.employment_status == filterEmploymentStatus;
+                });
+                deferred.resolve(filteredEmployees);
+            });
+
+            return deferred.promise;
+        };
+
+        var getCompanyEmployees = function(companyId, filterEmploymentStatus){
             employeeCollection = _.findWhere(personnels, {companyId: companyId});
             if(!employeeCollection){
                 return _getCompanyPersonnels(companyId)
                     .then(function(companyPersonnels){
                         return companyPersonnels.employees;
+                    })
+                    .then(function(allEmployees) {
+                        return _filterEmployeeListByEmploymentStatus(
+                            allEmployees,
+                            companyId,
+                            filterEmploymentStatus
+                        );
                     });
             }
-            else{
-                var deferred = $q.defer();
-                deferred.resolve(employeeCollection.employees);
-                return deferred.promise;
+            else {
+                return _filterEmployeeListByEmploymentStatus(
+                    employeeCollection.employees,
+                    companyId,
+                    filterEmploymentStatus
+                );
             }
         };
 
         var GetPaginatedEmployees = function(companyId, pageNum, pageSize, status){
-
-            return $q.all([
-                    getCompanyEmployees(companyId),
-                    EmployeeProfileService.initializeCompanyEmployees(companyId)
-                ]).then(function(values){
-                    var employees = values[0];
-                    var profiles = values[1];
-                    _.each(employees, function(employee){
-                        var foundProfile = _.find(profiles, function(profile){
-                            return profile.person.user == employee.user.id;
-                        });
-                        employee.profile = foundProfile;
-                    });
-                    var filteredEmployees = _.filter(employees, function(employee){
-                      return employee.profile && employee.profile.employment_status == status;
-                    });
-                    
-                    return _GetPaginatedEmployees(
-                        _.sortBy(filteredEmployees, function(emp){
-                            return emp.user.last_name;
-                        }),
-                        pageNum,
-                        pageSize);
-                });
+            return getCompanyEmployees(companyId, status).then(function(filteredEmployees) {
+                return _GetPaginatedEmployees(
+                    _.sortBy(filteredEmployees, function(emp) {
+                        return emp.user.last_name;
+                    }),
+                    pageNum,
+                    pageSize);
+            });
         };
 
         var getCompanyBrokers = function(companyId){

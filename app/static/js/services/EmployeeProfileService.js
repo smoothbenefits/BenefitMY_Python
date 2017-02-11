@@ -9,7 +9,15 @@ benefitmyService.factory('EmployeeProfileService',
         $q,
         EmployeeProfileRepository,
         EmployeeManagementEmployeeTerminationRepository,
-        PersonService){
+        PersonService) {
+
+        var EmploymentStatuses = {
+            Active: 'Active',
+            Prospective: 'Prospective',
+            Terminated: 'Terminated',
+            OnLeave: 'OnLeave'
+        };
+
         var isFullTimeEmploymentType = function(employeeProfile) {
           if (!employeeProfile) {
             return false;
@@ -118,6 +126,8 @@ benefitmyService.factory('EmployeeProfileService',
         };
 
         return {
+            EmploymentStatuses: EmploymentStatuses,
+
             isFullTimeEmploymentType: isFullTimeEmploymentType,
             initializeCompanyEmployees: initializeCompanyEmployees,
             searchEmployees: searchEmployees,
