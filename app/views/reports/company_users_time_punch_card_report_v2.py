@@ -16,6 +16,7 @@ from app.service.time_punch_card_service import (
     PUNCH_CARD_TYPE_PAID_TIME_OFF,
     PUNCH_CARD_TYPE_SICK_TIME,
     PUNCH_CARD_TYPE_PERSONAL_LEAVE)
+from app.service.company_personnel_service import CompanyPersonnelService
 
 
 # In the following dictionary,
@@ -49,6 +50,7 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
 
     date_time_service = DateTimeService()
     time_punch_card_service = TimePunchCardService()
+    company_personnel_service = CompanyPersonnelService()
 
     def __init__(self):
         # List out instance variables that will be used
@@ -62,11 +64,17 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
     def _build_employee_info_cache(self):
         self._employee_list_cache = []
         all_employees = self._get_all_employee_users_for_company(self._company.id)
+        filtered_employee_user_ids = self.company_personnel_service.get_company_employee_user_ids_non_fully_terminated_in_time_range(
+            self._company.id,
+            self._week_start_date,
+            self._week_end_date
+        )
         for employee in all_employees:
-            self._employee_list_cache.append({
-                'user_id': employee.id,
-                'full_name': self._get_user_full_name(employee)
-            })
+            if (employee.id in filtered_employee_user_ids):
+                self._employee_list_cache.append({
+                    'user_id': employee.id,
+                    'full_name': self._get_user_full_name(employee)
+                })
 
     def _build_report_time_sheets_data(self):
         # The structure of the result would be a nested dictionary
