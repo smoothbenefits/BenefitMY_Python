@@ -117,11 +117,20 @@ benefitmyService.factory('EmployeeProfileService',
             });
         };
 
+        var searchEmployeesWithStatus = function(term, status){
+            return _.filter(_cachedEmployeeProfiles, function(employee){
+              var fullName = employee.first_name + ' ' + employee.last_name;
+              return employee.employment_status == status && 
+                fullName.toLowerCase().indexOf(term.toLowerCase()) > -1;
+            });
+        }
+
         return {
             isFullTimeEmploymentType: isFullTimeEmploymentType,
             initializeCompanyEmployees: initializeCompanyEmployees,
             searchEmployees: searchEmployees,
             searchEmployeesByEmployeeNumber: searchEmployeesByEmployeeNumber,
+            searchEmployeesWithStatus: searchEmployeesWithStatus,
 
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();

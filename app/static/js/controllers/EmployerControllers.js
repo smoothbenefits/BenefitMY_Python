@@ -406,16 +406,18 @@ var employerUser = employersController.controller('employerUser',
       $scope.setPaginatedEmployees(null);
 
       $scope.selectedEmployee = '';
+      $scope.typeAheadFiltered = false;
       $scope.$watch('selectedEmployee', function(){
         if (!angular.isString($scope.selectedEmployee)){
           $scope.setPaginatedEmployees($scope.selectedEmployee.id);
+          $scope.typeAheadFiltered = true;
         }
-        else if(!$scope.selectedEmployee){
+        else if(!$scope.selectedEmployee && $scope.typeAheadFiltered){
           $scope.setPaginatedEmployees(null);
+          $scope.typeAheadFiltered = false;
         }
       });
-      $scope.employeeIsInvalid = false;
-
+      $scope.getEmployeeWithStatus = EmployeeProfileService.searchEmployeesWithStatus;
   }
 ]);
 
