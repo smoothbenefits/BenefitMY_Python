@@ -78,7 +78,7 @@ benefitmyService.factory('CompanyPersonnelsService',
             }
         };
 
-        var GetPaginatedEmployees = function(companyId, pageNum, pageSize, status){
+        var GetPaginatedEmployees = function(companyId, pageNum, pageSize, status, filterProfileId){
 
             return $q.all([
                     getCompanyEmployees(companyId),
@@ -93,7 +93,9 @@ benefitmyService.factory('CompanyPersonnelsService',
                         employee.profile = foundProfile;
                     });
                     var filteredEmployees = _.filter(employees, function(employee){
-                      return employee.profile && employee.profile.employment_status == status;
+                      return employee.profile && 
+                        employee.profile.employment_status == status && 
+                        (!filterProfileId || employee.profile.id == filterProfileId);
                     });
                     
                     return _GetPaginatedEmployees(
