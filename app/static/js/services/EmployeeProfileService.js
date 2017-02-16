@@ -107,6 +107,14 @@ benefitmyService.factory('EmployeeProfileService',
             return EmployeeProfileRepository.ByCompany.query({companyId:compId})
             .$promise.then(function(profiles){
                 _cachedEmployeeProfiles = profiles;
+
+                // Attach utility functions
+                _.each(_cachedEmployeeProfiles, function(profile){
+                    profile.getListOfEmploymentStatusInTimeRange = function(timeRangeStart, timeRangeEnd) {
+                        return getListOfEmploymentStatusInTimeRange(this, timeRangeStart, timeRangeEnd);
+                    };
+                });
+
                 return _cachedEmployeeProfiles;
             });
         };
@@ -124,6 +132,49 @@ benefitmyService.factory('EmployeeProfileService',
                 && employee.employee_number.toLowerCase() == employeeNumber.toLowerCase();
             });
         };
+
+
+        var getListOfEmploymentStatusInTimeRange = function(employeeProfile, timeRangeStart, timeRangeEnd) {
+            var result = [];
+
+            // Conditions
+            // * If employment start date after time range, result => [Prospective]
+            // * If employment end date prior to time range, result => [Terminated]
+            // * If employment start date prior to time range and end date after => [Active]
+            // * If employment start date within time range, result to include/add [Prospective, Active]
+            // * If employment end date within time range, result to include/add [Active, Terminated] 
+            
+            var rangeStart = moment(timeRangeStart);
+            var rangeEnd = moment(timeRangeEnd);
+            var employmentStart = moment(employeeProfile.start_date);
+            var employmentEnd = employeeProfile.end_date ? moment(employeeProfile.end_date) : moment("2100-01-01");
+
+            if (employmentStart > rangeEnd) {
+                result = [EmploymentStatuses.Prospective];
+            } else if (employmentEnd < rangeStart) {
+                result = [EmploymentStatuses.Terminated];
+            } else if (employmentStart <= rangeStart && employmentEnd >= rangeEnd) {
+                result = [EmploymentStatuses.Active];
+            }
+
+            if (employmentStart >= rangeStart && employmentStart <= rangeEnd) {
+                _ensureValueInList(result, EmploymentStatuses.Active);
+                _ensureValueInList(result, EmploymentStatuses.Prospective);
+            }
+
+            if (employmentEnd >= rangeStart && employmentEnd <= rangeEnd) {
+                _ensureValueInList(result, EmploymentStatuses.Active);
+                _ensureValueInList(result, EmploymentStatuses.Terminated);
+            }
+
+            return result;
+        };
+
+        var _ensureValueInList = function(list, value) {
+            if (!_.contains(list, value)) {
+                list.push(value);
+            }
+        }
 
         return {
             EmploymentStatuses: EmploymentStatuses,

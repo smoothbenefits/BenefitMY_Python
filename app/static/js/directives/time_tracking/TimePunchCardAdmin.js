@@ -68,9 +68,15 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
         $scope.reloadTimePunchCard = function() {
 
+          var employeeFilterSpecs = CompanyPersonnelsService.constructEmployeeStatusFilterSpecs(
+            null,
+            EmployeeProfileService.EmploymentStatuses.Terminated,
+            $scope.selectedDisplayWeek.weekStartDate,
+            moment($scope.selectedDisplayWeek.weekStartDate).add(7, 'days')
+          );
           var employeePromise = CompanyPersonnelsService.getCompanyEmployees(
             $scope.company.id,
-            EmployeeProfileService.EmploymentStatuses.Active
+            employeeFilterSpecs
           );
 
           TimePunchCardService.GetPunchCardsByCompanyTimeRange($scope.company.id, $scope.selectedDisplayWeek.weekStartDate, true)

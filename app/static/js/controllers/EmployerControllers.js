@@ -1318,7 +1318,7 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
       $scope.employeeProfileModel = employeeProfileModel;
       $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern', 'PerDiem'];
       $scope.employmentStatusList = _.reject(
-        _.values(EmploymentStatuses),
+        _.values(EmployeeProfileService.EmploymentStatuses),
           function(status){
             return status === EmployeeProfileService.EmploymentStatuses.Terminated;
           }

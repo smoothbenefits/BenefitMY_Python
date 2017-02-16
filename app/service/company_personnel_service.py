@@ -99,7 +99,6 @@ class CompanyPersonnelService(object):
         #  * If employment start date prior to time range and end date after => [Active]
         #  * If employment start date within time range, result to include/add [Prospective, Active]
         #  * If employment end date within time range, result to include/add [Active, Terminated] 
-        #  * If time range include 'Now', result to include/add employee's current status
 
         if (employee_profile.start_date > time_range_end):
             result = [EMPLOYMENT_STATUS_PROSPECTIVE]
@@ -118,10 +117,6 @@ class CompanyPersonnelService(object):
             employee_profile.start_date, time_range_start, time_range_end)):
             self._ensure_value_in_list(result, EMPLOYMENT_STATUS_ACTIVE)
             self._ensure_value_in_list(result, EMPLOYMENT_STATUS_TERMINATED)
-
-        if (self._date_time_service.is_time_in_range(
-            datetime.now(), time_range_start, time_range_end)):
-            self._ensure_value_in_list(result, employee_profile.employment_status)
 
         return result;
 
