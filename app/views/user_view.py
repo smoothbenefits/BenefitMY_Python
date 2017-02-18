@@ -8,7 +8,7 @@ from rest_framework.authentication import BasicAuthentication
 
 from django.db import transaction
 from django.contrib.auth import get_user_model
-from app.models.company_user import CompanyUser
+from app.models.company_user import CompanyUser, USER_TYPE_ADMIN
 from app.models.company import Company
 from app.custom_authentication import AuthUserManager, AuthUser
 from app.models.person import Person
@@ -133,12 +133,35 @@ class UserCredentialView(APIView):
     def put(self, request, format=None):
 
         target_user = request.DATA.get('target')
-        new_password = request.DATA.get('password')
-        user = AuthUser.objects.get(pk=target_user)
-        user.set_password(new_password)
-        user.save()
-        print 'SUCCESS'
-        return HttpResponse(status=200)
+        initiator_user = request.DATA.get('initiator')
+
+        if self._is_valid_initiator(initiator_user, target_user):
+            new_password = request.DATA.get('password')
+            user = AuthUser.objects.get(pk=target_user)
+            user.set_password(new_password)
+            user.save()
+            return HttpResponse(status=204)
+        else:
+            return HttpResponse(status=403)
+
+    def _is_valid_initiator(self, initiator, target):
+
+        if initiator == target:
+            return True
+
+        targetCompanyUsers = CompanyUser.objects.filter(user=target)
+        initiatorCompanyUsers = CompanyUser.objects.filter(user=initiator)
+
+        targetCompanies = []
+        for companyUser in targetCompanyUsers:
+            if companyUser.company not in targetCompanies:
+                targetCompanies.append(companyUser.company.id)
+
+        for companyUser in initiatorCompanyUsers:
+            if companyUser.company.id in targetCompanies:
+                return True
+
+        return False
 
 
 class UserByCredentialView(APIView):

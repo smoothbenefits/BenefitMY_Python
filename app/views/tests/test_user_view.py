@@ -529,6 +529,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
 
     def test_update_user_credential(self):
         update_request = {
+            'initiator': 2,
             'target': 3,
             'password': 'fortest'
         }
@@ -538,7 +539,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
             content_type='application/json'
         )
         self.assertIsNotNone(response)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
 
         credential = {
             'email': 'user3@benefitmy.com',
@@ -551,6 +552,6 @@ class UserViewTestCase(TestCase, ViewTestBase):
         )
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 200)
-        
+
         response_object = json.loads(response.content)
         self.assertTrue('user_info' in response_object)

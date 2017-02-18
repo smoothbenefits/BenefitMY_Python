@@ -15,6 +15,7 @@ BenefitMyApp.directive('bmCredentialUpdate', function() {
         $controller('modalMessageControllerBase', {$scope: $scope});
 
         var targetUserId = $scope.target;
+        var initiatorUserId = $scope.initiator;
 
         $scope.validPassword = function() {
           if (!$scope.newPassword) {
@@ -29,7 +30,7 @@ BenefitMyApp.directive('bmCredentialUpdate', function() {
             return false;
           }
 
-          if ($scope.newPassword.length < 6) {
+          if ($scope.newPassword.length < 8) {
             return false;
           }
 
@@ -39,10 +40,17 @@ BenefitMyApp.directive('bmCredentialUpdate', function() {
         $scope.save = function () {
           if (!$scope.validPassword()) {
             var errorMessage = 'Please make sure you provide a valid password. \n';
-            errorMessage += 'A valid password should be at least 6 character long.';
+
+            if ($scope.newPassword !== $scope.passwordRepeat) {
+              errorMessage += 'Re-entered password does not match the original value. \n';
+            }
+
+            if ($scope.newPassword.length < 8) {
+              errorMessage += 'Password should be at least 8-charater long. \n';
+            }
             $scope.showMessageWithOkayOnly('Error', errorMessage);
           } else {
-            UserCredentialService.UpdateUserCredential(targetUserId, $scope.newPassword)
+            UserCredentialService.UpdateUserCredential(initiatorUserId, targetUserId, $scope.newPassword)
             .then(function() {
               $scope.showMessageWithOkayOnly('Success', 'Changes are saved successfully.');
               $scope.resetPassword();
@@ -64,7 +72,8 @@ BenefitMyApp.directive('bmCredentialUpdate', function() {
   return {
     restrict: 'E',
     scope: {
-        target: '='
+        target: '=',
+        initiator: '='
     },
     templateUrl: '/static/partials/common/directive_credential_update.html',
     controller: controller
