@@ -240,12 +240,13 @@ var employerUser = employersController.controller('employerUser',
         }
       });
 
-      $scope.setPaginatedEmployees = function(){
+      $scope.setPaginatedEmployees = function(filterName){
         CompanyPersonnelsService.GetPaginatedEmployees(
           $scope.compId,
           $scope.paginatedEmployees.currentPage,
           $scope.paginatedEmployees.pageSize,
-          $scope.currentStatus)
+          $scope.currentStatus,
+          filterName)
         .then(function(employees){
           $scope.paginatedEmployees.list = employees.list;
           _.each($scope.paginatedEmployees.list, function(employee) {
@@ -393,14 +394,28 @@ var employerUser = employersController.controller('employerUser',
       $scope.toggleStatusForView = function(){
         $scope.currentStatus = $scope.nextStatus;
         $scope.nextStatus = toggleEmployeeStatus($scope.nextStatus);
-        $scope.setPaginatedEmployees();
+        $scope.setPaginatedEmployees(null);
       };
 
       $scope.showAddLink = function(){
         return $scope.currentStatus == EmployeeProfileService.EmploymentStatuses.Active;
       };
 
-      $scope.setPaginatedEmployees();
+      $scope.setPaginatedEmployees(null);
+
+      $scope.selectedEmployee = '';
+      $scope.typeAheadFiltered = false;
+      $scope.$watch('selectedEmployee', function(){
+        if (!angular.isString($scope.selectedEmployee)){
+          $scope.setPaginatedEmployees($scope.selectedEmployee.id);
+          $scope.typeAheadFiltered = true;
+        }
+        else if(!$scope.selectedEmployee && $scope.typeAheadFiltered){
+          $scope.setPaginatedEmployees(null);
+          $scope.typeAheadFiltered = false;
+        }
+      });
+      $scope.getEmployeeWithStatus = EmployeeProfileService.searchEmployeesWithStatus;
   }
 ]);
 

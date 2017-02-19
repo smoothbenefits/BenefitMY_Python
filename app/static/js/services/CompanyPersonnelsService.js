@@ -71,7 +71,7 @@ benefitmyService.factory('CompanyPersonnelsService',
                 deferred.resolve(employeeList);
             }
 
-            EmployeeProfileService.initializeCompanyEmployees(companyId)
+            EmployeeProfileService.getCompanyEmployeeProfiles(companyId)
             .then(function(employeeProfiles) {
                 _.each(employeeList, function(employee){
                     var foundProfile = _.find(employeeProfiles, function(profile){
@@ -81,6 +81,31 @@ benefitmyService.factory('CompanyPersonnelsService',
                 });
                 var filteredEmployees = _.filter(employeeList, function(employee){
                   return employee.profile && employeeStatusFilterSpecs.profileMatches(employee.profile);
+                });
+                deferred.resolve(filteredEmployees);
+            });
+
+            return deferred.promise;
+        };
+
+        var _filterEmployeeListByProfileId = function(employeeList, companyId, filterProfileId) {
+            var deferred = $q.defer();
+
+            // Filter not specified, just return original list
+            if (!filterProfileId) {
+                deferred.resolve(employeeList);
+            }
+
+            EmployeeProfileService.getCompanyEmployeeProfiles(companyId)
+            .then(function(employeeProfiles) {
+                _.each(employeeList, function(employee){
+                    var foundProfile = _.find(employeeProfiles, function(profile){
+                        return profile.person.user == employee.user.id;
+                    });
+                    employee.profile = foundProfile;
+                });
+                var filteredEmployees = _.filter(employeeList, function(employee){
+                  return employee.profile && employee.profile.id == filterProfileId;
                 });
                 deferred.resolve(filteredEmployees);
             });
@@ -114,15 +139,17 @@ benefitmyService.factory('CompanyPersonnelsService',
             }
         };
 
-        var GetPaginatedEmployees = function(companyId, pageNum, pageSize, status){
+        var GetPaginatedEmployees = function(companyId, pageNum, pageSize, status, filterProfileId){
             var filterSpecs = constructEmployeeStatusFilterSpecs(status);
             return getCompanyEmployees(companyId, filterSpecs).then(function(filteredEmployees) {
-                return _GetPaginatedEmployees(
-                    _.sortBy(filteredEmployees, function(emp) {
-                        return emp.user.last_name;
-                    }),
-                    pageNum,
-                    pageSize);
+                return _filterEmployeeListByProfileId(filteredEmployees, companyId, filterProfileId).then(function(filteredByProfileId) {
+                    return _GetPaginatedEmployees(
+                        _.sortBy(filteredByProfileId, function(emp) {
+                            return emp.user.last_name;
+                        }),
+                        pageNum,
+                        pageSize);
+                });
             });
         };
 

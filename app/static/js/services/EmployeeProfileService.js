@@ -119,6 +119,21 @@ benefitmyService.factory('EmployeeProfileService',
             });
         };
 
+        var getCompanyEmployeeProfiles = function(companyId) {
+            var deferred = $q.defer();
+
+            // Filter not specified, just return original list
+            if (_cachedEmployeeProfiles && _cachedEmployeeProfiles.length > 0) {
+                deferred.resolve(_cachedEmployeeProfiles);
+            }
+
+            return initializeCompanyEmployees(companyId);
+        };
+
+        var _resetCache = function() {
+            _cachedEmployeeProfiles = [];
+        };
+
         var searchEmployees = function(term){
             return _.filter(_cachedEmployeeProfiles, function(employee){
               var fullName = employee.first_name + ' ' + employee.last_name;
@@ -132,7 +147,6 @@ benefitmyService.factory('EmployeeProfileService',
                 && employee.employee_number.toLowerCase() == employeeNumber.toLowerCase();
             });
         };
-
 
         var getListOfEmploymentStatusInTimeRange = function(employeeProfile, timeRangeStart, timeRangeEnd) {
             var result = [];
@@ -174,15 +188,30 @@ benefitmyService.factory('EmployeeProfileService',
             if (!_.contains(list, value)) {
                 list.push(value);
             }
-        }
+        };
+
+        var searchEmployeesWithStatus = function(term, status){
+            return _.filter(_cachedEmployeeProfiles, function(employee){
+              var fullName = employee.first_name + ' ' + employee.last_name;
+              var currentActiveEmploymentStatues = getListOfEmploymentStatusInTimeRange(
+                    employee,
+                    moment(),
+                    moment()
+                );
+              return _.contains(currentActiveEmploymentStatues, status) && 
+                fullName.toLowerCase().indexOf(term.toLowerCase()) > -1;
+            });
+        };
 
         return {
             EmploymentStatuses: EmploymentStatuses,
 
             isFullTimeEmploymentType: isFullTimeEmploymentType,
             initializeCompanyEmployees: initializeCompanyEmployees,
+            getCompanyEmployeeProfiles: getCompanyEmployeeProfiles,
             searchEmployees: searchEmployees,
             searchEmployeesByEmployeeNumber: searchEmployeesByEmployeeNumber,
+            searchEmployeesWithStatus: searchEmployeesWithStatus,
 
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();
@@ -258,6 +287,8 @@ benefitmyService.factory('EmployeeProfileService',
                     });
                 };
 
+                _resetCache();
+
                 return deferred.promise;
             },
 
@@ -273,6 +304,8 @@ benefitmyService.factory('EmployeeProfileService',
                 function(error){
                     deferred.reject(error);
                 });
+
+                _resetCache();
 
                 return deferred.promise;
             },
