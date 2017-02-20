@@ -9,7 +9,7 @@ var employerHome = employersController.controller('employerHome',
   'countRepository',
   'CompanyServiceProviderService',
   'CompanyFeatureService',
-  'EmploymentStatuses',
+  'EmployeeProfileService',
   'IntegrationProviderService',
   function ($scope,
             $location,
@@ -19,7 +19,7 @@ var employerHome = employersController.controller('employerHome',
             countRepository,
             CompanyServiceProviderService,
             CompanyFeatureService,
-            EmploymentStatuses,
+            EmployeeProfileService,
             IntegrationProviderService){
 
     $scope.employeeCount = 0;
@@ -29,7 +29,7 @@ var employerHome = employersController.controller('employerHome',
     var loadWorkerCount = function(companyId){
       countRepository.employeeCount.get({
         companyId:companyId,
-        status:EmploymentStatuses.active
+        status:EmployeeProfileService.EmploymentStatuses.Active
       })
         .$promise.then(function(employeeCountResponse){
           $scope.employeeCount = employeeCountResponse.employees_count;
@@ -197,7 +197,6 @@ var employerUser = employersController.controller('employerUser',
    'EmployerEmployeeManagementService',
    'CompanyBenefitGroupService',
    'EmployeeProfileService',
-   'EmploymentStatuses',
   function employerUser($scope,
                         $state,
                         $stateParams,
@@ -210,8 +209,7 @@ var employerUser = employersController.controller('employerUser',
                         CompensationService,
                         EmployerEmployeeManagementService,
                         CompanyBenefitGroupService,
-                        EmployeeProfileService,
-                        EmploymentStatuses){
+                        EmployeeProfileService){
       $scope.compId = $stateParams.company_id;
       $scope.pages = [];
       $scope.brokers = [];
@@ -233,7 +231,7 @@ var employerUser = employersController.controller('employerUser',
         })
       };
 
-      $scope.currentStatus = EmploymentStatuses.active;
+      $scope.currentStatus = EmployeeProfileService.EmploymentStatuses.Active;
       CompanyBenefitGroupService.GetCompanyBenefitGroupByCompany($scope.compId)
       .then(function(groups) {
         $scope.groups = groups;
@@ -384,11 +382,11 @@ var employerUser = employersController.controller('employerUser',
 
       //Employee status functions
       var toggleEmployeeStatus = function(statusToToggle) {
-        if (statusToToggle === EmploymentStatuses.active) {
-          return EmploymentStatuses.terminated;
+        if (statusToToggle === EmployeeProfileService.EmploymentStatuses.Active) {
+          return EmployeeProfileService.EmploymentStatuses.Terminated;
         }
 
-        return EmploymentStatuses.active;
+        return EmployeeProfileService.EmploymentStatuses.Active;
       };
 
       $scope.nextStatus = toggleEmployeeStatus($scope.currentStatus);
@@ -400,7 +398,7 @@ var employerUser = employersController.controller('employerUser',
       };
 
       $scope.showAddLink = function(){
-        return $scope.currentStatus == EmploymentStatuses.active;
+        return $scope.currentStatus == EmployeeProfileService.EmploymentStatuses.Active;
       };
 
       $scope.setPaginatedEmployees(null);
@@ -1105,7 +1103,6 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'employmentAuthRepository',
   'employeeTaxRepository',
   'EmployeeProfileService',
-  'EmploymentStatuses',
   'CompensationService',
   'PersonService',
   function($scope,
@@ -1118,7 +1115,6 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            employmentAuthRepository,
            employeeTaxRepository,
            EmployeeProfileService,
-           EmploymentStatuses,
            CompensationService,
            PersonService){
 
@@ -1151,9 +1147,9 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
             $scope.employee.employeeProfile = profile;
             $scope.$watch('employee.employeeProfile.employmentStatus',
               function(employmentStatus){
-                $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmploymentStatuses.terminated;
+                $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmployeeProfileService.EmploymentStatuses.Terminated;
                 $scope.terminateMessage = undefined;
-                if(employmentStatus && employmentStatus === EmploymentStatuses.terminated){
+                if(employmentStatus && employmentStatus === EmployeeProfileService.EmploymentStatuses.Terminated){
                   $scope.terminateMessage = "Employment terminated";
                 };
             });
@@ -1325,23 +1321,21 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
    'EmployeeProfileService',
    'employeeProfileModel',
    'companyId',
-   'EmploymentStatuses',
     function($scope,
              $modal,
              $modalInstance,
              CompanyDepartmentService,
              EmployeeProfileService,
              employeeProfileModel,
-             companyId,
-             EmploymentStatuses){
+             companyId){
 
       $scope.errorMessage = null;
       $scope.employeeProfileModel = employeeProfileModel;
       $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern', 'PerDiem'];
       $scope.employmentStatusList = _.reject(
-        _.values(EmploymentStatuses),
+        _.values(EmployeeProfileService.EmploymentStatuses),
           function(status){
-            return status === EmploymentStatuses.terminated;
+            return status === EmployeeProfileService.EmploymentStatuses.Terminated;
           }
         );
 
