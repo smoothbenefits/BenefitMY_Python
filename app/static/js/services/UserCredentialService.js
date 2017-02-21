@@ -4,12 +4,11 @@ benefitmyService.factory('UserCredentialService',
   ['UserCredentialRepository', '$q',
   function (UserCredentialRepository, $q){
 
-    var UpdateUserCredential = function (initiator, target, newPassword) {
+    var UpdateUserCredential = function (target, newPassword) {
       var deferred = $q.defer();
 
       var request = {
         'target': target,
-        'initiator': initiator,
         'password': newPassword
       };
 

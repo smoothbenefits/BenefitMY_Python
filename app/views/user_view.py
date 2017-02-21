@@ -134,8 +134,12 @@ class UserCredentialView(APIView):
 
         target_user = request.DATA.get('target')
         initiator_user = request.DATA.get('initiator')
+        user_user = request.user
 
-        if self._is_valid_initiator(initiator_user, target_user):
+        initiator_user = AuthUser.objects.filter(email=request.user)
+        initiator_user_id = initiator_user[0].id
+
+        if self._is_valid_initiator(initiator_user_id, target_user):
             new_password = request.DATA.get('password')
             user = AuthUser.objects.get(pk=target_user)
             user.set_password(new_password)

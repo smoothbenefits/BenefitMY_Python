@@ -234,23 +234,16 @@ var employerUser = employersController.controller('employerUser',
       };
 
       $scope.resetPassword = function(employeeUserId) {
-        UserService.getCurUserInfo().then(function(userInfo) {
-          var currentUserId = userInfo.user.id;
-
-          var modalInstance = $modal.open({
-            templateUrl: '/static/partials/employee_record/modal_edit_employee_password.html',
-            controller: 'resetEmployeePasswordModalController',
-            size: 'md',
-            backdrop: 'static',
-            resolve: {
-              initiatorUserId: function() {
-                return currentUserId;
-              },
-              targetUserId: function() {
-                return employeeUserId;
-              }
+        var modalInstance = $modal.open({
+          templateUrl: '/static/partials/employee_record/modal_edit_employee_password.html',
+          controller: 'resetEmployeePasswordModalController',
+          size: 'md',
+          backdrop: 'static',
+          resolve: {
+            targetUserId: function() {
+              return employeeUserId;
             }
-          });
+          }
         });
       };
 
@@ -1303,16 +1296,13 @@ var resetEmployeePasswordModalController = employersController.controller('reset
   ['$scope',
    '$modal',
    '$modalInstance',
-   'initiatorUserId',
    'targetUserId',
    function($scope,
             $modal,
             $modalInstance,
-            initiatorUserId,
             targetUserId) {
 
       $scope.targetUserId = targetUserId;
-      $scope.initiatorUserId = initiatorUserId;
 
       $scope.back = function() {
         $modalInstance.dismiss();

@@ -15,7 +15,6 @@ BenefitMyApp.directive('bmCredentialUpdate', function() {
         $controller('modalMessageControllerBase', {$scope: $scope});
 
         var targetUserId = $scope.target;
-        var initiatorUserId = $scope.initiator;
 
         $scope.validPassword = function() {
           if (!$scope.newPassword) {
@@ -50,7 +49,7 @@ BenefitMyApp.directive('bmCredentialUpdate', function() {
             }
             $scope.showMessageWithOkayOnly('Error', errorMessage);
           } else {
-            UserCredentialService.UpdateUserCredential(initiatorUserId, targetUserId, $scope.newPassword)
+            UserCredentialService.UpdateUserCredential(targetUserId, $scope.newPassword)
             .then(function() {
               $scope.showMessageWithOkayOnly('Success', 'Changes are saved successfully.');
               $scope.resetPassword();
@@ -72,8 +71,7 @@ BenefitMyApp.directive('bmCredentialUpdate', function() {
   return {
     restrict: 'E',
     scope: {
-        target: '=',
-        initiator: '='
+        target: '='
     },
     templateUrl: '/static/partials/common/directive_credential_update.html',
     controller: controller

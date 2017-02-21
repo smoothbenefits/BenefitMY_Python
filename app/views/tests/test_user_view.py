@@ -1,7 +1,7 @@
 import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import AnonymousUser
 from view_test_base import ViewTestBase
 from app.service.hash_key_service import HashKeyService
@@ -529,15 +529,17 @@ class UserViewTestCase(TestCase, ViewTestBase):
 
     def test_update_user_credential(self):
         update_request = {
-            'initiator': 2,
             'target': 3,
             'password': 'fortest'
         }
+
+        self.client.login(email='user2@benefitmy.com', password='foobar')
         response = self.client.put(
             reverse('user_credential'),
             json.dumps(update_request),
             content_type='application/json'
         )
+
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 204)
 
