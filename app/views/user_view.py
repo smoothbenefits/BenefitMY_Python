@@ -132,16 +132,14 @@ class UserCredentialView(APIView):
     '''
     def put(self, request, format=None):
 
-        target_user = request.DATA.get('target')
-        initiator_user = request.DATA.get('initiator')
-        user_user = request.user
+        target_user_id = request.DATA.get('target')
 
         initiator_user = AuthUser.objects.filter(email=request.user)
         initiator_user_id = initiator_user[0].id
 
-        if self._is_valid_initiator(initiator_user_id, target_user):
+        if self._is_valid_initiator(initiator_user_id, target_user_id):
             new_password = request.DATA.get('password')
-            user = AuthUser.objects.get(pk=target_user)
+            user = AuthUser.objects.get(pk=target_user_id)
             user.set_password(new_password)
             user.save()
             return HttpResponse(status=204)
@@ -162,7 +160,7 @@ class UserCredentialView(APIView):
                 targetCompanies.append(companyUser.company.id)
 
         for companyUser in initiatorCompanyUsers:
-            if companyUser.company.id in targetCompanies:
+            if companyUser.company.id in targetCompanies and companyUser.company_user_type == USER_TYPE_ADMIN:
                 return True
 
         return False
