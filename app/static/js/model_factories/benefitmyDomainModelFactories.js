@@ -24,6 +24,15 @@ benefitmyDomainModelFactories.factory('users', [
   }
 ]);
 
+benefitmyDomainModelFactories.factory('UserCredentialRepository', [
+  '$resource',
+  function ($resource) {
+    return $resource('/api/v1/users/credential', {}, {
+      'update': {method: 'PUT'}
+    });
+  }
+])
+
 benefitmyDomainModelFactories.factory('userLogOut', [
      '$resource',
      function($resource){

@@ -8,9 +8,9 @@ from rest_framework.authentication import BasicAuthentication
 
 from django.db import transaction
 from django.contrib.auth import get_user_model
-from app.models.company_user import CompanyUser
+from app.models.company_user import CompanyUser, USER_TYPE_ADMIN
 from app.models.company import Company
-from app.custom_authentication import AuthUserManager
+from app.custom_authentication import AuthUserManager, AuthUser
 from app.models.person import Person
 from app.models.employee_profile import EmployeeProfile
 from app.serializers.person_serializer import PersonSerializer, PersonSimpleSerializer
@@ -122,6 +122,48 @@ class CurrentUserView(APIView):
         result = get_user_response_object(curUser)
 
         return Response(result)
+
+
+class UserCredentialView(APIView):
+
+    '''
+    This is the view to allow one user to change the password of another user.
+    For now, password can be changed by the user him/herself or his/her admin.
+    '''
+    def put(self, request, format=None):
+
+        target_user_id = request.DATA.get('target')
+
+        initiator_user = AuthUser.objects.filter(email=request.user)
+        initiator_user_id = initiator_user[0].id
+
+        if self._is_valid_initiator(initiator_user_id, target_user_id):
+            new_password = request.DATA.get('password')
+            user = AuthUser.objects.get(pk=target_user_id)
+            user.set_password(new_password)
+            user.save()
+            return HttpResponse(status=204)
+        else:
+            return HttpResponse(status=403)
+
+    def _is_valid_initiator(self, initiator, target):
+
+        if initiator == target:
+            return True
+
+        targetCompanyUsers = CompanyUser.objects.filter(user=target)
+        initiatorCompanyUsers = CompanyUser.objects.filter(user=initiator)
+
+        targetCompanies = []
+        for companyUser in targetCompanyUsers:
+            if companyUser.company not in targetCompanies:
+                targetCompanies.append(companyUser.company.id)
+
+        for companyUser in initiatorCompanyUsers:
+            if companyUser.company.id in targetCompanies and companyUser.company_user_type == USER_TYPE_ADMIN:
+                return True
+
+        return False
 
 
 class UserByCredentialView(APIView):

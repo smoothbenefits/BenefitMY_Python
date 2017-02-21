@@ -188,8 +188,10 @@ var employerUser = employersController.controller('employerUser',
    '$state',
    '$stateParams',
    '$location',
+   '$modal',
    'CompanyPersonnelsService',
    'usersRepository',
+   'UserService',
    'emailRepository',
    'TemplateService',
    'DocumentService',
@@ -201,8 +203,10 @@ var employerUser = employersController.controller('employerUser',
                         $state,
                         $stateParams,
                         $location,
+                        $modal,
                         CompanyPersonnelsService,
                         usersRepository,
+                        UserService,
                         emailRepository,
                         TemplateService,
                         DocumentService,
@@ -256,6 +260,20 @@ var employerUser = employersController.controller('employerUser',
               });
           });
           $scope.paginatedEmployees.totalItems = employees.totalCount;
+        });
+      };
+
+      $scope.resetPassword = function(employeeUserId) {
+        var modalInstance = $modal.open({
+          templateUrl: '/static/partials/employee_record/modal_edit_employee_password.html',
+          controller: 'resetEmployeePasswordModalController',
+          size: 'md',
+          backdrop: 'static',
+          resolve: {
+            targetUserId: function() {
+              return employeeUserId;
+            }
+          }
         });
       };
 
@@ -1105,6 +1123,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'EmployeeProfileService',
   'CompensationService',
   'PersonService',
+  'UserService',
   function($scope,
            $location,
            $stateParams,
@@ -1116,13 +1135,15 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            employeeTaxRepository,
            EmployeeProfileService,
            CompensationService,
-           PersonService){
+           PersonService,
+           UserService){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
 
     var compId = $stateParams.company_id;
     var employeeId = $stateParams.eid;
+    $scope.employeeUserId = employeeId;
     $scope.isBroker = false;
     $scope.employee = {};
     $scope.showEditButton = false;
@@ -1313,6 +1334,24 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
     }
 }]);
 
+var resetEmployeePasswordModalController = employersController.controller('resetEmployeePasswordModalController',
+  ['$scope',
+   '$modal',
+   '$modalInstance',
+   'targetUserId',
+   function($scope,
+            $modal,
+            $modalInstance,
+            targetUserId) {
+
+      $scope.targetUserId = targetUserId;
+
+      $scope.back = function() {
+        $modalInstance.dismiss();
+      };
+    }
+ ]);
+
 var editEmployeeProfileModalController = employersController.controller('editEmployeeProfileModalController',
   ['$scope',
    '$modal',
@@ -1340,8 +1379,8 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
         );
 
       CompanyDepartmentService.GetCompanyDepartments(companyId)
-      .then(function (companyDepartments) { 
-        $scope.companyDepartments = companyDepartments; 
+      .then(function (companyDepartments) {
+        $scope.companyDepartments = companyDepartments;
       });
 
       EmployeeProfileService.initializeCompanyEmployees(companyId);
