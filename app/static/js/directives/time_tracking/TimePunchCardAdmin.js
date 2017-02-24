@@ -31,6 +31,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     'TimePunchCardService',
     'CompanyEmployeeSummaryService',
     'CompanyPersonnelsService',
+    'EmployeeProfileService',
     function TimePunchCardAdminController(
       $scope,
       $state,
@@ -42,7 +43,8 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
       DateTimeService,
       TimePunchCardService,
       CompanyEmployeeSummaryService,
-      CompanyPersonnelsService) {
+      CompanyPersonnelsService,
+      EmployeeProfileService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -66,7 +68,16 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
         $scope.reloadTimePunchCard = function() {
 
-          var employeePromise = CompanyPersonnelsService.getCompanyEmployees($scope.company.id);
+          var employeeFilterSpecs = CompanyPersonnelsService.constructEmployeeStatusFilterSpecs(
+            null,
+            EmployeeProfileService.EmploymentStatuses.Terminated,
+            $scope.selectedDisplayWeek.weekStartDate,
+            moment($scope.selectedDisplayWeek.weekStartDate).add(7, 'days')
+          );
+          var employeePromise = CompanyPersonnelsService.getCompanyEmployees(
+            $scope.company.id,
+            employeeFilterSpecs
+          );
 
           TimePunchCardService.GetPunchCardsByCompanyTimeRange($scope.company.id, $scope.selectedDisplayWeek.weekStartDate, true)
           .then(function(companyPunchCardsByEmployee) {

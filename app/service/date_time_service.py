@@ -1,5 +1,5 @@
 from datetime import timedelta
-from datetime import date
+from datetime import date, datetime
 import dateutil.parser
 
 
@@ -66,3 +66,19 @@ class DateTimeService(object):
     def get_time_diff_in_hours(self, start_time, end_time):
         delta = end_time - start_time
         return round(delta.total_seconds() / 3600, self.TIME_UNIT_PRECISION)
+
+    def is_time_in_range(self, time, range_start, range_end):
+        # First to normalize all inputs for proper comparison
+        time = self._ensure_datetime(time)
+        range_start = self._ensure_datetime(range_start)
+        range_end = self._ensure_datetime(range_end)
+
+        return time >= range_start and time <= range_end
+
+    def _ensure_datetime(self, input_value):
+        """
+        Takes a date or a datetime as input, outputs a datetime
+        """
+        if isinstance(input_value, datetime):
+            return input_value
+        return datetime(input_value.year, input_value.month, input_value.day)

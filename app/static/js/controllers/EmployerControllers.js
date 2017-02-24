@@ -9,7 +9,8 @@ var employerHome = employersController.controller('employerHome',
   'countRepository',
   'CompanyServiceProviderService',
   'CompanyFeatureService',
-  'EmploymentStatuses',
+  'EmployeeProfileService',
+  'IntegrationProviderService',
   function ($scope,
             $location,
             $state,
@@ -18,7 +19,8 @@ var employerHome = employersController.controller('employerHome',
             countRepository,
             CompanyServiceProviderService,
             CompanyFeatureService,
-            EmploymentStatuses){
+            EmployeeProfileService,
+            IntegrationProviderService){
 
     $scope.employeeCount = 0;
     $scope.templateCount = 0;
@@ -27,7 +29,7 @@ var employerHome = employersController.controller('employerHome',
     var loadWorkerCount = function(companyId){
       countRepository.employeeCount.get({
         companyId:companyId,
-        status:EmploymentStatuses.active
+        status:EmployeeProfileService.EmploymentStatuses.Active
       })
         .$promise.then(function(employeeCountResponse){
           $scope.employeeCount = employeeCountResponse.employees_count;
@@ -59,6 +61,13 @@ var employerHome = employersController.controller('employerHome',
       });
     };
 
+    var loadCompanyIntegrationProviders = function(companyId) {
+        IntegrationProviderService.getIntegrationProvidersByCompany(companyId)
+        .then(function(integrationProviders) {
+            $scope.integrationProviders = integrationProviders;
+        });
+    };
+
     UserService.getCurUserInfo()
     .then(function(curUserInfo){
       $scope.company = curUserInfo.currentRole.company;
@@ -66,6 +75,7 @@ var employerHome = employersController.controller('employerHome',
       loadDocumentTemplatesCount($scope.company.id);
       loadVendorsCount($scope.company.id);
       loadCompanyFeatures($scope.company.id);
+      loadCompanyIntegrationProviders($scope.company.id);
     });
 
     $scope.rangedTimeCardEnabled = function() {
@@ -149,6 +159,27 @@ var employerHome = employersController.controller('employerHome',
     $scope.viewSupport = function(){
       $state.go('appSupport');
     };
+
+    $scope.payrollServiceEnabled = function() {
+      var payrollProvider = null;
+
+      if ($scope.integrationProviders 
+        && $scope.integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll]) {
+        payrollProvider = $scope.integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll];
+      }
+
+      if (payrollProvider) {
+        return payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll;
+      }
+
+      return false;
+    };
+
+    $scope.viewPayrollServices = function() {
+      $state.go('payrollProviderView', {
+            company_id: $scope.company.id
+      });
+    };
   }
 ]);
 
@@ -157,8 +188,10 @@ var employerUser = employersController.controller('employerUser',
    '$state',
    '$stateParams',
    '$location',
+   '$modal',
    'CompanyPersonnelsService',
    'usersRepository',
+   'UserService',
    'emailRepository',
    'TemplateService',
    'DocumentService',
@@ -166,21 +199,21 @@ var employerUser = employersController.controller('employerUser',
    'EmployerEmployeeManagementService',
    'CompanyBenefitGroupService',
    'EmployeeProfileService',
-   'EmploymentStatuses',
   function employerUser($scope,
                         $state,
                         $stateParams,
                         $location,
+                        $modal,
                         CompanyPersonnelsService,
                         usersRepository,
+                        UserService,
                         emailRepository,
                         TemplateService,
                         DocumentService,
                         CompensationService,
                         EmployerEmployeeManagementService,
                         CompanyBenefitGroupService,
-                        EmployeeProfileService,
-                        EmploymentStatuses){
+                        EmployeeProfileService){
       $scope.compId = $stateParams.company_id;
       $scope.pages = [];
       $scope.brokers = [];
@@ -202,7 +235,7 @@ var employerUser = employersController.controller('employerUser',
         })
       };
 
-      $scope.currentStatus = EmploymentStatuses.active;
+      $scope.currentStatus = EmployeeProfileService.EmploymentStatuses.Active;
       CompanyBenefitGroupService.GetCompanyBenefitGroupByCompany($scope.compId)
       .then(function(groups) {
         $scope.groups = groups;
@@ -211,12 +244,13 @@ var employerUser = employersController.controller('employerUser',
         }
       });
 
-      $scope.setPaginatedEmployees = function(){
+      $scope.setPaginatedEmployees = function(filterName){
         CompanyPersonnelsService.GetPaginatedEmployees(
           $scope.compId,
           $scope.paginatedEmployees.currentPage,
           $scope.paginatedEmployees.pageSize,
-          $scope.currentStatus)
+          $scope.currentStatus,
+          filterName)
         .then(function(employees){
           $scope.paginatedEmployees.list = employees.list;
           _.each($scope.paginatedEmployees.list, function(employee) {
@@ -226,6 +260,20 @@ var employerUser = employersController.controller('employerUser',
               });
           });
           $scope.paginatedEmployees.totalItems = employees.totalCount;
+        });
+      };
+
+      $scope.resetPassword = function(employeeUserId) {
+        var modalInstance = $modal.open({
+          templateUrl: '/static/partials/employee_record/modal_edit_employee_password.html',
+          controller: 'resetEmployeePasswordModalController',
+          size: 'md',
+          backdrop: 'static',
+          resolve: {
+            targetUserId: function() {
+              return employeeUserId;
+            }
+          }
         });
       };
 
@@ -352,11 +400,11 @@ var employerUser = employersController.controller('employerUser',
 
       //Employee status functions
       var toggleEmployeeStatus = function(statusToToggle) {
-        if (statusToToggle === EmploymentStatuses.active) {
-          return EmploymentStatuses.terminated;
+        if (statusToToggle === EmployeeProfileService.EmploymentStatuses.Active) {
+          return EmployeeProfileService.EmploymentStatuses.Terminated;
         }
 
-        return EmploymentStatuses.active;
+        return EmployeeProfileService.EmploymentStatuses.Active;
       };
 
       $scope.nextStatus = toggleEmployeeStatus($scope.currentStatus);
@@ -364,14 +412,28 @@ var employerUser = employersController.controller('employerUser',
       $scope.toggleStatusForView = function(){
         $scope.currentStatus = $scope.nextStatus;
         $scope.nextStatus = toggleEmployeeStatus($scope.nextStatus);
-        $scope.setPaginatedEmployees();
+        $scope.setPaginatedEmployees(null);
       };
 
       $scope.showAddLink = function(){
-        return $scope.currentStatus == EmploymentStatuses.active;
+        return $scope.currentStatus == EmployeeProfileService.EmploymentStatuses.Active;
       };
 
-      $scope.setPaginatedEmployees();
+      $scope.setPaginatedEmployees(null);
+
+      $scope.selectedEmployee = '';
+      $scope.typeAheadFiltered = false;
+      $scope.$watch('selectedEmployee', function(){
+        if (!angular.isString($scope.selectedEmployee)){
+          $scope.setPaginatedEmployees($scope.selectedEmployee.id);
+          $scope.typeAheadFiltered = true;
+        }
+        else if(!$scope.selectedEmployee && $scope.typeAheadFiltered){
+          $scope.setPaginatedEmployees(null);
+          $scope.typeAheadFiltered = false;
+        }
+      });
+      $scope.getEmployeeWithStatus = EmployeeProfileService.searchEmployeesWithStatus;
   }
 ]);
 
@@ -1059,9 +1121,9 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'employmentAuthRepository',
   'employeeTaxRepository',
   'EmployeeProfileService',
-  'EmploymentStatuses',
   'CompensationService',
   'PersonService',
+  'UserService',
   function($scope,
            $location,
            $stateParams,
@@ -1072,15 +1134,16 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            employmentAuthRepository,
            employeeTaxRepository,
            EmployeeProfileService,
-           EmploymentStatuses,
            CompensationService,
-           PersonService){
+           PersonService,
+           UserService){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
 
     var compId = $stateParams.company_id;
     var employeeId = $stateParams.eid;
+    $scope.employeeUserId = employeeId;
     $scope.isBroker = false;
     $scope.employee = {};
     $scope.showEditButton = false;
@@ -1105,9 +1168,9 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
             $scope.employee.employeeProfile = profile;
             $scope.$watch('employee.employeeProfile.employmentStatus',
               function(employmentStatus){
-                $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmploymentStatuses.terminated;
+                $scope.terminateEmployeeButton = employmentStatus && employmentStatus !== EmployeeProfileService.EmploymentStatuses.Terminated;
                 $scope.terminateMessage = undefined;
-                if(employmentStatus && employmentStatus === EmploymentStatuses.terminated){
+                if(employmentStatus && employmentStatus === EmployeeProfileService.EmploymentStatuses.Terminated){
                   $scope.terminateMessage = "Employment terminated";
                 };
             });
@@ -1271,6 +1334,24 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
     }
 }]);
 
+var resetEmployeePasswordModalController = employersController.controller('resetEmployeePasswordModalController',
+  ['$scope',
+   '$modal',
+   '$modalInstance',
+   'targetUserId',
+   function($scope,
+            $modal,
+            $modalInstance,
+            targetUserId) {
+
+      $scope.targetUserId = targetUserId;
+
+      $scope.back = function() {
+        $modalInstance.dismiss();
+      };
+    }
+ ]);
+
 var editEmployeeProfileModalController = employersController.controller('editEmployeeProfileModalController',
   ['$scope',
    '$modal',
@@ -1279,29 +1360,27 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
    'EmployeeProfileService',
    'employeeProfileModel',
    'companyId',
-   'EmploymentStatuses',
     function($scope,
              $modal,
              $modalInstance,
              CompanyDepartmentService,
              EmployeeProfileService,
              employeeProfileModel,
-             companyId,
-             EmploymentStatuses){
+             companyId){
 
       $scope.errorMessage = null;
       $scope.employeeProfileModel = employeeProfileModel;
       $scope.employmentTypes = ['FullTime', 'PartTime', 'Contractor', 'Intern', 'PerDiem'];
       $scope.employmentStatusList = _.reject(
-        _.values(EmploymentStatuses),
+        _.values(EmployeeProfileService.EmploymentStatuses),
           function(status){
-            return status === EmploymentStatuses.terminated;
+            return status === EmployeeProfileService.EmploymentStatuses.Terminated;
           }
         );
 
       CompanyDepartmentService.GetCompanyDepartments(companyId)
-      .then(function (companyDepartments) { 
-        $scope.companyDepartments = companyDepartments; 
+      .then(function (companyDepartments) {
+        $scope.companyDepartments = companyDepartments;
       });
 
       EmployeeProfileService.initializeCompanyEmployees(companyId);
@@ -2208,6 +2287,34 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
             || $scope.showEmployeeW4FormDownload();
       };
     }
+]);
+
+var employerCompanyPayrollIntegrationController = employersController.controller('employerCompanyPayrollIntegrationController', [
+  '$scope', '$state', '$stateParams', 'IntegrationProviderService',
+  function($scope, $state, $stateParams, IntegrationProviderService) {
+    var loadCompanyPayrollProvider = function(companyId) {
+        IntegrationProviderService.getIntegrationProvidersByCompany(companyId)
+        .then(function(integrationProviders) {
+            if (integrationProviders) {
+                $scope.payrollProvider = integrationProviders[IntegrationProviderService.IntegrationProviderServiceTypes.Payroll];
+            }
+        });
+    };
+
+    $scope.companyId = $stateParams.company_id;
+    loadCompanyPayrollProvider($scope.companyId);
+
+    // Whether to show the dedicated view for Advantage Payroll
+    $scope.showAdvantagePayrollView = function() {
+        return $scope.payrollProvider 
+            && $scope.payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll;
+    };
+
+    $scope.pageTitle = "Payroll Services";
+    $scope.backToDashboard = function() {
+      $state.go('/admin');
+    };
+  }
 ]);
 
 var employerCompanyInfoController = employersController.controller('EmployerCompanyInfoController',
