@@ -21,6 +21,7 @@ from excel_export_view_base import ExcelExportViewBase
 
 User = get_user_model()
 
+
 class CompanyUsersDirectDepositExcelExportView(ExcelExportViewBase):
 
     def _write_headers(self, excelSheet, max_direct_deposits):

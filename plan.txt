@@ -1,0 +1,20 @@
+* Implement a service layer module, for both python first, for AWS SNS and SQS access
+    * Python uses boto3
+    * Only later on consider implementation for NodeJs, using existing npm packages
+        * Yet another option would be create a REST API to facade the interaction with SNS and SQS, so only need to implement this with one language, and the consumers would just interact with this API in the normal HTTP fashion.
+* Abstract the creation of topics for publishing
+    * The consumer code just provide the topic name for publishing, and the service code figure out the environment, append to the topic name, check existense, and create if necessary. Only then publishing
+* Abstract the ensurance of SQS queue subscription to a topic. 
+    * Subscriber code should just ensure to find a choke place to "register" all the queue subscriptions, and let the service code to ensure the proper subscription of a queue to the topic. By checking for existense and create if needed. 
+* Create proper object model for topic subscribers, that encapsulates
+    * Manage queue subscription to topics
+    * Message handling logic
+    * Retry policy
+    * Atomicity level
+* Have separate topic for each event type
+    * Only evalualte whether we want go topic tree later
+* Have separate queue for each subscriber 
+* For our Python app, utilize the heroku free worker dyno for background process. 
+    * Start up the worker with Procfile.
+    * http://www.ficksworkshop.com/blog/post/using-redis-as-worker-queue-on-heroku
+* Remember to guard the SNS and SQS with IAM
