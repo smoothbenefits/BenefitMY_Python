@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.response import Response
@@ -7,6 +9,7 @@ from app.models.company_user import CompanyUser
 from app.models.employee_profile import EmployeeProfile
 from app.serializers.company_user_serializer import (
     CompanyUserSerializer, CompanyUserDetailSerializer)
+from app.service.company_personnel_service import CompanyPersonnelService
 
 
 class CompanyUserView(APIView):
@@ -28,12 +31,22 @@ class CompanyEmployeeCountView(APIView):
         filter_status = request.QUERY_PARAMS.get('status', None)
         employees = CompanyUser.objects.select_related('user').filter(company=pk,
                                        company_user_type='employee')
+        employee_count = len(employees)
         if filter_status:
-            profiles = EmployeeProfile.objects.select_related('person', 'user').filter(company=pk, employment_status=filter_status)
-            user_ids = [profile.person.user.id for profile in profiles]
-            employees = employees.filter(user__in=user_ids)
+            employee_count = 0
+            comp_personnel_service = CompanyPersonnelService()
+            user_ids_status_map = comp_personnel_service.get_company_employee_user_ids_to_employment_statuses_map(
+                pk,
+                datetime.date.today(),
+                datetime.date.today())
+            for user_id in user_ids_status_map:
+                print "The user with id {} has status array {}".format(user_id, user_ids_status_map[user_id])
+                for status in user_ids_status_map[user_id]:
+                    if status == filter_status:
+                        employee_count += 1
+            
         return Response({'employees_count':
-            len(employees)})
+            employee_count})
 
 class CompanyUserDetailView(APIView):
 

@@ -35,7 +35,7 @@ class CompanyPersonnelService(object):
         company_id,
         time_range_start,
         time_range_end):
-        all_employee_mappings = self._get_company_employee_user_ids_to_employment_statuses_map(
+        all_employee_mappings = self.get_company_employee_user_ids_to_employment_statuses_map(
             company_id, time_range_start, time_range_end)
         filtered_user_ids = []
 
@@ -56,7 +56,7 @@ class CompanyPersonnelService(object):
         then this employee would map to a list that contains 2
         statuses: Active and Terminated.
     '''
-    def _get_company_employee_user_ids_to_employment_statuses_map(
+    def get_company_employee_user_ids_to_employment_statuses_map(
         self,
         company_id,
         time_range_start,
