@@ -432,6 +432,7 @@ var employerUser = employersController.controller('employerUser',
           $scope.setPaginatedEmployees(null);
           $scope.typeAheadFiltered = false;
         }
+        $scope.paginatedEmployees.currentPage = 1;
       });
       $scope.getEmployeeWithStatus = EmployeeProfileService.searchEmployeesWithStatus;
   }
