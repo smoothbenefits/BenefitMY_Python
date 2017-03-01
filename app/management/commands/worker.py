@@ -9,6 +9,7 @@ from django.conf import settings
 
 from app.service.event_bus.aws_event_bus_service import AwsEventBusService
 from app.service.event_bus.event_handlers.environment_test_event_handler import EnvironmentTestEventHandler
+from app.service.event_bus.event_handlers.another_environment_test_event_handler import AnotherEnvironmentTestEventHandler
 from app.service.event_bus.events.environment_test_event import EnvironmentTestEvent
 
 
@@ -19,7 +20,8 @@ class Command(BaseCommand):
         event_bus_service = AwsEventBusService()
         message_pump = event_bus_service.create_event_message_pump()
         message_pump.register_event_message_handler(EnvironmentTestEventHandler)
-        message_pump.start_pumping()
+        message_pump.register_event_message_handler(AnotherEnvironmentTestEventHandler)
+        message_pump.start_pumping(on_new_thread=True)
 
     def handle(self, *args, **options):
         try:

@@ -104,6 +104,9 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
                 for message in messages:
 
                     # Print out the body and author (if set)
+                    print '#####################'
+                    print self._event_message_handler_class.__name__
+                    print self._queue.url
                     print message
                     print message.body
 
