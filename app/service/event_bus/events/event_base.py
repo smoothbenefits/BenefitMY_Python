@@ -9,6 +9,8 @@ class EventBase(object):
     def serialize(self):
         return json.dumps(self.__dict__, cls=DateTimeEncoder)
 
+    def deserialize(self, json_body):
+        self.__dict__ = json.loads(json_body)
 
 ''' Custom encoder needed to overcome the problem of json.dumps
     not able to handle datetime types.

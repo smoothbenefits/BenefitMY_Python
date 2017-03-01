@@ -9,5 +9,9 @@ class EventHandlerBase(object):
         ''' 
         self.event_class = event_class
 
-    def handle(self, event_message):
+    ''' Handle the event.
+        Note: the event here an instance of the event_class
+              registered for this handler.
+    ''' 
+    def handle(self, event):
         raise NotImplementedError()

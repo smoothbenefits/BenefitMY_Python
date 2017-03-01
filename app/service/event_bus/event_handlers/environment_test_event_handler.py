@@ -9,11 +9,9 @@ class EnvironmentTestEventHandler(EventHandlerBase):
     def __init__(self):
         super(EnvironmentTestEventHandler, self).__init__(EnvironmentTestEvent)
     
-    def handle(self, event_message):
-        print 'Start handling message ...'
-        print event_message
+    def handle(self, event):
         subject = "Test Event Handler"
-        text_content = "Test Content"
+        text_content = event.host_url
         from_email = settings.SUPPORT_EMAIL_ADDRESS
         to_emails = ['jeff.zhang.82@gmail.com']
         msg = EmailMultiAlternatives(subject, text_content, from_email, to_emails)

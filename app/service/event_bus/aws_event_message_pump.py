@@ -54,20 +54,21 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
             self._sqs = sqs_client
             self._event_message_handler_class = event_message_handler_class
             self._queue = None
+            self._message_handler = None
 
         def ensure_queue_setup(self):
             try:
                 # Validate the handler class
-                instance = self._event_message_handler_class()
-                AwsEventMessageUtility.validate_event_handler_instance(instance)
+                self._message_handler = self._event_message_handler_class()
+                AwsEventMessageUtility.validate_event_handler_instance(self._message_handler)
 
                 # Ensure setup of the message queue
-                queue_name = AwsEventMessageUtility.get_sqs_queue_name(instance)
+                queue_name = AwsEventMessageUtility.get_sqs_queue_name(self._message_handler)
                 self._queue = AwsEventMessageUtility.ensure_sqs_queue(self._sqs, queue_name)
                 queue_arn = self._queue.attributes.get('QueueArn')
 
                 # Ensure the SNS topic
-                topic_name = AwsEventMessageUtility.get_sns_topic_name(instance.event_class)
+                topic_name = AwsEventMessageUtility.get_sns_topic_name(self._message_handler.event_class)
                 topic_arn = AwsEventMessageUtility.ensure_sns_topic(self._sns, topic_name)
 
                 # Ensure subscription, queue -> topic
@@ -102,13 +103,17 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
 
                 # Process messages
                 for message in messages:
+                    # Parse out the actual event message from 
+                    # Boto3 sqs message data structure
+                    # And deserialize into the expected event 
+                    # instance.
+                    body = json.loads(message.body)
+                    event_message = body.get('Message', '{}')
+                    event_instance = self._message_handler.event_class()
+                    event_instance.deserialize(event_message)
 
-                    # Print out the body and author (if set)
-                    print '#####################'
-                    print self._event_message_handler_class.__name__
-                    print self._queue.url
-                    print message
-                    print message.body
+                    # Delegate to the message handler to handle
+                    self._message_handler.handle(event_instance)
 
                     # Let the queue know that the message is processed
                     message.delete()
