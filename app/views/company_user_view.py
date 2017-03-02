@@ -1,5 +1,3 @@
-import datetime
-
 from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.response import Response
@@ -33,18 +31,12 @@ class CompanyEmployeeCountView(APIView):
                                        company_user_type='employee')
         employee_count = len(employees)
         if filter_status:
-            employee_count = 0
             comp_personnel_service = CompanyPersonnelService()
-            user_ids_status_map = comp_personnel_service.get_company_employee_user_ids_to_employment_statuses_map(
+            users_in_status = comp_personnel_service.get_company_employee_user_ids_currently_with_status(
                 pk,
-                datetime.date.today(),
-                datetime.date.today())
-            for user_id in user_ids_status_map:
-                print "The user with id {} has status array {}".format(user_id, user_ids_status_map[user_id])
-                for status in user_ids_status_map[user_id]:
-                    if status == filter_status:
-                        employee_count += 1
-            
+                filter_status)
+            employee_count = len(users_in_status)
+
         return Response({'employees_count':
             employee_count})
 
