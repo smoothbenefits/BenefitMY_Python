@@ -49,7 +49,7 @@ class HashPkValidationMiddleware(object):
     def process_response(self, request, response):
         ''' Would need to encode anything in the response data, if it is JSON
         '''
-        if (request.method == 'PUT'):
+        if (request.method == 'PUT' and response.content):
             res = json.loads(response.content)
             self._encode_key('person', res)
             self._encode_key('company', res)

@@ -24,6 +24,15 @@ benefitmyDomainModelFactories.factory('users', [
   }
 ]);
 
+benefitmyDomainModelFactories.factory('UserCredentialRepository', [
+  '$resource',
+  function ($resource) {
+    return $resource('/api/v1/users/credential', {}, {
+      'update': {method: 'PUT'}
+    });
+  }
+])
+
 benefitmyDomainModelFactories.factory('userLogOut', [
      '$resource',
      function($resource){
@@ -821,6 +830,14 @@ benefitmyDomainModelFactories.factory('OpenEnrollmentDefinitionRepository', ['$r
       ByCompany: $resource(PREFIX + 'companies/:comp_id/open_enrollment', {comp_id: '@comp_id'}, {
         update: { method: 'PUT' }
       })
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('IntegrationProvideRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'companies/:companyId/integration_providers', {companyId: '@companyId'})
     }
   }
 ]);

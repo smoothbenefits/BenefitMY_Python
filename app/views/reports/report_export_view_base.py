@@ -121,7 +121,6 @@ class ReportExportViewBase(APIView):
 
         return '{} {}'.format(user.first_name, user.last_name)
 
-
     @staticmethod
     def get_date_string(date):
         if date:

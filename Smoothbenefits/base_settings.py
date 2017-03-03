@@ -261,6 +261,7 @@ PIPELINE_JS = {
             'js/directives/Edit1094c.js',
             'js/directives/GroupMemberLink.js',
             'js/directives/CompanyGroupSelection.js',
+            'js/directives/CredentialUpdate.js',
             'js/directives/FileDownloadLink.js',
             'js/directives/hr/CompanyDepartmentManager.js',
             'js/directives/hr/TimeOffManager.js',
@@ -280,6 +281,7 @@ PIPELINE_JS = {
             'js/directives/time_tracking/TimePunchCardWeeklyView.js',
             'js/directives/time_tracking/TimePunchCardAdminIndividual.js',
             'js/directives/OpenEnrollmentDefinition.js',
+            'js/directives/payroll/AdvantagePayrollView.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/model_factories/benefitmyInsuranceCertificateModelFactories.js',
@@ -342,6 +344,7 @@ PIPELINE_JS = {
             'js/services/TimeOffService.js',
             'js/services/WorkTimesheetService.js',
             'js/services/UserOnboardingStepStateService.js',
+            'js/services/UserCredentialService.js',
             'js/services/CompanyPersonnelsService.js',
             'js/services/UsStateService.js',
             'js/services/ContractorsService.js',
@@ -349,7 +352,9 @@ PIPELINE_JS = {
             'js/services/ProjectService.js',
             'js/services/TimePunchCardService.js',
             'js/services/common/DateTimeService.js',
-            'js/services/OpenEnrollmentDefinitionService.js'
+            'js/services/OpenEnrollmentDefinitionService.js',
+            'js/services/IntegrationProviderService.js',
+            'js/services/payroll_integration/AdvantagePayrollService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

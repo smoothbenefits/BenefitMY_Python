@@ -9,7 +9,15 @@ benefitmyService.factory('EmployeeProfileService',
         $q,
         EmployeeProfileRepository,
         EmployeeManagementEmployeeTerminationRepository,
-        PersonService){
+        PersonService) {
+
+        var EmploymentStatuses = {
+            Active: 'Active',
+            Prospective: 'Prospective',
+            Terminated: 'Terminated',
+            OnLeave: 'OnLeave'
+        };
+
         var isFullTimeEmploymentType = function(employeeProfile) {
           if (!employeeProfile) {
             return false;
@@ -99,8 +107,31 @@ benefitmyService.factory('EmployeeProfileService',
             return EmployeeProfileRepository.ByCompany.query({companyId:compId})
             .$promise.then(function(profiles){
                 _cachedEmployeeProfiles = profiles;
+
+                // Attach utility functions
+                _.each(_cachedEmployeeProfiles, function(profile){
+                    profile.getListOfEmploymentStatusInTimeRange = function(timeRangeStart, timeRangeEnd) {
+                        return getListOfEmploymentStatusInTimeRange(this, timeRangeStart, timeRangeEnd);
+                    };
+                });
+
                 return _cachedEmployeeProfiles;
             });
+        };
+
+        var getCompanyEmployeeProfiles = function(companyId) {
+            var deferred = $q.defer();
+
+            // Filter not specified, just return original list
+            if (_cachedEmployeeProfiles && _cachedEmployeeProfiles.length > 0) {
+                deferred.resolve(_cachedEmployeeProfiles);
+            }
+
+            return initializeCompanyEmployees(companyId);
+        };
+
+        var _resetCache = function() {
+            _cachedEmployeeProfiles = [];
         };
 
         var searchEmployees = function(term){
@@ -117,11 +148,70 @@ benefitmyService.factory('EmployeeProfileService',
             });
         };
 
+        var getListOfEmploymentStatusInTimeRange = function(employeeProfile, timeRangeStart, timeRangeEnd) {
+            var result = [];
+
+            // Conditions
+            // * If employment start date after time range, result => [Prospective]
+            // * If employment end date prior to time range, result => [Terminated]
+            // * If employment start date prior to time range and end date after => [Active]
+            // * If employment start date within time range, result to include/add [Prospective, Active]
+            // * If employment end date within time range, result to include/add [Active, Terminated] 
+            
+            var rangeStart = moment(timeRangeStart);
+            var rangeEnd = moment(timeRangeEnd);
+            var employmentStart = moment(employeeProfile.start_date);
+            var employmentEnd = employeeProfile.end_date ? moment(employeeProfile.end_date) : moment("2100-01-01");
+
+            if (employmentStart > rangeEnd) {
+                result = [EmploymentStatuses.Prospective];
+            } else if (employmentEnd < rangeStart) {
+                result = [EmploymentStatuses.Terminated];
+            } else if (employmentStart <= rangeStart && employmentEnd >= rangeEnd) {
+                result = [EmploymentStatuses.Active];
+            }
+
+            if (employmentStart >= rangeStart && employmentStart <= rangeEnd) {
+                _ensureValueInList(result, EmploymentStatuses.Active);
+                _ensureValueInList(result, EmploymentStatuses.Prospective);
+            }
+
+            if (employmentEnd >= rangeStart && employmentEnd <= rangeEnd) {
+                _ensureValueInList(result, EmploymentStatuses.Active);
+                _ensureValueInList(result, EmploymentStatuses.Terminated);
+            }
+
+            return result;
+        };
+
+        var _ensureValueInList = function(list, value) {
+            if (!_.contains(list, value)) {
+                list.push(value);
+            }
+        };
+
+        var searchEmployeesWithStatus = function(term, status){
+            return _.filter(_cachedEmployeeProfiles, function(employee){
+              var fullName = employee.first_name + ' ' + employee.last_name;
+              var currentActiveEmploymentStatues = getListOfEmploymentStatusInTimeRange(
+                    employee,
+                    moment(),
+                    moment()
+                );
+              return _.contains(currentActiveEmploymentStatues, status) && 
+                fullName.toLowerCase().indexOf(term.toLowerCase()) > -1;
+            });
+        };
+
         return {
+            EmploymentStatuses: EmploymentStatuses,
+
             isFullTimeEmploymentType: isFullTimeEmploymentType,
             initializeCompanyEmployees: initializeCompanyEmployees,
+            getCompanyEmployeeProfiles: getCompanyEmployeeProfiles,
             searchEmployees: searchEmployees,
             searchEmployeesByEmployeeNumber: searchEmployeesByEmployeeNumber,
+            searchEmployeesWithStatus: searchEmployeesWithStatus,
 
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();
@@ -197,6 +287,8 @@ benefitmyService.factory('EmployeeProfileService',
                     });
                 };
 
+                _resetCache();
+
                 return deferred.promise;
             },
 
@@ -212,6 +304,8 @@ benefitmyService.factory('EmployeeProfileService',
                 function(error){
                     deferred.reject(error);
                 });
+
+                _resetCache();
 
                 return deferred.promise;
             },
