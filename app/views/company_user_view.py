@@ -7,6 +7,7 @@ from app.models.company_user import CompanyUser
 from app.models.employee_profile import EmployeeProfile
 from app.serializers.company_user_serializer import (
     CompanyUserSerializer, CompanyUserDetailSerializer)
+from app.service.company_personnel_service import CompanyPersonnelService
 
 
 class CompanyUserView(APIView):
@@ -28,12 +29,16 @@ class CompanyEmployeeCountView(APIView):
         filter_status = request.QUERY_PARAMS.get('status', None)
         employees = CompanyUser.objects.select_related('user').filter(company=pk,
                                        company_user_type='employee')
+        employee_count = len(employees)
         if filter_status:
-            profiles = EmployeeProfile.objects.select_related('person', 'user').filter(company=pk, employment_status=filter_status)
-            user_ids = [profile.person.user.id for profile in profiles]
-            employees = employees.filter(user__in=user_ids)
+            comp_personnel_service = CompanyPersonnelService()
+            users_in_status = comp_personnel_service.get_company_employee_user_ids_currently_with_status(
+                pk,
+                filter_status)
+            employee_count = len(users_in_status)
+
         return Response({'employees_count':
-            len(employees)})
+            employee_count})
 
 class CompanyUserDetailView(APIView):
 
