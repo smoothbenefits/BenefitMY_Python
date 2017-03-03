@@ -1,5 +1,5 @@
 from django.utils import timezone
-from datetime import datetime, date
+import datetime
 from app.models.company_user import (
     CompanyUser,
     USER_TYPE_EMPLOYEE
@@ -47,6 +47,25 @@ class CompanyPersonnelService(object):
 
         return filtered_user_ids
 
+    ''' Get all employees who are part of the specified employment status as of now
+        This is to serve a common use case of where we want to know which
+        employees are of the specified employment status
+    '''
+    def get_company_employee_user_ids_currently_with_status(self, company_id, employment_status):
+        all_employee_mappings = self._get_company_employee_user_ids_to_employment_statuses_map(
+            company_id,
+            datetime.date.today(),
+            datetime.date.today())
+        
+        employees_with_status = []
+        for user_id in all_employee_mappings:
+            for status in all_employee_mappings[user_id]:
+                if employment_status == status:
+                    employees_with_status.append(user_id)
+                    break
+
+        return employees_with_status
+
     ''' Get a mapping, where each pair represents a employee 
         mapped to a list that contains all employement statuses
         that were at least partially "on" during the given time
@@ -62,7 +81,6 @@ class CompanyPersonnelService(object):
         time_range_start,
         time_range_end):
         result = {}
-
         all_employees = CompanyUser.objects.filter(
             company=company_id,
             company_user_type=USER_TYPE_EMPLOYEE)
@@ -111,10 +129,10 @@ class CompanyPersonnelService(object):
         if (self._date_time_service.is_time_in_range(
             employee_profile.start_date, time_range_start, time_range_end)):
             self._ensure_value_in_list(result, EMPLOYMENT_STATUS_PROSPECTIVE)
-            self._ensure_value_in_list(result, EMPLOYMENT_STATUS_TERMINATED)
+            self._ensure_value_in_list(result, EMPLOYMENT_STATUS_ACTIVE)
 
-        if (self._date_time_service.is_time_in_range(
-            employee_profile.start_date, time_range_start, time_range_end)):
+        if (employee_profile.end_date and self._date_time_service.is_time_in_range(
+            employee_profile.end_date, time_range_start, time_range_end)):
             self._ensure_value_in_list(result, EMPLOYMENT_STATUS_ACTIVE)
             self._ensure_value_in_list(result, EMPLOYMENT_STATUS_TERMINATED)
 
