@@ -99,7 +99,7 @@ class CompanyPersonnelService(object):
                         time_range_end
                     )
             else:
-                raise Exception('Found company employee profile for user that does not relate to the company!')
+                raise Exception('Found company employee profile for user that does not relate to the company! Offending user_id is: {}'.format(employee_user_id))
 
         return result
 
@@ -117,17 +117,16 @@ class CompanyPersonnelService(object):
         #  * If employment start date prior to time range and end date after => [Active]
         #  * If employment start date within time range, result to include/add [Prospective, Active]
         #  * If employment end date within time range, result to include/add [Active, Terminated] 
-
-        if (employee_profile.start_date > time_range_end):
+        if ((employee_profile.start_date or datetime.date.min) > time_range_end):
             result = [EMPLOYMENT_STATUS_PROSPECTIVE]
         elif (employee_profile.end_date and employee_profile.end_date < time_range_start):
             result = [EMPLOYMENT_STATUS_TERMINATED]
-        elif (employee_profile.start_date <= time_range_start
+        elif ((employee_profile.start_date or datetime.date.min) <= time_range_start
             and (not employee_profile.end_date or employee_profile.end_date >= time_range_end)):
             result = [EMPLOYMENT_STATUS_ACTIVE]
 
         if (self._date_time_service.is_time_in_range(
-            employee_profile.start_date, time_range_start, time_range_end)):
+            employee_profile.start_date or datetime.date.min, time_range_start, time_range_end)):
             self._ensure_value_in_list(result, EMPLOYMENT_STATUS_PROSPECTIVE)
             self._ensure_value_in_list(result, EMPLOYMENT_STATUS_ACTIVE)
 
