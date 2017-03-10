@@ -190,19 +190,6 @@ benefitmyService.factory('EmployeeProfileService',
             }
         };
 
-        var searchEmployeesWithStatus = function(term, status){
-            return _.filter(_cachedEmployeeProfiles, function(employee){
-              var fullName = employee.first_name + ' ' + employee.last_name;
-              var currentActiveEmploymentStatues = getListOfEmploymentStatusInTimeRange(
-                    employee,
-                    moment(),
-                    moment()
-                );
-              return _.contains(currentActiveEmploymentStatues, status) && 
-                fullName.toLowerCase().indexOf(term.toLowerCase()) > -1;
-            });
-        };
-
         return {
             EmploymentStatuses: EmploymentStatuses,
 
@@ -211,7 +198,6 @@ benefitmyService.factory('EmployeeProfileService',
             getCompanyEmployeeProfiles: getCompanyEmployeeProfiles,
             searchEmployees: searchEmployees,
             searchEmployeesByEmployeeNumber: searchEmployeesByEmployeeNumber,
-            searchEmployeesWithStatus: searchEmployeesWithStatus,
 
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();
