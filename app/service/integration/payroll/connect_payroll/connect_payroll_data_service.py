@@ -3,6 +3,10 @@ from django.contrib.auth import get_user_model
 from app.factory.report_view_model_factory import ReportViewModelFactory
 from app.service.web_request_service import WebRequestService
 from app.service.integration.integration_provider_data_service_base import IntegrationProviderDataServiceBase
+from app.service.integration.integration_provider_service import (
+        INTEGRATION_SERVICE_TYPE_PAYROLL,
+        INTEGRATION_PAYROLL_CONNECT_PAYROLL
+    )
 
 User = get_user_model()
 
@@ -28,11 +32,29 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         self.view_model_factory = ReportViewModelFactory()
 
     def sync_employee_data_to_remote(self, employee_user_id):
-        print 'HERE!!!!!!!!!!'
-        return
+        employee_cp_id = self._get_employee_external_id(
+                employee_user_id,
+                INTEGRATION_SERVICE_TYPE_PAYROLL,
+                INTEGRATION_PAYROLL_CONNECT_PAYROLL
+            )
+        employee_data_dto = self._get_employee_data_dto(employee_user_id)
 
-    def _check_employee_exists_in_cp(self, employee_user_id):
-        return False
+        if (employee_cp_id):
+            # Already exists in CP system, update
+            print 'Updating Employee...'
+        else:
+            # Does not yet exist in CP system, new employee addition, create
+            print 'Creating Employee...'
+
+        # Sync the cp ID from the response
+        self._set_employee_external_id(
+                employee_user_id,
+                INTEGRATION_SERVICE_TYPE_PAYROLL,
+                INTEGRATION_PAYROLL_CONNECT_PAYROLL,
+                'ALibaba-Test'
+            )
+
+        return
 
     def _get_employee_data_dto(self, employee_user_id):
         return

@@ -1,0 +1,2 @@
+* Finish DTO data population
+* Able to really sync with CP over the API

@@ -43,6 +43,10 @@ class CompanyIntegrationProviderDataService(object):
         self._enumerate_company_data_services(company_id, lambda data_service: data_service.sync_employee_data_to_remote(employee_user_id))
 
     def _enumerate_company_data_services(self, company_id, data_service_action):
+        # [TODO]: Distributed atomicity is hard to guarantee, when it involves
+        #         non-managed number of third-party APIs. 
+        #         At least we need to in logging and fault tolerance, and 
+        #         monitoring and alerts to follow.  
         company_integration_providers = self.integration_provider_service.get_company_integration_providers(company_id)
         for service_type in company_integration_providers:
             company_service_type_provider = company_integration_providers[service_type]
