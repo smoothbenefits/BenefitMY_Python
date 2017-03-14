@@ -47,7 +47,6 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
             # Does not yet exist in CP system, new employee addition, create
             print 'Creating Employee...'
             payroll_id = self._create_employee_data_to_remote(employee_data_dto)
-            print payroll_id
             # Sync the cp ID from the response
             self._set_employee_external_id(
                     employee_user_id,
@@ -118,7 +117,7 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
 
     def _update_employee_data_to_remote(self, employee_data_dto): 
         api_url = self._get_employee_api_url()
-        data = json.dumps(employee_data_dto.__dict__)
+        data = employee_data_dto.__dict__
 
         # [TODO]: Handle non-ok results
         response = self.web_request_service.put(
@@ -128,7 +127,7 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
 
     def _create_employee_data_to_remote(self, employee_data_dto):
         api_url = self._get_employee_api_url()
-        data = json.dumps(employee_data_dto.__dict__)
+        data = employee_data_dto.__dict__
 
         # [TODO]: Handle non-ok results
         response = self.web_request_service.post(
@@ -137,9 +136,6 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
             auth_token=CONNECT_PAYROLL_API_KEY)
 
         # The body of the response is the payroll ID
-        print response.status_code
-        print api_url
-        print data
         if (response.status_code == 200):
             return response.text
 
