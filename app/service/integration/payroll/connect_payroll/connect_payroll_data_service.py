@@ -1,4 +1,5 @@
 import json
+import decimal
 from django.contrib.auth import get_user_model
 
 from app.factory.report_view_model_factory import ReportViewModelFactory
@@ -42,11 +43,15 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         if (employee_data_dto.payrollId):
             # Already exists in CP system, update
             print 'Updating Employee...'
+            print employee_data_dto.payrollId
             self._update_employee_data_to_remote(employee_data_dto)
         else:
             # Does not yet exist in CP system, new employee addition, create
             print 'Creating Employee...'
             payroll_id = self._create_employee_data_to_remote(employee_data_dto)
+            
+            print payroll_id
+
             # Sync the cp ID from the response
             self._set_employee_external_id(
                     employee_user_id,
@@ -99,14 +104,14 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
             dto.hireDate = self._get_date_string(employee_profile_info.hire_date)
             dto.originalHireDate = self._get_date_string(employee_profile_info.hire_date)
             # [TODO]: Needs specification on employee status values
-            dto.employeeStatus = 3
+            dto.employeeStatus = '3'
             dto.terminationDate = self._get_date_string(employee_profile_info.end_date)
 
             # Salary data
-            self.payEffectiveDate = self._get_date_string(employee_profile_info.compensation_effective_date)
-            self.annualBaseSalary = employee_profile_info.annual_salary
-            self.baseHourlyRate = employee_profile_info.current_hourly_rate
-            self.hoursPerWeek = employee_profile_info.projected_hours_per_week  
+            dto.payEffectiveDate = self._get_date_string(employee_profile_info.compensation_effective_date)
+            dto.annualBaseSalary = self._get_decimal_string(employee_profile_info.annual_salary)
+            dto.baseHourlyRate = self._get_decimal_string(employee_profile_info.current_hourly_rate)
+            dto.hoursPerWeek = self._get_decimal_string(employee_profile_info.projected_hours_per_week)  
 
         # Other
         employee_i9_info = self.view_model_factory.get_employee_i9_data(employee_user_id)
@@ -157,3 +162,9 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
                 return None
         else:
             return None
+
+    def _get_decimal_string(self, input_value):
+        if isinstance(input_value, decimal.Decimal):
+            return str(input_value)
+
+        return input_value
