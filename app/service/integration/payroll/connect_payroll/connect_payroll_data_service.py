@@ -1,5 +1,7 @@
 import json
 import decimal
+import logging
+import traceback
 from django.contrib.auth import get_user_model
 
 from app.factory.report_view_model_factory import ReportViewModelFactory
@@ -8,7 +10,12 @@ from app.service.web_request_service import WebRequestService
 from app.service.integration.integration_provider_data_service_base import IntegrationProviderDataServiceBase
 from app.service.integration.integration_provider_service import (
         INTEGRATION_SERVICE_TYPE_PAYROLL,
-        INTEGRATION_PAYROLL_CONNECT_PAYROLL
+        INTEGRATION_PAYROLL_CONNECT_PAYROLL,
+        IntegrationProviderService
+    )
+from app.service.system_settings_service import (
+        SystemSettingsService,
+        SYSTEM_SETTING_CPAPIAUTHTOKEN
     )
 from connect_payroll_employee_dto import ConnectPayrollEmployeeDto
 
@@ -19,14 +26,10 @@ User = get_user_model()
 CONNECT_PAYROLL_API_BASE_URL = 'https://agilepayrollapi.azurewebsites.net/api/employee-navigator/'
 CONNECT_PAYROLL_API_EMPLOYEE_ROUTE = 'employees'
 
-# For testing purpose, put the below constants here
-# These should be modeled in data model, and retrieved as such.
-TEST_CP_CLIENT_CODE = '739600'
-
 # Hand shake protocal to get API key/authentication token 
 # needs to be figured out with CP. 
 # Hard code for testing purpose for now
-CONNECT_PAYROLL_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IlN3YWdnZXIiLCJyb2xlIjoiRGV2ZWxvcGVyIiwibmJmIjoxNDg5MTY1NjM3LCJleHAiOjE0ODk3NzA0MzcsImlhdCI6MTQ4OTE2NTYzNywiaXNzIjoiaHR0cHM6Ly9hZ2lsZXBheXJvbGxhcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIiwiYXVkIjoiaHR0cHM6Ly9hZ2lsZXBheXJvbGxhcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIn0.32i4TugLUlzCB8S9z47zfYOkKHqUnm3SfEr6SFXilWI'
+# CONNECT_PAYROLL_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IlN3YWdnZXIiLCJyb2xlIjoiRGV2ZWxvcGVyIiwibmJmIjoxNDg5MTY1NjM3LCJleHAiOjE0ODk3NzA0MzcsImlhdCI6MTQ4OTE2NTYzNywiaXNzIjoiaHR0cHM6Ly9hZ2lsZXBheXJvbGxhcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIiwiYXVkIjoiaHR0cHM6Ly9hZ2lsZXBheXJvbGxhcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIn0.32i4TugLUlzCB8S9z47zfYOkKHqUnm3SfEr6SFXilWI'
 
 
 class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
@@ -36,31 +39,49 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         self.view_model_factory = ReportViewModelFactory()
         self.web_request_service = WebRequestService()
         self.company_personnel_service = CompanyPersonnelService()
+        self.integration_provider_service = IntegrationProviderService()
+
+        # Retrieve the api token if available
+        setting_service = SystemSettingsService()
+        self._cp_api_auth_token = setting_service.get_setting_value_by_name(SYSTEM_SETTING_CPAPIAUTHTOKEN)
 
     def sync_employee_data_to_remote(self, employee_user_id):
-        employee_data_dto = self._get_employee_data_dto(employee_user_id)
+        # If the Connect Payroll API's auth token is not specified 
+        # in the environment, consider this feature to be off, and 
+        # skip all together.
+        if (not self._cp_api_auth_token):
+            return
 
-        if (employee_data_dto.payrollId):
-            # Already exists in CP system, update
-            print 'Updating Employee...'
-            print employee_data_dto.payrollId
-            self._update_employee_data_to_remote(employee_data_dto)
-        else:
-            # Does not yet exist in CP system, new employee addition, create
-            print 'Creating Employee...'
-            payroll_id = self._create_employee_data_to_remote(employee_data_dto)
-            
-            print payroll_id
+        # Also check whether the employee belong to a company with
+        # the right setup with the remote system. And also skip if
+        # this is not the case
+        external_company_id = self._get_cp_client_code_by_employee(employee_user_id)
+        if (not external_company_id):
+            return
 
-            # Sync the cp ID from the response
-            self._set_employee_external_id(
-                    employee_user_id,
-                    INTEGRATION_SERVICE_TYPE_PAYROLL,
-                    INTEGRATION_PAYROLL_CONNECT_PAYROLL,
-                    payroll_id
-                )
+        try:  
+            employee_data_dto = self._get_employee_data_dto(employee_user_id, external_company_id)
 
-    def _get_employee_data_dto(self, employee_user_id):
+            if (employee_data_dto.payrollId):
+                # Already exists in CP system, update
+                logging.info('Updating Employee CP ID: ' + employee_data_dto.payrollId)
+                self._update_employee_data_to_remote(employee_data_dto)
+            else:
+                # Does not yet exist in CP system, new employee addition, create
+                payroll_id = self._create_employee_data_to_remote(employee_data_dto)
+                logging.info('Created Employee CP ID: ' + payroll_id)
+                
+                # Sync the cp ID from the response
+                self._set_employee_external_id(
+                        employee_user_id,
+                        INTEGRATION_SERVICE_TYPE_PAYROLL,
+                        INTEGRATION_PAYROLL_CONNECT_PAYROLL,
+                        payroll_id
+                    )
+        except Exception as e:
+            logging.error(traceback.format_exc())
+
+    def _get_employee_data_dto(self, employee_user_id, external_company_id):
         # First populate the CP identifiers
         dto = ConnectPayrollEmployeeDto()
         dto.payrollId = self._get_employee_external_id(
@@ -70,8 +91,8 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
             )
         if (dto.payrollId == 'ALibaba-Test'):
             dto.payrollId = None
-        dto.companyId = self._get_cp_client_code_by_employee(employee_user_id)
-        
+        dto.companyId = external_company_id
+
         # Now populate other data
         company_id = self.company_personnel_service.get_company_id_by_employee_user_id(employee_user_id)
         company_info = self.view_model_factory.get_company_info(company_id)
@@ -128,7 +149,7 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         response = self.web_request_service.put(
             api_url,
             data_object=data,
-            auth_token=CONNECT_PAYROLL_API_KEY) 
+            auth_token=self._cp_api_auth_token) 
 
     def _create_employee_data_to_remote(self, employee_data_dto):
         api_url = self._get_employee_api_url()
@@ -138,7 +159,7 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         response = self.web_request_service.post(
             api_url,
             data_object=data,
-            auth_token=CONNECT_PAYROLL_API_KEY)
+            auth_token=self._cp_api_auth_token)
 
         # The body of the response is the payroll ID
         if (response.status_code == 200):
@@ -147,9 +168,14 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         return None
 
     def _get_cp_client_code_by_employee(self, employee_user_id):
-        # [TODO]: This should query for the actual client code
-        #         via company's service provider relational data
-        return TEST_CP_CLIENT_CODE
+        company_id = self.company_personnel_service.get_company_id_by_employee_user_id(employee_user_id)
+        integration_providers = self.integration_provider_service.get_company_integration_providers(company_id)
+        payroll_provider = integration_providers[INTEGRATION_SERVICE_TYPE_PAYROLL]
+        if (payroll_provider is not None 
+            and payroll_provider['integration_provider']['name'] == INTEGRATION_PAYROLL_CONNECT_PAYROLL):
+            return payroll_provider['company_external_id']
+
+        return None
 
     def _get_employee_api_url(self):
         return CONNECT_PAYROLL_API_BASE_URL + CONNECT_PAYROLL_API_EMPLOYEE_ROUTE

@@ -16,7 +16,8 @@ from app.models import (
     CompanyIntegrationProvider
 )
 from app.models.system.email_block_list import EmailBlockList
-
+from app.models.system.system_setting import SystemSetting
+from app.models.integration.company_user_integration_provider import CompanyUserIntegrationProvider
 
 # Register your models here.
 class UserCreationForm(forms.ModelForm):
@@ -120,6 +121,10 @@ class EmailBlockListAdmin(admin.ModelAdmin):
     list_display=('email_block_feature', 'user')
     fields=['email_block_feature', 'user']
 
+class SystemSettingAdmin(admin.ModelAdmin):
+    list_display=('name', 'value')
+    fields=['name', 'value']
+
 class IntegrationProviderAdmin(admin.ModelAdmin):
     list_display=('name', 'service_type')
     fields=['name', 'service_type']
@@ -128,6 +133,11 @@ class CompanyIntegrationProviderAdmin(admin.ModelAdmin):
     list_display=('company', 'integration_provider', 'company_external_id')
     fields=['company', 'integration_provider', 'company_external_id']
 
+class CompanyUserIntegrationProviderAdmin(admin.ModelAdmin):
+    list_display=('company_user', 'company', 'integration_provider', 'company_user_external_id')
+    fields=['company_user', 'integration_provider', 'company_user_external_id']
+    def company(self, obj):
+        return obj.company_user.company
 
 # Now register the new UserAdmin...
 admin.site.register(AuthUser, AuthUserAdmin)
@@ -138,8 +148,10 @@ admin.site.register(CompanyFeatures, CompanyFeatureAdmin)
 admin.site.register(SysPeriodDefinition, SysPeriodDefinitionAdmin)
 admin.site.register(SysApplicationFeature, SysApplicationFeatureAdmin)
 admin.site.register(EmailBlockList, EmailBlockListAdmin)
+admin.site.register(SystemSetting, SystemSettingAdmin)
 admin.site.register(IntegrationProvider, IntegrationProviderAdmin)
 admin.site.register(CompanyIntegrationProvider, CompanyIntegrationProviderAdmin)
+admin.site.register(CompanyUserIntegrationProvider, CompanyUserIntegrationProviderAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
