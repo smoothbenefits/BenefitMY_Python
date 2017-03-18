@@ -13,8 +13,8 @@ SYSTEM_SETTING_CPAPIEMPLOYEEROUTE = 'CpApiEmployeeRoute'
 class SystemSettingsService(object):
 
     def get_setting_value_by_name(self, setting_name):
-        setting_records = SystemSetting.objects.filter(name=setting_name)
-        if (len(setting_records) > 0):
-            return setting_records[0].value
-
-        return None
+        try:
+            setting_record = SystemSetting.objects.get(name=setting_name)
+            return setting_record.value
+        except SystemSetting.DoesNotExist:
+            return None

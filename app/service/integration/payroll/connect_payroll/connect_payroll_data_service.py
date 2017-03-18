@@ -91,8 +91,6 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
                 INTEGRATION_SERVICE_TYPE_PAYROLL,
                 INTEGRATION_PAYROLL_CONNECT_PAYROLL
             )
-        if (dto.payrollId == 'ALibaba-Test'):
-            dto.payrollId = None
         dto.companyId = external_company_id
 
         # Now populate other data

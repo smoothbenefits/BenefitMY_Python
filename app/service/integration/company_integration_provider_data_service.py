@@ -1,3 +1,4 @@
+import logging
 from django.contrib.auth import get_user_model
 
 from app.service.integration.integration_provider_service import (
@@ -60,3 +61,5 @@ class CompanyIntegrationProviderDataService(object):
                         # create an instance of the date service, and invoke the action
                         data_service = service_type_data_services[provider_name]()
                         data_service_action(data_service)
+                else:
+                    logging.warning('Unsupported integration service type encoutered: "{0}"'.format(service_type))
