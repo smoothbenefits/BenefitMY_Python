@@ -15,21 +15,13 @@ from app.service.integration.integration_provider_service import (
     )
 from app.service.system_settings_service import (
         SystemSettingsService,
-        SYSTEM_SETTING_CPAPIAUTHTOKEN
+        SYSTEM_SETTING_CPAPIAUTHTOKEN,
+        SYSTEM_SETTING_CPAPIBASEURI,
+        SYSTEM_SETTING_CPAPIEMPLOYEEROUTE
     )
 from connect_payroll_employee_dto import ConnectPayrollEmployeeDto
 
 User = get_user_model()
-
-# For now track the remote integration server here
-# When this is officialized, keep it in settings
-CONNECT_PAYROLL_API_BASE_URL = 'https://agilepayrollapi.azurewebsites.net/api/employee-navigator/'
-CONNECT_PAYROLL_API_EMPLOYEE_ROUTE = 'employees'
-
-# Hand shake protocal to get API key/authentication token 
-# needs to be figured out with CP. 
-# Hard code for testing purpose for now
-# CONNECT_PAYROLL_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IlN3YWdnZXIiLCJyb2xlIjoiRGV2ZWxvcGVyIiwibmJmIjoxNDg5MTY1NjM3LCJleHAiOjE0ODk3NzA0MzcsImlhdCI6MTQ4OTE2NTYzNywiaXNzIjoiaHR0cHM6Ly9hZ2lsZXBheXJvbGxhcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIiwiYXVkIjoiaHR0cHM6Ly9hZ2lsZXBheXJvbGxhcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIn0.32i4TugLUlzCB8S9z47zfYOkKHqUnm3SfEr6SFXilWI'
 
 
 class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
@@ -45,11 +37,21 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         setting_service = SystemSettingsService()
         self._cp_api_auth_token = setting_service.get_setting_value_by_name(SYSTEM_SETTING_CPAPIAUTHTOKEN)
 
+        # Also construct the API url, if available
+        self._cp_api_url = None
+        base_uri = setting_service.get_setting_value_by_name(SYSTEM_SETTING_CPAPIBASEURI)
+        employee_route = setting_service.get_setting_value_by_name(SYSTEM_SETTING_CPAPIEMPLOYEEROUTE)
+        if (base_uri and employee_route):
+            self._cp_api_url = base_uri + employee_route
+
     def sync_employee_data_to_remote(self, employee_user_id):
         # If the Connect Payroll API's auth token is not specified 
         # in the environment, consider this feature to be off, and 
         # skip all together.
         if (not self._cp_api_auth_token):
+            return
+
+        if (not self._cp_api_url):
             return
 
         # Also check whether the employee belong to a company with
@@ -142,22 +144,20 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         return dto
 
     def _update_employee_data_to_remote(self, employee_data_dto): 
-        api_url = self._get_employee_api_url()
         data = employee_data_dto.__dict__
 
         # [TODO]: Handle non-ok results
         response = self.web_request_service.put(
-            api_url,
+            self._cp_api_url,
             data_object=data,
             auth_token=self._cp_api_auth_token) 
 
     def _create_employee_data_to_remote(self, employee_data_dto):
-        api_url = self._get_employee_api_url()
         data = employee_data_dto.__dict__
 
         # [TODO]: Handle non-ok results
         response = self.web_request_service.post(
-            api_url,
+            self._cp_api_url,
             data_object=data,
             auth_token=self._cp_api_auth_token)
 
@@ -176,9 +176,6 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
             return payroll_provider['company_external_id']
 
         return None
-
-    def _get_employee_api_url(self):
-        return CONNECT_PAYROLL_API_BASE_URL + CONNECT_PAYROLL_API_EMPLOYEE_ROUTE
 
     def _get_date_string(self, date):
         if date:

@@ -6,6 +6,8 @@ User = get_user_model()
 
 # List of tracked setting names
 SYSTEM_SETTING_CPAPIAUTHTOKEN = 'CpApiAuthToken'
+SYSTEM_SETTING_CPAPIBASEURI = 'CpApiBaseUri'
+SYSTEM_SETTING_CPAPIEMPLOYEEROUTE = 'CpApiEmployeeRoute'
 
 
 class SystemSettingsService(object):
