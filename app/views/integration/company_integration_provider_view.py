@@ -4,7 +4,7 @@ from django.db import transaction
 from rest_framework.response import Response
 from rest_framework import status
 
-from app.service.integration_provider_service import IntegrationProviderService
+from app.service.integration.integration_provider_service import IntegrationProviderService
 
 
 class CompanyIntegrationProvidersByCompanyView(APIView):

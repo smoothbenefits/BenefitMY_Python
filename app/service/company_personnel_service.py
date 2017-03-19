@@ -23,6 +23,14 @@ class CompanyPersonnelService(object):
     def __init__(self):
         self._date_time_service = DateTimeService()
 
+    def get_company_id_by_employee_user_id(self, employee_user_id):
+        employees = CompanyUser.objects.filter(
+            user=employee_user_id,
+            company_user_type=USER_TYPE_EMPLOYEE)
+        if (len(employees) > 0):
+            return employees[0].company_id
+        return None
+
     ''' Get all employees who is not fully terminated during the given
         time range. i.e. the employee has other employment statuses in
         the time range than 'Terminated'.
