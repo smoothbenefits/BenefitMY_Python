@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 
 from app.models.integration.integration_provider import (
     IntegrationProvider,
-    INTEGRATION_SERVICE_TYPES
+    INTEGRATION_SERVICE_TYPES,
+    INTEGRATION_SERVICE_TYPE_PAYROLL
 )
 from app.models.integration.company_integration_provider import \
     CompanyIntegrationProvider 

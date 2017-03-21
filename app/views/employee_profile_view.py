@@ -8,6 +8,9 @@ from app.serializers.employee_profile_serializer import (
     EmployeeProfileSerializer, EmployeeProfilePostSerializer, EmployeeProfileWithNameSerializer)
 from app.models.person import Person
 from django.db.models import Q
+from app.service.integration.company_integration_provider_data_service \
+import CompanyIntegrationProviderDataService
+
 
 class EmployeeProfileView(APIView):
     def _get_object(self, pk):
@@ -31,6 +34,13 @@ class EmployeeProfileView(APIView):
         serializer = EmployeeProfilePostSerializer(employee_profile, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
+
+            # [TODO]: To remove
+            # This is setup to test the integration data sync
+            integration_data_service = CompanyIntegrationProviderDataService()
+            employee_user_id = employee_profile.person.user.id
+            integration_data_service.sync_employee_data_to_remote(employee_user_id)
+
             response_serializer = EmployeeProfileSerializer(serializer.object)
             return Response(response_serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

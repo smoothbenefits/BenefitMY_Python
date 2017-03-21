@@ -225,6 +225,7 @@ var employerUser = employersController.controller('employerUser',
         list: [],
         totalItems: 0
       };
+      $scope.employeeCollection;
       $scope.employment_types = EmployerEmployeeManagementService.EmploymentTypes;
       $scope.addUser = {
         send_email:true,
@@ -244,22 +245,36 @@ var employerUser = employersController.controller('employerUser',
         }
       });
 
-      $scope.setPaginatedEmployees = function(filterName){
-        CompanyPersonnelsService.GetPaginatedEmployees(
-          $scope.compId,
+      $scope.getEmployeeCollection = function(profileId){
+        return CompanyPersonnelsService.getCompanyEmployees($scope.compId)
+        .then(function(employeeCollection){
+          var list = employeeCollection.filterByTimeRangeStatus($scope.currentStatus);
+          if(profileId){
+            list = list.filterByProfileId(profileId);
+          }
+          return list;
+        });
+      };
+
+      $scope.populatePagination = function(){
+        var paginatedList = $scope.employeeCollection.paginate(
           $scope.paginatedEmployees.currentPage,
-          $scope.paginatedEmployees.pageSize,
-          $scope.currentStatus,
-          filterName)
-        .then(function(employees){
-          $scope.paginatedEmployees.list = employees.list;
-          _.each($scope.paginatedEmployees.list, function(employee) {
-              DocumentService.getDocumentsToUserEntry(employee.user.id)
-              .then(function(docEntry) {
-                employee.docEntry = docEntry;
-              });
-          });
-          $scope.paginatedEmployees.totalItems = employees.totalCount;
+          $scope.paginatedEmployees.pageSize
+        );
+        $scope.paginatedEmployees.list = paginatedList.list;
+        _.each($scope.paginatedEmployees.list, function(employee) {
+            DocumentService.getDocumentsToUserEntry(employee.user.id)
+            .then(function(docEntry) {
+              employee.docEntry = docEntry;
+            });
+        });
+        $scope.paginatedEmployees.totalItems = paginatedList.totalCount;
+      };
+
+      $scope.setPaginatedEmployees = function(profileId){
+        $scope.getEmployeeCollection(profileId).then(function(employeeCollection){
+          $scope.employeeCollection = employeeCollection;
+          $scope.populatePagination();
         });
       };
 
@@ -425,7 +440,7 @@ var employerUser = employersController.controller('employerUser',
       $scope.typeAheadFiltered = false;
       $scope.$watch('selectedEmployee', function(){
         if (!angular.isString($scope.selectedEmployee)){
-          $scope.setPaginatedEmployees($scope.selectedEmployee.id);
+          $scope.setPaginatedEmployees($scope.selectedEmployee.profile.id);
           $scope.typeAheadFiltered = true;
         }
         else if(!$scope.selectedEmployee && $scope.typeAheadFiltered){
@@ -434,7 +449,6 @@ var employerUser = employersController.controller('employerUser',
         }
         $scope.paginatedEmployees.currentPage = 1;
       });
-      $scope.getEmployeeWithStatus = EmployeeProfileService.searchEmployeesWithStatus;
   }
 ]);
 

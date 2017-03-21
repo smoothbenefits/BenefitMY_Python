@@ -22,7 +22,7 @@
               name="employee_search"
               ng-model="selectedEmployee"
               placeholder="Search"
-              typeahead="employee as employee.first_name + ' ' + employee.last_name for employee in getEmployeeWithStatus($viewValue, currentStatus)"
+              typeahead="employee as employee.profile.first_name + ' ' + employee.profile.last_name for employee in employeeCollection.search($viewValue)"
               ng-required="false"
               autocomplete="off"
               class="form-control" />
