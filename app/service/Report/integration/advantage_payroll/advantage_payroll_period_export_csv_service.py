@@ -14,6 +14,11 @@ from app.service.compensation_service import (
 from app.factory.report_view_model_factory import ReportViewModelFactory
 
 from app.service.time_punch_card_service import TimePunchCardService
+from app.service.integration.integration_provider_service import (
+        IntegrationProviderService,
+        INTEGRATION_SERVICE_TYPE_PAYROLL,
+        INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL
+    )
 from app.service.Report.csv_report_service_base import CsvReportServiceBase
 
 User = get_user_model()
@@ -34,10 +39,21 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         super(AdvantagePayrollPeriodExportCsvService, self).__init__()
         self.view_model_factory = ReportViewModelFactory()
         self.time_punch_card_service = TimePunchCardService()
+        self.integration_provider_service = IntegrationProviderService()
 
     def get_report(self, company_id, period_start, period_end, outputStream):
+        ap_client_id = self._get_ap_client_number(company_id)
+        if (not ap_client_id):
+            raise ValueError('The company is not properly configured to integrate with Advantage Payroll service!')
+
         self._write_company(company_id, period_start, period_end)
         self._save(outputStream)
+
+    def _get_ap_client_number(self, company_id):
+        return self.integration_provider_service.get_company_integration_provider_external_id(
+            company_id,
+            INTEGRATION_SERVICE_TYPE_PAYROLL,
+            INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL)
 
     def _write_company(self, company_id, period_start, period_end):
         user_ids = self._get_all_employee_user_ids_for_company(company_id)
@@ -105,10 +121,16 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
             'ssn': ''
         }
 
+        # First get the employee number that came from AP system
+        ap_employee_number = self.integration_provider_service.get_employee_integration_provider_external_id(
+            employee_user_id,
+            INTEGRATION_SERVICE_TYPE_PAYROLL,
+            INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL)
+        export_data['employee_number'] = ap_employee_number
+
         export_data['full_name'] = person_info.get_full_name()
         export_data['ssn'] = person_info.ssn
 
-        export_data['employee_number'] = employee_profile_info.employee_number
         export_data['pay_type_code'] = self._get_employee_pay_type_code(employee_profile_info.pay_type)
         export_data['pay_rate'] = self._normalize_decimal_number(self._get_employee_pay_rate(employee_profile_info))
 
