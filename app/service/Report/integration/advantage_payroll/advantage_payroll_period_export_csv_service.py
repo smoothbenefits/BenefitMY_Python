@@ -64,7 +64,8 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
                     person_info,
                     employee_profile_info,
                     employees_reported_hours)
-                self._write_employee(export_data)
+                if (export_data):
+                    self._write_employee(export_data)
 
     def _write_employee(self, export_data):
         self._write_cell(export_data['employee_number'])
@@ -81,6 +82,17 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         self._next_row()
 
     def _get_export_data(self, employee_user_id, person_info, employee_profile_info, employees_reported_hours):
+        # If some of the necessary data does not exist, omit the employee
+        if (not person_info 
+            or not employee_profile_info):
+            return None
+
+        # Per discussion with AP, the time tracking/payrol reporting
+        # can omit salaried employees for now
+        if (employee_profile_info):
+            if (employee_profile_info.pay_type == PAY_TYPE_SALARY):
+                return None
+
         export_data = {
             'employee_number': '',
             'full_name': '',
@@ -93,14 +105,12 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
             'ssn': ''
         }
 
-        if (person_info):
-            export_data['full_name'] = person_info.get_full_name()
-            export_data['ssn'] = person_info.ssn
+        export_data['full_name'] = person_info.get_full_name()
+        export_data['ssn'] = person_info.ssn
 
-        if (employee_profile_info):
-            export_data['employee_number'] = employee_profile_info.employee_number
-            export_data['pay_type_code'] = self._get_employee_pay_type_code(employee_profile_info.pay_type)
-            export_data['pay_rate'] = self._normalize_decimal_number(self._get_employee_pay_rate(employee_profile_info))
+        export_data['employee_number'] = employee_profile_info.employee_number
+        export_data['pay_type_code'] = self._get_employee_pay_type_code(employee_profile_info.pay_type)
+        export_data['pay_rate'] = self._normalize_decimal_number(self._get_employee_pay_rate(employee_profile_info))
 
         if (employee_user_id in employees_reported_hours):
             work_hours = employees_reported_hours[employee_user_id].paid_hours
