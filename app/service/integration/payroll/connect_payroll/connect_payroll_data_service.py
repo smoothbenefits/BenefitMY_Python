@@ -71,8 +71,8 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
             else:
                 # Does not yet exist in CP system, new employee addition, create
                 payroll_id = self._create_employee_data_to_remote(employee_data_dto)
-                logging.info('Created Employee CP ID: ' + payroll_id)
-                
+                logging.info('Created Employee CP ID: {0}'.format(payroll_id))
+
                 # Sync the cp ID from the response
                 self._set_employee_external_id(
                         employee_user_id,
