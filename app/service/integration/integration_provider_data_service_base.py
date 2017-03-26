@@ -11,7 +11,16 @@ class IntegrationProviderDataServiceBase(object):
     def __init__(self):
         self._integration_provider_service = IntegrationProviderService()
 
+    ''' Synchronize all appropriate data related to the given
+        employee to the external service provider
+    '''
     def sync_employee_data_to_remote(self, employee_user_id):
+        pass
+
+    ''' Generate external employee number (normally for a new employee),
+        and record that in WBM system.
+    ''' 
+    def generate_and_record_external_employee_number(self, employee_user_id):
         pass
 
     def _get_employee_external_id(self, employee_user_id, service_type, provider_name):
