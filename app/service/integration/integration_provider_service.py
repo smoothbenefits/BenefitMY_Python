@@ -41,6 +41,18 @@ class IntegrationProviderService(object):
         return result
 
     def get_company_integration_provider_external_id(self, company_id, service_type, provider_name):
+        company_integration_provider = self._get_company_integration_provider(company_id, service_type, provider_name)
+        if not company_integration_provider:
+            return None
+        return company_integration_provider['company_external_id']
+
+    def get_company_integration_provider_employee_external_id_seed(self, company_id, service_type, provider_name):
+        company_integration_provider = self._get_company_integration_provider(company_id, service_type, provider_name)
+        if not company_integration_provider:
+            return None
+        return company_integration_provider['employee_external_id_seed']
+
+    def _get_company_integration_provider(self, company_id, service_type, provider_name):
         company_integration_providers = self.get_company_integration_providers(company_id)
         integration_provider = company_integration_providers[service_type]
         if (not integration_provider):
@@ -48,7 +60,7 @@ class IntegrationProviderService(object):
         company_provider_name = integration_provider['integration_provider']['name']
         if (company_provider_name != provider_name):
             return None
-        return integration_provider['company_external_id']
+        return integration_provider
 
     def get_employee_integration_provider_external_id(self, employee_user_id, service_type, provider_name):
         company_user_integration_provider = self._get_employee_integration_provider_model(

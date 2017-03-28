@@ -5,11 +5,14 @@ from app.service.integration.integration_provider_service import (
         IntegrationProviderService,
         INTEGRATION_SERVICE_TYPES,
         INTEGRATION_SERVICE_TYPE_PAYROLL,
-        INTEGRATION_PAYROLL_CONNECT_PAYROLL
+        INTEGRATION_PAYROLL_CONNECT_PAYROLL,
+        INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL
     )
 from app.service.company_personnel_service import CompanyPersonnelService
 from app.service.integration.payroll.connect_payroll.connect_payroll_data_service \
 import ConnectPayrollDataService
+from app.service.integration.payroll.advantage_payroll.advantage_payroll_data_service \
+import AdvantagePayrollDataService
 
 User = get_user_model()
 
@@ -33,6 +36,7 @@ class CompanyIntegrationProviderDataService(object):
     def _register_data_service_classes(self):
         # Register all data services
         self._data_service_registry[INTEGRATION_SERVICE_TYPE_PAYROLL][INTEGRATION_PAYROLL_CONNECT_PAYROLL] = ConnectPayrollDataService
+        self._data_service_registry[INTEGRATION_SERVICE_TYPE_PAYROLL][INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL] = AdvantagePayrollDataService
 
     def sync_employee_data_to_remote(self, employee_user_id):
         # Enumerate through all the integration providers associated
@@ -42,6 +46,12 @@ class CompanyIntegrationProviderDataService(object):
         if (not company_id):
             return
         self._enumerate_company_data_services(company_id, lambda data_service: data_service.sync_employee_data_to_remote(employee_user_id))
+
+    def generate_and_record_external_employee_number(self, employee_user_id):
+        company_id = self.company_personnel_service.get_company_id_by_employee_user_id(employee_user_id)
+        if (not company_id):
+            raise ValueError('The given employee user ID "{0}" is not properly linked to a valid company.'.format(employee_user_id))
+        self._enumerate_company_data_services(company_id, lambda data_service: data_service.generate_and_record_external_employee_number(employee_user_id))
 
     def _enumerate_company_data_services(self, company_id, data_service_action):
         # [TODO]: Distributed atomicity is hard to guarantee, when it involves
