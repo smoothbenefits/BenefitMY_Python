@@ -86,4 +86,3 @@ class AdvantagePayrollDataService(IntegrationProviderDataServiceBase):
             return max(employee_numbers)
 
         return 0
-                
