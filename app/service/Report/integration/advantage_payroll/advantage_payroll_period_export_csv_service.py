@@ -92,7 +92,6 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         self._write_cell(export_data['division'])
         self._write_cell(export_data['department'])
         self._write_cell(export_data['job'])
-        self._write_cell(export_data['ssn'])
 
         # move to next row
         self._next_row()
@@ -117,8 +116,7 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
             'work_hours': '',
             'division': '',
             'department': '',
-            'job': '',
-            'ssn': ''
+            'job': ''
         }
 
         # First get the employee number that came from AP system
