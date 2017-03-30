@@ -52,7 +52,7 @@ BenefitMyApp.controller('ConfigureModalController', [
                     $scope.company.id)
                 .then(function(timeoffQuotaList){
                     $scope.employeeQuotas = [];
-                    _.each(employees, function(employee){
+                    _.each(employees.list, function(employee){
                         var envAwareId = utilityService.getEnvAwareId(employee.user.id);
                         var timeoffQuota = _.findWhere(timeoffQuotaList, {personDescriptor: envAwareId});
                         $scope.employeeQuotas.push({

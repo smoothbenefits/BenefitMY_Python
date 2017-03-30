@@ -28,7 +28,7 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
     var getCompanyEmployeeSummary = function(companyId) {
       return CompanyPersonnelsService.getCompanyEmployees(companyId)
       .then(function(employees){
-        var mappedList = mapToViewEmployeeList(employees);
+        var mappedList = mapToViewEmployeeList(employees.list);
         return mappedList
       }, function(error) {
         deferred.reject(error);
