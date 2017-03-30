@@ -130,8 +130,8 @@ class IntegrationProviderAdmin(admin.ModelAdmin):
     fields=['name', 'service_type']
 
 class CompanyIntegrationProviderAdmin(admin.ModelAdmin):
-    list_display=('company', 'integration_provider', 'company_external_id')
-    fields=['company', 'integration_provider', 'company_external_id']
+    list_display=('company', 'integration_provider', 'company_external_id', 'employee_external_id_seed')
+    fields=['company', 'integration_provider', 'company_external_id', 'employee_external_id_seed']
 
 class CompanyUserIntegrationProviderAdmin(admin.ModelAdmin):
     list_display=('company_user', 'company', 'integration_provider', 'company_user_external_id')

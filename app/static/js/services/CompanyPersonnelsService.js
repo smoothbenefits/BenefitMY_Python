@@ -63,7 +63,9 @@ benefitmyService.factory('CompanyPersonnelsService',
                     timeRangeStart = timeRangeEnd = moment();
                 }
 
-                var activeStatues = employee.profile.getListOfEmploymentStatusInTimeRange(timeRangeStart, timeRangeEnd);
+                var activeStatues = employee.profile ?
+                    employee.profile.getListOfEmploymentStatusInTimeRange(timeRangeStart, timeRangeEnd)
+                    : [];
 
                 // First check that required-on status is active in the range
                 if (requiredOnStatus && !_.contains(activeStatues, requiredOnStatus)) {
@@ -89,7 +91,9 @@ benefitmyService.factory('CompanyPersonnelsService',
 
         var _searchByName = function(term){
             return _.filter(this.list, function(employee){
-                var fullName = employee.profile.first_name + ' ' + employee.profile.last_name;
+                var fullName = employee.profile
+                    ? employee.profile.first_name + ' ' + employee.profile.last_name
+                    : "";
                 return fullName.toLowerCase().indexOf(term.toLowerCase()) > -1;
             });
         };
