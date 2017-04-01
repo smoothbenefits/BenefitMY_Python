@@ -763,22 +763,26 @@ var onboardDocument = employeeControllers.controller('onboardDocument',
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
 
-    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
-      $location.path('/employee');
-    },
-    function(redirectUrl){
-      if($location.path() !== redirectUrl){
-        $location.path(redirectUrl);
-      }
-      else{
-        $scope.displayAll = true;
-      }
-    });
+    var checkForOnboardingStep = function() {
+        EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
+          $location.path('/employee');
+        },
+        function(redirectUrl){
+          if($location.path() !== redirectUrl){
+            $location.path(redirectUrl);
+          }
+          else{
+            $scope.displayAll = true;
+          }
+        });
+    };
+
+    checkForOnboardingStep()
 
     $('body').addClass('onboarding-page');
 
     $scope.documentsSigned = function(){
-      $state.go('employee_family', {employeeId: $scope.employeeId});
+      checkForOnboardingStep();
     };
 }]);
 
