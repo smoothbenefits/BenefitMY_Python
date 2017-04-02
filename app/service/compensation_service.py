@@ -144,7 +144,7 @@ class CompensationService(object):
 
         if self.current_compensation.annual_base_salary:
             pay_type = PAY_TYPE_SALARY
-        elif (self.current_compensation.hourly_rate and self.current_compensation.projected_hour_per_month):
+        elif (self.current_compensation.hourly_rate and self.current_compensation.projected_hour_per_month is not None):
             pay_type = PAY_TYPE_HOURLY
 
         return pay_type
