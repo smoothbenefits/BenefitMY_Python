@@ -55,9 +55,6 @@
           </div>
         </div>
       </div>
-      <div class="row" ng-show="!currentSalary && useAnnualSalary()">
-        <div class="form-inline-error">* Salary number is required because no previous record found.</div>
-      </div>
       <div class="row" ng-if="useHourlyRate()">
         <div class="col-md-4">
           <div class="form-label">Hourly Rate</div>
@@ -111,7 +108,7 @@
 </div>
 <div class="modal-footer">
   <div class="button-group">
-    <button class="btn btn-info" ng-click="save(compensation)" ng-disabled="form.$invalid" style="width:20%;">Save</button>
+    <button class="btn btn-info" ng-click="save(compensation)" ng-disabled="form.$invalid || !validateModel()" style="width:20%;">Save</button>
     <button class="btn btn-primary" ng-click="cancel()" style="width:20%;">Cancel</button>
   </div>
 </div>

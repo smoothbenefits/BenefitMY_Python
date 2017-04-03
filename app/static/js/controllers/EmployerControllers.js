@@ -1484,15 +1484,55 @@ var addEmployeeCompensationModalController = employersController.controller(
         $modalInstance.dismiss('cancel');
       };
 
-      $scope.save = function(compensation) {
-        if (!currentSalary && compensation.salary) {
-          compensation.increasePercentage = null;
-        }
-        if(!compensation.salary && !compensation.hourly_rate && !compensation.increasePercentage){
-          $scope.errorMessage = "You cannot save compensation record where both salary and increase percentage are empty!"
-          return;
-        }
+      var hourlyRateSpecified = function(compensation) {
+        return $scope.isNumber(compensation.hourly_rate)
+            && compensation.hourly_rate >= 0;
+      };
 
+      var salarySpecified = function(compensation) {
+        return $scope.isNumber(compensation.salary)
+            && compensation.salary >= 0;
+      };
+
+      var percentageSpecified = function(compensation) {
+        return $scope.isNumber(compensation.increasePercentage)
+            && compensation.increasePercentage <= 100.0
+            && compensation.increasePercentage >= -100.0;
+      }
+
+      $scope.validateModel = function() {
+        if ($scope.useHourlyRate()) {
+            return hourlyRateSpecified($scope.compensation)
+                && $scope.compensation.effective_date;
+        } else {
+            return (salarySpecified($scope.compensation) 
+                    || percentageSpecified($scope.compensation))
+                && $scope.compensation.effective_date;
+        }
+      };
+
+      var cleanupModelForSave = function(compensation) {
+        if ($scope.useHourlyRate()) {
+            if (!compensation.projected_hour_per_month) {
+                compensation.projected_hour_per_month = 0.0;
+            }
+            compensation.salary = null;
+            compensation.increasePercentage = null;
+        } else {
+            if (percentageSpecified(compensation)) {
+                compensation.salary = null;
+            } else {
+                compensation.increasePercentage = null;
+            }
+            compensation.projected_hour_per_month = null;
+            compensation.hourly_rate = null;
+        }
+      };
+
+      $scope.save = function(compensation) {
+        // Perform necessary cleanup on the model to save first
+        cleanupModelForSave(compensation);
+        
         CompensationService.addCompensationByPerson(compensation, personId, companyId)
         .then(function(response){
           var newCompensation = CompensationService.mapToViewModel(response);
