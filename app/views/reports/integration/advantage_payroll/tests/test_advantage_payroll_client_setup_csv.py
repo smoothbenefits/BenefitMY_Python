@@ -16,7 +16,7 @@ class AdvantagePayrollClientSetupCsvTestCase(TestCase, ViewTestBase):
                 '44_person_company_suppl_life', '45_suppl_life_beneficiary', '46_hra_plan',
                 '47_company_hra_plan', '48_person_company_hra_plan', 'company_features',
                 'life_insurance', 'ltd_insurance', 'std_insurance', 'waived_benefit', 'direct_deposit',
-                'user_bank_account']
+                'user_bank_account', '77_integration_provider', '78_company_integration_provider']
 
     def test_get_advantage_payroll_client_setup_csv_success(self):
         if self.client.login(username='user2@benefitmy.com', password='foobar'):

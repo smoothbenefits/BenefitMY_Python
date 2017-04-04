@@ -24,6 +24,8 @@ from app.serializers.company_group_serializer import CompanyGroupPostSerializer
 from app.serializers.company_group_member_serializer import CompanyGroupMemberPostSerializer
 from app.serializers.dtos.account_creation_data_serializer import AccountCreationDataSerializer
 from app.service.hash_key_service import HashKeyService
+from app.service.integration.company_integration_provider_data_service \
+import CompanyIntegrationProviderDataService
 
 User = get_user_model()
 
@@ -62,6 +64,9 @@ class AccountCreationService(object):
         FIELD_MANAGER_LAST_NAME,
         FIELD_RECORD_END
     ]
+
+    def __init__(self):
+        self.company_integration_provider_data_service = CompanyIntegrationProviderDataService()
 
     def parse_raw_data(self, batch_account_raw_data):
         result = OperationResult(batch_account_raw_data)
@@ -466,6 +471,11 @@ class AccountCreationService(object):
             account_info.user_id = user.id
 
             account_result.set_output_data(account_info)
+
+            # Now for the new employee being created, setup any information
+            # required for external parties (such as payroll and benefit service)
+            # providers.
+            self.company_integration_provider_data_service.generate_and_record_external_employee_number(user.id)
 
         return account_result
 

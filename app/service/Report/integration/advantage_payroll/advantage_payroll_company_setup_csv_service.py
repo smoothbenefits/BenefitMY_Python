@@ -19,7 +19,11 @@ from app.service.compensation_service import (
     PAY_TYPE_HOURLY,
     PAY_TYPE_SALARY
 )
-
+from app.service.integration.integration_provider_service import (
+        IntegrationProviderService,
+        INTEGRATION_SERVICE_TYPE_PAYROLL,
+        INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL
+    )
 from app.factory.report_view_model_factory import ReportViewModelFactory
 
 from app.service.Report.csv_report_service_base import CsvReportServiceBase
@@ -32,11 +36,22 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
     def __init__(self):
         super(AdvantagePayrollCompanySetupCsvService, self).__init__()
         self.view_model_factory = ReportViewModelFactory()
+        self.integration_provider_service = IntegrationProviderService()
 
     def get_report(self, company_id, outputStream):
+        ap_client_id = self._get_ap_client_number(company_id)
+        if (not ap_client_id):
+            raise ValueError('The company is not properly configured to integrate with Advantage Payroll service!')
+
         self._write_headers()
-        self._write_company(company_id)
+        self._write_company(company_id, ap_client_id)
         self._save(outputStream)
+
+    def _get_ap_client_number(self, company_id):
+        return self.integration_provider_service.get_company_integration_provider_external_id(
+            company_id,
+            INTEGRATION_SERVICE_TYPE_PAYROLL,
+            INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL)
 
     def _write_headers(self):
 
@@ -77,27 +92,29 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._write_cell('SITSTATUS')
         self._write_cell('SITCODE')
 
-    def _write_company(self, company_id):
+    def _write_company(self, company_id, ap_client_id):
         user_ids = self._get_all_employee_user_ids_for_company(company_id)
 
         # For each of them, write out his/her information
         for i in range(len(user_ids)):
-            self._write_employee(user_ids[i], company_id)
+            self._write_employee(user_ids[i], company_id, ap_client_id)
 
-    def _write_employee(self, employee_user_id, company_id):
+    def _write_employee(self, employee_user_id, company_id, ap_client_id):
         company_info = self.view_model_factory.get_company_info(company_id)
         person_info = self.view_model_factory.get_employee_person_info(employee_user_id)
 
         # now start writing the employee row
         self._next_row()
 
-        # [TODO]: For now, skip the below fields
-        #   - CLTNO: Clint number registered with Advantage Payroll
-        self._skip_cells(1)
+        # Client number, this comes from the AP system
+        self._write_cell(ap_client_id)
 
-        # [TODO]: For now, use our internal user ID as the acting EMPNO
-        #         i.e. Employee number. Until we have that in our system
-        self._write_cell(employee_user_id)
+        # Employee Number, this comes from the AP system.
+        ap_employee_number = self.integration_provider_service.get_employee_integration_provider_external_id(
+            employee_user_id,
+            INTEGRATION_SERVICE_TYPE_PAYROLL,
+            INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL)
+        self._write_cell(ap_employee_number)
 
         # Now write the basic personal info of the employee
         self._write_employee_basic_info(person_info)

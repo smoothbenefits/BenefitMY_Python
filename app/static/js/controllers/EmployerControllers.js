@@ -225,6 +225,7 @@ var employerUser = employersController.controller('employerUser',
         list: [],
         totalItems: 0
       };
+      $scope.employeeCollection;
       $scope.employment_types = EmployerEmployeeManagementService.EmploymentTypes;
       $scope.addUser = {
         send_email:true,
@@ -244,22 +245,36 @@ var employerUser = employersController.controller('employerUser',
         }
       });
 
-      $scope.setPaginatedEmployees = function(filterName){
-        CompanyPersonnelsService.GetPaginatedEmployees(
-          $scope.compId,
+      $scope.getEmployeeCollection = function(profileId){
+        return CompanyPersonnelsService.getCompanyEmployees($scope.compId)
+        .then(function(employeeCollection){
+          var list = employeeCollection.filterByTimeRangeStatus($scope.currentStatus);
+          if(profileId){
+            list = list.filterByProfileId(profileId);
+          }
+          return list;
+        });
+      };
+
+      $scope.populatePagination = function(){
+        var paginatedList = $scope.employeeCollection.paginate(
           $scope.paginatedEmployees.currentPage,
-          $scope.paginatedEmployees.pageSize,
-          $scope.currentStatus,
-          filterName)
-        .then(function(employees){
-          $scope.paginatedEmployees.list = employees.list;
-          _.each($scope.paginatedEmployees.list, function(employee) {
-              DocumentService.getDocumentsToUserEntry(employee.user.id)
-              .then(function(docEntry) {
-                employee.docEntry = docEntry;
-              });
-          });
-          $scope.paginatedEmployees.totalItems = employees.totalCount;
+          $scope.paginatedEmployees.pageSize
+        );
+        $scope.paginatedEmployees.list = paginatedList.list;
+        _.each($scope.paginatedEmployees.list, function(employee) {
+            DocumentService.getDocumentsToUserEntry(employee.user.id)
+            .then(function(docEntry) {
+              employee.docEntry = docEntry;
+            });
+        });
+        $scope.paginatedEmployees.totalItems = paginatedList.totalCount;
+      };
+
+      $scope.setPaginatedEmployees = function(profileId){
+        $scope.getEmployeeCollection(profileId).then(function(employeeCollection){
+          $scope.employeeCollection = employeeCollection;
+          $scope.populatePagination();
         });
       };
 
@@ -425,7 +440,7 @@ var employerUser = employersController.controller('employerUser',
       $scope.typeAheadFiltered = false;
       $scope.$watch('selectedEmployee', function(){
         if (!angular.isString($scope.selectedEmployee)){
-          $scope.setPaginatedEmployees($scope.selectedEmployee.id);
+          $scope.setPaginatedEmployees($scope.selectedEmployee.profile.id);
           $scope.typeAheadFiltered = true;
         }
         else if(!$scope.selectedEmployee && $scope.typeAheadFiltered){
@@ -434,7 +449,6 @@ var employerUser = employersController.controller('employerUser',
         }
         $scope.paginatedEmployees.currentPage = 1;
       });
-      $scope.getEmployeeWithStatus = EmployeeProfileService.searchEmployeesWithStatus;
   }
 ]);
 
@@ -1470,15 +1484,55 @@ var addEmployeeCompensationModalController = employersController.controller(
         $modalInstance.dismiss('cancel');
       };
 
-      $scope.save = function(compensation) {
-        if (!currentSalary && compensation.salary) {
-          compensation.increasePercentage = null;
-        }
-        if(!compensation.salary && !compensation.hourly_rate && !compensation.increasePercentage){
-          $scope.errorMessage = "You cannot save compensation record where both salary and increase percentage are empty!"
-          return;
-        }
+      var hourlyRateSpecified = function(compensation) {
+        return $scope.isNumber(compensation.hourly_rate)
+            && compensation.hourly_rate >= 0;
+      };
 
+      var salarySpecified = function(compensation) {
+        return $scope.isNumber(compensation.salary)
+            && compensation.salary >= 0;
+      };
+
+      var percentageSpecified = function(compensation) {
+        return $scope.isNumber(compensation.increasePercentage)
+            && compensation.increasePercentage <= 100.0
+            && compensation.increasePercentage >= -100.0;
+      }
+
+      $scope.validateModel = function() {
+        if ($scope.useHourlyRate()) {
+            return hourlyRateSpecified($scope.compensation)
+                && $scope.compensation.effective_date;
+        } else {
+            return (salarySpecified($scope.compensation) 
+                    || percentageSpecified($scope.compensation))
+                && $scope.compensation.effective_date;
+        }
+      };
+
+      var cleanupModelForSave = function(compensation) {
+        if ($scope.useHourlyRate()) {
+            if (!compensation.projected_hour_per_month) {
+                compensation.projected_hour_per_month = 0.0;
+            }
+            compensation.salary = null;
+            compensation.increasePercentage = null;
+        } else {
+            if (percentageSpecified(compensation)) {
+                compensation.salary = null;
+            } else {
+                compensation.increasePercentage = null;
+            }
+            compensation.projected_hour_per_month = null;
+            compensation.hourly_rate = null;
+        }
+      };
+
+      $scope.save = function(compensation) {
+        // Perform necessary cleanup on the model to save first
+        cleanupModelForSave(compensation);
+        
         CompensationService.addCompensationByPerson(compensation, personId, companyId)
         .then(function(response){
           var newCompensation = CompensationService.mapToViewModel(response);

@@ -40,9 +40,67 @@ benefitmyService.factory('CompanyPersonnelsService',
             });
         };
 
-        var _GetPaginatedEmployees = function(employeeList, pageNum, pageSize){
-            var totalCount = employeeList.length;
-            var pagedList = employeeList;
+
+        var _filterEmployeeListByProfileId = function(profileId){
+            var filtered = _.filter(this.list, function(employee){
+                return employee.profile && employee.profile.id == profileId;
+            });
+            this.list = filtered;
+            return this;
+        };
+
+        var _filterEmployeeListByTimeRangeStatus = function(
+            requiredOnStatus,
+            requiredOnExcludeStatus,
+            timeRangeStart,
+            timeRangeEnd)
+        {
+            var filtered = _.filter(this.list, function(employee) {
+                if (!timeRangeStart || !timeRangeEnd) {
+                    // If time range is not provided, 
+                    // assume start and to be now, so this becomes 
+                    // a check against the current status
+                    timeRangeStart = timeRangeEnd = moment();
+                }
+
+                var activeStatues = employee.profile ?
+                    employee.profile.getListOfEmploymentStatusInTimeRange(timeRangeStart, timeRangeEnd)
+                    : [];
+
+                // First check that required-on status is active in the range
+                if (requiredOnStatus && !_.contains(activeStatues, requiredOnStatus)) {
+                    return false;
+                }
+
+                // Then check that if exclude status is specified, there are 
+                // indeed some statuses that are on during the range, beside
+                // the excluded status.
+                // One common need for this is to answer "is the employee at
+                // least partially employed during the time period" 
+                if (requiredOnExcludeStatus && !_.some(activeStatues, function(status) {
+                    return status != requiredOnExcludeStatus;
+                })) {
+                    return false;
+                }
+
+                return true;
+            });
+            this.list = filtered;
+            return this;
+        };
+
+        var _searchByName = function(term){
+            return _.filter(this.list, function(employee){
+                var fullName = employee.profile
+                    ? employee.profile.first_name + ' ' + employee.profile.last_name
+                    : "";
+                return fullName.toLowerCase().indexOf(term.toLowerCase()) > -1;
+            });
+        };
+
+        var _getPaginated = function(pageNum, pageSize){
+            var totalCount = this.list.length;
+            var pagedList = this.list;
             var offset = 0;
             var offsetEnd = pageSize * pageNum;
             var totalPages = Math.ceil(totalCount/pageSize);
@@ -55,7 +113,7 @@ benefitmyService.factory('CompanyPersonnelsService',
             if(offsetEnd > totalCount){
                 offsetEnd = totalCount;
             }
-            pagedList = employeeList.slice(offset, offsetEnd);
+            pagedList = this.list.slice(offset, offsetEnd);
 
             return {
                 totalCount: totalCount,
@@ -63,13 +121,8 @@ benefitmyService.factory('CompanyPersonnelsService',
             };
         };
 
-        var _filterEmployeeListByEmploymentStatus = function(employeeList, companyId, employeeStatusFilterSpecs) {
+        var _constructEmployeeListWithProfile = function(employeeList, companyId){
             var deferred = $q.defer();
-
-            // Filter specs not specified, just return original list
-            if (!employeeStatusFilterSpecs) {
-                deferred.resolve(employeeList);
-            }
 
             EmployeeProfileService.getCompanyEmployeeProfiles(companyId)
             .then(function(employeeProfiles) {
@@ -79,43 +132,20 @@ benefitmyService.factory('CompanyPersonnelsService',
                     });
                     employee.profile = foundProfile;
                 });
-                var filteredEmployees = _.filter(employeeList, function(employee){
-                  return employee.profile && employeeStatusFilterSpecs.profileMatches(employee.profile);
-                });
-                deferred.resolve(filteredEmployees);
+                var employeeListBuilder = {
+                    list: employeeList,
+                    filterByProfileId: _filterEmployeeListByProfileId,
+                    filterByTimeRangeStatus: _filterEmployeeListByTimeRangeStatus,
+                    search: _searchByName,
+                    paginate: _getPaginated
+                }
+                deferred.resolve(employeeListBuilder);
             });
 
             return deferred.promise;
         };
 
-        var _filterEmployeeListByProfileId = function(employeeList, companyId, filterProfileId) {
-            var deferred = $q.defer();
-
-            // Filter not specified, just return original list
-            if (!filterProfileId) {
-                deferred.resolve(employeeList);
-            }
-
-            EmployeeProfileService.getCompanyEmployeeProfiles(companyId)
-            .then(function(employeeProfiles) {
-                _.each(employeeList, function(employee){
-                    var foundProfile = _.find(employeeProfiles, function(profile){
-                        return profile.person.user == employee.user.id;
-                    });
-                    employee.profile = foundProfile;
-                });
-                var filteredEmployees = _.filter(employeeList, function(employee){
-                  return employee.profile && employee.profile.id == filterProfileId;
-                });
-                deferred.resolve(filteredEmployees);
-            });
-
-            return deferred.promise;
-        };
-
-        var getCompanyEmployees = function(
-            companyId,
-            employeeStatusFilterSpecs){
+        var getCompanyEmployees = function(companyId){
             employeeCollection = _.findWhere(personnels, {companyId: companyId});
             if(!employeeCollection){
                 return _getCompanyPersonnels(companyId)
@@ -123,35 +153,20 @@ benefitmyService.factory('CompanyPersonnelsService',
                         return companyPersonnels.employees;
                     })
                     .then(function(allEmployees) {
-                        return _filterEmployeeListByEmploymentStatus(
+                        return _constructEmployeeListWithProfile(
                             allEmployees,
-                            companyId,
-                            employeeStatusFilterSpecs
+                            companyId
                         );
                     });
             }
             else {
-                return _filterEmployeeListByEmploymentStatus(
+                return _constructEmployeeListWithProfile(
                     employeeCollection.employees,
-                    companyId,
-                    employeeStatusFilterSpecs
+                    companyId
                 );
             }
         };
 
-        var GetPaginatedEmployees = function(companyId, pageNum, pageSize, status, filterProfileId){
-            var filterSpecs = constructEmployeeStatusFilterSpecs(status);
-            return getCompanyEmployees(companyId, filterSpecs).then(function(filteredEmployees) {
-                return _filterEmployeeListByProfileId(filteredEmployees, companyId, filterProfileId).then(function(filteredByProfileId) {
-                    return _GetPaginatedEmployees(
-                        _.sortBy(filteredByProfileId, function(emp) {
-                            return emp.user.last_name;
-                        }),
-                        pageNum,
-                        pageSize);
-                });
-            });
-        };
 
         var getCompanyBrokers = function(companyId){
             brokerCollection = _.findWhere(personnels, {companyId: companyId});
@@ -181,54 +196,11 @@ benefitmyService.factory('CompanyPersonnelsService',
             }
         };
 
-        var constructEmployeeStatusFilterSpecs = function(
-            requiredOnStatus,
-            requiredOnExcludeStatus,
-            timeRangeStart,
-            timeRangeEnd) {
-
-            return {
-                requiredOnStatus: requiredOnStatus,
-                timeRangeStart: timeRangeStart,
-                timeRangeEnd: timeRangeEnd,
-
-                profileMatches: function(employeeProfile) {
-                    if (!timeRangeStart || !timeRangeEnd) {
-                        // If time range is not provided, 
-                        // assume start and to be now, so this becomes 
-                        // a check against the current status
-                        timeRangeStart = timeRangeEnd = moment();
-                    }
-
-                    var activeStatues = employeeProfile.getListOfEmploymentStatusInTimeRange(timeRangeStart, timeRangeEnd);
-
-                    // First check that required-on status is active in the range
-                    if (requiredOnStatus && !_.contains(activeStatues, requiredOnStatus)) {
-                        return false;
-                    }
-
-                    // Then check that if exclude status is specified, there are 
-                    // indeed some statuses that are on during the range, beside
-                    // the excluded status.
-                    // One common need for this is to answer "is the employee at
-                    // least partially employed during the time period" 
-                    if (requiredOnExcludeStatus && !_.some(activeStatues, function(status) {
-                        return status != requiredOnExcludeStatus;
-                    })) {
-                        return false;
-                    }
-
-                    return true;
-                }
-            };
-        };
 
         return {
             getCompanyBrokers: getCompanyBrokers,
             getCompanyEmployees: getCompanyEmployees,
-            clearCache: clearCache,
-            GetPaginatedEmployees: GetPaginatedEmployees,
-            constructEmployeeStatusFilterSpecs: constructEmployeeStatusFilterSpecs
+            clearCache: clearCache
         };
     }
 ]);
