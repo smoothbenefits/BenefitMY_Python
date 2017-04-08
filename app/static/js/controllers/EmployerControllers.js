@@ -1274,6 +1274,25 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
       return '';
     };
 
+    $scope.editEmployeeBasicInfo = function(){
+      var modalInstance = $modal.open({
+        templateUrl: '/static/partials/employee_record/modal_edit_employee_info.html',
+        controller: 'editEmployeeInfoModelController',
+        size: 'lg',
+        backdrop: 'static',
+        resolve: {
+          employeeId: function(){
+            return $scope.employeeUserId;
+          }
+        },
+      });
+      modalInstance.result.then(function(savedResponse){
+        $scope.employee = _.extend($scope.employee, savedResponse);
+        var successMessage = "The employee basic information has been saved successfully."
+        $scope.showMessageWithOkayOnly('Success', successMessage);
+      });
+    };
+
     $scope.editEmployeeProfile = function(){
         if (!$scope.employee.employeeProfile){
             return;
@@ -1366,6 +1385,27 @@ var resetEmployeePasswordModalController = employersController.controller('reset
       };
     }
  ]);
+
+var editEmployeeInfoModelController = employersController.controller('editEmployeeInfoModelController',
+  ['$scope',
+   '$modal',
+   '$modalInstance',
+   'employeeId',
+   function(
+     $scope,
+     $modal,
+     $modalInstance,
+     employeeId){
+      $scope.employeeId = employeeId;
+
+      $scope.infoSaved = function(savedResponse){
+        $modalInstance.close(savedResponse);
+      };
+      $scope.cancelled = function(){
+        $modalInstance.dismiss();
+      };
+   }
+  ]);
 
 var editEmployeeProfileModalController = employersController.controller('editEmployeeProfileModalController',
   ['$scope',
