@@ -13,7 +13,7 @@
         <th><span>Actions</span></th>
       </thead>
       <tbody>
-        <tr ng-repeat="quotaPerEmployee in employeeQuotas">
+        <tr ng-repeat="quotaPerEmployee in employeeQuotas | orderBy: 'employee.last_name'">
           <td>
             {{quotaPerEmployee.employee.first_name}} {{quotaPerEmployee.employee.last_name}}
           </td>

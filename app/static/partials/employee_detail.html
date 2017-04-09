@@ -16,6 +16,9 @@
       <div class='panel'>
         <div class='panel-heading' ng-click="basicInfoExpanded = !basicInfoExpanded">
           <b class="clickable"><span class="fa fa-toggle-down"></span>  Basic Information</b>
+          <a ng-click="editEmployeeBasicInfo();$event.stopPropagation();" ng-if="!isBroker">
+            <span class="fa fa-2x fa-pencil pull-right"></span>
+          </a>
         </div>
         <div class="panel-body" collapse="!basicInfoExpanded">
           <ul class="list-group">
@@ -280,6 +283,9 @@
       <div class='panel' ng-show="employee.emergency_contact.length > 0">
         <div class='panel-heading' ng-click="emergencyContactExpanded = !emergencyContactExpanded">
           <b class="clickable"><span class="fa fa-toggle-down"></span>  Emergency Contact</b>
+          <a ng-click="editEmployeeBasicInfo();$event.stopPropagation();" ng-if="!isBroker">
+            <span class="fa fa-2x fa-pencil pull-right"></span>
+          </a>
         </div>
         <div class="panel-body" collapse="!emergencyContactExpanded">
           <ul class="list-group" ng-repeat="emergency in employee.emergency_contact">

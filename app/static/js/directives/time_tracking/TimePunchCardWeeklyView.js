@@ -7,6 +7,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   'PersonService',
   'CompensationService',
   'utilityService',
+  'CompanyFeatureService',
   'punchCard',
   'adminView',
   'companyId',
@@ -19,6 +20,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     PersonService,
     CompensationService,
     utilityService,
+    CompanyFeatureService,
     punchCard,
     adminView,
     companyId){
@@ -29,6 +31,11 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
     $scope.allStates = UsStateService.GetAllStates();
+
+    CompanyFeatureService.getAllApplicationFeatureStatusByCompany(companyId)
+    .then(function(allFeatureStatus) {
+      $scope.allFeatureStatus = allFeatureStatus;
+    });
 
     $scope.$watch('punchCard.hours', function(hours){
       if(hours){
@@ -63,6 +70,12 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     var isAttributeVisible = function(attribute) {
         return !attribute.type.adminOnly || $scope.adminView;
+    };
+
+    $scope.projectManagementEnabled = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.ProjectManagement);
     };
 
     $scope.isTimeVisisble = function() {
