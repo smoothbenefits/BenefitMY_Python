@@ -77,10 +77,11 @@
 
         <div>
           <div class="form-label">City/Town</div>
-            <input type="text"
-              ng-model="punchCard.attributes.city.value">
-            </div>
+          <input type="text"
+            ng-model="punchCard.attributes.city.value">
+        </div>
         <div>
+          <div ng-show="projectManagementEnabled()">
             <div class="form-label">Project</div>
             <select 
                 name="project" 
@@ -88,6 +89,7 @@
                 ng-options="project.name for project in allProjects track by project._id"
                 class="form-control">
             </select>
+          </div>
         </div>
 
         <div ng-if="isHourlyRateAttributeVisisble()">
