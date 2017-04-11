@@ -107,6 +107,7 @@ MIDDLEWARE_CLASSES = (
     'cid.middleware.CidMiddleware',
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
     'app.middlewares.logging_middleware.LoggingMiddleware',
+    'app.middlewares.cors_middleware.CorsMiddleware',
     'reversion.middleware.RevisionMiddleware',
 )
 
