@@ -7,7 +7,8 @@ from app.views.employee_profile_view import (
     EmployeeProfileView,
     EmployeeProfileByPersonCompanyView,
     EmployeeProfileByCompanyUserView,
-    EmployeeProfilesByCompanyView)
+    EmployeeProfilesByCompanyView,
+    EmployeeProfileByCompanyPinView)
 from app.views.employee_compensation_view import (
     EmployeeCompensationView,
     EmployeeCompensationByPersonView)
@@ -650,6 +651,9 @@ urlpatterns = patterns('app.views',
     url(r'^%s/company/(?P<company_id>\w+)/employee_profiles/?$' % PREFIX,
         EmployeeProfilesByCompanyView.as_view(),
         name='employee_profiles_by_company_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/pin/(?P<pin>\w+)/employee_profile/?$' % PREFIX,
+        EmployeeProfileByCompanyPinView.as_view(),
+        name='employee_profile_by_company_pin_api'),
 
     url(r'^%s/employee_compensation/(?P<pk>\w+)/?$' % PREFIX,
         EmployeeCompensationView.as_view(),
