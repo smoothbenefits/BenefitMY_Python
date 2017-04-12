@@ -280,8 +280,11 @@ from app.views.reports.integration.advantage_payroll.advantage_payroll_client_se
 from app.views.reports.integration.advantage_payroll.advantage_payroll_period_export_csv \
     import AdvantagePayrollPeriodExportCsvView
 
+from app.views.admin.password_generator_view import PasswordGeneratorView
+
 PREFIX = "api/v1"
 PREFIX_V2 = "api/v2"
+ADMIN_PREFIX = 'admin/v1'
 
 urlpatterns = patterns('app.views',
     url(r'^dashboard/?$', dashboard_view.index, name='dashboard'),
@@ -748,7 +751,10 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<company_id>\w+)/advantage_payroll/period_export_csv/from/(?P<from_year>\d+)/(?P<from_month>\d+)/(?P<from_day>\d+)/to/(?P<to_year>\d+)/(?P<to_month>\d+)/(?P<to_day>\d+)/?$' % PREFIX, AdvantagePayrollPeriodExportCsvView.as_view(), name='company_advantage_payroll_period_export_csv_api'),
 
     # Logging
-    url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api")
+    url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api"),
+
+    # Admin APIs
+    url(r'^%s/password_generator/(?P<num_passwords>\d+)/?$' % ADMIN_PREFIX, PasswordGeneratorView.as_view(), name="password_generator_api")
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
