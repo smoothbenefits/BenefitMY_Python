@@ -1,0 +1,18 @@
+[ 
+  {
+    "fields": {
+      "user_for": 3,
+      "upload": 5
+    },
+    "model": "app.uploadforuser",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "user_for": 4,
+      "upload": 6
+    },
+    "model": "app.uploadforuser",
+    "pk": 2
+  }
+]

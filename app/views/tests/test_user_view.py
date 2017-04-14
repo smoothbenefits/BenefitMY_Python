@@ -1,7 +1,7 @@
 import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import AnonymousUser
 from view_test_base import ViewTestBase
 from app.service.hash_key_service import HashKeyService
@@ -348,7 +348,9 @@ class UserViewTestCase(TestCase, ViewTestBase):
         response = self.client.post(reverse('all_users'), json.dumps(new_user), content_type='application/json')
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.content, '')
+        issues = json.loads(response.content)
+        self.assertEqual(type(issues), list)
+        self.assertTrue(len(issues) > 0)
 
     def test_user_create_person_created(self):
         login_response = self.client.post(reverse('user_login'), {'email':self.admin_user.get_username(), 'password':self.user_password})
@@ -524,3 +526,34 @@ class UserViewTestCase(TestCase, ViewTestBase):
         )
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 401)
+
+    def test_update_user_credential(self):
+        update_request = {
+            'target': 3,
+            'password': 'fortest'
+        }
+
+        self.client.login(email='user2@benefitmy.com', password='foobar')
+        response = self.client.put(
+            reverse('user_credential'),
+            json.dumps(update_request),
+            content_type='application/json'
+        )
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 204)
+
+        credential = {
+            'email': 'user3@benefitmy.com',
+            'password': 'fortest'
+        }
+        response = self.client.post(
+            reverse('user_by_credential'),
+            json.dumps(credential),
+            content_type='application/json'
+        )
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+
+        response_object = json.loads(response.content)
+        self.assertTrue('user_info' in response_object)

@@ -28,7 +28,7 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
     var getCompanyEmployeeSummary = function(companyId) {
       return CompanyPersonnelsService.getCompanyEmployees(companyId)
       .then(function(employees){
-        var mappedList = mapToViewEmployeeList(employees);
+        var mappedList = mapToViewEmployeeList(employees.list);
         return mappedList
       }, function(error) {
         deferred.reject(error);
@@ -77,6 +77,14 @@ benefitmyService.factory('CompanyEmployeeSummaryService', [
         var reportUrl = API_PREFIX_V2 + '/companies/' + companyId + '/time_punch_card_excel';
         reportUrl += moment(weekStartDate).format('/YYYY/M/DD');
         return reportUrl;
+      },
+
+      getEmployeeI9FormUrl : function(employeeUserId) {
+        return API_PREFIX + '/users/' + employeeUserId + '/forms/i9';
+      },
+
+      getEmployeeW4FormUrl : function(employeeUserId) {
+        return API_PREFIX + '/users/' + employeeUserId + '/forms/w4';
       }
     };
   }

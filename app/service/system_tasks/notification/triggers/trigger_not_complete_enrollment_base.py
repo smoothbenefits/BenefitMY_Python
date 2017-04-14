@@ -4,7 +4,7 @@ from app.models.company_user import (CompanyUser, USER_TYPE_EMPLOYEE)
 from app.models.person import (Person, SELF)
 from app.models.employee_profile import (
     EmployeeProfile,
-    EMPLYMENT_STATUS_TERMINATED)
+    EMPLOYMENT_STATUS_TERMINATED)
 from app.service.user_enrollment_summary_service import(
     UserEnrollmentSummaryService,
     COMPLETED,
@@ -33,16 +33,27 @@ class TriggerNotCompleteEnrollmentBase(TriggerCompanyUserBase):
                 if (len(employee_profiles) > 0):
                     employee_profile = employee_profiles[0]
 
+            # skip if user does not have sufficient information to trigger
+            # the action
             if (not user
                 or not company
                 or not person
-                or not employee_profile
-                or employee_profile.employment_status == EMPLYMENT_STATUS_TERMINATED):
-                # skip if user does not have sufficient information to trigger
-                # the action
+                or not employee_profile):
                 continue
 
-            start_date = employee_profile.start_date
+            # skip if the user
+            #   - is not an active employee
+            #   - or is not a new employee
+            if (employee_profile.employment_status == EMPLOYMENT_STATUS_TERMINATED
+                or not company_user.new_employee):
+                continue
+
+            # Take the benefit start date as the checkout point
+            # Only as a safety net, if benefit start date is not available
+            # for any reason, take the employee start date
+            start_date = employee_profile.benefit_start_date
+            if (not start_date):
+                start_date = employee_profile.start_date
 
             # skip if this user's start date does not meet notification
             # schedule

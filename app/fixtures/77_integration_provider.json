@@ -1,0 +1,22 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "name": "Advantage Payroll",
+      "service_type": "Payroll"
+    },
+    "model": "app.integrationprovider",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "name": "Test 2 Payroll",
+      "service_type": "Payroll"
+    },
+    "model": "app.integrationprovider",
+    "pk": 2
+  }
+]

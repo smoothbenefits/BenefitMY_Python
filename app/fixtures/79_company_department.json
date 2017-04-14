@@ -1,0 +1,35 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company": 1,
+      "department": "Human Resources",
+      "description": "Human Resources"
+    },
+    "model": "app.companydepartment",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company": 1,
+      "department": "Research and Development",
+      "description": "Research and Development"
+    },
+    "model": "app.companydepartment",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company": 1,
+      "department": "Marketing and Sales",
+      "description": "Marketing and Sales"
+    },
+    "model": "app.companydepartment",
+    "pk": 3
+  }
+]

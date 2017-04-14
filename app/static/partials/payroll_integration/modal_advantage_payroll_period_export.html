@@ -1,0 +1,38 @@
+<div class="modal-header">
+  <h4 class="modal-title">Period Payroll Data Export</h4>
+</div>
+<div class="modal-body col-md-12">
+  <div class="form-holder col-md-10 col-md-offset-1">
+    <form name="form">
+        <div class="col-md-6">
+          <div class="form-label">Start Date (m/d/yyyy)</div>
+          <div class="textbox">
+            <bm-date-picker
+              model="inputModel.startDate"
+              ng-required="true"
+              name="start_date"
+              fieldname="'start_date'"
+              dirty="form.start_date.$dirty" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-label">End Date (m/d/yyyy)</div>
+          <div class="textbox">
+            <bm-date-picker
+              model="inputModel.endDate"
+              ng-required="true"
+              name="end_date"
+              fieldname="'end_date'"
+              dirty="form.end_date.$dirty" />
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="button-group">
+    <button class="btn btn-info" style="width: 20%" ng-disabled="!isValidToDownload()"><bm-file-download-link link-name="Download" link-href="getDownloadLink()" use-plain-text-style="true" on-finish="close()"></bm-file-download-link></button>
+    <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>
+  </div>
+</div>

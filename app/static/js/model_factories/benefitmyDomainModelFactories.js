@@ -24,6 +24,15 @@ benefitmyDomainModelFactories.factory('users', [
   }
 ]);
 
+benefitmyDomainModelFactories.factory('UserCredentialRepository', [
+  '$resource',
+  function ($resource) {
+    return $resource('/api/v1/users/credential', {}, {
+      'update': {method: 'PUT'}
+    });
+  }
+])
+
 benefitmyDomainModelFactories.factory('userLogOut', [
      '$resource',
      function($resource){
@@ -336,7 +345,8 @@ benefitmyDomainModelFactories.factory('UploadRepository', ['$resource',
       uploadsByCompany: $resource('/api/v1/companies/:compId/uploads/:pk',
                                  {compId:'@compId', pk: '@pk'}),
       uploadApplicationFeature: $resource('/api/v1/upload/application_features/:app_feature/:feature_id',
-                                          {app_feature:'@app_feature', feature_id:'@feature_id'})
+                                          {app_feature:'@app_feature', feature_id:'@feature_id'}),
+      uploadForUser: $resource('/api/v1/users/:userId/uploads_for', {userId: '@userId'})
     };
   }
 ]);
@@ -608,12 +618,7 @@ benefitmyDomainModelFactories.factory('PersonBenefitEnrollmentRepository', ['$re
 benefitmyDomainModelFactories.factory('CompanyFeatureRepository', ['$resource',
   function($resource) {
     return {
-      CompanyFeatureByCompany: $resource(PREFIX + 'company_features/:companyId/', {companyId: '@company_id'}),
-      ByCompanyFeatureId: $resource(PREFIX + 'company_features/:id/', {id: '@id'}, {
-        update: {
-          method: 'PUT'
-        }
-      })
+      AllApplicationFeatureStatusByCompany: $resource(PREFIX + 'all_company_features/:companyId/', {companyId: '@company_id'})
     };
   }
 ]);
@@ -802,8 +807,37 @@ benefitmyDomainModelFactories.factory('PhraseologyRepository', ['$resource',
       CompanyPhraseologysByCompany: $resource(PREFIX + 'company/:companyId/phraseologys', {companyId: '@companyId'}),
       EmployeePhraseologyById: $resource(PREFIX + 'employee_phraseologys/:id', {id: '@id'}, {
         update: { method: 'PUT' }
-      }), 
+      }),
       EmployeePhraseologysByPerson: $resource(PREFIX + 'person/:personId/phraseologys', {personId: '@personId'})
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('DepartmentRepository', ['$resource',
+  function($resource) {
+    return {
+      CompanyDepartmentById: $resource(PREFIX + 'company_departments/:id', {id: '@id'}, {
+        update: { method: 'PUT' }
+      }),
+      CompanyDepartmentsByCompany: $resource(PREFIX + 'company/:companyId/departments', {companyId: '@companyId'})
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('OpenEnrollmentDefinitionRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'companies/:comp_id/open_enrollment', {comp_id: '@comp_id'}, {
+        update: { method: 'PUT' }
+      })
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('IntegrationProvideRepository', ['$resource',
+  function($resource) {
+    return {
+      ByCompany: $resource(PREFIX + 'companies/:companyId/integration_providers', {companyId: '@companyId'})
     }
   }
 ]);

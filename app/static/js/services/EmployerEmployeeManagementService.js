@@ -62,7 +62,8 @@ benefitmyService.factory('EmployerEmployeeManagementService',
         "first_name": viewModel.first_name,
         "last_name": viewModel.last_name,
         "compensation_info": compensation,
-        "group_id": viewModel.group_id
+        "group_id": viewModel.group_id,
+        "employee_number": viewModel.employee_number
       };
 
       if (viewModel.employment_type.id === 1) {
@@ -144,7 +145,7 @@ benefitmyService.factory('EmployerEmployeeManagementService',
       }).catch(function(error) {
         result.added = false;
         result.sentEmail = false;
-        result.message = error;
+        result.messages = error.data;
         deferred.reject(result);
       });
 

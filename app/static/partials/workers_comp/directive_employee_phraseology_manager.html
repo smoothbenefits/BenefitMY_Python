@@ -1,0 +1,28 @@
+<div class='panel'>
+    <div class='panel-heading' ng-click="sectionExpanded = !sectionExpanded">
+      <b class="clickable"><span class="fa fa-toggle-down"></span>  Workers' Comp Information</b>
+    </div>
+    <div class="panel-body" collapse="!sectionExpanded">
+      <ul class="list-group">
+        <li class="list-group-item">
+          <h4 class="col-md-5">
+            Worker's Comp Department (Phraseology) Description
+          </h4>
+          <div class="col-md-7">
+            {{phraseologyInfo.description}}
+          </div>
+          <div style="clear:both"></div>
+        </li>
+        <li class="list-group-item">
+          <h4 class="col-md-5">
+            Workers' Comp Department (Phraseology)
+          </h4>
+          <div class="col-md-7">
+            {{phraseologyInfo.phraseology}}
+          </div>
+          <div style="clear:both"></div>
+        </li>
+      </ul>
+      <button class="btn btn-info" ng-click="openEditModal()">Change Phraseology Assignment</button>
+    </div>
+</div>

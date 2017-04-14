@@ -52,7 +52,7 @@
       </select>
     </div>
 
-  <div class="form-label">Date Of Birth</div>
+  <div class="form-label">Date Of Birth (m/d/yyyy)</div>
   <div class="datebox">
     <bm-date-picker model="person.birth_date"
       required="true"
@@ -203,7 +203,7 @@
     </button>
   </div>
   <div class="col-md-4 col-md-offset-2">
-    <button onclick="history.back()" class="btn green">
+    <button ng-click="cancel()" class="btn green">
       Cancel
     </button>
   </div>

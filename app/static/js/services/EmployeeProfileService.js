@@ -6,10 +6,18 @@ benefitmyService.factory('EmployeeProfileService',
     'EmployeeManagementEmployeeTerminationRepository',
     'PersonService',
     function (
-        $q, 
-        EmployeeProfileRepository, 
+        $q,
+        EmployeeProfileRepository,
         EmployeeManagementEmployeeTerminationRepository,
-        PersonService){
+        PersonService) {
+
+        var EmploymentStatuses = {
+            Active: 'Active',
+            Prospective: 'Prospective',
+            Terminated: 'Terminated',
+            OnLeave: 'OnLeave'
+        };
+
         var isFullTimeEmploymentType = function(employeeProfile) {
           if (!employeeProfile) {
             return false;
@@ -29,7 +37,15 @@ benefitmyService.factory('EmployeeProfileService',
             viewModel.personId = employeeProfileDomainModel.person;
             viewModel.companyId = employeeProfileDomainModel.company;
             viewModel.lastUpdateDateTime = moment(employeeProfileDomainModel.updated_at).format(DATE_FORMAT_STRING);
+            viewModel.employeeNumber = employeeProfileDomainModel.employee_number;
             viewModel.manager = employeeProfileDomainModel.manager;
+
+            if (employeeProfileDomainModel.department && employeeProfileDomainModel.department.department) {
+                viewModel.department = employeeProfileDomainModel.department.department;
+            } else {
+                viewModel.department = "";
+            }
+
             // TODO:
             // The below logic is quite cumbersome, but just to get the view model
             // working with angular's "date" input type...
@@ -69,7 +85,9 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.employment_status = employeeProfileViewModel.employmentStatus;
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
+            domainModel.department = employeeProfileViewModel.department.id;
             domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
+            domainModel.employee_number = employeeProfileViewModel.employeeNumber;
             domainModel.manager = employeeProfileViewModel.manager ? employeeProfileViewModel.manager.id : null;
 
             return domainModel;
@@ -89,8 +107,31 @@ benefitmyService.factory('EmployeeProfileService',
             return EmployeeProfileRepository.ByCompany.query({companyId:compId})
             .$promise.then(function(profiles){
                 _cachedEmployeeProfiles = profiles;
+
+                // Attach utility functions
+                _.each(_cachedEmployeeProfiles, function(profile){
+                    profile.getListOfEmploymentStatusInTimeRange = function(timeRangeStart, timeRangeEnd) {
+                        return getListOfEmploymentStatusInTimeRange(this, timeRangeStart, timeRangeEnd);
+                    };
+                });
+
                 return _cachedEmployeeProfiles;
             });
+        };
+
+        var getCompanyEmployeeProfiles = function(companyId) {
+            var deferred = $q.defer();
+
+            // Filter not specified, just return original list
+            if (_cachedEmployeeProfiles && _cachedEmployeeProfiles.length > 0) {
+                deferred.resolve(_cachedEmployeeProfiles);
+            }
+
+            return initializeCompanyEmployees(companyId);
+        };
+
+        var _resetCache = function() {
+            _cachedEmployeeProfiles = [];
         };
 
         var searchEmployees = function(term){
@@ -100,10 +141,63 @@ benefitmyService.factory('EmployeeProfileService',
             });
         };
 
+        var searchEmployeesByEmployeeNumber = function(employeeNumber) {
+            return _.filter(_cachedEmployeeProfiles, function(employee) {
+              return employee.employee_number && employeeNumber
+                && employee.employee_number.toLowerCase() == employeeNumber.toLowerCase();
+            });
+        };
+
+        var getListOfEmploymentStatusInTimeRange = function(employeeProfile, timeRangeStart, timeRangeEnd) {
+            var result = [];
+
+            // Conditions
+            // * If employment start date after time range, result => [Prospective]
+            // * If employment end date prior to time range, result => [Terminated]
+            // * If employment start date prior to time range and end date after => [Active]
+            // * If employment start date within time range, result to include/add [Prospective, Active]
+            // * If employment end date within time range, result to include/add [Active, Terminated] 
+            
+            var rangeStart = moment(timeRangeStart);
+            var rangeEnd = moment(timeRangeEnd);
+            var employmentStart = moment(employeeProfile.start_date);
+            var employmentEnd = employeeProfile.end_date ? moment(employeeProfile.end_date) : moment("2100-01-01");
+
+            if (employmentStart > rangeEnd) {
+                result = [EmploymentStatuses.Prospective];
+            } else if (employmentEnd < rangeStart) {
+                result = [EmploymentStatuses.Terminated];
+            } else if (employmentStart <= rangeStart && employmentEnd >= rangeEnd) {
+                result = [EmploymentStatuses.Active];
+            }
+
+            if (employmentStart >= rangeStart && employmentStart <= rangeEnd) {
+                _ensureValueInList(result, EmploymentStatuses.Active);
+                _ensureValueInList(result, EmploymentStatuses.Prospective);
+            }
+
+            if (employmentEnd >= rangeStart && employmentEnd <= rangeEnd) {
+                _ensureValueInList(result, EmploymentStatuses.Active);
+                _ensureValueInList(result, EmploymentStatuses.Terminated);
+            }
+
+            return result;
+        };
+
+        var _ensureValueInList = function(list, value) {
+            if (!_.contains(list, value)) {
+                list.push(value);
+            }
+        };
+
         return {
+            EmploymentStatuses: EmploymentStatuses,
+
             isFullTimeEmploymentType: isFullTimeEmploymentType,
             initializeCompanyEmployees: initializeCompanyEmployees,
+            getCompanyEmployeeProfiles: getCompanyEmployeeProfiles,
             searchEmployees: searchEmployees,
+            searchEmployeesByEmployeeNumber: searchEmployeesByEmployeeNumber,
 
             getEmployeeProfileForPersonCompany: function(personId, companyId) {
                 var deferred = $q.defer();
@@ -179,8 +273,10 @@ benefitmyService.factory('EmployeeProfileService',
                     });
                 };
 
+                _resetCache();
+
                 return deferred.promise;
-            }, 
+            },
 
             terminateEmployee: function(terminationData) {
                 var domainModel = mapTerminationViewToDomainModel(terminationData);
@@ -195,8 +291,12 @@ benefitmyService.factory('EmployeeProfileService',
                     deferred.reject(error);
                 });
 
+                _resetCache();
+
                 return deferred.promise;
-            }
+            },
+
+
         };
     }
 ]);

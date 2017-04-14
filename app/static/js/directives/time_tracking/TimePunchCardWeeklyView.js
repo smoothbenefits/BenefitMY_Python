@@ -7,6 +7,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   'PersonService',
   'CompensationService',
   'utilityService',
+  'CompanyFeatureService',
   'punchCard',
   'adminView',
   'companyId',
@@ -19,6 +20,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     PersonService,
     CompensationService,
     utilityService,
+    CompanyFeatureService,
     punchCard,
     adminView,
     companyId){
@@ -29,6 +31,18 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
     $scope.allStates = UsStateService.GetAllStates();
+
+    CompanyFeatureService.getAllApplicationFeatureStatusByCompany(companyId)
+    .then(function(allFeatureStatus) {
+      $scope.allFeatureStatus = allFeatureStatus;
+    });
+
+    $scope.$watch('punchCard.hours', function(hours){
+      if(hours){
+        $scope.punchCard.start = TimePunchCardService.getDefaultStartTime();
+        $scope.punchCard.end = moment(TimePunchCardService.getDefaultStartTime()).add(hours, 'h');
+      }
+    });
 
     ProjectService.GetProjectsByCompany(companyId).then(function(projects) {
         $scope.allProjects = projects;
@@ -58,7 +72,13 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         return !attribute.type.adminOnly || $scope.adminView;
     };
 
-    $scope.isTimeRangeVisisble = function() {
+    $scope.projectManagementEnabled = function() {
+        return $scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.ProjectManagement);
+    };
+
+    $scope.isTimeVisisble = function() {
         return $scope.punchCard.recordType
             && $scope.punchCard.recordType.behavior.timeRangeOn;
     };
@@ -73,7 +93,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         return false;
       }
 
-      if ($scope.isTimeRangeVisisble()
+      if ($scope.isTimeVisisble()
             && !moment($scope.punchCard.start).isBefore(moment($scope.punchCard.end))) {
         return false;
       }

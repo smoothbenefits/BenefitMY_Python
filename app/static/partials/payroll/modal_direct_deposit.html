@@ -57,31 +57,6 @@
 				</div>
 			</div>
 			<div class="row">
-				<label class="form-label">
-					<input type="checkbox"
-					name="remainder_of_all"
-					ng-model="account.remainder_of_all"
-					ng-required="false"
-					ng-checked="resetAmountAndPercent(account)" />
-
-					Remaining of Net Pay
-				</label>
-			</div>
-			<div class="row">
-				<div class="col-md-5">
-					<div class="form-label">Amount</div>
-					<div class="textbox">
-						<input type="number"
-						name="amount"
-						ng-model="account.amount"
-						ng-required="false"
-						ng-disabled="amountDisabled(account)" />
-					</div>
-					<div class="form-error-relative" ng-show="form.amount.$invalid">Amount is invalid</div>
-				</div>
-				<div class="col-md-1">
-					<div class="form-label"><h4> -OR- </h4></div>
-				</div>
 				<div class="col-md-5">
 					<div class="form-label">Percentage (without % sign)</div>
 					<div class="textbox input-group">
@@ -93,6 +68,20 @@
 						<span class="input-group-addon">%</span>
 					</div>
 					<div class="form-error-relative" ng-show="form.percentage.$invalid">Percentage is invalid</div>
+				</div>
+				<div class="col-md-1">
+					<div class="form-label"><h4> -OR- </h4></div>
+				</div>
+				<div class="col-md-5">
+					<div class="form-label">Amount</div>
+					<div class="textbox">
+						<input type="number"
+						name="amount"
+						ng-model="account.amount"
+						ng-required="false"
+						ng-disabled="amountDisabled(account)" />
+					</div>
+					<div class="form-error-relative" ng-show="form.amount.$invalid">Amount is invalid</div>
 				</div>
 			</div>
 		</form>

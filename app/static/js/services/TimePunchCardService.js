@@ -21,6 +21,11 @@ benefitmyService.factory('TimePunchCardService',
                 'displayText': 'State',
                 'adminOnly': false
             },
+            'City': {
+                'name': 'City',
+                'displayText': 'City/Town',
+                'adminOnly': false
+            },
             'Project': {
                 'name': 'Project',
                 'displayText': 'Project',
@@ -30,7 +35,7 @@ benefitmyService.factory('TimePunchCardService',
                 'name': 'HourlyRate',
                 'displayText': 'Hourly Rate',
                 'adminOnly': true
-            },
+            }
         };
 
         var sanitizeViewModel = function(punchCard) {
@@ -112,8 +117,16 @@ benefitmyService.factory('TimePunchCardService',
                 return cardType.name == domainModel.recordType;
             });
 
+            if(viewModel.inHours){
+                viewModel.hours = moment(viewModel.end).diff(moment(viewModel.start), 'hours');
+            }
+
             // Attach utility functions
             viewModel.getTimeRangeDisplayText = function() {
+                if(this.inHours){
+                    return this.hours + ' hours';
+                }
+
                 if (this.start && !this.end){
                     return 'Started at ' + moment(this.start).format('hh:mm A');
                 }
@@ -166,6 +179,10 @@ benefitmyService.factory('TimePunchCardService',
                     type: AttributeTypes.State,
                     value: null
                 },
+                'city': {
+                    type: AttributeTypes.City,
+                    value: null
+                },
                 'project': {
                     type: AttributeTypes.Project,
                     id: null,
@@ -185,6 +202,9 @@ benefitmyService.factory('TimePunchCardService',
                         switch(domainAttr.name) {
                             case AttributeTypes.State.name:
                                 result.state.value = domainAttr.value;
+                                break;
+                            case AttributeTypes.City.name:
+                                result.city.value = domainAttr.value;
                                 break;
                             case AttributeTypes.Project.name:
                                 result.project.id = domainAttr.value;
@@ -218,6 +238,13 @@ benefitmyService.factory('TimePunchCardService',
                     result.push({
                         'name': AttributeTypes.State.name,
                         'value': attributesViewModel.state.value
+                    });
+                }
+
+                if (attributesViewModel.city && attributesViewModel.city.value) {
+                    result.push({
+                        'name': AttributeTypes.City.name,
+                        'value': attributesViewModel.city.value
                     });
                 }
 
@@ -259,6 +286,7 @@ benefitmyService.factory('TimePunchCardService',
               'date': date,
               'start': getDefaultStartTime(date),
               'end': getDefaultEndTime(date),
+              'inHours': false,
               'attributes': []
             };
 
@@ -268,6 +296,10 @@ benefitmyService.factory('TimePunchCardService',
                 domainModel.attributes.push({
                     'name': AttributeTypes.State.name,
                     'value': cachedCard.attributes.state.value
+                });
+                domainModel.attributes.push({
+                    'name': AttributeTypes.City.name,
+                    'value': cachedCard.attributes.city.value
                 });
             }
 
@@ -460,7 +492,8 @@ benefitmyService.factory('TimePunchCardService',
           GetPunchCardsByCompanyTimeRange: GetPunchCardsByCompanyTimeRange,
           GetAllPunchCardsByCompany: GetAllPunchCardsByCompany,
           GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser,
-          FilteredCardsForTotalHours: FilteredCardsForTotalHours
+          FilteredCardsForTotalHours: FilteredCardsForTotalHours,
+          getDefaultStartTime: getDefaultStartTime
         };
     }
 ]);

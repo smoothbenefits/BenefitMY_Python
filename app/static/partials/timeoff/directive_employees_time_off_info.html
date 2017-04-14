@@ -13,7 +13,7 @@
         <th><span>Actions</span></th>
       </thead>
       <tbody>
-        <tr ng-repeat="quotaPerEmployee in employeeQuotas">
+        <tr ng-repeat="quotaPerEmployee in employeeQuotas | orderBy: 'employee.last_name'">
           <td>
             {{quotaPerEmployee.employee.first_name}} {{quotaPerEmployee.employee.last_name}}
           </td>
@@ -30,7 +30,7 @@
               N/A
             </span>
             <div ng-if="quotaPerEmployee.quota" ng-repeat="quotaInfoItem in quotaPerEmployee.quota.quotaInfoCollection">
-              {{quotaInfoItem.accrualSpecs ? quotaInfoItem.accrualSpecs.accruedHours : ''}}
+              {{quotaInfoItem.accrualSpecs ? quotaInfoItem.accrualSpecs.accruedHours.toFixed(1) : ''}}
             <div>
           </td>
           <td>
@@ -38,7 +38,7 @@
               N/A
             </span>
             <div ng-if="quotaPerEmployee.quota" ng-repeat="quotaInfoItem in quotaPerEmployee.quota.quotaInfoCollection">
-              {{quotaInfoItem.bankedHours}}
+              {{quotaInfoItem.bankedHours.toFixed(1)}}
             <div>
           </td>
           <td>

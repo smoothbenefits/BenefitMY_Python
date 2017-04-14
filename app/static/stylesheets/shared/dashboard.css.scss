@@ -59,6 +59,10 @@
                 color: $black-font;
                 margin: 0 0 $gutter-xs;
                 font-size: $size-md;
+                a{
+                    font-size: $size-sm;
+                    margin-left: $gutter-xs;
+                }
             }
             .general-info {
                 color: $gray-font;
@@ -70,6 +74,9 @@
             }
         }
         .content-body {
+            .cta{
+                margin-left:$gutter-xs;
+            }
             padding: $gutter;
             padding-top: 0;
             h2 {
@@ -208,6 +215,15 @@
                                     border-left: none;
                                 }
                             }
+                        }
+                    }
+                }
+                tfoot{
+                    span{
+                        margin-left: 5px;
+                        font-size: 16px;
+                        i{
+                            font-style: normal;
                         }
                     }
                 }

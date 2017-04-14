@@ -1,0 +1,53 @@
+<div class="breadcrumb">
+  <a ng-click="backToDashboard()">{{getCurRoleString()}} Dashboard</a>
+  <span>Reports</span>
+</div>
+
+<div class="content-header">
+  <h1>Reports for Your Company</h1>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="row">
+    <div class="col-md-10">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th><span>Name</span></th>
+            <th><span>Description</span></th>
+            <th><span>Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-if="exportCompanyEmployeeSummaryUrl">
+            <td>Employee Benefits Selections</td>
+            <td>
+                <div>This excel report contains the benefits selections every employees has made in your company.</div>
+                <div>Each row of the report shows all the selections made by each employee</div>
+            </td>
+            <td><bm-file-download-link link-name="Download" link-href="exportCompanyEmployeeSummaryUrl"></bm-file-download-link></td>
+          </tr>
+          <tr ng-if="exportCompanyEmployeeDirectDepositUrl">
+            <td>Direct Deposit Report</td>
+            <td>This excel report contains direct deposit information entered by all of your employees</td>
+            <td><bm-file-download-link link-name="Download" link-href="exportCompanyEmployeeDirectDepositUrl"></bm-file-download-link></td>
+          </tr>
+          <tr ng-if="exportCompanyEmployeeLifeBeneficiarySummaryUrl">
+            <td>Life Insurance Beneficiaries</td>
+            <td>This excel report contains beneficiary information for each employees who made life insurance elections</td>
+            <td><bm-file-download-link link-name="Download" link-href="exportCompanyEmployeeLifeBeneficiarySummaryUrl"></bm-file-download-link></td>
+          </tr>
+          <tr ng-if="exportCompanyEmployeeSummaryPdfUrl">
+            <td>Employee Summary</td>
+            <td>
+                <div>This PDF report contains basic information for every employee in your company.</div>
+                <div>This include the employee personal information, employment profile and benefit selections</div>
+            </td>
+            <td><bm-file-download-link link-name="Download" link-href="exportCompanyEmployeeSummaryPdfUrl"></bm-file-download-link></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="back"><a ng-click='backToDashboard()'>&laquo; Back</a></div>
+</div> <!-- / .content-body -->

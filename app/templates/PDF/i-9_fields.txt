@@ -1,0 +1,198 @@
+---
+FieldType: Text
+FieldName: employee_last_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_first_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_other_last_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_address
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_apt_number
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_city
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_state
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_zip_code
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_middle_initial
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_birth_date
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_email
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_phone
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Button
+FieldName: employee_status_citizen
+FieldFlags: 0
+FieldValue: Off
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Button
+FieldName: employee_status_non_citizen
+FieldFlags: 0
+FieldValue: Off
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Button
+FieldName: employee_status_perm
+FieldFlags: 0
+FieldValue: Off
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Button
+FieldName: employee_status_alien
+FieldFlags: 0
+FieldValue: Off
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Text
+FieldName: employee_perm_uscis_number
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_authorization_expire_date
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_alien_uscis_number
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_alien_i94
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_alien_passport
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_alien_passport_country
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Button
+FieldName: preparer_yes
+FieldFlags: 0
+FieldValue: Off
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Text
+FieldName: s2_employee_last_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: s2_employee_first_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: s2_employee_middle_initial
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: s2_employee_status
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employer_company_name
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employer_company_address
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employer_company_city
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employer_company_state
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employer_company_zip_code
+FieldFlags: 0
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: employee_ssn_1
+FieldFlags: 16777216
+FieldJustification: Left
+FieldMaxLength: 3
+---
+FieldType: Text
+FieldName: employee_ssn_2
+FieldFlags: 16777216
+FieldJustification: Left
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: employee_ssn_3
+FieldFlags: 16777216
+FieldJustification: Left
+FieldMaxLength: 4
+---
+FieldType: Text
+FieldName: employment_start_date
+FieldFlags: 0
+FieldJustification: Left

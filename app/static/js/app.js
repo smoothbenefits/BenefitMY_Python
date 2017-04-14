@@ -10,6 +10,7 @@ var BenefitMyApp = angular.module('BenefitMyApp',[
     'blockUI',
     'environment',
     'fcsa-number',
+    'ngFileSaver',
     'benefitmyDomainModelFactories',
     'benefitmyTimeTrackingModelFactories',
     'benefitmyInsuranceCertificateModelFactories',
@@ -276,6 +277,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/company_employee_selection.html',
                 controller: 'brokerEmployeeEnrollmentController'
             }).
+            state('broker_company_reports', {
+                url: '/broker/reports/:company_id',
+                templateUrl: '/static/partials/view_reports.html',
+                controller: 'brokerViewCompanyReportsController'
+            }).
             state('/', {
                 url: '/',
                 template: '',
@@ -305,6 +311,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/admin/employee/add/:company_id',
                 templateUrl:'/static/partials/add_employee.html',
                 controller:'employerUser'
+            }).
+            state('admin_company_info', {
+                url: '/admin/company/:company_id',
+                templateUrl: '/static/partials/company_info/company_info_base.html',
+                controller: 'EmployerCompanyInfoController'
             }).
             state('batch_add_employees', {
                 url: '/admin/employee/batch_add/:company_id',
@@ -398,10 +409,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/company_employee_selection.html',
                 controller:'employerEmployeeSelected'
             }).
-            state('admin_employee_uploads',{
-                url: '/admin/:company_id/employee/:employee_id/uploads',
-                templateUrl: '/static/partials/view_employee_uploads.html',
-                controller: 'employerViewUploads'
+            state('admin_employee_files',{
+                url: '/admin/:company_id/employee/:employee_id/files',
+                templateUrl: '/static/partials/upload/employee_files.html',
+                controller: 'employerViewEmployeeFiles'
             }).
             state('admin_time_off', {
               url: '/admin/hr/timeoff',
@@ -429,10 +440,10 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 controller: 'employerAdminIndividualTimePunchCards',
                 params: {startDate: null}
             }).
-            state('admin_departments', {
-              url: '/admin/hr/departments',
-              templateUrl: '/static/partials/workers_comp/departments_base.html',
-              controller: 'employerViewDepartments'
+            state('admin_phraseologies', {
+              url: '/admin/hr/phraseologies',
+              templateUrl: '/static/partials/workers_comp/phraseologies_base.html',
+              controller: 'employerViewPhraseologies'
             }).
             state('admin_service_provider', {
               url: '/admin/service_provider',
@@ -458,6 +469,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/admin/projects/:projectId/payables',
                 templateUrl: '/static/partials/contractor/project_payable_base.html',
                 controller: 'employerManageProjectPayable'
+            }).
+            state('admin_reports', {
+                url: '/admin/reports',
+                templateUrl: '/static/partials/view_reports.html',
+                controller: 'employerViewReports'
             }).
             state('/employee',{
                 url: '/employee',
@@ -572,7 +588,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('employee_family', {
                 url: '/employee/family/:employeeId?',
-                templateUrl: '/static/partials/family_management/base.html',
+                templateUrl: '/static/partials/family_management/benefit_selection_management.html',
                 controller: 'employeeFamilyController'
             }).
             state('/employee/signup/:signup_number', {
@@ -622,7 +638,7 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
             }).
             state('employeeUploads', {
                 url:'/employee/uploads',
-                templateUrl:'/static/partials/manage_uploads.html'
+                templateUrl:'/static/partials/upload/manage_uploads.html'
             }).
             state('employeeSupport', {
               url: '/employee/support',
@@ -648,6 +664,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 url: '/support',
                 templateUrl: '/static/partials/help_center/app_help.html',
                 controller: 'appSupportController'
+            }).
+            state('payrollProviderView', {
+              url: '/admin/payroll_services/:company_id',
+              templateUrl: '/static/partials/payroll_integration/main.html',
+              controller: 'employerCompanyPayrollIntegrationController'
             });
      }
  ]);

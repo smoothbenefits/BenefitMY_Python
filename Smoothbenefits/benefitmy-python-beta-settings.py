@@ -52,10 +52,10 @@ MIDDLEWARE_CLASSES = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dajhg195o0enj',
-        'USER': 'qrbggyikekndgd',
-        'PASSWORD': 'V-L-iEgmLMuqgGhT607Jv4Ph4q',
-        'HOST': 'ec2-54-227-247-161.compute-1.amazonaws.com',
+        'NAME': 'de94t1pirsgrs2',
+        'USER': 'ub3su5lfgiceuv',
+        'PASSWORD': 'p7p9qibvs0en4naevs5abar79t2',
+        'HOST': 'ec2-52-5-245-203.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }

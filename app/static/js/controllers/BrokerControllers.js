@@ -43,6 +43,10 @@ var clientsController = brokersControllers.controller('clientsController', [
       $state.go('broker_company_aca_report', {company_id: clientId});
     };
 
+    $scope.viewReports = function(clientId){
+      $state.go('broker_company_reports', {company_id: clientId});
+    };
+
     var getClientList = function(theUser)
     {
         clientListRepository.get({userId:theUser.id})
@@ -176,7 +180,6 @@ var benefitsController = brokersControllers.controller(
       $scope.role = 'Broker';
       $scope.showAddBenefitButton = true;
       $scope.benefitDeletable = true;
-
 
       companyRepository.get({clientId: $stateParams.clientId})
       .$promise.then(function(company){
@@ -789,13 +792,15 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
    'SupplementalLifeInsuranceService',
    'UserService',
    'envService',
+   'CompanyFeatureService',
    function($scope,
             $state,
             $stateParams,
             $controller,
             SupplementalLifeInsuranceService,
             UserService,
-            envService){
+            envService,
+            CompanyFeatureService){
 
     // Inherite scope from base
     $controller('brokerAddBenefitControllerBase', {$scope: $scope});
@@ -804,6 +809,10 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
 
     SupplementalLifeInsuranceService.getBlankPlanForCompany($scope.companyId).then(function(blankCompanyPlan) {
         $scope.newPlan = blankCompanyPlan;
+    });
+
+    CompanyFeatureService.getAllApplicationFeatureStatusByCompany($scope.companyId).then(function(allFeatureStatus) {
+        $scope.allFeatureStatus = allFeatureStatus;
     });
 
     $scope.isProd = envService.get() == 'production';
@@ -841,6 +850,12 @@ var brokerAddSupplementalLifeInsurance = brokersControllers.controller(
 
               $scope.showMessageWithOkayOnly('Failed', failureMessage);
             });
+    };
+
+    $scope.isAdadEnabled = function() {
+        return $scope.allFeatureStatus 
+            && $scope.allFeatureStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.ADAD);
     };
    }
   ]);
@@ -1771,4 +1786,24 @@ var companyAcaReport = brokersControllers.controller('companyAcaReport', [
     $controller('modalMessageControllerBase', {$scope: $scope});
     $scope.companyId = $stateParams.company_id;
   }
+]);
+
+var brokerViewCompanyReportsController = brokersControllers.controller('brokerViewCompanyReportsController',
+    ['$scope',
+     '$state',
+     '$stateParams',
+     'CompanyEmployeeSummaryService',
+    function($scope, $state, $stateParams, CompanyEmployeeSummaryService) {
+        $scope.companyId = $stateParams.company_id;
+
+        $scope.exportCompanyEmployeeSummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryExcelUrl($scope.companyId);
+        $scope.exportCompanyEmployeeLifeBeneficiarySummaryUrl = CompanyEmployeeSummaryService.getCompanyEmployeeLifeInsuranceBeneficiarySummaryExcelUrl($scope.companyId);
+        $scope.exportCompanyBenefitsBillingSummaryUrl = CompanyEmployeeSummaryService.getCompanyBenefitsBillingReportExcelUrl($scope.companyId);
+        $scope.exportCompanyEmployeeSummaryPdfUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryPdfUrl($scope.companyId);
+        $scope.companyHphcExcelUrl = CompanyEmployeeSummaryService.getCompanyHphcExcelUrl($scope.companyId);
+
+        $scope.backToDashboard = function() {
+          $state.go('/broker');
+        };
+    }
 ]);

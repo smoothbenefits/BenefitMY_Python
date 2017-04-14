@@ -62,6 +62,17 @@
         </div>
       </div>
 
+      <div class="form-label">Employee Number</div>
+      <div class="textbox">
+        <input type="text"
+        name="employee_number"
+        ng-model="addUser.employee_number"
+        ng-required="false">
+        <div class="form-inline-error" ng-show="!isEmployeeNumberValid(addUser.employee_number)">
+            <span>Employee number is invalid. A common reason is that the number is already associated with another employee.</span>
+        </div>
+      </div>
+
       <div class="form-label">Employment Type*</div>
       <div class="select-box">
         <select id="employment_type"
@@ -91,14 +102,14 @@
 
       <div class="form-label">Manager</div>
       <div class="textbox">
-        <input 
+        <input
           type="text"
           name="employee_manager"
-          ng-model="addUser.managerSelected" 
-          placeholder="Start typing the name of an employee..." 
+          ng-model="addUser.managerSelected"
+          placeholder="Start typing the name of an employee..."
           typeahead="manager as manager.first_name + ' ' + manager.last_name for manager in getEmployees($viewValue)"
           ng-required="false"
-          autocomplete="off" 
+          autocomplete="off"
           class="form-control" />
           <div class="form-error" ng-show="managerInvalid(addUser.managerSelected)">
             <span>The manager you selected is an invalid candidate!</span>
@@ -120,6 +131,8 @@
         <div class="textbox input-group">
           <span class="input-group-addon">$</span>
           <input type="number"
+            min="0"
+            step="any"
             name="employee_salary"
             ng-model="addUser.annual_base_salary"
             ng-required="isFullTime(addUser)" />
@@ -135,6 +148,7 @@
           <span class="input-group-addon">$</span>
           <input type="number"
             min="0"
+            step="any"
             name="hourly_rate"
             ng-model="addUser.hourly_rate"
             ng-required="!isFullTime(addUser)" />
@@ -146,6 +160,7 @@
         <div class="textbox input-group">
           <input type="number"
             min="0"
+            step="any"
             name="projected_hour_per_month"
             ng-model="addUser.projected_hour_per_month"
             ng-required="!isFullTime(addUser)" />
@@ -156,7 +171,7 @@
         </div>
       </div>
 
-      <div class="form-label">Date of Hire*</div>
+      <div class="form-label">Date of Hire* (m/d/yyyy)</div>
       <div class="datebox">
         <bm-date-picker model="addUser.date_of_hire"
           required="true"
@@ -168,7 +183,7 @@
         </div>
       </div>
 
-      <div class="form-label">Benefit Start Date*</div>
+      <div class="form-label">Benefit Start Date* (m/d/yyyy)</div>
       <div class="datebox">
         <bm-date-picker model="addUser.benefit_start_date"
           required="true"
@@ -196,20 +211,10 @@
           ng-model="addUser.password_confirm"
           ng-required="!addUser.send_email"
           ng-change="validatePassword(addUser.password, addUser.password_confirm)">
-          <div class="form-error" ng-hide="validatePassword(addUser.password, addUser.password_confirm)">
-            <span>{{passwordValidationError}}</span>
+          <div class="form-error" ng-show="form.employee_password.$dirty && form.employee_password_confirm.$dirty">
+            <span ng-show="!validatePassword(addUser.password, addUser.password_confirm)">{{passwordValidationError}}</span>
           </div>
         </div>
-      </div>
-
-      <div class="checkbox">
-        <label>
-          <input type="checkbox"
-          name="is_employee_new"
-          ng-model="addUser.new_employee"
-          ng-require="false">
-          New Employee
-        </label>
       </div>
       <div class="checkbox">
         <label>

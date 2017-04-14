@@ -4,8 +4,10 @@ from rest_framework.response import Response
 
 from app.models.person import Person
 from app.models.company_user import CompanyUser
+from app.models.employee_profile import EmployeeProfile
 from app.serializers.company_user_serializer import (
     CompanyUserSerializer, CompanyUserDetailSerializer)
+from app.service.company_personnel_service import CompanyPersonnelService
 
 
 class CompanyUserView(APIView):
@@ -24,9 +26,19 @@ class CompanyUserView(APIView):
 class CompanyEmployeeCountView(APIView):
 
     def get(self, request, pk, format=None):
+        filter_status = request.QUERY_PARAMS.get('status', None)
+        employees = CompanyUser.objects.select_related('user').filter(company=pk,
+                                       company_user_type='employee')
+        employee_count = len(employees)
+        if filter_status:
+            comp_personnel_service = CompanyPersonnelService()
+            users_in_status = comp_personnel_service.get_company_employee_user_ids_currently_with_status(
+                pk,
+                filter_status)
+            employee_count = len(users_in_status)
+
         return Response({'employees_count':
-            len(CompanyUser.objects.filter(company=pk,
-                                       company_user_type='employee'))})
+            employee_count})
 
 class CompanyUserDetailView(APIView):
 

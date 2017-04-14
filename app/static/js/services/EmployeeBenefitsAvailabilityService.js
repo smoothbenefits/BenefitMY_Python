@@ -17,9 +17,9 @@ benefitmyService.factory('EmployeeBenefitsAvailabilityService',
         EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId)
         .then(function(employeeProfile){
             var isFullTime = EmployeeProfileService.isFullTimeEmploymentType(employeeProfile);
-            CompanyFeatureService.getEnabledCompanyFeatureByCompany(companyId)
-            .then(function(compFeatures){  
-                if(isFullTime || !compFeatures.BenefitsForFullTimeOnly){
+            CompanyFeatureService.getAllApplicationFeatureStatusByCompany(companyId)
+            .then(function(allFeatureStatus){  
+                if(isFullTime || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.BenefitsForFullTimeOnly)){
                     CompanyBenefitAvailabilityService.getBenefitAvailabilityForUser(companyId, userId)
                     .then(function(companyBenefits) {
                         deferred.resolve(companyBenefits);

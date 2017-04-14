@@ -5,6 +5,7 @@ class PersonInfo(object):
     first_name = ''
     last_name = ''
     birth_date = ''
+    gender = ''
     ssn = ''
     email = ''
     phones = []
@@ -27,8 +28,14 @@ class PersonInfo(object):
             elif (person_model.user.last_name):
                 self.last_name = person_model.user.last_name
 
-            self.ssn = person_model.ssn
-            self.birth_date = person_model.birth_date
+            if (person_model.ssn):
+                self.ssn = person_model.ssn
+
+            if (person_model.birth_date):
+                self.birth_date = person_model.birth_date
+
+            if (person_model.gender):
+                self.gender = person_model.gender
 
             if (person_model.email):
                 self.email = person_model.email
@@ -66,6 +73,9 @@ class PersonInfo(object):
                 full_address = full_address + ', ' + self.address2
         return full_address
 
+    def get_city_state_zipcode(self):
+        return self.city + ', ' + self.state + ' ' + self.zipcode
+
     def get_country_and_zipcode(self):
         result = None
         if (self.country is not None):
@@ -86,3 +96,17 @@ class PersonInfo(object):
         if (result):
             result = round(result, 2)
         return result
+
+    def get_ssn_tokenized(self):
+        if (not self.ssn):
+            return [
+                '',
+                '',
+                ''
+            ]
+
+        return [
+            self.ssn[:3],
+            self.ssn[3:5],
+            self.ssn[5:]
+        ]

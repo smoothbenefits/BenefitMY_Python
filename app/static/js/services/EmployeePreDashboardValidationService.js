@@ -13,6 +13,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                           'CompanyFeatureService',
                           'DirectDepositService',
                           'UserOnboardingStepStateService',
+                          'OpenEnrollmentDefinitionService',
   function($state,
            PersonService,
            UserService,
@@ -23,7 +24,8 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
            BenefitSummaryService,
            CompanyFeatureService,
            DirectDepositService,
-           UserOnboardingStepStateService){
+           UserOnboardingStepStateService,
+           OpenEnrollmentDefinitionService){
 
     var getUrlFromState = function(state, stateParams) {
         return $state.href(state, stateParams).replace('#', '');
@@ -72,7 +74,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
       return true;
     };
 
-    var validateBasicInfo = function(employeeId, isNewEmployee, disabledFeatures, succeeded, failed){
+    var validateBasicInfo = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
       //step one (basic info) validation
       PersonService.getSelfPersonInfo(employeeId)
         .then(function(self){
@@ -93,9 +95,9 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         });
     };
 
-    var validateEmploymentAuth = function(employeeId, isNewEmployee, disabledFeatures, succeeded, failed){
+    var validateEmploymentAuth = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
       if (!isNewEmployee 
-        || (disabledFeatures && disabledFeatures.I9)) {
+        || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.I9)) {
         // Skip I-9 validation if this is not a new employee
         succeeded();
       } 
@@ -118,10 +120,10 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
       } 
     };
 
-    var validateW4Info = function(employeeId, isNewEmployee, disabledFeatures, succeeded, failed){
+    var validateW4Info = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
       if (!isNewEmployee 
-        || (disabledFeatures && disabledFeatures.W4)) {
-        // Skip I-9 validation if this is not a new employee
+        || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
+        // Skip W-4 validation if this is not a new employee
         succeeded();
       } 
       else {
@@ -142,9 +144,10 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
       }
     };
 
-    var validateDirectDeposit = function(employeeId, isNewEmployee, disabledFeatures, succeeded, failed){
-      if (disabledFeatures && disabledFeatures.DirectDeposit) {
-        // Skip if the feature is disabled
+    var validateDirectDeposit = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
+      if (!isNewEmployee ||
+          !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.DD)) {
+        // Skip if the feature is disabled or it's an existing employee
         succeeded();
       } 
       else {
@@ -180,7 +183,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
       }
     };
 
-    var validateDocuments = function(employeeId, isNewEmployee, disabledFeatures, succeeded, failed) {
+    var validateDocuments = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed) {
         DocumentService.getAllDocumentsForUser(employeeId).then(
             function(documents) {
                 if (!documents || documents.length <= 0) {
@@ -203,47 +206,61 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         );
     };
 
-    var validateBenefitEnrollments = function(employeeId, isNewEmployee, disabledFeatures, succeeded, failed) {
-        UserService.getCurUserInfo().then(
-            function(userInfo) {
-                var company = userInfo.currentRole.company;
+    var validateBenefitEnrollmentCompleted = function(employeeId, companyId, succeeded, failed){
+      BenefitSummaryService.getBenefitEnrollmentByUser(employeeId, companyId).then(
+          function(enrollmentSummary) {
+              if (enrollmentSummary.allEnrollmentsCompleted) {
+                  succeeded();
+              }
+              else {
+                  failed();
+              }
+          },
+          function(errors) {
+              failed();
+          }
+      );
+    };
 
-                BenefitSummaryService.getBenefitEnrollmentByUser(employeeId, company.id).then(
-                    function(enrollmentSummary) {
-                        if (enrollmentSummary.allEnrollmentsCompleted) {
-                            succeeded();
-                        }
-                        else {
-                            failed();
-                        }
-                    },
-                    function(errors) {
-                        failed();
-                    }
-                );
-            },
-            function(errors) {
-                failed();
-            }
-        );
+    var validateBenefitEnrollments = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed) {
+      UserService.getCurUserInfo().then(
+        function(userInfo) {
+          var company = userInfo.currentRole.company;
+          if(isNewEmployee){
+            validateBenefitEnrollmentCompleted(employeeId, company.id, succeeded, failed);
+          }
+          else{
+            OpenEnrollmentDefinitionService.InOpenEnrollmentPeriod(company.id)
+            .then(function(answer){
+              if(answer){
+                validateBenefitEnrollmentCompleted(employeeId, company.id, succeeded, failed);
+              }
+              else{
+                succeeded();
+              }
+            }, function(error){
+              succeeded();
+            });
+          }
+        });
     };
 
     return {
         onboarding: function(employeeId, succeeded, failed){
-          var disabledFeaturesPromise = UserService.getCurUserInfo().then(function(userInfo) {
+          var companyFeaturesPromise = UserService.getCurUserInfo().then(function(userInfo) {
             var company = userInfo.currentRole.company;
-            return CompanyFeatureService.getDisabledCompanyFeatureByCompany(company.id);
+            return CompanyFeatureService.getAllApplicationFeatureStatusByCompany(company.id);
           });
-          disabledFeaturesPromise.then(
-            function(disabledFeatures){
+          companyFeaturesPromise.then(
+            function(allFeatureStatus){
               UserService.isCurrentUserNewEmployee().then(
                 function(isNewEmployee) {
-                  validateBasicInfo(employeeId, isNewEmployee, disabledFeatures, function(){
-                    validateEmploymentAuth(employeeId, isNewEmployee, disabledFeatures, function(){
-                      validateW4Info(employeeId, isNewEmployee, disabledFeatures, function(){
-                        validateDirectDeposit(employeeId, isNewEmployee, disabledFeatures, function(){
-                            validateDocuments(employeeId, isNewEmployee, disabledFeatures, function() {
-                                validateBenefitEnrollments(employeeId, isNewEmployee, disabledFeatures, function() {
+                  validateBasicInfo(employeeId, isNewEmployee, allFeatureStatus, function(){
+                    validateEmploymentAuth(employeeId, isNewEmployee, allFeatureStatus, function(){
+                      validateW4Info(employeeId, isNewEmployee, allFeatureStatus, function(){
+                        validateDirectDeposit(employeeId, isNewEmployee, allFeatureStatus, function(){
+                            validateDocuments(employeeId, isNewEmployee, allFeatureStatus, function() {
+                                validateBenefitEnrollments(employeeId, isNewEmployee, allFeatureStatus, function() {
                                     succeeded();
                                 },
                                 function() {

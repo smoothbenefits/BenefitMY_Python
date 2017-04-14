@@ -73,7 +73,7 @@ from company_features import CompanyFeatures
 from company_group import CompanyGroup
 from company_group_member import CompanyGroupMember
 from upload import Upload
-from upload_audience import UploadAudience
+from upload_for_user import UploadForUser
 from upload_application_feature import UploadApplicationFeature
 
 from sys_application_feature import SysApplicationFeature
@@ -101,3 +101,10 @@ from workers_comp.employee_phraseology import EmployeePhraseology
 from onboarding.user_onboarding_step_state import UserOnboardingStepState
 from system.email_block_list import EmailBlockList
 from company_service_provider import CompanyServiceProvider
+from open_enrollment_definition import OpenEnrollmentDefinition
+
+from integration.integration_provider import IntegrationProvider
+from integration.company_integration_provider import CompanyIntegrationProvider
+from integration.company_user_integration_provider import CompanyUserIntegrationProvider
+
+from system.system_setting import SystemSetting

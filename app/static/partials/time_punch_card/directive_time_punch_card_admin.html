@@ -1,6 +1,5 @@
 <div class="content-header">
   <h1>Timesheet Reports and Time-off Requests</h1>
-  <span class="general-info">View the work hour reported by employees</span>
   <div class="view-instruction">
     <p>You can find the total hours submitted by employees for selected week</p>
   </div>
@@ -50,7 +49,7 @@
           <tr ng-repeat="employeeTimeCard in employeePunchCards | orderBy:'employee.lastName'">
             <td>
               <span>{{employeeTimeCard.employee.firstName}} {{employeeTimeCard.employee.lastName}}</span>
-              <span ng-if="employeeTimeCard.isInProgress" class="label label-warning">Checked-In</span>
+              <span ng-if="employeeTimeCard.isInProgress" class="label label-warning pull-right">Checked-In</span>
             </td>
             <td>{{employeeTimeCard.hours}}</td>
             <td><span>

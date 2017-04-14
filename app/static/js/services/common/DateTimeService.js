@@ -43,8 +43,33 @@ benefitmyService.factory('DateTimeService',
             return weeks;
         };
 
+        var GetMonthsInYear = function(){
+            var monthsInYear = [];
+            var idx = 0;
+            while(idx < 12){
+                monthsInYear.push({
+                    id: idx,
+                    name: moment().month(idx).format("MMMM")
+                });
+                idx++;
+            }
+            return monthsInYear;
+        };
+
+        var GetDaysInMonth = function(){
+            var day = 1;
+            var daysInMonth = [];
+            while(day <= moment().month(0).daysInMonth()){
+                daysInMonth.push(day++);
+            }
+            return daysInMonth
+        }
+        
+
         return {
-            GetListOfWeeks: GetListOfWeeks
+            GetListOfWeeks: GetListOfWeeks,
+            GetMonthsInYear: GetMonthsInYear,
+            GetDaysInMonth: GetDaysInMonth
         };
     }
 ]);

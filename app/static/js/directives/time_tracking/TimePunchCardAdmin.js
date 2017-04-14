@@ -31,6 +31,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     'TimePunchCardService',
     'CompanyEmployeeSummaryService',
     'CompanyPersonnelsService',
+    'EmployeeProfileService',
     function TimePunchCardAdminController(
       $scope,
       $state,
@@ -42,7 +43,8 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
       DateTimeService,
       TimePunchCardService,
       CompanyEmployeeSummaryService,
-      CompanyPersonnelsService) {
+      CompanyPersonnelsService,
+      EmployeeProfileService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -76,8 +78,14 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
             var employeeTotalTimes = [];
             var employees = _.keys(companyPunchCardsByEmployee);
 
-            employeePromise.then(function(allEmployees) {
-              _.each(allEmployees, function(employee) {
+            employeePromise.then(function(employeeListBuilder) {
+              employeeListBuilder.filterByTimeRangeStatus(
+                null,
+                EmployeeProfileService.EmploymentStatuses.Terminated,
+                $scope.selectedDisplayWeek.weekStartDate,
+                moment($scope.selectedDisplayWeek.weekStartDate).add(7, 'days')
+              );
+              _.each(employeeListBuilder.list, function(employee) {
                 // Convert to environment aware user id for employee comparison
                 var envAwareUserId = utilityService.getEnvAwareId(employee.user.id);
 
