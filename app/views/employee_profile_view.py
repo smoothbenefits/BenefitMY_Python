@@ -64,6 +64,7 @@ class EmployeeProfileByPersonCompanyView(APIView):
         serializer = EmployeeProfileSerializer(employee_profile)
         return Response(serializer.data)
 
+
 class EmployeeProfileByCompanyUserView(APIView):
     def _get_object(self, company_id, user_id):
         try:
@@ -83,4 +84,14 @@ class EmployeeProfilesByCompanyView(APIView):
         employee_profiles = EmployeeProfile.objects.filter(company=company_id)
         serializer = EmployeeProfileWithNameSerializer(employee_profiles, many=True)
         return Response(serializer.data)
-            
+
+
+class EmployeeProfileByCompanyPinView(APIView):
+    def get(self, request, company_id, pin):
+        try:
+            # Employee's pin should be unique within the scope of a company
+            employee_profile = EmployeeProfile.objects.get(company=company_id, pin=pin)
+            serializer = EmployeeProfileSerializer(employee_profile)
+            return Response(serializer.data)
+        except EmployeeProfile.DoesNotExist:
+            raise Http404
