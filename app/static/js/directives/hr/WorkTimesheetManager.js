@@ -86,7 +86,7 @@ BenefitMyApp.controller('WorkTimeSheetEditModalController', [
                     $scope.selectedDisplayWeek.weekStartDate)
                 .then(function(workTimeSheets){
                     $scope.employeeWorkHourList = [];
-                    _.each(employees, function(employee){
+                    _.each(employees.list, function(employee){
                         var employeeWorksheet = _.find(workTimeSheets, function(timesheet){
                             return timesheet.employee.email == employee.user.email
                         });

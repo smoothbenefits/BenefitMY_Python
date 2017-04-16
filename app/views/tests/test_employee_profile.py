@@ -352,3 +352,22 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
                                            kwargs={'pk': self.normalize_key(sys.maxint)}))
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 404)
+
+    def test_get_employee_profile_by_company_pin_success(self):
+        response = self.client.get(reverse('employee_profile_by_company_pin_api',
+                                           kwargs={'company_id': self.normalize_key(1),
+                                                   'pin': "1234"}))
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual("1234", result['pin'])
+        self.assertEqual("https://www.google.com/", result['photo_url'])
+
+    def test_get_employee_profile_by_company_pin_not_exist(self):
+        response = self.client.get(reverse('employee_profile_by_company_pin_api',
+                                           kwargs={'company_id': self.normalize_key(1),
+                                                   'pin': "0000"}))
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 404)

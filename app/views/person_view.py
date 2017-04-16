@@ -6,7 +6,8 @@ from django.contrib.auth import get_user_model
 from app.serializers.person_serializer import PersonSerializer, PersonFullPostSerializer
 from rest_framework.response import Response
 from app.serializers.user_serializer import UserFamilySerializer
-
+from app.service.integration.company_integration_provider_data_service \
+import CompanyIntegrationProviderDataService
 
 User = get_user_model()
 
@@ -28,6 +29,13 @@ class PersonView(APIView):
         serializer = PersonFullPostSerializer(person, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
+
+            # [TODO]: To remove
+            # This is setup to test the integration data sync
+            integration_data_service = CompanyIntegrationProviderDataService()
+            employee_user_id = person.user.id
+            integration_data_service.sync_employee_data_to_remote(employee_user_id)
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -17,6 +17,15 @@ class CompanyIntegrationProvider(models.Model):
     # system.
     company_external_id = models.CharField(max_length=255, null=True, blank=True)
 
+    # Optional
+    # In the case where the external id for employees need to be 
+    # generated on the WBM system, we need to know where to start
+    # There would be default logic built, such as starting at the 
+    # max employee ID currently exists. But there are often cases
+    # where this starting point needs to be forcely set. And this
+    # below field is for this purpose
+    employee_external_id_seed = models.CharField(max_length=255, null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

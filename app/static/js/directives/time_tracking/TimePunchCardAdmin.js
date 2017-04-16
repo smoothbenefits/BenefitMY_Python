@@ -68,16 +68,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
 
         $scope.reloadTimePunchCard = function() {
 
-          var employeeFilterSpecs = CompanyPersonnelsService.constructEmployeeStatusFilterSpecs(
-            null,
-            EmployeeProfileService.EmploymentStatuses.Terminated,
-            $scope.selectedDisplayWeek.weekStartDate,
-            moment($scope.selectedDisplayWeek.weekStartDate).add(7, 'days')
-          );
-          var employeePromise = CompanyPersonnelsService.getCompanyEmployees(
-            $scope.company.id,
-            employeeFilterSpecs
-          );
+          var employeePromise = CompanyPersonnelsService.getCompanyEmployees($scope.company.id);
 
           TimePunchCardService.GetPunchCardsByCompanyTimeRange($scope.company.id, $scope.selectedDisplayWeek.weekStartDate, true)
           .then(function(companyPunchCardsByEmployee) {
@@ -87,8 +78,14 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
             var employeeTotalTimes = [];
             var employees = _.keys(companyPunchCardsByEmployee);
 
-            employeePromise.then(function(allEmployees) {
-              _.each(allEmployees, function(employee) {
+            employeePromise.then(function(employeeListBuilder) {
+              employeeListBuilder.filterByTimeRangeStatus(
+                null,
+                EmployeeProfileService.EmploymentStatuses.Terminated,
+                $scope.selectedDisplayWeek.weekStartDate,
+                moment($scope.selectedDisplayWeek.weekStartDate).add(7, 'days')
+              );
+              _.each(employeeListBuilder.list, function(employee) {
                 // Convert to environment aware user id for employee comparison
                 var envAwareUserId = utilityService.getEnvAwareId(employee.user.id);
 
