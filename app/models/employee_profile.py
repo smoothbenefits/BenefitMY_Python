@@ -70,5 +70,9 @@ class EmployeeProfile(models.Model):
 
     employee_number = models.TextField(blank=True, null=True)
 
+    pin = models.TextField(blank=True, null=True)
+
+    photo_url = models.TextField(blank=True, null=True)
+
     class Meta:
-        unique_together = (('person', 'company'), ('employee_number', 'company'))
+        unique_together = (('person', 'company'), ('employee_number', 'company'), ('pin', 'company'))
