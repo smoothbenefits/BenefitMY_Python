@@ -15,11 +15,15 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
         # Collection of per-queue pumps
         self._queue_pumps = []
 
-    def register_event_message_handler(self, event_message_handler_class):
+    def register_event_message_handler(
+        self,
+        event_message_handler_class,
+        message_queue_config=None):
         queue_pump = self.AwsQueuePump(
             self._sns,
             self._sqs,
-            event_message_handler_class
+            event_message_handler_class,
+            message_queue_config
         )
         queue_pump.ensure_queue_setup()
         self._queue_pumps.append(queue_pump)
@@ -49,12 +53,15 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
             self,
             sns_client,
             sqs_client,
-            event_message_handler_class):
+            event_message_handler_class,
+            message_queue_config):
             self._sns = sns_client
             self._sqs = sqs_client
             self._event_message_handler_class = event_message_handler_class
             self._queue = None
+            self._dead_letter_queue = None
             self._message_handler = None
+            self._message_queue_config = message_queue_config
 
         def ensure_queue_setup(self):
             try:
@@ -93,9 +100,41 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
                     self._queue.set_attributes(Attributes={
                         'Policy': json.dumps(policy)
                     })
-        
+
+                # Now setup the queue config if specified
+                if (self._message_queue_config):
+                    self._queue.set_attributes(Attributes=self._message_queue_config.to_dict())
+                
+                # Now ensure the setup of the dead-letter queue
+                self._ensure_dead_letter_queue(queue_name)
+
             except Exception as e:
                 logging.error(traceback.format_exc())
+
+        ''' This is to ensure the proper setup of dead-letter
+            queue.
+            For now, this is not yet made highly configurable
+            from the consumer side, and below is the hardcoded
+            setup:
+                * Source queue is 1-1 mapped to a corresponding dead-letter queue
+                * The queue configuration for all dead-letter queues use SQS defaults
+                * Redrive policy on the source queue is set to allow max 5 recerives
+                  of a message before moving it to dead-letter queue
+
+            All of these knobs could be later on exposed on API for consumers
+            to control/override, but this is not a priority for now.
+        '''
+        def _ensure_dead_letter_queue(self, source_queue_name):
+            dl_queue_name = source_queue_name + '_DL'
+            self._dead_letter_queue = AwsEventMessageUtility.ensure_sqs_queue(self._sqs, dl_queue_name)
+            dl_queue_arn = self._dead_letter_queue.attributes.get('QueueArn')
+            redrive_policy = {
+                'maxReceiveCount': '5',
+                'deadLetterTargetArn': dl_queue_arn
+            }
+            self._queue.set_attributes(Attributes={
+                'RedrivePolicy': json.dumps(redrive_policy)
+            })
 
         def pump_event_messages(self):
             try:

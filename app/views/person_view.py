@@ -8,11 +8,15 @@ from rest_framework.response import Response
 from app.serializers.user_serializer import UserFamilySerializer
 from app.service.integration.company_integration_provider_data_service \
 import CompanyIntegrationProviderDataService
+from app.service.event_bus.aws_event_bus_service import AwsEventBusService
+from app.service.event_bus.events.employee_name_changed_event import EmployeeNameChangedEvent
 
 User = get_user_model()
 
 
 class PersonView(APIView):
+    event_bus_service = AwsEventBusService()
+
     def get_object(self, pk):
         try:
             return Person.objects.get(pk=pk)
@@ -26,6 +30,8 @@ class PersonView(APIView):
 
     def put(self, request, pk, format=None):
         person = self.get_object(pk)
+        original_name = person.first_name
+        
         serializer = PersonFullPostSerializer(person, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
@@ -36,9 +42,13 @@ class PersonView(APIView):
             employee_user_id = person.user.id
             integration_data_service.sync_employee_data_to_remote(employee_user_id)
 
+            # Test event handling for user name changes
+            new_name = serializer.data['first_name']
+            event = EmployeeNameChangedEvent(original_name, new_name)
+            self.event_bus_service.publish_event(event)
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def delete(self, request, pk, format=None):
         person = self.get_object(pk)

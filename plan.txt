@@ -32,8 +32,8 @@
 * Queue name use: environment_eventname_handlername
 
 * boto3 AWS signature expires. Need auto renew
-  * Add logic to boto3 client accesor, and check for timestamp
-    * May need to firsy wrap all AWS clients into a custom construct: AwsClients
+  * Add logic to boto3 client accessor, and check for timestamp
+    * May need to first wrap all AWS clients into a custom construct: AwsClients
   * Reinitialize the session if time span is larger than threshold
 * Introcuce below notions into the system (on event or handler)
   * Deadletter queue
