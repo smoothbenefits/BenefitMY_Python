@@ -10,9 +10,11 @@ class AnotherEnvironmentTestEventHandler(EventHandlerBase):
         super(AnotherEnvironmentTestEventHandler, self).__init__(EnvironmentTestEvent)
     
     def handle(self, event):
-        subject = "Test Event Handler"
-        text_content = event.environment
-        from_email = settings.SUPPORT_EMAIL_ADDRESS
-        to_emails = ['jeff.zhang.82@gmail.com']
-        msg = EmailMultiAlternatives(subject, text_content, from_email, to_emails)
-        msg.send()
+        # subject = "Test Event Handler"
+        # text_content = event.environment
+        # from_email = settings.SUPPORT_EMAIL_ADDRESS
+        # to_emails = []
+        # msg = EmailMultiAlternatives(subject, text_content, from_email, to_emails)
+        # msg.send()
+
+        pass

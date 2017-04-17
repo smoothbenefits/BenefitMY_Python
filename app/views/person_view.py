@@ -42,11 +42,6 @@ class PersonView(APIView):
             employee_user_id = person.user.id
             integration_data_service.sync_employee_data_to_remote(employee_user_id)
 
-            # Test event handling for user name changes
-            new_name = serializer.data['first_name']
-            event = EmployeeNameChangedEvent(original_name, new_name)
-            self.event_bus_service.publish_event(event)
-
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
