@@ -6,7 +6,7 @@ import logging
 
 # How long would the client keep the boto3 session, until
 # invalidate (and recreate) it, in seconds
-AWS_CLIENT_BOTO3_SESSION_INVALIDATE_TIME = 600
+AWS_CLIENT_BOTO3_SESSION_INVALIDATE_TIME = 3600
 
 
 class AwsClient(object):

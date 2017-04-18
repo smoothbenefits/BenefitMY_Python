@@ -20,8 +20,7 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
         event_message_handler_class,
         message_queue_config=None):
         queue_pump = self.AwsQueuePump(
-            self._aws_client.sns,
-            self._aws_client.sqs,
+            self._aws_client,
             event_message_handler_class,
             message_queue_config
         )
@@ -51,12 +50,10 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
     class AwsQueuePump(object):
         def __init__(
             self,
-            sns_client,
-            sqs_client,
+            aws_client,
             event_message_handler_class,
             message_queue_config):
-            self._sns = sns_client
-            self._sqs = sqs_client
+            self._aws_client = aws_client
             self._event_message_handler_class = event_message_handler_class
             self._queue = None
             self._dead_letter_queue = None
@@ -71,15 +68,15 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
 
                 # Ensure setup of the message queue
                 queue_name = AwsEventMessageUtility.get_sqs_queue_name(self._message_handler)
-                self._queue = AwsEventMessageUtility.ensure_sqs_queue(self._sqs, queue_name)
+                self._queue = AwsEventMessageUtility.ensure_sqs_queue(self._aws_client.sqs, queue_name)
                 queue_arn = self._queue.attributes.get('QueueArn')
 
                 # Ensure the SNS topic
                 topic_name = AwsEventMessageUtility.get_sns_topic_name(self._message_handler.event_class)
-                topic_arn = AwsEventMessageUtility.ensure_sns_topic(self._sns, topic_name)
+                topic_arn = AwsEventMessageUtility.ensure_sns_topic(self._aws_client.sns, topic_name)
 
                 # Ensure subscription, queue -> topic
-                response = self._sns.subscribe(
+                response = self._aws_client.sns.subscribe(
                     TopicArn=topic_arn,
                     Protocol='sqs',
                     Endpoint=queue_arn
@@ -126,7 +123,7 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
         '''
         def _ensure_dead_letter_queue(self, source_queue_name):
             dl_queue_name = source_queue_name + '_DL'
-            self._dead_letter_queue = AwsEventMessageUtility.ensure_sqs_queue(self._sqs, dl_queue_name)
+            self._dead_letter_queue = AwsEventMessageUtility.ensure_sqs_queue(self._aws_client.sqs, dl_queue_name)
             dl_queue_arn = self._dead_letter_queue.attributes.get('QueueArn')
             redrive_policy = {
                 'maxReceiveCount': '5',
