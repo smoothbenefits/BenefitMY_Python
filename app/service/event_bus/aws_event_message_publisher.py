@@ -10,8 +10,8 @@ class AwsEventMessagePublisher(AwsEventMessageFacilityBase):
         AwsEventMessageUtility.validate_event_object(event_object)
 
         topic_name = AwsEventMessageUtility.get_sns_topic_name(type(event_object))
-        topic_arn = AwsEventMessageUtility.ensure_sns_topic(self._sns, topic_name)
-        response = self._sns.publish(
+        topic_arn = AwsEventMessageUtility.ensure_sns_topic(self._aws_client.sns, topic_name)
+        response = self._aws_client.sns.publish(
             TopicArn=topic_arn,
             Message=event_object.serialize())
 

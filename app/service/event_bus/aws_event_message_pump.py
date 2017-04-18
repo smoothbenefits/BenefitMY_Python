@@ -20,8 +20,8 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
         event_message_handler_class,
         message_queue_config=None):
         queue_pump = self.AwsQueuePump(
-            self._sns,
-            self._sqs,
+            self._aws_client.sns,
+            self._aws_client.sqs,
             event_message_handler_class,
             message_queue_config
         )

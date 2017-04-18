@@ -16,4 +16,5 @@ class EnvironmentTestEventHandler(EventHandlerBase):
         # to_emails = []
         # msg = EmailMultiAlternatives(subject, text_content, from_email, to_emails)
         # msg.send()
+
         pass
