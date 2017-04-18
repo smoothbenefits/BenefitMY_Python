@@ -8,14 +8,11 @@ from rest_framework.response import Response
 from app.serializers.user_serializer import UserFamilySerializer
 from app.service.integration.company_integration_provider_data_service \
 import CompanyIntegrationProviderDataService
-from app.service.event_bus.aws_event_bus_service import AwsEventBusService
-from app.service.event_bus.events.employee_name_changed_event import EmployeeNameChangedEvent
 
 User = get_user_model()
 
 
 class PersonView(APIView):
-    event_bus_service = AwsEventBusService()
 
     def get_object(self, pk):
         try:
