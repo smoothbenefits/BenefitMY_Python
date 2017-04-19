@@ -91,7 +91,7 @@ class EmployeeProfileByCompanyPinView(APIView):
         try:
             # Employee's pin should be unique within the scope of a company
             employee_profile = EmployeeProfile.objects.get(company=company_id, pin=pin)
-            serializer = EmployeeProfileSerializer(employee_profile)
+            serializer = EmployeeProfileWithNameSerializer(employee_profile)
             return Response(serializer.data)
         except EmployeeProfile.DoesNotExist:
             raise Http404
