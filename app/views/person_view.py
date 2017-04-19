@@ -27,7 +27,6 @@ class PersonView(APIView):
 
     def put(self, request, pk, format=None):
         person = self.get_object(pk)
-        original_name = person.first_name
         
         serializer = PersonFullPostSerializer(person, data=request.DATA)
         if serializer.is_valid():
