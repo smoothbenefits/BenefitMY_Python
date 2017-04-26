@@ -10,7 +10,7 @@
                 <b>{{datesOfWeek[weekdayNum].weekdayName}}</b><br/>({{datesOfWeek[weekdayNum].displayDate}})
               </span>
             </td>
-            <td> 
+            <td>
               <div class="time-punch-card" ng-repeat="punchCard in weeklyPunchCards[weekdayNum]">
                 <div class="header-row">
                   <b>{{punchCard.getTimeRangeDisplayText()}}</b>
@@ -18,6 +18,9 @@
                 <div class="info-row" ng-class="{'in-progress': punchCard.inProgress}">
                     <div ng-if="punchCard.inProgress">Status: <b>Checked In</b></div>
                     <div>Card Type: <b>{{punchCard.recordType.name}}</b></div>
+                    <div ng-if="isLowConfidenceDetection(punchCard.checkInAssets.imageDetectionAsset.confidence)">
+                        <span class="label label-danger">Photo taken may need your attentions.</span>
+                    </div>
                     <div ng-if="isAttributeVisible(punchCard.attributes.state)">State: <b>{{punchCard.attributes.state.value}}</b></div>
                     <div ng-if="isAttributeVisible(punchCard.attributes.city)">City/Town: <b>{{punchCard.attributes.city.value}}</b></div>
                     <div ng-if="isAttributeVisible(punchCard.attributes.project)">Project: <b>{{punchCard.attributes.project.value.name}}</b></div>

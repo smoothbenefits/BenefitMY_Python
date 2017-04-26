@@ -11,6 +11,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   'punchCard',
   'adminView',
   'companyId',
+  'TimePunchCardDetectionConfigurations',
   function(
     $scope,
     $modalInstance,
@@ -23,7 +24,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     CompanyFeatureService,
     punchCard,
     adminView,
-    companyId){
+    companyId,
+    TimePunchCardDetectionConfigurations){
     $scope.headerText = punchCard ? 'Edit Punch Card' : 'Create Punch Card';
 
     $scope.punchCard = punchCard;
@@ -67,6 +69,10 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         });
       });
     }
+
+    var isLowConfidenceDetection = function(confidence) {
+      return TimePunchCardDetectionConfigurations.imageDetectionConfidenceThreshold >= confidence;
+    };
 
     var isAttributeVisible = function(attribute) {
         return !attribute.type.adminOnly || $scope.adminView;
