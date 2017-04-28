@@ -61,6 +61,9 @@ INSTALLED_APPS = (
     'cid',
 )
 
+# AWS settings
+DEFAULT_AWS_REGION = 'us-west-2'
+
 CID_GENERATE = True
 
 PDFTK_BIN = './.apt/usr/bin/pdftk'
