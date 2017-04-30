@@ -5,7 +5,7 @@ class AccountCreationData(object):
         compensation_info=None, send_email=None, password=None,
         new_employee=None, start_date=None, benefit_start_date=None, create_docs=None, doc_fields=None,
         group_id=None, group_name=None, manager_id=None, manager_first_name=None,
-        manager_last_name=None, employee_number=None):
+        manager_last_name=None, employee_number=None, pin=None):
         self.user_id = user_id
         self.company_id = company_id
         self.company_user_type = company_user_type
@@ -27,3 +27,4 @@ class AccountCreationData(object):
         self.manager_first_name = manager_first_name
         self.manager_last_name = manager_last_name
         self.employee_number = employee_number
+        self.pin = pin

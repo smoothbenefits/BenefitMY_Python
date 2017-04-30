@@ -389,9 +389,10 @@ class AccountCreationService(object):
         # Create the employee profile
         key_service = HashKeyService()
         person_id = key_service.decode_key(person_serializer.data['id'])
-        pin = account_info['pin']
+        pin = account_info.pin
+        pinService = EmployeePinService()
         if not pin:
-            pin = EmployeePinService.get_company_wide_unique_pin(account_info.company_id, user.id)
+            pin = pinService.get_company_wide_unique_pin(account_info.company_id, user.id)
 
         profile_data = {
             'person': person_id,
