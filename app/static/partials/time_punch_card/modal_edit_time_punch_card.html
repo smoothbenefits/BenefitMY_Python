@@ -71,7 +71,7 @@
             <div class="form-label">State</div>
             <select name="state" ng-model="punchCard.attributes.state.value" ng-required="true" class="form-control">
                 <option style="display:none" value="">select a state</option>
-                <option ng-repeat="state in allStates">{{state}}</option> 
+                <option ng-repeat="state in allStates">{{state}}</option>
             </select>
         </div>
 
@@ -83,8 +83,8 @@
         <div>
           <div ng-show="projectManagementEnabled()">
             <div class="form-label">Project</div>
-            <select 
-                name="project" 
+            <select
+                name="project"
                 ng-model="punchCard.attributes.project.value"
                 ng-options="project.name for project in allProjects track by project._id"
                 class="form-control">
@@ -103,6 +103,32 @@
                   fcsa-number="{ preventInvalidInput: true, maxDecimals: 2 }" />
               </div>
         </div>
+
+        <div ng-if="hasPunchCardAssets()">
+          <div class="form-label">
+            Punch Card Assets
+            <span ng-if="isLowConfidenceDetection()" class="label label-danger">
+              Low confidence detection
+            </span>
+          </div>
+          <div class="button-group">
+            <a ng-disabled="!hasAssets(punchCard.checkInAssets)"
+              class="btn btn-info"
+              target="_blank"
+              style="width: 30%"
+              ng-href="{{getRealTimeImageAssetUrl(punchCard.checkInAssets)}}">
+              Check-In Asset
+            </a>
+            <a ng-disabled="!hasAssets(punchCard.checkOutAssets)"
+              class="btn btn-info"
+              target="_blank"
+              style="width: 30%"
+              ng-href="{{getRealTimeImageAssetUrl(punchCard.checkOutAssets)}}">
+              Check-Out Asset
+            </a>
+          </div>
+        </div>
+
     </form>
   </div>
 </div>

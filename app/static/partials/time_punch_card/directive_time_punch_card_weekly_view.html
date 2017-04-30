@@ -25,6 +25,7 @@
                     <div ng-if="isAttributeVisible(punchCard.attributes.city)">City/Town: <b>{{punchCard.attributes.city.value}}</b></div>
                     <div ng-if="isAttributeVisible(punchCard.attributes.project)">Project: <b>{{punchCard.attributes.project.value.name}}</b></div>
                     <div ng-if="isAttributeVisible(punchCard.attributes.hourlyRate)">Houly Rate: <b>${{punchCard.attributes.hourlyRate.value.toLocaleString()}}</b></div>
+                    <div ng-if="attentionNeeded(punchCard)"><span class="label label-danger">Attention Needed</span></div>
                 </div>
                 <div class="action-row">
                   <div class="col-xs-6"><a ng-click="editPunchCard(punchCard)">Edit</a></div>
