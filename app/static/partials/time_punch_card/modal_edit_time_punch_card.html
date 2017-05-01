@@ -107,8 +107,8 @@
         <div ng-if="hasPunchCardAssets()">
           <div class="form-label">
             Punch Card Assets
-            <span ng-if="isLowConfidenceDetection()" class="label label-danger">
-              Low confidence detection
+            <span ng-if="isLowConfidenceDetect()" class="label label-danger">
+              Possible Photo Mismatch
             </span>
           </div>
           <div class="button-group">
@@ -117,14 +117,14 @@
               target="_blank"
               style="width: 30%"
               ng-href="{{getRealTimeImageAssetUrl(punchCard.checkInAssets)}}">
-              Check-In Asset
+              Check-In Photo
             </a>
             <a ng-disabled="!hasAssets(punchCard.checkOutAssets)"
               class="btn btn-info"
               target="_blank"
               style="width: 30%"
               ng-href="{{getRealTimeImageAssetUrl(punchCard.checkOutAssets)}}">
-              Check-Out Asset
+              Check-Out Photo
             </a>
           </div>
         </div>

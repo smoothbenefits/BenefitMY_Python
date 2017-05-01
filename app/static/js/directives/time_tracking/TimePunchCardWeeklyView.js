@@ -70,27 +70,25 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       });
     }
 
-    $scope.isLowConfidenceDetection = function() {
+    $scope.isLowConfidenceDetected = function() {
       var confidence = 0;
 
-      if ($scope.punchCard.checkInAssets && $scope.punchCard.checkInAssets.imageDetectionAsset
-          && $scope.punchCard.checkInAssets.imageDetectionAsset.confidence) {
-            confidence = $scope.punchCard.checkInAssets.imageDetectionAsset.confidence;
+      if ($scope.hasAssets($scope.punchCard.checkInAssets)) {
+        confidence = $scope.punchCard.checkInAssets.imageDetectionAsset.confidence;
       }
 
-      if ($scope.punchCard.checkInAssets && $scope.punchCard.checkInAssets.imageDetectionAsset
-          && $scope.punchCard.checkInAssets.imageDetectionAsset.confidence) {
-            confidence = $scope.punchCard.checkInAssets.imageDetectionAsset.confidence;
+      if ($scope.hasAssets($scope.punchCard.checkOutAssets)) {
+        var checkOutConfidence = $scope.punchCard.checkOutAssets.imageDetectionAsset.confidence;
+        if (checkOutConfidence < confidence) {
+          confidence = checkOutConfidence;
+        }
       }
 
       return TimePunchCardDetectionConfigurations.imageDetectionConfidenceThreshold >= confidence;
     };
 
     $scope.hasAssets = function (assets) {
-       if (assets && assets.imageDetectionAsset) {
-         return true;
-       }
-       return false;
+      return assets && assets.imageDetectionAsset;
     };
 
     $scope.hasPunchCardAssets = function() {
