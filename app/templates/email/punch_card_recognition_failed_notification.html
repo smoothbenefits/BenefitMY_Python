@@ -1,0 +1,19 @@
+<html>
+    <head>
+    </head>
+    <body>
+      <h4>Dear {{admin.first_name}} {{admin.last_name}}:</h4>
+      <br/>
+      <p>Your employee, {{employee.first_name}} {{employee.last_name}}, just clocked {{card.status}}. 
+        The photo of the employee below did not match the image we have on file for {{employee.first_name}} {{employee.last_name}}. 
+        Please verify {{employee.first_name}} {{employee.last_name}}  has properly clocked {{card.status}}.</p>
+      <br/>
+      <p>Thank you for your attention!</p>
+      <br /> 
+      <p>workbenefits.me</p>
+      <hr/>
+
+      <img src="{{card.photo_url}}" style="border: 1px solid #56A245;border-radius: 0;width: 400px;text-align: center;box-shadow: none;text-shadow: none;
+      display: inline-block;margin-top: 10px;margin-bottom: 0px;vertical-align: middle;white-space: nowrap;" />
+    </body>
+</html>

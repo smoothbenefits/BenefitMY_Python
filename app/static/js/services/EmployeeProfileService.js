@@ -39,6 +39,7 @@ benefitmyService.factory('EmployeeProfileService',
             viewModel.lastUpdateDateTime = moment(employeeProfileDomainModel.updated_at).format(DATE_FORMAT_STRING);
             viewModel.employeeNumber = employeeProfileDomainModel.employee_number;
             viewModel.manager = employeeProfileDomainModel.manager;
+            viewModel.pin = employeeProfileDomainModel.pin;
 
             if (employeeProfileDomainModel.department && employeeProfileDomainModel.department.department) {
                 viewModel.department = employeeProfileDomainModel.department.department;
@@ -89,6 +90,7 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
             domainModel.employee_number = employeeProfileViewModel.employeeNumber;
             domainModel.manager = employeeProfileViewModel.manager ? employeeProfileViewModel.manager.id : null;
+            domainModel.pin = employeeProfileViewModel.pin;
 
             return domainModel;
         };
@@ -156,8 +158,8 @@ benefitmyService.factory('EmployeeProfileService',
             // * If employment end date prior to time range, result => [Terminated]
             // * If employment start date prior to time range and end date after => [Active]
             // * If employment start date within time range, result to include/add [Prospective, Active]
-            // * If employment end date within time range, result to include/add [Active, Terminated] 
-            
+            // * If employment end date within time range, result to include/add [Active, Terminated]
+
             var rangeStart = moment(timeRangeStart);
             var rangeEnd = moment(timeRangeEnd);
             var employmentStart = moment(employeeProfile.start_date);

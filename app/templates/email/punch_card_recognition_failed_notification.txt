@@ -1,0 +1,13 @@
+Dear {{admin.first_name}} {{admin.last_name}}:
+
+Your employee, {{employee.first_name}} {{employee.last_name}}, just clocked {{card.status}}. 
+The photo of the employee below did not match the image we have on file for {{employee.first_name}} {{employee.last_name}}. 
+Please verify {{employee.first_name}} {{employee.last_name}} has properly clocked {{card.status}}.
+
+Thank you for your attention!
+
+workbenefits.me
+
+---------------------------------------------------------------------------
+
+Photo URL: {{card.photo_url}}

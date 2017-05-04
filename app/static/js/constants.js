@@ -245,3 +245,7 @@ settings.constant('tabLayoutGlobalConfig', [
 settings.constant('BenefitsEnrollmentConfigurations', {
     updateReasonExemptPeriodInDays: 30.0
 });
+
+settings.constant('TimePunchCardDetectionConfigurations', {
+    imageDetectionConfidenceThreshold: 60
+});
