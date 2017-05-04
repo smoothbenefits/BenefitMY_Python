@@ -60,22 +60,27 @@ class PunchCardRecognitionFailedHandler(EventHandlerBase):
             return
 
         employee = self._get_user_info_by_id(self.hash_key_service.decode_key_with_environment(event.user_id))
-        context_data = {
-            'admin': admins[0],
-            'employee': employee
-        }
-        context_data['card'] = {
-            'status': 'in' if event.in_progress else 'out',
-            'photo_url': event.photo_url
-        }
-        
-        to_emails = []
+        if not employee:
+            logging.error(
+                "PunchCardRecognitionFailedEvent failed. The employee of company {} cannot match passed in user_id {}".format(event.company_id, event.user_id)
+            )
+            return
         for admin in admins:
+            context_data = {
+                'admin': admin,
+                'employee': employee,
+                'card': {
+                    'status': 'in' if event.in_progress else 'out',
+                    'photo_url': event.photo_url
+                }
+            }
+            
+            to_emails = []
             to_emails.append(admin.email)
-        self.email_service.send_support_email(
-            to_emails,
-            subject,
-            context_data,
-            html_template,
-            text_template
-        )
+            self.email_service.send_support_email(
+                to_emails,
+                subject,
+                context_data,
+                html_template,
+                text_template
+            )
