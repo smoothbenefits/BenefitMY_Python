@@ -359,6 +359,7 @@ PIPELINE_JS = {
             'js/services/ProjectService.js',
             'js/services/TimePunchCardService.js',
             'js/services/common/DateTimeService.js',
+            'js/services/common/NumberService.js',
             'js/services/OpenEnrollmentDefinitionService.js',
             'js/services/IntegrationProviderService.js',
             'js/services/payroll_integration/AdvantagePayrollService.js'
