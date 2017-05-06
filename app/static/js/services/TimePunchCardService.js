@@ -118,13 +118,13 @@ benefitmyService.factory('TimePunchCardService',
             });
 
             if(viewModel.inHours){
-                viewModel.hours = moment(viewModel.end).diff(moment(viewModel.start), 'hours');
+                viewModel.hours = moment(viewModel.end).diff(moment(viewModel.start), 'hours', true);
             }
 
             // Attach utility functions
             viewModel.getTimeRangeDisplayText = function() {
                 if(this.inHours){
-                    return this.hours + ' hours';
+                    return this.hours.toFixed(2) + ' hours';
                 }
 
                 if (this.start && !this.end){
