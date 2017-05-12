@@ -55,7 +55,7 @@ var employerHome = employersController.controller('employerHome',
     };
 
     var loadCompanyFeatures = function(companyId){
-      CompanyFeatureService.getAllApplicationFeatureStatusByCompany(companyId)
+      UserService.getCurrentRoleCompleteFeatureStatus()
       .then(function(allFeatureStatus) {
         $scope.allFeatureStatus = allFeatureStatus;
       });
@@ -2344,7 +2344,8 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
     'users',
     'CompanyEmployeeSummaryService',
     'CompanyFeatureService',
-    function($scope, $state, $stateParams, UploadService, users, CompanyEmployeeSummaryService, CompanyFeatureService){
+    'UserService',
+    function($scope, $state, $stateParams, UploadService, users, CompanyEmployeeSummaryService, CompanyFeatureService, UserService){
       $scope.compId = $stateParams.company_id;
       $scope.uploads = [];
       UploadService.getEmployeeUploads($scope.compId, $stateParams.employee_id)
@@ -2358,7 +2359,7 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
         $scope.employee = resp.user;
       });
 
-      CompanyFeatureService.getAllApplicationFeatureStatusByCompany($scope.compId).then(function(allFeatureStatus) {
+      UserService.getCurrentRoleCompleteFeatureStatus().then(function(allFeatureStatus) {
         $scope.allFeatureStatus = allFeatureStatus;
       });
 

@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from app.models.company_user import CompanyUser, USER_TYPE_ADMIN, USER_TYPE_BROKER
 from app.models.company_features import CompanyFeatures
 from app.models.company import Company
+from app.models.company_user_features import CompanyUserFeatures
 
 User = get_user_model()
 
@@ -117,5 +118,16 @@ class ApplicationFeatureService(object):
         company_features = CompanyFeatures.objects.filter(company=company_id)
         for company_feature in company_features:
             result[company_feature.company_feature.feature] = company_feature.feature_status
+
+        return result
+
+    def get_complete_application_feature_status_by_company_user(self, company_id, user_id):
+        # Use the company feature statuses as the starting point
+        # and then take in the per-user overrides
+        result = self.get_complete_application_feature_status_by_company(company_id)
+
+        company_user_features = CompanyUserFeatures.objects.filter(company_user__company=company_id, company_user__user=user_id)
+        for company_user_feature in company_user_features:
+            result[company_user_feature.feature.feature] = company_user_feature.feature_status
 
         return result

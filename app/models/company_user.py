@@ -21,6 +21,12 @@ class CompanyUser(models.Model):
     new_employee = models.BooleanField(default=True)
 
     def __str__(self):
+        user_str = str(self.user.id)
         if (self.user.first_name and self.user.last_name):
-            return self.user.first_name + ' ' + self.user.last_name
-        return str(self.user.id)
+            user_str = self.user.first_name + ' ' + self.user.last_name
+        
+        company_str = str(self.company.id)
+        if (self.company.name):
+            company_str = self.company.name
+
+        return '{0} [{1}]'.format(user_str, company_str)
