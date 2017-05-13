@@ -4,11 +4,13 @@ benefitmyService.factory('TimePunchCardService',
   ['$q',
    'utilityService',
    'ProjectService',
+   'NumberService',
    'TimePunchCardRepository',
    function TimePunchCardService(
     $q,
     utilityService,
     ProjectService,
+    NumberService,
     TimePunchCardRepository){
 
         // Define supported attributes on time punch cards
@@ -118,13 +120,13 @@ benefitmyService.factory('TimePunchCardService',
             });
 
             if(viewModel.inHours){
-                viewModel.hours = moment(viewModel.end).diff(moment(viewModel.start), 'hours');
+                viewModel.hours = moment(viewModel.end).diff(moment(viewModel.start), 'hours', true);
             }
 
             // Attach utility functions
             viewModel.getTimeRangeDisplayText = function() {
                 if(this.inHours){
-                    return this.hours + ' hours';
+                    return NumberService.ToLimitDecimals(this.hours, 2) + ' hours';
                 }
 
                 if (this.start && !this.end){
