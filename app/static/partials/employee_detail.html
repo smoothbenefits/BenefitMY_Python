@@ -200,7 +200,7 @@
           </ul>
         </div>
       </div>
-      <div class='panel'>
+      <div class='panel' ng-if="!hideSalaryData">
         <div class='panel-heading' ng-click="compensationExpanded = !compensationExpanded">
           <b class="clickable"><span class="fa fa-toggle-down"></span>  Compensation</b>
           <a ng-click="addCompensation();$event.stopPropagation();" ng-if="!isBroker">

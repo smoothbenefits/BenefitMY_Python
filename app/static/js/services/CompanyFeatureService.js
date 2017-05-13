@@ -32,7 +32,8 @@ benefitmyService.factory(
         RangedTimeCard: 'RangedTimeCard',
         ProjectManagement: 'ProjectManagement',
         MobileProjectManagement: 'MobileProjectManagement',
-        ShowDisabledFeaturesForEmployer: 'ShowDisabledFeaturesForEmployer'
+        ShowDisabledFeaturesForEmployer: 'ShowDisabledFeaturesForEmployer',
+        HideSalaryData: 'HideSalaryData'
       };
 
       var getAllApplicationFeatureStatusByCompany = function(companyId) {

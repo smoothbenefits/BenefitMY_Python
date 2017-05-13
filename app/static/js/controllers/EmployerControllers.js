@@ -161,6 +161,12 @@ var employerHome = employersController.controller('employerHome',
     };
 
     $scope.payrollServiceEnabled = function() {
+      // First check for hide-salary-data feature
+      if ($scope.allFeatureStatus
+        && $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.HideSalaryData)) {
+        return false;
+      }
+
       var payrollProvider = null;
 
       if ($scope.integrationProviders 
@@ -1139,6 +1145,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'CompensationService',
   'PersonService',
   'UserService',
+  'CompanyFeatureService',
   function($scope,
            $location,
            $stateParams,
@@ -1151,10 +1158,18 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            EmployeeProfileService,
            CompensationService,
            PersonService,
-           UserService){
+           UserService,
+           CompanyFeatureService){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
+
+    // Now setup all the on/off switches for features
+    $scope.hideSalaryData = false;
+
+    UserService.getCurrentRoleCompleteFeatureStatus().then(function(allFeatureStatus) {
+        $scope.hideSalaryData = allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.HideSalaryData);
+    });
 
     var compId = $stateParams.company_id;
     var employeeId = $stateParams.eid;
