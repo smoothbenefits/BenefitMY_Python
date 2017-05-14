@@ -247,11 +247,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
 
     return {
         onboarding: function(employeeId, succeeded, failed){
-          var companyFeaturesPromise = UserService.getCurUserInfo().then(function(userInfo) {
-            var company = userInfo.currentRole.company;
-            return CompanyFeatureService.getAllApplicationFeatureStatusByCompany(company.id);
-          });
-          companyFeaturesPromise.then(
+          UserService.getCurrentRoleCompleteFeatureStatus().then(
             function(allFeatureStatus){
               UserService.isCurrentUserNewEmployee().then(
                 function(isNewEmployee) {

@@ -55,7 +55,7 @@ var employerHome = employersController.controller('employerHome',
     };
 
     var loadCompanyFeatures = function(companyId){
-      CompanyFeatureService.getAllApplicationFeatureStatusByCompany(companyId)
+      UserService.getCurrentRoleCompleteFeatureStatus()
       .then(function(allFeatureStatus) {
         $scope.allFeatureStatus = allFeatureStatus;
       });
@@ -161,6 +161,12 @@ var employerHome = employersController.controller('employerHome',
     };
 
     $scope.payrollServiceEnabled = function() {
+      // First check for hide-salary-data feature
+      if ($scope.allFeatureStatus
+        && $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.HideSalaryData)) {
+        return false;
+      }
+
       var payrollProvider = null;
 
       if ($scope.integrationProviders 
@@ -1139,6 +1145,7 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
   'CompensationService',
   'PersonService',
   'UserService',
+  'CompanyFeatureService',
   function($scope,
            $location,
            $stateParams,
@@ -1151,10 +1158,18 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
            EmployeeProfileService,
            CompensationService,
            PersonService,
-           UserService){
+           UserService,
+           CompanyFeatureService){
 
     // Inherit base modal controller for dialog window
     $controller('modalMessageControllerBase', {$scope: $scope});
+
+    // Now setup all the on/off switches for features
+    $scope.hideSalaryData = false;
+
+    UserService.getCurrentRoleCompleteFeatureStatus().then(function(allFeatureStatus) {
+        $scope.hideSalaryData = allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.HideSalaryData);
+    });
 
     var compId = $stateParams.company_id;
     var employeeId = $stateParams.eid;
@@ -2344,7 +2359,8 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
     'users',
     'CompanyEmployeeSummaryService',
     'CompanyFeatureService',
-    function($scope, $state, $stateParams, UploadService, users, CompanyEmployeeSummaryService, CompanyFeatureService){
+    'UserService',
+    function($scope, $state, $stateParams, UploadService, users, CompanyEmployeeSummaryService, CompanyFeatureService, UserService){
       $scope.compId = $stateParams.company_id;
       $scope.uploads = [];
       UploadService.getEmployeeUploads($scope.compId, $stateParams.employee_id)
@@ -2358,7 +2374,7 @@ var employerViewEmployeeFiles = employersController.controller('employerViewEmpl
         $scope.employee = resp.user;
       });
 
-      CompanyFeatureService.getAllApplicationFeatureStatusByCompany($scope.compId).then(function(allFeatureStatus) {
+      UserService.getCurrentRoleCompleteFeatureStatus().then(function(allFeatureStatus) {
         $scope.allFeatureStatus = allFeatureStatus;
       });
 

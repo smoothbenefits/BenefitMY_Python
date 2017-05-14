@@ -5,6 +5,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   'ProjectService',
   'UsStateService',
   'PersonService',
+  'UserService',
   'CompensationService',
   'utilityService',
   'CompanyFeatureService',
@@ -19,6 +20,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     ProjectService,
     UsStateService,
     PersonService,
+    UserService,
     CompensationService,
     utilityService,
     CompanyFeatureService,
@@ -34,7 +36,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
     $scope.allStates = UsStateService.GetAllStates();
 
-    CompanyFeatureService.getAllApplicationFeatureStatusByCompany(companyId)
+    UserService.getCurrentRoleCompleteFeatureStatus()
     .then(function(allFeatureStatus) {
       $scope.allFeatureStatus = allFeatureStatus;
     });

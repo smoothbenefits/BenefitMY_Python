@@ -6,7 +6,15 @@ benefitmyService.factory('UserService',
    'users',
    '$location',
    '$q',
-  function (currentUser, clientListRepository, users, $location, $q){
+   'CompanyFeatureService',
+  function (
+    currentUser,
+    clientListRepository,
+    users,
+    $location,
+    $q,
+    CompanyFeatureService){
+
     var getCurRoleFromPath = function(){
         var curPath = $location.path();
         if(curPath[0] === '/'){
@@ -91,10 +99,19 @@ benefitmyService.factory('UserService',
         return deferred.promise;
     };
 
+    var getCurrentRoleCompleteFeatureStatus = function() {
+        return getCurUserInfo().then(function(userInfo) {
+            var userId = userInfo.user.id;
+            var companyId = userInfo.currentRole.company.id;
+            return CompanyFeatureService.getAllApplicationFeatureStatusByCompanyUser(companyId, userId);
+        });
+    };
+
     return {
       getCurUserInfo: getCurUserInfo,
       getCurrentRole: getCurRoleFromPath,
       isCurrentUserNewEmployee: isCurrentUserNewEmployee,
-      getUserDataByUserId: getUserDataByUserId
+      getUserDataByUserId: getUserDataByUserId,
+      getCurrentRoleCompleteFeatureStatus: getCurrentRoleCompleteFeatureStatus
     };
 }]);

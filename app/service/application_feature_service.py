@@ -5,10 +5,17 @@ from django.contrib.auth import get_user_model
 from app.models.company_user import CompanyUser, USER_TYPE_ADMIN, USER_TYPE_BROKER
 from app.models.company_features import CompanyFeatures
 from app.models.company import Company
+from app.models.company_user_features import CompanyUserFeatures
 
 User = get_user_model()
 
 # List of features
+
+## -- Internal use only
+APP_FEATURE_INTERNAL_TESTDEFAULTON = 'Internal_TestDefaultOn'
+APP_FEATURE_INTERNAL_TESTDEFAULTOFF = 'Internal_TestDefaultOff'
+
+## -- Public use
 APP_FEATURE_FSA = 'FSA'
 APP_FEATURE_DD = 'DD'
 APP_FEATURE_MEDICALBENEFIT = 'MedicalBenefit'
@@ -33,9 +40,11 @@ APP_FEATURE_RANGEDTIMECARD = 'RangedTimeCard'
 APP_FEATURE_PROJECTMANAGEMENT = 'ProjectManagement'
 APP_FEATURE_MOBILEPROJECTMANAGEMENT = 'MobileProjectManagement'
 APP_FEATURE_SHOWDISABLEDFEATURESFOREMPLOYER = 'ShowDisabledFeaturesForEmployer'
+APP_FEATURE_HIDESALARYDATA = 'HideSalaryData'
 
 # Feature categorization by expected default behavior
 APP_FEATURES_DEFAULT_ENABLED = [
+    APP_FEATURE_INTERNAL_TESTDEFAULTON,
     APP_FEATURE_RANGEDTIMECARD,
     APP_FEATURE_MOBILEPROJECTMANAGEMENT,
     APP_FEATURE_FSA,
@@ -59,10 +68,12 @@ APP_FEATURES_DEFAULT_ENABLED = [
 ]
 
 APP_FEATURES_DEFAULT_DISABLED = [
+    APP_FEATURE_INTERNAL_TESTDEFAULTOFF,
     APP_FEATURE_BENEFITSFORFULLTIMEONLY,
     APP_FEATURE_WORKTIMESHEETNOTIFICATION,
     APP_FEATURE_WORKTIMESHEET,
-    APP_FEATURE_PROJECTMANAGEMENT
+    APP_FEATURE_PROJECTMANAGEMENT,
+    APP_FEATURE_HIDESALARYDATA
 ]
 
 
@@ -117,5 +128,16 @@ class ApplicationFeatureService(object):
         company_features = CompanyFeatures.objects.filter(company=company_id)
         for company_feature in company_features:
             result[company_feature.company_feature.feature] = company_feature.feature_status
+
+        return result
+
+    def get_complete_application_feature_status_by_company_user(self, company_id, user_id):
+        # Use the company feature statuses as the starting point
+        # and then take in the per-user overrides
+        result = self.get_complete_application_feature_status_by_company(company_id)
+
+        company_user_features = CompanyUserFeatures.objects.filter(company_user__company=company_id, company_user__user=user_id)
+        for company_user_feature in company_user_features:
+            result[company_user_feature.feature.feature] = company_user_feature.feature_status
 
         return result

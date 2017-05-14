@@ -44,7 +44,7 @@
       <div class="col-xs-6"><a ng-click="viewTimeOffQuota()">Quota</a></div>
     </div>
   </div><!-- / .dashboard-card -->
-  <div class="dashboard-card" ng-show="payrollServiceEnabled()">
+  <div class="dashboard-card" ng-if="payrollServiceEnabled()">
     <div class="info-row">
       <div class="col-xs-4 img-col"><span class="flaticon-pie52"></span></div>
       <div class="col-xs-8 info-col">

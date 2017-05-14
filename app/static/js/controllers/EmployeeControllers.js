@@ -466,12 +466,12 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
              tabLayoutGlobalConfig,
              UserService,
              CompanyFeatureService){
-    var companyFeaturesPromise = UserService.getCurUserInfo().then(function(userInfo) {
+    var companyFeaturesPromise = UserService.getCurrentRoleCompleteFeatureStatus().then(function(userInfo) {
         var company = userInfo.currentRole.company;
         return CompanyFeatureService.getAllApplicationFeatureStatusByCompany(company.id);
     });
 
-    companyFeaturesPromise.then(function(allFeatureStatus) {
+    UserService.getCurrentRoleCompleteFeatureStatus().then(function(allFeatureStatus) {
         UserService.isCurrentUserNewEmployee().then(
             function(isNewEmployee) {
                 var section = _.findWhere(tabLayoutGlobalConfig, { section_name: 'employee_onboard'});
@@ -1737,6 +1737,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
    'SupplementalLifeInsuranceService',
    'SupplementalLifeInsuranceConditionService',
    'PersonService',
+   'UserService',
    'CompanyFeatureService',
     function supplementalLifeBenefitsSignup(
       $scope,
@@ -1748,6 +1749,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
       SupplementalLifeInsuranceService,
       SupplementalLifeInsuranceConditionService,
       PersonService,
+      UserService,
       CompanyFeatureService){
 
         // Inherite scope from base
@@ -1817,7 +1819,7 @@ var supplementalLifeBenefitsSignup = employeeControllers.controller(
                     && $scope.supplementalLifeInsurancePlan.spousePlanCondition.name === 'Tobacco';
             });
 
-            CompanyFeatureService.getAllApplicationFeatureStatusByCompany(company.id).then(function(allFeatureStatus) {
+            UserService.getCurrentRoleCompleteFeatureStatus().then(function(allFeatureStatus) {
                 $scope.allFeatureStatus = allFeatureStatus;
             });
           });

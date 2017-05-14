@@ -5,11 +5,13 @@ benefitmyService.factory('EmployeeBenefitsAvailabilityService',
    'EmployeeProfileService',
    'CompanyBenefitAvailabilityService',
    'CompanyFeatureService',
+   'UserService',
    function EmployeeBenefitsAvailabilityService(
      $q,
      EmployeeProfileService,
      CompanyBenefitAvailabilityService,
-     CompanyFeatureService){
+     CompanyFeatureService,
+     UserService){
 
      var getEmployeeAvailableBenefits = function(companyId, userId){
         var deferred = $q.defer();
@@ -17,7 +19,7 @@ benefitmyService.factory('EmployeeBenefitsAvailabilityService',
         EmployeeProfileService.getEmployeeProfileForCompanyUser(companyId, userId)
         .then(function(employeeProfile){
             var isFullTime = EmployeeProfileService.isFullTimeEmploymentType(employeeProfile);
-            CompanyFeatureService.getAllApplicationFeatureStatusByCompany(companyId)
+            UserService.getCurrentRoleCompleteFeatureStatus()
             .then(function(allFeatureStatus){  
                 if(isFullTime || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.BenefitsForFullTimeOnly)){
                     CompanyBenefitAvailabilityService.getBenefitAvailabilityForUser(companyId, userId)

@@ -623,6 +623,14 @@ benefitmyDomainModelFactories.factory('CompanyFeatureRepository', ['$resource',
   }
 ]);
 
+benefitmyDomainModelFactories.factory('CompanyUserFeatureRepository', ['$resource',
+  function($resource) {
+    return {
+      AllApplicationFeatureStatusByCompanyUser: $resource(PREFIX + 'all_company_user_features/:companyId/:userId/', {companyId: '@company_id', userId: '@user_id'})
+    };
+  }
+]);
+
 benefitmyDomainModelFactories.factory('BenefitPolicyKeyRepository', ['$resource',
   function($resource){
     return $resource('/api/v1/benefit_policy_keys');

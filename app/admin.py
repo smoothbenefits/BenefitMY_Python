@@ -12,6 +12,7 @@ from app.models import (
     SysPeriodDefinition,
     SysApplicationFeature,
     CompanyFeatures,
+    CompanyUserFeatures,
     IntegrationProvider,
     CompanyIntegrationProvider
 )
@@ -109,6 +110,10 @@ class CompanyFeatureAdmin(admin.ModelAdmin):
     list_display = ('company', 'company_feature', 'feature_status')
     fields = ['company', 'company_feature', 'feature_status']
 
+class CompanyUserFeatureAdmin(admin.ModelAdmin):
+    list_display=('company_user','feature', 'feature_status')
+    fields=['company_user', 'feature', 'feature_status']
+
 class SysPeriodDefinitionAdmin(admin.ModelAdmin):
     list_display = ('name', 'month_factor')
     fields = ['name', 'month_factor']
@@ -134,10 +139,8 @@ class CompanyIntegrationProviderAdmin(admin.ModelAdmin):
     fields=['company', 'integration_provider', 'company_external_id', 'employee_external_id_seed']
 
 class CompanyUserIntegrationProviderAdmin(admin.ModelAdmin):
-    list_display=('company_user', 'company', 'integration_provider', 'company_user_external_id')
+    list_display=('company_user', 'integration_provider', 'company_user_external_id')
     fields=['company_user', 'integration_provider', 'company_user_external_id']
-    def company(self, obj):
-        return obj.company_user.company
 
 # Now register the new UserAdmin...
 admin.site.register(AuthUser, AuthUserAdmin)
@@ -145,6 +148,7 @@ admin.site.register(Company, CompanyAdmin)
 admin.site.register(CompanyUser, CompanyUserAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(CompanyFeatures, CompanyFeatureAdmin)
+admin.site.register(CompanyUserFeatures, CompanyUserFeatureAdmin)
 admin.site.register(SysPeriodDefinition, SysPeriodDefinitionAdmin)
 admin.site.register(SysApplicationFeature, SysApplicationFeatureAdmin)
 admin.site.register(EmailBlockList, EmailBlockListAdmin)

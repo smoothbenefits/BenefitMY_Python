@@ -1,0 +1,29 @@
+[
+  {
+    "fields": {
+      "feature_status": false,
+      "company_user": 2,
+      "feature": 10001
+    },
+    "model": "app.companyuserfeatures",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "feature_status": true,
+      "company_user": 3,
+      "feature": 10002
+    },
+    "model": "app.companyuserfeatures",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "feature_status": true,
+      "company_user": 3,
+      "feature": 10001
+    },
+    "model": "app.companyuserfeatures",
+    "pk": 3
+  }
+]

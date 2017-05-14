@@ -159,5 +159,19 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 22
+  }, 
+  {
+    "fields": {
+      "feature": "Internal_TestDefaultOn"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 10001
+  },
+  {
+    "fields": {
+      "feature": "Internal_TestDefaultOff"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 10002
   }
 ]
