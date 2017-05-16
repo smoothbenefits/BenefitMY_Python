@@ -41,12 +41,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cid.middleware.CidMiddleware',
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
     'app.middlewares.logging_middleware.LoggingMiddleware',
     'app.middlewares.cors_middleware.CorsMiddleware',
     'reversion.middleware.RevisionMiddleware',
 )
-
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
