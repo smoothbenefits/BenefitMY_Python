@@ -31,3 +31,4 @@ python-dateutil==2.5.3
 pypdf==1.13
 cairocffi==0.6
 cairosvg==1.0.19
+boto3==1.4.0

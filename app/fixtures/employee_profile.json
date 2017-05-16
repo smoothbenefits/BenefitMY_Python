@@ -31,7 +31,9 @@
       "company": 1,
       "annual_base_salary": "110000.00",
       "employment_type": "FullTime",
-      "manager": null
+      "manager": null,
+      "pin": "1234",
+      "photo_url": "https://www.google.com/"
     },
     "model": "app.employeeprofile",
     "pk": 2

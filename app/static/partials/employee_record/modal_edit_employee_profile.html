@@ -80,6 +80,15 @@
         </div>
       </div>
       <div class="row">
+        <div class="form-label">PIN Number</div>
+        <div class="textbox">
+          <input type="text"
+          name="pin-number"
+          ng-model="employeeProfileModel.pin"
+          ng-required="false" />
+        </div>
+      </div>
+      <div class="row">
         <div class="form-label">Employment Start Date (m/d/yyyy)</div>
         <div class="datebox">
           <bm-date-picker model="employeeProfileModel.startDate"

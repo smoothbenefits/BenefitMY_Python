@@ -13,6 +13,7 @@ User = get_user_model()
 
 
 class PersonView(APIView):
+
     def get_object(self, pk):
         try:
             return Person.objects.get(pk=pk)
@@ -26,6 +27,7 @@ class PersonView(APIView):
 
     def put(self, request, pk, format=None):
         person = self.get_object(pk)
+        
         serializer = PersonFullPostSerializer(person, data=request.DATA)
         if serializer.is_valid():
             serializer.save()
@@ -38,7 +40,6 @@ class PersonView(APIView):
 
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def delete(self, request, pk, format=None):
         person = self.get_object(pk)

@@ -13,6 +13,7 @@ from app.models.employee_profile import EmployeeProfile
 from app.views.util_view import onboard_email
 from app.service.user_document_generator import UserDocumentGenerator
 from app.service.employee_organization_service import EmployeeOrganizationService
+from app.service.employee_pin_service import EmployeePinService
 from app.dtos.issue import Issue
 from app.dtos.operation_result import OperationResult
 from app.dtos.employee_organization.employee_organization_setup_data \
@@ -388,11 +389,17 @@ class AccountCreationService(object):
         # Create the employee profile
         key_service = HashKeyService()
         person_id = key_service.decode_key(person_serializer.data['id'])
+        pin = account_info.pin
+        pinService = EmployeePinService()
+        if not pin:
+            pin = pinService.get_company_wide_unique_pin(account_info.company_id, user.id)
+
         profile_data = {
             'person': person_id,
             'company': account_info.company_id,
             'start_date': account_info.start_date,
             'benefit_start_date': account_info.benefit_start_date,
+            'pin': pin
         }
 
         if (account_info.compensation_info.annual_base_salary is not None):

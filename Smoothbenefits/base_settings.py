@@ -27,6 +27,9 @@ HASH_KEY = '5e14ca8a-4a48-4cf7-aa3b-e207eb1a9adb'
 # Default password for initial user account setup
 DEFAULT_USER_PW = 'd4gf6u0hhfg48ds321cdsf'
 
+# Global rekognition confidence threshold
+GLOBAL_REKOGNITION_THRESHOLD = 60
+
 # Whether debug logging should also output to console
 LOG_TO_CONSOLE = False
 
@@ -60,6 +63,9 @@ INSTALLED_APPS = (
     'django_cron',
     'cid',
 )
+
+# AWS settings
+DEFAULT_AWS_REGION = 'us-west-2'
 
 CID_GENERATE = True
 
@@ -107,6 +113,7 @@ MIDDLEWARE_CLASSES = (
     'cid.middleware.CidMiddleware',
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
     'app.middlewares.logging_middleware.LoggingMiddleware',
+    'app.middlewares.cors_middleware.CorsMiddleware',
     'reversion.middleware.RevisionMiddleware',
 )
 
@@ -352,6 +359,7 @@ PIPELINE_JS = {
             'js/services/ProjectService.js',
             'js/services/TimePunchCardService.js',
             'js/services/common/DateTimeService.js',
+            'js/services/common/NumberService.js',
             'js/services/OpenEnrollmentDefinitionService.js',
             'js/services/IntegrationProviderService.js',
             'js/services/payroll_integration/AdvantagePayrollService.js'

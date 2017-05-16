@@ -11,6 +11,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   'punchCard',
   'adminView',
   'companyId',
+  'TimePunchCardDetectionConfigurations',
   function(
     $scope,
     $modalInstance,
@@ -23,7 +24,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     CompanyFeatureService,
     punchCard,
     adminView,
-    companyId){
+    companyId,
+    TimePunchCardDetectionConfigurations){
     $scope.headerText = punchCard ? 'Edit Punch Card' : 'Create Punch Card';
 
     $scope.punchCard = punchCard;
@@ -66,6 +68,40 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
           }
         });
       });
+    }
+
+    $scope.isLowConfidenceDetected = function() {
+      var confidence = 0;
+
+      if ($scope.hasAssets($scope.punchCard.checkInAssets)) {
+        confidence = $scope.punchCard.checkInAssets.imageDetectionAsset.confidence;
+      }
+
+      if ($scope.hasAssets($scope.punchCard.checkOutAssets)) {
+        var checkOutConfidence = $scope.punchCard.checkOutAssets.imageDetectionAsset.confidence;
+        if (checkOutConfidence < confidence) {
+          confidence = checkOutConfidence;
+        }
+      }
+
+      return TimePunchCardDetectionConfigurations.imageDetectionConfidenceThreshold >= confidence;
+    };
+
+    $scope.hasAssets = function (assets) {
+      return assets && assets.imageDetectionAsset;
+    };
+
+    $scope.hasPunchCardAssets = function() {
+      return $scope.hasAssets($scope.punchCard.checkInAssets) ||
+             $scope.hasAssets($scope.punchCard.checkOutAssets);
+    };
+
+    $scope.getRealTimeImageAssetUrl = function(assets) {
+      if (!$scope.hasAssets(assets)){
+        return '';
+      }
+
+      return assets.imageDetectionAsset.realTimeImageAsset.url;
     }
 
     var isAttributeVisible = function(attribute) {
@@ -131,12 +167,14 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     '$modal',
     '$controller',
     'TimePunchCardService',
+    'TimePunchCardDetectionConfigurations',
     function TimePunchCardWeekDirectiveController(
       $scope,
       $attrs,
       $modal,
       $controller,
-      TimePunchCardService) {
+      TimePunchCardService,
+      TimePunchCardDetectionConfigurations) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -231,6 +269,29 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         $scope.isAttributeVisible = function(attribute) {
             return (!attribute.type.adminOnly || $scope.adminMode)
                 && attribute.value;
+        };
+
+        $scope.attentionNeeded = function(punchCard) {
+
+            var threshold = TimePunchCardDetectionConfigurations.imageDetectionConfidenceThreshold;
+
+            // Examine check in assets
+            if (punchCard.checkInAssets && punchCard.checkInAssets.imageDetectionAsset) {
+                var confidence = punchCard.checkInAssets.imageDetectionAsset.confidence;
+                if (confidence && confidence <= threshold) {
+                    return true;
+                }
+            }
+
+            // Examine check out assets
+            if (punchCard.checkOutAssets && punchCard.checkOutAssets.imageDetectionAsset) {
+                var confidence = punchCard.checkOutAssets.imageDetectionAsset.confidence;
+                if (confidence && confidence <= threshold) {
+                    return true;
+                }
+            }
+
+            return false;
         };
     }
   ]
