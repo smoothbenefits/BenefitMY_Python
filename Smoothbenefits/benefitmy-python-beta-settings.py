@@ -42,6 +42,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
+    'app.middlewares.logging_middleware.LoggingMiddleware',
+    'app.middlewares.cors_middleware.CorsMiddleware',
     'reversion.middleware.RevisionMiddleware',
 )
 
