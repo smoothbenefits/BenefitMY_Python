@@ -33,9 +33,9 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(employee_profile['company'], self.normalize_key(1))
         self.assertIsNotNone(employee_profile['manager'])
         manager = employee_profile['manager']
-        self.assertEqual(manager['id'], self.normalize_key(2))
-        self.assertEqual(manager['first_name'], 'Christina')
-        self.assertEqual(manager['last_name'], 'Cowell')
+        self.assertEqual(manager['id'], self.normalize_key(3))
+        self.assertEqual(manager['first_name'], 'Lebron')
+        self.assertEqual(manager['last_name'], 'James')
 
     def test_get_employee_profile_by_person_company_success(self):
         response = self.client.get(reverse('employee_profile_by_person_company_api',
@@ -56,9 +56,9 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(employee_profile['company'], self.normalize_key(1))
         self.assertIsNotNone(employee_profile['manager'])
         manager = employee_profile['manager']
-        self.assertEqual(manager['id'], self.normalize_key(2))
-        self.assertEqual(manager['first_name'], 'Christina')
-        self.assertEqual(manager['last_name'], 'Cowell')
+        self.assertEqual(manager['id'], self.normalize_key(3))
+        self.assertEqual(manager['first_name'], 'Lebron')
+        self.assertEqual(manager['last_name'], 'James')
 
     def test_get_employee_profile_by_company_user_success(self):
         response = self.client.get(reverse('employee_profile_by_company_user_api',
@@ -79,9 +79,9 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(employee_profile['company'], self.normalize_key(1))
         self.assertIsNotNone(employee_profile['manager'])
         manager = employee_profile['manager']
-        self.assertEqual(manager['id'], self.normalize_key(2))
-        self.assertEqual(manager['first_name'], 'Christina')
-        self.assertEqual(manager['last_name'], 'Cowell')
+        self.assertEqual(manager['id'], self.normalize_key(3))
+        self.assertEqual(manager['first_name'], 'Lebron')
+        self.assertEqual(manager['last_name'], 'James')
 
     def test_get_employee_profile_non_exist(self):
         response = self.client.get(reverse('employee_profile_api',
