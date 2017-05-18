@@ -2333,8 +2333,14 @@ var employerViewReports = employersController.controller('employerViewReports',
   ['$scope',
   '$state',
   'UserService',
+  'CompanyFeatureService',
   'CompanyEmployeeSummaryService',
-  function($scope, $state, UserService, CompanyEmployeeSummaryService) {
+  function(
+    $scope,
+    $state,
+    UserService,
+    CompanyFeatureService,
+    CompanyEmployeeSummaryService) {
     UserService.getCurUserInfo()
     .then(function(curUserInfo){
       var company = curUserInfo.currentRole.company;
@@ -2345,6 +2351,22 @@ var employerViewReports = employersController.controller('employerViewReports',
       $scope.exportCompanyEmployeeSummaryPdfUrl = CompanyEmployeeSummaryService.getCompanyEmployeeSummaryPdfUrl(company.id);
       $scope.companyHphcExcelUrl = CompanyEmployeeSummaryService.getCompanyHphcExcelUrl(company.id);
     });
+
+    UserService.getCurrentRoleCompleteFeatureStatus().then(function(allFeatureStatus) {
+        $scope.allFeatureStatus = allFeatureStatus;
+    });
+
+    $scope.companyEmployeeSummaryEnabled = function() {
+        // First, check whether the current user needs to 
+        // have salary data hidden
+        if ($scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.HideSalaryData)) {
+            return false;
+        }
+
+        return $scope.exportCompanyEmployeeSummaryUrl;
+    };
+
     $scope.backToDashboard = function(){
       $state.go('/admin');
     };
