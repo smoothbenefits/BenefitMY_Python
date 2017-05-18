@@ -136,7 +136,7 @@ var userController = userControllers.controller('userController',
       $scope.companyName = userInfo.currentRole.company.name;
       $scope.company_id = userInfo.currentRole.company.id;
 
-      CompanyFeatureService.getAllApplicationFeatureStatusByCompany($scope.company_id)
+      CompanyFeatureService.getAllApplicationFeatureStatusByCompanyUser($scope.company_id, $scope.curUser.id)
       .then(function(allFeatureStatus) {
         $scope.allFeatureStatus = allFeatureStatus;
       });

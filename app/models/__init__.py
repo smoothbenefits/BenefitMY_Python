@@ -70,6 +70,7 @@ from hsa.company_group_hsa_plan import CompanyGroupHsaPlan
 from hsa.person_company_group_hsa_plan import PersonCompanyGroupHsaPlan
 
 from company_features import CompanyFeatures
+from company_user_features import CompanyUserFeatures
 from company_group import CompanyGroup
 from company_group_member import CompanyGroupMember
 from upload import Upload
