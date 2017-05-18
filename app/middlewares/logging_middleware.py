@@ -56,6 +56,4 @@ class LoggingMiddleware(object):
         }
         if hasattr(request, 'correlation_id'):
             record['correlation_id'] = request.correlation_id
-        else:
-            self.log.info(request)
         return json.dumps(record)
