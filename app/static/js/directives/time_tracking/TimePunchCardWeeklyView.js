@@ -122,6 +122,13 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     };
 
     $scope.isHourlyRateAttributeVisisble = function() {
+        // First, check whether the current user needs to 
+        // have salary data hidden
+        if ($scope.allFeatureStatus
+            && $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.HideSalaryData)) {
+            return false;
+        }
+
         return $scope.punchCard.recordType
             && isAttributeVisible(punchCard.attributes.hourlyRate);
     };
