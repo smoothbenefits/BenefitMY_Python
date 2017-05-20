@@ -12,6 +12,7 @@ var employeeHome = employeeControllers.controller('employeeHome',
    'DirectDepositService',
    'DocumentService',
    'CompanyFeatureService',
+   'CompanyPersonnelsService',
   function ($scope,
             $location,
             $state,
@@ -22,7 +23,8 @@ var employeeHome = employeeControllers.controller('employeeHome',
             EmploymentProfileService,
             DirectDepositService,
             DocumentService,
-            CompanyFeatureService){
+            CompanyFeatureService,
+            CompanyPersonnelsService){
     $('body').removeClass('onboarding-page');
 
     var curUserId;
@@ -49,6 +51,12 @@ var employeeHome = employeeControllers.controller('employeeHome',
           $state.go('settings', {user_id: $scope.employee_id, onboard:1});
         });
       }
+      CompanyPersonnelsService.getEmployeeDirectReportCount(
+        $scope.company.id,
+        $scope.employee_id
+      ).then(function(count){
+        $scope.directReportCount = count;
+      });
       return response;
     });
 
@@ -130,6 +138,18 @@ var employeeHome = employeeControllers.controller('employeeHome',
         return $scope.allFeatureStatus 
             && $scope.allFeatureStatus.isFeatureEnabled(
                 CompanyFeatureService.AppFeatureNames.RangedTimeCard);
+    };
+
+    $scope.showDirectReports = function(){
+      return $scope.allFeatureStatus &&
+        $scope.allFeatureStatus.isFeatureEnabled(
+          CompanyFeatureService.AppFeatureNames.DirectReportsView
+        ) &&
+        $scope.directReportCount > 0;
+    };
+
+    $scope.viewDirectReports = function(){
+      $state.go('employee_direct_reports_view');
     };
 
     $scope.viewTimePunchCards = function() {
@@ -2625,3 +2645,23 @@ var employeeManageTimePunchCardController = employeeControllers.controller('empl
      };
    }
 ]);
+
+var directReportsViewController = employeeControllers.controller('directReportsViewController', [
+    '$scope',
+    '$state',
+    'UserService',
+    function($scope, $state, UserService){
+      UserService.getCurUserInfo().then(function(curUserInfo){
+        $scope.user = curUserInfo.user;
+        $scope.role = curUserInfo.currentRole.company_user_type.capitalize();
+        $scope.company = curUserInfo.currentRole.company;
+      });
+
+      $scope.backToDashboard = function(){
+        $state.go('/employee');
+      };
+    }
+]);
+
+
+
