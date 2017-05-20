@@ -110,5 +110,21 @@
     },
     "model": "app.authuser",
     "pk": 7
+  },
+  {
+    "fields": {
+      "first_name": "Lebron",
+      "last_name": "James",
+      "last_updated": "2016-03-24T16:22:53.911Z",
+      "is_active": true,
+      "is_superuser": false,
+      "is_admin": false,
+      "date_created": "2016-03-24T16:15:13.441Z",
+      "last_login": "2016-03-24T16:21:37.412Z",
+      "password": "pbkdf2_sha256$12000$bj4e47R3rFGR$/KTMm9O5igIZKoUqKM5GIPeJzIf95x8BSjGQxCxv520=",
+      "email": "user5@benefitmy.com"
+    },
+    "model": "app.authuser",
+    "pk": 8
   }
 ]

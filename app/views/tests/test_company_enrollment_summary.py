@@ -42,7 +42,7 @@ class CompanyEnrollmentSummaryTestCase(TestCase, ViewTestBase):
         self.assertEqual(completed[0]['id'], self.normalize_key(3))
 
         totalCount = summary['totalEmployeeCount']
-        self.assertEqual(totalCount, 2)
+        self.assertEqual(totalCount, 3)
         
     def test_get_company_enrollment_summary_company_non_existent(self):
 
