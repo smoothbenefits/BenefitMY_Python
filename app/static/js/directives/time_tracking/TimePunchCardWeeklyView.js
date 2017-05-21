@@ -122,7 +122,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     };
 
     $scope.isHourlyRateAttributeVisisble = function() {
-        // First, check whether the current user needs to 
+        // First, check whether the current user needs to
         // have salary data hidden
         if ($scope.allFeatureStatus
             && $scope.allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.HideSalaryData)) {
@@ -287,7 +287,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             // Examine check in assets
             if (punchCard.checkInAssets && punchCard.checkInAssets.imageDetectionAsset) {
                 var confidence = punchCard.checkInAssets.imageDetectionAsset.confidence;
-                if (confidence && confidence <= threshold) {
+                if (!confidence || confidence <= threshold) {
                     return true;
                 }
             }
@@ -295,7 +295,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             // Examine check out assets
             if (punchCard.checkOutAssets && punchCard.checkOutAssets.imageDetectionAsset) {
                 var confidence = punchCard.checkOutAssets.imageDetectionAsset.confidence;
-                if (confidence && confidence <= threshold) {
+                if (!confidence || confidence <= threshold) {
                     return true;
                 }
             }
