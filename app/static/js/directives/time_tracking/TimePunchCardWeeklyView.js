@@ -121,7 +121,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             && $scope.punchCard.recordType.behavior.timeRangeOn;
     };
 
-    $scope.isHourlyRateAttributeVisisble = function() {
+    $scope.isHourlyRateAttributeVisible = function() {
         // First, check whether the current user needs to
         // have salary data hidden
         if ($scope.allFeatureStatus
