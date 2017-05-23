@@ -849,3 +849,24 @@ benefitmyDomainModelFactories.factory('IntegrationProvideRepository', ['$resourc
     }
   }
 ]);
+
+benefitmyDomainModelFactories.factory('DirectReportsRepository', ['$resource',
+  function($resource){
+    return{
+      ByManager: $resource(
+        PREFIX + 'companies/:companyId/users/:userId/direct_reports',
+        {
+          companyId: '@companyId',
+          userId: '@userId'
+        }
+      ),
+      DirectReportCount: $resource(
+        PREFIX + 'companies/:companyId/users/:userId/direct_report_count',
+        {
+          companyId: '@companyId',
+          userId: '@userId'
+        }
+      )
+    }
+  }
+]);

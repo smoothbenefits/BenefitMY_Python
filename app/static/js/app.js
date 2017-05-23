@@ -660,6 +660,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/time_punch_card/time_punch_card_base.html',
                 controller: 'employeeManageTimePunchCardController'
             }).
+            state('employee_direct_reports_view', {
+              url: '/employee/direct_reports',
+              templateUrl: '/static/partials/view_direct_reports.html',
+              controller: 'directReportsViewController'
+            }).
             state('appSupport', {
                 url: '/support',
                 templateUrl: '/static/partials/help_center/app_help.html',

@@ -240,7 +240,7 @@ from app.views.employee_organization.batch_employee_organization_import_view \
     import BatchEmployeeOrganizationImportView
 
 from app.views.employee_management.employee_termination_view import EmployeeTerminationView
-from app.views.employee_management.reporting_structure_view import DirectReportsView
+from app.views.employee_management.reporting_structure_view import DirectReportsView, DirectReportCountView
 
 from app.views.user_data_change_email_view import UserDataChangeEmailView
 
@@ -342,6 +342,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/?$' % PREFIX, CompanyView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/users/?$' % PREFIX, CompanyUserView.as_view(), name='company_users_api'),
     url(r'^%s/companies/(?P<comp_id>\w+)/users/(?P<user_id>\w+)/direct_reports/?$' % PREFIX, DirectReportsView.as_view(), name='direct_reports_api'),
+    url(r'^%s/companies/(?P<comp_id>\w+)/users/(?P<user_id>\w+)/direct_report_count/?$' % PREFIX, DirectReportCountView.as_view(), name='direct_report_count_api'),
     url(r'^%s/companies/(?P<pk>\w+)/documents/?$' % PREFIX, CompanyDocumentView.as_view()),
     url(r'^%s/companies/(?P<pk>\w+)/templates/?$' % PREFIX, CompanyTemplatesView.as_view()),
     url(r'^%s/company_employees_count/(?P<pk>\w+)/?$' % PREFIX, CompanyEmployeeCountView.as_view(), name='company_employee_count'),

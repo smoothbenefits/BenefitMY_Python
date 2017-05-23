@@ -31,6 +31,17 @@
           <div class="col-xs-12"><a ng-click="viewTimePunchCards()">View</a></div>
         </div>
       </div><!-- / .dashboard-card -->
+      <div class="dashboard-card" ng-if="showDirectReports()">
+        <div class="info-row">
+          <div class="col-xs-4 img-col"><span class="flaticon-star145"></span></div>
+          <div class="col-xs-8 info-col">
+            <h4>Direct Reports</h4>
+          </div>
+        </div>
+        <div class="action-row">
+          <div class="col-xs-12"><a ng-click="viewDirectReports()">View</a></div>
+        </div>
+      </div><!-- / .dashboard-card -->
   </div>
 
   <div ng-if="showBenefitSection()">

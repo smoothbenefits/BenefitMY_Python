@@ -17,3 +17,12 @@ class DirectReportsView(APIView):
         direct_reports = self._personnel_service.get_direct_report_company_users(comp_id, user_id)
         serializer = CompanyUserSerializer(direct_reports, many=True)
         return Response({'user_roles':serializer.data})
+
+
+class DirectReportCountView(APIView):
+
+    _personnel_service = CompanyPersonnelService()
+
+    def get(self, request, comp_id, user_id, format=None):
+        direct_reports_count = self._personnel_service.get_direct_report_count(comp_id, user_id)
+        return Response({'count': direct_reports_count})
