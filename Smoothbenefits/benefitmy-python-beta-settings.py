@@ -30,21 +30,7 @@ TEMPLATE_DEBUG = False
 
 # Application configurations
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-MIDDLEWARE_CLASSES = (
-    'sslify.middleware.SSLifyMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'app.middlewares.hash_pk_validation_middleware.HashPkValidationMiddleware',
-    'app.middlewares.logging_middleware.LoggingMiddleware',
-    'app.middlewares.cors_middleware.CorsMiddleware',
-    'reversion.middleware.RevisionMiddleware',
-)
-
+MIDDLEWARE_CLASSES = ('sslify.middleware.SSLifyMiddleware',) + MIDDLEWARE_CLASSES
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
