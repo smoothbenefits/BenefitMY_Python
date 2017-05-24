@@ -22,7 +22,9 @@ benefitmyService.factory('TimeOffService',
         // The enum listing out all supported timeoff accural
         // frequency.
         var AccrualFrequency = {
+            Annual: 'Annual',
             Monthly: 'Monthly',
+            Weekly: 'Weekly',
             Daily: 'Daily',
             Hourly: 'Hourly'
         };
@@ -52,7 +54,9 @@ benefitmyService.factory('TimeOffService',
         */
         var getAvailableAccrualFrequecy = function() {
             return [
+              AccrualFrequency.Annual,
               AccrualFrequency.Monthly,
+              AccrualFrequency.Weekly,
               AccrualFrequency.Daily,
               AccrualFrequency.Hourly
             ];
