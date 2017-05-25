@@ -52,6 +52,8 @@ class LoggingMiddleware(object):
             'path_info': request.path_info,
             'method': request.method,
             'query_string': request.META['QUERY_STRING'],
-            'correlation_id': request.correlation_id
+            'correlation_id': ''
         }
+        if hasattr(request, 'correlation_id'):
+            record['correlation_id'] = request.correlation_id
         return json.dumps(record)

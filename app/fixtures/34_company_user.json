@@ -58,5 +58,15 @@
     },
     "model": "app.companyuser",
     "pk": 6
+  },
+  {
+    "fields": {
+      "company": 1,
+      "new_employee": false,
+      "user": 8,
+      "company_user_type": "employee"
+    },
+    "model": "app.companyuser",
+    "pk": 7
   }
 ]

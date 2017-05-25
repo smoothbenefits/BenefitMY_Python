@@ -1,8 +1,6 @@
 """
 Configurations for Beta environment
 """
-import logging
-from logentries import LogentriesHandler
 from Smoothbenefits.base_settings import *
 
 # Environment Identification

@@ -49,26 +49,40 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
 
-        $scope.$watch('company', function(company) {
-          if(company){
-            // Configuration of the view window of weeks to include
-            var preWeeks = 10;
-            var postWeeks = 5;
+        $scope.$watch('company', function(watchedArray) {
+          // Configuration of the view window of weeks to include
+          var preWeeks = 10;
+          var postWeeks = 5;
 
-            // Populate the weeks for display
-            $scope.listOfWeeks = DateTimeService.GetListOfWeeks(preWeeks, postWeeks);
+          // Populate the weeks for display
+          $scope.listOfWeeks = DateTimeService.GetListOfWeeks(preWeeks, postWeeks);
 
-            $scope.selectedDisplayWeek = _.find($scope.listOfWeeks, function(weekItem) {
-                return weekItem.isCurrentWeek;
-            });
+          $scope.selectedDisplayWeek = _.find($scope.listOfWeeks, function(weekItem) {
+              return weekItem.isCurrentWeek;
+          });
 
-            $scope.reloadTimePunchCard();
-          }
+          $scope.reloadTimePunchCard();
+          
         });
 
-        $scope.reloadTimePunchCard = function() {
+        $scope.isAllCompanyView = function(){
+          return _.isUndefined($scope.manangerUser);
+        };
 
-          var employeePromise = CompanyPersonnelsService.getCompanyEmployees($scope.company.id);
+        $scope.reloadTimePunchCard = function() {
+          var employeePromise;
+          if($scope.company){
+            if($scope.isAllCompanyView()){
+              employeePromise = CompanyPersonnelsService.getCompanyEmployees($scope.company.id);
+            }
+            else{
+              employeePromise = CompanyPersonnelsService.getEmployeeDirectReports($scope.company.id, $scope.manangerUser.id);
+            }
+          }
+
+          if (!employeePromise){
+            return;
+          }
 
           TimePunchCardService.GetPunchCardsByCompanyTimeRange($scope.company.id, $scope.selectedDisplayWeek.weekStartDate, true)
           .then(function(companyPunchCardsByEmployee) {
@@ -86,6 +100,9 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
                 moment($scope.selectedDisplayWeek.weekStartDate).add(7, 'days')
               );
               _.each(employeeListBuilder.list, function(employee) {
+                if(!$scope.firstEmployee){
+                  $scope.firstEmployee = employee;
+                }
                 // Convert to environment aware user id for employee comparison
                 var envAwareUserId = utilityService.getEnvAwareId(employee.user.id);
 
@@ -119,6 +136,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
             });
           });
         };
+
 
         $scope.downloadWeeklyTimePunchCardReport = function() {
             var link = CompanyEmployeeSummaryService.getWeeklyTimePunchCardReportUrl(
@@ -157,9 +175,10 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
           });
         };
 
-        $scope.editIndividual = function(){
+        $scope.editIndividual = function(){  
           $state.go('admin_individual_timepunchcards',
             {
+              employee_id: $scope.firstEmployee.user.id,
               startDate: $scope.selectedDisplayWeek.weekStartDate
             }
           );
@@ -170,7 +189,8 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
   return {
     restrict: 'E',
     scope: {
-        company: '='
+        company: '=',
+        manangerUser: '='
     },
     templateUrl: '/static/partials/time_punch_card/directive_time_punch_card_admin.html',
     controller: 'TimePunchCardAdminController'
