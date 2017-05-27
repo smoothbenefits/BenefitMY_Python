@@ -96,7 +96,7 @@ SESSION_COOKIE_AGE = 8 * 60 * 60 #Set the expiry to 8 hrs for now.
 # Email
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'frank.qiu@gmail.com'
-EMAIL_HOST_PASSWORD = 'BenefitMy2015'
+EMAIL_HOST_PASSWORD = 'Shuibian2017'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
