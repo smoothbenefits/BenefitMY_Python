@@ -1971,9 +1971,9 @@ var employerAdminIndividualTimePunchCards = employersController.controller('empl
           });
         } else {
           CompanyPersonnelsService.getCompanyEmployees($scope.company.id)
-            .then(function(employees){
-              if(employees && employees.length > 0){
-                var employee = employees[0];
+            .then(function(employeeCollection){
+              if(employeeCollection.list && employeeCollection.list.length > 0){
+                var employee = employeeCollection.list[0];
                 $scope.user = employee.user;
                 $scope.pageTitle = 'Time punch cards for ' + $scope.user.first_name + ' ' + $scope.user.last_name;
               }

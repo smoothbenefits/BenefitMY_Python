@@ -1,8 +1,8 @@
 var benefitmyService = angular.module('benefitmyService');
 
 benefitmyService.factory('CompanyPersonnelsService',
-    ['$q', 'employerWorkerRepository', 'EmployeeProfileService',
-    function($q, employerWorkerRepository, EmployeeProfileService){
+    ['$q', 'employerWorkerRepository', 'DirectReportsRepository', 'EmployeeProfileService',
+    function($q, employerWorkerRepository, DirectReportsRepository, EmployeeProfileService){
         var initialized = false, personnels = [];
 
         var _mapEmployeeDomainDataToViewData = function(compRole){
@@ -196,8 +196,35 @@ benefitmyService.factory('CompanyPersonnelsService',
             }
         };
 
+        var getEmployeeDirectReports = function(companyId, manager_user_id){
+            return DirectReportsRepository.ByManager.get({
+                companyId: companyId,
+                userId: manager_user_id
+            }).$promise.then(function(response){
+                var directReports = []
+                _.each(response.user_roles, function(role){
+                  directReports.push(_mapEmployeeDomainDataToViewData(role));
+                });
+                return _constructEmployeeListWithProfile(
+                    directReports,
+                    companyId
+                );
+            });
+        };
+
+        var getEmployeeDirectReportCount = function(companyId, manager_user_id){
+            return DirectReportsRepository.DirectReportCount.get({
+                companyId: companyId,
+                userId: manager_user_id
+            }).$promise.then(function(response){
+                return response.count;
+            });
+        }
+
 
         return {
+            getEmployeeDirectReportCount: getEmployeeDirectReportCount,
+            getEmployeeDirectReports: getEmployeeDirectReports,
             getCompanyBrokers: getCompanyBrokers,
             getCompanyEmployees: getCompanyEmployees,
             clearCache: clearCache

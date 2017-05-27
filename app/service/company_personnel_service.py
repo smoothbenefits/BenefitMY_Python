@@ -4,6 +4,7 @@ from app.models.company_user import (
     CompanyUser,
     USER_TYPE_EMPLOYEE
 )
+from app.models.person import SELF
 from app.models.employee_profile import (
     EmployeeProfile,
     EMPLOYMENT_STATUS_ACTIVE,
@@ -152,3 +153,46 @@ class CompanyPersonnelService(object):
             return 
 
         input_list.append(value)
+
+
+    def _get_direct_report_profiles(self, company_id, manager_user_id):
+        if not company_id or not manager_user_id:
+            return []
+        try:
+            manager_employee_profile = EmployeeProfile.objects.get(
+                person__user=manager_user_id,
+                person__relationship=SELF,
+                company=company_id
+            )
+        except EmployeeProfile.DoesNotExist:
+            return []
+        direct_report_profiles = EmployeeProfile.objects.filter(
+            manager=manager_employee_profile,
+            employment_status = EMPLOYMENT_STATUS_ACTIVE,
+            company=company_id
+        )
+        return direct_report_profiles
+
+
+    ''' Get the list of direct report company_users from the input manager user.
+        Company_id must be provided to make sure the correct company data is queried.
+    '''
+    def get_direct_report_company_users(self, company_id, manager_user_id):
+        direct_report_profiles = self._get_direct_report_profiles(company_id, manager_user_id)
+        if not direct_report_profiles:
+            return []
+        direct_report_users = [profile.person.user for profile in direct_report_profiles]
+        return CompanyUser.objects.filter(
+            company=company_id,
+            company_user_type=USER_TYPE_EMPLOYEE,
+            user__in=direct_report_users
+        )
+
+    ''' Get the number of direct reports from the input manager user.
+        Company_id must be provided to make sure the correct company data is queried.
+    '''
+    def get_direct_report_count(self, company_id, manager_user_id):
+        direct_report_profiles = self._get_direct_report_profiles(company_id, manager_user_id)
+        if not direct_report_profiles:
+            return 0
+        return direct_report_profiles.count()

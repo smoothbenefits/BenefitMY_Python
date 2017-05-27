@@ -159,6 +159,14 @@
     },
     "model": "app.sysapplicationfeature",
     "pk": 22
+  },
+  {
+    "fields": {
+      "feature": "DirectReportsView"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 23
+
   }, 
   {
     "fields": {
