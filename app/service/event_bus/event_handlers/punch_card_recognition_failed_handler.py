@@ -27,7 +27,7 @@ class PunchCardRecognitionFailedHandler(EventHandlerBase):
         for comp_user in comp_users:
             admin_user = User.objects.get(pk=comp_user.user_id)
             admin_user_person = self._get_user_info_by_id(comp_user.user_id)
-            if admin_user_person:
+            if admin_user_person and admin_user_person.email:
                 admins.append(admin_user_person)
             else:
                 admins.append(admin_user)
