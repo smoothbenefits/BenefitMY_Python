@@ -21,4 +21,4 @@ class CompanyUserIntegrationProvider(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = (('company_user', 'integration_provider'), ('company_user_external_id', 'integration_provider'))
+        unique_together = (('company_user', 'integration_provider'),)
