@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import datetime
 import encrypted_fields.fields
+import django.db.models.deletion
 import django.utils.timezone
 from django.conf import settings
 import django.core.validators
@@ -11,10 +12,7 @@ import django.core.validators
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'app', '0001_initial'), (b'app', '0002_auto_20150425_0221'), (b'app', '0003_uploadapplicationfeature_uploadaudience'), (b'app', '0004_auto_20150428_0327'), (b'app', '0005_auto_20150430_1345'), (b'app', '0006_auto_20150501_0201'), (b'app', '0007_auto_20150502_0145'), (b'app', '0008_auto_20150503_0058'), (b'app', '0009_auto_20150505_0259'), (b'app', '0010_auto_20150508_0208'), (b'app', '0011_auto_20150509_1933'), (b'app', '0012_auto_20150510_0249'), (b'app', '0013_auto_20150512_1811'), (b'app', '0014_remove_supplementallifeinsuranceplanrate_condition'), (b'app', '0015_auto_20150513_0415'), (b'app', '0016_auto_20150517_0328'), (b'app', '0017_auto_20150521_0141'), (b'app', '0018_supplementallifeinsuranceplanrate_benefit_reduction_percentage'), (b'app', '0019_auto_20150525_0209'), (b'app', '0020_remove_upload_upload_type'), (b'app', '0021_auto_20150603_0125'), (b'app', '0022_benefitplan_mandatory_pcp'), (b'app', '0023_benefitplan_pcp_link'), (b'app', '0024_remove_usercompanybenefitplanoption_pcp'), (b'app', '0025_auto_20150612_0143'), (b'app', '0026_auto_20150620_0229'), (b'app', '0027_person_reason_for_change'), (b'app', '0028_benefitpolicykey_rank'), (b'app', '0029_auto_20150703_2352'), (b'app', '0030_sysbenefitupdatereasoncategory_rank'), (b'app', '0031_auto_20150716_1753'), (b'app', '0032_auto_20150718_0128'), (b'app', '0033_auto_20150721_0218'), (b'app', '0034_auto_20150730_0154'), (b'app', '0035_auto_20150731_0138'), (b'app', '0036_auto_20150802_0522'), (b'app', '0037_auto_20150805_0023'), (b'app', '0037_auto_20150804_0121'), (b'app', '0038_merge'), (b'app', '0039_auto_20150807_0216'), (b'app', '0040_auto_20150816_1815'), (b'app', '0041_auto_20150819_0259'), (b'app', '0042_company1095c'), (b'app', '0043_companyltdagebasedrate_companystdagebasedrate'), (b'app', '0043_auto_20150917_0138'), (b'app', '0044_merge'), (b'app', '0045_auto_20150919_1607'), (b'app', '0046_companycommuterplan_personcompanycommuterplan'), (b'app', '0047_auto_20150929_0219'), (b'app', '0048_employee1095c'), (b'app', '0049_employeeprofile_benefit_start_date'), (b'app', '0050_companyextrabenefitplan_extrabenefititem_personcompanyextrabenefitplan_personcompanyextrabenefitplan'), (b'app', '0051_remove_template_document_type'), (b'app', '0052_remove_document_document_type'), (b'app', '0053_company1094cmemberinfo_company1094cmonthlymemberinfo'), (b'app', '0054_auto_20151021_0212'), (b'app', '0055_auto_20151023_2310'), (b'app', '0056_auto_20151025_1330'), (b'app', '0057_auto_20151030_0007'), (b'app', '0058_auto_20151105_0157'), (b'app', '0059_auto_20151125_0013'), (b'app', '0060_auto_20151129_1754'), (b'app', '0061_companygroup'), (b'app', '0062_companygroupmember')]
-
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
@@ -192,7 +190,7 @@ class Migration(migrations.Migration):
             name='CompanyUser',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('company_user_type', models.TextField(choices=[(b'employee', b'employee'), (b'admin', b'admin'), (b'broker', b'broker'), (b'super', b'super')])),
+                ('company_user_type', models.TextField(db_index=True, choices=[(b'employee', b'employee'), (b'admin', b'admin'), (b'broker', b'broker'), (b'super', b'super')])),
                 ('new_employee', models.BooleanField(default=True)),
                 ('company', models.ForeignKey(to='app.Company')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
@@ -688,18 +686,6 @@ class Migration(migrations.Migration):
                 ('feature_id', models.IntegerField()),
                 ('application_feature', models.ForeignKey(related_name='upload_application_feature_app_feature', to='app.SysApplicationFeature')),
                 ('upload', models.ForeignKey(related_name='upload_application_feature_upload', to='app.Upload')),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='UploadAudience',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('company', models.ForeignKey(related_name='upload_audience_company', to='app.Company')),
-                ('upload', models.ForeignKey(related_name='upload_audience_upload', to='app.Upload')),
-                ('user_for', models.ForeignKey(related_name='upload_audience_user_for', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
             },
@@ -1552,7 +1538,7 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('company_commuter_plan', models.ForeignKey(related_name='person_company_commuter_plan', to='app.CompanyCommuterPlan')),
                 ('person', models.ForeignKey(related_name='person_company_commuter_plan', to='app.Person')),
-                ('monthly_amount_parking_post_tax', models.DecimalField(default=0, max_digits=20, decimal_places=10)),
+                ('monthly_amount_parking_post_tax', models.DecimalField(max_digits=20, decimal_places=10)),
             ],
             options={
             },
@@ -1731,5 +1717,462 @@ class Migration(migrations.Migration):
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyGroupBasicLifeInsurancePlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company_basic_life_insurance_plan', models.ForeignKey(related_name='company_group_basic_life_insurance', to='app.CompanyLifeInsurancePlan')),
+                ('company_group', models.ForeignKey(related_name='basic_life_insurance_plan', to='app.CompanyGroup')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyGroupSupplLifeInsurancePlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company_group', models.ForeignKey(related_name='suppl_life_insurance_plan', to='app.CompanyGroup')),
+                ('company_suppl_life_insurance_plan', models.ForeignKey(related_name='company_group_suppl_life_insurance', to='app.CompSupplLifeInsurancePlan')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyGroupHsaPlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('company_group', models.ForeignKey(related_name='company_group_hsa_plan', to='app.CompanyGroup')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyHsaPlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('company', models.ForeignKey(related_name='company_hsa_plan', to='app.Company')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PersonCompanyGroupHsaPlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('amount_per_year', models.DecimalField(null=True, max_digits=8, decimal_places=2, blank=True)),
+                ('record_reason_note', models.CharField(max_length=512, null=True, blank=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('company_hsa_plan', models.ForeignKey(related_name='person_hsa_selection', blank=True, to='app.CompanyHsaPlan', null=True)),
+                ('person', models.ForeignKey(related_name='hsa_plan_person', to='app.Person')),
+                ('record_reason', models.ForeignKey(related_name='hsa_update_reason', blank=True, to='app.SysBenefitUpdateReason', null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='companygrouphsaplan',
+            name='company_hsa_plan',
+            field=models.ForeignKey(related_name='company_group_hsa_plan', to='app.CompanyHsaPlan'),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='companygrouphsaplan',
+            name='company_group',
+            field=models.ForeignKey(related_name='company_hsa_plan', to='app.CompanyGroup'),
+            preserve_default=True,
+        ),
+        migrations.CreateModel(
+            name='CompanyGroupBenefitPlanOption',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company_benefit_plan_option', models.ForeignKey(related_name='company_group_benefit_plan_option', to='app.CompanyBenefitPlanOption')),
+                ('company_group', models.ForeignKey(related_name='health_benefit_plan_option', to='app.CompanyGroup')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyGroupStdInsurancePlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company_group', models.ForeignKey(related_name='company_std_insurance_plan', to='app.CompanyGroup')),
+                ('company_std_insurance_plan', models.ForeignKey(related_name='company_group_std', to='app.CompanyStdInsurancePlan')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyGroupHraPlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company_group', models.ForeignKey(related_name='hra_plan', to='app.CompanyGroup')),
+                ('company_hra_plan', models.ForeignKey(related_name='company_group_hra', to='app.CompanyHraPlan')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyGroupLtdInsurancePlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company_group', models.ForeignKey(related_name='company_ltd_insurance_plan', to='app.CompanyGroup')),
+                ('company_ltd_insurance_plan', models.ForeignKey(related_name='company_group_ltd', to='app.CompanyLtdInsurancePlan')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyGroupFsaPlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company_fsa_plan', models.ForeignKey(related_name='company_group_fsa', to='app.CompanyFsaPlan')),
+                ('company_group', models.ForeignKey(related_name='fsa_plan', to='app.CompanyGroup')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyGroupCommuterPlan',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company_commuter_plan', models.ForeignKey(related_name='company_group_commuter', to='app.CompanyCommuterPlan')),
+                ('company_group', models.ForeignKey(related_name='commuter_plan', to='app.CompanyGroup')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='employeeprofile',
+            name='manager',
+            field=models.ForeignKey(related_name='direct_reports', blank=True, to='app.EmployeeProfile', null=True),
+            preserve_default=True,
+        ),
+        migrations.CreateModel(
+            name='UserOnboardingStepState',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('step', models.CharField(max_length=255, choices=[(b'direct_deposit', b'direct_deposit')])),
+                ('state', models.CharField(blank=True, max_length=2048, null=True, choices=[(b'skipped', b'skipped'), (b'completed', b'completed')])),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('user', models.ForeignKey(related_name='onboarding_step_state', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='useronboardingstepstate',
+            unique_together=set([('step', 'user')]),
+        ),
+        migrations.CreateModel(
+            name='EmailBlockList',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('email_block_feature', models.CharField(max_length=255)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('user', models.ForeignKey(related_name='email_block_feature', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyServiceProvider',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('provider_type', models.CharField(max_length=255)),
+                ('name', models.CharField(max_length=1024)),
+                ('email', models.EmailField(max_length=255, null=True, blank=True)),
+                ('phone', models.CharField(max_length=32, null=True, blank=True)),
+                ('link', models.CharField(max_length=1024, null=True, blank=True)),
+                ('show_to_employee', models.BooleanField(default=False)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('company', models.ForeignKey(related_name='service_provider', to='app.Company')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CompanyPhraseology',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('description', models.CharField(max_length=1024)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company', models.ForeignKey(related_name='company_company_phraseology', to='app.Company')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='EmployeePhraseology',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('start_date', models.DateField()),
+                ('end_date', models.DateField()),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('employee_person', models.ForeignKey(related_name='employee_employee_phraseology', to='app.Person')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Phraseology',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('phraseology', models.CharField(max_length=2048)),
+                ('ma_code', models.CharField(max_length=4, null=True, blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='employeephraseology',
+            name='phraseology',
+            field=models.ForeignKey(related_name='phraseology_employee_phraseology', to='app.Phraseology'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='companyphraseology',
+            name='phraseology',
+            field=models.ForeignKey(related_name='phraseology_company_phraseology', to='app.Phraseology'),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='employeephraseology',
+            name='end_date',
+            field=models.DateField(null=True, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='employeephraseology',
+            name='start_date',
+            field=models.DateField(auto_now_add=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='person',
+            name='person_type',
+            field=models.CharField(max_length=30, db_index=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='person',
+            name='relationship',
+            field=models.CharField(default=b'dependent', max_length=30, db_index=True, choices=[(b'self', b'self'), (b'dependent', b'dependent'), (b'spouse', b'spouse'), (b'child', b'child'), (b'life partner', b'life partner'), (b'ex-spouse', b'ex-spouse'), (b'disabled dependent', b'disabled dependent'), (b'stepchild', b'stepchild')]),
+            preserve_default=True,
+        ),
+        migrations.CreateModel(
+            name='UploadForUser',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('upload', models.ForeignKey(related_name='upload_for_user_upload', to='app.Upload')),
+                ('user_for', models.ForeignKey(related_name='upload_for_user_user_for', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='OpenEnrollmentDefinition',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('start_month', models.IntegerField()),
+                ('start_day', models.IntegerField()),
+                ('end_month', models.IntegerField()),
+                ('end_day', models.IntegerField()),
+                ('company', models.ForeignKey(related_name='employment_authorization', to='app.Company', unique=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterField(
+            model_name='employeeprofile',
+            name='employment_status',
+            field=models.CharField(default=b'Active', max_length=20, choices=[(b'Active', b'Active'), (b'Prospective', b'Prospective'), (b'Terminated', b'Terminated'), (b'OnLeave', b'OnLeave')]),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='employeeprofile',
+            name='employee_number',
+            field=models.TextField(null=True, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='employeeprofile',
+            unique_together=set([('person', 'company'), ('employee_number', 'company')]),
+        ),
+        migrations.CreateModel(
+            name='CompanyIntegrationProvider',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('company_external_id', models.CharField(max_length=255, null=True, blank=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('company', models.ForeignKey(related_name='integration_provider', to='app.Company')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='IntegrationProvider',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255)),
+                ('service_type', models.CharField(max_length=30, choices=[(b'Payroll', b'Payroll')])),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='integrationprovider',
+            unique_together=set([('name', 'service_type')]),
+        ),
+        migrations.AddField(
+            model_name='companyintegrationprovider',
+            name='integration_provider',
+            field=models.ForeignKey(related_name='company_list', to='app.IntegrationProvider'),
+            preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='companyintegrationprovider',
+            unique_together=set([('company', 'integration_provider'), ('company_external_id', 'integration_provider')]),
+        ),
+        migrations.CreateModel(
+            name='CompanyDepartment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('department', models.CharField(max_length=128)),
+                ('description', models.CharField(max_length=1024)),
+                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
+                ('company', models.ForeignKey(related_name='company_company_department', to='app.Company')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='companydepartment',
+            unique_together=set([('company', 'department')]),
+        ),
+        migrations.AddField(
+            model_name='employeeprofile',
+            name='department',
+            field=models.ForeignKey(related_name='employee_profile_company_department', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='app.CompanyDepartment', null=True),
+            preserve_default=True,
+        ),
+        migrations.CreateModel(
+            name='CompanyUserIntegrationProvider',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('company_user_external_id', models.CharField(max_length=255, null=True, blank=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('company_user', models.ForeignKey(related_name='integration_provider', to='app.CompanyUser')),
+                ('integration_provider', models.ForeignKey(related_name='company_user_list', to='app.IntegrationProvider')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='companyuserintegrationprovider',
+            unique_together=set([('company_user', 'integration_provider'), ('company_user_external_id', 'integration_provider')]),
+        ),
+        migrations.CreateModel(
+            name='SystemSetting',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=127)),
+                ('value', models.CharField(max_length=1023, null=True, blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='companyintegrationprovider',
+            name='employee_external_id_seed',
+            field=models.CharField(max_length=255, null=True, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='employeeprofile',
+            name='photo_url',
+            field=models.TextField(null=True, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='employeeprofile',
+            name='pin',
+            field=models.TextField(null=True, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='employeeprofile',
+            unique_together=set([('person', 'company'), ('pin', 'company'), ('employee_number', 'company')]),
+        ),
+        migrations.CreateModel(
+            name='CompanyUserFeatures',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('feature_status', models.BooleanField(default=True)),
+                ('company_user', models.ForeignKey(to='app.CompanyUser')),
+                ('feature', models.ForeignKey(to='app.SysApplicationFeature')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='companyuserintegrationprovider',
+            unique_together=set([('company_user', 'integration_provider')]),
         ),
     ]
