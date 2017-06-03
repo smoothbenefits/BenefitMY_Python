@@ -9,7 +9,6 @@
           <th><span>Type</span></th>
           <th><span>Accrual Rate</span></th>
           <th><span>Accrual Frequency</span></th>
-          <th><span>Accrued Hours</span></th>
           <th><span>Banked Hours</span></th>
         </thead>
         <tbody>
@@ -34,16 +33,6 @@
                     </select>
                     <div class="form-validation-error" ng-show="form.accrualfrequency.$invalid">
                         <span ng-show="form.accrualfrequency.$error.required">Accrual Frequency is a required field</span>
-                    </div>
-                </div>
-              </td>
-              <td>
-                <div class="textbox">
-                  <input type="number"
-                    name="accuredhours"
-                    ng-model="quotaInfo.accrualSpecs.accruedHours">
-                    <div class="form-error-relative" ng-show="form.accuredhours.$dirty && form.accuredhours.$invalid">
-                        Accrued hours not valid
                     </div>
                 </div>
               </td>
