@@ -8,7 +8,6 @@
       <thead>
         <th><span>Employee</span></th>
         <th><span>Types</span></th>
-        <th><span>Accrued Hours to Date</span></th>
         <th><span>Banked Hours Balance</span></th>
         <th><span>Actions</span></th>
       </thead>
@@ -23,14 +22,6 @@
             </span>
             <div ng-if="quotaPerEmployee.quota" ng-repeat="quotaInfoItem in quotaPerEmployee.quota.quotaInfoCollection">
               {{quotaInfoItem.timeoffType}}
-            <div>
-          </td>
-          <td>
-            <span ng-if="!quotaPerEmployee.quota">
-              N/A
-            </span>
-            <div ng-if="quotaPerEmployee.quota" ng-repeat="quotaInfoItem in quotaPerEmployee.quota.quotaInfoCollection">
-              {{quotaInfoItem.accrualSpecs ? quotaInfoItem.accrualSpecs.accruedHours.toFixed(1) : ''}}
             <div>
           </td>
           <td>

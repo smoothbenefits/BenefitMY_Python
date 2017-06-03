@@ -16,13 +16,11 @@
     <table class="table table-striped" >
       <thead>
         <th><span>Type</span></th>
-        <th><span>Accrued Hours to Date</span></th>
         <th><span>Banked Hours Balance</span></th>
       </thead>
       <tbody>
         <tr ng-repeat="quotaInfo in quotaData.quotaInfoCollection">
           <td>{{quotaInfo.timeoffType}}</td>
-          <td>{{quotaInfo.accrualSpecs ? quotaInfo.accrualSpecs.accruedHours.toFixed(1) : ''}}</td>
           <td>{{quotaInfo.bankedHours.toFixed(1)}}</td>
         </tr>
       </tbody>
