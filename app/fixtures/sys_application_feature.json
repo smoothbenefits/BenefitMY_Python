@@ -167,6 +167,14 @@
     "model": "app.sysapplicationfeature",
     "pk": 23
 
+  },
+  {
+    "fields": {
+      "feature": "EmployeeTimePunchCardViewOnly"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 24
+
   }, 
   {
     "fields": {
