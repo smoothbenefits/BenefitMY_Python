@@ -178,13 +178,15 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     '$controller',
     'TimePunchCardService',
     'TimePunchCardDetectionConfigurations',
+    'CompanyFeatureService',
     function TimePunchCardWeekDirectiveController(
       $scope,
       $attrs,
       $modal,
       $controller,
       TimePunchCardService,
-      TimePunchCardDetectionConfigurations) {
+      TimePunchCardDetectionConfigurations,
+      CompanyFeatureService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -273,6 +275,10 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                         $scope.weeklyPunchCards = punchCards;
                     }
                 );
+                CompanyFeatureService.getAllApplicationFeatureStatusByCompanyUser($scope.companyId, $scope.user.id)
+                .then(function(userFeaturesStatus){
+                  $scope.userFeaturesStatus = userFeaturesStatus;
+                });
             }
         };
 
@@ -303,6 +309,13 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
             return false;
         };
+
+        $scope.cardActionAllowed = function(){
+          return $scope.adminMode ||
+            !($scope.userFeaturesStatus &&
+              $scope.userFeaturesStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.EmployeeTimePunchCardViewOnly));
+        }
     }
   ]
 ).directive('bmTimePunchCardWeeklyView', function() {
