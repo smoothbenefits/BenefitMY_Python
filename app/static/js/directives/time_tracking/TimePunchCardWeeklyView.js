@@ -12,6 +12,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
   'punchCard',
   'adminView',
   'companyId',
+  'companyInfo',
   'TimePunchCardDetectionConfigurations',
   function(
     $scope,
@@ -27,6 +28,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     punchCard,
     adminView,
     companyId,
+    companyInfo,
     TimePunchCardDetectionConfigurations){
     $scope.headerText = punchCard ? 'Edit Punch Card' : 'Create Punch Card';
 
@@ -70,6 +72,11 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
           }
         });
       });
+    }
+
+    // Fill in default state value if a state is not selected and company address is provided.
+    if (!$scope.punchCard.attributes.state.value && companyInfo.address.state) {
+      $scope.punchCard.attributes.state.value = companyInfo.address.state;
     }
 
     $scope.isLowConfidenceDetected = function() {
@@ -176,6 +183,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     '$attrs',
     '$modal',
     '$controller',
+    'CompanyService',
     'TimePunchCardService',
     'TimePunchCardDetectionConfigurations',
     function TimePunchCardWeekDirectiveController(
@@ -183,6 +191,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       $attrs,
       $modal,
       $controller,
+      CompanyService,
       TimePunchCardService,
       TimePunchCardDetectionConfigurations) {
 
@@ -210,6 +219,10 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                 };
               }
 
+              CompanyService.getCompanyInfo(cmopanyId).then(function(companyInfo) {
+                $scope.companyInfo = companyInfo;
+              });
+
               $scope.reloadCards();
             }
           });
@@ -232,6 +245,9 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                   },
                   'companyId': function() {
                     return $scope.companyId;
+                  },
+                  'companyInfo': function() {
+                    return $scope.companyInfo;
                   }
                 }
             });
