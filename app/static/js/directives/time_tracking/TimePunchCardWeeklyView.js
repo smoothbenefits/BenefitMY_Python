@@ -35,6 +35,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
     $scope.allStates = UsStateService.GetAllStates();
+    $scope.cardCheckedIn = true;
+    $scope.cardCheckedOut = false;
 
     UserService.getCurrentRoleCompleteFeatureStatus()
     .then(function(allFeatureStatus) {
@@ -151,6 +153,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
       return true;
     };
+
 
     $scope.save = function() {
         // Perform card type based sanitization first
