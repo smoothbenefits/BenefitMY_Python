@@ -154,6 +154,11 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       return true;
     };
 
+    $scope.endTimeUpdated = function(){
+      if($scope.punchCard.end){
+        $scope.punchCard.inProgress = false;
+      }
+    }
 
     $scope.save = function() {
         // Perform card type based sanitization first
