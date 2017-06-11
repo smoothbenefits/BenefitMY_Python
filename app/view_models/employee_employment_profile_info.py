@@ -54,33 +54,34 @@ class EmployeeEmploymentProfileInfo(object):
             if (self._compensation_service):
                 current_compensation = self._compensation_service.current_compensation
                 
-                projected_hours_cycle = self._get_projected_hours_per_pay_cycle(
-                    current_compensation,
-                    self._employee_profile_model.company.pay_period_definition
-                )
-                if (projected_hours_cycle):
-                    self.projected_hours_per_pay_cycle = projected_hours_cycle
-
-                projected_hours_week = self._get_projected_hours_per_week(
-                    current_compensation
-                )
-                if (projected_hours_week):
-                    self.projected_hours_per_week = projected_hours_week
-
-                pay_type = self._compensation_service.get_current_pay_type()
-                if (pay_type):
-                    self.pay_type = pay_type 
-
-                self.compensation_effective_date = current_compensation.effective_date
-
-                if (self.pay_type == PAY_TYPE_HOURLY):
-                    self.current_hourly_rate = self._compensation_service.get_current_hourly_rate()
-                elif (self.pay_type == PAY_TYPE_SALARY):
-                    self.annual_salary = self._compensation_service.get_current_annual_salary()
-                    self.current_pay_period_salary = self._get_pay_period_salary(
-                        self.annual_salary,
+                if (current_compensation):
+                    projected_hours_cycle = self._get_projected_hours_per_pay_cycle(
+                        current_compensation,
                         self._employee_profile_model.company.pay_period_definition
                     )
+                    if (projected_hours_cycle):
+                        self.projected_hours_per_pay_cycle = projected_hours_cycle
+
+                    projected_hours_week = self._get_projected_hours_per_week(
+                        current_compensation
+                    )
+                    if (projected_hours_week):
+                        self.projected_hours_per_week = projected_hours_week
+
+                    pay_type = self._compensation_service.get_current_pay_type()
+                    if (pay_type):
+                        self.pay_type = pay_type 
+
+                    self.compensation_effective_date = current_compensation.effective_date
+
+                    if (self.pay_type == PAY_TYPE_HOURLY):
+                        self.current_hourly_rate = self._compensation_service.get_current_hourly_rate()
+                    elif (self.pay_type == PAY_TYPE_SALARY):
+                        self.annual_salary = self._compensation_service.get_current_annual_salary()
+                        self.current_pay_period_salary = self._get_pay_period_salary(
+                            self.annual_salary,
+                            self._employee_profile_model.company.pay_period_definition
+                        )
 
     def _get_projected_hours_per_pay_cycle(self, compensation_info, pay_period_definition):
         if (compensation_info.projected_hour_per_month):
