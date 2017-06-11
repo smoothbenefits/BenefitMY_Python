@@ -28,11 +28,11 @@
                     <div ng-if="attentionNeeded(punchCard)"><span class="label label-danger">Possible Photo Mismatch</span></div>
                 </div>
                 <div class="action-row">
-                  <div class="col-xs-6"><a ng-click="editPunchCard(punchCard)">Edit</a></div>
-                  <div class="col-xs-6"><a ng-click="deletePunchCard(punchCard)" confirm="Please confirm to delete this time punch card.">Delete</a></div>
+                  <div class="col-xs-6" ng-if="cardActionAllowed()"><a ng-click="editPunchCard(punchCard)">Edit</a></div>
+                  <div class="col-xs-6" ng-if="cardActionAllowed()"><a ng-click="deletePunchCard(punchCard)" confirm="Please confirm to delete this time punch card.">Delete</a></div>
                 </div>
               </div>
-              <div style="margin:5px;">
+              <div style="margin:5px;" ng-if="cardActionAllowed()">
                 <span class="btn inline" ng-click="createPunchCard(datesOfWeek[weekdayNum].date)"><i class="fa fa-plus"></i></span>
               </div>
             </td>

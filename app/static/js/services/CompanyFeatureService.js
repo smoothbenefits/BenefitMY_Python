@@ -34,7 +34,8 @@ benefitmyService.factory(
         MobileProjectManagement: 'MobileProjectManagement',
         ShowDisabledFeaturesForEmployer: 'ShowDisabledFeaturesForEmployer',
         HideSalaryData: 'HideSalaryData',
-        DirectReportsView: 'DirectReportsView'
+        DirectReportsView: 'DirectReportsView',
+        EmployeeTimePunchCardViewOnly: 'EmployeeTimePunchCardViewOnly'
       };
 
       var getAllApplicationFeatureStatusByCompany = function(companyId) {

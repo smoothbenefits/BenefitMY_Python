@@ -52,7 +52,8 @@
                           hour-step="'1'"
                           minute-step="'1'"
                           show-spinners="false"
-                          ng-model="punchCard.end">
+                          ng-model="punchCard.end"
+                          ng-change="endTimeUpdated()">
                         </timepicker>
                     </div>
                     <div class="col-sm-8 col-sm-offset-2" ng-if="punchCard.inHours">
@@ -66,7 +67,29 @@
                 </div>
             </div>
         </div>
-
+        <div ng-if="isTimeVisisble()">
+            <div class="form-label">Status</div>
+            <div class="panel">
+              <div class="panel-body">
+                <div class="col-sm-5 col-sm-offset-1">
+                  <input
+                    type="radio"
+                    name="status"
+                    ng-model="punchCard.inProgress"
+                    ng-value="cardCheckedIn">
+                  <span>Checked In</span>
+                </div>
+                <div class="col-sm-5 col-sm-offset-1">
+                  <input
+                    type="radio"
+                    name="status"
+                    ng-model="punchCard.inProgress"
+                    ng-value="cardCheckedOut">
+                  <span>Checked Out</span>
+                </div>
+              </div>
+            </div>
+        </div>
         <div>
             <div class="form-label">State</div>
             <select name="state" ng-model="punchCard.attributes.state.value" ng-required="true" class="form-control">

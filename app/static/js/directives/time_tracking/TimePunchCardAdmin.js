@@ -4,16 +4,19 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
   'week',
   'user',
   'companyId',
+  'adminMode',
   function(
     $scope,
     $modalInstance,
     week,
     user,
-    companyId) {
+    companyId,
+    adminMode) {
 
     $scope.week = week;
     $scope.user = user;
     $scope.companyId = companyId;
+    $scope.adminMode = adminMode;
 
     $scope.close = function(){
         $modalInstance.close();
@@ -165,6 +168,9 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
                 },
                 'companyId': function() {
                   return utilityService.retrieveIdFromEnvAwareId(employee.companyDescriptor);
+                },
+                'adminMode': function(){
+                  return true;
                 }
               }
             });

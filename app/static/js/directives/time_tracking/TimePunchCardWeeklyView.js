@@ -35,6 +35,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
     $scope.allStates = UsStateService.GetAllStates();
+    $scope.cardCheckedIn = true;
+    $scope.cardCheckedOut = false;
 
     UserService.getCurrentRoleCompleteFeatureStatus()
     .then(function(allFeatureStatus) {
@@ -152,6 +154,12 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       return true;
     };
 
+    $scope.endTimeUpdated = function(){
+      if($scope.punchCard.end){
+        $scope.punchCard.inProgress = false;
+      }
+    }
+
     $scope.save = function() {
         // Perform card type based sanitization first
         $scope.punchCard.recordType.behavior.sanitizeViewModel($scope.punchCard);
@@ -178,13 +186,15 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     '$controller',
     'TimePunchCardService',
     'TimePunchCardDetectionConfigurations',
+    'CompanyFeatureService',
     function TimePunchCardWeekDirectiveController(
       $scope,
       $attrs,
       $modal,
       $controller,
       TimePunchCardService,
-      TimePunchCardDetectionConfigurations) {
+      TimePunchCardDetectionConfigurations,
+      CompanyFeatureService) {
 
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
@@ -273,6 +283,10 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                         $scope.weeklyPunchCards = punchCards;
                     }
                 );
+                CompanyFeatureService.getAllApplicationFeatureStatusByCompanyUser($scope.companyId, $scope.user.id)
+                .then(function(userFeaturesStatus){
+                  $scope.userFeaturesStatus = userFeaturesStatus;
+                });
             }
         };
 
@@ -303,6 +317,13 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
             return false;
         };
+
+        $scope.cardActionAllowed = function(){
+          return $scope.adminMode ||
+            !($scope.userFeaturesStatus &&
+              $scope.userFeaturesStatus.isFeatureEnabled(
+                    CompanyFeatureService.AppFeatureNames.EmployeeTimePunchCardViewOnly));
+        }
     }
   ]
 ).directive('bmTimePunchCardWeeklyView', function() {
