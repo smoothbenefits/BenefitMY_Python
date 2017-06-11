@@ -5,7 +5,6 @@ import dateutil.parser
 
 class DateTimeService(object):
 
-    TIME_UNIT_PRECISION = 1
 
     def get_last_week_range_by_date(self, date):
         curr_week_range = self.get_week_range_by_date(date)
@@ -63,9 +62,9 @@ class DateTimeService(object):
     def parse_date_time(self, date_time_string):
         return dateutil.parser.parse(date_time_string)
 
-    def get_time_diff_in_hours(self, start_time, end_time):
+    def get_time_diff_in_hours(self, start_time, end_time, time_unit_precsion=1):
         delta = end_time - start_time
-        return round(delta.total_seconds() / 3600, self.TIME_UNIT_PRECISION)
+        return round(delta.total_seconds() / 3600, time_unit_precsion)
 
     def is_time_in_range(self, time, range_start, range_end):
         # First to normalize all inputs for proper comparison
