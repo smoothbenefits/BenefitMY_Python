@@ -43,6 +43,13 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       $scope.allFeatureStatus = allFeatureStatus;
     });
 
+    if(!$scope.punchCard.end && $scope.punchCard.date){
+      // We hould set the date of the end to the same as the punchCard start date.
+      // In the edit case, we should not leave a card without end time
+      var cardDate = moment($scope.punchCard.date).toDate();
+      $scope.punchCard.end = TimePunchCardService.getDefaultStartTime(cardDate);
+    }
+
     $scope.$watch('punchCard.hours', function(hours){
       if(hours){
         $scope.punchCard.start = TimePunchCardService.getDefaultStartTime();
