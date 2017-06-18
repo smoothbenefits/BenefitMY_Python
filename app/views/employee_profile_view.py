@@ -10,6 +10,7 @@ from app.models.person import Person
 from django.db.models import Q
 from app.service.integration.company_integration_provider_data_service \
 import CompanyIntegrationProviderDataService
+from app.service.monitoring.logging_service import LoggingService
 
 
 class EmployeeProfileView(APIView):
@@ -87,6 +88,8 @@ class EmployeeProfilesByCompanyView(APIView):
 
 
 class EmployeeProfileByCompanyPinView(APIView):
+    logger = LoggingService()
+
     def get(self, request, company_id, pin):
         try:
             # Employee's pin should be unique within the scope of a company
@@ -94,4 +97,7 @@ class EmployeeProfileByCompanyPinView(APIView):
             serializer = EmployeeProfileWithNameSerializer(employee_profile)
             return Response(serializer.data)
         except EmployeeProfile.DoesNotExist:
+            self.logger.error("Failed attempt to retrieve employee profile by company '{}' and pin '{}'".format(
+                company_id, pin
+            ))
             raise Http404
