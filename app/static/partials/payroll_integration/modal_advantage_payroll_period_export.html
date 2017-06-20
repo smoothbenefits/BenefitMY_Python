@@ -26,6 +26,9 @@
               dirty="form.end_date.$dirty" />
           </div>
         </div>
+        <div class="alert alert-warning" ng-if="!validateWeekBoundary()">
+            <strong><span class="fa fa-warning"></span> Time range selected does not fall on week boundary. Please check this is expected.</strong>
+        </div>
     </form>
   </div>
 </div>

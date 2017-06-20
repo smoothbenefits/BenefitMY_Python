@@ -2,16 +2,33 @@ BenefitMyApp.controller('PeriodReportModalController', [
   '$scope',
   '$modalInstance',
   'AdvantagePayrollService',
+  'CompanyService',
+  'DateTimeService',
   'companyId',
   function($scope,
            $modalInstance,
            AdvantagePayrollService,
+           CompanyService,
+           DateTimeService,
            companyId){
 
     $scope.inputModel = {
         startDate: moment().format('M/D/YYYY'),
         endDate: moment().format('M/D/YYYY')
     };
+
+    CompanyService.getCompanyInfo(companyId).then(function(companyInfo) {
+        var payPeriodName = companyInfo.payPeriod.name;
+        if (payPeriodName.toLowerCase().indexOf('week') >= 0) {
+            // The pay period is by number of weeks and hence
+            // we should be able to assume the time range should
+            // normally be on week boundary
+            $scope.expectWeekBoundary = true;
+            var weekBoundary = DateTimeService.GetWeekBoundary(moment());
+            $scope.inputModel.startDate = weekBoundary.startDateOfWeek.format('M/D/YYYY');
+            $scope.inputModel.endDate = weekBoundary.endDateOfWeek.format('M/D/YYYY');
+        }
+    });
 
     $scope.isValidToDownload = function() {
         var startDate = moment($scope.inputModel.startDate);
@@ -27,6 +44,18 @@ BenefitMyApp.controller('PeriodReportModalController', [
             $scope.inputModel.startDate,
             $scope.inputModel.endDate
         );
+    };
+
+    $scope.validateWeekBoundary = function() {
+        if ($scope.expectWeekBoundary) {
+            var startDate = moment($scope.inputModel.startDate);
+            var endDate = moment($scope.inputModel.endDate);
+
+            return DateTimeService.IsWeekStart(startDate)
+                && DateTimeService.IsWeekEnd(endDate);
+        }
+
+        return true;
     };
 
     $scope.close = function() {
