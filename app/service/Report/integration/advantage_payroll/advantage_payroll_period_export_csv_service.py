@@ -22,7 +22,7 @@ from app.service.integration.integration_provider_service import (
 from app.service.Report.csv_report_service_base import CsvReportServiceBase
 
 User = get_user_model()
-
+REGULAR_HOUR_LIMIT = 40
 
 class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
     
@@ -74,41 +74,69 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
             # report period.
             if (employee_profile_info and 
                 employee_profile_info.is_employee_active_anytime_in_time_period(period_start, period_end)):
+                
                 person_info = self.view_model_factory.get_employee_person_info(employee_user_id)
-                export_data = self._get_export_data(
-                    employee_user_id,
-                    person_info,
-                    employee_profile_info,
-                    employees_reported_hours)
-                if (export_data):
-                    self._write_employee(export_data)
+                self._write_employee(employee_user_id, person_info, employee_profile_info, employees_reported_hours)
 
-    def _write_employee(self, export_data):
-        self._write_cell(export_data['employee_number'])
-        self._write_cell(export_data['full_name'])
-        self._write_cell(export_data['pay_type_code'])
-        self._write_cell(export_data['pay_rate'])
-        self._write_cell(export_data['work_hours'])
-        self._write_cell(export_data['division'])
-        self._write_cell(export_data['department'])
-        self._write_cell(export_data['job'])
+    def _write_employee(
+        self,
+        employee_user_id,
+        person_info,
+        employee_profile_info,
+        employees_reported_hours
+    ):
+        # If some of the necessary data does not exist, omit the employee
+        if (not person_info 
+            or not employee_profile_info):
+            return
+
+        # Per discussion with AP, the time tracking/payrol reporting
+        # can omit salaried employees for now
+        if (employee_profile_info and employee_profile_info.pay_type == PAY_TYPE_SALARY):
+            return
+
+        regular_work_hours = None
+        overtime_work_hours = None
+        if (employee_user_id in employees_reported_hours):
+            work_hours = employees_reported_hours[employee_user_id].paid_hours
+            if(work_hours > REGULAR_HOUR_LIMIT):
+                regular_work_hours = self._normalize_decimal_number(REGULAR_HOUR_LIMIT)
+                overtime_work_hours = self._normalize_decimal_number(work_hours - REGULAR_HOUR_LIMIT)
+            else:
+                regular_work_hours = self._normalize_decimal_number(work_hours)
+
+
+        row_data = self._get_hours_row_base(
+                employee_user_id,
+                person_info,
+                employee_profile_info)
+        row_data['work_hours'] = regular_work_hours
+        self._write_row(row_data)
+
+        if overtime_work_hours:
+            row_data = self._get_hours_row_base(
+                employee_user_id,
+                person_info,
+                employee_profile_info)
+            row_data['pay_type_code'] = 'OT'
+            row_data['work_hours'] = overtime_work_hours
+            self._write_row(row_data)
+
+    def _write_row(self, row_data):
+        self._write_cell(row_data['employee_number'])
+        self._write_cell(row_data['full_name'])
+        self._write_cell(row_data['pay_type_code'])
+        self._write_cell(row_data['pay_rate'])
+        self._write_cell(row_data['work_hours'])
+        self._write_cell(row_data['division'])
+        self._write_cell(row_data['department'])
+        self._write_cell(row_data['job'])
 
         # move to next row
         self._next_row()
 
-    def _get_export_data(self, employee_user_id, person_info, employee_profile_info, employees_reported_hours):
-        # If some of the necessary data does not exist, omit the employee
-        if (not person_info 
-            or not employee_profile_info):
-            return None
-
-        # Per discussion with AP, the time tracking/payrol reporting
-        # can omit salaried employees for now
-        if (employee_profile_info):
-            if (employee_profile_info.pay_type == PAY_TYPE_SALARY):
-                return None
-
-        export_data = {
+    def _get_hours_row_base(self, employee_user_id, person_info, employee_profile_info):
+        row_data = {
             'employee_number': '',
             'full_name': '',
             'pay_type_code': '',
@@ -124,19 +152,14 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
             employee_user_id,
             INTEGRATION_SERVICE_TYPE_PAYROLL,
             INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL)
-        export_data['employee_number'] = ap_employee_number
+        row_data['employee_number'] = ap_employee_number
 
-        export_data['full_name'] = person_info.get_full_name()
-        export_data['ssn'] = person_info.ssn
+        row_data['full_name'] = person_info.get_full_name()
 
-        export_data['pay_type_code'] = self._get_employee_pay_type_code(employee_profile_info.pay_type)
-        export_data['pay_rate'] = self._normalize_decimal_number(self._get_employee_pay_rate(employee_profile_info))
-
-        if (employee_user_id in employees_reported_hours):
-            work_hours = employees_reported_hours[employee_user_id].paid_hours
-            export_data['work_hours'] = self._normalize_decimal_number(work_hours)
-
-        return export_data
+        row_data['pay_type_code'] = self._get_employee_pay_type_code(employee_profile_info.pay_type)
+        row_data['pay_rate'] = self._normalize_decimal_number(self._get_employee_pay_rate(employee_profile_info))
+        
+        return row_data
 
     def _get_employee_pay_rate(self, employee_profile_info):
         if (employee_profile_info.current_pay_period_salary):
