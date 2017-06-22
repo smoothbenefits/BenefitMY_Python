@@ -46,16 +46,36 @@ BenefitMyApp.controller('PeriodReportModalController', [
         );
     };
 
-    $scope.validateWeekBoundary = function() {
+    $scope.validateWeekBoundaryForStartDate = function() {
         if ($scope.expectWeekBoundary) {
             var startDate = moment($scope.inputModel.startDate);
-            var endDate = moment($scope.inputModel.endDate);
 
-            return DateTimeService.IsWeekStart(startDate)
-                && DateTimeService.IsWeekEnd(endDate);
+            return DateTimeService.IsWeekStart(startDate);
         }
 
         return true;
+    };
+
+    $scope.validateWeekBoundaryForEndDate = function() {
+        if ($scope.expectWeekBoundary) {
+            var endDate = moment($scope.inputModel.endDate);
+
+            return DateTimeService.IsWeekEnd(endDate);
+        }
+
+        return true;
+    };
+
+    $scope.getCorrectedStartDateForDisplay = function() {
+        var startDate = moment($scope.inputModel.startDate);
+        var weekBoundary = DateTimeService.GetWeekBoundary(startDate);
+        return weekBoundary.startDateOfWeek.format('M/D/YYYY');
+    };
+
+    $scope.getCorrectedEndDateForDisplay = function() {
+        var endDate = moment($scope.inputModel.endDate);
+        var weekBoundary = DateTimeService.GetWeekBoundary(endDate);
+        return weekBoundary.endDateOfWeek.format('M/D/YYYY');
     };
 
     $scope.close = function() {
