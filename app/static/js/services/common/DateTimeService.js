@@ -63,13 +63,40 @@ benefitmyService.factory('DateTimeService',
                 daysInMonth.push(day++);
             }
             return daysInMonth
-        }
-        
+        };
+
+        /**
+            Get the begin and end dates of the week that contains 
+            the given date.
+            @param date expected to be a valid date object
+        */
+        var GetWeekBoundary = function(date) {
+            var startDateOfWeek = moment(date).startOf('week');
+            var endDateOfWeek = moment(date).endOf('week');
+
+            return {
+                startDateOfWeek: startDateOfWeek,
+                endDateOfWeek: endDateOfWeek
+            };
+        };
+
+        var IsWeekStart = function(date) {
+            var startDateOfWeek = moment(date).startOf('week');
+            return date.isSame(startDateOfWeek, 'day');
+        };
+
+        var IsWeekEnd = function(date) {
+            var endDateOfWeek = moment(date).endOf('week');
+            return date.isSame(endDateOfWeek, 'day');
+        };
 
         return {
             GetListOfWeeks: GetListOfWeeks,
             GetMonthsInYear: GetMonthsInYear,
-            GetDaysInMonth: GetDaysInMonth
+            GetDaysInMonth: GetDaysInMonth,
+            GetWeekBoundary: GetWeekBoundary,
+            IsWeekStart: IsWeekStart,
+            IsWeekEnd: IsWeekEnd
         };
     }
 ]);
