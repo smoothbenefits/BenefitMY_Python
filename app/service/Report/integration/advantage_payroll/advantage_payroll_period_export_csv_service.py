@@ -22,7 +22,7 @@ from app.service.integration.integration_provider_service import (
 from app.service.Report.csv_report_service_base import CsvReportServiceBase
 
 User = get_user_model()
-REGULAR_HOUR_LIMIT = 40
+OVERTIME_PAY_CODE = 'OT'
 
 class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
     
@@ -95,31 +95,26 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         if (employee_profile_info and employee_profile_info.pay_type == PAY_TYPE_SALARY):
             return
 
-        regular_work_hours = None
-        overtime_work_hours = None
+        user_hours = None
         if (employee_user_id in employees_reported_hours):
-            work_hours = employees_reported_hours[employee_user_id].paid_hours
-            if(work_hours > REGULAR_HOUR_LIMIT):
-                regular_work_hours = self._normalize_decimal_number(REGULAR_HOUR_LIMIT)
-                overtime_work_hours = self._normalize_decimal_number(work_hours - REGULAR_HOUR_LIMIT)
-            else:
-                regular_work_hours = self._normalize_decimal_number(work_hours)
+            user_hours = employees_reported_hours[employee_user_id]
 
 
         row_data = self._get_hours_row_base(
                 employee_user_id,
                 person_info,
                 employee_profile_info)
-        row_data['work_hours'] = regular_work_hours
+        if user_hours:
+            row_data['work_hours'] = self._normalize_decimal_number(user_hours.paid_hours)
         self._write_row(row_data)
 
-        if overtime_work_hours:
+        if user_hours and user_hours.overtime_hours and user_hours.overtime_hours > 0:
             row_data = self._get_hours_row_base(
                 employee_user_id,
                 person_info,
                 employee_profile_info)
-            row_data['pay_type_code'] = 'OT'
-            row_data['work_hours'] = overtime_work_hours
+            row_data['pay_type_code'] = OVERTIME_PAY_CODE
+            row_data['work_hours'] = self._normalize_decimal_number(user_hours.overtime_hours)
             self._write_row(row_data)
 
     def _write_row(self, row_data):
