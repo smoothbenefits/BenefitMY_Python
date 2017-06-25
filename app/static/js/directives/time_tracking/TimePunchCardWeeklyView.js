@@ -155,9 +155,13 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     };
 
     $scope.endTimeUpdated = function(){
-      if($scope.punchCard.end){
-        $scope.punchCard.inProgress = false;
+      var updatedTime = moment($scope.punchCard.end);
+      if($scope.punchCard.date){
+        // We hould set the date of the end to the same as the punchCard date.
+        // In the edit case, we should not leave a card without end time
+        $scope.punchCard.end = moment($scope.punchCard.date).hour(updatedTime.hour()).minute(updatedTime.minute())
       }
+      $scope.punchCard.inProgress = false;
     }
 
     $scope.save = function() {
