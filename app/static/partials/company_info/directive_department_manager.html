@@ -17,12 +17,14 @@
         <thead>
           <th><span>Name</span></th>
           <th><span>Description</span></th>
+          <th><span>Code</span></th>
           <th><span>Action</span></th>
         </thead>
         <tbody>
           <tr ng-repeat="department in companyDepartments">
             <td><a ng-click="openEditModal(department)">{{department.department}}</a></td>
             <td>{{department.description}}</td>
+            <td>{{department.code}}</td>
             <td>
                 <span class="btn inline" confirm="{{deleteConfirmMsg}}" ng-click="deleteDepartment(department)">Delete</span>
             </td>
