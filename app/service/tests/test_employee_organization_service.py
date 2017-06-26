@@ -11,6 +11,7 @@ class TestEmployeeOrganizationService(TestCase):
 
     # your fixture files here
     fixtures = ['24_person', '49_period_definition', '10_company', '23_auth_user',
+                '79_company_department', '82_company_job', '83_company_division',
                 'employee_profile', '11_address', '12_phone']
 
     def test_employee_organization_setup_manager_profile_id_succeed(self):
