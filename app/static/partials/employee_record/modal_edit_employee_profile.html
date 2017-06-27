@@ -43,6 +43,26 @@
         </div>
       </div>
       <div class="row">
+        <div class="form-label">Job</div>
+        <div class="textbox">
+          <select ng-model="employeeProfileModel.job"
+          ng-required="false"
+          name="employeeProfileModel.job"
+          ng-options="job.job for job in companyJobs"
+          class="form-control"></select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-label">Division</div>
+        <div class="textbox">
+          <select ng-model="employeeProfileModel.division"
+          ng-required="false"
+          name="employeeProfileModel.division"
+          ng-options="division.division for division in companyDivisions"
+          class="form-control"></select>
+        </div>
+      </div>
+      <div class="row">
         <div class="form-label">Employment Type</div>
         <div class="textbox">
           <select ng-model="employeeProfileModel.employmentType"

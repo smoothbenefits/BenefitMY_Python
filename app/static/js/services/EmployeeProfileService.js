@@ -47,6 +47,18 @@ benefitmyService.factory('EmployeeProfileService',
                 viewModel.department = "";
             }
 
+            if (employeeProfileDomainModel.job && employeeProfileDomainModel.job.job) {
+                viewModel.job = employeeProfileDomainModel.job.job;
+            } else {
+                viewModel.job = "";
+            }
+
+            if (employeeProfileDomainModel.division && employeeProfileDomainModel.division.division) {
+                viewModel.division = employeeProfileDomainModel.division.division;
+            } else {
+                viewModel.division = "";
+            }
+
             // TODO:
             // The below logic is quite cumbersome, but just to get the view model
             // working with angular's "date" input type...
@@ -87,6 +99,8 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
             domainModel.department = employeeProfileViewModel.department.id;
+            domainModel.job = employeeProfileViewModel.job.id;
+            domainModel.division = employeeProfileViewModel.division.id;
             domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
             domainModel.employee_number = employeeProfileViewModel.employeeNumber;
             domainModel.manager = employeeProfileViewModel.manager ? employeeProfileViewModel.manager.id : null;
