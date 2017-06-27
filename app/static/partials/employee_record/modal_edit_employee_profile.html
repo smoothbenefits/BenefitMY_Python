@@ -38,7 +38,7 @@
           <select ng-model="employeeProfileModel.department"
           ng-required="false"
           name="employeeProfileModel.department"
-          ng-options="department.department for department in companyDepartments"
+          ng-options="department.department for department in companyDepartments track by department.id"
           class="form-control"></select>
         </div>
       </div>
@@ -48,7 +48,7 @@
           <select ng-model="employeeProfileModel.job"
           ng-required="false"
           name="employeeProfileModel.job"
-          ng-options="job.job for job in companyJobs"
+          ng-options="job.job for job in companyJobs track by job.id"
           class="form-control"></select>
         </div>
       </div>
@@ -58,7 +58,7 @@
           <select ng-model="employeeProfileModel.division"
           ng-required="false"
           name="employeeProfileModel.division"
-          ng-options="division.division for division in companyDivisions"
+          ng-options="division.division for division in companyDivisions track by division.id"
           class="form-control"></select>
         </div>
       </div>

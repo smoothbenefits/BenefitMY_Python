@@ -41,23 +41,21 @@ benefitmyService.factory('EmployeeProfileService',
             viewModel.manager = employeeProfileDomainModel.manager;
             viewModel.pin = employeeProfileDomainModel.pin;
 
-            if (employeeProfileDomainModel.department && employeeProfileDomainModel.department.department) {
-                viewModel.department = employeeProfileDomainModel.department.department;
-            } else {
-                viewModel.department = "";
-            }
+            viewModel.department = employeeProfileDomainModel.department;
+            viewModel.job = employeeProfileDomainModel.job;
+            viewModel.division = employeeProfileDomainModel.division;
 
-            if (employeeProfileDomainModel.job && employeeProfileDomainModel.job.job) {
-                viewModel.job = employeeProfileDomainModel.job.job;
-            } else {
-                viewModel.job = "";
-            }
+            viewModel.departmentDisplayName = function() {
+                return this.department ? this.department.department : '';
+            };
 
-            if (employeeProfileDomainModel.division && employeeProfileDomainModel.division.division) {
-                viewModel.division = employeeProfileDomainModel.division.division;
-            } else {
-                viewModel.division = "";
-            }
+            viewModel.jobDisplayName = function() {
+                return this.job ? this.job.job : '';
+            };
+
+            viewModel.divisionDisplayName = function() {
+                return this.division ? this.division.division : '';
+            };
 
             // TODO:
             // The below logic is quite cumbersome, but just to get the view model
