@@ -832,6 +832,28 @@ benefitmyDomainModelFactories.factory('DepartmentRepository', ['$resource',
   }
 ]);
 
+benefitmyDomainModelFactories.factory('JobRepository', ['$resource',
+  function($resource) {
+    return {
+      CompanyJobById: $resource(PREFIX + 'company_jobs/:id', {id: '@id'}, {
+        update: { method: 'PUT' }
+      }),
+      CompanyJobsByCompany: $resource(PREFIX + 'company/:companyId/jobs', {companyId: '@companyId'})
+    }
+  }
+]);
+
+benefitmyDomainModelFactories.factory('DivisionRepository', ['$resource',
+  function($resource) {
+    return {
+      CompanyDivisionById: $resource(PREFIX + 'company_divisions/:id', {id: '@id'}, {
+        update: { method: 'PUT' }
+      }),
+      CompanyDivisionsByCompany: $resource(PREFIX + 'company/:companyId/divisions', {companyId: '@companyId'})
+    }
+  }
+]);
+
 benefitmyDomainModelFactories.factory('OpenEnrollmentDefinitionRepository', ['$resource',
   function($resource) {
     return {

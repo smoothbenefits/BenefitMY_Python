@@ -1,0 +1,36 @@
+<div class="content-header">
+  <h1>Manage Divisions</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="openEditModal()">Add A New Division</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Add A New Division</span> button to create a new division</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="panel" ng-show="hasDivisions()">
+    <div class="panel-heading">
+      Divisions
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Name</span></th>
+          <th><span>Description</span></th>
+          <th><span>Code</span></th>
+          <th><span>Action</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="division in companyDivisions">
+            <td><a ng-click="openEditModal(division)">{{division.division}}</a></td>
+            <td>{{division.description}}</td>
+            <td>{{division.code}}</td>
+            <td>
+                <span class="btn inline" confirm="{{deleteConfirmMsg}}" ng-click="deleteDivision(division)">Delete</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

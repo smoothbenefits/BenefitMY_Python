@@ -10,6 +10,7 @@ class TestMockTimeTrackingAppBase(TestCase, ViewTestBase, TimeTrackingAppMock):
     # your fixture files here
     fixtures = ['24_person', '49_period_definition', '10_company', '23_auth_user',
                 'sys_application_feature', '34_company_user', 'company_features',
+                '79_company_department', '82_company_job', '83_company_division',
                 'employee_profile', '27_compensation_update_reason',
                 '50_employee_compensation', '74_phraseology', '76_employee_phraseology']
 

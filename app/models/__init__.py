@@ -7,6 +7,9 @@ from employee_timetracking import EmployeeTimeTracking
 from sys_compensation_update_reason import SysCompensationUpdateReason
 from company import Company
 from company_user import CompanyUser
+from company_department import CompanyDepartment
+from company_job import CompanyJob
+from company_division import CompanyDivision
 from health_benefits.benefit_type import BenefitType
 from health_benefits.benefit_plan import BenefitPlan
 from health_benefits.company_benefit_plan_option import CompanyBenefitPlanOption

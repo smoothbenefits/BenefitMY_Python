@@ -7,6 +7,7 @@ class CompanyStdInsuranceEmployeePremiumViewTestCase(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['23_auth_user', '24_person', 'std_insurance',
     '27_compensation_update_reason', '50_employee_compensation', '49_period_definition', '10_company',
+    '79_company_department', '82_company_job', '83_company_division',
     'employee_profile']
 
     def test_get_company_std_insurance_employee_premium_view_success(self):

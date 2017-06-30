@@ -23,7 +23,8 @@ class UserCompanyTestCase(TestCase, ViewTestBase):
 
 
 class CompanyUsersTestCase(TestCase, ViewTestBase):
-    fixtures = ['34_company_user', '49_period_definition', '10_company', '23_auth_user', '24_person', 'employee_profile']
+    fixtures = ['34_company_user', '49_period_definition', '10_company', '23_auth_user', '24_person',
+                '79_company_department', '82_company_job', '83_company_division', 'employee_profile']
 
     def test_get_company_users(self):
         response = self.client.get(reverse('company_users_api',
