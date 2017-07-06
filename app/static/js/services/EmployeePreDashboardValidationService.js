@@ -28,7 +28,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
            OpenEnrollmentDefinitionService){
 
     var getUrlFromState = function(state, stateParams) {
-        return $state.href(state, stateParams).replace('#', '');
+        return $state.href(state, stateParams).replace('#', '').replace('!', '');
     };
 
     var getBasicInfoUrl = function(employeeId){
