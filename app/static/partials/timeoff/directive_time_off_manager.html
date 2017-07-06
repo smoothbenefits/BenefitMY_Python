@@ -31,7 +31,7 @@
           <td>{{request.created}}</td>
           <td>{{getQuotaByTimeOffRequest(request)}}</td>
           <td ng-if="request.actionNeeded">
-            <a ng-click="updateStatus(request, 'APPROVED')">Approve</a> / <a ng-click="updateStatus(request, 'DENIED')">Deny</a>
+            <a ng-click="approveRequest(request)">Approve</a> / <a ng-click="denyRequest(request)">Deny</a>
           </td>
           <td ng-if="!request.actionNeeded">{{request.status}}</td>
         </tr>
