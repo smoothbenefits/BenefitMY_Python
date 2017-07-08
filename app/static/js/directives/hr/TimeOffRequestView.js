@@ -50,8 +50,12 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
 
-    $scope.hasSelfRequests = function() {
-      return $scope.requestedTimeOffs && $scope.requestedTimeOffs.length;
+    $scope.hasPendingRequests = function() {
+        return $scope.pendingRequests && $scope.pendingRequests.length;
+    };
+
+    $scope.hasDecidedRequests = function() {
+        return $scope.decidedRequests && $scope.decidedRequests.length;
     };
 
     $scope.$watch('user', function(theUser){
@@ -60,7 +64,14 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
         // Get existing time off requests
         TimeOffService.GetTimeOffsByRequestor(theUser.id)
         .then(function(timeOffs) {
-          $scope.requestedTimeOffs = timeOffs;
+          if (timeOffs) {
+            $scope.pendingRequests = _.filter(timeOffs, function(request) {
+                return request.status == TimeOffService.TimeoffStatus.Pending;
+            });
+            $scope.decidedRequests = _.filter(timeOffs, function(request) {
+                return request.status != TimeOffService.TimeoffStatus.Pending;
+            });
+          }
         });
 
         var companyId = theUser.company_group_user[0].company_group.company.id;
@@ -107,6 +118,18 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
         return $scope.quotaData 
             && $scope.quotaData.quotaInfoCollection
             && $scope.quotaData.quotaInfoCollection.length > 0;
+    };
+
+    $scope.cancelRequest = function(timeoffRequest) {
+        var confirmMessage = 'Are you sure you want to cancel the time off request?';
+        if (confirm(confirmMessage)) {
+            TimeOffService.UpdateTimeOffStatus(timeoffRequest, TimeOffService.TimeoffStatus.Canceled)
+            .then(function(updatedRequest){
+              $scope.pendingRequests = 
+                _.reject($scope.pendingRequests, {id:updatedRequest.id});
+              $scope.decidedRequests.unshift(updatedRequest);
+            });
+        }
     };
 
     $scope.requestTimeOff = function(){

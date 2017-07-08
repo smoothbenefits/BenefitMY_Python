@@ -54,14 +54,20 @@ BenefitMyApp.controller('TimeOffManagerDirectiveController', [
       return 'N/A';
     };
 
-    $scope.updateStatus = function(request, newStatus){
-      var confirmMessage = 'Are you sure you want to approve the time off request?'
-      if (newStatus === 'DENIED'){
-        confirmMessage = 'Are you sure you want to deny the time off request?'
-      }
+    $scope.denyRequest = function(request) {
+        var confirmMessage = 'Are you sure you want to deny the time off request?';
+        updateRequestStatus(request, TimeOffService.TimeoffStatus.Denied, confirmMessage);
+    };
+
+    $scope.approveRequest = function(request) {
+        var confirmMessage = 'Are you sure you want to approve the time off request?';
+        updateRequestStatus(request, TimeOffService.TimeoffStatus.Approved, confirmMessage);
+    };
+
+    var updateRequestStatus = function(request, newStatus, confirmMessage){
       if(confirm(confirmMessage)){
         request.status = newStatus;
-        TimeOffService.UpdateTimeOffStatus(request)
+        TimeOffService.UpdateTimeOffStatus(request, newStatus)
         .then(function(updatedRequest){
           $scope.pendingRequests = 
             _.reject($scope.pendingRequests, {id:updatedRequest.id});
