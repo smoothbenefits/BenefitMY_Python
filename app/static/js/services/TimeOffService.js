@@ -34,7 +34,8 @@ benefitmyService.factory('TimeOffService',
             Pending: 'PENDING',
             Approved: 'APPROVED',
             Canceled: 'CANCELED',
-            Denied: 'DENIED'
+            Denied: 'DENIED',
+            Revoked: 'REVOKED'
         };
 
         /**

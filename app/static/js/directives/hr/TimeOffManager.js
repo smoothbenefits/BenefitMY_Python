@@ -64,15 +64,30 @@ BenefitMyApp.controller('TimeOffManagerDirectiveController', [
         updateRequestStatus(request, TimeOffService.TimeoffStatus.Approved, confirmMessage);
     };
 
+    $scope.revokeRequest = function(request) {
+        var confirmMessage = 'Are you sure you want to revoke the approval issued on the time off request?\n\nThis will give the deducted hours back to the employee.';
+        updateRequestStatus(request, TimeOffService.TimeoffStatus.Revoked, confirmMessage);
+    };
+
+    $scope.allowRevokeRequest = function(request) {
+        return request.status == TimeOffService.TimeoffStatus.Approved;
+    };
+
     var updateRequestStatus = function(request, newStatus, confirmMessage){
       if(confirm(confirmMessage)){
-        request.status = newStatus;
         TimeOffService.UpdateTimeOffStatus(request, newStatus)
-        .then(function(updatedRequest){
-          $scope.pendingRequests = 
-            _.reject($scope.pendingRequests, {id:updatedRequest.id});
-          $scope.actionedRequests.unshift(updatedRequest);
-        });
+        .then(
+            function(updatedRequest) {
+              $scope.pendingRequests = 
+                _.reject($scope.pendingRequests, {id:updatedRequest.id});
+              $scope.actionedRequests = 
+                _.reject($scope.actionedRequests, {id:updatedRequest.id});
+              $scope.actionedRequests.unshift(updatedRequest);
+            },
+            function(error) {
+                alert('There was a problem updating the status of the timeoff request. Please try again later.');
+            }
+        );
       }
     };
   }

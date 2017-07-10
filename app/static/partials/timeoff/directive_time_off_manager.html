@@ -50,6 +50,7 @@
         <th><span>Duration</span></th>
         <th><span>Date and time created</span></th>
         <th><span>Status</span></th>
+        <th><span>Actions</span></th>
       </thead>
       <tbody>
         <tr ng-repeat="request in actionedRequests">
@@ -59,6 +60,9 @@
           <td>{{request.duration}} hour(s)</td>
           <td>{{request.created}}</td>
           <td>{{request.status}}</td>
+          <td>
+              <a ng-click="revokeRequest(request)" ng-if="allowRevokeRequest(request)">Revoke</a>
+          </td>
         </tr>
       </tbody>
     </table>
