@@ -115,7 +115,8 @@ benefitmyService.factory('TimeOffService',
             'personDescriptor': utilityService.getEnvAwareId(viewModel.requestor.id),
             'firstName': viewModel.requestor.first_name,
             'lastName': viewModel.requestor.last_name,
-            'email': viewModel.requestor.email
+            'email': viewModel.requestor.email,
+            'companyDescriptor': utilityService.getEnvAwareId(viewModel.requestor.companyId)
           }
 
           domainModel.requestor = requestor;

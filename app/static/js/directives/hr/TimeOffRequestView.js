@@ -1,6 +1,6 @@
 BenefitMyApp.controller('TimeOffRequestModalController', [
-  '$scope', '$modalInstance', 'user', 'manager', 'TimeOffService',
-  function($scope, $modalInstance, user, manager, TimeOffService){
+  '$scope', '$modalInstance', 'user', 'manager', 'companyId', 'TimeOffService',
+  function($scope, $modalInstance, user, manager, companyId, TimeOffService){
 
     if (!manager.isHr) {
       $scope.approverName = manager.first_name + ' ' + manager.last_name;
@@ -15,6 +15,8 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
       'approver': manager,
       'requestor': user
     };
+
+    $scope.timeoff.requestor.companyId = companyId;
 
     $scope.cancel = function() {
       $modalInstance.dismiss();
@@ -144,6 +146,9 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
           },
           'manager': function() {
             return $scope.employeeProfile.manager;
+          },
+          'companyId': function() {
+            return $scope.employeeProfile.companyId;
           }
         }
       });
