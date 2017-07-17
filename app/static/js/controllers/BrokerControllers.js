@@ -1805,5 +1805,9 @@ var brokerViewCompanyReportsController = brokersControllers.controller('brokerVi
         $scope.backToDashboard = function() {
           $state.go('/broker');
         };
+
+        $scope.companyEmployeeSummaryEnabled = function(){
+          return true;
+        };
     }
 ]);

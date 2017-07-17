@@ -26,6 +26,10 @@
               dirty="form.end_date.$dirty" />
           </div>
         </div>
+        <div class="alert alert-warning" ng-if="!validateWeekBoundaryForStartDate() || !validateWeekBoundaryForEndDate()">
+            <strong ng-if="!validateWeekBoundaryForStartDate()"><span class="fa fa-warning"></span> Specified start date is not a week start. The start of the week is {{getCorrectedStartDateForDisplay()}}. <br /></strong>
+            <strong ng-if="!validateWeekBoundaryForEndDate()"><span class="fa fa-warning"></span> Specified end date is not a week end. The end of the week is {{getCorrectedEndDateForDisplay()}}.</strong>
+        </div>
     </form>
   </div>
 </div>
