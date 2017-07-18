@@ -6,6 +6,8 @@ from custom_fields.hash_field import HashField
 from sys_period_definition_serializer import SysPeriodDefinitionSerializer
 from app.serializers.person_serializer import PersonSerializer
 from app.serializers.company_department_serializer import CompanyDepartmentSerializer
+from app.serializers.company_job_serializer import CompanyJobSerializer
+from app.serializers.company_division_serializer import CompanyDivisionSerializer
 
 
 class ManagerSerializer(HashPkSerializerBase):
@@ -23,6 +25,8 @@ class EmployeeProfileSerializer(HashPkSerializerBase):
     pay_rate = SysPeriodDefinitionSerializer()
     manager = ManagerSerializer(required=False)
     department = CompanyDepartmentSerializer(required=False)
+    job = CompanyJobSerializer(required=False)
+    division = CompanyDivisionSerializer(required=False)
     class Meta:
         model = EmployeeProfile
 
@@ -38,5 +42,7 @@ class EmployeeProfileWithNameSerializer(HashPkSerializerBase):
     manager = ManagerSerializer(required=False)
     person = PersonSerializer()
     department = CompanyDepartmentSerializer(required=False)
+    job = CompanyJobSerializer(required=False)
+    division = CompanyDivisionSerializer(required=False)
     class Meta:
         model = EmployeeProfile

@@ -41,11 +41,21 @@ benefitmyService.factory('EmployeeProfileService',
             viewModel.manager = employeeProfileDomainModel.manager;
             viewModel.pin = employeeProfileDomainModel.pin;
 
-            if (employeeProfileDomainModel.department && employeeProfileDomainModel.department.department) {
-                viewModel.department = employeeProfileDomainModel.department.department;
-            } else {
-                viewModel.department = "";
-            }
+            viewModel.department = employeeProfileDomainModel.department;
+            viewModel.job = employeeProfileDomainModel.job;
+            viewModel.division = employeeProfileDomainModel.division;
+
+            viewModel.departmentDisplayName = function() {
+                return this.department ? this.department.department : '';
+            };
+
+            viewModel.jobDisplayName = function() {
+                return this.job ? this.job.job : '';
+            };
+
+            viewModel.divisionDisplayName = function() {
+                return this.division ? this.division.division : '';
+            };
 
             // TODO:
             // The below logic is quite cumbersome, but just to get the view model
@@ -87,6 +97,8 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
             domainModel.department = employeeProfileViewModel.department.id;
+            domainModel.job = employeeProfileViewModel.job.id;
+            domainModel.division = employeeProfileViewModel.division.id;
             domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
             domainModel.employee_number = employeeProfileViewModel.employeeNumber;
             domainModel.manager = employeeProfileViewModel.manager ? employeeProfileViewModel.manager.id : null;

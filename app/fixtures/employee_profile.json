@@ -13,7 +13,10 @@
       "annual_base_salary": "140000.00",
       "employment_type": "FullTime",
       "manager": 3,
-      "employee_number": "ABC-012345"
+      "employee_number": "ABC-012345",
+      "department": 1,
+      "job": 2,
+      "division": 1
     },
     "model": "app.employeeprofile",
     "pk": 1
@@ -33,7 +36,10 @@
       "employment_type": "FullTime",
       "manager": null,
       "pin": "1234",
-      "photo_url": "https://www.google.com/"
+      "photo_url": "https://www.google.com/",
+      "department": 1,
+      "job": 1,
+      "division": 2
     },
     "model": "app.employeeprofile",
     "pk": 2

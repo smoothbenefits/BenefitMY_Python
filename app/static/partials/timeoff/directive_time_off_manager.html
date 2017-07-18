@@ -31,7 +31,7 @@
           <td>{{request.created}}</td>
           <td>{{getQuotaByTimeOffRequest(request)}}</td>
           <td ng-if="request.actionNeeded">
-            <a ng-click="updateStatus(request, 'APPROVED')">Approve</a> / <a ng-click="updateStatus(request, 'DENIED')">Deny</a>
+            <a ng-click="approveRequest(request)">Approve</a> / <a ng-click="denyRequest(request)">Deny</a>
           </td>
           <td ng-if="!request.actionNeeded">{{request.status}}</td>
         </tr>
@@ -50,6 +50,7 @@
         <th><span>Duration</span></th>
         <th><span>Date and time created</span></th>
         <th><span>Status</span></th>
+        <th><span>Actions</span></th>
       </thead>
       <tbody>
         <tr ng-repeat="request in actionedRequests">
@@ -59,6 +60,9 @@
           <td>{{request.duration}} hour(s)</td>
           <td>{{request.created}}</td>
           <td>{{request.status}}</td>
+          <td>
+              <a ng-click="revokeRequest(request)" ng-if="allowRevokeRequest(request)">Revoke</a>
+          </td>
         </tr>
       </tbody>
     </table>

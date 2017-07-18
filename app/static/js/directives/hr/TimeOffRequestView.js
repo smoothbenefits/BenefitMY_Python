@@ -1,6 +1,6 @@
 BenefitMyApp.controller('TimeOffRequestModalController', [
-  '$scope', '$modalInstance', 'user', 'manager', 'TimeOffService',
-  function($scope, $modalInstance, user, manager, TimeOffService){
+  '$scope', '$modalInstance', 'user', 'manager', 'companyId', 'TimeOffService',
+  function($scope, $modalInstance, user, manager, companyId, TimeOffService){
 
     if (!manager.isHr) {
       $scope.approverName = manager.first_name + ' ' + manager.last_name;
@@ -15,6 +15,8 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
       'approver': manager,
       'requestor': user
     };
+
+    $scope.timeoff.requestor.companyId = companyId;
 
     $scope.cancel = function() {
       $modalInstance.dismiss();
@@ -50,8 +52,12 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
 
-    $scope.hasSelfRequests = function() {
-      return $scope.requestedTimeOffs && $scope.requestedTimeOffs.length;
+    $scope.hasPendingRequests = function() {
+        return $scope.pendingRequests && $scope.pendingRequests.length;
+    };
+
+    $scope.hasDecidedRequests = function() {
+        return $scope.decidedRequests && $scope.decidedRequests.length;
     };
 
     $scope.$watch('user', function(theUser){
@@ -60,7 +66,14 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
         // Get existing time off requests
         TimeOffService.GetTimeOffsByRequestor(theUser.id)
         .then(function(timeOffs) {
-          $scope.requestedTimeOffs = timeOffs;
+          if (timeOffs) {
+            $scope.pendingRequests = _.filter(timeOffs, function(request) {
+                return request.status == TimeOffService.TimeoffStatus.Pending;
+            });
+            $scope.decidedRequests = _.filter(timeOffs, function(request) {
+                return request.status != TimeOffService.TimeoffStatus.Pending;
+            });
+          }
         });
 
         var companyId = theUser.company_group_user[0].company_group.company.id;
@@ -109,6 +122,18 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
             && $scope.quotaData.quotaInfoCollection.length > 0;
     };
 
+    $scope.cancelRequest = function(timeoffRequest) {
+        var confirmMessage = 'Are you sure you want to cancel the time off request?';
+        if (confirm(confirmMessage)) {
+            TimeOffService.UpdateTimeOffStatus(timeoffRequest, TimeOffService.TimeoffStatus.Canceled)
+            .then(function(updatedRequest){
+              $scope.pendingRequests = 
+                _.reject($scope.pendingRequests, {id:updatedRequest.id});
+              $scope.decidedRequests.unshift(updatedRequest);
+            });
+        }
+    };
+
     $scope.requestTimeOff = function(){
       var modalInstance = $modal.open({
         templateUrl: '/static/partials/timeoff/modal_request_timeoff.html',
@@ -121,6 +146,9 @@ BenefitMyApp.controller('TimeOffRequestModalController', [
           },
           'manager': function() {
             return $scope.employeeProfile.manager;
+          },
+          'companyId': function() {
+            return $scope.employeeProfile.companyId;
           }
         }
       });

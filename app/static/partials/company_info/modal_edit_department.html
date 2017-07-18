@@ -25,9 +25,17 @@
           ng-required="true"/>
         <div class="form-validation-error" ng-show="form.description.$dirty && form.description.$invalid">
             <span ng-show="form.description.$error.required">Description is a required field</span>
-          </div>
         </div>
       </div>
+
+      <div class="form-label">Department Code</div>
+      <div class="textbox">
+        <input type="text"
+          name="code"
+          ng-model="contextDepartment.code"
+          ng-required="false"/>
+      </div>
+
     </form>
   </div>
 </div>

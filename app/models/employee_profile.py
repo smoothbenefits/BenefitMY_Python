@@ -5,6 +5,8 @@ from django.db import models
 from person import Person
 from company import Company
 from company_department import CompanyDepartment
+from company_job import CompanyJob
+from company_division import CompanyDivision
 from sys_period_definition import SysPeriodDefinition
 
 FULL_TIME = 'FullTime'
@@ -58,6 +60,18 @@ class EmployeeProfile(models.Model):
                                    null=True,
                                    on_delete=models.SET_NULL,
                                    related_name="employee_profile_company_department")
+
+    job = models.ForeignKey(CompanyJob,
+                                   blank=True,
+                                   null=True,
+                                   on_delete=models.SET_NULL,
+                                   related_name="employee_profile_company_job")
+
+    division = models.ForeignKey(CompanyDivision,
+                                   blank=True,
+                                   null=True,
+                                   on_delete=models.SET_NULL,
+                                   related_name="employee_profile_company_division")
 
     created_at = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now)
 

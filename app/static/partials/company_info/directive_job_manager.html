@@ -1,0 +1,36 @@
+<div class="content-header">
+  <h1>Manage Jobs</h1>
+  <div class="cta">
+    <span class="btn green" ng-click="openEditModal()">Add A New Job</span>
+  </div>
+  <div class="view-instruction">
+    <p> Please use the <span class="green-link">Add A New Job</span> button to create a new job</p>
+  </div>
+</div><!-- / .content-header -->
+<div class="content-body">
+  <div class="panel" ng-show="hasJobs()">
+    <div class="panel-heading">
+      Jobs
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped" >
+        <thead>
+          <th><span>Name</span></th>
+          <th><span>Description</span></th>
+          <th><span>Code</span></th>
+          <th><span>Action</span></th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="job in companyJobs">
+            <td><a ng-click="openEditModal(job)">{{job.job}}</a></td>
+            <td>{{job.description}}</td>
+            <td>{{job.code}}</td>
+            <td>
+                <span class="btn inline" confirm="{{deleteConfirmMsg}}" ng-click="deleteJob(job)">Delete</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
