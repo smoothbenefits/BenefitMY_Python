@@ -1,5 +1,10 @@
 from rest_framework.views import APIView
-from django.http import Http404
+from django.http import (
+    HttpResponse,
+    Http404,
+    HttpResponseBadRequest,
+    HttpResponseRedirect
+)
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db import transaction
@@ -206,3 +211,25 @@ class DocumentSignatureView(APIView):
         document.save()
         serialized = DocumentSerializer(document)
         return Response(serialized.data)
+
+
+class DocumentDownloadView(APIView):
+
+    def get(self, request, document_id, format=None):
+        document = self._get_document(document_id)
+
+        if (not document.upload):
+            # Being asked to download a document that has no upload
+            # is an invalid request
+            return HttpResponseBadRequest('Specified document does not have an upload. It is not valid for download.')
+
+        if ('pdf' in document.upload.file_type.lower()):
+            print 'This is a PDF'
+
+        return HttpResponseRedirect(document.upload.S3)
+
+    def _get_document(self, document_id):
+        try:
+            return Document.objects.get(pk=document_id)
+        except Document.DoesNotExist:
+            raise Http404

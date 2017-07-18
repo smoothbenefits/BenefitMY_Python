@@ -57,6 +57,7 @@ from app.views.document_view import (
     UserDocumentView,
     DocumentView,
     DocumentSignatureView,
+    DocumentDownloadView,
     documents)
 from app.views.company_templates_view import CompanyTemplatesView
 
@@ -385,6 +386,8 @@ urlpatterns = patterns('app.views',
         CompanyUserTypeDocumentView.as_view()),
     url(r'^%s/documents/(?P<pk>\w+)/?$' % PREFIX, DocumentView.as_view()),
     url(r'^%s/documents/(?P<pk>\w+)/signature/?$' % PREFIX, DocumentSignatureView.as_view()),
+
+    url(r'^%s/documents/(?P<document_id>\w+)/download/?$' % PREFIX, DocumentDownloadView.as_view()),
 
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
     url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
