@@ -418,7 +418,7 @@ benefitmyService.factory('TimePunchCardService',
 
         var GetPunchCardsByCompanyTimeRange = function(companyId, weekStartDate, includeInProgress){
           weekStartDateString = moment(weekStartDate).format(STORAGE_DATE_FORMAT_STRING);
-          weekEndDateString = moment(weekStartDate).add(7, 'days').format(STORAGE_DATE_FORMAT_STRING);
+          weekEndDateString = moment(weekStartDate).endOf('week').format(STORAGE_DATE_FORMAT_STRING);
           return GetPunchCards(
             TimePunchCardRepository.ByCompany,
             companyId,
