@@ -20,6 +20,8 @@ from app.serializers.document_serializer import (
     DocumentSerializer)
 from app.serializers.dtos.key_value_pair_serializer import KeyValuePairSerializer
 from app.service.template_service import TemplateService
+from app.service.signature_service import SignatureService
+from app.service.web_request_service import WebRequestService
 
 
 class DocumentView(APIView):
@@ -223,8 +225,17 @@ class DocumentDownloadView(APIView):
             # is an invalid request
             return HttpResponseBadRequest('Specified document does not have an upload. It is not valid for download.')
 
-        if ('pdf' in document.upload.file_type.lower()):
-            print 'This is a PDF'
+        # Do the additional processing for PDF documents that has been signed
+        if ('pdf' in document.upload.file_type.lower()
+            and document.signature):
+            web_request_service = WebRequestService()
+            signature_service = SignatureService()
+
+            # Get the PDF stream from the URL
+            res = web_request_service.get(document.upload.S3)
+            res.raise_for_status()
+            
+            # Use the signature service to add signature to the
 
         return HttpResponseRedirect(document.upload.S3)
 

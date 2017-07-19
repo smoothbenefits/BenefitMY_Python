@@ -14,57 +14,23 @@ class PdfModificationService(object):
         image_stream,
         image_placements,
         output_stream):
-        self._merge_canvas_to_pdf(
+        image_placement_operation = PDFImagePlacementOperation(image_stream, image_placements)
+        self.modify_pdf_document(
             original_pdf_stream,
-            (lambda canvas: self._draw_image_on_canvas(
-                canvas,
-                image_stream,
-                image_placements
-            )),
+            [image_placement_operation],
             output_stream)
 
-    def _draw_image_on_canvas(
-        self,
-        canvas,
-        image_stream,
-        image_placements):
-
-        # Read in the image to place
-        image = ImageReader(image_stream)
-
-        # Sorts the placements by page number
-        sorted_placements = sorted(image_placements, key=lambda placement: placement.page_number)
-
-        # Now for each of the placement, place the image
-        current_page = 1
-        for image_placement in sorted_placements:
-
-            # Adding page to canvas until got to the page to place the 
-            # next placement
-            while(current_page < image_placement.page_number):
-                canvas.showPage()
-                current_page = current_page + 1
-
-            canvas.drawImage(
-                image,
-                image_placement.left_in_inch * inch,
-                image_placement.bottom_in_inch * inch,
-                image_placement.width_in_inch * inch,
-                image_placement.height_in_inch * inch,
-                preserveAspectRatio=True,
-                mask='auto')
-        
-    def _merge_canvas_to_pdf(self, original_pdf_stream, canvas_operation, output_stream):
-        
+    def modify_pdf_document(self, original_pdf_stream, pdf_operations, output_stream):
         # Create a PDF canvas to hold the target drawing to be merged
         # on to the original
         packet = StringIO.StringIO()
-        can = canvas.Canvas(packet, pagesize=letter)
 
-        # Invoke delegation logic to operate on the canvas
-        # E.g. Draw an image at the desired place on the page
-        canvas_operation(can)
-        can.save()
+        # Invoke PDF operations
+        for pdf_operation in pdf_operations:
+            packet.seek(0)
+            can = canvas.Canvas(packet, pagesize=letter)
+            pdf_operation.apply_to_canvas(can)
+            can.save()
 
         # Move to the beginning of the StringIO buffer
         # And initialize a PDF file reader to read that in
@@ -103,3 +69,55 @@ class ImagePlacement(object):
         self.bottom_in_inch = bottom_in_inch
         self.width_in_inch = width_in_inch
         self.height_in_inch = height_in_inch
+
+
+class PDFOperationBase(object):
+    def __init__(self):
+        pass
+
+    def apply_to_canvas(self, canvas):
+        raise NotImplementedError()
+
+
+class PDFImagePlacementOperation(PDFOperationBase):
+    def __init__(self, image_stream, placements):
+        super(PDFImagePlacementOperation, self).__init__()
+        self.image_stream = image_stream
+        self.placements = placements
+
+    def apply_to_canvas(self, canvas):
+        # Reset position in image cached stream
+        self.image_stream.seek(0)
+
+        # Read in the image to place
+        image = ImageReader(self.image_stream)
+
+        # Sorts the placements by page number
+        sorted_placements = sorted(self.placements, key=lambda placement: placement.page_number)
+
+        # Now for each of the placement, place the image
+        current_page = 1
+        for image_placement in sorted_placements:
+
+            # Adding page to canvas until got to the page to place the 
+            # next placement
+            while(current_page < image_placement.page_number):
+                canvas.showPage()
+                current_page = current_page + 1
+
+            canvas.drawImage(
+                image,
+                image_placement.left_in_inch * inch,
+                image_placement.bottom_in_inch * inch,
+                image_placement.width_in_inch * inch,
+                image_placement.height_in_inch * inch,
+                preserveAspectRatio=True,
+                mask='auto')
+    
+
+class PDFTextPlacementOperation(PDFOperationBase):
+    def __init__(self):
+        super(PDFTextPlacementOperation, self).__init__()
+
+    def apply_to_canvas(self, canvas):
+        raise NotImplementedError()
