@@ -41,19 +41,23 @@ from app.service.life_insurance_service import LifeInsuranceService
 
 User = get_user_model()
 
+import traceback
 
 class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
     def get_all_employees_resport(self, company_id, outputStream):
-        # initialize the canvas
-        self._init_canvas(outputStream)
-        self._write_company(company_id)
-        self._save()
+        try:
+            # initialize the canvas
+            self.pdf_composer.init_canvas(outputStream)
+            self._write_company(company_id)
+            self.pdf_composer.save()
+        except Exception as e:
+            print traceback.format_exc()
 
     def get_employee_report(self, employee_user_id, company_id, outputStream):
-        self._init_canvas(outputStream)
+        self.pdf_composer.init_canvas(outputStream)
         self._write_employee(employee_user_id, company_id)
-        self._save()
+        self.pdf_composer.save()
 
     def _write_company(self, company_id):
         user_ids = self._get_all_employee_user_ids_for_company(company_id)
@@ -87,22 +91,19 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         if company_group:
             company_group_id = company_group.id
 
-        # set the common configuration on the page
-        self._init_page()
-
         # Write title of the page
         title = self._get_page_title(company_id)
-        self._set_font(14)
-        self._write_line([title])
-        self._start_new_line()
+        self.pdf_composer.set_font(14)
+        self.pdf_composer.write_line([title])
+        self.pdf_composer.start_new_line()
 
         # Write full name of the employee being rendered
-        self._set_font(12)
+        self.pdf_composer.set_font(12)
         full_name = self._get_person_full_name(person, user)
-        self._write_line([full_name])
+        self.pdf_composer.write_line([full_name])
 
-        self._start_new_line()
-        self._set_font(10)
+        self.pdf_composer.start_new_line()
+        self.pdf_composer.set_font(10)
 
         # Write employee type and address
         self._write_employee_meta_info(person, company_group)
@@ -119,15 +120,15 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         self._write_employee_commuter_info(person, company_group_id)
 
         # extra space between main sections
-        self._start_new_line()
-        self._start_new_line()
+        self.pdf_composer.start_new_line()
+        self.pdf_composer.start_new_line()
 
         # Now move onto documents
         self._write_employee_all_documents_info(user)
 
         # end the current page for the current employ
         # and start a new one for the next
-        self._start_new_page()
+        self.pdf_composer.start_new_page()
 
         return
 
@@ -150,28 +151,28 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             width_array.append(0.2)
 
         if meta_info:
-            self._write_line_uniform_width(meta_info, width_array)
+            self.pdf_composer.write_line_uniform_width(meta_info, width_array)
 
         if employee_address:
             address = "{} {}, {} {} {}".format(employee_address.street_1, employee_address.street_2, employee_address.city, employee_address.state, employee_address.zipcode)
-            self._write_line_uniform_width([address])
-            self._start_new_line()
+            self.pdf_composer.write_line_uniform_width([address])
+            self.pdf_composer.start_new_line()
 
     def _write_not_selected_plan(self, benefit_name):
         # Render header
-        self._write_line_uniform_width([benefit_name])
-        self._draw_line()
-        self._write_line_uniform_width(['Not Selected'])
-        self._start_new_line()
-        self._start_new_line()
+        self.pdf_composer.write_line_uniform_width([benefit_name])
+        self.pdf_composer.draw_line()
+        self.pdf_composer.write_line_uniform_width(['Not Selected'])
+        self.pdf_composer.start_new_line()
+        self.pdf_composer.start_new_line()
 
     def _write_waived_plan(self, benefit_name):
         # Render header
-        self._write_line_uniform_width([benefit_name])
-        self._draw_line()
-        self._write_line_uniform_width(['Waived'])
-        self._start_new_line()
-        self._start_new_line()
+        self.pdf_composer.write_line_uniform_width([benefit_name])
+        self.pdf_composer.draw_line()
+        self.pdf_composer.write_line_uniform_width(['Waived'])
+        self.pdf_composer.start_new_line()
+        self.pdf_composer.start_new_line()
 
     def _get_beneficiary_tier(self, tier_number):
         if tier_number == '1':
@@ -183,17 +184,17 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
         if not beneficiaries:
             return
 
-        self._write_line_uniform_width([' ', '{} Beneficiaries:'.format(plan_name)], [0.1, 0.9])
-        self._start_new_line()
+        self.pdf_composer.write_line_uniform_width([' ', '{} Beneficiaries:'.format(plan_name)], [0.1, 0.9])
+        self.pdf_composer.start_new_line()
         column_width_dists = [0.1, 0.1, 0.1, 0.1, 0.15, 0.2, 0.15, 0.1]
-        self._write_line_uniform_width([' ', 'Tier', 'First Name', 'Last Name', 'Relationship', 'Email', 'Phone', 'Percentage'], column_width_dists)
-        self._draw_line(56)
+        self.pdf_composer.write_line_uniform_width([' ', 'Tier', 'First Name', 'Last Name', 'Relationship', 'Email', 'Phone', 'Percentage'], column_width_dists)
+        self.pdf_composer.draw_line(56)
         for beneficiary in beneficiaries:
-            self._write_line_uniform_width([' ', '{}'.format(self._get_beneficiary_tier(beneficiary.tier)), beneficiary.first_name, beneficiary.last_name, beneficiary.relationship, beneficiary.email, beneficiary.phone, beneficiary.percentage],
+            self.pdf_composer.write_line_uniform_width([' ', '{}'.format(self._get_beneficiary_tier(beneficiary.tier)), beneficiary.first_name, beneficiary.last_name, beneficiary.relationship, beneficiary.email, beneficiary.phone, beneficiary.percentage],
                                                column_width_dists)
 
-        self._start_new_line()
-        self._start_new_line()
+        self.pdf_composer.start_new_line()
+        self.pdf_composer.start_new_line()
 
     def _write_employee_all_health_benefits_info(self, user_model, company_group_id):
         user_benefit_plan_options = UserCompanyBenefitPlanOption.objects.filter(user=user_model.id)
@@ -216,10 +217,10 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             column_width_dists = [0.45, 0.35, 0.2]
 
             # Render header
-            self._write_line_uniform_width(
+            self.pdf_composer.write_line_uniform_width(
                 [benefit_type + ' Plan', 'Enrolled Members', 'Employee Premium'],
                 column_width_dists)
-            self._draw_line()
+            self.pdf_composer.draw_line()
 
             user_benefit_option = user_benefit_options[0]
             company_plan_option = user_benefit_option.benefit
@@ -238,22 +239,22 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 relationship = enrolled_member.person.relationship
                 text_block[1].append(relationship + ': ' + member_name)
 
-            self._write_block_uniform_width(text_block, column_width_dists)
-            self._start_new_line()
-            self._start_new_line()
+            self.pdf_composer.write_block_uniform_width(text_block, column_width_dists)
+            self.pdf_composer.start_new_line()
+            self.pdf_composer.start_new_line()
 
         elif len(user_waived_benefit) > 0:
             # Render header
-            self._write_line_uniform_width([benefit_type + ' Plan', 'Waive Reason'])
-            self._draw_line()
+            self.pdf_composer.write_line_uniform_width([benefit_type + ' Plan', 'Waive Reason'])
+            self.pdf_composer.draw_line()
 
             user_waived = user_waived_benefit[0]
 
-            self._write_line_uniform_width([
+            self.pdf_composer.write_line_uniform_width([
                 'Waived',
                 user_waived.reason])
-            self._start_new_line()
-            self._start_new_line()
+            self.pdf_composer.start_new_line()
+            self.pdf_composer.start_new_line()
 
         elif len(company_plan_options) > 0:
             self._write_not_selected_plan(benefit_type + ' Plan')
@@ -270,9 +271,9 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             if (employee_plan.company_life_insurance):
                 # Render header
                 column_width_dists = [0.45, 0.35, 0.2]
-                self._write_line_uniform_width(['Basic Life (AD&D)', 'Coverage', 'Employee Premium'],
+                self.pdf_composer.write_line_uniform_width(['Basic Life (AD&D)', 'Coverage', 'Employee Premium'],
                                                column_width_dists)
-                self._draw_line()
+                self.pdf_composer.draw_line()
 
                 company_plan = employee_plan.company_life_insurance
                 plan = company_plan.life_insurance_plan
@@ -282,10 +283,10 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 # Convert employee premium to per pay period from per month
                 month_factor = employee_plan.company_life_insurance.company.pay_period_definition.month_factor
                 employee_premium = "${:.2f}".format(float(cost.employee_cost) * month_factor)
-                self._write_line_uniform_width([plan.name, cost.benefit_amount, employee_premium],
+                self.pdf_composer.write_line_uniform_width([plan.name, cost.benefit_amount, employee_premium],
                                                column_width_dists)
-                self._start_new_line()
-                self._start_new_line()
+                self.pdf_composer.start_new_line()
+                self.pdf_composer.start_new_line()
                 beneficiaries = employee_plan.life_insurance_beneficiary.all().order_by('tier')
                 self._write_beneficiaries('Basic Life (AD&D)', beneficiaries)
             else:
@@ -306,14 +307,14 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 plan = employee_plans[0]
                 if plan.company_hra_plan:
                     # Render header
-                    self._write_line_uniform_width(['HRA Plan', 'Description'])
-                    self._draw_line()
-                    self._write_line_uniform_width([
+                    self.pdf_composer.write_line_uniform_width(['HRA Plan', 'Description'])
+                    self.pdf_composer.draw_line()
+                    self.pdf_composer.write_line_uniform_width([
                         plan.company_hra_plan.hra_plan.name,
                         plan.company_hra_plan.hra_plan.description])
 
-                    self._start_new_line()
-                    self._start_new_line()
+                    self.pdf_composer.start_new_line()
+                    self.pdf_composer.start_new_line()
                 else:
                     self._write_waived_plan('HRA Plan')
 
@@ -333,8 +334,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
                 if plan.company_supplemental_life_insurance_plan:
                     # Render header
-                    self._write_line_uniform_width(['Suppl. Life Plan', 'Coverage Target', 'Elected Amount', 'Premium', 'Condition'])
-                    self._draw_line()
+                    self.pdf_composer.write_line_uniform_width(['Suppl. Life Plan', 'Coverage Target', 'Elected Amount', 'Premium', 'Condition'])
+                    self.pdf_composer.draw_line()
 
                     text_block = [[],[],[],[],[]]
                     text_block[0].append(plan.company_supplemental_life_insurance_plan.supplemental_life_insurance_plan.name)
@@ -355,10 +356,10 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                     text_block[4].append(plan.spouse_condition.name)
                     text_block[4].append('N/A')
 
-                    self._write_block_uniform_width(text_block)
+                    self.pdf_composer.write_block_uniform_width(text_block)
 
-                    self._start_new_line()
-                    self._start_new_line()
+                    self.pdf_composer.start_new_line()
+                    self.pdf_composer.start_new_line()
 
                     beneficiaries = plan.suppl_life_insurance_beneficiary.all().order_by('tier')
                     self._write_beneficiaries('Suppl. Life Plan', beneficiaries)
@@ -378,17 +379,17 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
             if employee_plan.company_std_insurance:
                 # Render header
-                self._write_line_uniform_width(['STD Plan', 'Employee Premium'])
-                self._draw_line()
+                self.pdf_composer.write_line_uniform_width(['STD Plan', 'Employee Premium'])
+                self.pdf_composer.draw_line()
 
                 company_plan = employee_plan.company_std_insurance
                 plan = company_plan.std_insurance_plan
                 # get the premium
                 disability_service = DisabilityInsuranceService(company_plan)
                 employee_premium = disability_service.get_employee_premium(employee_plan.total_premium_per_month)
-                self._write_line_uniform_width([plan.name, "${:.2f}".format(employee_premium)])
-                self._start_new_line()
-                self._start_new_line()
+                self.pdf_composer.write_line_uniform_width([plan.name, "${:.2f}".format(employee_premium)])
+                self.pdf_composer.start_new_line()
+                self.pdf_composer.start_new_line()
             else:
                 self._write_waived_plan('STD Plan')
         elif company_plans:
@@ -403,17 +404,17 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             employee_plan = employee_plans[0]
             if employee_plan.company_ltd_insurance:
                 # Render header
-                self._write_line_uniform_width(['LTD Plan', 'Employee Premium'])
-                self._draw_line()
+                self.pdf_composer.write_line_uniform_width(['LTD Plan', 'Employee Premium'])
+                self.pdf_composer.draw_line()
                 company_plan = employee_plan.company_ltd_insurance
 
                 # get the premium
                 disability_service = DisabilityInsuranceService(company_plan)
                 employee_premium = disability_service.get_employee_premium(employee_plan.total_premium_per_month)
                 plan = company_plan.ltd_insurance_plan
-                self._write_line_uniform_width([plan.name, "${:.2f}".format(employee_premium)])
-                self._start_new_line()
-                self._start_new_line()
+                self.pdf_composer.write_line_uniform_width([plan.name, "${:.2f}".format(employee_premium)])
+                self.pdf_composer.start_new_line()
+                self.pdf_composer.start_new_line()
             else:
                 self._write_waived_plan('LTD Plan')
         elif company_plans:
@@ -428,8 +429,8 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
             fsa = fsas[0]
             if (fsa.company_fsa_plan):
                 # Render header
-                self._write_line_uniform_width(['FSA Account Type', 'Elected Annual Amount', 'Paycheck Withhold'])
-                self._draw_line()
+                self.pdf_composer.write_line_uniform_width(['FSA Account Type', 'Elected Annual Amount', 'Paycheck Withhold'])
+                self.pdf_composer.draw_line()
 
                 month_factor = fsa.company_fsa_plan.company.pay_period_definition.month_factor
                 primary_amount = 0
@@ -438,11 +439,11 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 dependent_amount = 0
                 if (fsa.dependent_amount_per_year):
                     dependent_amount = fsa.dependent_amount_per_year
-                self._write_line_uniform_width(['Health Account', primary_amount, "${:.2f}".format(float(primary_amount) / 12 * month_factor)])
-                self._write_line_uniform_width(['Dependent Care Account', dependent_amount, "${:.2f}".format(float(dependent_amount) / 12 * month_factor)])
+                self.pdf_composer.write_line_uniform_width(['Health Account', primary_amount, "${:.2f}".format(float(primary_amount) / 12 * month_factor)])
+                self.pdf_composer.write_line_uniform_width(['Dependent Care Account', dependent_amount, "${:.2f}".format(float(dependent_amount) / 12 * month_factor)])
 
-                self._start_new_line()
-                self._start_new_line()
+                self.pdf_composer.start_new_line()
+                self.pdf_composer.start_new_line()
             else:
                 self._write_waived_plan('Flexible Spending Account')
         elif company_plans:
@@ -460,15 +461,15 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 plan_selected = True
                 if (plan.company_hsa_plan):
                     # Render header
-                    self._write_line_uniform_width(['HSA Plan', 'Selected Amount Per Year'])
-                    self._draw_line()
+                    self.pdf_composer.write_line_uniform_width(['HSA Plan', 'Selected Amount Per Year'])
+                    self.pdf_composer.draw_line()
 
-                    self._write_line_uniform_width([
+                    self.pdf_composer.write_line_uniform_width([
                         plan.company_hsa_plan.name,
                         self._normalize_dollar_amount(plan.amount_per_year)])
 
-                    self._start_new_line()
-                    self._start_new_line()
+                    self.pdf_composer.start_new_line()
+                    self.pdf_composer.start_new_line()
                 else:
                     self._write_waived_plan('Health Savings Account')
         if not plan_selected and group_plans:
@@ -485,20 +486,20 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
                 plan_selected = True
                 # Render header
                 # Split onto
-                self._write_line_uniform_width(['Commuter Plan', 'Transit/Month', 'Transit/Month', 'Parking/Month', 'Parking/Month'])
-                self._write_line_uniform_width(['', '(Pre-Tax)', '(Post-Tax)', '(Pre-Tax)', '(Post-Tax)'])
-                self._draw_line()
+                self.pdf_composer.write_line_uniform_width(['Commuter Plan', 'Transit/Month', 'Transit/Month', 'Parking/Month', 'Parking/Month'])
+                self.pdf_composer.write_line_uniform_width(['', '(Pre-Tax)', '(Post-Tax)', '(Pre-Tax)', '(Post-Tax)'])
+                self.pdf_composer.draw_line()
 
                 plan = employee_plans[0]
-                self._write_line_uniform_width([
+                self.pdf_composer.write_line_uniform_width([
                     plan.company_commuter_plan.plan_name,
                     self._normalize_dollar_amount(plan.monthly_amount_transit_pre_tax),
                     self._normalize_dollar_amount(plan.monthly_amount_transit_post_tax),
                     self._normalize_dollar_amount(plan.monthly_amount_parking_pre_tax),
                     self._normalize_dollar_amount(plan.monthly_amount_parking_post_tax)])
 
-                self._start_new_line()
-                self._start_new_line()
+                self.pdf_composer.start_new_line()
+                self.pdf_composer.start_new_line()
 
         if not plan_selected and company_plans:
             self._write_not_selected_plan('Commuter Plan')
@@ -508,11 +509,11 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
     def _write_employee_all_documents_info(self, user_model):
         documents = Document.objects.filter(user=user_model.id)
         if (len(documents) > 0):
-            self._write_line(['Documents:'])
-            self._draw_line()
+            self.pdf_composer.write_line(['Documents:'])
+            self.pdf_composer.draw_line()
 
             for document in documents:
-                self._write_line_uniform_width([
+                self.pdf_composer.write_line_uniform_width([
                     document.name,
                     'Signed' if document.signature is not None else 'Not Signed',
                     self._get_date_string(document.signature.created_at) if document.signature is not None else ''
