@@ -1,9 +1,9 @@
 from pyPdf import PdfFileWriter, PdfFileReader
+from app.service.Report.pdf_compose_service import (
+    PdfComposeService,
+    PlacementBounds
+)
 import StringIO
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A4, letter
-from reportlab.lib.units import inch
-from reportlab.lib.utils import ImageReader
 
 
 class PdfModificationService(object):
@@ -15,22 +15,52 @@ class PdfModificationService(object):
         image_placements,
         output_stream):
         image_placement_operation = PDFImagePlacementOperation(image_stream, image_placements)
-        self.modify_pdf_document(
+        self.modify_pdf_document_with_operation(
             original_pdf_stream,
-            [image_placement_operation],
+            image_placement_operation,
             output_stream)
 
-    def modify_pdf_document(self, original_pdf_stream, pdf_operations, output_stream):
+    def append_to_pdf_document(self, original_pdf_stream, pdf_composer_callback, output_stream):
+        self._internal_modify_pdf_document(
+            original_pdf_stream,
+            lambda pdf_composer: self._advance_pdf_composer_page_for_append(original_pdf_stream, pdf_composer),
+            pdf_composer_callback,
+            output_stream
+        )
+
+    def _advance_pdf_composer_page_for_append(self, original_pdf_stream, pdf_composer):
+        original_pdf_stream.seek(0)
+        original_pdf = PdfFileReader(original_pdf_stream)
+
+        for page_index in range(0, original_pdf.numPages):
+            pdf_composer.start_new_page()
+
+    def modify_pdf_document(self, original_pdf_stream, pdf_composer_callback, output_stream):
+        self._internal_modify_pdf_document(
+            original_pdf_stream,
+            lambda pdf_composer: None,
+            pdf_composer_callback,
+            output_stream
+        )
+        
+    def modify_pdf_document_with_operation(self, original_pdf_stream, pdf_operation, output_stream):
+        self.modify_pdf_document(
+            original_pdf_stream,
+            lambda pdf_composer: pdf_operation.write_to_pdf(pdf_composer),
+            output_stream)
+
+    def _internal_modify_pdf_document(self, original_pdf_stream, pdf_composer_preconfig, pdf_composer_callback, output_stream):
         # Create a PDF canvas to hold the target drawing to be merged
         # on to the original
         packet = StringIO.StringIO()
 
-        # Invoke PDF operations
-        for pdf_operation in pdf_operations:
-            packet.seek(0)
-            can = canvas.Canvas(packet, pagesize=letter)
-            pdf_operation.apply_to_canvas(can)
-            can.save()
+        # Manipulate the PDF composer to apply modifications
+        packet.seek(0)
+        pdf_composer = PdfComposeService()
+        pdf_composer.init_canvas(packet)
+        pdf_composer_preconfig(pdf_composer)
+        pdf_composer_callback(pdf_composer)
+        pdf_composer.save()
 
         # Move to the beginning of the StringIO buffer
         # And initialize a PDF file reader to read that in
@@ -39,6 +69,7 @@ class PdfModificationService(object):
         source_pdf = PdfFileReader(packet)
 
         # Now read in the destination/original PDF as the merge target
+        original_pdf_stream.seek(0)
         original_pdf = PdfFileReader(original_pdf_stream)
 
         # Now create the output PDF as the merge result holder
@@ -53,6 +84,13 @@ class PdfModificationService(object):
                 page.mergePage(source_pdf.getPage(page_index))
             output_pdf.addPage(page)
 
+        # If the modification doc has more pages than the original
+        # also just append them to the resultant document
+        for page_index in range(0, source_pdf.numPages):
+            if (page_index >= original_pdf.numPages):
+                page = source_pdf.getPage(page_index)
+                output_pdf.addPage(page)
+
         # Finally, write the result PDF to the given output stream
         output_pdf.write(output_stream)
 
@@ -65,17 +103,19 @@ class PdfModificationService(object):
 class ImagePlacement(object):
     def __init__(self, page_number, left_in_inch, bottom_in_inch, width_in_inch, height_in_inch):
         self.page_number = page_number
-        self.left_in_inch = left_in_inch
-        self.bottom_in_inch = bottom_in_inch
-        self.width_in_inch = width_in_inch
-        self.height_in_inch = height_in_inch
+        self.placement_bounds = PlacementBounds(
+            left_in_inch,
+            bottom_in_inch,
+            width_in_inch,
+            height_in_inch
+        )
 
 
 class PDFOperationBase(object):
     def __init__(self):
         pass
 
-    def apply_to_canvas(self, canvas):
+    def write_to_pdf(self, pdf_composer):
         raise NotImplementedError()
 
 
@@ -85,13 +125,7 @@ class PDFImagePlacementOperation(PDFOperationBase):
         self.image_stream = image_stream
         self.placements = placements
 
-    def apply_to_canvas(self, canvas):
-        # Reset position in image cached stream
-        self.image_stream.seek(0)
-
-        # Read in the image to place
-        image = ImageReader(self.image_stream)
-
+    def write_to_pdf(self, pdf_composer):
         # Sorts the placements by page number
         sorted_placements = sorted(self.placements, key=lambda placement: placement.page_number)
 
@@ -102,22 +136,7 @@ class PDFImagePlacementOperation(PDFOperationBase):
             # Adding page to canvas until got to the page to place the 
             # next placement
             while(current_page < image_placement.page_number):
-                canvas.showPage()
+                pdf_composer.start_new_page()
                 current_page = current_page + 1
 
-            canvas.drawImage(
-                image,
-                image_placement.left_in_inch * inch,
-                image_placement.bottom_in_inch * inch,
-                image_placement.width_in_inch * inch,
-                image_placement.height_in_inch * inch,
-                preserveAspectRatio=True,
-                mask='auto')
-    
-
-class PDFTextPlacementOperation(PDFOperationBase):
-    def __init__(self):
-        super(PDFTextPlacementOperation, self).__init__()
-
-    def apply_to_canvas(self, canvas):
-        raise NotImplementedError()
+            pdf_composer.place_image(self.image_stream, image_placement.placement_bounds)

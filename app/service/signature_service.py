@@ -8,9 +8,9 @@ from app.models.signature import Signature
 from app.service.Report.pdf_modification_service import (
     PdfModificationService,
     ImagePlacement,
-    PDFImagePlacementOperation,
-    PDFTextPlacementOperation
+    PDFImagePlacementOperation
 )
+from app.factory.report_view_model_factory import ReportViewModelFactory
 
 User = get_user_model()
 
@@ -90,19 +90,46 @@ class SignatureService(object):
 
     def append_signature_page(
         self,
-        signature_model,
+        pdf_stream,
+        user_id,
         signature_date,
         output_stream):
         # get signature image
-        signature_image_stream = self.get_user_signature_image_stream_from_signature_model(signature_model)
+        signature_image_stream = self.get_user_signature_image_stream(user_id)
         if (not signature_image_stream):
             return
 
         # get signature owner's full name
+        view_model_factory = ReportViewModelFactory()
+        person_info = view_model_factory.get_employee_person_info(user_id)
+        full_name = person_info.get_full_name()
 
-        # Modify the PDF 
+        # get date display text
+        date_text = signature_date.strftime("%m/%d/%Y")
+
+        # Modify the PDF
+        pdf_modification_service = PdfModificationService()
+        pdf_modification_service.append_to_pdf_document(
+            pdf_stream,
+            lambda pdf_composer: self._write_signature_page(pdf_composer, signature_image_stream, full_name, date_text),
+            output_stream
+        )
+
         return
 
+    def _write_signature_page(self, pdf_composer, signature_image_stream, full_name, date_text):
+        pdf_composer.set_font(22)
+        pdf_composer.write_line(['Signature Page'])
+        pdf_composer.draw_line()
+        pdf_composer.start_new_line()
+
+        pdf_composer.set_font(14)
+        pdf_composer.write_line(['Full Name:   ', full_name])
+        pdf_composer.start_new_line()
+        pdf_composer.write_line(['Signature: '])
+        pdf_composer.draw_image(signature_image_stream, 3.0, 1.5)
+        pdf_composer.start_new_line()
+        pdf_composer.write_line(['Date:   ', date_text])
 
 ''' A class to hold constants representing the pre-identified list
     of placements for signature onto various of PDF forms

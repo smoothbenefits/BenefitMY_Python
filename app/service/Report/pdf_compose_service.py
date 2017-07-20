@@ -1,6 +1,8 @@
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.pdfmetrics import stringWidth
+from reportlab.lib.utils import ImageReader
+from reportlab.lib.units import inch
 
 
 class PdfComposeService(object):
@@ -53,7 +55,14 @@ class PdfComposeService(object):
         return
 
     def start_new_line(self):
-        self.__start_new_line_internal(self._line_height)
+        line_height = max(self._font_size, self._line_height)
+        self.__start_new_line_internal(line_height)
+
+    def write_text(self, text, trail_spacing=10):
+        text = self._normalize_text(text)
+        self._canvas.drawString(self._translate_X(self._current_X), self._translate_Y(self._current_Y), text)
+        self._current_X = self._current_X + self._get_text_width(text) + trail_spacing
+        return
 
     def write_line_uniform_width(self, text_items, segment_length_fractions=None):
         if text_items is None or len(text_items) <= 0:
@@ -97,7 +106,7 @@ class PdfComposeService(object):
             self.start_new_line()
 
         for text in text_items:
-            self._write_text(text)
+            self.write_text(text)
 
         # End this line and move to next
         self.start_new_line()
@@ -151,6 +160,49 @@ class PdfComposeService(object):
 
         return
 
+    def draw_image(self, image_stream, image_width_in_inch, image_height_in_inch, preserveAspectRatio=True):
+        # limit the image size to not go beyond the writable area
+        image_width_in_pt = min(self._inch_to_pt(image_width_in_inch), self._write_area_width)
+        image_height_in_pt = min(self._inch_to_pt(image_height_in_inch), self._write_area_height)
+
+        # Now preseve space for the image
+        self.__start_new_line_internal(image_height_in_pt)
+
+        self.place_image(
+            image_stream,
+            PlacementBounds(
+                self._pt_to_inch(self._translate_X(self._current_X)),
+                self._pt_to_inch(self._translate_Y(self._current_Y)),
+                self._pt_to_inch(image_width_in_pt),
+                self._pt_to_inch(image_height_in_pt)
+            ),
+            preserveAspectRatio)
+
+        # Move to a new line
+        self._current_X = self._current_X + image_width_in_pt + 20.0
+
+    def place_image(self, image_stream, placement_bounds, preserveAspectRatio=True):
+        image_stream.seek(0)
+
+        # Read in the image to place
+        image = ImageReader(image_stream)
+
+        # Now place the image onto the current canvas
+        self._canvas.drawImage(
+            image,
+            placement_bounds.left_in_inch * inch,
+            placement_bounds.bottom_in_inch * inch,
+            placement_bounds.width_in_inch * inch,
+            placement_bounds.height_in_inch * inch,
+            preserveAspectRatio=preserveAspectRatio,
+            mask='auto')
+
+    def _pt_to_inch(self, value_in_pt):
+        return value_in_pt / 72.0
+
+    def _inch_to_pt(self, value_in_inch):
+        return value_in_inch * 72.0
+
     def _normalize_text(self, text):
         result = text
         if (text is None):
@@ -190,8 +242,10 @@ class PdfComposeService(object):
             self.start_new_page()
         return
 
-    def _write_text(self, text, trail_spacing=10):
-        text = self._normalize_text(text)
-        self._canvas.drawString(self._translate_X(self._current_X), self._translate_Y(self._current_Y), text)
-        self._current_X = self._current_X + self._get_text_width(text) + trail_spacing
-        return
+
+class PlacementBounds(object):
+    def __init__(self, left_in_inch, bottom_in_inch, width_in_inch, height_in_inch):
+        self.left_in_inch = left_in_inch
+        self.bottom_in_inch = bottom_in_inch
+        self.width_in_inch = width_in_inch
+        self.height_in_inch = height_in_inch

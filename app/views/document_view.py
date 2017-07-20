@@ -1,3 +1,5 @@
+import StringIO
+
 from rest_framework.views import APIView
 from django.http import (
     HttpResponse,
@@ -234,8 +236,22 @@ class DocumentDownloadView(APIView):
             # Get the PDF stream from the URL
             res = web_request_service.get(document.upload.S3)
             res.raise_for_status()
-            
-            # Use the signature service to add signature to the
+            pdf_stream = StringIO.StringIO(res.content)
+
+            # Construct the response
+            file_name = 'Signed_{}'.format(document.upload.file_name)
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="{}"'.format(file_name)
+   
+            # Use the signature service to add signature page
+            signature_service.append_signature_page(
+                pdf_stream,
+                document.user.id,
+                document.updated_at,
+                response
+            )
+
+            return response
 
         return HttpResponseRedirect(document.upload.S3)
 

@@ -41,18 +41,14 @@ from app.service.life_insurance_service import LifeInsuranceService
 
 User = get_user_model()
 
-import traceback
 
 class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
     def get_all_employees_resport(self, company_id, outputStream):
-        try:
-            # initialize the canvas
-            self.pdf_composer.init_canvas(outputStream)
-            self._write_company(company_id)
-            self.pdf_composer.save()
-        except Exception as e:
-            print traceback.format_exc()
+        # initialize the canvas
+        self.pdf_composer.init_canvas(outputStream)
+        self._write_company(company_id)
+        self.pdf_composer.save()
 
     def get_employee_report(self, employee_user_id, company_id, outputStream):
         self.pdf_composer.init_canvas(outputStream)
