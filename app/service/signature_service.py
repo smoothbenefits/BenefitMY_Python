@@ -124,6 +124,9 @@ class SignatureService(object):
         pdf_composer.start_new_line()
 
         pdf_composer.set_font(14)
+        pdf_composer.write_line(['I acknowledge that I have received a copy of the above document.'])
+        pdf_composer.write_line(['My signature means that I have read and understand the document.'])
+        pdf_composer.start_new_line()
         pdf_composer.write_line(['Full Name:   ', full_name])
         pdf_composer.start_new_line()
         pdf_composer.write_line(['Signature: '])
