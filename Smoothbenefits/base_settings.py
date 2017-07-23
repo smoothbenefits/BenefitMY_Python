@@ -77,7 +77,7 @@ TEMPLATES = [
         'APP_DIRS': True,
     },
     {
-        'BACKEND': 'app.service.report.pdf_tk_engine.PdftkEngine',
+        'BACKEND': 'app.service.pdf_processing.pdf_tk_engine.PdftkEngine',
         'APP_DIRS': True,
     },
 ]

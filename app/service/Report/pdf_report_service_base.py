@@ -1,10 +1,9 @@
 from report_service_base import ReportServiceBase
-from app.service.Report.pdf_compose_service import PdfComposeService
 
 
 class PdfReportServiceBase(ReportServiceBase):
     def __init__(self):
-        self.pdf_composer = PdfComposeService()
+        pass
 
     def _normalize_dollar_amount(self, text):
         result = text

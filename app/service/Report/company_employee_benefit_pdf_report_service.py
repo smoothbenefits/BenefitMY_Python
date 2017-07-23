@@ -38,6 +38,7 @@ from app.models.document import Document
 
 from app.service.disability_insurance_service import DisabilityInsuranceService
 from app.service.life_insurance_service import LifeInsuranceService
+from app.service.pdf_processing.pdf_composer import PdfComposer
 
 User = get_user_model()
 
@@ -46,12 +47,12 @@ class CompanyEmployeeBenefitPdfReportService(PdfReportServiceBase):
 
     def get_all_employees_resport(self, company_id, outputStream):
         # initialize the canvas
-        self.pdf_composer.init_canvas(outputStream)
+        self.pdf_composer = PdfComposer(outputStream)
         self._write_company(company_id)
         self.pdf_composer.save()
 
     def get_employee_report(self, employee_user_id, company_id, outputStream):
-        self.pdf_composer.init_canvas(outputStream)
+        self.pdf_composer = PdfComposer(outputStream)
         self._write_employee(employee_user_id, company_id)
         self.pdf_composer.save()
 

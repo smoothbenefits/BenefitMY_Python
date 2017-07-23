@@ -5,8 +5,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from app.models.signature import Signature
-from app.service.Report.pdf_modification_service import (
-    PdfModificationService,
+from app.service.pdf_processing.pdf_modifier import (
+    PdfModifier,
     ImagePlacement,
     PDFImagePlacementOperation
 )
@@ -75,14 +75,13 @@ class SignatureService(object):
         if (signature_image_stream):
             # Utilize the PDF modification service to place the signature 
             # onto the form
-            pdf_modification_service = PdfModificationService()
+            pdf_modifier = PdfModifier(pdf_stream)
 
             # Place the signature image onto the PDF form
-            pdf_modification_service.place_image(
-                pdf_stream,
-                signature_image_stream,
-                signature_placements,
-                output_stream)
+            image_placement_operation = PDFImagePlacementOperation(signature_image_stream, signature_placements)
+            pdf_modifier \
+                .with_modification_operations([image_placement_operation]) \
+                .build_output_pdf(output_stream)
 
             return True
 
@@ -108,16 +107,19 @@ class SignatureService(object):
         date_text = signature_date.strftime("%m/%d/%Y")
 
         # Modify the PDF
-        pdf_modification_service = PdfModificationService()
-        pdf_modification_service.append_to_pdf_document(
-            pdf_stream,
-            lambda pdf_composer: self._write_signature_page(pdf_composer, signature_image_stream, full_name, date_text),
-            output_stream
-        )
+        pdf_modifier = PdfModifier(pdf_stream)
+        original_pdf_num_pages = pdf_modifier.get_num_pages_in_original()
+        pdf_modifier \
+            .with_modifications(lambda pdf_composer: self._write_signature_page(pdf_composer, original_pdf_num_pages, signature_image_stream, full_name, date_text)) \
+            .build_output_pdf(output_stream)
 
         return
 
-    def _write_signature_page(self, pdf_composer, signature_image_stream, full_name, date_text):
+    def _write_signature_page(self, pdf_composer, page_num, signature_image_stream, full_name, date_text):
+        # first, move pdf_composer to the right page
+        for page_index in range(0, page_num):
+            pdf_composer.start_new_page()
+
         pdf_composer.set_font(22)
         pdf_composer.write_line(['Signature Page'])
         pdf_composer.draw_line()

@@ -1,76 +1,56 @@
 from pyPdf import PdfFileWriter, PdfFileReader
-from app.service.Report.pdf_compose_service import (
-    PdfComposeService,
+from app.service.pdf_processing.pdf_composer import (
+    PdfComposer,
     PlacementBounds
 )
 import StringIO
 
+''' A utility class to apply modifications to an existing 
+    PDF file (stream), with a builder pattern
+'''
+class PdfModifier(object):
+    def __init__(self, original_pdf_stream):
+        self._original_pdf_stream = original_pdf_stream
+        self._original_pdf_stream.seek(0)
 
-class PdfModificationService(object):
+        # initialize a buffer stream to compose the modification
+        # that to be merged later
+        self._modification_stream = StringIO.StringIO()
 
-    def place_image(
-        self,
-        original_pdf_stream,
-        image_stream,
-        image_placements,
-        output_stream):
-        image_placement_operation = PDFImagePlacementOperation(image_stream, image_placements)
-        self.modify_pdf_document_with_operation(
-            original_pdf_stream,
-            image_placement_operation,
-            output_stream)
+    ''' Apply specified list of operations to the PDF
+        @param modification_operations list of predefined PDF operations
+               (concrete implementations of 'PDFOperationBase')
+    '''
+    def with_modification_operations(self, modification_operations):
+        for modification_operation in modification_operations:
+            # start a new composer and apply the operation logic
+            # polymophically 
+            pdf_composer = self._init_pdf_composer()
+            modification_operation.write_to_pdf(pdf_composer)
+            pdf_composer.save()
 
-    def append_to_pdf_document(self, original_pdf_stream, pdf_composer_callback, output_stream):
-        self._internal_modify_pdf_document(
-            original_pdf_stream,
-            lambda pdf_composer: self._advance_pdf_composer_page_for_append(original_pdf_stream, pdf_composer),
-            pdf_composer_callback,
-            output_stream
-        )
+        return self
 
-    def _advance_pdf_composer_page_for_append(self, original_pdf_stream, pdf_composer):
-        original_pdf_stream.seek(0)
-        original_pdf = PdfFileReader(original_pdf_stream)
-
-        for page_index in range(0, original_pdf.numPages):
-            pdf_composer.start_new_page()
-
-    def modify_pdf_document(self, original_pdf_stream, pdf_composer_callback, output_stream):
-        self._internal_modify_pdf_document(
-            original_pdf_stream,
-            lambda pdf_composer: None,
-            pdf_composer_callback,
-            output_stream
-        )
-        
-    def modify_pdf_document_with_operation(self, original_pdf_stream, pdf_operation, output_stream):
-        self.modify_pdf_document(
-            original_pdf_stream,
-            lambda pdf_composer: pdf_operation.write_to_pdf(pdf_composer),
-            output_stream)
-
-    def _internal_modify_pdf_document(self, original_pdf_stream, pdf_composer_preconfig, pdf_composer_callback, output_stream):
-        # Create a PDF canvas to hold the target drawing to be merged
-        # on to the original
-        packet = StringIO.StringIO()
-
-        # Manipulate the PDF composer to apply modifications
-        packet.seek(0)
-        pdf_composer = PdfComposeService()
-        pdf_composer.init_canvas(packet)
-        pdf_composer_preconfig(pdf_composer)
+    def with_modifications(self, pdf_composer_callback):
+        pdf_composer = self._init_pdf_composer()
         pdf_composer_callback(pdf_composer)
         pdf_composer.save()
+
+        return self
+
+    ''' The output method of the builder, to actually  
+    '''
+    def build_output_pdf(self, output_stream):
 
         # Move to the beginning of the StringIO buffer
         # And initialize a PDF file reader to read that in
         # as source asset PDF to be merged into the original 
-        packet.seek(0)
-        source_pdf = PdfFileReader(packet)
+        self._modification_stream.seek(0)
+        source_pdf = PdfFileReader(self._modification_stream)
 
         # Now read in the destination/original PDF as the merge target
-        original_pdf_stream.seek(0)
-        original_pdf = PdfFileReader(original_pdf_stream)
+        self._original_pdf_stream.seek(0)
+        original_pdf = PdfFileReader(self._original_pdf_stream)
 
         # Now create the output PDF as the merge result holder
         output_pdf = PdfFileWriter()
@@ -93,6 +73,15 @@ class PdfModificationService(object):
 
         # Finally, write the result PDF to the given output stream
         output_pdf.write(output_stream)
+
+    def get_num_pages_in_original(self):
+        self._original_pdf_stream.seek(0)
+        original_pdf = PdfFileReader(self._original_pdf_stream)
+        return original_pdf.numPages
+
+    def _init_pdf_composer(self):
+        self._modification_stream.seek(0)
+        return PdfComposer(self._modification_stream)
 
 
 ''' A class representing an image placement(bounds) on PDF

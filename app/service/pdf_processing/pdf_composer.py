@@ -5,7 +5,7 @@ from reportlab.lib.utils import ImageReader
 from reportlab.lib.units import inch
 
 
-class PdfComposeService(object):
+class PdfComposer(object):
     _page_margin_left_right = 25
     _page_margin_top_bottom = 35
     _line_height = 12
@@ -24,16 +24,8 @@ class PdfComposeService(object):
 
     _canvas = None
 
-    def init_canvas(self, output_stream):
-        if self._canvas is None:
-            self._canvas = canvas.Canvas(output_stream, pagesize=letter)
-            self._width, self._height = letter
-            self._write_area_width = self._width - self._page_margin_left_right * 2.0
-            self._write_area_height = self._height - self._page_margin_top_bottom * 2.0
-
-            #Setup page common properties
-            self._init_page()
-        return
+    def __init__(self, output_stream):
+        self._init_canvas(output_stream)
 
     def set_font(self, font_size):
         if font_size > 0:
@@ -196,6 +188,17 @@ class PdfComposeService(object):
             placement_bounds.height_in_inch * inch,
             preserveAspectRatio=preserveAspectRatio,
             mask='auto')
+
+    def _init_canvas(self, output_stream):
+        if self._canvas is None:
+            self._canvas = canvas.Canvas(output_stream, pagesize=letter)
+            self._width, self._height = letter
+            self._write_area_width = self._width - self._page_margin_left_right * 2.0
+            self._write_area_height = self._height - self._page_margin_top_bottom * 2.0
+
+            #Setup page common properties
+            self._init_page()
+        return
 
     def _pt_to_inch(self, value_in_pt):
         return value_in_pt / 72.0
