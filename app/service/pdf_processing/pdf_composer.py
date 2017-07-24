@@ -5,6 +5,10 @@ from reportlab.lib.utils import ImageReader
 from reportlab.lib.units import inch
 
 
+''' Facility to allow creation of PDF files from scrach.
+    Provides common actions to enable the composure of 
+    PDF contents line by line and page by page.
+'''
 class PdfComposer(object):
     _page_margin_left_right = 25
     _page_margin_top_bottom = 35
