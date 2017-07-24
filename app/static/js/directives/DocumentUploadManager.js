@@ -91,6 +91,12 @@ BenefitMyApp.directive('bmdocumentuploadmanager',
               handleUploadArea($scope.uploadManager.files);
             });
 
+            $scope.getDownloadUrl = function(uploadFile) {
+                return uploadFile.documentDownloadUrl
+                    ? uploadFile.documentDownloadUrl
+                    : uploadFile.S3;
+            };
+
             if ('templateId' in $attrs) {
                 $attrs.$observe('templateId', function(templateId) {
                     $scope.uploadManager.uploadedFiles = [];
@@ -111,7 +117,9 @@ BenefitMyApp.directive('bmdocumentuploadmanager',
                         DocumentService.getDocumentById($attrs.documentId)
                           .then(function(document){
                             if (document && document.upload) {
-                                $scope.uploadManager.uploadedFiles.push(document.upload);
+                                var uploadToAdd = angular.copy(document.upload);
+                                uploadToAdd.documentDownloadUrl = document.downloadUrl;
+                                $scope.uploadManager.uploadedFiles.push(uploadToAdd);
                             }
                         });
                     }

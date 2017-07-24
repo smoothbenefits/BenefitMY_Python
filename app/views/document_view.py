@@ -1,5 +1,12 @@
+import StringIO
+
 from rest_framework.views import APIView
-from django.http import Http404
+from django.http import (
+    HttpResponse,
+    Http404,
+    HttpResponseBadRequest,
+    HttpResponseRedirect
+)
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db import transaction
@@ -15,6 +22,8 @@ from app.serializers.document_serializer import (
     DocumentSerializer)
 from app.serializers.dtos.key_value_pair_serializer import KeyValuePairSerializer
 from app.service.template_service import TemplateService
+from app.service.signature_service import SignatureService
+from app.service.web_request_service import WebRequestService
 
 
 class DocumentView(APIView):
@@ -206,3 +215,48 @@ class DocumentSignatureView(APIView):
         document.save()
         serialized = DocumentSerializer(document)
         return Response(serialized.data)
+
+
+class DocumentDownloadView(APIView):
+
+    def get(self, request, document_id, format=None):
+        document = self._get_document(document_id)
+
+        if (not document.upload):
+            # Being asked to download a document that has no upload
+            # is an invalid request
+            return HttpResponseBadRequest('Specified document does not have an upload. It is not valid for download.')
+
+        # Do the additional processing for PDF documents that has been signed
+        if ('pdf' in document.upload.file_type.lower()
+            and document.signature):
+            web_request_service = WebRequestService()
+            signature_service = SignatureService()
+
+            # Get the PDF stream from the URL
+            res = web_request_service.get(document.upload.S3)
+            res.raise_for_status()
+            pdf_stream = StringIO.StringIO(res.content)
+
+            # Construct the response
+            file_name = 'Signed_{}'.format(document.upload.file_name)
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="{}"'.format(file_name)
+   
+            # Use the signature service to add signature page
+            signature_service.append_signature_page(
+                pdf_stream,
+                document.user.id,
+                document.updated_at,
+                response
+            )
+
+            return response
+
+        return HttpResponseRedirect(document.upload.S3)
+
+    def _get_document(self, document_id):
+        try:
+            return Document.objects.get(pk=document_id)
+        except Document.DoesNotExist:
+            raise Http404
