@@ -1,4 +1,6 @@
 from datetime import date
+from dateutil import rrule
+import json
 
 from django.contrib.auth import get_user_model
 
@@ -23,6 +25,9 @@ from app.service.Report.csv_report_service_base import CsvReportServiceBase
 
 User = get_user_model()
 OVERTIME_PAY_CODE = 'OT'
+PAID_TIME_OFF_CODE = 'PTO'
+SICK_TIME_CODE = 'SICK'
+SALARY_EMPLOYEE_HOURS_PER_DAY = 8
 
 class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
     
@@ -40,12 +45,13 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         self.view_model_factory = ReportViewModelFactory()
         self.time_punch_card_service = TimePunchCardService()
         self.integration_provider_service = IntegrationProviderService()
+        self.week_days = 0
 
     def get_report(self, company_id, period_start, period_end, outputStream):
         ap_client_id = self._get_ap_client_number(company_id)
         if (not ap_client_id):
             raise ValueError('The company is not properly configured to integrate with Advantage Payroll service!')
-
+        self.week_days = self._get_week_day_number(period_start, period_end)
         self._write_company(company_id, period_start, period_end)
         self._save(outputStream)
 
@@ -90,31 +96,67 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
             or not employee_profile_info):
             return
 
-        # Per discussion with AP, the time tracking/payrol reporting
-        # can omit salaried employees for now
-        if (employee_profile_info and employee_profile_info.pay_type == PAY_TYPE_SALARY):
-            return
-
-        user_hours = None
-        if (employee_user_id in employees_reported_hours):
-            user_hours = employees_reported_hours[employee_user_id]
-
 
         row_data = self._get_hours_row_base(
                 employee_user_id,
                 person_info,
                 employee_profile_info)
-        if user_hours:
-            row_data['work_hours'] = self._normalize_decimal_number(user_hours.paid_hours)
+        
+        user_hours = None
+        if (employee_user_id in employees_reported_hours):
+            user_hours = employees_reported_hours[employee_user_id]
+        
+        # First, let's write the hours worked
+        if (employee_profile_info and employee_profile_info.pay_type == PAY_TYPE_SALARY):
+            salary_hours = SALARY_EMPLOYEE_HOURS_PER_DAY * self.week_days
+            if(user_hours):
+                # if we have PTO or Sick time cards for salary employees, remove those hours
+                salary_hours -= user_hours.paid_time_off_hours
+                salary_hours -= user_hours.sick_time_hours
+            row_data['work_hours'] = self._normalize_decimal_number(salary_hours)
+        else:
+            if user_hours:
+                row_data['work_hours'] = self._normalize_decimal_number(user_hours.paid_hours)
+            else:
+                row_data['work_hours'] = 0.0
         self._write_row(row_data)
 
-        if user_hours and user_hours.overtime_hours and user_hours.overtime_hours > 0:
+        if user_hours:
+            # Write the hours worked over time
+            self._write_hours_for_type(
+                user_hours.overtime_hours,
+                OVERTIME_PAY_CODE,
+                employee_user_id,
+                person_info,
+                employee_profile_info
+            )
+
+            # Write the hours took off for vacations
+            self._write_hours_for_type(
+                user_hours.paid_time_off_hours,
+                PAID_TIME_OFF_CODE,
+                employee_user_id,
+                person_info,
+                employee_profile_info
+            )
+
+            # Write the hours took off for sick
+            self._write_hours_for_type(
+                user_hours.sick_time_hours,
+                SICK_TIME_CODE,
+                employee_user_id,
+                person_info,
+                employee_profile_info
+            )
+
+    def _write_hours_for_type(self, hours, pay_code, employee_user_id, person_info, employee_profile_info):
+        if hours and hours > 0:
             row_data = self._get_hours_row_base(
                 employee_user_id,
                 person_info,
                 employee_profile_info)
-            row_data['pay_type_code'] = OVERTIME_PAY_CODE
-            row_data['work_hours'] = self._normalize_decimal_number(user_hours.overtime_hours)
+            row_data['pay_type_code'] = pay_code
+            row_data['work_hours'] = self._normalize_decimal_number(hours)
             self._write_row(row_data)
 
     def _write_row(self, row_data):
@@ -157,11 +199,8 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         return row_data
 
     def _get_employee_pay_rate(self, employee_profile_info):
-        if (employee_profile_info.current_pay_period_salary):
-            return employee_profile_info.current_pay_period_salary
-        elif (employee_profile_info.current_hourly_rate):
+        if (employee_profile_info.pay_type == PAY_TYPE_HOURLY and employee_profile_info.current_hourly_rate):
             return employee_profile_info.current_hourly_rate
-
         return ''
 
     def _get_employee_pay_type_code(self, employee_pay_type):
@@ -177,3 +216,15 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         if (decimal_number == 0 or decimal_number):
             result = "{:.2f}".format(float(decimal_number))
         return result
+
+    def _get_week_day_number(self, start, end):
+        # The solution below comes from 
+        # http://coding.derkeiler.com/Archive/Python/comp.lang.python/2004-09/3758.html
+        dates=rrule.rruleset() # create an rrule.rruleset instance 
+        dates.rrule(rrule.rrule(rrule.DAILY, dtstart=start, until=end)) 
+                     # this set is INCLUSIVE of alpha and omega 
+        dates.exrule(rrule.rrule(rrule.DAILY, 
+                                byweekday=(rrule.SA, rrule.SU), 
+                                dtstart=start)) 
+        # here's where we exclude the weekend dates 
+        return len(list(dates)) # there's probably a faster way to handle this 

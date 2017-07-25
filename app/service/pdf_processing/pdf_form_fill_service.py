@@ -3,6 +3,9 @@ import StringIO
 from pdf_tk_engine import get_template
 
 
+''' Facility to allow filling PDF-based forms with specified data
+    programmatically. 
+'''
 class PDFFormFillService(object):
 
     def get_filled_form_stream(self, template_name, field_map):

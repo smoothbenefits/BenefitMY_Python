@@ -45,6 +45,12 @@ benefitmyService.factory('TimePunchCardService',
                 punchCard.start = null;
                 punchCard.end = null;
             }
+
+            if (punchCard.end && punchCard.date){
+                // Make sure the end date is within the same date of the punchCard date
+                var updatedTime = moment(punchCard.end);
+                punchCard.end = moment(punchCard.date).hour(updatedTime.hour()).minute(updatedTime.minute());
+            }
         };
 
         var PunchCardTypeBehaviors = {
