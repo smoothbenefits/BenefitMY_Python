@@ -11,10 +11,26 @@
     <div class="col-md-8 col-md-offset-2">
       <div class='panel'>
         <div class='panel-heading' ng-click="departmentInfoExpanded = !departmentInfoExpanded">
-          <b class="clickable"><span class="fa fa-toggle-down"></span>Departments</b>
+          <b class="clickable"><span class="fa fa-toggle-down"></span> Departments</b>
         </div>
         <div class="panel-body" collapse="!departmentInfoExpanded">
           <bm-department-manager company-id="companyId"></bm-department-manager>
+        </div>
+      </div>
+      <div class='panel'>
+        <div class='panel-heading' ng-click="jobInfoExpanded = !jobInfoExpanded">
+          <b class="clickable"><span class="fa fa-toggle-down"></span> Jobs</b>
+        </div>
+        <div class="panel-body" collapse="!jobInfoExpanded">
+          <bm-job-manager company-id="companyId"></bm-job-manager>
+        </div>
+      </div>
+      <div class='panel'>
+        <div class='panel-heading' ng-click="divisionInfoExpanded = !divisionInfoExpanded">
+          <b class="clickable"><span class="fa fa-toggle-down"></span> Divisions</b>
+        </div>
+        <div class="panel-body" collapse="!divisionInfoExpanded">
+          <bm-division-manager company-id="companyId"></bm-division-manager>
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ from datetime import date
 from django.http import HttpResponse
 from django.http import Http404
 
-from app.service.Report.pdf_form_fill_service import PDFFormFillService
+from app.service.pdf_processing.pdf_form_fill_service import PDFFormFillService
 from ...report_export_view_base import ReportExportViewBase
 from app.factory.report_view_model_factory import ReportViewModelFactory
 

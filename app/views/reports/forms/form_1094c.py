@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 from app.models.aca.company_1094_c_member_info import ELIGIBILITY_CERTIFICATIONS
 from app.models.aca.company_1094_c_monthly_member_info import PERIODS
-from app.service.Report.pdf_form_fill_service import PDFFormFillService
+from app.service.pdf_processing.pdf_form_fill_service import PDFFormFillService
 from ..report_export_view_base import ReportExportViewBase
 from app.factory.report_view_model_factory import ReportViewModelFactory
 

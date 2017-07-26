@@ -39,7 +39,7 @@
         <td class="file-icon" style="text-align:center">
           <div ng-class="file.file_type.replace('/', '-')">&nbsp;</div>
         </td>
-        <td width="250" style="text-align:center"><a ng-href="{{file.S3}}" target="_blank">{{file.file_name}}</a></td>
+        <td width="250" style="text-align:center"><a ng-href="{{getDownloadUrl(file)}}" target="_blank">{{file.file_name}}</a></td>
         <td width="180" style="text-align:center" ng-show="!viewOnlyMode">
           <a href="javascript:void(0)" ng-click="uploadManager.deleteS3File(file)">Delete</a>
         </td>

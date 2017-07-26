@@ -39,6 +39,11 @@ benefitmyService.factory('DocumentService',
                 viewModel.signature.createTimeForDisplay = moment(viewModel.signature.created_at).format(DATE_TIME_FORMAT_STRING);
             }
 
+            // Attach document download link if it is appropriate
+            if (viewModel.upload) {
+                viewModel.downloadUrl = '/api/v1/documents/' + viewModel.id + '/download';
+            }
+
             return viewModel;
         };
 

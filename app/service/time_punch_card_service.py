@@ -102,6 +102,10 @@ class TimePunchCardService(object):
                     # Once we found which week this card belongs to, operate on the week hours object
                     if (card.card_type == PUNCH_CARD_TYPE_PERSONAL_LEAVE):
                         week_aggregate['hours'].unpaid_hours += card.get_punch_card_hours()
+                    elif (card.card_type == PUNCH_CARD_TYPE_PAID_TIME_OFF):
+                        week_aggregate['hours'].paid_time_off_hours += card.get_punch_card_hours()
+                    elif (card.card_type == PUNCH_CARD_TYPE_SICK_TIME):
+                        week_aggregate['hours'].sick_time_hours += card.get_punch_card_hours()
                     elif(card.card_type == PUNCH_CARD_TYPE_COMPANY_HOLIDAY):
                         # For now, since by design we don't track a start and end time for
                         # company holiday cards, assume a 8 hours counted towards paid hours
@@ -118,5 +122,7 @@ class TimePunchCardService(object):
                 user_hours.paid_hours +=week_aggregate['hours'].paid_hours
                 user_hours.unpaid_hours += week_aggregate['hours'].unpaid_hours
                 user_hours.overtime_hours += week_aggregate['hours'].overtime_hours
+                user_hours.paid_time_off_hours += week_aggregate['hours'].paid_time_off_hours
+                user_hours.sick_time_hours += week_aggregate['hours'].sick_time_hours
             result_dict[user_id] = user_hours
         return result_dict

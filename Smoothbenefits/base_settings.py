@@ -77,7 +77,7 @@ TEMPLATES = [
         'APP_DIRS': True,
     },
     {
-        'BACKEND': 'app.service.report.pdf_tk_engine.PdftkEngine',
+        'BACKEND': 'app.service.pdf_processing.pdf_tk_engine.PdftkEngine',
         'APP_DIRS': True,
     },
 ]
@@ -271,6 +271,8 @@ PIPELINE_JS = {
             'js/directives/CredentialUpdate.js',
             'js/directives/FileDownloadLink.js',
             'js/directives/hr/CompanyDepartmentManager.js',
+            'js/directives/hr/CompanyJobManager.js',
+            'js/directives/hr/CompanyDivisionManager.js',
             'js/directives/hr/TimeOffManager.js',
             'js/directives/hr/TimeOffRequestView.js',
             'js/directives/hr/TimesheetReportDownloadView.js',
@@ -301,6 +303,8 @@ PIPELINE_JS = {
             'js/services/BenefitElectionService.js',
             'js/services/CompanyService.js',
             'js/services/CompanyDepartmentService.js',
+            'js/services/CompanyJobService.js',
+            'js/services/CompanyDivisionService.js',
             'js/services/CompanyFeatureService.js',
             'js/services/CompanyEmployeeSummaryService.js',
             'js/services/CompanyServiceProviderService.js',

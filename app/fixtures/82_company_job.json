@@ -1,0 +1,37 @@
+[
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company": 1,
+      "job": "HR Manager",
+      "description": "Manager position in HR Department",
+      "code": "HRM"
+    },
+    "model": "app.companyjob",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company": 1,
+      "job": "Software Engineer",
+      "description": "Software Engineer of Research and Development department"
+    },
+    "model": "app.companyjob",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "created_at": "2015-01-24T16:16:02.760Z",
+      "updated_at": "2015-05-04T16:56:09.765Z",
+      "company": 1,
+      "job": "Sr. Marketer",
+      "description": "Senior Marketer in Marketing and Sales department",
+      "code": "SR-M"
+    },
+    "model": "app.companyjob",
+    "pk": 3
+  }
+]

@@ -53,7 +53,6 @@ class TimePunchCard(object):
     def get_punch_card_hours(self):
         if (self.start is not None and self.end is not None):
             return self.date_time_service.get_time_diff_in_hours(self.start, self.end, 2)
-
         return 0.0
 
     def get_card_day_of_week_iso(self):

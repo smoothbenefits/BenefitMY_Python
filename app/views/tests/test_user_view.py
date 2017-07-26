@@ -20,6 +20,7 @@ class UserViewTestCase(TestCase, ViewTestBase):
                 '12_phone',
                 '34_company_user',
                 '61_company_group',
+                '79_company_department', '82_company_job', '83_company_division',
                 'employee_profile']
 
     def setUp(self):

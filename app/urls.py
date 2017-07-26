@@ -57,6 +57,7 @@ from app.views.document_view import (
     UserDocumentView,
     DocumentView,
     DocumentSignatureView,
+    DocumentDownloadView,
     documents)
 from app.views.company_templates_view import CompanyTemplatesView
 
@@ -272,6 +273,12 @@ from app.views.workers_comp.employee_phraseology_view import (
 from app.views.company_department_view import (
     CompanyDepartmentView,
     CompanyDepartmentByCompanyView)
+from app.views.company_job_view import (
+    CompanyJobView,
+    CompanyJobByCompanyView)
+from app.views.company_division_view import (
+    CompanyDivisionView,
+    CompanyDivisionByCompanyView)
 
 # Integrations
 
@@ -379,6 +386,8 @@ urlpatterns = patterns('app.views',
         CompanyUserTypeDocumentView.as_view()),
     url(r'^%s/documents/(?P<pk>\w+)/?$' % PREFIX, DocumentView.as_view()),
     url(r'^%s/documents/(?P<pk>\w+)/signature/?$' % PREFIX, DocumentSignatureView.as_view()),
+
+    url(r'^%s/documents/(?P<document_id>\w+)/download/?$' % PREFIX, DocumentDownloadView.as_view()),
 
     url(r'^%s/direct_deposit/(?P<pk>\w+)/?$' % PREFIX, DirectDepositView.as_view(), name='direct_deposit_api'),
     url(r'^%s/application_features/?$' % PREFIX, SysApplicationFeatureView.as_view(), name='sys_application_feature_api'),
@@ -750,6 +759,20 @@ urlpatterns = patterns('app.views',
         CompanyDepartmentView.as_view(), name='company_department_post_api'),
     url(r'^%s/company/(?P<company_id>\w+)/departments/?$' % PREFIX,
         CompanyDepartmentByCompanyView.as_view(), name='company_department_by_company_api'),
+
+    url(r'^%s/company_jobs/(?P<pk>\w+)/?$' % PREFIX,
+        CompanyJobView.as_view(), name='company_job_api'),
+    url(r'^%s/company_jobs/?$' % PREFIX,
+        CompanyJobView.as_view(), name='company_job_post_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/jobs/?$' % PREFIX,
+        CompanyJobByCompanyView.as_view(), name='company_job_by_company_api'),
+
+    url(r'^%s/company_divisions/(?P<pk>\w+)/?$' % PREFIX,
+        CompanyDivisionView.as_view(), name='company_division_api'),
+    url(r'^%s/company_divisions/?$' % PREFIX,
+        CompanyDivisionView.as_view(), name='company_division_post_api'),
+    url(r'^%s/company/(?P<company_id>\w+)/divisions/?$' % PREFIX,
+        CompanyDivisionByCompanyView.as_view(), name='company_division_by_company_api'),    
 
     # Integration
 

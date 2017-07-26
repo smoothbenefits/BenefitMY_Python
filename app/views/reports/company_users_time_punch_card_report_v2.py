@@ -149,7 +149,11 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
         return blank_data
 
     def _merge_punch_card_data_to_full_set(self, punch_card, all_states_sheets_data):
-        state_data = all_states_sheets_data[punch_card.state]
+        state_data = None
+        if (punch_card.state): 
+            state_data = all_states_sheets_data[punch_card.state]
+        else:
+            state_data = all_states_sheets_data[TIME_PUNCH_CARD_NON_SPECIFIED_STATE]
         card_type = punch_card.card_type
         if (card_type in CARD_TYPES):
             card_type_data = state_data[card_type]

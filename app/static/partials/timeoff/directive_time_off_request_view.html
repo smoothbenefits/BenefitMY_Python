@@ -26,14 +26,39 @@
       </tbody>
     </table>
   </div><!-- TimeOff Limit Table -->
-  <div class="panel" ng-if="!hasSelfRequests()">
+  <div class="panel" ng-if="!hasPendingRequests() && !hasDecidedRequests()">
     <div class="panel-body">
         There are no time requested. <a ng-click="requestTimeOff()">Click here</a> to make a time off request.
     </div>
   </div>
-  <div class="table-responsive" ng-if="hasSelfRequests()">
+  <div class="table-responsive" ng-if="hasPendingRequests()">
     <div class="table-title">
-      Timeoff Requested
+      Pending Timeoff Requests
+    </div>
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Type</span></th>
+        <th><span>Start</span></th>
+        <th><span>Duration</span></th>
+        <th><span>Approver Email</span></th>
+        <th><span>Date and time created</span></th>
+        <th><span>Actions</span></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="timeOff in pendingRequests">
+          <td>{{timeOff.type}}</td>
+          <td>{{timeOff.start}}</td>
+          <td>{{timeOff.duration}} hour(s)</td>
+          <td>{{timeOff.approver}}</td>
+          <td>{{timeOff.created}}</td>
+          <td><a ng-click="cancelRequest(timeOff)">Cancel</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div> <!-- TimeOff Request Result Table -->
+  <div class="table-responsive" ng-if="hasDecidedRequests()">
+    <div class="table-title">
+      Decided Timeoff Requests
     </div>
     <table class="table table-striped" >
       <thead>
@@ -42,16 +67,16 @@
         <th><span>Duration</span></th>
         <th><span>Status</span></th>
         <th><span>Approver Email</span></th>
-        <th><span>Date and time created</span></th>
+        <th><span>Decision Time</span></th>
       </thead>
       <tbody>
-        <tr ng-repeat="timeOff in requestedTimeOffs">
+        <tr ng-repeat="timeOff in decidedRequests">
           <td>{{timeOff.type}}</td>
           <td>{{timeOff.start}}</td>
           <td>{{timeOff.duration}} hour(s)</td>
           <td>{{timeOff.status}}</td>
           <td>{{timeOff.approver}}</td>
-          <td>{{timeOff.created}}</td>
+          <td>{{timeOff.decisionTime}}</td>
         </tr>
       </tbody>
     </table>

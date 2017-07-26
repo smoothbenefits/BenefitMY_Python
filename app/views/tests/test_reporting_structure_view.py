@@ -8,6 +8,7 @@ from view_test_base import ViewTestBase
 class DirectReportsViewTest(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['24_person',
+                '79_company_department', '82_company_job', '83_company_division',
                 'employee_profile',
                 '49_period_definition',
                 '10_company',
@@ -64,6 +65,7 @@ class DirectReportsViewTest(TestCase, ViewTestBase):
 class DirectReportCountViewTest(TestCase, ViewTestBase):
     # your fixture files here
     fixtures = ['24_person',
+                '79_company_department', '82_company_job', '83_company_division',
                 'employee_profile',
                 '49_period_definition',
                 '10_company',

@@ -5,7 +5,8 @@
       "updated_at": "2015-05-04T16:56:09.765Z",
       "company": 1,
       "department": "Human Resources",
-      "description": "Human Resources"
+      "description": "Human Resources",
+      "code": "HR"
     },
     "model": "app.companydepartment",
     "pk": 1
@@ -27,7 +28,8 @@
       "updated_at": "2015-05-04T16:56:09.765Z",
       "company": 1,
       "department": "Marketing and Sales",
-      "description": "Marketing and Sales"
+      "description": "Marketing and Sales",
+      "code": "M&S"
     },
     "model": "app.companydepartment",
     "pk": 3

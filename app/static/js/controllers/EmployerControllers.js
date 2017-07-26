@@ -1427,6 +1427,8 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
    '$modal',
    '$modalInstance',
    'CompanyDepartmentService',
+   'CompanyJobService',
+   'CompanyDivisionService',
    'EmployeeProfileService',
    'employeeProfileModel',
    'companyId',
@@ -1434,6 +1436,8 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
              $modal,
              $modalInstance,
              CompanyDepartmentService,
+             CompanyJobService,
+             CompanyDivisionService,
              EmployeeProfileService,
              employeeProfileModel,
              companyId){
@@ -1451,6 +1455,16 @@ var editEmployeeProfileModalController = employersController.controller('editEmp
       CompanyDepartmentService.GetCompanyDepartments(companyId)
       .then(function (companyDepartments) {
         $scope.companyDepartments = companyDepartments;
+      });
+
+      CompanyJobService.GetCompanyJobs(companyId)
+      .then(function (companyJobs) {
+        $scope.companyJobs = companyJobs;
+      });
+
+      CompanyDivisionService.GetCompanyDivisions(companyId)
+      .then(function (companyDivisions) {
+        $scope.companyDivisions = companyDivisions;
       });
 
       EmployeeProfileService.initializeCompanyEmployees(companyId);
@@ -2458,5 +2472,11 @@ var employerCompanyInfoController = employersController.controller('EmployerComp
       $scope.companyId = $stateParams.company_id;
 
       $scope.departmentInfoExpanded = true;
+      $scope.jobInfoExpanded = false;
+      $scope.divisionInfoExpanded = false;
+
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      };
     }
 ]);

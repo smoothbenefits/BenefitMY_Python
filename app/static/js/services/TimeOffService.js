@@ -29,6 +29,15 @@ benefitmyService.factory('TimeOffService',
             Hourly: 'Hourly'
         };
 
+        // Available statuses
+        var TimeoffStatus = {
+            Pending: 'PENDING',
+            Approved: 'APPROVED',
+            Canceled: 'CANCELED',
+            Denied: 'DENIED',
+            Revoked: 'REVOKED'
+        };
+
         /**
             Get the list of available time off types.
             TODO:
@@ -72,7 +81,7 @@ benefitmyService.factory('TimeOffService',
                 created: moment(domainModel.requestTimestamp).format(DATE_TIME_FORMAT_STRING),
                 requestor: domainModel.requestor,
                 approver: domainModel.approver.email,
-                actionNeeded: domainModel.status.toLowerCase() == 'pending',
+                actionNeeded: domainModel.status.toLowerCase() == TimeoffStatus.Pending.toLowerCase(),
                 decisionTime: moment(domainModel.decisionTimestamp).format(DATE_TIME_FORMAT_STRING)
             };
             return viewModel;
@@ -96,7 +105,7 @@ benefitmyService.factory('TimeOffService',
 
         var mapViewModelToDomainModel = function(viewModel) {
           var domainModel = {
-            'status': 'PENDING',
+            'status': TimeoffStatus.Pending,
             'startDateTime': viewModel.starting_date,
             'type': viewModel.type,
             'duration': viewModel.duration,
@@ -106,7 +115,8 @@ benefitmyService.factory('TimeOffService',
             'personDescriptor': utilityService.getEnvAwareId(viewModel.requestor.id),
             'firstName': viewModel.requestor.first_name,
             'lastName': viewModel.requestor.last_name,
-            'email': viewModel.requestor.email
+            'email': viewModel.requestor.email,
+            'companyDescriptor': utilityService.getEnvAwareId(viewModel.requestor.companyId)
           }
 
           domainModel.requestor = requestor;
@@ -144,8 +154,8 @@ benefitmyService.factory('TimeOffService',
                 });
         };
 
-        var UpdateTimeOffStatus = function(timeOff){
-            return TimeOffRepository.StatusByTimeoffId.update({timeoffId:timeOff.id}, {status: timeOff.status})
+        var UpdateTimeOffStatus = function(timeOff, newStatus){
+            return TimeOffRepository.StatusByTimeoffId.update({timeoffId:timeOff.id}, {status: newStatus})
                 .$promise.then(function(timeoff){
                     return mapDomainModelToViewModel(timeoff);
                 });
@@ -207,6 +217,7 @@ benefitmyService.factory('TimeOffService',
         return {
             TimeoffTypes: TimeoffTypes,
             AccrualFrequency: AccrualFrequency,
+            TimeoffStatus: TimeoffStatus,
             GetAvailableTimeoffTypes: getAvailableTimeoffTypes,
             GetAvailableAccrualFrequecy: getAvailableAccrualFrequecy,
             GetTimeOffsByRequestor: GetTimeOffsByRequestor,
