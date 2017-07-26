@@ -2474,5 +2474,9 @@ var employerCompanyInfoController = employersController.controller('EmployerComp
       $scope.departmentInfoExpanded = true;
       $scope.jobInfoExpanded = false;
       $scope.divisionInfoExpanded = false;
+
+      $scope.backToDashboard = function(){
+        $state.go('/admin');
+      };
     }
 ]);
