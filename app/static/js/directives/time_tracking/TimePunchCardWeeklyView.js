@@ -45,8 +45,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     $scope.$watch('punchCard.hours', function(hours){
       if(hours){
-        $scope.punchCard.start = TimePunchCardService.getDefaultStartTime();
-        $scope.punchCard.end = moment(TimePunchCardService.getDefaultStartTime()).add(hours, 'h');
+        $scope.punchCard.start = TimePunchCardService.getDefaultStartTime($scope.punchCard.date);
+        $scope.punchCard.end = moment($scope.punchCard.start).add(hours, 'h');
       }
     });
 
