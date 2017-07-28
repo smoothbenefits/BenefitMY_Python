@@ -122,14 +122,15 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         self._write_row(row_data)
 
         if user_hours:
-            # Write the hours worked over time
-            self._write_hours_for_type(
-                user_hours.overtime_hours,
-                OVERTIME_PAY_CODE,
-                employee_user_id,
-                person_info,
-                employee_profile_info
-            )
+            if(employee_profile_info and employee_profile_info.pay_type == PAY_TYPE_HOURLY):
+                # Write the hours worked over time only for hourly employees
+                self._write_hours_for_type(
+                    user_hours.overtime_hours,
+                    OVERTIME_PAY_CODE,
+                    employee_user_id,
+                    person_info,
+                    employee_profile_info
+                )
 
             # Write the hours took off for vacations
             self._write_hours_for_type(
