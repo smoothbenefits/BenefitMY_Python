@@ -50,7 +50,7 @@ class PdfModifier(object):
 
         # Now read in the destination/original PDF as the merge target
         self._original_pdf_stream.seek(0)
-        original_pdf = PdfFileReader(self._original_pdf_stream)
+        original_pdf = self._get_pdf_reader(self._original_pdf_stream)
 
         # Now create the output PDF as the merge result holder
         output_pdf = PdfFileWriter()
@@ -76,8 +76,14 @@ class PdfModifier(object):
 
     def get_num_pages_in_original(self):
         self._original_pdf_stream.seek(0)
-        original_pdf = PdfFileReader(self._original_pdf_stream)
+        original_pdf = self._get_pdf_reader(self._original_pdf_stream)
         return original_pdf.numPages
+
+    def _get_pdf_reader(self, pdf_stream):
+        pdf = PdfFileReader(pdf_stream)
+        if pdf.isEncrypted:
+            pdf.decrypt("")
+        return pdf
 
     def _init_pdf_composer(self):
         self._modification_stream.seek(0)
