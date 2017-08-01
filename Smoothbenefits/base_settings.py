@@ -291,6 +291,7 @@ PIPELINE_JS = {
             'js/directives/time_tracking/TimePunchCardAdminIndividual.js',
             'js/directives/OpenEnrollmentDefinition.js',
             'js/directives/payroll/AdvantagePayrollView.js',
+            'js/directives/payroll/ConnectPayrollView.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/model_factories/benefitmyInsuranceCertificateModelFactories.js',
@@ -366,7 +367,8 @@ PIPELINE_JS = {
             'js/services/common/NumberService.js',
             'js/services/OpenEnrollmentDefinitionService.js',
             'js/services/IntegrationProviderService.js',
-            'js/services/payroll_integration/AdvantagePayrollService.js'
+            'js/services/payroll_integration/AdvantagePayrollService.js',
+            'js/services/payroll_integration/ConnectPayrollService.js'
             ),
         'output_filename': 'js/benefitmy.js',
     }

@@ -19,7 +19,7 @@ from app.service.time_punch_card_service import TimePunchCardService
 from app.service.integration.integration_provider_service import (
         IntegrationProviderService,
         INTEGRATION_SERVICE_TYPE_PAYROLL,
-        INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL
+        INTEGRATION_PAYROLL_CONNECT_PAYROLL
     )
 from app.service.Report.csv_report_service_base import CsvReportServiceBase
 
@@ -30,7 +30,7 @@ SICK_TIME_CODE = 'SICK'
 SALARY_EMPLOYEE_HOURS_PER_DAY = 8
 
 
-class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
+class ConnectPayrollPeriodExportCsvService(CsvReportServiceBase):
     
     ''' Big assumptions and TODOs
         * The expectation for this export is weekly
@@ -42,7 +42,7 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
     '''
 
     def __init__(self):
-        super(AdvantagePayrollPeriodExportCsvService, self).__init__()
+        super(ConnectPayrollPeriodExportCsvService, self).__init__()
         self.view_model_factory = ReportViewModelFactory()
         self.time_punch_card_service = TimePunchCardService()
         self.integration_provider_service = IntegrationProviderService()
@@ -51,7 +51,7 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
     def get_report(self, company_id, period_start, period_end, outputStream):
         ap_client_id = self._get_ap_client_number(company_id)
         if (not ap_client_id):
-            raise ValueError('The company is not properly configured to integrate with Advantage Payroll service!')
+            raise ValueError('The company is not properly configured to integrate with Connect Payroll service!')
         self.week_days = self._get_week_day_number(period_start, period_end)
         self._write_company(company_id, period_start, period_end)
         self._save(outputStream)
@@ -60,7 +60,7 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         return self.integration_provider_service.get_company_integration_provider_external_id(
             company_id,
             INTEGRATION_SERVICE_TYPE_PAYROLL,
-            INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL)
+            INTEGRATION_PAYROLL_CONNECT_PAYROLL)
 
     def _write_company(self, company_id, period_start, period_end):
         user_ids = self._get_all_employee_user_ids_for_company(company_id)
@@ -190,7 +190,7 @@ class AdvantagePayrollPeriodExportCsvService(CsvReportServiceBase):
         ap_employee_number = self.integration_provider_service.get_employee_integration_provider_external_id(
             employee_user_id,
             INTEGRATION_SERVICE_TYPE_PAYROLL,
-            INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL)
+            INTEGRATION_PAYROLL_CONNECT_PAYROLL)
         row_data['employee_number'] = ap_employee_number
 
         row_data['full_name'] = person_info.get_full_name()
