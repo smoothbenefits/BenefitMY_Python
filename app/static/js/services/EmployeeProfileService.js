@@ -96,9 +96,9 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.employment_status = employeeProfileViewModel.employmentStatus;
             domainModel.person = employeeProfileViewModel.personId;
             domainModel.company = employeeProfileViewModel.companyId;
-            domainModel.department = employeeProfileViewModel.department.id;
-            domainModel.job = employeeProfileViewModel.job.id;
-            domainModel.division = employeeProfileViewModel.division.id;
+            domainModel.department = employeeProfileViewModel.department ? employeeProfileViewModel.department.id : null;
+            domainModel.job = employeeProfileViewModel.job ? employeeProfileViewModel.job.id : null;
+            domainModel.division = employeeProfileViewModel.division ? employeeProfileViewModel.division.id : null;
             domainModel.benefit_start_date = employeeProfileViewModel.benefitStartDate? moment(employeeProfileViewModel.benefitStartDate).format(STORAGE_DATE_FORMAT_STRING) : domainModel.start_date;
             domainModel.employee_number = employeeProfileViewModel.employeeNumber;
             domainModel.manager = employeeProfileViewModel.manager ? employeeProfileViewModel.manager.id : null;
