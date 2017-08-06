@@ -1,4 +1,4 @@
-BenefitMyApp.controller('PeriodReportModalController', [
+BenefitMyApp.controller('APPeriodReportModalController', [
   '$scope',
   '$modalInstance',
   'AdvantagePayrollService',
@@ -106,7 +106,7 @@ BenefitMyApp.controller('PeriodReportModalController', [
     $scope.openPeriodExportModal = function() {
         $modal.open({
             templateUrl: '/static/partials/payroll_integration/modal_advantage_payroll_period_export.html',
-            controller: 'PeriodReportModalController',
+            controller: 'APPeriodReportModalController',
             backdrop: 'static',
             size: 'md',
             resolve: {

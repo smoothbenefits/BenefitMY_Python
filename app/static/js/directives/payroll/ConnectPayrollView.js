@@ -1,4 +1,4 @@
-BenefitMyApp.controller('PeriodReportModalController', [
+BenefitMyApp.controller('CPPeriodReportModalController', [
   '$scope',
   '$modalInstance',
   'ConnectPayrollService',
@@ -104,7 +104,7 @@ BenefitMyApp.controller('PeriodReportModalController', [
     $scope.openPeriodExportModal = function() {
         $modal.open({
             templateUrl: '/static/partials/payroll_integration/modal_connect_payroll_period_export.html',
-            controller: 'PeriodReportModalController',
+            controller: 'CPPeriodReportModalController',
             backdrop: 'static',
             size: 'md',
             resolve: {
