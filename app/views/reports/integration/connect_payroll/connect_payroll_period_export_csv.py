@@ -21,7 +21,7 @@ class ConnectPayrollPeriodExportCsvView(ReportExportViewBase):
         csv_service = ConnectPayrollPeriodExportCsvService()
 
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=cp_period_data_export.csv'
+        response['Content-Disposition'] = 'attachment; filename=period_data_export.csv'
 
         csv_service.get_report(company_id, period_start, period_end, response)
 
