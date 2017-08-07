@@ -27,8 +27,8 @@ class ConnectPayrollPeriodExportCsvTestCase(TestMockTimePunchCardAppBase):
     def test_get_connect_payroll_period_export_csv_success(self):
         week_start_date = datetime.date(2017, 1, 1)
         week_end_date = datetime.date(2017, 1, 7)
-        mock_url = self._setup_mock_url(week_start_date, week_end_date, 1)
-        mock_json = self._setup_mock_return_json([week_start_date], 1, 3)
+        mock_url = self._setup_mock_url(week_start_date, week_end_date, 2)
+        mock_json = self._setup_mock_return_json([week_start_date], 2, 3)
         self.setup_mock_get(
             path=mock_url,
             return_json = mock_json)
@@ -36,7 +36,7 @@ class ConnectPayrollPeriodExportCsvTestCase(TestMockTimePunchCardAppBase):
         if self.client.login(username='user2@benefitmy.com', password='foobar'):
             response = self.client.get(reverse('company_connect_payroll_period_export_csv_api',
                                                kwargs={
-                                                'company_id': self.normalize_key(1),
+                                                'company_id': self.normalize_key(2),
                                                 'from_year': '2017',
                                                 'from_month': '1',
                                                 'from_day': '1',
