@@ -259,7 +259,7 @@ var employerUser = employersController.controller('employerUser',
           if(profileId){
             list = list.filterByProfileId(profileId);
           }
-          return list;
+          return list.orderByLastName();
         });
       };
 
