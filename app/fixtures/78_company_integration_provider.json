@@ -9,6 +9,17 @@
     },
     "model": "app.CompanyIntegrationProvider",
     "pk": 1
+  },
+  {
+    "fields": {
+      "company": 2,
+      "integration_provider": 3,
+      "company_external_id": "CP-001",
+      "created_at": "2015-09-23T14:09:38Z",
+      "updated_at": "2015-09-23T15:23:33Z"
+    },
+    "model": "app.CompanyIntegrationProvider",
+    "pk": 2
   }
 ]
 

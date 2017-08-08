@@ -291,6 +291,10 @@ from app.views.reports.integration.advantage_payroll.advantage_payroll_client_se
 from app.views.reports.integration.advantage_payroll.advantage_payroll_period_export_csv \
     import AdvantagePayrollPeriodExportCsvView
 
+# # Connect Payroll
+from app.views.reports.integration.connect_payroll.connect_payroll_period_export_csv \
+    import ConnectPayrollPeriodExportCsvView
+
 from app.views.admin.password_generator_view import PasswordGeneratorView
 
 PREFIX = "api/v1"
@@ -779,9 +783,12 @@ urlpatterns = patterns('app.views',
     # # Common
     url(r'^%s/companies/(?P<company_id>\w+)/integration_providers?$' % PREFIX, CompanyIntegrationProvidersByCompanyView.as_view(), name='company_integration_providers_api'),
 
-    # #Advantage Payroll
+    # # Advantage Payroll
     url(r'^%s/companies/(?P<company_id>\w+)/advantage_payroll/setup_csv?$' % PREFIX, AdvantagePayrollClientSetupCsvView.as_view(), name='company_advantage_payroll_setup_csv_api'),
     url(r'^%s/companies/(?P<company_id>\w+)/advantage_payroll/period_export_csv/from/(?P<from_year>\d+)/(?P<from_month>\d+)/(?P<from_day>\d+)/to/(?P<to_year>\d+)/(?P<to_month>\d+)/(?P<to_day>\d+)/?$' % PREFIX, AdvantagePayrollPeriodExportCsvView.as_view(), name='company_advantage_payroll_period_export_csv_api'),
+
+    # # Connect Payroll
+    url(r'^%s/companies/(?P<company_id>\w+)/connect_payroll/period_export_csv/from/(?P<from_year>\d+)/(?P<from_month>\d+)/(?P<from_day>\d+)/to/(?P<to_year>\d+)/(?P<to_month>\d+)/(?P<to_day>\d+)/?$' % PREFIX, ConnectPayrollPeriodExportCsvView.as_view(), name='company_connect_payroll_period_export_csv_api'),
 
     # Logging
     url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api"),

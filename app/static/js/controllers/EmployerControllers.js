@@ -175,7 +175,8 @@ var employerHome = employersController.controller('employerHome',
       }
 
       if (payrollProvider) {
-        return payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll;
+        return payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll
+            || payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.ConnectPayroll;
       }
 
       return false;
@@ -2455,6 +2456,12 @@ var employerCompanyPayrollIntegrationController = employersController.controller
     $scope.showAdvantagePayrollView = function() {
         return $scope.payrollProvider 
             && $scope.payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll;
+    };
+
+    // Whether to show the dedicated view for Connect Payroll
+    $scope.showConnectPayrollView = function() {
+        return $scope.payrollProvider 
+            && $scope.payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.ConnectPayroll;
     };
 
     $scope.pageTitle = "Payroll Services";

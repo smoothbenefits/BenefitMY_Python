@@ -13,7 +13,7 @@ benefitmyService.factory('IntegrationProviderService',
 
         var IntegrationProviderNames = {
             AdvantagePayroll: 'Advantage Payroll',
-            ContentPayroll: 'Connect Payroll'
+            ConnectPayroll: 'Connect Payroll'
         };
 
         var integrationProvidersByCompanyIdCache = {};
