@@ -1,4 +1,11 @@
-<div class="content-header"></div>
+<div class="content-header" ng-if="admin">
+  <h1>
+    Time Off Requests
+  </h1>
+  <div class="cta">
+      <span class="btn green" ng-click="seeAllTimeOffs()">Company Wide Requests</span>
+  </div>
+</div>
 <div class="content-body">
   <div class="panel" ng-show="!hasPendingRequests()">
     <div class="panel-heading">

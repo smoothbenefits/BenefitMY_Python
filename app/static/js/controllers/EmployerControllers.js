@@ -2487,3 +2487,24 @@ var employerCompanyInfoController = employersController.controller('EmployerComp
       };
     }
 ]);
+
+var employerCompanyWideTimeOffController = employersController.controller('employerCompanyWideTimeOffController',
+  ['$scope',
+   '$state',
+   'UserService',
+   function($scope, $state, UserService){
+     $scope.role = 'Employer';
+     $scope.isAdmin = true;
+     UserService.getCurUserInfo().then(function(userInfo) {
+       $scope.user = userInfo.user;
+       $scope.user.role = userInfo.currentRole.company_user_type;
+       $scope.company = userInfo.currentRole.company;
+     });
+     $scope.back = function(){
+        $state.go('admin_time_off');
+     };
+     $scope.backToDashboard = function(){
+        $state.go('/admin');
+     };
+   }
+  ]);
