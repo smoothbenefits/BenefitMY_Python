@@ -19,12 +19,30 @@ BenefitMyApp.controller('CompanyTimeOffViewDirectiveController', [
     $scope.hasDecidedRequests = function() {
         return $scope.decidedRequests && $scope.decidedRequests.length;
     };
-
+    $scope.startDate = moment().subtract(7, 'days').format('L');
+    $scope.endDate = moment().format('L');
     $scope.$watch('companyId', function(companyId){
       if(companyId){
         $scope.companyId = companyId;
         // Get existing time off requests
-        TimeOffService.GetTimeOffsByCompany(companyId)
+        TimeOffService.GetTimeOffsByCompany(companyId, $scope.startDate, $scope.endDate)
+        .then(function(timeOffs) {
+          if (timeOffs) {
+            $scope.pendingRequests = timeOffs.requestsPending;
+            $scope.decidedRequests = timeOffs.requestsActioned;
+          }
+        });
+      }
+    });
+
+    $scope.$watchGroup(['startDate', 'endDate'], function(group){
+      if(moment($scope.startDate) >= moment($scope.endDate)){
+        $scope.errorMessage = "The Start Date cannot be the same or later than End Date";
+      }
+      else if($scope.companyId){
+        $scope.errorMessage = null;
+        // Get existing time off requests
+        TimeOffService.GetTimeOffsByCompany($scope.companyId, moment($scope.startDate), moment($scope.endDate))
         .then(function(timeOffs) {
           if (timeOffs) {
             $scope.pendingRequests = timeOffs.requestsPending;

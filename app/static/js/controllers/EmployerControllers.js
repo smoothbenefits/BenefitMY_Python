@@ -2494,7 +2494,6 @@ var employerCompanyWideTimeOffController = employersController.controller('emplo
    'UserService',
    function($scope, $state, UserService){
      $scope.role = 'Employer';
-     $scope.isAdmin = true;
      UserService.getCurUserInfo().then(function(userInfo) {
        $scope.user = userInfo.user;
        $scope.user.role = userInfo.currentRole.company_user_type;

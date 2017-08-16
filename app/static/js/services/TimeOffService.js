@@ -154,16 +154,19 @@ benefitmyService.factory('TimeOffService',
                 });
         };
 
-        var GetTimeOffsByCompany = function(companyId){
+        var GetTimeOffsByCompany = function(companyId, startDate, endDate){
             var envAwareCompanyId = utilityService.getEnvAwareId(companyId);
-            return TimeOffRepository.ByCompany.query({compId:envAwareCompanyId})
-                .$promise.then(function(timeoffs){
-                    var timeOffRequests = mapDomainModelsToViewModels(timeoffs);
-                    return {
-                        requestsPending: _.where(timeOffRequests, {actionNeeded: true}),
-                        requestsActioned: _.where(timeOffRequests, {actionNeeded: false})
-                    };
-                })
+            return TimeOffRepository.ByCompany.query({
+                compId:envAwareCompanyId,
+                start_date: moment(startDate).toISOString(),
+                end_date: moment(endDate).toISOString(),
+            }).$promise.then(function(timeoffs){
+                var timeOffRequests = mapDomainModelsToViewModels(timeoffs);
+                return {
+                    requestsPending: _.where(timeOffRequests, {actionNeeded: true}),
+                    requestsActioned: _.where(timeOffRequests, {actionNeeded: false})
+                };
+            });
         }
 
         var UpdateTimeOffStatus = function(timeOff, newStatus){
