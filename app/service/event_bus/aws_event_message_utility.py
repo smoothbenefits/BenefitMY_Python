@@ -44,6 +44,8 @@ class AwsEventMessageUtility(object):
     @staticmethod
     def ensure_sns_topic(sns_client, topic_name):
         response = sns_client.create_topic(Name=topic_name)
+        if (not AwsEventMessageUtility.is_success_response(response)):
+            return None
         return response['TopicArn']
 
     ################################
@@ -59,8 +61,25 @@ class AwsEventMessageUtility(object):
     def get_sqs_queue_name(event_message_handler_instance):
         handler_class_name = type(event_message_handler_instance).__name__
         event_class_name = event_message_handler_instance.event_class.__name__
-        return settings.ENVIRONMENT_IDENTIFIER + '_' + event_class_name + '_' + handler_class_name
+        # If the event class name is repeated in the handler name, remove it
+        # This is an attempt to reduce the length of the queue name
+        # So to reduce the chance of it being over the limit
+        handler_class_name = handler_class_name.replace(event_class_name, '')
+        plain_name = settings.ENVIRONMENT_IDENTIFIER + '_' + event_class_name + '_' + handler_class_name
+
+        if (len(plain_name) > 80):
+            raise Exception('The queue name is too long per SQS specification: {0}'.format(plain_name))
+
+        return plain_name
 
     @staticmethod
     def ensure_sqs_queue(sqs_client, queue_name, delay_seconds=5):
         return sqs_client.create_queue(QueueName=queue_name, Attributes={'DelaySeconds': str(delay_seconds)})
+
+    ################################
+    ## Common 
+    ################################
+
+    @staticmethod
+    def is_success_response(aws_client_response):
+        return aws_client_response['ResponseMetadata']['HTTPStatusCode'] < 400

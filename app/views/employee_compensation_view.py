@@ -9,9 +9,13 @@ from app.serializers.employee_compensation_serializer import (
     EmployeeCompensationSerializer, EmployeeCompensationPostSerializer)
 from app.service.compensation_service import CompensationService
 from app.serializers.dtos.compensation_info_serializer import CompensationInfoSerializer
+from app.service.event_bus.aws_event_bus_service import AwsEventBusService
+from app.service.event_bus.events.compensation_updated_event import CompensationUpdatedEvent
 
 
 class EmployeeCompensationView(APIView):
+    _aws_event_bus_service = AwsEventBusService()
+
     def _get_object(self, pk):
         try:
             return EmployeeCompensation.objects.get(pk=pk)
@@ -32,6 +36,11 @@ class EmployeeCompensationView(APIView):
         serializer = EmployeeCompensationPostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
+
+            # Log event
+            model = serializer.object
+            self._aws_event_bus_service.publish_event(CompensationUpdatedEvent(model.person.user.id))
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

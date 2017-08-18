@@ -39,7 +39,7 @@ class PunchCardRecognitionFailedHandler(EventHandlerBase):
         except Person.DoesNotExist:
             return None
 
-    def handle(self, event):
+    def _internal_handle(self, event):
         if not event.company_id or not event.user_id:
             logging.warning(
                 "Handling PunchCardRecognitionFailedEvent with no user_id nor company_id. Do nothing."

@@ -11,9 +11,13 @@ from django.db.models import Q
 from app.service.integration.company_integration_provider_data_service \
 import CompanyIntegrationProviderDataService
 from app.service.monitoring.logging_service import LoggingService
+from app.service.event_bus.aws_event_bus_service import AwsEventBusService
+from app.service.event_bus.events.employee_profile_updated_event import EmployeeProfileUpdatedEvent
 
 
 class EmployeeProfileView(APIView):
+    _aws_event_bus_service = AwsEventBusService()
+
     def _get_object(self, pk):
         try:
             return EmployeeProfile.objects.get(pk=pk)
@@ -36,11 +40,8 @@ class EmployeeProfileView(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            # [TODO]: To remove
-            # This is setup to test the integration data sync
-            integration_data_service = CompanyIntegrationProviderDataService()
-            employee_user_id = employee_profile.person.user.id
-            integration_data_service.sync_employee_data_to_remote(employee_user_id)
+            # Log event
+            self._aws_event_bus_service.publish_event(EmployeeProfileUpdatedEvent(employee_profile.person.user.id, employee_profile.company.id))
 
             response_serializer = EmployeeProfileSerializer(serializer.object)
             return Response(response_serializer.data)
@@ -50,9 +51,15 @@ class EmployeeProfileView(APIView):
         serializer = EmployeeProfilePostSerializer(data=request.DATA)
         if serializer.is_valid():
             serializer.save()
-            response_serializer = EmployeeProfileSerializer(serializer.object)
+            employee_profile = serializer.object
+
+            # log event
+            self._aws_event_bus_service.publish_event(EmployeeProfileUpdatedEvent(employee_profile.person.user.id, employee_profile.company.id))
+
+            response_serializer = EmployeeProfileSerializer(employee_profile)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class EmployeeProfileByPersonCompanyView(APIView):
     def _get_object(self, person_id, company_id):

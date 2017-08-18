@@ -8,11 +8,15 @@ from rest_framework.response import Response
 from app.serializers.user_serializer import UserFamilySerializer
 from app.service.integration.company_integration_provider_data_service \
 import CompanyIntegrationProviderDataService
+from app.service.event_bus.aws_event_bus_service import AwsEventBusService
+from app.service.event_bus.events.person_info_updated_event import PersonInfoUpdatedEvent
+
 
 User = get_user_model()
 
 
 class PersonView(APIView):
+    _aws_event_bus_service = AwsEventBusService()
 
     def get_object(self, pk):
         try:
@@ -32,11 +36,8 @@ class PersonView(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            # [TODO]: To remove
-            # This is setup to test the integration data sync
-            integration_data_service = CompanyIntegrationProviderDataService()
-            employee_user_id = person.user.id
-            integration_data_service.sync_employee_data_to_remote(employee_user_id)
+            # Log event
+            self._aws_event_bus_service.publish_event(PersonInfoUpdatedEvent(person.id))
 
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
