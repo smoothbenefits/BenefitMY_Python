@@ -275,6 +275,7 @@ PIPELINE_JS = {
             'js/directives/hr/CompanyDivisionManager.js',
             'js/directives/hr/TimeOffManager.js',
             'js/directives/hr/TimeOffRequestView.js',
+            'js/directives/hr/CompanyTimeOffView.js',
             'js/directives/hr/TimesheetReportDownloadView.js',
             'js/directives/hr/EmployeesTimeOffInfo.js',
             'js/directives/hr/WorkTimesheetManager.js',

@@ -73,6 +73,10 @@ BenefitMyApp.controller('TimeOffManagerDirectiveController', [
         return request.status == TimeOffService.TimeoffStatus.Approved;
     };
 
+    $scope.seeAllTimeOffs = function(){
+      $state.go('admin_company_wide_time_off');
+    };
+
     var updateRequestStatus = function(request, newStatus, confirmMessage){
       if(confirm(confirmMessage)){
         TimeOffService.UpdateTimeOffStatus(request, newStatus)
@@ -97,7 +101,8 @@ BenefitMyApp.controller('TimeOffManagerDirectiveController', [
         restrict: 'E',
         scope: {
           user: '=',
-          company: '='
+          company: '=',
+          admin: '='
         },
         templateUrl: '/static/partials/timeoff/directive_time_off_manager.html',
         controller: 'TimeOffManagerDirectiveController'
