@@ -1,0 +1,93 @@
+<div class="content-header">
+  <h1>View Company Wide Time Offs</h1>
+</div><!-- / .content-header -->
+
+<div class="content-body">
+  <div class="panel">
+    <div class="panel-head">
+      Select A Date Range
+    </div>
+    <div class="panel-body">
+      <div class="pull-left" style="width:400px;">
+        <h4>
+          Start Date
+        </h4>
+        <bm-date-picker model="startDate"
+          name="start_date"
+          fieldname="'start_date'">
+        </bm-date-picker>
+      </div>
+      <div class="pull-left" style="margin-left:20px; width:400px;">
+        <h4>
+          End Date
+        </h4>
+        <bm-date-picker model="endDate"
+          name="end_date"
+          fieldname="'end_date'">
+        </bm-date-picker>
+      </div>
+      <div style="clear:both;">
+        <span class="form-validation-error" ng-if="errorMessage">
+          {{errorMessage}}
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="panel" ng-if="!hasPendingRequests() && !hasDecidedRequests()">
+    <div class="panel-body">
+        There are no time off requested in the company during this period.
+    </div>
+  </div>
+  <div class="table-responsive" ng-if="hasPendingRequests()">
+    <div class="table-title">
+      Pending Timeoff Requests
+    </div>
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Requestor</span></th>
+        <th><span>Type</span></th>
+        <th><span>Start</span></th>
+        <th><span>Duration</span></th>
+        <th><span>Approver Email</span></th>
+        <th><span>Date and time created</span></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="timeOff in pendingRequests">
+          <td>{{timeOff.requestor.firstName}} {{timeOff.requestor.lastName}}</td>
+          <td>{{timeOff.type}}</td>
+          <td>{{timeOff.start}}</td>
+          <td>{{timeOff.duration}} hour(s)</td>
+          <td>{{timeOff.approver}}</td>
+          <td>{{timeOff.created}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div> <!-- TimeOff Request Result Table -->
+  <div class="table-responsive" ng-if="hasDecidedRequests()">
+    <div class="table-title">
+      Decided Timeoff Requests
+    </div>
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Requestor</span></th>
+        <th><span>Type</span></th>
+        <th><span>Start</span></th>
+        <th><span>Duration</span></th>
+        <th><span>Status</span></th>
+        <th><span>Approver Email</span></th>
+        <th><span>Decision Time</span></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="timeOff in decidedRequests">
+          <td>{{timeOff.requestor.firstName}} {{timeOff.requestor.lastName}}</td>
+          <td>{{timeOff.type}}</td>
+          <td>{{timeOff.start}}</td>
+          <td>{{timeOff.duration}} hour(s)</td>
+          <td>{{timeOff.status}}</td>
+          <td>{{timeOff.approver}}</td>
+          <td>{{timeOff.decisionTime}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div> <!-- TimeOff Request Result Table -->
+</div>

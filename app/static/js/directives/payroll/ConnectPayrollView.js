@@ -1,13 +1,13 @@
-BenefitMyApp.controller('APPeriodReportModalController', [
+BenefitMyApp.controller('CPPeriodReportModalController', [
   '$scope',
   '$modalInstance',
-  'AdvantagePayrollService',
+  'ConnectPayrollService',
   'CompanyService',
   'DateTimeService',
   'companyId',
   function($scope,
            $modalInstance,
-           AdvantagePayrollService,
+           ConnectPayrollService,
            CompanyService,
            DateTimeService,
            companyId){
@@ -39,7 +39,7 @@ BenefitMyApp.controller('APPeriodReportModalController', [
     };
 
     $scope.getDownloadLink = function() {
-        return AdvantagePayrollService.getTimeTrackingReportCsvUrl(
+        return ConnectPayrollService.getTimeTrackingReportCsvUrl(
             companyId,
             $scope.inputModel.startDate,
             $scope.inputModel.endDate
@@ -86,27 +86,25 @@ BenefitMyApp.controller('APPeriodReportModalController', [
         $modalInstance.dismiss();
     };
   }
-]).controller('AdvantagePayrollViewDirectiveController', [
+]).controller('ConnectPayrollViewDirectiveController', [
   '$scope',
   '$state',
   '$modal',
   '$controller',
-  'AdvantagePayrollService',
+  'ConnectPayrollService',
   function($scope,
            $state,
            $modal,
            $controller,
-           AdvantagePayrollService) {
+           ConnectPayrollService) {
 
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
 
-    $scope.allEmployeesSetupCsvDownloadLink = AdvantagePayrollService.getAllEmployeesPayrollSertupDataCsvUrl($scope.companyId);
-    
     $scope.openPeriodExportModal = function() {
         $modal.open({
-            templateUrl: '/static/partials/payroll_integration/modal_advantage_payroll_period_export.html',
-            controller: 'APPeriodReportModalController',
+            templateUrl: '/static/partials/payroll_integration/modal_connect_payroll_period_export.html',
+            controller: 'CPPeriodReportModalController',
             backdrop: 'static',
             size: 'md',
             resolve: {
@@ -117,14 +115,14 @@ BenefitMyApp.controller('APPeriodReportModalController', [
         });
     };
   }
-]).directive('bmAdvantagePayrollView', function(){
+]).directive('bmConnectPayrollView', function(){
 
     return {
         restrict: 'E',
         scope: {
           companyId: '='        
         },
-        templateUrl: '/static/partials/payroll_integration/directive_advantage_payroll_view.html',
-        controller: 'AdvantagePayrollViewDirectiveController'
+        templateUrl: '/static/partials/payroll_integration/directive_connect_payroll_view.html',
+        controller: 'ConnectPayrollViewDirectiveController'
       };
 });

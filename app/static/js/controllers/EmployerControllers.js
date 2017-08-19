@@ -175,7 +175,8 @@ var employerHome = employersController.controller('employerHome',
       }
 
       if (payrollProvider) {
-        return payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll;
+        return payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll
+            || payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.ConnectPayroll;
       }
 
       return false;
@@ -258,7 +259,7 @@ var employerUser = employersController.controller('employerUser',
           if(profileId){
             list = list.filterByProfileId(profileId);
           }
-          return list;
+          return list.orderByLastName();
         });
       };
 
@@ -2457,6 +2458,12 @@ var employerCompanyPayrollIntegrationController = employersController.controller
             && $scope.payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.AdvantagePayroll;
     };
 
+    // Whether to show the dedicated view for Connect Payroll
+    $scope.showConnectPayrollView = function() {
+        return $scope.payrollProvider 
+            && $scope.payrollProvider.integration_provider.name == IntegrationProviderService.IntegrationProviderNames.ConnectPayroll;
+    };
+
     $scope.pageTitle = "Payroll Services";
     $scope.backToDashboard = function() {
       $state.go('/admin');
@@ -2480,3 +2487,23 @@ var employerCompanyInfoController = employersController.controller('EmployerComp
       };
     }
 ]);
+
+var employerCompanyWideTimeOffController = employersController.controller('employerCompanyWideTimeOffController',
+  ['$scope',
+   '$state',
+   'UserService',
+   function($scope, $state, UserService){
+     $scope.role = 'Employer';
+     UserService.getCurUserInfo().then(function(userInfo) {
+       $scope.user = userInfo.user;
+       $scope.user.role = userInfo.currentRole.company_user_type;
+       $scope.company = userInfo.currentRole.company;
+     });
+     $scope.back = function(){
+        $state.go('admin_time_off');
+     };
+     $scope.backToDashboard = function(){
+        $state.go('/admin');
+     };
+   }
+  ]);

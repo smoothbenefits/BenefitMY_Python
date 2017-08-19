@@ -41,6 +41,9 @@ class EmployeeEmploymentProfileInfo(object):
         self.current_pay_period_salary = ''
         self.annual_salary = ''
         self.employment_type = ''
+        self.department = None
+        self.division = None
+        self.job = None
 
         if (self._employee_profile_model):
             self.job_title = self._employee_profile_model.job_title
@@ -50,6 +53,21 @@ class EmployeeEmploymentProfileInfo(object):
             self.pay_cycle = self._employee_profile_model.company.pay_period_definition.name
             self.employment_status = self._employee_profile_model.employment_status
             self.employment_type = self._employee_profile_model.employment_type
+
+            if (self._employee_profile_model.department):
+                self.department = Department(
+                    self._employee_profile_model.department.department,
+                    self._employee_profile_model.department.code)
+
+            if (self._employee_profile_model.division):
+                self.division = Division(
+                    self._employee_profile_model.division.division,
+                    self._employee_profile_model.division.code)
+
+            if (self._employee_profile_model.job):
+                self.job = Job(
+                    self._employee_profile_model.job.job,
+                    self._employee_profile_model.job.code)
 
             if (self._compensation_service):
                 current_compensation = self._compensation_service.current_compensation
@@ -118,3 +136,21 @@ class EmployeeEmploymentProfileInfo(object):
     
     def is_full_time_employee(self):
         return self.employment_type == FULL_TIME
+
+
+class Department(object):
+    def __init__(self, name, code):
+        self.name = name
+        self.code = code
+
+
+class Job(object):
+    def __init__(self, name, code):
+        self.name = name
+        self.code = code
+
+
+class Division(object):
+    def __init__(self, name, code):
+        self.name = name
+        self.code = code

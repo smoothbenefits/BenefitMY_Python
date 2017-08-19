@@ -121,6 +121,14 @@ benefitmyService.factory('CompanyPersonnelsService',
             };
         };
 
+        var _orderByLastName = function(){
+            var sorted =  _.sortBy(this.list, function(employee){
+                return employee.profile.last_name;
+            });
+            this.list = sorted;
+            return this;
+        }
+
         var _constructEmployeeListWithProfile = function(employeeList, companyId){
             var deferred = $q.defer();
 
@@ -137,7 +145,8 @@ benefitmyService.factory('CompanyPersonnelsService',
                     filterByProfileId: _filterEmployeeListByProfileId,
                     filterByTimeRangeStatus: _filterEmployeeListByTimeRangeStatus,
                     search: _searchByName,
-                    paginate: _getPaginated
+                    paginate: _getPaginated,
+                    orderByLastName: _orderByLastName
                 }
                 deferred.resolve(employeeListBuilder);
             });
