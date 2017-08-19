@@ -3,16 +3,14 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 
 from .event_handler_base import EventHandlerBase
 from ..events.employee_profile_updated_event import EmployeeProfileUpdatedEvent
+from app.models.person import (Person, SELF)
+from app.service.integration.company_integration_provider_data_service import CompanyIntegrationProviderDataService
 
 
 class EmployeeProfileUpdatedEventCpDataSyncHandler(EventHandlerBase):
     def __init__(self):
         super(EmployeeProfileUpdatedEventCpDataSyncHandler, self).__init__(EmployeeProfileUpdatedEvent)
-    
+        self._cp_data_service = CompanyIntegrationProviderDataService()
+
     def _internal_handle(self, event):
-        subject = "Test EmployeeProfileUpdatedEvent Handler"
-        text_content = '{0} : {1}'.format(event.user_id, event.company_id)
-        from_email = settings.SUPPORT_EMAIL_ADDRESS
-        to_emails = ['jeff.zhang.82@gmail.com']
-        msg = EmailMultiAlternatives(subject, text_content, from_email, to_emails)
-        msg.send()
+        self._cp_data_service.sync_employee_data_to_remote(event.user_id)

@@ -10,9 +10,7 @@ class CompensationUpdatedEventCpDataSyncHandler(EventHandlerBase):
         super(CompensationUpdatedEventCpDataSyncHandler, self).__init__(CompensationUpdatedEvent)
     
     def _internal_handle(self, event):
-        subject = "Test CompensationUpdatedEvent Handler"
-        text_content = 'user_id : {0}'.format(event.user_id)
-        from_email = settings.SUPPORT_EMAIL_ADDRESS
-        to_emails = ['jeff.zhang.82@gmail.com']
-        msg = EmailMultiAlternatives(subject, text_content, from_email, to_emails)
-        msg.send()
+        # TODO: 
+        # Once we know how to sync compensation data to CP, we would then
+        # implement logic here
+        pass

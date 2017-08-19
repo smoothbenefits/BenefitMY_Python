@@ -26,6 +26,7 @@ class EventHandlerBase(object):
             self._logger.info('Finished handling event')
         except Exception as e:
             self._logger.error(traceback.format_exc())
+            raise
 
     def _internal_handle(self, event):
         raise NotImplementedError()

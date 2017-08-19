@@ -8,8 +8,6 @@ from app.serializers.employee_profile_serializer import (
     EmployeeProfileSerializer, EmployeeProfilePostSerializer, EmployeeProfileWithNameSerializer)
 from app.models.person import Person
 from django.db.models import Q
-from app.service.integration.company_integration_provider_data_service \
-import CompanyIntegrationProviderDataService
 from app.service.monitoring.logging_service import LoggingService
 from app.service.event_bus.aws_event_bus_service import AwsEventBusService
 from app.service.event_bus.events.employee_profile_updated_event import EmployeeProfileUpdatedEvent
@@ -41,7 +39,7 @@ class EmployeeProfileView(APIView):
             serializer.save()
 
             # Log event
-            self._aws_event_bus_service.publish_event(EmployeeProfileUpdatedEvent(employee_profile.person.user.id, employee_profile.company.id))
+            self._aws_event_bus_service.publish_event(EmployeeProfileUpdatedEvent(employee_profile.company.id, employee_profile.person.user.id))
 
             response_serializer = EmployeeProfileSerializer(serializer.object)
             return Response(response_serializer.data)
@@ -54,7 +52,7 @@ class EmployeeProfileView(APIView):
             employee_profile = serializer.object
 
             # log event
-            self._aws_event_bus_service.publish_event(EmployeeProfileUpdatedEvent(employee_profile.person.user.id, employee_profile.company.id))
+            self._aws_event_bus_service.publish_event(EmployeeProfileUpdatedEvent(employee_profile.company.id, employee_profile.person.user.id))
 
             response_serializer = EmployeeProfileSerializer(employee_profile)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)

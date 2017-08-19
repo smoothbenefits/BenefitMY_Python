@@ -1,6 +1,5 @@
 import json
 import decimal
-import logging
 import traceback
 from django.contrib.auth import get_user_model
 
@@ -20,11 +19,13 @@ from app.service.system_settings_service import (
         SYSTEM_SETTING_CPAPIEMPLOYEEROUTE
     )
 from connect_payroll_employee_dto import ConnectPayrollEmployeeDto
+from app.service.monitoring.logging_service import LoggingService
 
 User = get_user_model()
 
 
 class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
+    _logger = LoggingService()
 
     def __init__(self):
         super(ConnectPayrollDataService, self).__init__()
@@ -66,12 +67,15 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
 
             if (employee_data_dto.payrollId):
                 # Already exists in CP system, update
-                logging.info('Updating Employee CP ID: ' + employee_data_dto.payrollId)
+                self._logger.info('Updating Employee CP ID: ' + employee_data_dto.payrollId)
+                self._logger.info(employee_data_dto)
                 self._update_employee_data_to_remote(employee_data_dto)
             else:
                 # Does not yet exist in CP system, new employee addition, create
+                self._logger.info('Creating new employee record on CP system ...')
+                self._logger.info(employee_data_dto)
                 payroll_id = self._create_employee_data_to_remote(employee_data_dto)
-                logging.info('Created Employee CP ID: {0}'.format(payroll_id))
+                self._logger.info('Created Employee CP ID: {0}'.format(payroll_id))
 
                 # Sync the cp ID from the response
                 self._set_employee_external_id(
@@ -81,7 +85,7 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
                         payroll_id
                     )
         except Exception as e:
-            logging.error(traceback.format_exc())
+            self._logger.error(traceback.format_exc())
 
     def _get_employee_data_dto(self, employee_user_id, external_company_id):
         # First populate the CP identifiers

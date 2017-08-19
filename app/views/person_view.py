@@ -6,8 +6,6 @@ from django.contrib.auth import get_user_model
 from app.serializers.person_serializer import PersonSerializer, PersonFullPostSerializer
 from rest_framework.response import Response
 from app.serializers.user_serializer import UserFamilySerializer
-from app.service.integration.company_integration_provider_data_service \
-import CompanyIntegrationProviderDataService
 from app.service.event_bus.aws_event_bus_service import AwsEventBusService
 from app.service.event_bus.events.person_info_updated_event import PersonInfoUpdatedEvent
 
