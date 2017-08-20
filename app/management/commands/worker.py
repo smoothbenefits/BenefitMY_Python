@@ -37,6 +37,7 @@ class Command(BaseCommand):
         common_sqs_config = AwsMessageQueueConfig()
         common_sqs_config.VisibilityTimeout = 60
         common_sqs_config.MessageRetentionPeriod = 86400
+        common_sqs_config.ReceiveMessageWaitTimeSeconds = 20
 
         # The below section registers all the event handlers
         # Keep appending more registrations for use cases going
