@@ -45,7 +45,13 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         if (base_uri and employee_route):
             self._cp_api_url = base_uri + employee_route
 
-    def sync_employee_data_to_remote(self, employee_user_id):
+    def _integration_service_type(self):
+        return INTEGRATION_SERVICE_TYPE_PAYROLL
+
+    def _integration_provider_name(self):
+        return INTEGRATION_PAYROLL_CONNECT_PAYROLL
+
+    def _internal_sync_employee_data_to_remote(self, employee_user_id):
         # If the Connect Payroll API's auth token is not specified 
         # in the environment, consider this feature to be off, and 
         # skip all together.
@@ -80,8 +86,8 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
                 # Sync the cp ID from the response
                 self._set_employee_external_id(
                         employee_user_id,
-                        INTEGRATION_SERVICE_TYPE_PAYROLL,
-                        INTEGRATION_PAYROLL_CONNECT_PAYROLL,
+                        self._integration_service_type(),
+                        self._integration_provider_name(),
                         payroll_id
                     )
         except Exception as e:
@@ -92,8 +98,8 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         dto = ConnectPayrollEmployeeDto()
         dto.payrollId = self._get_employee_external_id(
                 employee_user_id,
-                INTEGRATION_SERVICE_TYPE_PAYROLL,
-                INTEGRATION_PAYROLL_CONNECT_PAYROLL
+                self._integration_service_type(),
+                self._integration_provider_name()
             )
         dto.companyId = external_company_id
 
@@ -172,9 +178,9 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
     def _get_cp_client_code_by_employee(self, employee_user_id):
         company_id = self.company_personnel_service.get_company_id_by_employee_user_id(employee_user_id)
         integration_providers = self.integration_provider_service.get_company_integration_providers(company_id)
-        payroll_provider = integration_providers[INTEGRATION_SERVICE_TYPE_PAYROLL]
+        payroll_provider = integration_providers[self._integration_service_type()]
         if (payroll_provider is not None 
-            and payroll_provider['integration_provider']['name'] == INTEGRATION_PAYROLL_CONNECT_PAYROLL):
+            and payroll_provider['integration_provider']['name'] == self._integration_provider_name()):
             return payroll_provider['company_external_id']
 
         return None
