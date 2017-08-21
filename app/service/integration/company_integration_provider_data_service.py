@@ -23,7 +23,7 @@ User = get_user_model()
     created for various integration providers 
 '''
 class CompanyIntegrationProviderDataService(object):
-    _logger = LoggingService
+    _logger = LoggingService()
 
     def __init__(self):
         self.integration_provider_service = IntegrationProviderService()
@@ -83,11 +83,11 @@ class CompanyIntegrationProviderDataService(object):
 
                         try:
                             data_service_action(data_service)
-                            self._logger('Successfully executed integration data action')
-                            self._logger(service_action_record)
+                            self._logger.error('Successfully executed integration data action')
+                            self._logger.info(service_action_record)
                         except Exception as e:
-                            self._logger('Failed to complete integration data action')
-                            self._logger(service_action_record)
+                            self._logger.error('Failed to complete integration data action')
+                            self._logger.info(service_action_record)
                             failed_data_service_records.append(service_action_record)
                 else:
                     self._logger.warning('Unsupported integration service type encoutered: "{0}"'.format(service_type))
