@@ -1,6 +1,7 @@
 import json
 import decimal
 import traceback
+from dateutil.parser import parse
 from django.contrib.auth import get_user_model
 
 from app.factory.report_view_model_factory import ReportViewModelFactory
@@ -68,8 +69,15 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
         if (not external_company_id):
             return
 
-        try:  
+        try:
+            # Populate the data object from the current state of the employee in WBM system
+            # Also apply client(WBM) side validation on the data, based on understanding of
+            # documentation from ConnectPay   
             employee_data_dto = self._get_employee_data_dto(employee_user_id, external_company_id)
+            issue_list = self._validate_employee_data_dto(employee_data_dto)
+
+            if (issue_list and len(issue_list) > 0):
+                raise RuntimeError('There are problems collecting complete data required to sync to ConnectPay API for employee "{0}"'.format(employee_user_id), issue_list)
 
             if (employee_data_dto.payrollId):
                 # Already exists in CP system, update
@@ -92,6 +100,7 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
                     )
         except Exception as e:
             self._logger.error(traceback.format_exc())
+            raise
 
     def _get_employee_data_dto(self, employee_user_id, external_company_id):
         # First populate the CP identifiers
@@ -151,37 +160,183 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
 
         return dto
 
+    def _validate_employee_data_dto(self, employee_data_dto):
+        issue_list = []
+
+        # System Data
+        _DataValidator(employee_data_dto, 'companyId', issue_list) \
+            .with_value_exists_check() \
+            .with_value_length_check(6, 6) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'payrollId', issue_list) \
+            .with_value_valid_integer_check() \
+            .validate()
+
+        # Employee bio data and basic info
+        _DataValidator(employee_data_dto, 'ssn', issue_list) \
+            .with_value_exists_check() \
+            .with_value_length_check(9, 9) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'firstName', issue_list) \
+            .with_value_exists_check() \
+            .with_value_length_check(1, 20) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'middleName', issue_list) \
+            .with_value_length_check(0, 20) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'lastName', issue_list) \
+            .with_value_exists_check() \
+            .with_value_length_check(1, 20) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'dob', issue_list) \
+            .with_value_exists_check() \
+            .with_value_valid_datetime_check() \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'gender', issue_list) \
+            .with_value_exists_check() \
+            .with_value_in_list_check(['M', 'F']) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'address1', issue_list) \
+            .with_value_length_check(0, 30) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'address2', issue_list) \
+            .with_value_length_check(0, 30) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'city', issue_list) \
+            .with_value_length_check(0, 28) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'state', issue_list) \
+            .with_value_exists_check() \
+            .with_value_length_check(2, 2) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'zip', issue_list) \
+            .with_value_exists_check() \
+            .with_value_length_check(5, 10) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'country', issue_list) \
+            .with_value_length_check(0, 30) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'email', issue_list) \
+            .with_value_exists_check() \
+            .with_value_length_check(1, 250) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'phone', issue_list) \
+            .with_value_length_check(0, 14) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'phone', issue_list) \
+            .with_value_length_check(0, 14) \
+            .validate()
+
+        # Employment data
+        _DataValidator(employee_data_dto, 'department', issue_list) \
+            .with_value_valid_integer_check() \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'division', issue_list) \
+            .with_value_valid_integer_check() \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'union', issue_list) \
+            .with_value_type_boolean_check() \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'jobTitle', issue_list) \
+            .with_value_length_check(0, 30) \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'fullTime', issue_list) \
+            .with_value_type_boolean_check() \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'seasonal', issue_list) \
+            .with_value_type_boolean_check() \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'hireDate', issue_list) \
+            .with_value_exists_check() \
+            .with_value_valid_datetime_check() \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'originalHireDate', issue_list) \
+            .with_value_valid_datetime_check() \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'terminationDate', issue_list) \
+            .with_value_valid_datetime_check() \
+            .validate()
+
+        self.employeeStatus = None
+
+        # Salary data
+        _DataValidator(employee_data_dto, 'payEffectiveDate', issue_list) \
+            .with_value_valid_datetime_check() \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'annualBaseSalary', issue_list) \
+            .with_value_valid_decimal_check() \
+            .validate()
+
+        _DataValidator(employee_data_dto, 'baseHourlyRate', issue_list) \
+            .with_value_valid_decimal_check() \
+            .validate()
+
+        return issue_list
+
     def _update_employee_data_to_remote(self, employee_data_dto): 
         data = employee_data_dto.__dict__
 
-        # [TODO]: Handle non-ok results
         response = self.web_request_service.put(
             self._cp_api_url,
             data_object=data,
-            auth_token=self._cp_api_auth_token) 
+            auth_token=self._cp_api_auth_token)
+
+        response.raise_for_status()
 
     def _create_employee_data_to_remote(self, employee_data_dto):
         data = employee_data_dto.__dict__
 
-        # [TODO]: Handle non-ok results
         response = self.web_request_service.post(
             self._cp_api_url,
             data_object=data,
             auth_token=self._cp_api_auth_token)
 
-        # The body of the response is the payroll ID
-        if (response.status_code == 200):
-            return response.text
+        response.raise_for_status()
 
-        return None
+        # Also, we really only expect here the below based on CP API behavior
+        # * HTTP 200
+        # * body contains the resultant ID created 
+        # So throw if we receive anything else
+        if (response.status_code != 200):
+            raise RuntimeError('POST to ConnectPay Employee API resulted in a non-200 status: "{0}"'.format(response.status_code), response)
+
+        if (not response.text):
+            raise RuntimeError('POST to ConnectPay Employee API resulted in empty body, and hence was not able to receive new employee ID.')
+
+        return response.text
 
     def _get_cp_client_code_by_employee(self, employee_user_id):
         company_id = self.company_personnel_service.get_company_id_by_employee_user_id(employee_user_id)
-        integration_providers = self.integration_provider_service.get_company_integration_providers(company_id)
-        payroll_provider = integration_providers[self._integration_service_type()]
-        if (payroll_provider is not None 
-            and payroll_provider['integration_provider']['name'] == self._integration_provider_name()):
-            return payroll_provider['company_external_id']
+        
+        if (company_id):
+            return self.integration_provider_service.get_company_integration_provider_external_id(
+                company_id,
+                self._integration_service_type(),
+                self._integration_provider_name())
 
         return None
 
@@ -199,3 +354,125 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
             return str(input_value)
 
         return input_value
+
+
+class _DataValidator(object):
+    def __init__(self, dto, field_name, issue_list):
+        dto_dict = dto.__dict__
+        if (field_name not in dto_dict):
+            raise RuntimeError('The specified field name to check is not part of the object.')
+        self._field_value = dto_dict[field_name]
+        self._field_name = field_name
+        self._issue_list = issue_list
+        self._check_list = []
+
+    def with_value_exists_check(self):
+        self._check_list.append(lambda : self.__check_value_exists())
+        return self
+
+    def with_value_length_check(self, min_length, max_length):
+        self._check_list.append(lambda : self.__check_value_length(min_length, max_length))
+        return self
+
+    def with_value_type_boolean_check(self):
+        self._check_list.append(lambda : self.__check_value_type_boolean())
+        return self
+
+    def with_value_valid_integer_check(self):
+        self._check_list.append(lambda : self.__check_value_valid_integer())
+        return self
+
+    def with_value_valid_datetime_check(self):
+        self._check_list.append(lambda : self.__check_value_valid_datetime())
+        return self
+
+    def with_value_valid_decimal_check(self):
+        self._check_list.append(lambda : self.__check_value_valid_decimal())
+        return self
+
+    def with_value_in_list_check(self, value_list):
+        self._check_list.append(lambda : self.__check_value_in_list(value_list))
+        return self
+
+    def validate(self):
+        for check in self._check_list:
+            check()
+
+    def __append_issue(self, issue):
+        prefix_token = '[Field="{0}" | Value="{1}"]'.format(self._field_name, self._field_value)
+        self._issue_list.append('{0} {1}'.format(prefix_token, issue))
+
+    def __check_value_exists(self):
+        if (not self._field_value):
+            self.__append_issue('Missing value for required field')
+
+    def __check_value_length(self, min_length, max_length):
+        if (min_length < 0 or max_length < 0 or max_length < min_length):
+            raise ValueError('The provided min_length and max_length to check is not valid: "[{0}, {1}]"'.format(min_length, max_length))
+        if (not self._field_value):
+            return
+        value_len = len(self._field_value)
+        if (value_len < min_length or value_len > max_length):
+            self.__append_issue('Value length out of expected range: excepted-"[{0}, {1}]", was-"{2}"'.format(min_length, max_length, value_len))
+
+    def __check_value_type_boolean(self):
+        if (not self._field_value):
+            return
+        if (not isinstance(self._field_value, bool)):
+            self.__append_issue('Value is not of expected type "boolean"')
+
+    def __check_value_valid_integer(self):
+        if (not self._field_value):
+            return
+        if (not self.__is_integer(self._field_value)):
+            self.__append_issue('Value is not of expected type "integer"')
+
+    def __check_value_valid_decimal(self):
+        if (not self._field_value):
+            return
+        if (not self.__is_decimal(self._field_value)):
+            self.__append_issue('Value is not valid decimal string')
+
+    def __check_value_valid_datetime(self):
+        if (not self._field_value):
+            return
+        if (not self.__is_datetime(self._field_value)):
+            self.__append_issue('Value is not valid date time string')
+
+    def __check_value_in_list(self, value_list):
+        if (not self._field_value):
+            return
+        if (not value_list or not isinstance(value_list, list)):
+            raise ValueError('Provided value_list is not valid')
+        if (not self._field_value in value_list):
+            self.__append_issue('Value is outside expected options: "{0}"'.format(value_list))
+
+    def __is_datetime(self, date_string):
+        try: 
+            parse(date_string)
+            return True
+        except ValueError:
+            return False
+
+    def __is_decimal(self, decimal_value):
+        if (isinstance(decimal_value, float)):
+            return True
+
+        try: 
+            float(decimal_value)
+            return True
+        except ValueError:
+            return False
+
+    def __is_integer(self, integer_value):
+        # Note: python considers boolean values True/False to be integer type
+        #       so needs to handle this case explicitly
+        if (isinstance(integer_value, int)
+            and not isinstance(integer_value, bool)):
+            return True
+
+        try:
+            int(integer_value)
+            return True
+        except ValueError:
+            return False
