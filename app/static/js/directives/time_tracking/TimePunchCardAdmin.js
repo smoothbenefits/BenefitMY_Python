@@ -102,6 +102,8 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
                 $scope.selectedDisplayWeek.weekStartDate,
                 moment($scope.selectedDisplayWeek.weekStartDate).add(7, 'days')
               );
+              employeeListBuilder.orderByLastName();
+
               _.each(employeeListBuilder.list, function(employee) {
                 if(!$scope.firstEmployee){
                   $scope.firstEmployee = employee;
