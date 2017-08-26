@@ -36,4 +36,3 @@ class AwsEventMessagePublisher(AwsEventMessageFacilityBase):
             return response
         except Exception as e:
             self._logger.error('Failed to publish event: {0}'.format(e))
-    
