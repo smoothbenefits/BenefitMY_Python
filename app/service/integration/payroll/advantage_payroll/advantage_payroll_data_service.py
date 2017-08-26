@@ -25,13 +25,19 @@ class AdvantagePayrollDataService(IntegrationProviderDataServiceBase):
         self.company_personnel_service = CompanyPersonnelService()
         self.integration_provider_service = IntegrationProviderService()
 
-    def generate_and_record_external_employee_number(self, employee_user_id):
+    def _integration_service_type(self):
+        return INTEGRATION_SERVICE_TYPE_PAYROLL
+
+    def _integration_provider_name(self):
+        return INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL
+
+    def _internal_generate_and_record_external_employee_number(self, employee_user_id):
         # First check whether the said employee already have a number
         # If so, this is an exception state, log it, and skip the operation
         employee_number = self.integration_provider_service.get_employee_integration_provider_external_id(
             employee_user_id,
-            INTEGRATION_SERVICE_TYPE_PAYROLL,
-            INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL)
+            self._integration_service_type(),
+            self._integration_provider_name())
         if (employee_number):
             logging.error('Invalid Operation: Try to generate external ID for employee (User ID={0}) already has one!'.format(employee_user_id))
             return
@@ -42,15 +48,15 @@ class AdvantagePayrollDataService(IntegrationProviderDataServiceBase):
         # of the specified employee
         self.integration_provider_service.set_employee_integration_provider_external_id(
             employee_user_id,
-            INTEGRATION_SERVICE_TYPE_PAYROLL,
-            INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL,
+            self._integration_service_type(),
+            self._integration_provider_name(),
             next_employee_number)
 
     def _get_next_external_employee_number(self, company_id):
         employee_number_seed_str = self.integration_provider_service.get_company_integration_provider_employee_external_id_seed(
             company_id,
-            INTEGRATION_SERVICE_TYPE_PAYROLL,
-            INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL)
+            self._integration_service_type(),
+            self._integration_provider_name())
         employee_number_seed = 0
         if (employee_number_seed_str):
             try: 
@@ -64,8 +70,8 @@ class AdvantagePayrollDataService(IntegrationProviderDataServiceBase):
     def _get_max_external_employee_number(self, company_id):
         all_employee_data = CompanyUserIntegrationProvider.objects.filter(
                 company_user__company=company_id,
-                integration_provider__service_type=INTEGRATION_SERVICE_TYPE_PAYROLL,
-                integration_provider__name=INTEGRATION_PAYROLL_ADVANTAGE_PAYROLL)
+                integration_provider__service_type=self._integration_service_type(),
+                integration_provider__name=self._integration_provider_name())
 
         employee_numbers = []
         for employee_data in all_employee_data:
