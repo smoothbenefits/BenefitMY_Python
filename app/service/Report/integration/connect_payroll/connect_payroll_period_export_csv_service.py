@@ -74,7 +74,7 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
         elif (earning_type == EARNING_TYPE_PTO):
             return 'VAC'
         elif (earning_type == EARNING_TYPE_SICK_TIME):
-            return 'SIC'
+            return 'SICK'
         elif (earning_type == EARNING_TYPE_OVERTIME):
             return 'OT'
         else:
