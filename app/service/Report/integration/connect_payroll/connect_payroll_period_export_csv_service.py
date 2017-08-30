@@ -199,16 +199,10 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
             'pto_ending_balance': ''
         }
 
-        # First get the employee number that came from AP system
-        employee_number = self.integration_provider_service.get_employee_integration_provider_external_id(
-            employee_user_id,
-            INTEGRATION_SERVICE_TYPE_PAYROLL,
-            INTEGRATION_PAYROLL_CONNECT_PAYROLL)
-
         row_data['client_name'] = company_info.company_name
         row_data['client_number'] = company_payroll_id
 
-        row_data['employee_number'] = employee_number
+        row_data['employee_number'] = employee_profile_info.employee_number
         row_data['employee_name'] = person_info.get_full_name()
 
         if (employee_profile_info.department):
