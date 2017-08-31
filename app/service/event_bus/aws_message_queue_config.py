@@ -14,10 +14,10 @@ class AwsMessageQueueConfig(object):
         self.MessageRetentionPeriod = None
 
         # In seconds 
-        self.ReceiveMessageWaitTimeSeconds = None
+        self.ReceiveMessageWaitTimeSeconds = 5
 
         # In seconds
-        self.VisibilityTimeout = None
+        self.VisibilityTimeout = 5
 
     def to_dict(self):
         return {k: str(v) for k, v in self.__dict__.iteritems() if v is not None}

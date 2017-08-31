@@ -8,12 +8,18 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from app.service.event_bus.aws_event_bus_service import AwsEventBusService
+
 from app.service.event_bus.event_handlers.environment_test_event_handler import EnvironmentTestEventHandler
 from app.service.event_bus.event_handlers.another_environment_test_event_handler import AnotherEnvironmentTestEventHandler
 from app.service.event_bus.event_handlers.punch_card_recognition_failed_handler import PunchCardRecognitionFailedHandler
+from app.service.event_bus.event_handlers.employee_profile_updated_event_cp_data_sync_handler import EmployeeProfileUpdatedEventCpDataSyncHandler
+from app.service.event_bus.event_handlers.person_info_updated_event_cp_data_sync_handler import PersonInfoUpdatedEventCpDataSyncHandler
+from app.service.event_bus.event_handlers.w4_updated_event_cp_data_sync_handler import W4UpdatedEventCpDataSyncHandler
+from app.service.event_bus.event_handlers.compensation_updated_event_cp_data_sync_handler import CompensationUpdatedEventCpDataSyncHandler
+
 from app.service.event_bus.events.environment_test_event import EnvironmentTestEvent
 from app.service.event_bus.aws_message_queue_config import AwsMessageQueueConfig
-from app.service.event_bus.events.punch_card_recognition_failed_event import PunchCardRecognitionFailedEvent
+
 
 class Command(BaseCommand):
     def run_process(self):
@@ -31,6 +37,7 @@ class Command(BaseCommand):
         common_sqs_config = AwsMessageQueueConfig()
         common_sqs_config.VisibilityTimeout = 60
         common_sqs_config.MessageRetentionPeriod = 86400
+        common_sqs_config.ReceiveMessageWaitTimeSeconds = 20
 
         # The below section registers all the event handlers
         # Keep appending more registrations for use cases going
@@ -38,6 +45,10 @@ class Command(BaseCommand):
         message_pump.register_event_message_handler(EnvironmentTestEventHandler, common_sqs_config)
         message_pump.register_event_message_handler(AnotherEnvironmentTestEventHandler, common_sqs_config)
         message_pump.register_event_message_handler(PunchCardRecognitionFailedHandler, common_sqs_config)
+        message_pump.register_event_message_handler(EmployeeProfileUpdatedEventCpDataSyncHandler, common_sqs_config)
+        message_pump.register_event_message_handler(PersonInfoUpdatedEventCpDataSyncHandler, common_sqs_config)
+        message_pump.register_event_message_handler(W4UpdatedEventCpDataSyncHandler, common_sqs_config)
+        message_pump.register_event_message_handler(CompensationUpdatedEventCpDataSyncHandler, common_sqs_config)
 
         # Now start the pump, which will start pumping and handling
         # with all registered event handlers above
