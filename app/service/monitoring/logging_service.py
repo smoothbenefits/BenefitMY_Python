@@ -37,6 +37,8 @@ class LoggingService(object):
         self.log.debug(formatted)
 
     def _format(self, message, caller):
+        if (hasattr(message, '__dict__')):
+            message = message.__dict__
         return '{}; REPORTER: {}'.format(message, caller)
 
     def _caller_name(self, skip=2):

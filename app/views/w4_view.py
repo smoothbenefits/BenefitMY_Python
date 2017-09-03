@@ -7,8 +7,13 @@ from django.db import transaction
 from app.models.w4 import W4
 from app.serializers.w4_serializer import W4Serializer
 
+from app.service.event_bus.aws_event_bus_service import AwsEventBusService
+from app.service.event_bus.events.w4_updated_event import W4UpdatedEvent
+
 
 class W4View(APIView):
+    _aws_event_bus_service = AwsEventBusService()
+
     def _get_object(self, pk):
         try:
             return W4.objects.get(user=pk)
@@ -31,11 +36,19 @@ class W4View(APIView):
                                       data=request.DATA)
             if serializer.is_valid():
                 serializer.save()
+
+                # Log event
+                self._aws_event_bus_service.publish_event(W4UpdatedEvent(pk))
+
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except W4.DoesNotExist:
             serializer = W4Serializer(data=request.DATA)
             if serializer.is_valid():
                 serializer.save()
+
+                # Log event
+                self._aws_event_bus_service.publish_event(W4UpdatedEvent(pk))
+                
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

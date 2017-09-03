@@ -9,7 +9,7 @@ class EnvironmentTestEventHandler(EventHandlerBase):
     def __init__(self):
         super(EnvironmentTestEventHandler, self).__init__(EnvironmentTestEvent)
     
-    def handle(self, event):
+    def _internal_handle(self, event):
         # subject = "Test Event Handler"
         # text_content = event.host_url
         # from_email = settings.SUPPORT_EMAIL_ADDRESS

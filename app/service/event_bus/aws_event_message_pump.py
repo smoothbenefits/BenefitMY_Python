@@ -1,14 +1,15 @@
 import thread
 import traceback
-import logging
 import time
 import json
 
 from .aws_event_message_facility_base import AwsEventMessageFacilityBase
 from .aws_event_message_utility import AwsEventMessageUtility
+from app.service.monitoring.logging_service import LoggingService
 
 
 class AwsEventMessagePump(AwsEventMessageFacilityBase):
+
     def __init__(self, aws_region=None):
         super(AwsEventMessagePump, self).__init__(aws_region)
         
@@ -24,8 +25,10 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
             event_message_handler_class,
             message_queue_config
         )
-        queue_pump.ensure_queue_setup()
-        self._queue_pumps.append(queue_pump)
+        success = queue_pump.ensure_queue_setup()
+
+        if (success):
+            self._queue_pumps.append(queue_pump)
 
     def start_pumping(self, on_new_thread=False):
         if (on_new_thread):
@@ -48,6 +51,8 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
         per-queue based message handling
     '''
     class AwsQueuePump(object):
+        _logger = LoggingService()
+        
         def __init__(
             self,
             aws_client,
@@ -69,11 +74,19 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
                 # Ensure setup of the message queue
                 queue_name = AwsEventMessageUtility.get_sqs_queue_name(self._message_handler)
                 self._queue = AwsEventMessageUtility.ensure_sqs_queue(self._aws_client.sqs, queue_name)
+                
+                if (not self._queue):
+                    self._logger.error('Failed to ensure event message queue with name: "{0}"'.format(queue_name))
+                    return False
                 queue_arn = self._queue.attributes.get('QueueArn')
 
                 # Ensure the SNS topic
                 topic_name = AwsEventMessageUtility.get_sns_topic_name(self._message_handler.event_class)
                 topic_arn = AwsEventMessageUtility.ensure_sns_topic(self._aws_client.sns, topic_name)
+
+                if (not topic_arn):
+                    self._logger.error('Failed to ensure SNS topic with name: "{0}"'.format(topic_name))
+                    return False
 
                 # Ensure subscription, queue -> topic
                 response = self._aws_client.sns.subscribe(
@@ -81,6 +94,10 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
                     Protocol='sqs',
                     Endpoint=queue_arn
                 )
+
+                if (not AwsEventMessageUtility.is_success_response(response)):
+                    self._logger.error('Failed to ensure SQS-SNS subscription: "{0}-{1}"'.format(queue_name, topic_name))
+                    return False
 
                 # Set up a policy to allow SNS access to the queue
                 if 'Policy' in self._queue.attributes:
@@ -105,8 +122,10 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
                 # Now ensure the setup of the dead-letter queue
                 self._ensure_dead_letter_queue(queue_name)
 
+                return True
+
             except Exception as e:
-                logging.error(traceback.format_exc())
+                self._logger.error(traceback.format_exc())
 
         ''' This is to ensure the proper setup of dead-letter
             queue.
@@ -124,6 +143,11 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
         def _ensure_dead_letter_queue(self, source_queue_name):
             dl_queue_name = source_queue_name + '_DL'
             self._dead_letter_queue = AwsEventMessageUtility.ensure_sqs_queue(self._aws_client.sqs, dl_queue_name)
+            
+            if (not self._dead_letter_queue):
+                self._logger.error('Failed to ensure deadletter queue for: "{0}"'.format(source_queue_name))
+                return
+
             dl_queue_arn = self._dead_letter_queue.attributes.get('QueueArn')
             redrive_policy = {
                 'maxReceiveCount': '5',
@@ -139,6 +163,8 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
 
                 # Process messages
                 for message in messages:
+                    self._logger.info('Handling event message: {0}'.format(message.body))
+
                     # Parse out the actual event message from 
                     # Boto3 sqs message data structure
                     # And deserialize into the expected event 
@@ -154,7 +180,7 @@ class AwsEventMessagePump(AwsEventMessageFacilityBase):
                     # Let the queue know that the message is processed
                     message.delete()
             except Exception as e:
-                logging.error(traceback.format_exc())
+                self._logger.error(traceback.format_exc())
 
         def start_pump_async(self):
             thread.start_new_thread(self._run_pump, ())

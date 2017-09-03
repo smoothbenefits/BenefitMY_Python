@@ -17,6 +17,8 @@ from app.models.company_user import (
 from app.serializers.integration.company_integration_provider_serializer import \
     CompanyIntegrationProviderSerializer
 
+from app.service.company_personnel_service import CompanyPersonnelService
+
 User = get_user_model()
 
 # Payroll service provider names
@@ -25,6 +27,7 @@ INTEGRATION_PAYROLL_CONNECT_PAYROLL = 'Connect Payroll'
 
 
 class IntegrationProviderService(object):
+    company_personnel_service = CompanyPersonnelService()
 
     def get_company_integration_providers(self, company_id):
         result = {}
@@ -61,6 +64,24 @@ class IntegrationProviderService(object):
         if (company_provider_name != provider_name):
             return None
         return integration_provider
+
+    def is_integration_service_available_to_company(self, company_id, service_type, provider_name):
+        company_integration_providers = self.get_company_integration_providers(company_id)
+        if (not service_type in company_integration_providers):
+            return False
+        company_service_type_provider = company_integration_providers[service_type]
+        if (not company_service_type_provider):
+            return False
+        found_provider_name = company_service_type_provider['integration_provider']['name']
+        if (found_provider_name != provider_name):
+            return False
+        return True
+
+    def is_integration_service_available_to_employee(self, employee_user_id, service_type, provider_name):
+        company_id = self.company_personnel_service.get_company_id_by_employee_user_id(employee_user_id)
+        if (not company_id):
+            raise ValueError('Did not find associated company for user {0}'.format(employee_user_id))
+        return self.is_integration_service_available_to_company(company_id, service_type, provider_name)
 
     def get_employee_integration_provider_external_id(self, employee_user_id, service_type, provider_name):
         company_user_integration_provider = self._get_employee_integration_provider_model(

@@ -1,4 +1,4 @@
-import logging
+import traceback
 from django.contrib.auth import get_user_model
 
 from app.service.integration.integration_provider_service import (
@@ -13,6 +13,7 @@ from app.service.integration.payroll.connect_payroll.connect_payroll_data_servic
 import ConnectPayrollDataService
 from app.service.integration.payroll.advantage_payroll.advantage_payroll_data_service \
 import AdvantagePayrollDataService
+from app.service.monitoring.logging_service import LoggingService
 
 User = get_user_model()
 
@@ -22,6 +23,7 @@ User = get_user_model()
     created for various integration providers 
 '''
 class CompanyIntegrationProviderDataService(object):
+    _logger = LoggingService()
 
     def __init__(self):
         self.integration_provider_service = IntegrationProviderService()
@@ -45,19 +47,18 @@ class CompanyIntegrationProviderDataService(object):
         company_id = self.company_personnel_service.get_company_id_by_employee_user_id(employee_user_id)
         if (not company_id):
             return
-        self._enumerate_company_data_services(company_id, lambda data_service: data_service.sync_employee_data_to_remote(employee_user_id))
+        return self._enumerate_company_data_services(company_id, lambda data_service: data_service.sync_employee_data_to_remote(employee_user_id))
 
     def generate_and_record_external_employee_number(self, employee_user_id):
         company_id = self.company_personnel_service.get_company_id_by_employee_user_id(employee_user_id)
         if (not company_id):
             raise ValueError('The given employee user ID "{0}" is not properly linked to a valid company.'.format(employee_user_id))
-        self._enumerate_company_data_services(company_id, lambda data_service: data_service.generate_and_record_external_employee_number(employee_user_id))
+        return self._enumerate_company_data_services(company_id, lambda data_service: data_service.generate_and_record_external_employee_number(employee_user_id))
 
     def _enumerate_company_data_services(self, company_id, data_service_action):
-        # [TODO]: Distributed atomicity is hard to guarantee, when it involves
-        #         non-managed number of third-party APIs. 
-        #         At least we need to in logging and fault tolerance, and 
-        #         monitoring and alerts to follow.  
+        # Record failed actions and report back to caller
+        failed_data_service_records = []
+
         company_integration_providers = self.integration_provider_service.get_company_integration_providers(company_id)
         for service_type in company_integration_providers:
             company_service_type_provider = company_integration_providers[service_type]
@@ -70,6 +71,36 @@ class CompanyIntegrationProviderDataService(object):
                     if (provider_name in service_type_data_services):
                         # create an instance of the date service, and invoke the action
                         data_service = service_type_data_services[provider_name]()
-                        data_service_action(data_service)
+
+                        # Collect the current data service specs into a record instance
+                        # for logging and anormaly reporting to upstream
+                        service_action_record = IntegrationDataServiceActionRecord(
+                            company_id=company_id,
+                            service_type=service_type,
+                            provider_name=provider_name,
+                            service_action=data_service_action
+                        )
+
+                        try:
+                            data_service_action(data_service)
+                            self._logger.error('Successfully executed integration data action')
+                            self._logger.info(service_action_record)
+                        except Exception as e:
+                            self._logger.error('Failed to complete integration data action')
+                            self._logger.info(service_action_record)
+                            failed_data_service_records.append(service_action_record)
                 else:
-                    logging.warning('Unsupported integration service type encoutered: "{0}"'.format(service_type))
+                    self._logger.warning('Unsupported integration service type encoutered: "{0}"'.format(service_type))
+
+        return failed_data_service_records
+
+
+''' A data object to hold specs involved in a single integrtion data service
+    This is more for reporting purposes
+'''
+class IntegrationDataServiceActionRecord(object):
+    def __init__(self, company_id, service_type, provider_name, service_action):
+        self.company_id = company_id
+        self.service_type = service_type
+        self.provider_name = provider_name
+        self.service_action = service_action
