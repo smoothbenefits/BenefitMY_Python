@@ -2,6 +2,9 @@ from MA_state_tax_election_serializer import MAStateTaxElectionSerializer
 from RI_state_tax_election_serializer import RIStateTaxElectionSerializer
 
 
+''' Factory to provide the proper state tax election serializer (class)
+    based on given state.
+'''
 class StateTaxElectionSerializerFactory(object):
     _state_serializer_map = {
         'MA': MAStateTaxElectionSerializer,

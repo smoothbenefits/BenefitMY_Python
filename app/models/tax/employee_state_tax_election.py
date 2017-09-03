@@ -37,7 +37,7 @@ class EmployeeStateTaxElection(models.Model):
         json_data = json.loads(self.data)
         serializer = self._state_tax_election_serializer_factory.get_state_tax_election_serializer(self.state)(data=json_data)
         if (not serializer.is_valid()):
-            raise RuntimeError('Failed to deserialize state tax election data for user "{0}" and state "{1}"'.format(self.user.id, self.state))
+            raise RuntimeError('Failed to deserialize state tax election data for user "{0}" and state "{1}": '.format(self.user.id, self.state), serializer.errors)
         return serializer.object
 
     @tax_election_data.setter

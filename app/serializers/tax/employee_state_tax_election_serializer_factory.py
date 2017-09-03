@@ -8,6 +8,9 @@ from RI_employee_state_tax_election_serializer import (
 )
 
 
+''' Factory to provide the proper employee state tax election serializer (class)
+    based on given state.
+'''
 class EmployeeStateTaxElectionSerializerFactory(object):
     _employee_state_serializer_map = {
         'MA': MAEmployeeStateTaxElectionSerializer,
