@@ -1,8 +1,10 @@
+import json
 import reversion
 
 from django.db import models
 from app.custom_authentication import AuthUser
 from ..address import STATES_CHOICES
+from app.serializers.tax.state_tax_election_serializer_factory import StateTaxElectionSerializerFactory
 
 
 @reversion.register
@@ -25,3 +27,22 @@ class EmployeeStateTaxElection(models.Model):
 
     class Meta:
         unique_together = (('user', 'state'),)
+
+    _state_tax_election_serializer_factory = StateTaxElectionSerializerFactory()
+
+    @property
+    def tax_election_data(self):
+        if (not self.data):
+            return None
+        json_data = json.loads(self.data)
+        serializer = self._state_tax_election_serializer_factory.get_state_tax_election_serializer(self.state)(data=json_data)
+        if (not serializer.is_valid()):
+            raise RuntimeError('Failed to deserialize state tax election data for user "{0}" and state "{1}"'.format(self.user.id, self.state))
+        return serializer.object
+
+    @tax_election_data.setter
+    def tax_election_data(self, value):
+        if (not value):
+            self.data = None
+        serializer = self._state_tax_election_serializer_factory.get_state_tax_election_serializer(self.state)(value)
+        self.data = json.dumps(serializer.data)
