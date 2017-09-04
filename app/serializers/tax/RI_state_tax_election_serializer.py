@@ -4,8 +4,14 @@ from app.dtos.tax.RI_state_tax_election import RIStateTaxElection
 
 
 class RIStateTaxElectionSerializer(StateTaxElectionSerializer):
-    is_legal_residence = serializers.BooleanField(default=False)
-    household_name = serializers.CharField(max_length=255)
+    is_not_dependent = serializers.BooleanField()
+    spouse_is_dependent = serializers.BooleanField()
+    num_dependents = serializers.IntegerField(min_value=0)
+    additional_allowances = serializers.IntegerField(min_value=0)
+
+    additional_witholding = serializers.DecimalField(min_value=0.0, decimal_places=2)
+    is_exempt_status = serializers.BooleanField()
+    is_exempt_ms_status = serializers.BooleanField()
 
     def restore_object(self, attrs, instance=None):
         return RIStateTaxElection(**attrs)

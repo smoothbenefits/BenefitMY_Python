@@ -1,0 +1,14 @@
+{
+    "user": "3", 
+    "tax_election_data": {
+        "personal_exemption": 1,
+        "spouse_exemption": 0,
+        "num_dependents": 2,
+        "additional_witholding": 20.2,
+        "head_of_household": true,
+        "is_blind": false,
+        "is_spouse_blind": false,
+        "is_fulltime_student": false
+    }, 
+    "state": "MA"
+}

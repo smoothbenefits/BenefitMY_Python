@@ -1,5 +1,6 @@
 import json
 import reversion
+import decimal
 
 from django.db import models
 from app.custom_authentication import AuthUser
@@ -45,4 +46,11 @@ class EmployeeStateTaxElection(models.Model):
         if (not value):
             self.data = None
         serializer = self._state_tax_election_serializer_factory.get_state_tax_election_serializer(self.state)(value)
-        self.data = json.dumps(serializer.data)
+        self.data = json.dumps(serializer.data, cls=DecimalEncoder)
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return float(o)
+        return super(DecimalEncoder, self).default(o)

@@ -10,6 +10,13 @@ from RI_employee_state_tax_election_serializer import (
 
 ''' Factory to provide the proper employee state tax election serializer (class)
     based on given state.
+
+    Rumination: We only need this because I did not find an effective way to enable
+                a single generic EmployeeStateTaxElectionSerializer to handle a 
+                polymorphic nested StateTaxElectionSerialier, based on the state in
+                context. If we can find a way to achieve that. This whole factor, 
+                and all the state specific employee tax election class definitions
+                can be retired.
 '''
 class EmployeeStateTaxElectionSerializerFactory(object):
     _employee_state_serializer_map = {
