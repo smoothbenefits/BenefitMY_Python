@@ -631,6 +631,11 @@ BenefitMyApp.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/static/partials/employee_onboard/partial_tax.html',
                 controller: 'onboardTax'
             }).
+            state('employee_onboard.state_tax', {
+                url: '/state_tax',
+                templateUrl: '/static/partials/employee_onboard/partial_state_tax.html',
+                controller: 'onboardStateTax'
+            }).
             state('employee_onboard.document', {
                 url: '/document',
                 templateUrl: '/static/partials/employee_onboard/partial_document.html',

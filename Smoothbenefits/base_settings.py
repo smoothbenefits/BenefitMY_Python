@@ -293,6 +293,7 @@ PIPELINE_JS = {
             'js/directives/OpenEnrollmentDefinition.js',
             'js/directives/payroll/AdvantagePayrollView.js',
             'js/directives/payroll/ConnectPayrollView.js',
+            'js/directives/tax/StateTaxElectionView.js',
             'js/model_factories/benefitmyDomainModelFactories.js',
             'js/model_factories/benefitmyTimeTrackingModelFactories.js',
             'js/model_factories/benefitmyInsuranceCertificateModelFactories.js',

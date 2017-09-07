@@ -43,6 +43,10 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
       return getUrlFromState('employee_onboard.tax', { employee_id: employeeId });
     };
 
+    var getStateTaxUrl = function(employeeId){
+      return getUrlFromState('employee_onboard.state_tax', { employee_id: employeeId });
+    };
+
     var getDocumentUrl = function(employeeId){
       return getUrlFromState('employee_onboard.document', { employee_id: employeeId });
     };
@@ -141,6 +145,17 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         }, function(err){
           failed(err);
         });
+      }
+    };
+
+    var validateStateTaxInfo = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
+      if (!isNewEmployee 
+        || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
+        // Skip W-4 validation if this is not a new employee
+        succeeded();
+      } 
+      else {
+        failed();
       }
     };
 
@@ -254,21 +269,26 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                   validateBasicInfo(employeeId, isNewEmployee, allFeatureStatus, function(){
                     validateEmploymentAuth(employeeId, isNewEmployee, allFeatureStatus, function(){
                       validateW4Info(employeeId, isNewEmployee, allFeatureStatus, function(){
-                        validateDirectDeposit(employeeId, isNewEmployee, allFeatureStatus, function(){
-                            validateDocuments(employeeId, isNewEmployee, allFeatureStatus, function() {
-                                validateBenefitEnrollments(employeeId, isNewEmployee, allFeatureStatus, function() {
-                                    succeeded();
+                        validateStateTaxInfo(employeeId, isNewEmployee, allFeatureStatus, function(){
+                            validateDirectDeposit(employeeId, isNewEmployee, allFeatureStatus, function(){
+                                validateDocuments(employeeId, isNewEmployee, allFeatureStatus, function() {
+                                    validateBenefitEnrollments(employeeId, isNewEmployee, allFeatureStatus, function() {
+                                        succeeded();
+                                    },
+                                    function() {
+                                        failed(getBenefitEnrollFlowUrl(employeeId));
+                                    });
                                 },
                                 function() {
-                                    failed(getBenefitEnrollFlowUrl(employeeId));
+                                    failed(getDocumentUrl(employeeId, isNewEmployee));
                                 });
                             },
                             function() {
-                                failed(getDocumentUrl(employeeId, isNewEmployee));
+                                failed(getDirectDepositUrl(employeeId));
                             });
                         },
                         function() {
-                            failed(getDirectDepositUrl(employeeId));
+                            failed(getStateTaxUrl(employeeId));
                         });
                       },
                       function(){

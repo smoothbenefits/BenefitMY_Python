@@ -505,7 +505,7 @@ var onboardIndex = employeeControllers.controller('onboardIndex',
                 if (!isNewEmployee
                     || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
                     $scope.tabs = _.reject($scope.tabs, function(tab) {
-                        return tab.name == 'tax';
+                        return tab.name == 'tax' || tab.name == 'state_tax';
                     });
                 }
                 if (!isNewEmployee
@@ -711,8 +711,44 @@ var onboardTax = employeeControllers.controller('onboardTax',
       var empAuth = employeePayrollService.mapW4ViewToDto($scope.employee);
       employeePayrollService.saveEmployeeTaxByUserId($scope.employeeId, empAuth)
       .then(function(response){
-        $state.go('employee_onboard.direct_deposit', { employee_id: $scope.employeeId });
+        $state.go('employee_onboard.state_tax', { employee_id: $scope.employeeId });
       });
+    };
+}]);
+
+var onboardStateTax = employeeControllers.controller('onboardStateTax',
+  ['$scope',
+   '$state',
+   '$stateParams',
+   '$location',
+   '$window',
+   'EmployeePreDashboardValidationService',
+  function(
+    $scope,
+    $state,
+    $stateParams,
+    $location,
+    $window,
+    EmployeePreDashboardValidationService){
+
+    $scope.employeeId = $stateParams.employee_id;
+
+    EmployeePreDashboardValidationService.onboarding($scope.employeeId, function(){
+      $location.path('/employee');
+    },
+    function(redirectUrl){
+      if($location.path() !== redirectUrl){
+        $location.path(redirectUrl);
+      }
+      else{
+        $scope.displayAll = true;
+      }
+    });
+
+    $('body').addClass('onboarding-page');
+
+    $scope.proceed = function(){
+      $state.go('employee_onboard.direct_deposit', { employee_id: $scope.employeeId });
     };
 }]);
 
