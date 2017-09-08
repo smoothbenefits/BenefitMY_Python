@@ -52,3 +52,18 @@ class EmployeeStateTaxElectionView(APIView):
             response_serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_serializer(state)(record)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EmployeeStateTaxElectionByEmployeeView(APIView):
+    _state_tax_election_serializer_factory = EmployeeStateTaxElectionSerializerFactory()
+
+    def _get_object_collection(self, user_id):
+        return EmployeeStateTaxElection.objects.filter(user=user_id)
+
+    def get(self, request, user_id, format=None):
+        records = self._get_object_collection(user_id)
+        result = []
+        for record in records:
+            serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_serializer(record.state)(record)
+            result.append(serializer.data)
+        return Response(result)

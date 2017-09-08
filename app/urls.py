@@ -70,7 +70,10 @@ from app.views.health_benefits.user_company_benefit_plan_option_view import (
 from app.views.user_company_roles_view import UserCompanyRolesView
 
 from app.views.w4_view import W4View
-from app.views.tax.employee_state_tax_election_view import EmployeeStateTaxElectionView
+from app.views.tax.employee_state_tax_election_view import (
+    EmployeeStateTaxElectionView,
+    EmployeeStateTaxElectionByEmployeeView
+)
 from app.views.employment_authorization_view import EmploymentAuthorizationView
 from app.views.signature_view import (SignatureByUserView, SignatureView)
 from app.views.health_benefits.benefit_details_view import (
@@ -325,6 +328,7 @@ urlpatterns = patterns('app.views',
     url(r'^%s/companies/(?P<pk>\w+)/waived_benefits/?$' % PREFIX, CompanyWaivedBenefitView.as_view(), name='company_waived_benefit_api'),
     url(r'^%s/users/(?P<pk>\w+)/w4/?$' % PREFIX, W4View.as_view(), name='w4_api'),
     url(r'^%s/users/(?P<user_id>\w+)/w4/states/(?P<state>\w+)/?$' % PREFIX, EmployeeStateTaxElectionView.as_view(), name='employee_state_tax_election_api'),
+    url(r'^%s/users/(?P<user_id>\w+)/w4/states/?$' % PREFIX, EmployeeStateTaxElectionByEmployeeView.as_view(), name='employee_state_tax_election_by_employee_api'),
     url(r'^%s/users/(?P<pk>\w+)/employment_authorization/?$' % PREFIX,
         EmploymentAuthorizationView.as_view()),
     url(r'^%s/signature/?$' % PREFIX, SignatureView.as_view()),
