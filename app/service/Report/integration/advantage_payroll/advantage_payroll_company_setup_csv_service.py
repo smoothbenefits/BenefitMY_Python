@@ -162,7 +162,7 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._write_cell(self._normalize_decimal_number(employee_profile_info.projected_hours_per_pay_cycle))
         self._write_cell(self._get_employee_pay_type_code(employee_profile_info.pay_type))
         self._write_cell(self._normalize_decimal_number(employee_profile_info.current_hourly_rate))
-        self._write_cell(self._normalize_decimal_number(employee_profile_info.current_pay_period_salary))
+        self._write_cell(self._get_employee_current_pay_period_salary(employee_profile_info))
         self._write_cell(self._get_date_string(employee_profile_info.compensation_effective_date))
 
     def _write_employee_w4_info(self, employee_user_id, company_info):
@@ -219,6 +219,12 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
             return 'S'
         else:
             return ''
+
+    def _get_employee_current_pay_period_salary(self, employee_profile_info):
+        if (employee_profile_info.pay_type == PAY_TYPE_HOURLY):
+            return 0
+        else:
+            return self._normalize_decimal_number(employee_profile_info.current_pay_period_salary)
 
     def _normalize_decimal_number(self, decimal_number):
         result = decimal_number
