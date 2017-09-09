@@ -3,19 +3,30 @@ BenefitMyApp.controller('StateTaxElectionViewDirectiveController', [
   '$state',
   '$modal',
   '$controller',
+  'EmployeeTaxElectionService',
   function($scope,
            $state,
            $modal,
-           $controller) {
+           $controller,
+           EmployeeTaxElectionService) {
 
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
+
+    $scope.$watch('userId', function(userId) {
+        if (userId) {
+            EmployeeTaxElectionService.getTaxElectionsByEmployee(userId).then(function(elections){
+                $scope.elections = elections;
+            });
+        }
+    });
   }
 ]).directive('bmStateTaxElectionView', function(){
 
     return {
         restrict: 'E',
-        scope: {      
+        scope: { 
+            userId: '='     
         },
         templateUrl: '/static/partials/tax/directive_state_tax_election_view.html',
         controller: 'StateTaxElectionViewDirectiveController'

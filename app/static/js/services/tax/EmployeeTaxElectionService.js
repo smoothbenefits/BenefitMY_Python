@@ -23,6 +23,12 @@ benefitmyService.factory('EmployeeTaxElectionService',
             viewModel.isValid = function() {
                 return isValidTaxElection(this);
             };
+            viewModel.getCreatedTimeStampForDisplay = function() {
+                return _getTimeForDisplay(this.created_at);
+            };
+            viewModel.getUpdatedTimeStampForDisplay = function() {
+                return _getTimeForDisplay(this.updated_at);
+            };
             return viewModel;
         };
 
@@ -42,7 +48,7 @@ benefitmyService.factory('EmployeeTaxElectionService',
                     electionViewModels.push(mapDomainToViewModel(election));
                 });
                 var sortedCollection = _.sortBy(electionViewModels, 'state');
-                deferred.resolve(_.sortBy(sortedCollection);
+                deferred.resolve(_.sortBy(sortedCollection));
             },
             function(error){
                 deferred.reject(error);
@@ -112,8 +118,15 @@ benefitmyService.factory('EmployeeTaxElectionService',
                 throw new Error('Could not locate blank election generator for specified state: ' + state);
             }
             var model = blankGenerator(userId);
-
+            return _attachUtilitiesToViewModel(model);
         };  
+
+        var _getTimeForDisplay = function(dateTime) {
+            if (!dateTime) {
+                return null;
+            }
+            return moment(dateTime).format(DATE_FORMAT_STRING);
+        };
 
         //////////////////////////////////////////////
         // Per-state tax election validation
