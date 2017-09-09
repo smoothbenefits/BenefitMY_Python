@@ -72,7 +72,7 @@ class FormW4View(ReportExportViewBase):
         
         # Now produce the PDF with information filled
         formService = PDFFormFillService()
-        pdf_stream = formService.get_filled_form_stream('PDF/w4.pdf', fields)
+        pdf_stream = formService.get_filled_form_stream('PDF/tax/w4.pdf', fields)
 
         # Now utilize the signature service to apply the user's signature
         # if applicable
