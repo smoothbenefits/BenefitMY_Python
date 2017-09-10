@@ -22,6 +22,7 @@ from document_field import DocumentField
 from health_benefits.enrolled import Enrolled
 from health_benefits.user_company_waived_benefit import UserCompanyWaivedBenefit
 from w4 import W4
+from tax.employee_state_tax_election import EmployeeStateTaxElection
 from signature import Signature
 from employment_authorization import EmploymentAuthorization
 from health_benefits.benefit_details import BenefitDetails
