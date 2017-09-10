@@ -1,1 +1,15 @@
-<div>RI Tax</div>
+<form name="form">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <label class="control-label">Additional Allowances</label>
+            <span class="textbox col-xs-2">
+                <input  type="number"
+                        min="0"
+                        ng-model="taxElection.tax_election_data.additional_allowances"
+                        ng-required="true"
+                        ng-name = "additional_allowances" />
+            </span>
+            <div style="clear:both"></div>
+        </li>
+    </ul>
+</form>

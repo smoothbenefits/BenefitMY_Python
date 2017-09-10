@@ -1,0 +1,6 @@
+* Figure out how to dynamically change form based on state in context
+* Impelement state selector for create mode.
+  * Available options should be limited to supported states but not elected yet
+  * When the dropdown is shown, the form should be hidden. When the form is shown, the dropdown should be hidden.
+* "Create new election" button should be disabled/hidden if no more state needs elections.
+* Implement delete.

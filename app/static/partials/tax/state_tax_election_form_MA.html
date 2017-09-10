@@ -1,1 +1,16 @@
-<div>MA Tax</div>
+<form name="form">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <label class="control-label">Personal Exemption</label>
+            <span class="textbox col-xs-12">
+                <input  type="number"
+                        min="1"
+                        max="2"
+                        ng-model="taxElection.tax_election_data.personal_exemption"
+                        ng-required="true"
+                        ng-name = "personal_exemption" />
+            </span>
+            <div style="clear:both"></div>
+        </li>
+    </ul>
+</form>

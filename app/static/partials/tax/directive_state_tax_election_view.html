@@ -3,29 +3,26 @@
   <div class="view-instruction">
     <p>Please use this view to specify your state tax election(s)</p>
   </div>
+  <div class="cta"><span class="btn green" ng-click="createElection()">Create New Election</span></div>
 </div><!-- / .content-header -->
 <div class="content-body">
-  <div class="row">
-    <div class="col-md-10">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th><span>State</span></th>
-            <th><span>Time of Latest Submission</span></th>
-            <th><span>Actions</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="election in elections">
-            <td>{{election.state}}</td>
-            <td>{{election.getUpdatedTimeStampForDisplay()}}</td>
-            <td>
-                <span class="btn inline" ng-click="viewElection(election)">View</span>
-                <span class="btn inline" ng-click="editElection(election)">Edit</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><span>State</span></th>
+        <th><span>Time of Latest Submission</span></th>
+        <th><span>Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="election in elections">
+        <td>{{election.state}}</td>
+        <td>{{election.getUpdatedTimeStampForDisplay()}}</td>
+        <td>
+            <span class="btn inline" ng-click="editElection(election)">View / Edit</span>
+            <span class="btn inline" ng-click="deleteElection(election)" confirm="This will delete this election. Please confirm.">Delete</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

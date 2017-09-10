@@ -29,6 +29,9 @@ benefitmyService.factory('EmployeeTaxElectionService',
             viewModel.getUpdatedTimeStampForDisplay = function() {
                 return _getTimeForDisplay(this.updated_at);
             };
+            viewModel.isNew = function() {
+                return self.isNewElection; 
+            };
             return viewModel;
         };
 
@@ -118,6 +121,11 @@ benefitmyService.factory('EmployeeTaxElectionService',
                 throw new Error('Could not locate blank election generator for specified state: ' + state);
             }
             var model = blankGenerator(userId);
+
+            // Mark the model to indicate that it is for a new election
+            model.isNewElection = true;
+
+            // Attach the common utilities
             return _attachUtilitiesToViewModel(model);
         };  
 
