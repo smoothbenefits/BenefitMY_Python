@@ -14,6 +14,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                           'DirectDepositService',
                           'UserOnboardingStepStateService',
                           'OpenEnrollmentDefinitionService',
+                          'EmployeeTaxElectionService',
   function($state,
            PersonService,
            UserService,
@@ -25,7 +26,8 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
            CompanyFeatureService,
            DirectDepositService,
            UserOnboardingStepStateService,
-           OpenEnrollmentDefinitionService){
+           OpenEnrollmentDefinitionService,
+           EmployeeTaxElectionService){
 
     var getUrlFromState = function(state, stateParams) {
         return $state.href(state, stateParams).replace('#', '').replace('!', '');
@@ -155,7 +157,18 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         succeeded();
       } 
       else {
-        failed();
+        EmployeeTaxElectionService.getTaxElectionsByEmployee(employeeId).then(
+            function(elections) {
+                if (elections && elections.length > 0) {
+                    succeeded();
+                } else {
+                    failed();
+                }
+            },
+            function(errors) {
+                failed();
+            }
+        );
       }
     };
 

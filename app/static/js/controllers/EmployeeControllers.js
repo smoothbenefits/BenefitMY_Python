@@ -747,7 +747,7 @@ var onboardStateTax = employeeControllers.controller('onboardStateTax',
 
     $('body').addClass('onboarding-page');
 
-    $scope.proceed = function(){
+    $scope.onFinish = function(){
       $state.go('employee_onboard.direct_deposit', { employee_id: $scope.employeeId });
     };
 }]);

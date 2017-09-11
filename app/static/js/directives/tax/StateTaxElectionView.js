@@ -77,11 +77,13 @@ BenefitMyApp.directive('bmStateTaxElectionView', function() {
       '$state',
       '$modal',
       '$controller',
+      '$attrs',
       'EmployeeTaxElectionService',
       function($scope,
                $state,
                $modal,
                $controller,
+               $attrs,
                EmployeeTaxElectionService) {
 
         // Inherite scope from base
@@ -116,6 +118,18 @@ BenefitMyApp.directive('bmStateTaxElectionView', function() {
 
         $scope.hasExistingElections = function() {
             return $scope.elections && $scope.elections.length > 0;
+        };
+
+        $scope.showFinishButton = function() {
+            return 'onFinish' in $attrs
+                && $scope.elections
+                && $scope.elections.length > 0;
+        };
+
+        $scope.onFinishClicked = function() {
+            if ('onFinish' in $attrs) {
+                $scope.onFinish();
+            }
         };
 
         $scope.createElection = function() {
@@ -184,7 +198,8 @@ BenefitMyApp.directive('bmStateTaxElectionView', function() {
     return {
         restrict: 'E',
         scope: { 
-            userId: '='     
+            userId: '=',
+            onFinish: '&'     
         },
         templateUrl: '/static/partials/tax/directive_state_tax_election_view.html',
         controller: StateTaxElectionViewDirectiveController
