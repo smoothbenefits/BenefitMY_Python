@@ -1,5 +1,36 @@
 BenefitMyApp.directive('bmStateTaxElectionView', function() {
 
+    var stateElectionFormTemplateUrlMapping = {
+        'MA': '/static/partials/tax/state_tax_election_form_MA.html',
+        'RI': '/static/partials/tax/state_tax_election_form_RI.html'
+    };
+
+    var StateSelectionModalController = [
+       '$scope',
+       '$state',
+       '$modalInstance',
+       '$q',
+       'statesYetElected',
+        function(
+            $scope,
+            $state,
+            $modalInstance,
+            $q,
+            statesYetElected) {
+
+            $scope.statesYetElected = statesYetElected;
+            $scope.selectedState = statesYetElected[0];
+
+            $scope.cancel = function() {
+                $modalInstance.dismiss('cancelByUser');
+            };
+
+            $scope.ok = function() {
+                $modalInstance.close($scope.selectedState);
+            };
+        }
+    ];
+
     var StateTaxElectionEditModalController = [
        '$scope',
        '$state',
@@ -7,25 +38,21 @@ BenefitMyApp.directive('bmStateTaxElectionView', function() {
        '$q',
        'EmployeeTaxElectionService',
        'taxElection',
-       'userId',
         function(
             $scope,
             $state,
             $modalInstance,
             $q,
             EmployeeTaxElectionService,
-            taxElection,
-            userId) {
-
-            // Whether we are in create or edit mode is determined by whether the modal
-            // was given an existing tax election to edit.
-            $scope.isCreateMode = !taxElection;
+            taxElection) {
 
             if (taxElection) {
                 $scope.taxElection = angular.copy(taxElection);
-            } else {
-                $scope.taxElection = EmployeeTaxElectionService.getBlankElection(userId, 'MA');
             }
+
+            $scope.stateElectionFormTemplateUrl = function() {
+                return stateElectionFormTemplateUrlMapping[$scope.taxElection.state];
+            };
 
             $scope.isValidToSave = function() {
                 return EmployeeTaxElectionService.isValidTaxElection($scope.taxElection);
@@ -60,13 +87,56 @@ BenefitMyApp.directive('bmStateTaxElectionView', function() {
         // Inherite scope from base
         $controller('modalMessageControllerBase', {$scope: $scope});
 
+        var refreshCurrentElections = function() {
+            EmployeeTaxElectionService.getTaxElectionsByEmployee($scope.userId).then(function(elections){
+                $scope.elections = elections;
+            });
+        };
+
         $scope.$watch('userId', function(userId) {
             if (userId) {
-                EmployeeTaxElectionService.getTaxElectionsByEmployee(userId).then(function(elections){
-                    $scope.elections = elections;
-                });
+                refreshCurrentElections();
             }
         });
+
+        var getStatesYetElected = function() {
+            var existingStates = _.map($scope.elections, function(election) {
+                return election.state;
+            });
+
+            return _.reject(EmployeeTaxElectionService.TaxElectionSupportedStates, function(state) {
+                return _.contains(existingStates, state);
+            });
+        };
+
+        $scope.canCreateNewElection = function() {
+            var statesYetElected = getStatesYetElected();
+            return statesYetElected && statesYetElected.length > 0;
+        };
+
+        $scope.hasExistingElections = function() {
+            return $scope.elections && $scope.elections.length > 0;
+        };
+
+        $scope.createElection = function() {
+            var modalInstance = $modal.open({
+            templateUrl: '/static/partials/tax/modal_state_selection.html',
+            controller: StateSelectionModalController,
+            size: 'sm',
+            backdrop: 'static',
+            resolve: {
+              statesYetElected: function() {
+                return getStatesYetElected();
+              }
+            }
+          });
+
+          modalInstance.result.then(function(selectedState){
+            // Construct a blank election based on the state selected
+            var blankElection = EmployeeTaxElectionService.getBlankElection($scope.userId, selectedState);
+            $scope.editElection(blankElection);
+          });
+        };
 
         $scope.editElection = function(election) {
           var modalInstance = $modal.open({
@@ -77,9 +147,6 @@ BenefitMyApp.directive('bmStateTaxElectionView', function() {
             resolve: {
               taxElection: function () {
                 return election;
-              },
-              userId: function() {
-                return $scope.userId;
               }
             }
           });
@@ -90,14 +157,25 @@ BenefitMyApp.directive('bmStateTaxElectionView', function() {
                 $scope.showMessageWithOkayOnly('Success', successMessage);
                 
                 // Refresh the set of elections from server
-                EmployeeTaxElectionService.getTaxElectionsByEmployee(userId).then(function(elections){
-                    $scope.elections = elections;
-                });
+                refreshCurrentElections();
             } else {
                 var failureMessage = "Failed to save state tax election. Message: " + result.data;
                 $scope.showMessageWithOkayOnly('Failed', failureMessage);
             }
           });
+        };
+
+        $scope.deleteElection = function(election) {
+            EmployeeTaxElectionService.deleteTaxElection(election).then(
+                function() {
+                    // Refresh the set of elections from server
+                    refreshCurrentElections();
+                },
+                function(errors) {
+                    var failureMessage = "Failed to delete state tax election. Message: " + errors;
+                    $scope.showMessageWithOkayOnly('Failed', failureMessage);
+                }
+            );
         };
 
       }

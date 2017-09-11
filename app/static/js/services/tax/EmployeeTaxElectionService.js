@@ -60,6 +60,14 @@ benefitmyService.factory('EmployeeTaxElectionService',
             return deferred.promise;
         };
 
+        var deleteTaxElection = function(electionViewModel) {
+            return EmployeeTaxElectionRepository.ByEmployeeAndState.delete(
+                {userId: electionViewModel.user, state:electionViewModel.state}
+            ).$promise.then(function(response) {
+                return response;
+            });
+        };
+
         var saveTaxElection = function(electionViewModel) {
             var deferred = $q.defer();
 
@@ -103,7 +111,7 @@ benefitmyService.factory('EmployeeTaxElectionService',
                 return false;
             }
 
-            var validator = _taxElectionValidatorMapping[taxElection.state];
+            var validator = _getElectionValidator(taxElection.state);
             if (!validator) {
                 return false;
             }
@@ -112,12 +120,12 @@ benefitmyService.factory('EmployeeTaxElectionService',
         };
 
         var getBlankElection = function(userId, state) {
-            if (!_.contains(TaxElectionSupportedStates, taxElection.state)) {
+            if (!_.contains(TaxElectionSupportedStates, state)) {
                 throw new Error('Specified state is not supported for tax election yet: ' + state);
             }
 
-            var blankGenerator = _taxElectionBlankGeneratorMapping[state];
-            if (!blankGeneratorr) {
+            var blankGenerator = _getBlankElectionGenerator(state);
+            if (!blankGenerator) {
                 throw new Error('Could not locate blank election generator for specified state: ' + state);
             }
             var model = blankGenerator(userId);
@@ -140,9 +148,13 @@ benefitmyService.factory('EmployeeTaxElectionService',
         // Per-state tax election validation
         //////////////////////////////////////////////
 
-        var _taxElectionValidatorMapping = {
-            'MA': _isValidTaxElectionForMA,
-            'RI': _isValidTaxElectionForRI
+        var _getElectionValidator = function(state) {
+            var taxElectionValidatorMapping = {
+                MA: _isValidTaxElectionForMA,
+                RI: _isValidTaxElectionForRI
+            };
+
+            return taxElectionValidatorMapping[state];
         };
 
         var _isValidTaxElectionForMA = function(taxElection) {
@@ -211,10 +223,14 @@ benefitmyService.factory('EmployeeTaxElectionService',
         // Per-state blank election generation
         //////////////////////////////////////////////
 
-        var _taxElectionBlankGeneratorMapping = {
-            'MA': _getBlankElectionForMA,
-            'RI': _getBlankElectionForRI
-        };
+        var _getBlankElectionGenerator = function(state) {
+            var taxElectionBlankGeneratorMapping = {
+                MA: _getBlankElectionForMA,
+                RI: _getBlankElectionForRI
+            };
+
+            return taxElectionBlankGeneratorMapping[state];
+        }  
 
         var _getBlankElectionForMA = function(userId) {
             var result = {}
@@ -251,7 +267,8 @@ benefitmyService.factory('EmployeeTaxElectionService',
             getTaxElectionsByEmployee: getTaxElectionsByEmployee,
             saveTaxElection: saveTaxElection,
             isValidTaxElection: isValidTaxElection,
-            getBlankElection: getBlankElection
+            getBlankElection: getBlankElection,
+            deleteTaxElection: deleteTaxElection
         };
     }
 ]);
