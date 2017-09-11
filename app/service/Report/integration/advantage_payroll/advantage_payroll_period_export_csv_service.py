@@ -42,7 +42,10 @@ class AdvantagePayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
 
     def _get_pay_code(self, earning_type):
         if (earning_type == EARNING_TYPE_SALARY):
-            return 'S'
+            # Due to a bug in Advantage payroll system, if we are outputting the number
+            # of hours a salary employee worked in this report, we have
+            # to output pay_code to be the same as the hourly employee
+            return 'H'
         elif (earning_type == EARNING_TYPE_HOURLY):
             return 'H'
         elif (earning_type == EARNING_TYPE_PTO):

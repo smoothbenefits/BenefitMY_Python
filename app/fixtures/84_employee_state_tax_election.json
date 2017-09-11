@@ -1,0 +1,24 @@
+[
+  {
+    "fields": {
+        "user": "3", 
+        "data": "{\r\n            \"personal_exemption\": 1,\r\n            \"spouse_exemption\": 0,\r\n            \"num_dependents\": 2,\r\n            \"additional_witholding\": 20.2,\r\n            \"head_of_household\": true,\r\n            \"is_blind\": false,\r\n            \"is_spouse_blind\": false,\r\n            \"is_fulltime_student\": false\r\n        }", 
+        "state": "MA",
+        "created_at": "2015-01-24T16:16:02.760Z",
+        "updated_at": "2015-05-04T16:56:09.765Z"
+    },
+    "model": "app.employeestatetaxelection",
+    "pk": 1
+  },
+  {
+    "fields": {
+        "user": "3", 
+        "data": "{\r\n            \"is_not_dependent\": true,\r\n            \"spouse_is_dependent\": true,\r\n            \"num_dependents\": 2,\r\n            \"additional_allowances\": 0,\r\n            \"additional_witholding\": 301.25,\r\n            \"is_exempt_status\": false,\r\n            \"is_exempt_ms_status\": true\r\n        }", 
+        "state": "RI",
+        "created_at": "2015-01-24T16:16:02.760Z",
+        "updated_at": "2015-05-04T16:56:09.765Z"
+    },
+    "model": "app.employeestatetaxelection",
+    "pk": 2
+  }
+]
