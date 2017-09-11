@@ -16,6 +16,20 @@ benefitmyService.factory('EmployeeTaxElectionService',
             // Just return the original, along with some utility functions attached
             
             var viewModel = electionDomainModel;
+
+            // Due to Django REST behavior where it renders all Decimal fields into strings
+            // This causes difficulties in binding the string data to a number input field
+            // here at the front end. So here we preemptively convert all possible such fileds
+            // to float first for the view model.
+            for (var property in viewModel.tax_election_data) {
+                if (viewModel.tax_election_data.hasOwnProperty(property)) {
+                    var value = viewModel.tax_election_data[property];
+                    if (_isNumeric(value)) {
+                        viewModel.tax_election_data[property] = parseFloat(value);
+                    }
+                }
+            }
+
             return _attachUtilitiesToViewModel(viewModel);
         };
 
@@ -30,7 +44,7 @@ benefitmyService.factory('EmployeeTaxElectionService',
                 return _getTimeForDisplay(this.updated_at);
             };
             viewModel.isNew = function() {
-                return self.isNewElection; 
+                return this.isNewElection; 
             };
             return viewModel;
         };
@@ -240,8 +254,10 @@ benefitmyService.factory('EmployeeTaxElectionService',
 
             // Now populate the election data with defaults
 
-            // For now, the MVP, we do not setup any defaults, to 
-            // force users to make explicit inputs for every field
+            result.tax_election_data.head_of_household = false;
+            result.tax_election_data.is_blind = false;
+            result.tax_election_data.is_spouse_blind = false;
+            result.tax_election_data.is_fulltime_student = false;
 
             return result;
         }
@@ -261,6 +277,10 @@ benefitmyService.factory('EmployeeTaxElectionService',
         }
 
         //////////////////////////////////////////////
+
+        var _isNumeric = function(value) {
+          return !isNaN(value - parseFloat(value));
+        }
 
         return {
             TaxElectionSupportedStates: TaxElectionSupportedStates,
