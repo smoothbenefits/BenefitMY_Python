@@ -31,10 +31,10 @@ TEMPLATE_DEBUG = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dcv4d46p3t7lkj',
-        'USER': 'feblksfyqbhdjv',
-        'PASSWORD': '7F2Flb6iVg-jGTtD2dsoWXzKi3',
-        'HOST': 'ec2-54-225-101-202.compute-1.amazonaws.com',
+        'NAME': 'dadsss51kovk6l',
+        'USER': 'epkcctcekxsjov',
+        'PASSWORD': '57869fdff3f5e956f1dd915eda02b64c0adc956f8ab15b12b6629c60e6b6b79e',
+        'HOST': 'ec2-54-221-241-23.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
