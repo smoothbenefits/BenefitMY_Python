@@ -228,6 +228,14 @@ benefitmyService.factory('EmployeeTaxElectionService',
                 ||taxElection.tax_election_data.is_exempt_ms_status == undefined) {
                 return false;
             }
+
+            // The form does not allow application of both exemption status at 
+            // the same time.
+            if (taxElection.tax_election_data.is_exempt_status
+                && taxElection.tax_election_data.is_exempt_ms_status) {
+                return false;
+            }
+
             return true;
         }
 
@@ -270,8 +278,11 @@ benefitmyService.factory('EmployeeTaxElectionService',
 
             // Now populate the election data with defaults
 
-            // For now, the MVP, we do not setup any defaults, to 
-            // force users to make explicit inputs for every field
+            result.tax_election_data.is_not_dependent = false;
+            result.tax_election_data.spouse_is_dependent = false;
+
+            result.tax_election_data.is_exempt_status = false;
+            result.tax_election_data.is_exempt_ms_status = false;
 
             return result;
         }
