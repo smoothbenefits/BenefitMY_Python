@@ -5,6 +5,17 @@ BenefitMyApp.directive('bmStateTaxElectionView', function() {
         'RI': '/static/partials/tax/state_tax_election_form_RI.html'
     };
 
+    var stateElectionAssets = {
+        'MA': {
+            FormTemplateUrl: '/static/partials/tax/state_tax_election_form_MA.html',
+            InstructionsUrl: '/static/documents/tax/MA_2017.pdf'
+        },
+        'RI': {
+            FormTemplateUrl: '/static/partials/tax/state_tax_election_form_RI.html',
+            InstructionsUrl: '/static/documents/tax/RI_2017.pdf'
+        }
+    }
+
     var StateSelectionModalController = [
        '$scope',
        '$state',
@@ -51,7 +62,19 @@ BenefitMyApp.directive('bmStateTaxElectionView', function() {
             }
 
             $scope.stateElectionFormTemplateUrl = function() {
-                return stateElectionFormTemplateUrlMapping[$scope.taxElection.state];
+                var assets = stateElectionAssets[$scope.taxElection.state];
+                if (!assets) {
+                    return null;
+                }
+                return assets.FormTemplateUrl;
+            };
+
+            $scope.stateElectionFormInstructionsUrl = function() {
+                var assets = stateElectionAssets[$scope.taxElection.state];
+                if (!assets) {
+                    return null;
+                }
+                return assets.InstructionsUrl;
             };
 
             $scope.isValidToSave = function() {
