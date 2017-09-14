@@ -177,15 +177,15 @@ benefitmyService.factory('EmployeeTaxElectionService',
                 || !taxElection.tax_election_data) {
                 return false;
             }
-            if (!taxElection.tax_election_data.personal_exemption == undefined
+            if (taxElection.tax_election_data.personal_exemption == undefined
                 || !_.contains([1, 2], taxElection.tax_election_data.personal_exemption)) {
                 return false;
             }
-            if (!taxElection.tax_election_data.spouse_exemption == undefined
+            if (taxElection.tax_election_data.spouse_exemption == undefined
                 || !_.contains([0, 4, 5], taxElection.tax_election_data.spouse_exemption)) {
                 return false;
             }
-            if (!taxElection.tax_election_data.num_dependents == undefined
+            if (taxElection.tax_election_data.num_dependents == undefined
                 || taxElection.tax_election_data.num_dependents < 0) {
                 return false;
             }
@@ -209,7 +209,7 @@ benefitmyService.factory('EmployeeTaxElectionService',
                 return false;
             }
 
-            if (!taxElection.tax_election_data.num_dependents == undefined
+            if (taxElection.tax_election_data.num_dependents == undefined
                 || taxElection.tax_election_data.num_dependents < 0) {
                 return false;
             }

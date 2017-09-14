@@ -10,12 +10,17 @@ benefitmyService.factory('UserOnboardingStepStateService',
         UserService){
 
         var Steps = {
-            directDeposit: 'direct_deposit'
+            BasicInfo: 'basic_info',
+            EmploymentAuthorization: 'employment_authorization',
+            W4Info: 'W4_info',
+            StateTaxInfo: 'state_tax_info',
+            DirectDeposit: 'direct_deposit',
+            Documents: 'documents'
         };
 
         var States = {
-            skipped: 'skipped',
-            completed: 'completed'
+            Skipped: 'skipped',
+            Completed: 'completed'
         }
 
         var getStepStatesByUser = function(userId) {
@@ -64,13 +69,23 @@ benefitmyService.factory('UserOnboardingStepStateService',
             );
         };
 
+        var checkUserFinishedStep = function(userId, step) {
+            return getStateByUserAndStep(userId, step).then(
+                function(stepState) {
+                    return stepState 
+                        && (stepState == States.Completed
+                            || stepState == States.Skipped);
+                }
+            );
+        };
+
         return {
 
             Steps: Steps,
             States: States,
             getStateByUserAndStep: getStateByUserAndStep,
             updateStateByUserAndStep: updateStateByUserAndStep,
-
+            checkUserFinishedStep: checkUserFinishedStep
         };
     }
 ]);

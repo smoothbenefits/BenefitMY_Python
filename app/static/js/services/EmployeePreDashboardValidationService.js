@@ -157,12 +157,26 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         succeeded();
       } 
       else {
-        EmployeeTaxElectionService.getTaxElectionsByEmployee(employeeId).then(
-            function(elections) {
-                if (elections && elections.length > 0) {
+        UserOnboardingStepStateService.checkUserFinishedStep(
+            employeeId,
+            UserOnboardingStepStateService.Steps.StateTaxInfo).then(
+            function(stepFinishedAlreadyFlag) {
+                if (stepFinishedAlreadyFlag) {
                     succeeded();
-                } else {
-                    failed();
+                }
+                else {
+                    EmployeeTaxElectionService.getTaxElectionsByEmployee(employeeId).then(
+                        function(elections) {
+                            if (elections && elections.length > 0) {
+                                succeeded();
+                            } else {
+                                failed();
+                            }
+                        },
+                        function(errors) {
+                            failed();
+                        }
+                    );
                 }
             },
             function(errors) {
@@ -179,13 +193,11 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         succeeded();
       } 
       else {
-        UserOnboardingStepStateService.getStateByUserAndStep(
+        UserOnboardingStepStateService.checkUserFinishedStep(
             employeeId,
-            UserOnboardingStepStateService.Steps.directDeposit).then(
-            function(state) {
-                if (state && 
-                    (state == UserOnboardingStepStateService.States.skipped
-                     || state == UserOnboardingStepStateService.States.completed)) {
+            UserOnboardingStepStateService.Steps.DirectDeposit).then(
+            function(stepFinishedAlreadyFlag) {
+                if (stepFinishedAlreadyFlag) {
                     succeeded();
                 }
                 else {
