@@ -443,6 +443,15 @@ var directDeposit = employeeControllers.controller('employeeDirectDepositControl
         });
   }]);
 
+var stateTax = employeeControllers.controller('employeeStateTaxController',
+  ['$scope',
+   'UserService',
+   function($scope, UserService){
+        var userPromise = UserService.getCurUserInfo().then(function(response){
+          $scope.userId = response.user.id;
+        });
+  }]);
+
 var signIn = employeeControllers.controller('employeeSignin', ['$scope', '$stateParams', function($scope, $stateParams){
   $scope.employee = {};
   $scope.employee.id = $stateParams.employee_id;

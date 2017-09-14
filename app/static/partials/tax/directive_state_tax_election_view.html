@@ -1,9 +1,9 @@
-<div class="content-header">
+<div class="content-header" style="overflow:auto;">
   <h1>State Tax Elections</h1>
   <div class="view-instruction">
     <p>Please use this view to specify your state tax election(s)</p>
   </div>
-  <div class="cta"><span class="btn green" ng-click="createElection()" ng-disabled="!canCreateNewElection()">Create New Election</span></div>
+  <div class="cta-above-table"><span class="btn green" ng-click="createElection()" ng-disabled="!canCreateNewElection()">Create New Election</span></div>
 </div><!-- / .content-header -->
 <div class="content-body">
   <table class="table table-striped" ng-if="hasExistingElections()">

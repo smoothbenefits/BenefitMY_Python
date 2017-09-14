@@ -187,6 +187,13 @@ settings.constant('tabLayoutGlobalConfig', [
             },
             {
                 id: 2,
+                verbose_name: 'State Tax',
+                name: 'state_tax',
+                active: false,
+                state: 'employee_payroll.state_tax'
+            },
+            {
+                id: 3,
                 verbose_name: 'Direct Deposit',
                 name: 'direct_deposit',
                 active: false,

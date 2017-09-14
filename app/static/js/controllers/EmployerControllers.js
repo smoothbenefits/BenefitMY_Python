@@ -299,6 +299,20 @@ var employerUser = employersController.controller('employerUser',
         });
       };
 
+      $scope.manageStateTax = function(employeeUserId) {
+        var modalInstance = $modal.open({
+          templateUrl: '/static/partials/employee_record/modal_manage_employee_state_tax.html',
+          controller: 'manageEmployeeStateTaxModalController',
+          size: 'lg',
+          backdrop: 'static',
+          resolve: {
+            employeeUserId: function() {
+              return employeeUserId;
+            }
+          }
+        });
+      };
+
       $scope.updateSalaryType = function(employee) {
         if (EmployerEmployeeManagementService.IsFullTimeEmploymentType(employee.employment_type)) {
           $scope.isHourlyRate = false;
@@ -1401,6 +1415,27 @@ var resetEmployeePasswordModalController = employersController.controller('reset
       };
     }
  ]);
+
+var manageEmployeeStateTaxModalController = employersController.controller('manageEmployeeStateTaxModalController',
+    [  '$scope',
+       '$state',
+       '$modalInstance',
+       '$q',
+       'employeeUserId',
+        function(
+            $scope,
+            $state,
+            $modalInstance,
+            $q,
+            employeeUserId) {
+
+            $scope.userId = employeeUserId;
+
+            $scope.back = function() {
+                $modalInstance.dismiss();
+            };
+        }
+    ]);
 
 var editEmployeeInfoModelController = employersController.controller('editEmployeeInfoModelController',
   ['$scope',
