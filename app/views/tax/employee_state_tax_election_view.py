@@ -6,6 +6,7 @@ from rest_framework import status
 from app.models.tax.employee_state_tax_election import EmployeeStateTaxElection
 from app.service.monitoring.logging_service import LoggingService
 from app.service.event_bus.aws_event_bus_service import AwsEventBusService
+from app.service.event_bus.events.state_tax_updated_event import StateTaxUpdatedEvent
 from app.serializers.tax.employee_state_tax_election_serializer_factory import EmployeeStateTaxElectionSerializerFactory
 
 
@@ -27,6 +28,10 @@ class EmployeeStateTaxElectionView(APIView):
     def delete(self, request, user_id, state, format=None):
         record = self._get_object(user_id, state)
         record.delete()
+
+        # Log event
+        self._aws_event_bus_service.publish_event(StateTaxUpdatedEvent(user_id, state))
+        
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, user_id, state, format=None):
@@ -35,7 +40,8 @@ class EmployeeStateTaxElectionView(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            # TODO: Log event here
+            # Log event
+            self._aws_event_bus_service.publish_event(StateTaxUpdatedEvent(user_id, state))
 
             response_serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_serializer(state)(serializer.object)
             return Response(response_serializer.data)
@@ -47,7 +53,8 @@ class EmployeeStateTaxElectionView(APIView):
             serializer.save()
             record = serializer.object
 
-            # TODO: log event here
+            # Log event
+            self._aws_event_bus_service.publish_event(StateTaxUpdatedEvent(user_id, state))
 
             response_serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_serializer(state)(record)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
