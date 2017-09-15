@@ -153,7 +153,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     var validateStateTaxInfo = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
       if (!isNewEmployee 
         || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
-        // Skip W-4 validation if this is not a new employee
+        // Skip State Tax validation if this is not a new employee, or if the feature switch is off
         succeeded();
       } 
       else {
