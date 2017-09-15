@@ -20,15 +20,18 @@ benefitmyService.factory('SupplementalLifeInsuranceConditionService',
          var deferred = $q.defer();
 
          if(!_conditions){
-            $http.get('/api/v1/supplemental_life_condition/').success(function(data){
-               _conditions = {};
-               _.each(data, function(item){
-                  _conditions[item.name] = mapConditionDomainToViewModel(item);
-               });
-               deferred.resolve(_conditions);
-            }).error(function(data){
-               deferred.reject(data);
-            });
+            $http.get('/api/v1/supplemental_life_condition/').then(
+                function(response){
+                   _conditions = {};
+                   _.each(response.data, function(item){
+                      _conditions[item.name] = mapConditionDomainToViewModel(item);
+                   });
+                   deferred.resolve(_conditions);
+                },
+                function(response){
+                   deferred.reject(response);
+                }
+            );
          }
          else{
             deferred.resolve(_conditions);

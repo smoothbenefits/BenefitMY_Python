@@ -9,15 +9,18 @@ benefitmyService.factory('ApplicationFeatureService',
          var deferred = $q.defer();
 
          if(!_applicationFeatures){
-            $http.get('/api/v1/application_features/').success(function(data){
-               _applicationFeatures = {};
-               _.each(data, function(item){
-                  _applicationFeatures[item.feature] = item.id;
-               });
-               deferred.resolve(_applicationFeatures);
-            }).error(function(data){
-               deferred.reject(data);
-            });
+            $http.get('/api/v1/application_features/').then(
+                function(response){
+                   _applicationFeatures = {};
+                   _.each(response.data, function(item){
+                      _applicationFeatures[item.feature] = item.id;
+                   });
+                   deferred.resolve(_applicationFeatures);
+                },
+                function(response){
+                   deferred.reject(response);
+                }
+            );
          }
          else{
             deferred.resolve(_applicationFeatures);
