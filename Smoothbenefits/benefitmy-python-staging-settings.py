@@ -32,9 +32,9 @@ TEMPLATE_DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbhdqcnhj8qihh',
-        'USER': 'espzlrtdipscti',
-        'PASSWORD': '6tw_VJkq-1pvnKAS8s0pTm540e',
+        'NAME': 'dfl8s5416jqs11',
+        'USER': 'grxplfhqnhfmze',
+        'PASSWORD': '931efa9aaabbbb97b2ac5180084fd4bb51735213210db28b9c55757d28871a4e',
         'HOST': 'ec2-54-225-101-60.compute-1.amazonaws.com',
         'PORT': '5432',
     }
