@@ -1,0 +1,84 @@
+<form name="form">
+  <div class="form-label">Personal Exemption (Box 1)</div>
+  <div class="textbox">
+    <input type="number"
+    min="1"
+    max="2"
+    name="personal_exemption"
+    ng-model="taxElection.tax_election_data.personal_exemption"
+    ng-required="true">
+  </div>
+
+  <div class="form-label">Spouse Exemption (Box 2)</div>
+  <div class="textbox">
+    <input type="number"
+    min="0"
+    max="5"
+    name="spouse_exemption"
+    ng-model="taxElection.tax_election_data.spouse_exemption"
+    ng-required="true">
+  </div>
+
+  <div class="form-label">Number of Qualified Dependents (Box 3)</div>
+  <div class="textbox">
+    <input type="number"
+    min="0"
+    name="num_dependents"
+    ng-model="taxElection.tax_election_data.num_dependents"
+    ng-required="true">
+  </div>
+
+  <br />
+
+  <div class="panel">
+    <div class="panel-head">Additional Witholding Per Pay Period (Section 5)</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                  <div class="form-label">Additional Witholding Per Pay Period (Box 5)</div>
+                  <div class="textbox">
+                    <input type="number"
+                    min="0"
+                    name="additional_witholding"
+                    ng-model="taxElection.tax_election_data.additional_witholding"
+                    ng-required="true"
+                    step="any">
+                  </div>
+
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"
+                      name="head_of_household"
+                      ng-model="taxElection.tax_election_data.head_of_household">
+                      Check if you will file as head of household on your tax return.
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"
+                      name="is_blind"
+                      ng-model="taxElection.tax_election_data.is_blind">
+                      Check if you are blind.
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"
+                      name="is_spouse_blind"
+                      ng-model="taxElection.tax_election_data.is_spouse_blind">
+                      Check if spouse is blind and not subject to withholding
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"
+                      name="is_fulltime_student"
+                      ng-model="taxElection.tax_election_data.is_fulltime_student">
+                      Check if you are a full-time student engaged in seasonal, part-time or temporary employment whose estimated annual income will not exceed $8,000
+                    </label>
+                  </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</form>

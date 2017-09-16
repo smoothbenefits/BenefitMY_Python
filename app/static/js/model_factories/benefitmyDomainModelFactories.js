@@ -206,6 +206,14 @@ benefitmyDomainModelFactories.factory('employeeTaxRepository', ['$resource',
     return $resource('/api/v1/users/:userId/w4/', {userId:'@userId'});
   }
 ]);
+benefitmyDomainModelFactories.factory('EmployeeTaxElectionRepository', ['$resource',
+  function($resource){
+    return {
+        ByEmployeeAndState: $resource('/api/v1/users/:userId/w4/states/:state', {userId:'@userId', state:'@state'}, {update: {method: 'PUT'}}),
+        ByEmployee: $resource('/api/v1/users/:userId/w4/states', {userId:'@userId'})
+    };
+  }
+]);
 benefitmyDomainModelFactories.factory('peopleRepository', ['$resource',
   function($resource){
     return {

@@ -1,4 +1,5 @@
 import json
+import traceback
 from app.service.monitoring.logging_service import LoggingService
 from django.http import Http404
 
@@ -33,7 +34,7 @@ class LoggingMiddleware(object):
         '''
         Log exception
         '''
-        self.log.error(exception)
+        self.log.error(traceback.format_exc())
 
         return None
 
