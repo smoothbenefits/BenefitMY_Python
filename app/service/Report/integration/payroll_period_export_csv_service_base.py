@@ -29,6 +29,8 @@ EARNING_TYPE_SALARY = PAY_TYPE_SALARY
 EARNING_TYPE_OVERTIME = 'Overtime'
 EARNING_TYPE_PTO = 'PTO'
 EARNING_TYPE_SICK_TIME = 'SICK'
+EARNING_TYPE_HOLIDAY = 'HOLIDAY'
+EARNING_TYPE_UNPAID_LEAVE = 'UnpaidLeave'
 
 SALARY_EMPLOYEE_HOURS_PER_DAY = 8
 
@@ -161,9 +163,11 @@ class PayrollPeriodExportCsvServiceBase(CsvReportServiceBase):
         elif (earning_type == EARNING_TYPE_SALARY):
             salary_hours = SALARY_EMPLOYEE_HOURS_PER_DAY * self.week_days
             if(employee_hours):
-                # if we have PTO or Sick time cards for salary employees, remove those hours
+                # if we have PTO, Holiday, unpaid_leave or Sick time cards for salary employees, remove those hours
                 salary_hours -= employee_hours.paid_time_off_hours
+                salary_hours -= employee_hours.holiday_hours
                 salary_hours -= employee_hours.sick_time_hours
+                salary_hours -= employee_hours.unpaid_hours
             return self._normalize_decimal_number(salary_hours)
         elif (earning_type == EARNING_TYPE_OVERTIME):
             return employee_hours.overtime_hours
@@ -171,6 +175,10 @@ class PayrollPeriodExportCsvServiceBase(CsvReportServiceBase):
             return employee_hours.paid_time_off_hours
         elif (earning_type == EARNING_TYPE_SICK_TIME):
             return employee_hours.sick_time_hours
+        elif (earning_type == EARNING_TYPE_HOLIDAY):
+            return employee_hours.holiday_hours
+        elif (earning_type == EARNING_TYPE_UNPAID_LEAVE):
+            return employee_hours.unpaid_hours
 
     def _get_employee_pay_rate(self, employee_profile_info):
         if (employee_profile_info.pay_type == PAY_TYPE_HOURLY and employee_profile_info.current_hourly_rate):
