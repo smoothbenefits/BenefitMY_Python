@@ -41,12 +41,16 @@ benefitmyService.factory('BenefitUpdateReasonService',
          var deferred = $q.defer();
 
          if(!_benefitUpdateReasons){
-            $http.get('/api/v1/benefit_update_reasons/').success(function(data){
-               _benefitUpdateReasons = mapReasonsToViewModels(data);
-               deferred.resolve(_benefitUpdateReasons);
-            }).error(function(data){
-               deferred.reject(data);
-            });
+            $http.get('/api/v1/benefit_update_reasons/')
+            .then(
+                function(response){
+                   _benefitUpdateReasons = mapReasonsToViewModels(response.data);
+                   deferred.resolve(_benefitUpdateReasons);
+                },
+                function(errors) {
+                    deferred.reject(errors);
+                }
+            );
          }
          else{
             deferred.resolve(_benefitUpdateReasons);

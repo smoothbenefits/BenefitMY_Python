@@ -187,6 +187,13 @@ settings.constant('tabLayoutGlobalConfig', [
             },
             {
                 id: 2,
+                verbose_name: 'State Tax',
+                name: 'state_tax',
+                active: false,
+                state: 'employee_payroll.state_tax'
+            },
+            {
+                id: 3,
                 verbose_name: 'Direct Deposit',
                 name: 'direct_deposit',
                 active: false,
@@ -217,13 +224,21 @@ settings.constant('tabLayoutGlobalConfig', [
             {
                 id: 3,
                 verbose_name: 'Tax information (W-4)',
-                description: 'Information about your W-4 and state tax withholding form',
+                description: 'Information about your W-4 federal tax withholding election',
                 name: 'tax',
                 active: false,
                 state: 'employee_onboard.tax'
             },
             {
                 id: 4,
+                verbose_name: 'State Tax Election(s)',
+                description: 'Information about your state tax withholding election(s)',
+                name: 'state_tax',
+                active: false,
+                state: 'employee_onboard.state_tax'
+            },
+            {
+                id: 5,
                 verbose_name: 'Direct Deposit Information',
                 description: 'Information about your direct deposit accounts setup',
                 name: 'direct_deposit',
@@ -231,7 +246,7 @@ settings.constant('tabLayoutGlobalConfig', [
                 state: 'employee_onboard.direct_deposit'
             },
             {
-                id: 5,
+                id: 6,
                 verbose_name: 'Employee Documents',
                 description: 'Documents required by the employer',
                 name: 'document',

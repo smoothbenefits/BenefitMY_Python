@@ -15,6 +15,7 @@ from app.service.event_bus.event_handlers.punch_card_recognition_failed_handler 
 from app.service.event_bus.event_handlers.employee_profile_updated_event_cp_data_sync_handler import EmployeeProfileUpdatedEventCpDataSyncHandler
 from app.service.event_bus.event_handlers.person_info_updated_event_cp_data_sync_handler import PersonInfoUpdatedEventCpDataSyncHandler
 from app.service.event_bus.event_handlers.w4_updated_event_cp_data_sync_handler import W4UpdatedEventCpDataSyncHandler
+from app.service.event_bus.event_handlers.state_tax_updated_event_cp_data_sync_handler import StateTaxUpdatedEventCpDataSyncHandler
 from app.service.event_bus.event_handlers.compensation_updated_event_cp_data_sync_handler import CompensationUpdatedEventCpDataSyncHandler
 
 from app.service.event_bus.events.environment_test_event import EnvironmentTestEvent
@@ -48,6 +49,7 @@ class Command(BaseCommand):
         message_pump.register_event_message_handler(EmployeeProfileUpdatedEventCpDataSyncHandler, common_sqs_config)
         message_pump.register_event_message_handler(PersonInfoUpdatedEventCpDataSyncHandler, common_sqs_config)
         message_pump.register_event_message_handler(W4UpdatedEventCpDataSyncHandler, common_sqs_config)
+        message_pump.register_event_message_handler(StateTaxUpdatedEventCpDataSyncHandler, common_sqs_config)
         message_pump.register_event_message_handler(CompensationUpdatedEventCpDataSyncHandler, common_sqs_config)
 
         # Now start the pump, which will start pumping and handling

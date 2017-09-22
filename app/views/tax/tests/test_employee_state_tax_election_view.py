@@ -298,3 +298,13 @@ class EmployeeStateTaxElectionTestCase(TestCase, ViewTestBase):
 
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
+
+    def test__get_employee_state_tax_election_by_employee__exists__success(self):
+        response = self.client.get(reverse('employee_state_tax_election_by_employee_api',
+                                           kwargs={'user_id': self.normalize_key(3)}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+
+        result = json.loads(response.content)
+        self.assertEqual(type(result), list)
+        self.assertEqual(len(result), 2)

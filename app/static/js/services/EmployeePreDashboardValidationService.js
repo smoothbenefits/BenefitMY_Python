@@ -14,6 +14,7 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                           'DirectDepositService',
                           'UserOnboardingStepStateService',
                           'OpenEnrollmentDefinitionService',
+                          'EmployeeTaxElectionService',
   function($state,
            PersonService,
            UserService,
@@ -25,7 +26,8 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
            CompanyFeatureService,
            DirectDepositService,
            UserOnboardingStepStateService,
-           OpenEnrollmentDefinitionService){
+           OpenEnrollmentDefinitionService,
+           EmployeeTaxElectionService){
 
     var getUrlFromState = function(state, stateParams) {
         return $state.href(state, stateParams).replace('#', '').replace('!', '');
@@ -41,6 +43,10 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
 
     var getTaxUrl = function(employeeId){
       return getUrlFromState('employee_onboard.tax', { employee_id: employeeId });
+    };
+
+    var getStateTaxUrl = function(employeeId){
+      return getUrlFromState('employee_onboard.state_tax', { employee_id: employeeId });
     };
 
     var getDocumentUrl = function(employeeId){
@@ -144,6 +150,42 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
       }
     };
 
+    var validateStateTaxInfo = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
+      if (!isNewEmployee 
+        || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
+        // Skip State Tax validation if this is not a new employee, or if the feature switch is off
+        succeeded();
+      } 
+      else {
+        UserOnboardingStepStateService.checkUserFinishedStep(
+            employeeId,
+            UserOnboardingStepStateService.Steps.StateTaxInfo).then(
+            function(stepFinishedAlreadyFlag) {
+                if (stepFinishedAlreadyFlag) {
+                    succeeded();
+                }
+                else {
+                    EmployeeTaxElectionService.getTaxElectionsByEmployee(employeeId).then(
+                        function(elections) {
+                            if (elections && elections.length > 0) {
+                                succeeded();
+                            } else {
+                                failed();
+                            }
+                        },
+                        function(errors) {
+                            failed();
+                        }
+                    );
+                }
+            },
+            function(errors) {
+                failed();
+            }
+        );
+      }
+    };
+
     var validateDirectDeposit = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
       if (!isNewEmployee ||
           !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.DD)) {
@@ -151,13 +193,11 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
         succeeded();
       } 
       else {
-        UserOnboardingStepStateService.getStateByUserAndStep(
+        UserOnboardingStepStateService.checkUserFinishedStep(
             employeeId,
-            UserOnboardingStepStateService.Steps.directDeposit).then(
-            function(state) {
-                if (state && 
-                    (state == UserOnboardingStepStateService.States.skipped
-                     || state == UserOnboardingStepStateService.States.completed)) {
+            UserOnboardingStepStateService.Steps.DirectDeposit).then(
+            function(stepFinishedAlreadyFlag) {
+                if (stepFinishedAlreadyFlag) {
                     succeeded();
                 }
                 else {
@@ -254,21 +294,26 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
                   validateBasicInfo(employeeId, isNewEmployee, allFeatureStatus, function(){
                     validateEmploymentAuth(employeeId, isNewEmployee, allFeatureStatus, function(){
                       validateW4Info(employeeId, isNewEmployee, allFeatureStatus, function(){
-                        validateDirectDeposit(employeeId, isNewEmployee, allFeatureStatus, function(){
-                            validateDocuments(employeeId, isNewEmployee, allFeatureStatus, function() {
-                                validateBenefitEnrollments(employeeId, isNewEmployee, allFeatureStatus, function() {
-                                    succeeded();
+                        validateStateTaxInfo(employeeId, isNewEmployee, allFeatureStatus, function(){
+                            validateDirectDeposit(employeeId, isNewEmployee, allFeatureStatus, function(){
+                                validateDocuments(employeeId, isNewEmployee, allFeatureStatus, function() {
+                                    validateBenefitEnrollments(employeeId, isNewEmployee, allFeatureStatus, function() {
+                                        succeeded();
+                                    },
+                                    function() {
+                                        failed(getBenefitEnrollFlowUrl(employeeId));
+                                    });
                                 },
                                 function() {
-                                    failed(getBenefitEnrollFlowUrl(employeeId));
+                                    failed(getDocumentUrl(employeeId, isNewEmployee));
                                 });
                             },
                             function() {
-                                failed(getDocumentUrl(employeeId, isNewEmployee));
+                                failed(getDirectDepositUrl(employeeId));
                             });
                         },
                         function() {
-                            failed(getDirectDepositUrl(employeeId));
+                            failed(getStateTaxUrl(employeeId));
                         });
                       },
                       function(){

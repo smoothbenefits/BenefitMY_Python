@@ -178,6 +178,13 @@
   }, 
   {
     "fields": {
+      "feature": "HolidaysAsWorkingHours"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 25
+  },
+  {
+    "fields": {
       "feature": "Internal_TestDefaultOn"
     },
     "model": "app.sysapplicationfeature",
