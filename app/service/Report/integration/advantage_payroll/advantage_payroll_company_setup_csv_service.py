@@ -5,6 +5,7 @@ from app.models.w4 import (
     W4_MARRIAGE_STATUS_MARRIED,
     W4_MARRIAGE_STATUS_MARRIED_HIGH_SINGLE
 )
+from app.models.company_user import CompanyUser, USER_TYPE_EMPLOYEE
 from app.models.sys_period_definition import (
     PERIOD_WEEKLY,
     PERIOD_BIWEEKLY,
@@ -14,6 +15,10 @@ from app.models.sys_period_definition import (
 from app.models.employee_profile import (
     EMPLOYMENT_STATUS_ACTIVE,
     EMPLOYMENT_STATUS_TERMINATED
+)
+from app.models.onboarding.user_onboarding_step_state import (
+    UserOnboardingStepState,
+    STEP_DOCUMENTS
 )
 from app.service.compensation_service import (
     PAY_TYPE_HOURLY,
@@ -99,7 +104,15 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         for i in range(len(user_ids)):
             self._write_employee(user_ids[i], company_id, ap_client_id)
 
+    def _user_completed_onboarding(self, company_id, user_id):
+        comp_user = CompanyUser.objects.get(user=user_id, company_user_type=USER_TYPE_EMPLOYEE, company=company_id)
+        return not comp_user.new_employee or \
+            UserOnboardingStepState.objects.filter(user=user_id, step=STEP_DOCUMENTS).exists()
+
+
     def _write_employee(self, employee_user_id, company_id, ap_client_id):
+        if not self._user_completed_onboarding(company_id, employee_user_id):
+            return
         company_info = self.view_model_factory.get_company_info(company_id)
         person_info = self.view_model_factory.get_employee_person_info(employee_user_id)
 
