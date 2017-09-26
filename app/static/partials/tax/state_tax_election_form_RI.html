@@ -1,0 +1,83 @@
+<form name="form">
+  <br />
+
+  <div class="panel">
+    <div class="panel-head">Number of Allowances (Section 1)</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"
+                      name="is_not_dependent"
+                      ng-model="taxElection.tax_election_data.is_not_dependent">
+                      Check if no one else can claim me as a dependent.
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"
+                      name="spouse_is_dependent"
+                      ng-model="taxElection.tax_election_data.spouse_is_dependent">
+                      Check if I can claim my spouse as a dependent.
+                    </label>
+                  </div>
+
+                  <div class="form-label">Number of Dependents You Claim</div>
+                  <div class="textbox">
+                    <input type="number"
+                    min="0"
+                    name="num_dependents"
+                    ng-model="taxElection.tax_election_data.num_dependents"
+                    ng-required="true">
+                  </div>
+
+                  <div class="form-label">Enter Any Additional Allowances</div>
+                  <div class="textbox">
+                    <input type="number"
+                    min="0"
+                    name="additional_allowances"
+                    ng-model="taxElection.tax_election_data.additional_allowances"
+                    ng-required="true">
+                  </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="form-label">Additional Witholding Amount From Pay (Box 2)</div>
+  <div class="textbox">
+    <input type="number"
+    min="0"
+    name="additional_witholding"
+    ng-model="taxElection.tax_election_data.additional_witholding"
+    ng-required="true"
+    step="any">
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">Exempt Conditions (Box 3)</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"
+                      name="is_exempt_status"
+                      ng-model="taxElection.tax_election_data.is_exempt_status">
+                      Check if "EXEMPT" status applies.
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"
+                      name="is_exempt_ms_status"
+                      ng-model="taxElection.tax_election_data.is_exempt_ms_status">
+                      Check if "EXEMPT-MS" status applies.
+                    </label>
+                  </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</form>

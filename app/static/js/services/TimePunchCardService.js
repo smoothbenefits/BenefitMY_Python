@@ -143,6 +143,9 @@ benefitmyService.factory('TimePunchCardService',
                         + ' - '
                         + moment(this.end).format('hh:mm A');
                 }
+                else if (this.recordType.name === PunchCardTypes['CompanyHoliday']['name']){
+                    return '8 hours';
+                }
                 else{
                     return 'N/A';
                 }
