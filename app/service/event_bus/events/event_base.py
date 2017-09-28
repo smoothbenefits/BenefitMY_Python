@@ -3,6 +3,8 @@ from datetime import datetime
 
 
 class EventBase(object):
+    environment_aware = True
+
     def __init__(self):
         self.event_timestamp_utc = datetime.utcnow()
 

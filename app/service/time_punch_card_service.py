@@ -79,7 +79,10 @@ class TimePunchCardService(object):
         for entry in all_entries:
             user_punch_cards.append(TimePunchCard(entry))
 
-        return user_punch_cards
+        # Sort the cards by user ID
+        sorted_cards = sorted(user_punch_cards, key=lambda card: card.user_id)
+
+        return sorted_cards
 
     def get_company_users_reported_hours_by_date_range(
         self,

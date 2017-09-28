@@ -1,0 +1,16 @@
+Company: {{context_data.company.name}}
+
+[Daily Time and Attendance Validation Report - {{context_data.date}}]
+
+{% if context_data.issues %}
+Issues Might Worth Attention
+    {% for issue in context_data.issues %}
+    ({{issue.employee_name}}) {{issue.notes}}
+    {% endfor %}
+{% else %}
+Great News! No validation issues found.
+{% endif %}
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}

@@ -1,0 +1,73 @@
+from datetime import datetime, timedelta
+from django.conf import settings
+from django.core.mail import send_mail, EmailMultiAlternatives
+
+from app.models.company import Company
+from app.dtos.notification.email_data import EmailData
+
+from .event_handler_base import EventHandlerBase
+from ..events.company_daily_time_card_audit_requested_event import CompanyDailyTimeCardAuditEvent
+from app.service.time_punch_card_service import TimePunchCardService
+from app.service.send_email_service import SendEmailService
+
+
+class CompanyDailyTimeCardAuditEventHandler(EventHandlerBase):
+
+    def __init__(self):
+        super(CompanyDailyTimeCardAuditEventHandler, self).__init__(CompanyDailyTimeCardAuditEvent)
+        self._time_punch_card_service = TimePunchCardService()
+        self._send_email_service = SendEmailService()
+    
+    def _internal_handle(self, event):
+        if (not event.company_id):
+            raise ValueError('The event is expected to provide company_id, which is missing!')
+
+        emails = self._send_email_service.get_employer_emails_by_company(event.company_id)
+        email_data = self._get_email_data(event.company_id)
+
+        self._send_email_service.send_support_email(
+            emails, email_data.subject, email_data.context_data,
+            email_data.html_template_path, email_data.txt_template_path
+        )
+
+    def _get_email_data(self, company_id):
+        # Get validation issues to include into the email context
+        issues = self._get_validation_issues(company_id)
+
+        # Get display date
+        date_text = self._get_display_date()
+
+        # Now prepare the email content data
+        subject = '[System Notification - {0}] Time & Attendance Data Validation Result'.format(date_text)
+
+        html_template_path = 'email/system_notifications/time_card_audit_notification.html'
+        txt_template_path = 'email/system_notifications/time_card_audit_notification.txt'
+
+        context_data = { 
+            'company': Company.objects.get(pk=company_id),
+            'issues': issues,
+            'date': date_text
+        }
+        context_data = {'context_data':context_data, 'site_url':settings.SITE_URL}
+
+        return EmailData(subject, html_template_path, txt_template_path, context_data, False)    
+
+    def _get_validation_issues(self, company_id):
+        issues = []
+
+        # Get all cards for the company for the past 24 hours
+        end = datetime.now()
+        begin = end - timedelta(hours=24)
+
+        cards = self._time_punch_card_service.get_company_users_time_punch_cards_by_date_range(
+                company_id,
+                begin,
+                end
+            )
+
+        return issues
+
+    def _get_display_date(self):
+        now = datetime.now()
+        date = now - timedelta(hours=12)
+        return date.strftime('%m/%d/%Y')
