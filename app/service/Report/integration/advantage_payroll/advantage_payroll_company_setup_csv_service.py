@@ -39,7 +39,6 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         super(AdvantagePayrollCompanySetupCsvService, self).__init__()
         self.view_model_factory = ReportViewModelFactory()
         self.integration_provider_service = IntegrationProviderService()
-        self.w4_info = None
 
     def get_report(self, company_id, outputStream):
         ap_client_id = self._get_ap_client_number(company_id)
@@ -102,14 +101,15 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         for i in range(len(user_ids)):
             self._write_employee(user_ids[i], company_id, ap_client_id)
 
-    def _user_completed_onboarding(self, company_id, user_id):
-        comp_user = CompanyUser.objects.get(user=user_id, company_user_type=USER_TYPE_EMPLOYEE, company=company_id)
-        self.w4_info = self.view_model_factory.get_employee_w4_data(user_id)
-        return not comp_user.new_employee or \
-            (self.w4_info and self.w4_info.total_points)
+    def _user_completed_onboarding(self, company_id, user_id, w4_info):
+        if not w4_info or not w4_info.total_points: 
+            comp_user = CompanyUser.objects.get(user=user_id, company_user_type=USER_TYPE_EMPLOYEE, company=company_id)
+            return not comp_user.new_employee
+        return True
 
     def _write_employee(self, employee_user_id, company_id, ap_client_id):
-        if not self._user_completed_onboarding(company_id, employee_user_id):
+        w4_info = self.view_model_factory.get_employee_w4_data(employee_user_id)
+        if not self._user_completed_onboarding(company_id, employee_user_id, w4_info):
             return
         company_info = self.view_model_factory.get_company_info(company_id)
         person_info = self.view_model_factory.get_employee_person_info(employee_user_id)
@@ -134,7 +134,7 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._write_employee_employment_profile_info(employee_user_id, company_info)
 
         # Noew write the employee's w4/witholding info
-        self._write_employee_w4_info(employee_user_id, company_info)
+        self._write_employee_w4_info(company_info, w4_info)
 
     def _write_employee_basic_info(self, person_info):
         self._write_cell(person_info.first_name)
@@ -176,15 +176,13 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._write_cell(self._get_employee_current_pay_period_salary(employee_profile_info))
         self._write_cell(self._get_date_string(employee_profile_info.compensation_effective_date))
 
-    def _write_employee_w4_info(self, employee_user_id, company_info):
-        if not self.w4_info:
-            self.w4_info = self.view_model_factory.get_employee_w4_data(employee_user_id)
-        if (self.w4_info):
-            status_code = self._get_w4_marriage_status_code(self.w4_info.marriage_status)
+    def _write_employee_w4_info(self, company_info, w4_info):
+        if (w4_info):
+            status_code = self._get_w4_marriage_status_code(w4_info.marriage_status)
 
             self._write_cell(status_code)
-            self._write_cell(self.w4_info.total_points)
-            self._write_cell(self.w4_info.extra_amount)
+            self._write_cell(w4_info.total_points)
+            self._write_cell(w4_info.extra_amount)
 
             # [TODO]: For now, use the federal w4 info to fill state fields
             # [TODO]: For now, use the company state for the state withold code
