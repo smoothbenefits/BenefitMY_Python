@@ -2,10 +2,12 @@ Company: {{context_data.company.name}}
 
 [Daily Time and Attendance Validation Report - {{context_data.date}}]
 
-{% if context_data.issues %}
+{% if context_data.cards_with_issues %}
 Issues Might Worth Attention
-    {% for issue in context_data.issues %}
-    ({{issue.employee_name}}) {{issue.notes}}
+    {% for card in context_data.cards_with_issues %}
+        {% for issue in card.validation_issues %}
+        ({{card.employee_full_name}}) [{{issue.level}}]: {{issue.notes}}
+        {% endfor %}
     {% endfor %}
 {% else %}
 Great News! No validation issues found.

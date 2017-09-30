@@ -1,5 +1,10 @@
+from django.contrib.auth import get_user_model
 from app.service.hash_key_service import HashKeyService
 from app.service.date_time_service import DateTimeService
+from .time_card_validation_issue import TimeCardValidationIssue
+from ..user_info import UserInfo
+
+User = get_user_model()
 
 # Time Punch Card Attribute Types
 PUNCH_CARD_ATTRIBUTE_TYPE_STATE = 'State'
@@ -17,6 +22,7 @@ class TimePunchCard(object):
 
         # List out instance variables
         self.user_id = None
+        self.user_info = None
         self.date = None
         self.start = None
         self.end = None
@@ -26,6 +32,9 @@ class TimePunchCard(object):
         # Parse out user ID
         user_descriptor = punch_card_domain_model['employee']['personDescriptor']
         self.user_id = int(self.hash_key_service.decode_key_with_environment(user_descriptor))
+        if (self.user_id):
+            user_model = User.objects.get(pk=self.user_id)
+            self.user_info = UserInfo(user_model)
 
         # Parse card type
         self.card_type = punch_card_domain_model['recordType']
@@ -50,6 +59,9 @@ class TimePunchCard(object):
                     self.state = attribute['value']
                     break
 
+        # Support lasy-evaluated validation
+        self._validation_issues = None
+
     def get_punch_card_hours(self):
         if (self.start is not None and self.end is not None):
             return self.date_time_service.get_time_diff_in_hours(self.start, self.end, 2)
@@ -57,3 +69,24 @@ class TimePunchCard(object):
 
     def get_card_day_of_week_iso(self):
         return self.date.isoweekday() % 7
+
+    @property
+    def validation_issues(self):
+        if (self._validation_issues is None):
+            self._validation_issues = []
+            self._validation_issues.append(TimeCardValidationIssue(TimeCardValidationIssue.LEVEL_ERROR, 'OMG! Error!'))
+            self._validation_issues.append(TimeCardValidationIssue(TimeCardValidationIssue.LEVEL_WARNING, 'It is ok. Only a Warning.'))
+        return self._validation_issues
+
+    def is_valid(self):
+        issues = self.validation_issues
+        blocking_issue = next(
+            (issue for issue in issues if issue.level > TimeCardValidationIssue.LEVEL_WARNING),
+            None)
+        return blocking_issue is None
+
+    @property
+    def employee_full_name(self):
+        if (self.user_info is None):
+            return None
+        return self.user_info.full_name

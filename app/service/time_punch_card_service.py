@@ -80,7 +80,7 @@ class TimePunchCardService(object):
             user_punch_cards.append(TimePunchCard(entry))
 
         # Sort the cards by user ID
-        sorted_cards = sorted(user_punch_cards, key=lambda card: card.user_id)
+        sorted_cards = sorted(user_punch_cards, key=lambda card: (card.user_id, card.date))
 
         return sorted_cards
 

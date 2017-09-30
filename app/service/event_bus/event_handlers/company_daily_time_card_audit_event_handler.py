@@ -4,6 +4,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 
 from app.models.company import Company
 from app.dtos.notification.email_data import EmailData
+from app.view_models.time_tracking.time_card_validation_issue import TimeCardValidationIssue
 
 from .event_handler_base import EventHandlerBase
 from ..events.company_daily_time_card_audit_requested_event import CompanyDailyTimeCardAuditEvent
@@ -31,8 +32,8 @@ class CompanyDailyTimeCardAuditEventHandler(EventHandlerBase):
         )
 
     def _get_email_data(self, company_id):
-        # Get validation issues to include into the email context
-        issues = self._get_validation_issues(company_id)
+        # Get cards with validation issues
+        cards_with_issues = self._get_time_cards_with_issues(company_id)
 
         # Get display date
         date_text = self._get_display_date()
@@ -45,16 +46,14 @@ class CompanyDailyTimeCardAuditEventHandler(EventHandlerBase):
 
         context_data = { 
             'company': Company.objects.get(pk=company_id),
-            'issues': issues,
+            'cards_with_issues': cards_with_issues,
             'date': date_text
         }
         context_data = {'context_data':context_data, 'site_url':settings.SITE_URL}
 
         return EmailData(subject, html_template_path, txt_template_path, context_data, False)    
 
-    def _get_validation_issues(self, company_id):
-        issues = []
-
+    def _get_time_cards_with_issues(self, company_id):
         # Get all cards for the company for the past 24 hours
         end = datetime.now()
         begin = end - timedelta(hours=24)
@@ -65,9 +64,29 @@ class CompanyDailyTimeCardAuditEventHandler(EventHandlerBase):
                 end
             )
 
-        return issues
+        cards_with_issues = [_TimeCardViewModel(card) for card in cards if len(card.validation_issues) > 0]
+
+        return cards_with_issues
 
     def _get_display_date(self):
         now = datetime.now()
         date = now - timedelta(hours=12)
         return date.strftime('%m/%d/%Y')
+
+
+class _TimeCardViewModel(object):
+    def __init__(self, time_punch_card):
+        self.employee_full_name = time_punch_card.employee_full_name
+        self.validation_issues = [_TimeCardValidationIssueViewModel(issue) for issue in time_punch_card.validation_issues]
+
+
+class _TimeCardValidationIssueViewModel(object):
+    def __init__(self, validation_issue):
+        self.notes = validation_issue.notes
+        self.level = validation_issue.level
+        self.visual_cue_css_class = 'circle_unknown'
+        
+        if (self.level == TimeCardValidationIssue.LEVEL_ERROR):
+            self.visual_cue_css_class = 'circle_error'
+        elif (self.level == TimeCardValidationIssue.LEVEL_WARNING):
+            self.visual_cue_css_class = 'circle_warning'

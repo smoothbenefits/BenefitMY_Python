@@ -1,25 +1,73 @@
 <html>
     <head>
+    <style>
+        .circle_warning
+        {
+            padding: 5px;
+            background: #DDDD00;
+            width: 1px;
+            border-radius: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            width: 1%;
+            border: 0.1em solid grey;
+        }
+        .circle_error
+        {
+            padding: 5px;
+            background: red;
+            width: 1px;
+            border-radius: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            width: 1%;
+            border: 0.1em solid grey;
+        }
+        .circle_unknown
+        {
+            padding: 5px;
+            background: grey;
+            width: 1px;
+            border-radius: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            width: 1%;
+            border: 0.1em solid grey;
+        }
+        .inline
+        {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
     </head>
     <body>
       <h3>Company: {{context_data.company.name}}</h3>
       <h4>[Daily Time and Attendance Validation Report - {{context_data.date}}]</h4>
       <br/>
 
-      {% if context_data.issues %}
-          <div>Issues Might Worth Attention</div>
+      {% if context_data.cards_with_issues %}
+          <h4>Issues Worth Attention</h4>
+          <br/>
           <table border="1">
               <thead>
-                <tr>
+                <tr style="padding: 1px;">
                   <th><span>Employee</span></th>
                   <th><span>Notes</span></th>
                 </tr>
               </thead>
               <tbody>
-                {% for issue in context_data.issues %}
-                <tr>
-                    <td>{{issue.employee_name}}</td>
-                    <td>{{issue.notes}}</td>
+                {% for card in context_data.cards_with_issues %}
+                <tr style="padding: 1px;">
+                    <td>{{card.employee_full_name}}</td>
+                    <td>
+                        {% for issue in card.validation_issues %}
+                        <div style="margin:2px;white-space:nowrap;">
+                          <div class="{{issue.visual_cue_css_class}} inline"></div>
+                          <div class="inline">{{issue.notes}}</div>
+                        </div>
+                        {% endfor %}
+                    </td>
                 </tr>
                 {% endfor %}
               </tbody>
