@@ -54,14 +54,18 @@ class CompanyDailyTimeCardAuditEventHandler(EventHandlerBase):
         return EmailData(subject, html_template_path, txt_template_path, context_data, False)    
 
     def _get_time_cards_with_issues(self, company_id):
-        # Get all cards for the company for the past 24 hours
-        end = datetime.now()
-        begin = end - timedelta(hours=24)
+        # Get all cards for the company for the day just passed
+        # The assumption is that this report would be run sometime near
+        # the end of the day. Just to play safe that this is not ran just
+        # a few minutes passed the calendar day mark, take a time 12 hours
+        # earlier to ensure we are looking at the right date.
+        now = datetime.now()
+        card_date = now - timedelta(hours=12)
 
         cards = self._time_punch_card_service.get_company_users_time_punch_cards_by_date_range(
                 company_id,
-                begin,
-                end
+                card_date,
+                card_date
             )
 
         cards_with_issues = [_TimeCardViewModel(card) for card in cards if len(card.validation_issues) > 0]

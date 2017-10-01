@@ -73,9 +73,8 @@ class TimePunchCard(object):
     @property
     def validation_issues(self):
         if (self._validation_issues is None):
-            self._validation_issues = []
-            self._validation_issues.append(TimeCardValidationIssue(TimeCardValidationIssue.LEVEL_ERROR, 'OMG! Error!'))
-            self._validation_issues.append(TimeCardValidationIssue(TimeCardValidationIssue.LEVEL_WARNING, 'It is ok. Only a Warning.'))
+            self._validation_issues = self._validate() 
+        
         return self._validation_issues
 
     def is_valid(self):
@@ -84,6 +83,31 @@ class TimePunchCard(object):
             (issue for issue in issues if issue.level > TimeCardValidationIssue.LEVEL_WARNING),
             None)
         return blocking_issue is None
+
+    def _validate(self):
+        validation_issues = []
+
+        card_hours = self.get_punch_card_hours()
+
+        # 1. Unclosed timecard (clocked in, but not out)
+        if (self.start is not None and self.end is None):
+            validation_issues.append(TimeCardValidationIssue(
+                TimeCardValidationIssue.LEVEL_ERROR,
+                '[Unclosed Card] Clocked in, but not out, by midnight.'))
+
+        # 2. Negative hours
+        if (card_hours < 0.0):
+            validation_issues.append(TimeCardValidationIssue(
+                TimeCardValidationIssue.LEVEL_ERROR,
+                '[Invalid Balance] Card with negative accounted hours.'))
+
+        # 3. Long working hours, such as over 10 hours work?
+        if (card_hours >= 10.0):
+            validation_issues.append(TimeCardValidationIssue(
+                TimeCardValidationIssue.LEVEL_WARNING,
+                '[Unusual Balance] Card with more than 10 hours.'))
+        
+        return validation_issues
 
     @property
     def employee_full_name(self):
