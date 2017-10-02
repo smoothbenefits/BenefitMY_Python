@@ -33,7 +33,7 @@ class CompanyDailyTimeCardAuditEventHandler(EventHandlerBase):
 
     def _get_email_data(self, company_id):
         # Get cards with validation issues
-        cards_with_issues = self._get_time_cards_with_issues(company_id)
+        card_aggrgates_with_issues = self._get_time_cards_aggrgates_with_issues(company_id)
 
         # Get display date
         date_text = self._get_display_date()
@@ -46,14 +46,14 @@ class CompanyDailyTimeCardAuditEventHandler(EventHandlerBase):
 
         context_data = { 
             'company': Company.objects.get(pk=company_id),
-            'cards_with_issues': cards_with_issues,
+            'card_aggrgates_with_issues': card_aggrgates_with_issues,
             'date': date_text
         }
         context_data = {'context_data':context_data, 'site_url':settings.SITE_URL}
 
         return EmailData(subject, html_template_path, txt_template_path, context_data, False)    
 
-    def _get_time_cards_with_issues(self, company_id):
+    def _get_time_cards_aggrgates_with_issues(self, company_id):
         # Get all cards for the company for the day just passed
         # The assumption is that this report would be run sometime near
         # the end of the day. Just to play safe that this is not ran just
@@ -62,15 +62,13 @@ class CompanyDailyTimeCardAuditEventHandler(EventHandlerBase):
         now = datetime.now()
         card_date = now - timedelta(hours=12)
 
-        cards = self._time_punch_card_service.get_company_users_time_punch_cards_by_date_range(
+        card_aggregates = self._time_punch_card_service.get_company_users_daily_time_punch_cards_aggregates(
                 company_id,
-                card_date,
-                card_date
-            )
+                card_date)
 
-        cards_with_issues = [_TimeCardViewModel(card) for card in cards if len(card.validation_issues) > 0]
+        card_aggregates_with_issues = [_TimeCardAggregateViewModel(card_aggregate) for card_aggregate in card_aggregates if len(card_aggregate.validation_issues) > 0]
 
-        return cards_with_issues
+        return card_aggregates_with_issues
 
     def _get_display_date(self):
         now = datetime.now()
@@ -78,10 +76,10 @@ class CompanyDailyTimeCardAuditEventHandler(EventHandlerBase):
         return date.strftime('%m/%d/%Y')
 
 
-class _TimeCardViewModel(object):
-    def __init__(self, time_punch_card):
-        self.employee_full_name = time_punch_card.employee_full_name
-        self.validation_issues = [_TimeCardValidationIssueViewModel(issue) for issue in time_punch_card.validation_issues]
+class _TimeCardAggregateViewModel(object):
+    def __init__(self, time_punch_card_aggregate):
+        self.employee_full_name = time_punch_card_aggregate.employee_full_name
+        self.validation_issues = [_TimeCardValidationIssueViewModel(issue) for issue in time_punch_card_aggregate.validation_issues]
 
 
 class _TimeCardValidationIssueViewModel(object):

@@ -28,6 +28,7 @@ class TimePunchCard(object):
         self.end = None
         self.state = None
         self.card_type = None
+        self.in_progress = None
 
         # Parse out user ID
         user_descriptor = punch_card_domain_model['employee']['personDescriptor']
@@ -58,6 +59,10 @@ class TimePunchCard(object):
                 if attribute['name'] == PUNCH_CARD_ATTRIBUTE_TYPE_STATE:
                     self.state = attribute['value']
                     break
+
+        in_progress_str = punch_card_domain_model['inProgress']
+        if (in_progress_str):
+            self.in_progress = bool(in_progress_str)
 
         # Support lasy-evaluated validation
         self._validation_issues = None
@@ -90,7 +95,8 @@ class TimePunchCard(object):
         card_hours = self.get_punch_card_hours()
 
         # 1. Unclosed timecard (clocked in, but not out)
-        if (self.start is not None and self.end is None):
+        if ((self.start is not None and self.end is None)
+            or (self.in_progress)):
             validation_issues.append(TimeCardValidationIssue(
                 TimeCardValidationIssue.LEVEL_ERROR,
                 '[Unclosed Card] Clocked in, but not out, by midnight.'))
@@ -99,13 +105,13 @@ class TimePunchCard(object):
         if (card_hours < 0.0):
             validation_issues.append(TimeCardValidationIssue(
                 TimeCardValidationIssue.LEVEL_ERROR,
-                '[Invalid Balance] Card with negative accounted hours.'))
+                '[Invalid Card Balance] Card with negative accounted hours.'))
 
-        # 3. Long working hours, such as over 10 hours work?
+        # 3. Long working hours, such as over 10 hours work
         if (card_hours >= 10.0):
             validation_issues.append(TimeCardValidationIssue(
                 TimeCardValidationIssue.LEVEL_WARNING,
-                '[Unusual Balance] Card with more than 10 hours.'))
+                '[Unusual Card Balance] Card with more than 10 hours.'))
         
         return validation_issues
 

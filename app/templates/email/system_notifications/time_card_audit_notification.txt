@@ -2,11 +2,11 @@ Company: {{context_data.company.name}}
 
 [Daily Time and Attendance Validation Report - {{context_data.date}}]
 
-{% if context_data.cards_with_issues %}
+{% if context_data.card_aggrgates_with_issues %}
 Issues Might Worth Attention
-    {% for card in context_data.cards_with_issues %}
-        {% for issue in card.validation_issues %}
-        ({{card.employee_full_name}}) [{{issue.level}}]: {{issue.notes}}
+    {% for card_aggregate in context_data.card_aggrgates_with_issues %}
+        {% for issue in card_aggregate.validation_issues %}
+        ({{card_aggregate.employee_full_name}}) [{{issue.level}}]: {{issue.notes}}
         {% endfor %}
     {% endfor %}
 {% else %}

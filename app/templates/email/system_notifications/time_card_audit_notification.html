@@ -9,7 +9,6 @@
             border-radius: 100%;
             margin-left: auto;
             margin-right: auto;
-            width: 1%;
             border: 0.1em solid grey;
         }
         .circle_error
@@ -20,7 +19,6 @@
             border-radius: 100%;
             margin-left: auto;
             margin-right: auto;
-            width: 1%;
             border: 0.1em solid grey;
         }
         .circle_unknown
@@ -31,7 +29,6 @@
             border-radius: 100%;
             margin-left: auto;
             margin-right: auto;
-            width: 1%;
             border: 0.1em solid grey;
         }
         .inline
@@ -46,7 +43,7 @@
       <h4>[Daily Time and Attendance Validation Report - {{context_data.date}}]</h4>
       <br/>
 
-      {% if context_data.cards_with_issues %}
+      {% if context_data.card_aggrgates_with_issues %}
           <h4>Issues Worth Attention</h4>
           <br/>
           <table border="1">
@@ -57,11 +54,11 @@
                 </tr>
               </thead>
               <tbody>
-                {% for card in context_data.cards_with_issues %}
+                {% for card_aggregate in context_data.card_aggrgates_with_issues %}
                 <tr style="padding: 1px;">
-                    <td>{{card.employee_full_name}}</td>
+                    <td>{{card_aggregate.employee_full_name}}</td>
                     <td>
-                        {% for issue in card.validation_issues %}
+                        {% for issue in card_aggregate.validation_issues %}
                         <div style="margin:2px;white-space:nowrap;">
                           <div class="{{issue.visual_cue_css_class}} inline"></div>
                           <div class="inline">{{issue.notes}}</div>
