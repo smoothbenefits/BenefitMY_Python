@@ -32,6 +32,9 @@ class EmployeeProfileSerializer(HashPkSerializerBase):
 
 
 class EmployeeProfilePostSerializer(HashPkSerializerBase):
+    department = CompanyDepartmentSerializer(required=False)
+    division = CompanyDivisionSerializer(required=False)
+    job = CompanyJobSerializer(required=False)
     class Meta:
         model = EmployeeProfile
 
