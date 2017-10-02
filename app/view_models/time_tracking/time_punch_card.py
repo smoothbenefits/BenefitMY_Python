@@ -60,9 +60,10 @@ class TimePunchCard(object):
                     self.state = attribute['value']
                     break
 
-        in_progress_str = punch_card_domain_model['inProgress']
-        if (in_progress_str):
-            self.in_progress = bool(in_progress_str)
+        if ('inProgress' in punch_card_domain_model):
+            in_progress_str = punch_card_domain_model['inProgress']
+            if (in_progress_str):
+                self.in_progress = bool(in_progress_str)
 
         # Support lasy-evaluated validation
         self._validation_issues = None

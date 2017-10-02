@@ -16,7 +16,7 @@ class TestMockTimePunchCardAppBase(TestCase, ViewTestBase, TimePunchCardAppMock)
                 '50_employee_compensation', '74_phraseology', '76_employee_phraseology']
 
     def _setup_mock_url(self, start_date, end_date, company_id):
-        service_path = 'api/v1/company/{0}/time_punch_cards?start_date={1}&end_date={2}'.format(
+        service_path = 'api/v1/company/{0}/time_punch_cards?start_date={1}&end_date={2}&includeall=true'.format(
             '{0}_{1}'.format(settings.ENVIRONMENT_IDENTIFIER, self.normalize_key(company_id)),
             start_date.isoformat(),
             end_date.isoformat())
