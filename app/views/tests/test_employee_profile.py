@@ -318,6 +318,53 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['manager'], None)
         self.assertEqual(result['employee_number'], "ABC-999999")
 
+    def test_put_employee_profile_with_ddj_success(self):
+        post_data = {
+            "id": self.normalize_key(1),
+            "person": self.normalize_key(3),
+            "company": self.normalize_key(1),
+            "pay_rate": self.normalize_key(1),
+            "job_title": "Senior Broker",
+            "job": self.normalize_key(2),
+            "department": self.normalize_key(1),
+            "division": self.normalize_key(1),
+            "annual_base_salary": "140022.00",
+            "start_date": "2010-03-01",
+            "benefit_start_date": '2010-03-22',
+            "end_date": None,
+            "employment_type": "FullTime",
+            "employment_status": "Active",
+            "manager": None,
+            "employee_number": "ABC-999999"
+        }
+        response = self.client.put(reverse('employee_profile_api',
+                                           kwargs={'pk': self.normalize_key(1)}),
+                                    data=json.dumps(post_data),
+                                    content_type='application/json')
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertIn('id', result)
+        self.assertEqual(result['id'], self.normalize_key(1))
+        self.assertEqual(result['person'], self.normalize_key(3))
+        self.assertEqual(result['company'], self.normalize_key(1))
+        self.assertIn('pay_rate', result)
+        self.assertIn('id', result['pay_rate'])
+        self.assertEqual(result['pay_rate']['id'], self.normalize_key(1))
+        self.assertEqual(result['job_title'], "Senior Broker")
+        self.assertEqual(result['job']['id'], self.normalize_key(2))
+        self.assertEqual(result['department']['id'], self.normalize_key(1))
+        self.assertEqual(result['division']['id'], self.normalize_key(1))
+        self.assertEqual(result['annual_base_salary'], "140022.00")
+        self.assertEqual(result['start_date'], "2010-03-01")
+        self.assertEqual(result['benefit_start_date'], "2010-03-22")
+        self.assertEqual(result['end_date'], None)
+        self.assertEqual(result['employment_type'], "FullTime")
+        self.assertEqual(result['employment_status'], "Active")
+        self.assertEqual(result['manager'], None)
+        self.assertEqual(result['employee_number'], "ABC-999999")
+
     def test_put_employee_profile_duplicate_company_employee_number_failure(self):
         post_data = {
             "id": self.normalize_key(1),

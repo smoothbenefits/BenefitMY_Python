@@ -5,9 +5,9 @@ from hash_pk_serializer_base import HashPkSerializerBase
 from custom_fields.hash_field import HashField
 from sys_period_definition_serializer import SysPeriodDefinitionSerializer
 from app.serializers.person_serializer import PersonSerializer
-from app.serializers.company_department_serializer import CompanyDepartmentSerializer
-from app.serializers.company_job_serializer import CompanyJobSerializer
-from app.serializers.company_division_serializer import CompanyDivisionSerializer
+from app.serializers.company_department_serializer import CompanyDepartmentSerializer, CompanyDepartmentFieldWithId
+from app.serializers.company_job_serializer import CompanyJobSerializer, CompanyJobFieldWithId
+from app.serializers.company_division_serializer import CompanyDivisionSerializer, CompanyDivisionFieldWithId
 
 
 class ManagerSerializer(HashPkSerializerBase):
@@ -30,11 +30,10 @@ class EmployeeProfileSerializer(HashPkSerializerBase):
     class Meta:
         model = EmployeeProfile
 
-
 class EmployeeProfilePostSerializer(HashPkSerializerBase):
-    department = CompanyDepartmentSerializer(required=False)
-    division = CompanyDivisionSerializer(required=False)
-    job = CompanyJobSerializer(required=False)
+    department = CompanyDepartmentFieldWithId(required=False)
+    division = CompanyDivisionFieldWithId(required=False)
+    job = CompanyJobFieldWithId(required=False)
     class Meta:
         model = EmployeeProfile
 
