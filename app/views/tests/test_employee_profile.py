@@ -318,6 +318,53 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
         self.assertEqual(result['manager'], None)
         self.assertEqual(result['employee_number'], "ABC-999999")
 
+    def test_put_employee_profile_with_ddj_success(self):
+        post_data = {
+            "id": self.normalize_key(1),
+            "person": self.normalize_key(3),
+            "company": self.normalize_key(1),
+            "pay_rate": self.normalize_key(1),
+            "job_title": "Senior Broker",
+            "job": self.normalize_key(2),
+            "department": self.normalize_key(1),
+            "division": self.normalize_key(1),
+            "annual_base_salary": "140022.00",
+            "start_date": "2010-03-01",
+            "benefit_start_date": '2010-03-22',
+            "end_date": None,
+            "employment_type": "FullTime",
+            "employment_status": "Active",
+            "manager": None,
+            "employee_number": "ABC-999999"
+        }
+        response = self.client.put(reverse('employee_profile_api',
+                                           kwargs={'pk': self.normalize_key(1)}),
+                                    data=json.dumps(post_data),
+                                    content_type='application/json')
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertIn('id', result)
+        self.assertEqual(result['id'], self.normalize_key(1))
+        self.assertEqual(result['person'], self.normalize_key(3))
+        self.assertEqual(result['company'], self.normalize_key(1))
+        self.assertIn('pay_rate', result)
+        self.assertIn('id', result['pay_rate'])
+        self.assertEqual(result['pay_rate']['id'], self.normalize_key(1))
+        self.assertEqual(result['job_title'], "Senior Broker")
+        self.assertEqual(result['job']['id'], self.normalize_key(2))
+        self.assertEqual(result['department']['id'], self.normalize_key(1))
+        self.assertEqual(result['division']['id'], self.normalize_key(1))
+        self.assertEqual(result['annual_base_salary'], "140022.00")
+        self.assertEqual(result['start_date'], "2010-03-01")
+        self.assertEqual(result['benefit_start_date'], "2010-03-22")
+        self.assertEqual(result['end_date'], None)
+        self.assertEqual(result['employment_type'], "FullTime")
+        self.assertEqual(result['employment_status'], "Active")
+        self.assertEqual(result['manager'], None)
+        self.assertEqual(result['employee_number'], "ABC-999999")
+
     def test_put_employee_profile_duplicate_company_employee_number_failure(self):
         post_data = {
             "id": self.normalize_key(1),
@@ -372,3 +419,34 @@ class EmployeeProfileTestCase(TestCase, ViewTestBase):
 
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 404)
+
+    def test_upload_new_photo_url(self):
+        response = self.client.get(reverse('employee_profile_by_company_pin_api',
+                                           kwargs={'company_id': self.normalize_key(1),
+                                                   'pin': "1234"}))
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 200)
+        result = json.loads(response.content)
+        self.assertEqual(result['person']['id'], self.normalize_key(4))
+        self.assertIsNotNone(result['department'])
+        self.assertEqual(result['department']['id'], self.normalize_key(1))
+        employee_profile_id = result['id']
+        new_photo_url = 'https://www.yahoo.com'
+        result['person'] = self.normalize_key(4)
+        result['photo_url'] = new_photo_url
+        put_response = self.client.put(
+            reverse('employee_profile_api',
+                kwargs={'pk': employee_profile_id}),
+            data=json.dumps(result),
+            content_type='application/json'
+        )
+        self.assertEqual(put_response.status_code, 200)
+
+        response_again = self.client.get(reverse('employee_profile_by_company_pin_api',
+                                           kwargs={'company_id': self.normalize_key(1),
+                                                   'pin': "1234"}))
+        self.assertIsNotNone(response_again)
+        self.assertEqual(response_again.status_code, 200)
+        result_new = json.loads(response_again.content)
+        self.assertEqual(result_new['pin'], "1234")
+        self.assertEqual(result_new['photo_url'], new_photo_url)
