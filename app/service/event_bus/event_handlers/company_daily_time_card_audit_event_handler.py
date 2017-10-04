@@ -64,7 +64,8 @@ class CompanyDailyTimeCardAuditEventHandler(EventHandlerBase):
 
         card_aggregates = self._time_punch_card_service.get_company_users_daily_time_punch_cards_aggregates(
                 company_id,
-                card_date)
+                card_date,
+                include_unclosed_cards=True)
 
         card_aggregates_with_issues = [_TimeCardAggregateViewModel(card_aggregate) for card_aggregate in card_aggregates if len(card_aggregate.validation_issues) > 0]
 

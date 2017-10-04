@@ -63,14 +63,18 @@ class TimePunchCardService(object):
         self,
         company_id,
         start_date,
-        end_date
+        end_date,
+        include_unclosed_cards=False
     ):
         user_punch_cards = []
-        api_url = '{0}api/v1/company/{1}/time_punch_cards?start_date={2}&end_date={3}&includeall=true'.format(
+        api_url = '{0}api/v1/company/{1}/time_punch_cards?start_date={2}&end_date={3}'.format(
             settings.TIME_TRACKING_SERVICE_URL,
             self.hash_key_service.encode_key_with_environment(company_id),
             start_date.isoformat(),
             end_date.isoformat())
+
+        if (include_unclosed_cards):
+            api_url = '{0}{1}'.format(api_url, '&includeall=true')
 
         r = self.request_service.get(api_url)
         if r.status_code == 404:
@@ -85,10 +89,10 @@ class TimePunchCardService(object):
 
         return sorted_cards
 
-    def get_company_users_daily_time_punch_cards_aggregates(self, company_id, date):
+    def get_company_users_daily_time_punch_cards_aggregates(self, company_id, date, include_unclosed_cards=False):
         mappings = {}
 
-        all_cards = self.get_company_users_time_punch_cards_by_date_range(company_id, date, date)
+        all_cards = self.get_company_users_time_punch_cards_by_date_range(company_id, date, date, include_unclosed_cards)
         for card in all_cards:
             if card.user_id not in mappings:
                 mappings[card.user_id] = EmployeeDailyPunchCardAggregate(card.user_id, date)
@@ -101,12 +105,14 @@ class TimePunchCardService(object):
         self,
         company_id,
         start_date,
-        end_date
+        end_date,
+        include_unclosed_cards=False
     ):
         user_punch_cards = self.get_company_users_time_punch_cards_by_date_range(
                 company_id,
                 start_date,
-                end_date)
+                end_date,
+                include_unclosed_cards)
 
         result_dict = {}
         user_weekly_aggregate_dict = {}
