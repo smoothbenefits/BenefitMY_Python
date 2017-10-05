@@ -39,7 +39,10 @@ class AwsEventMessageUtility(object):
     @staticmethod
     def get_sns_topic_name(event_class):
         class_name = event_class.__name__
-        return settings.ENVIRONMENT_IDENTIFIER + '_' + class_name
+        if (event_class.environment_aware):
+            return settings.ENVIRONMENT_IDENTIFIER + '_' + class_name
+        else:
+            return class_name
 
     @staticmethod
     def ensure_sns_topic(sns_client, topic_name):

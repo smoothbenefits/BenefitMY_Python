@@ -24,6 +24,15 @@ class CompanyPersonnelService(object):
     def __init__(self):
         self._date_time_service = DateTimeService()
 
+    def is_user_employee(self, user_id):
+        try:
+            employee = CompanyUser.objects.get(
+                user=user_id,
+                company_user_type=USER_TYPE_EMPLOYEE)
+            return True
+        except CompanyUser.DoesNotExist:
+            return False
+
     def get_company_id_by_employee_user_id(self, employee_user_id):
         employees = CompanyUser.objects.filter(
             user=employee_user_id,

@@ -1,5 +1,10 @@
+from django.contrib.auth import get_user_model
 from app.service.hash_key_service import HashKeyService
 from app.service.date_time_service import DateTimeService
+from .time_card_validation_issue import TimeCardValidationIssue
+from ..user_info import UserInfo
+
+User = get_user_model()
 
 # Time Punch Card Attribute Types
 PUNCH_CARD_ATTRIBUTE_TYPE_STATE = 'State'
@@ -17,15 +22,20 @@ class TimePunchCard(object):
 
         # List out instance variables
         self.user_id = None
+        self.user_info = None
         self.date = None
         self.start = None
         self.end = None
         self.state = None
         self.card_type = None
+        self.in_progress = None
 
         # Parse out user ID
         user_descriptor = punch_card_domain_model['employee']['personDescriptor']
         self.user_id = int(self.hash_key_service.decode_key_with_environment(user_descriptor))
+        if (self.user_id):
+            user_model = User.objects.get(pk=self.user_id)
+            self.user_info = UserInfo(user_model)
 
         # Parse card type
         self.card_type = punch_card_domain_model['recordType']
@@ -50,6 +60,14 @@ class TimePunchCard(object):
                     self.state = attribute['value']
                     break
 
+        if ('inProgress' in punch_card_domain_model):
+            in_progress_str = punch_card_domain_model['inProgress']
+            if (in_progress_str):
+                self.in_progress = bool(in_progress_str)
+
+        # Support lasy-evaluated validation
+        self._validation_issues = None
+
     def get_punch_card_hours(self):
         if (self.start is not None and self.end is not None):
             return self.date_time_service.get_time_diff_in_hours(self.start, self.end, 2)
@@ -57,3 +75,49 @@ class TimePunchCard(object):
 
     def get_card_day_of_week_iso(self):
         return self.date.isoweekday() % 7
+
+    @property
+    def validation_issues(self):
+        if (self._validation_issues is None):
+            self._validation_issues = self._validate() 
+        
+        return self._validation_issues
+
+    def is_valid(self):
+        issues = self.validation_issues
+        blocking_issue = next(
+            (issue for issue in issues if issue.level > TimeCardValidationIssue.LEVEL_WARNING),
+            None)
+        return blocking_issue is None
+
+    def _validate(self):
+        validation_issues = []
+
+        card_hours = self.get_punch_card_hours()
+
+        # 1. Unclosed timecard (clocked in, but not out)
+        if ((self.start is not None and self.end is None)
+            or (self.in_progress)):
+            validation_issues.append(TimeCardValidationIssue(
+                TimeCardValidationIssue.LEVEL_ERROR,
+                '[Unclosed Card] Clocked in, but not out, by midnight.'))
+
+        # 2. Negative hours
+        if (card_hours < 0.0):
+            validation_issues.append(TimeCardValidationIssue(
+                TimeCardValidationIssue.LEVEL_ERROR,
+                '[Invalid Card Balance] Card with negative accounted hours.'))
+
+        # 3. Long working hours, such as over 10 hours work
+        if (card_hours >= 10.0):
+            validation_issues.append(TimeCardValidationIssue(
+                TimeCardValidationIssue.LEVEL_WARNING,
+                '[Unusual Card Balance] Card with more than 10 hours.'))
+        
+        return validation_issues
+
+    @property
+    def employee_full_name(self):
+        if (self.user_info is None):
+            return None
+        return self.user_info.full_name
