@@ -1,3 +1,4 @@
+from . import FieldWithIdOrObject
 from rest_framework import serializers
 from custom_fields.hash_field import HashField
 from hash_pk_serializer_base import HashPkSerializerBase
@@ -16,3 +17,7 @@ class CompanyJobPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CompanyJob
+
+class CompanyJobFieldWithId(FieldWithIdOrObject):
+    model = CompanyJob
+    serializer = CompanyJobSerializer

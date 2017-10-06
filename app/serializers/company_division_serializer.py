@@ -1,3 +1,4 @@
+from . import FieldWithIdOrObject
 from rest_framework import serializers
 from custom_fields.hash_field import HashField
 from hash_pk_serializer_base import HashPkSerializerBase
@@ -16,3 +17,7 @@ class CompanyDivisionPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CompanyDivision
+
+class CompanyDivisionFieldWithId(FieldWithIdOrObject):
+    model = CompanyDivision
+    serializer = CompanyDivisionSerializer

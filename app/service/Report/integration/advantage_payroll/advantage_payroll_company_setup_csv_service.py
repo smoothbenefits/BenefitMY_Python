@@ -5,6 +5,7 @@ from app.models.w4 import (
     W4_MARRIAGE_STATUS_MARRIED,
     W4_MARRIAGE_STATUS_MARRIED_HIGH_SINGLE
 )
+from app.models.company_user import CompanyUser, USER_TYPE_EMPLOYEE
 from app.models.sys_period_definition import (
     PERIOD_WEEKLY,
     PERIOD_BIWEEKLY,
@@ -15,6 +16,7 @@ from app.models.employee_profile import (
     EMPLOYMENT_STATUS_ACTIVE,
     EMPLOYMENT_STATUS_TERMINATED
 )
+
 from app.service.compensation_service import (
     PAY_TYPE_HOURLY,
     PAY_TYPE_SALARY
@@ -99,7 +101,16 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         for i in range(len(user_ids)):
             self._write_employee(user_ids[i], company_id, ap_client_id)
 
+    def _user_completed_onboarding(self, company_id, user_id, w4_info):
+        if not w4_info or not w4_info.total_points: 
+            comp_user = CompanyUser.objects.get(user=user_id, company_user_type=USER_TYPE_EMPLOYEE, company=company_id)
+            return not comp_user.new_employee
+        return True
+
     def _write_employee(self, employee_user_id, company_id, ap_client_id):
+        w4_info = self.view_model_factory.get_employee_w4_data(employee_user_id)
+        if not self._user_completed_onboarding(company_id, employee_user_id, w4_info):
+            return
         company_info = self.view_model_factory.get_company_info(company_id)
         person_info = self.view_model_factory.get_employee_person_info(employee_user_id)
 
@@ -123,7 +134,7 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._write_employee_employment_profile_info(employee_user_id, company_info)
 
         # Noew write the employee's w4/witholding info
-        self._write_employee_w4_info(employee_user_id, company_info)
+        self._write_employee_w4_info(company_info, w4_info)
 
     def _write_employee_basic_info(self, person_info):
         self._write_cell(person_info.first_name)
@@ -165,8 +176,7 @@ class AdvantagePayrollCompanySetupCsvService(CsvReportServiceBase):
         self._write_cell(self._get_employee_current_pay_period_salary(employee_profile_info))
         self._write_cell(self._get_date_string(employee_profile_info.compensation_effective_date))
 
-    def _write_employee_w4_info(self, employee_user_id, company_info):
-        w4_info = self.view_model_factory.get_employee_w4_data(employee_user_id)
+    def _write_employee_w4_info(self, company_info, w4_info):
         if (w4_info):
             status_code = self._get_w4_marriage_status_code(w4_info.marriage_status)
 
