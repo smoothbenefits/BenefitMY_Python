@@ -3,20 +3,22 @@ from dateutil import rrule
 import json
 
 from django.contrib.auth import get_user_model
-
+from app.service.application_feature_service import (
+    APP_FEATURE_EMPLOYMENTTYPEDRIVENPAYROLLTIME,
+    ApplicationFeatureService
+)
 from app.service.Report.integration.payroll_period_export_csv_service_base import (
-        PayrollPeriodExportCsvServiceBase,
-        EARNING_TYPE_HOURLY,
-        EARNING_TYPE_SALARY,
-        EARNING_TYPE_OVERTIME,
-        EARNING_TYPE_PTO,
-        EARNING_TYPE_SICK_TIME
-    )
+    PayrollPeriodExportCsvServiceBase,
+    EARNING_TYPE_HOURLY,
+    EARNING_TYPE_SALARY,
+    EARNING_TYPE_OVERTIME,
+    EARNING_TYPE_PTO,
+    EARNING_TYPE_SICK_TIME
+)
 from app.service.integration.integration_provider_service import (
-        INTEGRATION_SERVICE_TYPE_PAYROLL,
-        INTEGRATION_PAYROLL_CONNECT_PAYROLL
-    )
-
+    INTEGRATION_SERVICE_TYPE_PAYROLL,
+    INTEGRATION_PAYROLL_CONNECT_PAYROLL
+)
 from app.service.compensation_service import (
     PAY_TYPE_HOURLY,
     PAY_TYPE_SALARY
@@ -29,6 +31,7 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
 
     def __init__(self):
         super(ConnectPayrollPeriodExportCsvService, self).__init__()
+        self.app_feature_service = ApplicationFeatureService()
 
     #########################################
     ## Override methods - Begin
@@ -148,13 +151,15 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
         if (employee_user_id in employees_reported_hours):
             user_hours = employees_reported_hours[employee_user_id]
 
-        if (employee_profile_info and employee_profile_info.pay_type == PAY_TYPE_SALARY):
+        employee_pay_type = self._get_employee_pay_type(employee_profile_info, company_info)
+
+        if (employee_pay_type == PAY_TYPE_SALARY):
             self._append_earning_type_row(base_row_data, EARNING_TYPE_SALARY, user_hours, rows)
         else:
             self._append_earning_type_row(base_row_data, EARNING_TYPE_HOURLY, user_hours, rows)
 
         if user_hours:
-            if(employee_profile_info and employee_profile_info.pay_type == PAY_TYPE_HOURLY):
+            if(employee_pay_type == PAY_TYPE_HOURLY):
                 # Write the hours worked over time only for hourly employees
                 self._append_earning_type_row(base_row_data, EARNING_TYPE_OVERTIME, user_hours, rows)
 
@@ -229,4 +234,12 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
 
             row_list.append(row_data)
 
-        return
+    def _get_employee_pay_type(self, employee_profile_info, company_info):
+        if not employee_profile_info:
+            return None
+        if self.app_feature_service.get_company_feature_value(
+                company_info.company_id,
+                APP_FEATURE_EMPLOYMENTTYPEDRIVENPAYROLLTIME
+            ) and employee_profile_info.is_full_time_employee():
+            return PAY_TYPE_SALARY
+        return employee_profile_info.pay_type

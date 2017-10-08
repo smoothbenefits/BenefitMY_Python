@@ -185,6 +185,13 @@
   },
   {
     "fields": {
+      "feature": "EmploymentTypeDrivenPayrollTime"
+    },
+    "model": "app.sysapplicationfeature",
+    "pk": 26
+  },
+  {
+    "fields": {
       "feature": "Internal_TestDefaultOn"
     },
     "model": "app.sysapplicationfeature",

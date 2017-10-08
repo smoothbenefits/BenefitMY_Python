@@ -45,6 +45,7 @@ APP_FEATURE_DIRECTREPORTSVIEW = 'DirectReportsView'
 APP_FEATURE_EMPLOYEETIMEPUNCHCARDVIEWONLY = 'EmployeeTimePunchCardViewOnly'
 APP_FEATURE_HOLIDAYSASWORKINGHOURS = 'HolidaysAsWorkingHours'
 APP_FEATURE_TIMEPUNCHCARDAUDITREPORT = 'TimePunchCardAuditReport'
+APP_FEATURE_EMPLOYMENTTYPEDRIVENPAYROLLTIME = 'EmploymentTypeDrivenPayrollTime'
 
 # Feature categorization by expected default behavior
 APP_FEATURES_DEFAULT_ENABLED = [
@@ -81,7 +82,8 @@ APP_FEATURES_DEFAULT_DISABLED = [
     APP_FEATURE_HIDESALARYDATA,
     APP_FEATURE_DIRECTREPORTSVIEW,
     APP_FEATURE_EMPLOYEETIMEPUNCHCARDVIEWONLY,
-    APP_FEATURE_HOLIDAYSASWORKINGHOURS
+    APP_FEATURE_HOLIDAYSASWORKINGHOURS,
+    APP_FEATURE_EMPLOYMENTTYPEDRIVENPAYROLLTIME
 ]
 
 
@@ -149,3 +151,9 @@ class ApplicationFeatureService(object):
             result[company_user_feature.feature.feature] = company_user_feature.feature_status
 
         return result
+
+    def get_company_feature_value(self, company_id, feature_item):
+        company_features = self.get_complete_application_feature_status_by_company(company_id)
+        if(feature_item not in company_features):
+            raise ValueError('feature [] not part of the company features'.format(feature_item))
+        return company_features.get(feature_item)
