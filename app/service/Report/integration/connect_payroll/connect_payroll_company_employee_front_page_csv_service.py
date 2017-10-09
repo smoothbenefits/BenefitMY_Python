@@ -30,6 +30,7 @@ from app.factory.report_view_model_factory import ReportViewModelFactory
 
 from app.service.Report.csv_report_service_base import CsvReportServiceBase
 from app.service.monitoring.logging_service import LoggingService
+from .tax.connect_payroll_state_tax_election_adaptor_factory import ConnectPayrollStateTaxElectionAdaptorFactory
 
 User = get_user_model()
 
@@ -38,11 +39,20 @@ import traceback
 
 class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
 
+    ########################################################################
+    ## Items of further investigations
+    ## * [Employement Type] WBM: Only W-2   CP: W-2 and 1099-M
+    ## * [W-4 Status] WBM: Married high rate    CP: Head of house hold
+    ## * [W-4 withold state] WBM: Company State (correct?). CP: allow more options
+    ## * [W-4 additional amount] WBM: additional dollar.  CP: more options
+    ########################################################################
+
     def __init__(self):
         super(ConnectPayrollCompanyEmployeeFrontPageCsvService, self).__init__()
         self.view_model_factory = ReportViewModelFactory()
         self.integration_provider_service = IntegrationProviderService()
         self.logger = LoggingService()
+        self._state_tax_election_adaptor_factory = ConnectPayrollStateTaxElectionAdaptorFactory()
 
     def get_report(self, company_id, outputStream):
         try:
@@ -177,6 +187,10 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
         self._write_organizational_allocation_info(employee_data_context)
         self._write_employee_name(employee_data_context)
         self._write_employee_pay_schedule(employee_data_context)
+        self._write_employee_address(employee_data_context)
+        self._write_employment_type(employee_data_context)
+        self._write_federal_tax_info(employee_data_context)
+        self._write_state_tax_info(employee_data_context)
 
     def _write_integration_info(self, employee_data_context):
         self._write_cell(employee_data_context.employee_number)
@@ -230,9 +244,69 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
         else:
             return ''
 
+    def _write_employee_address(self, employee_data_context):
+        person_info = employee_data_context.person_info
+        self._write_cell(person_info.address1)
+        self._write_cell(person_info.address2)
+        self._write_cell(person_info.city)
+        self._write_cell(person_info.state)
+        self._write_cell(person_info.zipcode)
 
+        # Skip the zip extension, not supported
+        self._skip_cells(1)
 
+    def _write_employment_type(self, employee_data_context):
+        # [Remark]: We only support W2 employee (?)
+        self._write_cell('W2')
 
+    def _write_federal_tax_info(self, employee_data_context):
+        w4_info = employee_data_context.w4_info
+        company_info = employee_data_context.company_info
+
+        status_code = self._get_w4_marriage_status_code(w4_info.marriage_status)
+
+        self._write_cell(status_code)
+        self._write_cell(w4_info.total_points)
+        self._write_cell('A')
+        self._write_cell(w4_info.extra_amount)
+        self._write_cell(company_info.state)
+        self._write_cell(company_info.state)
+
+    def _get_w4_marriage_status_code(self, marriage_status):
+        if (marriage_status == W4_MARRIAGE_STATUS_SINGLE):
+            return 'S'
+        elif(marriage_status == W4_MARRIAGE_STATUS_MARRIED):
+            return 'M'
+        elif(marriage_status == W4_MARRIAGE_STATUS_MARRIED_HIGH_SINGLE):
+            return 'H'
+        else:
+            return ''
+
+    def _write_state_tax_info(self, employee_data_context):
+        w4_info = employee_data_context.w4_info
+        state_tax_info = employee_data_context.state_tax_info
+
+        # This limits how many state elections CP can take and hence
+        # we can output
+        export_limit = 2
+        counter = 0
+
+        all_state_elections = state_tax_info.get_all_state_elections()
+
+        for state in all_state_elections:
+            if (counter >= export_limit):
+                break
+            adaptor = self._state_tax_election_adaptor_factory.get_adaptor(state, all_state_elections[state])
+            if (adaptor):
+                self._write_cell(adaptor.get_filing_status())
+                self._write_cell(adaptor.get_total_exemptions())
+                self._write_cell(adaptor.get_additional_exemptions())
+                self._write_cell(adaptor.get_additional_amount_code())
+                self._write_cell(adaptor.get_additional_amount())
+
+                counter = counter + 1
+
+    
 
 
 
@@ -293,16 +367,6 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
         else:
             self._skip_cells(5)
 
-    def _get_w4_marriage_status_code(self, marriage_status):
-        if (marriage_status == W4_MARRIAGE_STATUS_SINGLE):
-            return 'S'
-        elif(marriage_status == W4_MARRIAGE_STATUS_MARRIED):
-            return 'M'
-        elif(marriage_status == W4_MARRIAGE_STATUS_MARRIED_HIGH_SINGLE):
-            return 'S'
-        else:
-            return ''
-
     def _get_employment_status_code(self, employment_status):
         if (employment_status == EMPLOYMENT_STATUS_ACTIVE):
             return 'A'
@@ -340,6 +404,7 @@ class _EmployeeDataContext(object):
         self.company_id = company_id
 
         self.w4_info = self._view_model_factory.get_employee_w4_data(employee_user_id)
+        self.state_tax_info = self._view_model_factory.get_employee_state_tax_data(employee_user_id)
         self.company_info = self._view_model_factory.get_company_info(company_id)
         self.person_info = self._view_model_factory.get_employee_person_info(employee_user_id)
         self.employee_profile_info = self._view_model_factory.get_employee_employment_profile_data(
@@ -360,6 +425,7 @@ class _EmployeeDataContext(object):
 
     def has_complete_data(self):
         return self.user_completed_onboarding() \
+            and self.state_tax_info \
             and self.employee_number \
             and self.company_info \
             and self.person_info \
