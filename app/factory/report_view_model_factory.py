@@ -40,7 +40,7 @@ class ReportViewModelFactory(object):
         if (not person_model): 
             return None
 
-        return EmployeeEmploymentProfileInfo(person_model, company_id)
+        return EmployeeEmploymentProfileInfo(person_model, company_id, employee_user_id)
 
     def get_employee_1095_c_data(self, employee_user_id, company_id):
         return self._get_employee_1095_c_data_collection(employee_user_id, company_id)

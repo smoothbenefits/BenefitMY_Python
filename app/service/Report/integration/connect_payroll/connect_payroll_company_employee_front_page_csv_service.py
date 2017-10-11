@@ -1,3 +1,5 @@
+import traceback
+
 from django.contrib.auth import get_user_model
 
 from app.models.w4 import (
@@ -35,8 +37,6 @@ from .tax.connect_payroll_state_tax_election_adaptor_factory import ConnectPayro
 User = get_user_model()
 
 
-import traceback
-
 class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
 
     ########################################################################
@@ -45,6 +45,10 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
     ## * [W-4 Status] WBM: Married high rate    CP: Head of house hold
     ## * [W-4 withold state] WBM: Company State (correct?). CP: allow more options
     ## * [W-4 additional amount] WBM: additional dollar.  CP: more options
+    ## * [I-9 status] WBM does not know F-1/J-1 status
+    ## * [Employment Status] Does WBM include terminated employees?
+    ## * [New Hire Flag] Does the NewHire flag stands for the same expectation
+    ##   on WBM and CP?
     ########################################################################
 
     def __init__(self):
@@ -64,7 +68,8 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
             self._write_company(company_id, client_id)
             self._save(outputStream)
         except Exception as e:
-            print traceback.format_exc()
+            self.logger.error('Failed to produce Connect Payroll Employee Front Page export for company "{0}"'.format(company_id))
+            self.logger.error(traceback.format_exc())
             raise e
 
     def _get_client_number(self, company_id):
@@ -191,6 +196,10 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
         self._write_employment_type(employee_data_context)
         self._write_federal_tax_info(employee_data_context)
         self._write_state_tax_info(employee_data_context)
+        self._write_1099M_data(employee_data_context)
+        self._write_employee_HR_info(employee_data_context)
+        self._write_employee_salary_data(employee_data_context)
+        self._write_employee_other_HR_data(employee_data_context)
 
     def _write_integration_info(self, employee_data_context):
         self._write_cell(employee_data_context.employee_number)
@@ -306,94 +315,90 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
 
                 counter = counter + 1
 
-    
+        # Skip any set of fields that the employee does not have data to fill
+        # E.g. secondary state witholding
+        self._skip_cells((export_limit - counter) * 5)
 
-
-
-
-    def _write_employee_basic_info(self, person_info):
-        self._write_cell(person_info.first_name)
-        self._write_cell(person_info.last_name)
-        self._write_cell(self._get_date_string(person_info.birth_date))
-        self._write_cell(person_info.gender)
-        self._write_cell(person_info.ssn)
-        self._write_cell(person_info.address1)
-        self._write_cell(person_info.address2)
-        self._write_cell(person_info.city)
-        self._write_cell(person_info.state)
-        self._write_cell(person_info.zipcode)
-
-    def _write_employee_employment_profile_info(self, user_ids, company_info):
-        employee_profile_info = self.view_model_factory.get_employee_employment_profile_data(
-                                    user_ids,
-                                    company_info.company_id)
-
-        if (not employee_profile_info):
-            self._skip_cells(10)
-            return
-
-        # Profile
-        self._write_cell(self._get_date_string(employee_profile_info.hire_date))
-        self._write_cell(self._get_pay_cycle_code(employee_profile_info.pay_cycle))
-
-        # [TODO]: For now, skip the department info
+    def _write_1099M_data(self, employee_data_context):
+        # [Remark]: WBM does not support 1099-M
         self._skip_cells(1)
-        self._write_cell(self._get_employment_status_code(employee_profile_info.employment_status))
 
-        # [TODO]: For now, use the company address state as the employee
-        #         work state
-        self._write_cell(company_info.state)
+    def _write_employee_HR_info(self, employee_data_context):
+        person_info = employee_data_context.person_info
+        self._write_cell(person_info.email)
+        self._write_cell(self._get_date_string(person_info.birth_date))
 
-        # Compensation
-        self._write_cell(self._normalize_decimal_number(employee_profile_info.projected_hours_per_pay_cycle))
-        self._write_cell(self._get_employee_pay_type_code(employee_profile_info.pay_type))
-        self._write_cell(self._normalize_decimal_number(employee_profile_info.current_hourly_rate))
-        self._write_cell(self._get_employee_current_pay_period_salary(employee_profile_info))
-        self._write_cell(self._get_date_string(employee_profile_info.compensation_effective_date))
-
-    def _write_employee_w4_info(self, company_info, w4_info):
-        if (w4_info):
-            status_code = self._get_w4_marriage_status_code(w4_info.marriage_status)
-
-            self._write_cell(status_code)
-            self._write_cell(w4_info.total_points)
-            self._write_cell(w4_info.extra_amount)
-
-            # [TODO]: For now, use the federal w4 info to fill state fields
-            # [TODO]: For now, use the company state for the state withold code
-            self._write_cell(status_code)
-            self._write_cell(company_info.state)
-
+    def _write_employee_salary_data(self, employee_data_context):
+        employee_profile_info = employee_data_context.employee_profile_info
+        pay_type = employee_profile_info.pay_type
+        if (pay_type == PAY_TYPE_HOURLY):
+            self._skip_cells(2)
+            self._write_cell(self._normalize_decimal_number(employee_profile_info.current_hourly_rate))
+            self._write_cell(self._get_date_string(employee_profile_info.compensation_effective_date))
+        elif (pay_type == PAY_TYPE_SALARY):
+            self._write_cell(self._normalize_decimal_number(employee_profile_info.annual_salary))
+            self._write_cell(self._get_date_string(employee_profile_info.compensation_effective_date))
+            self._skip_cells(2)
         else:
-            self._skip_cells(5)
+            self.logger.warn('Skipping data for employee "{0}": Invalid pay type.'.format(employee_data_context.employee_user_id))
+            self._skip_cells(4)
 
-    def _get_employment_status_code(self, employment_status):
+    def _write_employee_other_HR_data(self, employee_data_context):
+        employee_profile_info = employee_data_context.employee_profile_info
+        person_info = employee_data_context.person_info
+
+        self._write_cell(employee_profile_info.new_employee)
+        # [Remark]: Seasonal is not supported on WBM and seems to not be used by CP
+        self._skip_cells(1)
+        self._write_cell(self._get_date_string(employee_profile_info.hire_date))
+        self._write_cell(person_info.gender)
+
+        if (len(person_info.phones) > 0):
+            phone = person_info.phones[0]
+            self._write_cell(phone['number'])
+        else:
+            self._skip_cells(1)
+
+        # [Remark]: Skip all J1/F1 Visa 
+        self._skip_cells(2)
+
+        code_and_date = self._get_employement_status_code_and_date(employee_profile_info)
+        if (not code_and_date):
+            self.logger.warn('Skipping data for employee "{0}": Invalid employment status'.format(employee_data_context.employee_user_id))
+            self._skip_cells(2)
+        else:
+            self._write_cell(code_and_date['code'])
+            self._write_cell(code_and_date['date'])
+
+        # [Remark]: Skip the status reason
+        self._skip_cells(1)
+
+    def _get_employement_status_code_and_date(self, employee_profile_info):
+        employment_status = employee_profile_info.employment_status
         if (employment_status == EMPLOYMENT_STATUS_ACTIVE):
-            return 'A'
+            return {
+                'code': 'Active',
+                'date': self._get_date_string(employee_profile_info.hire_date)
+            }
         elif (employment_status == EMPLOYMENT_STATUS_TERMINATED):
-            return 'T'
+            return {
+                'code': 'Terminated',
+                'date': self._get_date_string(employee_profile_info.end_date)
+            }
         else:
-            return ''
+            return None
 
-    def _get_employee_pay_type_code(self, employee_pay_type):
-        if (employee_pay_type == PAY_TYPE_HOURLY):
-            return 'H'
-        elif (employee_pay_type == PAY_TYPE_SALARY):
-            return 'S'
-        else:
-            return ''
-
-    def _get_employee_current_pay_period_salary(self, employee_profile_info):
-        if (employee_profile_info.pay_type == PAY_TYPE_HOURLY):
-            return 0
-        else:
-            return self._normalize_decimal_number(employee_profile_info.current_pay_period_salary)
+    def _write_other_tax_data(self, employee_data_context):
+        # [Remark] WBM Non-supported
+        # [Remark] CP does not seem to use 
+        self._skip_cells(10)
 
     def _normalize_decimal_number(self, decimal_number):
         result = decimal_number
         if (decimal_number == 0 or decimal_number):
             result = "{:.2f}".format(float(decimal_number))
         return result
+
 
 class _EmployeeDataContext(object):
     _view_model_factory = ReportViewModelFactory()
