@@ -49,6 +49,7 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
     ## * [Employment Status] Does WBM include terminated employees?
     ## * [New Hire Flag] Does the NewHire flag stands for the same expectation
     ##   on WBM and CP?
+    ## * [I-9/W-4 non-new employee] WBM does not have data, what would CP expect?
     ########################################################################
 
     def __init__(self):
