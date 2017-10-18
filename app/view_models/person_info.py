@@ -3,6 +3,7 @@ from app.service.compensation_service import CompensationService
 
 class PersonInfo(object):
     first_name = ''
+    middle_name = ''
     last_name = ''
     birth_date = ''
     gender = ''
@@ -22,6 +23,9 @@ class PersonInfo(object):
                 self.first_name = person_model.first_name
             elif (person_model.user.first_name):
                 self.first_name = person_model.user.first_name
+
+            if (person_model.middle_name):
+                self.middle_name = person_model.middle_name
 
             if (person_model.last_name):
                 self.last_name = person_model.last_name
@@ -61,9 +65,18 @@ class PersonInfo(object):
             self.compensation_service = CompensationService(person_model.id)
 
     def get_full_name(self):
-        if self.first_name is not None and self.last_name is not None:
-            return self.first_name + ' ' + self.last_name
-        return None
+        result = ''
+        
+        if (self.first_name):
+            result = '{0}'.format(self.first_name)
+
+        if (self.middle_name):
+            result = '{0} {1}'.format(result, self.middle_name)
+
+        if (self.last_name):
+            result = '{0} {1}'.format(result, self.last_name)
+        
+        return result
 
     def get_full_street_address(self):
         full_address = None

@@ -298,6 +298,8 @@ from app.views.reports.integration.advantage_payroll.advantage_payroll_period_ex
 # # Connect Payroll
 from app.views.reports.integration.connect_payroll.connect_payroll_period_export_csv \
     import ConnectPayrollPeriodExportCsvView
+from app.views.reports.integration.connect_payroll.connect_payroll_employee_front_page_csv \
+    import ConnectPayrollEmployeeFrontPageCsvView
 
 from app.views.admin.password_generator_view import PasswordGeneratorView
 
@@ -795,7 +797,8 @@ urlpatterns = patterns('app.views',
 
     # # Connect Payroll
     url(r'^%s/companies/(?P<company_id>\w+)/connect_payroll/period_export_csv/from/(?P<from_year>\d+)/(?P<from_month>\d+)/(?P<from_day>\d+)/to/(?P<to_year>\d+)/(?P<to_month>\d+)/(?P<to_day>\d+)/?$' % PREFIX, ConnectPayrollPeriodExportCsvView.as_view(), name='company_connect_payroll_period_export_csv_api'),
-
+    url(r'^%s/companies/(?P<company_id>\w+)/connect_payroll/employee_frontpage_csv?$' % PREFIX, ConnectPayrollEmployeeFrontPageCsvView.as_view(), name='company_connect_payroll_employee_frontpage_csv_api'),
+    
     # Logging
     url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api"),
 
