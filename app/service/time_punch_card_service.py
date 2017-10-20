@@ -168,7 +168,7 @@ class TimePunchCardService(object):
             result_dict[user_id] = user_hours
         return result_dict
 
-    def get_company_users_setting(self, company_id):
+    def get_time_tracking_setting_for_all_company_users(self, company_id):
         api_url = '{0}api/v1/company/{1}/person/all_time_punch_card_setting'.format(
             settings.TIME_TRACKING_SERVICE_URL,
             self.hash_key_service.encode_key_with_environment(company_id))
@@ -181,7 +181,7 @@ class TimePunchCardService(object):
     def get_time_tracking_setting_for_user(self, company_id, user_id):
         company_settings_object = self.time_tracking_settings_dictionary.get(company_id)
         if not company_settings_object:
-            company_settings_object = self.get_company_users_setting(company_id)
+            company_settings_object = self.get_time_tracking_setting_for_all_company_users(company_id)
             self.time_tracking_settings_dictionary[company_id] = company_settings_object
 
         if not company_settings_object:
@@ -193,4 +193,8 @@ class TimePunchCardService(object):
                     return employee['setting']
 
         return company_settings_object['company']['setting']
+
+    def clear_time_tracking_setting_cache(self):
+        self.time_tracking_settings_dictionary = {}
+
 
