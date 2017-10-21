@@ -11,6 +11,7 @@ from app.service.application_feature_service import (
 
 from app.view_models.time_tracking.time_punch_card import TimePunchCard
 from app.view_models.time_tracking.reported_hours import ReportedHours
+from app.view_models.time_tracking.employee_daily_punch_card_aggregate import EmployeeDailyPunchCardAggregate
 
 User = get_user_model()
 
@@ -29,6 +30,7 @@ class TimePunchCardService(object):
     hash_key_service = HashKeyService()
     request_service = WebRequestService()
     app_feature_service = ApplicationFeatureService()
+    time_tracking_settings_dictionary = {}
 
     def _add_paid_hours_to_week_hours(self, week_hours, hours_number):
         if week_hours.paid_hours >= WEEKLY_REGULAR_HOURS_LIMIT:
@@ -62,7 +64,8 @@ class TimePunchCardService(object):
         self,
         company_id,
         start_date,
-        end_date
+        end_date,
+        include_unclosed_cards=False
     ):
         user_punch_cards = []
         api_url = '{0}api/v1/company/{1}/time_punch_cards?start_date={2}&end_date={3}'.format(
@@ -70,6 +73,9 @@ class TimePunchCardService(object):
             self.hash_key_service.encode_key_with_environment(company_id),
             start_date.isoformat(),
             end_date.isoformat())
+
+        if (include_unclosed_cards):
+            api_url = '{0}{1}'.format(api_url, '&includeall=true')
 
         r = self.request_service.get(api_url)
         if r.status_code == 404:
@@ -79,18 +85,35 @@ class TimePunchCardService(object):
         for entry in all_entries:
             user_punch_cards.append(TimePunchCard(entry))
 
-        return user_punch_cards
+        # Sort the cards by user ID
+        sorted_cards = sorted(user_punch_cards, key=lambda card: (card.user_id, card.date))
+
+        return sorted_cards
+
+    def get_company_users_daily_time_punch_cards_aggregates(self, company_id, date, include_unclosed_cards=False):
+        mappings = {}
+
+        all_cards = self.get_company_users_time_punch_cards_by_date_range(company_id, date, date, include_unclosed_cards)
+        for card in all_cards:
+            if card.user_id not in mappings:
+                mappings[card.user_id] = EmployeeDailyPunchCardAggregate(card.user_id, date)
+            mappings[card.user_id].add_card(card)
+
+        unsorted = mappings.values()
+        return sorted(unsorted, key=lambda aggregate: aggregate.user_id)
 
     def get_company_users_reported_hours_by_date_range(
         self,
         company_id,
         start_date,
-        end_date
+        end_date,
+        include_unclosed_cards=False
     ):
         user_punch_cards = self.get_company_users_time_punch_cards_by_date_range(
                 company_id,
                 start_date,
-                end_date)
+                end_date,
+                include_unclosed_cards)
 
         result_dict = {}
         user_weekly_aggregate_dict = {}
@@ -144,3 +167,34 @@ class TimePunchCardService(object):
 
             result_dict[user_id] = user_hours
         return result_dict
+
+    def get_time_tracking_setting_for_all_company_users(self, company_id):
+        api_url = '{0}api/v1/company/{1}/person/all_time_punch_card_setting'.format(
+            settings.TIME_TRACKING_SERVICE_URL,
+            self.hash_key_service.encode_key_with_environment(company_id))
+
+        r = self.request_service.get(api_url)
+        if r.status_code != 200:
+            return None
+        return r.json()
+
+    def get_time_tracking_setting_for_user(self, company_id, user_id):
+        company_settings_object = self.time_tracking_settings_dictionary.get(company_id)
+        if not company_settings_object:
+            company_settings_object = self.get_time_tracking_setting_for_all_company_users(company_id)
+            self.time_tracking_settings_dictionary[company_id] = company_settings_object
+
+        if not company_settings_object:
+            return None
+
+        if 'employees' in company_settings_object:
+            for employee in company_settings_object['employees']:
+                if employee['personDescriptor'] == self.hash_key_service.encode_key_with_environment(user_id):
+                    return employee['setting']
+
+        return company_settings_object['company']['setting']
+
+    def clear_time_tracking_setting_cache(self):
+        self.time_tracking_settings_dictionary = {}
+
+

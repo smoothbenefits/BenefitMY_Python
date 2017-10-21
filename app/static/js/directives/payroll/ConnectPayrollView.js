@@ -101,6 +101,8 @@ BenefitMyApp.controller('CPPeriodReportModalController', [
     // Inherite scope from base
     $controller('modalMessageControllerBase', {$scope: $scope});
 
+    $scope.allEmployeesFrontpageCsvDownloadLink = ConnectPayrollService.getAllEmployeesFrontPageCsvUrl($scope.companyId);
+
     $scope.openPeriodExportModal = function() {
         $modal.open({
             templateUrl: '/static/partials/payroll_integration/modal_connect_payroll_period_export.html',
