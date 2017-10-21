@@ -40,6 +40,7 @@ benefitmyService.factory('EmployeeProfileService',
             viewModel.employeeNumber = employeeProfileDomainModel.employee_number;
             viewModel.manager = employeeProfileDomainModel.manager;
             viewModel.pin = employeeProfileDomainModel.pin;
+            viewModel.photoUrl = employeeProfileDomainModel.photo_url;
 
             viewModel.department = employeeProfileDomainModel.department;
             viewModel.job = employeeProfileDomainModel.job;
@@ -103,6 +104,7 @@ benefitmyService.factory('EmployeeProfileService',
             domainModel.employee_number = employeeProfileViewModel.employeeNumber;
             domainModel.manager = employeeProfileViewModel.manager ? employeeProfileViewModel.manager.id : null;
             domainModel.pin = employeeProfileViewModel.pin;
+            domainModel.photo_url = employeeProfileViewModel.photoUrl;
 
             return domainModel;
         };
