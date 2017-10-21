@@ -29,6 +29,7 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
 
     def __init__(self):
         super(ConnectPayrollPeriodExportCsvService, self).__init__()
+        self.time_punch_card_service.clear_time_tracking_setting_cache()
 
     #########################################
     ## Override methods - Begin
@@ -148,13 +149,14 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
         if (employee_user_id in employees_reported_hours):
             user_hours = employees_reported_hours[employee_user_id]
 
-        if (employee_profile_info and employee_profile_info.pay_type == PAY_TYPE_SALARY):
+        employee_pay_type = self._get_employee_pay_type(employee_profile_info)
+        if (employee_pay_type == PAY_TYPE_SALARY or self._is_employee_treated_as_salary_pay_type(company_info, employee_user_id)):
             self._append_earning_type_row(base_row_data, EARNING_TYPE_SALARY, user_hours, rows)
         else:
             self._append_earning_type_row(base_row_data, EARNING_TYPE_HOURLY, user_hours, rows)
 
         if user_hours:
-            if(employee_profile_info and employee_profile_info.pay_type == PAY_TYPE_HOURLY):
+            if(employee_pay_type == PAY_TYPE_HOURLY and not self._is_employee_treated_as_salary_pay_type(company_info, employee_user_id)):
                 # Write the hours worked over time only for hourly employees
                 self._append_earning_type_row(base_row_data, EARNING_TYPE_OVERTIME, user_hours, rows)
 
@@ -230,3 +232,15 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
             row_list.append(row_data)
 
         return
+
+    def _get_employee_pay_type(self, employee_profile_info):
+        if not employee_profile_info:
+            return None    
+        return employee_profile_info.pay_type
+
+    def _is_employee_treated_as_salary_pay_type(self, company_info, employee_user_id):
+        time_tracking_setting = self.time_punch_card_service.get_time_tracking_setting_for_user(
+            company_info.company_id,
+            employee_user_id
+        )
+        return time_tracking_setting and time_tracking_setting['autoReportFullWeek']['active']
