@@ -52,6 +52,31 @@ class ConnectPayrollDataService(IntegrationProviderDataServiceBase):
     def _integration_provider_name(self):
         return INTEGRATION_PAYROLL_CONNECT_PAYROLL
 
+    def _internal_generate_and_record_external_employee_number(self, employee_user_id):
+        # First check whether the said employee already have a number
+        # If so, this is an exception state, log it, and skip the operation
+        employee_number = self.integration_provider_service.get_employee_integration_provider_external_id(
+            employee_user_id,
+            self._integration_service_type(),
+            self._integration_provider_name())
+        if (employee_number):
+            logging.error('Invalid Operation: Try to generate external ID for employee (User ID={0}) already has one!'.format(employee_user_id))
+            return
+
+        company_id = self.company_personnel_service.get_company_id_by_employee_user_id(employee_user_id)
+        next_employee_number = self._get_next_external_employee_number(company_id)
+        # Now save the next usable external employee number to the profile
+        # of the specified employee
+        self._set_employee_external_id(
+            employee_user_id,
+            self._integration_service_type(),
+            self._integration_provider_name(),
+            next_employee_number
+        )
+
+    def _get_next_external_employee_number(self, company_id):
+        return 0
+
     def _internal_sync_employee_data_to_remote(self, employee_user_id):
         # If the Connect Payroll API's auth token is not specified 
         # in the environment, consider this feature to be off, and 
