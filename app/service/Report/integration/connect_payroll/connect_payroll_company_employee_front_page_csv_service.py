@@ -271,16 +271,20 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
 
     def _write_federal_tax_info(self, employee_data_context):
         w4_info = employee_data_context.w4_info
-        company_info = employee_data_context.company_info
 
-        status_code = self._get_w4_marriage_status_code(w4_info.marriage_status)
+        if (not w4_info):
+            self._skip_cells(6)
+        else:
+            company_info = employee_data_context.company_info
 
-        self._write_cell(status_code)
-        self._write_cell(w4_info.total_points)
-        self._write_cell('A')
-        self._write_cell(w4_info.extra_amount)
-        self._write_cell(company_info.state)
-        self._write_cell(company_info.state)
+            status_code = self._get_w4_marriage_status_code(w4_info.marriage_status)
+
+            self._write_cell(status_code)
+            self._write_cell(w4_info.total_points)
+            self._write_cell('A')
+            self._write_cell(w4_info.extra_amount)
+            self._write_cell(company_info.state)
+            self._write_cell(company_info.state)
 
     def _get_w4_marriage_status_code(self, marriage_status):
         if (marriage_status == W4_MARRIAGE_STATUS_SINGLE):
@@ -293,7 +297,6 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
             return ''
 
     def _write_state_tax_info(self, employee_data_context):
-        w4_info = employee_data_context.w4_info
         state_tax_info = employee_data_context.state_tax_info
 
         # This limits how many state elections CP can take and hence
@@ -301,20 +304,21 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
         export_limit = 2
         counter = 0
 
-        all_state_elections = state_tax_info.get_all_state_elections()
+        if (state_tax_info):
+            all_state_elections = state_tax_info.get_all_state_elections()
 
-        for state in all_state_elections:
-            if (counter >= export_limit):
-                break
-            adaptor = self._state_tax_election_adaptor_factory.get_adaptor(state, all_state_elections[state])
-            if (adaptor):
-                self._write_cell(adaptor.get_filing_status())
-                self._write_cell(adaptor.get_total_exemptions())
-                self._write_cell(adaptor.get_additional_exemptions())
-                self._write_cell(adaptor.get_additional_amount_code())
-                self._write_cell(adaptor.get_additional_amount())
+            for state in all_state_elections:
+                if (counter >= export_limit):
+                    break
+                adaptor = self._state_tax_election_adaptor_factory.get_adaptor(state, all_state_elections[state])
+                if (adaptor):
+                    self._write_cell(adaptor.get_filing_status())
+                    self._write_cell(adaptor.get_total_exemptions())
+                    self._write_cell(adaptor.get_additional_exemptions())
+                    self._write_cell(adaptor.get_additional_amount_code())
+                    self._write_cell(adaptor.get_additional_amount())
 
-                counter = counter + 1
+                    counter = counter + 1
 
         # Skip any set of fields that the employee does not have data to fill
         # E.g. secondary state witholding
@@ -423,16 +427,19 @@ class _EmployeeDataContext(object):
             INTEGRATION_SERVICE_TYPE_PAYROLL,
             INTEGRATION_PAYROLL_CONNECT_PAYROLL)
 
+        # Get the is new flag to help judging on data completeness 
+        comp_user = CompanyUser.objects.get(user=self.employee_user_id, company_user_type=USER_TYPE_EMPLOYEE, company=self.company_id)
+        self.is_new_employee = comp_user.new_employee
+
     def user_completed_onboarding(self):
         if not self.w4_info or not self.w4_info.total_points: 
-            comp_user = CompanyUser.objects.get(user=self.employee_user_id, company_user_type=USER_TYPE_EMPLOYEE, company=self.company_id)
-            return not comp_user.new_employee
+            return not self.is_new_employee
         return True
 
     def has_complete_data(self):
         return self.user_completed_onboarding() \
-            and self.state_tax_info \
-            and self.employee_number \
+            and (self.w4_info or not self.is_new_employee) \
+            and (self.state_tax_info or not self.is_new_employee) \
             and self.company_info \
             and self.person_info \
             and self.employee_profile_info
