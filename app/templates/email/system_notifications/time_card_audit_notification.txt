@@ -1,0 +1,18 @@
+Company: {{context_data.company.name}}
+
+[Daily Time and Attendance Validation Report - {{context_data.date}}]
+
+{% if context_data.card_aggrgates_with_issues %}
+Issues Might Worth Attention
+    {% for card_aggregate in context_data.card_aggrgates_with_issues %}
+        {% for issue in card_aggregate.validation_issues %}
+        ({{card_aggregate.employee_full_name}}) [{{issue.level}}]: {{issue.notes}}
+        {% endfor %}
+    {% endfor %}
+{% else %}
+Great News! No validation issues found.
+{% endif %}
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}

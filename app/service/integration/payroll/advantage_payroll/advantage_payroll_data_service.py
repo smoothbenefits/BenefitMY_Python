@@ -46,11 +46,12 @@ class AdvantagePayrollDataService(IntegrationProviderDataServiceBase):
         next_employee_number = self._get_next_external_employee_number(company_id)
         # Now save the next usable external employee number to the profile
         # of the specified employee
-        self.integration_provider_service.set_employee_integration_provider_external_id(
+        self._set_employee_external_id(
             employee_user_id,
             self._integration_service_type(),
             self._integration_provider_name(),
-            next_employee_number)
+            next_employee_number
+        )
 
     def _get_next_external_employee_number(self, company_id):
         employee_number_seed_str = self.integration_provider_service.get_company_integration_provider_employee_external_id_seed(

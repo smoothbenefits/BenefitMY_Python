@@ -1,0 +1,82 @@
+<html>
+    <head>
+    <style>
+        .circle_warning
+        {
+            padding: 5px;
+            background: #DDDD00;
+            width: 1px;
+            border-radius: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            border: 0.1em solid grey;
+        }
+        .circle_error
+        {
+            padding: 5px;
+            background: red;
+            width: 1px;
+            border-radius: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            border: 0.1em solid grey;
+        }
+        .circle_unknown
+        {
+            padding: 5px;
+            background: grey;
+            width: 1px;
+            border-radius: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            border: 0.1em solid grey;
+        }
+        .inline
+        {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+    </head>
+    <body>
+      <h3>Company: {{context_data.company.name}}</h3>
+      <h4>[Daily Time and Attendance Validation Report - {{context_data.date}}]</h4>
+      <br/>
+
+      {% if context_data.card_aggrgates_with_issues %}
+          <h4>Issues Worth Attention</h4>
+          <br/>
+          <table border="1">
+              <thead>
+                <tr style="padding: 1px;">
+                  <th><span>Employee</span></th>
+                  <th><span>Notes</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for card_aggregate in context_data.card_aggrgates_with_issues %}
+                <tr style="padding: 1px;">
+                    <td>{{card_aggregate.employee_full_name}}</td>
+                    <td>
+                        {% for issue in card_aggregate.validation_issues %}
+                        <div style="margin:2px;white-space:nowrap;">
+                          <div class="{{issue.visual_cue_css_class}} inline"></div>
+                          <div class="inline">{{issue.notes}}</div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+          </table>
+      {% else %}
+          <h4>Great News! No validation issues found.</h4>
+      {% endif %}
+      <br/> 
+      <hr/>
+
+      <a href="{{site_url}}" style="background:#6EBE4B;color:#FFF;font-weight:700;border: 1px solid #56A245;border-radius: 0;padding: 10px 6px; width: 150px;text-align: center;box-shadow: none;text-shadow: none;
+      line-height: 15px;display: inline-block;margin-bottom: 0;vertical-align: middle;cursor: pointer;white-space: nowrap;font-size: 13px;">
+      Visit Site</a>
+    </body>
+</html>

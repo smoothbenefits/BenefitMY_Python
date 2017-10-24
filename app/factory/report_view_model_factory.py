@@ -7,6 +7,7 @@ from app.models.aca.company_1094_c_member_info import Company1094CMemberInfo
 from app.models.aca.company_1094_c_monthly_member_info import Company1094CMonthlyMemberInfo
 from app.models.employment_authorization import EmploymentAuthorization
 from app.models.w4 import W4
+from app.models.tax.employee_state_tax_election import EmployeeStateTaxElection
 
 from app.view_models.person_info import PersonInfo
 from app.view_models.company_info import CompanyInfo
@@ -15,6 +16,7 @@ from app.view_models.report.employee_1095_c_data import Employee1095CData
 from app.view_models.report.company_1094_c_data import Company1094CData
 from app.view_models.report.employee_i9_data import EmployeeI9Data
 from app.view_models.report.employee_w4_data import EmployeeW4Data
+from app.view_models.employee_state_tax_info import EmployeeStateTaxInfo
 from django.http import Http404
 
 
@@ -38,7 +40,7 @@ class ReportViewModelFactory(object):
         if (not person_model): 
             return None
 
-        return EmployeeEmploymentProfileInfo(person_model, company_id)
+        return EmployeeEmploymentProfileInfo(person_model, company_id, employee_user_id)
 
     def get_employee_1095_c_data(self, employee_user_id, company_id):
         return self._get_employee_1095_c_data_collection(employee_user_id, company_id)
@@ -51,6 +53,9 @@ class ReportViewModelFactory(object):
 
     def get_employee_w4_data(self, user_id):
         return self._get_employee_w4_data(user_id)
+
+    def get_employee_state_tax_data(self, user_id):
+        return self._get_employee_state_tax_info(user_id)
 
     def _get_person_by_user(self, user_id):
         person_model = None
@@ -112,6 +117,10 @@ class ReportViewModelFactory(object):
             return None
 
         return EmployeeW4Data(w4_model)
+
+    def _get_employee_state_tax_info(self, user_id):
+        election_models = EmployeeStateTaxElection.objects.filter(user=user_id)
+        return EmployeeStateTaxInfo(election_models)
 
     def _get_company_1094_c_data(self, company_id):
         member_info = None

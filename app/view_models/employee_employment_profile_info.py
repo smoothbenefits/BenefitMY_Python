@@ -3,6 +3,10 @@ from app.models.employee_profile import (
     EmployeeProfile,
     FULL_TIME
 )
+from app.models.company_user import (
+    CompanyUser,
+    USER_TYPE_EMPLOYEE
+)
 
 from app.service.compensation_service import (
     CompensationService,
@@ -12,7 +16,7 @@ from app.service.compensation_service import (
 
 class EmployeeEmploymentProfileInfo(object):
 
-    def __init__(self, person_model, company_id):
+    def __init__(self, person_model, company_id, employee_user_id):
         self._employee_profile_model = None
         self._compensation_service = None
 
@@ -27,6 +31,12 @@ class EmployeeEmploymentProfileInfo(object):
             except EmployeeProfile.DoesNotExist:
                 pass
 
+        self._company_user_model = CompanyUser.objects.get(
+            user=employee_user_id,
+            company_user_type=USER_TYPE_EMPLOYEE,
+            company=company_id)
+
+        self.new_employee = self._company_user_model.new_employee
         self.job_title = ''
         self.employee_number = ''
         self.hire_date = ''

@@ -1,0 +1,25 @@
+<div class='panel'>
+    <div class='panel-heading' ng-click="sectionExpanded = !sectionExpanded">
+      <b class="clickable"><span class="fa fa-toggle-down"></span>  Employee Photo</b>
+    </div>
+    <div class="panel-body" collapse="!sectionExpanded">
+      <ul class="list-group">
+        <li class="list-group-item" ng-if="hasPhoto()">
+              <h4 class="col-md-5">
+                Photo on File
+              </h4>
+              <div class="col-md-7">
+                <img ng-if="hasPhoto()" src={{employeeProfile.photoUrl}} height="250" width="250" style="float:left;"></img>
+              </div>
+              <div style="clear:both"></div>
+        </li>
+        <li class="list-group-item" ng-if="!hasPhoto()">
+            <h4 class="col-md-10">
+                Employee does not have photo on file
+            </h4>
+            <div style="clear:both"></div>
+        </li>
+      </ul>
+      <button class="btn btn-info" ng-if="hasPhoto()" ng-click="deletePhoto()" confirm="This will delete the current photo on employee's file. Do you want to proceed?">Delete Photo</button>
+    </div>
+</div>

@@ -17,6 +17,8 @@ from app.service.event_bus.event_handlers.person_info_updated_event_cp_data_sync
 from app.service.event_bus.event_handlers.w4_updated_event_cp_data_sync_handler import W4UpdatedEventCpDataSyncHandler
 from app.service.event_bus.event_handlers.state_tax_updated_event_cp_data_sync_handler import StateTaxUpdatedEventCpDataSyncHandler
 from app.service.event_bus.event_handlers.compensation_updated_event_cp_data_sync_handler import CompensationUpdatedEventCpDataSyncHandler
+from app.service.event_bus.event_handlers.daily_time_card_audit_report_handler import DailyTimeCardAuditReportHandler
+from app.service.event_bus.event_handlers.company_daily_time_card_audit_event_handler import CompanyDailyTimeCardAuditEventHandler
 
 from app.service.event_bus.events.environment_test_event import EnvironmentTestEvent
 from app.service.event_bus.aws_message_queue_config import AwsMessageQueueConfig
@@ -51,6 +53,8 @@ class Command(BaseCommand):
         message_pump.register_event_message_handler(W4UpdatedEventCpDataSyncHandler, common_sqs_config)
         message_pump.register_event_message_handler(StateTaxUpdatedEventCpDataSyncHandler, common_sqs_config)
         message_pump.register_event_message_handler(CompensationUpdatedEventCpDataSyncHandler, common_sqs_config)
+        message_pump.register_event_message_handler(DailyTimeCardAuditReportHandler, common_sqs_config)
+        message_pump.register_event_message_handler(CompanyDailyTimeCardAuditEventHandler, common_sqs_config)
 
         # Now start the pump, which will start pumping and handling
         # with all registered event handlers above
