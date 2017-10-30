@@ -28,25 +28,36 @@ benefitmyService.factory('UserService',
             return undefined;
         }
     };
+
+    var _mapUserRoles = function(originalRoles) {
+        return _.map(originalRoles, function(role) {
+            if (role.company_user_type === 'super') {
+                role.company_user_type = 'admin';
+            }
+            return role;
+        });
+    };
+
     var getCurUserInfo = function() {
         var deferred = $q.defer();
         var userInfo = {};
         currentUser.get().$promise.then(function(response){
             userInfo.user = response.user;
-            userInfo.roles = response.roles;
+            userInfo.roles = _mapUserRoles(response.roles);
             userInfo.person = response.person;
           clientListRepository.get({userId: response.user.id})
             .$promise.then(function(response){
-            var curRole = _.find(response.company_roles, {company_user_type: getCurRoleFromPath()});
-            if(curRole){
-              userInfo.currentRole = curRole;
-            }
-            else{
-              //we cannot find the curRole from path, what can we do?
-              //we will select the first role from the list then.
-              userInfo.currentRole = response.company_roles[0];
-            }
-            deferred.resolve(userInfo);
+                var roles = _mapUserRoles(response.company_roles);
+                var curRole = _.find(roles, {company_user_type: getCurRoleFromPath()});
+                if(curRole){
+                  userInfo.currentRole = curRole;
+                }
+                else{
+                  //we cannot find the curRole from path, what can we do?
+                  //we will select the first role from the list then.
+                  userInfo.currentRole = roles[0];
+                }
+                deferred.resolve(userInfo);
           });
         });
         return deferred.promise;
