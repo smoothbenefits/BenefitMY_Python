@@ -3,12 +3,13 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.utils.decorators import available_attrs
 
-from app.models.company_user import CompanyUser
-
-ADMIN = 'admin'
-EMPLOYEE = 'employee'
-BROKER = 'broker'
-
+from app.models.company_user import (
+    CompanyUser,
+    USER_TYPE_EMPLOYEE,
+    USER_TYPE_ADMIN,
+    USER_TYPE_BROKER,
+    USER_TYPE_SUPER
+)
 
 def user_passes_test(test_func,
                      login_url=None,
@@ -46,7 +47,7 @@ def company_employer(request, **kwargs):
         return CompanyUser.objects.filter(
             user=user_id,
             company=company_id,
-            company_user_type=ADMIN).exists()
+            company_user_type__in=[USER_TYPE_ADMIN, USER_TYPE_SUPER]).exists()
 
 
 def company_broker(request, **kwargs):
@@ -60,7 +61,7 @@ def company_broker(request, **kwargs):
         return CompanyUser.objects.filter(
             user=user_id,
             company=company_id,
-            company_user_type=BROKER).exists()
+            company_user_type__in=[USER_TYPE_BROKER, USER_TYPE_SUPER]).exists()
 
 
 def company_employer_or_broker(request, **kwargs):
@@ -74,4 +75,4 @@ def company_employer_or_broker(request, **kwargs):
         return CompanyUser.objects.filter(
             user=user_id,
             company=company_id,
-            company_user_type__in=[BROKER, ADMIN]).exists()
+            company_user_type__in=[USER_TYPE_BROKER, USER_TYPE_ADMIN, USER_TYPE_SUPER]).exists()

@@ -55,8 +55,8 @@ var modalMessageControllerBase = userControllers.controller(
     }]);
 
 var findViewController = userControllers.controller('findViewController',
-    ['$scope', '$location', 'currentUser', 'clientListRepository',
-    function findViewController($scope, $location, currentUser, clientListRepository){
+    ['$scope', '$location', 'UserService', 'clientListRepository',
+    function findViewController($scope, $location, UserService, clientListRepository){
       var currentUser;
       var userRolesContains = function(userType, userRoles)
       {
@@ -87,8 +87,8 @@ var findViewController = userControllers.controller('findViewController',
         }
       };
 
-      currentUser.get().$promise.then(function(response){
-          determineDashboardLocation(response.roles);
+      UserService.getCurUserInfo().then(function(userInfo) {
+        determineDashboardLocation(userInfo.roles);
       });
     }
 ]);
