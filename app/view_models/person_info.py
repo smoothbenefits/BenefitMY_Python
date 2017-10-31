@@ -64,13 +64,13 @@ class PersonInfo(object):
             # initialize compensation service for use later
             self.compensation_service = CompensationService(person_model.id)
 
-    def get_full_name(self):
+    def get_full_name(self, include_middle_name=True):
         result = ''
         
         if (self.first_name):
             result = '{0}'.format(self.first_name)
 
-        if (self.middle_name):
+        if (include_middle_name and self.middle_name):
             result = '{0} {1}'.format(result, self.middle_name)
 
         if (self.last_name):

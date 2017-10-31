@@ -205,13 +205,15 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
         row_data['client_number'] = company_payroll_id
 
         row_data['employee_number'] = employee_profile_info.employee_number
-        row_data['employee_name'] = person_info.get_full_name()
+        row_data['employee_name'] = person_info.get_full_name(include_middle_name=False)
 
-        if (employee_profile_info.department):
-            row_data['department'] = employee_profile_info.department.code
+        # [TODO]:
+        # For now, based on feedback from Sean, we do not send department nor job code 
+        # if (employee_profile_info.department):
+        #     row_data['department'] = employee_profile_info.department.code
 
-        if (employee_profile_info.job):
-            row_data['job_code'] = employee_profile_info.job.code
+        # if (employee_profile_info.job):
+        #     row_data['job_code'] = employee_profile_info.job.code
 
         # TODO: Confirm
         # According to Doc, Location and Division is currently not supported
