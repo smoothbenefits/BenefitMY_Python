@@ -179,10 +179,12 @@ class TimePunchCardService(object):
         return r.json()
 
     def get_time_tracking_setting_for_user(self, company_id, user_id):
-        company_settings_object = self.time_tracking_settings_dictionary.get(company_id)
-        if not company_settings_object:
+        company_settings_object = None
+        if company_id not in self.time_tracking_settings_dictionary:
             company_settings_object = self.get_time_tracking_setting_for_all_company_users(company_id)
             self.time_tracking_settings_dictionary[company_id] = company_settings_object
+        else:
+            company_settings_object = self.time_tracking_settings_dictionary.get(company_id)
 
         if not company_settings_object:
             return None
@@ -192,7 +194,10 @@ class TimePunchCardService(object):
                 if employee['personDescriptor'] == self.hash_key_service.encode_key_with_environment(user_id):
                     return employee['setting']
 
-        return company_settings_object['company']['setting']
+        if 'company' in company_settings_object:
+            return company_settings_object['company']['setting']
+
+        return None
 
     def clear_time_tracking_setting_cache(self):
         self.time_tracking_settings_dictionary = {}
