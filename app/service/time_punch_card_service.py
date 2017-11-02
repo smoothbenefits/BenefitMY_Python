@@ -20,7 +20,8 @@ PUNCH_CARD_TYPE_WORK_TIME = 'Work Time'
 PUNCH_CARD_TYPE_COMPANY_HOLIDAY = 'Company Holiday'
 PUNCH_CARD_TYPE_PAID_TIME_OFF = 'Paid Time Off'
 PUNCH_CARD_TYPE_SICK_TIME = 'Sick Time'
-PUNCH_CARD_TYPE_PERSONAL_LEAVE = 'Personal Leave'
+PUNCH_CARD_TYPE_PERSONAL_LEAVE = 'Personal Leave',
+PUNCH_CARD_TYPE_BREAK_TIME = 'Break Time'
 
 WEEKLY_REGULAR_HOURS_LIMIT = 40
 
@@ -36,6 +37,10 @@ class TimePunchCardService(object):
         if week_hours.paid_hours >= WEEKLY_REGULAR_HOURS_LIMIT:
             # If for this week, we are already in overtime scenario, just add the hours to overtime
             week_hours.overtime_hours += hours_number
+            if week_hours.overtime_hours <= 0:
+                # if our overtime hours becomes negative, we should adjust paid hours accordingly
+                week_hour.paid_hours = WEEKLY_REGULAR_HOURS_LIMIT + week_hours.overtime_hours
+                week_hour.overtime_hours = 0
         else:
             # If we are in regular time scenario, add to regular hours
             week_hours.paid_hours += hours_number
@@ -143,6 +148,8 @@ class TimePunchCardService(object):
                             self._add_paid_hours_to_week_hours(week_aggregate['hours'], holiday_default_hours)
 
                         week_aggregate['hours'].holiday_hours += holiday_default_hours
+                    elif (card.card_type == PUNCH_CARD_TYPE_BREAK_TIME):
+                        self._add_paid_hours_to_week_hours(week_aggregate['hours'], 0 - card.get_punch_card_hours())
                     else:
                         self._add_paid_hours_to_week_hours(week_aggregate['hours'], card.get_punch_card_hours())
 

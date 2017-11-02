@@ -57,17 +57,26 @@ benefitmyService.factory('TimePunchCardService',
             'WorkTime': {
                 'timeRangeOn': true,
                 'includedInTotalHours': true,
-                'sanitizeViewModel': sanitizeViewModel
+                'sanitizeViewModel': sanitizeViewModel,
+                'countAsNegative': false
             },
             'PartialDayOff': {
                 'timeRangeOn': true,
                 'includedInTotalHours': true,
-                'sanitizeViewModel': sanitizeViewModel
+                'sanitizeViewModel': sanitizeViewModel,
+                'countAsNegative': false
             },
             'FullDayOff': {
                 'timeRangeOn': false,
                 'includedInTotalHours': false,
-                'sanitizeViewModel': sanitizeViewModel
+                'sanitizeViewModel': sanitizeViewModel,
+                'countAsNegative': false
+            },
+            'BreakTime': {
+                'timeRangeOn': true,
+                'includedInTotalHours': true,
+                'sanitizeViewModel': sanitizeViewModel,
+                'countAsNegative': true
             }
         };
 
@@ -91,6 +100,10 @@ benefitmyService.factory('TimePunchCardService',
             'PersonalLeave': {
                 'name': 'Personal Leave',
                 'behavior': PunchCardTypeBehaviors.PartialDayOff
+            },
+            'BreakTime': {
+                'name': 'Break Time',
+                'behavior': PunchCardTypeBehaviors.BreakTime
             }
         };
 
@@ -160,7 +173,12 @@ benefitmyService.factory('TimePunchCardService',
                 var endTime = moment(this.end);
 
                 // Get time difference between start and end time in hour before rounding
-                return endTime.diff(startTime, 'hours', true);
+                var duration = endTime.diff(startTime, 'hours', true);
+                if (this.recordType.behavior.countAsNegative)
+                {
+                    return 0 - duration;
+                }
+                return duration
             };
 
             return viewModel;

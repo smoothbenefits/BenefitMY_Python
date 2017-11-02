@@ -15,7 +15,8 @@ from app.service.time_punch_card_service import (
     PUNCH_CARD_TYPE_COMPANY_HOLIDAY,
     PUNCH_CARD_TYPE_PAID_TIME_OFF,
     PUNCH_CARD_TYPE_SICK_TIME,
-    PUNCH_CARD_TYPE_PERSONAL_LEAVE)
+    PUNCH_CARD_TYPE_PERSONAL_LEAVE,
+    PUNCH_CARD_TYPE_BREAK_TIME)
 from app.service.company_personnel_service import CompanyPersonnelService
 
 
@@ -30,7 +31,17 @@ CARD_TYPES = OrderedDict([
     (PUNCH_CARD_TYPE_SICK_TIME, {'name': 'Sick Time', 'NoHours': False, 'PrePopulate': True}),
     (PUNCH_CARD_TYPE_PAID_TIME_OFF, {'name': 'PTO', 'NoHours': False, 'PrePopulate': True}),
     (PUNCH_CARD_TYPE_COMPANY_HOLIDAY, {'name': 'Company Holiday', 'NoHours': True, 'PrePopulate': True}),
-    (PUNCH_CARD_TYPE_PERSONAL_LEAVE, {'name': 'Personal Leave (unpaid)', 'NoHours': False, 'PrePopulate': False})
+    (PUNCH_CARD_TYPE_PERSONAL_LEAVE, {'name': 'Personal Leave (unpaid)', 'NoHours': False, 'PrePopulate': False}),
+    (PUNCH_CARD_TYPE_BREAK_TIME, 
+        {
+            'name': 'Break Time',
+            'NoHours': False,
+            'PrePopulate': False,
+            'CountHoursAsNegative': True,
+            'MergeWith': PUNCH_CARD_TYPE_WORK_TIME,
+            'RenderRow': False
+        }
+    ),
 ])
 
 DATE_FORMAT_STRING = '%m/%d/%Y'
@@ -156,7 +167,8 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
             state_data = all_states_sheets_data[TIME_PUNCH_CARD_NON_SPECIFIED_STATE]
         card_type = punch_card.card_type
         if (card_type in CARD_TYPES):
-            card_type_data = state_data[card_type]
+            index_card_type = CARD_TYPES[card_type].get('MergeWith', card_type)
+            card_type_data = state_data[index_card_type]
             if punch_card.user_id not in card_type_data:
                 card_type_data.setdefault(
                     punch_card.user_id,
@@ -170,8 +182,11 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
                     employee_weekly_data[card_weekday_iso] = TIME_PUNCH_CARD_NO_HOURS_DEFAULT_HOURS
             else:
                 # Accumulate the hours specified by the card
-                hours = punch_card.get_punch_card_hours()   
-                employee_weekly_data[card_weekday_iso] += hours
+                hours = punch_card.get_punch_card_hours()
+                if CARD_TYPES[card_type].get('CountHoursAsNegative', False):
+                    employee_weekly_data[card_weekday_iso] -= hours
+                else:
+                    employee_weekly_data[card_weekday_iso] += hours
 
     def _write_all_states_sheets(self, all_states_sheets_data):
         for state in all_states_sheets_data:
@@ -182,7 +197,8 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
         self._write_sheet_headers(state)
 
         for card_type in CARD_TYPES:
-            self._write_card_type_section(card_type, state_sheet_data[card_type])
+            if CARD_TYPES[card_type].get('RenderRow', True):
+                self._write_card_type_section(card_type, state_sheet_data[card_type])
 
     def _write_sheet_headers(self, state):
         self._write_cell('Company')
