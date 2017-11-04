@@ -275,6 +275,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
         $scope.reloadCards = function() {
             $scope.weeklyPunchCards = [];
             if ($scope.week && $scope.user && $scope.companyId) {
+              setTimeout(function(){
+                // Add a time delay to ensure all the cards are in stable state in timetracking service
                 TimePunchCardService.GetWeeklyPunchCardsByEmployeeUser(
                     $scope.user, $scope.week.weekStartDate, $scope.week.weekEndDate).then(
                     function(punchCards) {
@@ -285,6 +287,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                 .then(function(userFeaturesStatus){
                   $scope.userFeaturesStatus = userFeaturesStatus;
                 });
+              }, 300);
             }
         };
 

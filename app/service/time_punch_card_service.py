@@ -9,18 +9,17 @@ from app.service.application_feature_service import (
     ApplicationFeatureService
 )
 
-from app.view_models.time_tracking.time_punch_card import TimePunchCard
+from app.view_models.time_tracking.time_punch_card import (
+    TimePunchCard,
+    PUNCH_CARD_TYPE_COMPANY_HOLIDAY,
+    PUNCH_CARD_TYPE_PAID_TIME_OFF,
+    PUNCH_CARD_TYPE_SICK_TIME,
+    PUNCH_CARD_TYPE_PERSONAL_LEAVE
+)
 from app.view_models.time_tracking.reported_hours import ReportedHours
 from app.view_models.time_tracking.employee_daily_punch_card_aggregate import EmployeeDailyPunchCardAggregate
 
 User = get_user_model()
-
-# Time Punch Card Types
-PUNCH_CARD_TYPE_WORK_TIME = 'Work Time'
-PUNCH_CARD_TYPE_COMPANY_HOLIDAY = 'Company Holiday'
-PUNCH_CARD_TYPE_PAID_TIME_OFF = 'Paid Time Off'
-PUNCH_CARD_TYPE_SICK_TIME = 'Sick Time'
-PUNCH_CARD_TYPE_PERSONAL_LEAVE = 'Personal Leave'
 
 WEEKLY_REGULAR_HOURS_LIMIT = 40
 
@@ -36,6 +35,10 @@ class TimePunchCardService(object):
         if week_hours.paid_hours >= WEEKLY_REGULAR_HOURS_LIMIT:
             # If for this week, we are already in overtime scenario, just add the hours to overtime
             week_hours.overtime_hours += hours_number
+            if week_hours.overtime_hours <= 0:
+                # if our overtime hours becomes negative, we should adjust paid hours accordingly
+                week_hour.paid_hours = WEEKLY_REGULAR_HOURS_LIMIT + week_hours.overtime_hours
+                week_hour.overtime_hours = 0
         else:
             # If we are in regular time scenario, add to regular hours
             week_hours.paid_hours += hours_number
