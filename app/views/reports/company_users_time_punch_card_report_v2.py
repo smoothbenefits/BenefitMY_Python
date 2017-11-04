@@ -9,14 +9,15 @@ from app.views.permission import (
     company_employer)
 from excel_export_view_base import ExcelExportViewBase
 from app.service.date_time_service import DateTimeService
-from app.service.time_punch_card_service import (
-    TimePunchCardService,
+from app.view_models.time_tracking.time_punch_card import (
     PUNCH_CARD_TYPE_WORK_TIME,
     PUNCH_CARD_TYPE_COMPANY_HOLIDAY,
     PUNCH_CARD_TYPE_PAID_TIME_OFF,
     PUNCH_CARD_TYPE_SICK_TIME,
     PUNCH_CARD_TYPE_PERSONAL_LEAVE,
-    PUNCH_CARD_TYPE_BREAK_TIME)
+    PUNCH_CARD_TYPE_BREAK_TIME
+)
+from app.service.time_punch_card_service import TimePunchCardService
 from app.service.company_personnel_service import CompanyPersonnelService
 
 
@@ -37,7 +38,6 @@ CARD_TYPES = OrderedDict([
             'name': 'Break Time',
             'NoHours': False,
             'PrePopulate': False,
-            'CountHoursAsNegative': True,
             'MergeWith': PUNCH_CARD_TYPE_WORK_TIME,
             'RenderRow': False
         }
@@ -183,10 +183,7 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
             else:
                 # Accumulate the hours specified by the card
                 hours = punch_card.get_punch_card_hours()
-                if CARD_TYPES[card_type].get('CountHoursAsNegative', False):
-                    employee_weekly_data[card_weekday_iso] -= hours
-                else:
-                    employee_weekly_data[card_weekday_iso] += hours
+                employee_weekly_data[card_weekday_iso] += hours
 
     def _write_all_states_sheets(self, all_states_sheets_data):
         for state in all_states_sheets_data:

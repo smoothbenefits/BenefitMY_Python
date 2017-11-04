@@ -9,19 +9,17 @@ from app.service.application_feature_service import (
     ApplicationFeatureService
 )
 
-from app.view_models.time_tracking.time_punch_card import TimePunchCard
+from app.view_models.time_tracking.time_punch_card import (
+    TimePunchCard,
+    PUNCH_CARD_TYPE_COMPANY_HOLIDAY,
+    PUNCH_CARD_TYPE_PAID_TIME_OFF,
+    PUNCH_CARD_TYPE_SICK_TIME,
+    PUNCH_CARD_TYPE_PERSONAL_LEAVE
+)
 from app.view_models.time_tracking.reported_hours import ReportedHours
 from app.view_models.time_tracking.employee_daily_punch_card_aggregate import EmployeeDailyPunchCardAggregate
 
 User = get_user_model()
-
-# Time Punch Card Types
-PUNCH_CARD_TYPE_WORK_TIME = 'Work Time'
-PUNCH_CARD_TYPE_COMPANY_HOLIDAY = 'Company Holiday'
-PUNCH_CARD_TYPE_PAID_TIME_OFF = 'Paid Time Off'
-PUNCH_CARD_TYPE_SICK_TIME = 'Sick Time'
-PUNCH_CARD_TYPE_PERSONAL_LEAVE = 'Personal Leave',
-PUNCH_CARD_TYPE_BREAK_TIME = 'Break Time'
 
 WEEKLY_REGULAR_HOURS_LIMIT = 40
 
@@ -148,8 +146,6 @@ class TimePunchCardService(object):
                             self._add_paid_hours_to_week_hours(week_aggregate['hours'], holiday_default_hours)
 
                         week_aggregate['hours'].holiday_hours += holiday_default_hours
-                    elif (card.card_type == PUNCH_CARD_TYPE_BREAK_TIME):
-                        self._add_paid_hours_to_week_hours(week_aggregate['hours'], 0 - card.get_punch_card_hours())
                     else:
                         self._add_paid_hours_to_week_hours(week_aggregate['hours'], card.get_punch_card_hours())
 

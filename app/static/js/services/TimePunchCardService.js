@@ -176,7 +176,7 @@ benefitmyService.factory('TimePunchCardService',
                 var duration = endTime.diff(startTime, 'hours', true);
                 if (this.recordType.behavior.countAsNegative)
                 {
-                    return 0 - duration;
+                    return -duration;
                 }
                 return duration
             };
