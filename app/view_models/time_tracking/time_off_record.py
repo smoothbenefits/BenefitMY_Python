@@ -69,4 +69,4 @@ class TimeOffRecord(object):
     def approver_full_name(self):
         if (self.approver_user_info is None):
             return None
-        return self.approver_user_info.full_name  
+        return self.approver_user_info.full_name 

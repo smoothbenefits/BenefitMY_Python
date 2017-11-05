@@ -6,7 +6,11 @@ from django.contrib.auth import get_user_model
 
 from app.factory.report_view_model_factory import ReportViewModelFactory
 
-from app.service.time_off_service import TimeOffService
+from app.service.time_off_service import (
+    TimeOffService,
+    TIME_OFF_STATUS_APPROVED,
+    TIME_OFF_STATUS_PENDING
+)
 from app.service.Report.csv_report_service_base import CsvReportServiceBase
 
 User = get_user_model()
@@ -42,12 +46,25 @@ class CompanyTimeOffReportService(CsvReportServiceBase):
 
         # Get the time tracking data for the company, for the date period
         # specified
-        all_records = self.time_off_service.get_company_users_time_off_records_by_date_range(
-            company_id, period_start, period_end)
+        # all_records = self.time_off_service.get_company_users_time_off_records_by_date_range(
+        #     company_id, period_start, period_end)
 
         # print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
         # for record in all_records:
         #     print '{0} {1} {2} {3}'.format(record.requestor_full_name, self._get_date_string(record.start_date_time), record.record_type, self._normalize_decimal_number(record.duration))
+
+        # Get the time tracking data for the company, for the date period
+        # specified
+        all_aggregates = self.time_off_service.get_company_users_time_off_record_aggregates_by_date_range(
+            company_id, period_start, period_end)
+
+        print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+        for aggregate in all_aggregates:
+            print '{0} {1} {2}'.format(
+                aggregate.employee_full_name,
+                self._normalize_decimal_number(aggregate.get_total_hours_by_record_status(TIME_OFF_STATUS_APPROVED)),
+                self._normalize_decimal_number(aggregate.get_total_hours_by_record_status(TIME_OFF_STATUS_PENDING))
+            )
 
     def _write_employee(self):
         pass
