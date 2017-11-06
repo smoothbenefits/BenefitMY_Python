@@ -11,6 +11,14 @@ PUNCH_CARD_ATTRIBUTE_TYPE_STATE = 'State'
 PUNCH_CARD_ATTRIBUTE_TYPE_PROJECT = 'Project'
 PUNCH_CARD_ATTRIBUTE_TYPE_HOURLY_RATE = 'HourlyRate'
 
+# Time Punch Card Types
+PUNCH_CARD_TYPE_WORK_TIME = 'Work Time'
+PUNCH_CARD_TYPE_COMPANY_HOLIDAY = 'Company Holiday'
+PUNCH_CARD_TYPE_PAID_TIME_OFF = 'Paid Time Off'
+PUNCH_CARD_TYPE_SICK_TIME = 'Sick Time'
+PUNCH_CARD_TYPE_PERSONAL_LEAVE = 'Personal Leave',
+PUNCH_CARD_TYPE_BREAK_TIME = 'Break Time'
+
 
 class TimePunchCard(object):
     hash_key_service = HashKeyService()
@@ -70,7 +78,11 @@ class TimePunchCard(object):
 
     def get_punch_card_hours(self):
         if (self.start is not None and self.end is not None):
-            return self.date_time_service.get_time_diff_in_hours(self.start, self.end, 2)
+            card_hours = self.date_time_service.get_time_diff_in_hours(self.start, self.end, 2)
+            if self.card_type == PUNCH_CARD_TYPE_BREAK_TIME:
+                return -card_hours
+            else:
+                return card_hours 
         return 0.0
 
     def get_card_day_of_week_iso(self):

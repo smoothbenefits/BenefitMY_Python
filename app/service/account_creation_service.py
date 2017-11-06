@@ -351,13 +351,7 @@ class AccountCreationService(object):
         password = settings.DEFAULT_USER_PW
         if account_info.password:
             password = account_info.password
-        User.objects.create_user(account_info.email, password)
-        if not userManager.user_exists(account_info.email):
-            raise Exception(
-                "Failed to create user account due to missing manager information"
-            )
-
-        user = userManager.get_user(account_info.email)
+        user = User.objects.create_user(account_info.email, password)
         user.first_name = account_info.first_name
         user.last_name = account_info.last_name
         user.save()
