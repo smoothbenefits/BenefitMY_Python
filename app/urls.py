@@ -203,6 +203,8 @@ from app.views.reports.company_users_life_insurance_beneficiary_excel import Com
 from app.views.reports.company_users_worktime_report import CompanyUsersWorktimeWeeklyReportView
 from app.views.reports.company_users_time_punch_card_report import CompanyUsersTimePunchCardWeeklyReportView
 from app.views.reports.company_users_time_punch_card_report_v2 import CompanyUsersTimePunchCardWeeklyReportV2View
+from app.views.reports.time_tracking.company_time_off_report_csv import CompanyTimeOffReportCsvView
+
 from app.views.reports.company_users_summary_pdf import CompanyUsersSummaryPdfExportView
 
 from app.views.reports.integration.company_hphc_excel import CompanyHphcExcelView
@@ -377,6 +379,9 @@ urlpatterns = patterns('app.views',
         CompanyUsersTimePunchCardWeeklyReportView.as_view(), name='company_time_punch_card_report_weekly'),
     url(r'^%s/companies/(?P<pk>\w+)/time_punch_card_excel/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/?$' % PREFIX_V2,
         CompanyUsersTimePunchCardWeeklyReportV2View.as_view(), name='company_time_punch_card_report_weekly_v2'),
+    url(r'^%s/companies/(?P<company_id>\w+)/time_off_report_csv/from/(?P<from_year>\d+)/(?P<from_month>\d+)/(?P<from_day>\d+)/to/(?P<to_year>\d+)/(?P<to_month>\d+)/(?P<to_day>\d+)/?$' % PREFIX,
+        CompanyTimeOffReportCsvView.as_view(), name='company_time_off_report_csv'),
+
     url(r'^%s/companies/(?P<pk>\w+)/users/pdf/?$' % PREFIX, CompanyUsersSummaryPdfExportView.as_view(), name='company_summary_pdf_api'),
     url(r'^%s/company/(?P<pk>\w+)/role/(?P<role_type>\w+)/?$' % PREFIX, CompanyUserDetailView.as_view(), name='company_user_details_api'),
 
