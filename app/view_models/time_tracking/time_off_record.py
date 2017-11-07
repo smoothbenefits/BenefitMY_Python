@@ -55,8 +55,8 @@ class TimeOffRecord(object):
         self.start_date_time = self.date_time_service.parse_date_time(time_off_domain_model['startDateTime'])
         self.request_timestamp = self.date_time_service.parse_date_time(time_off_domain_model['requestTimestamp'])
 
-        decision_time_str = time_off_domain_model['decisionTimestamp']
-        if (decision_time_str):
+        if ('decisionTimestamp' in time_off_domain_model):
+            decision_time_str = time_off_domain_model['decisionTimestamp']
             self.decision_timestamp = self.date_time_service.parse_date_time(decision_time_str)
 
     @property
