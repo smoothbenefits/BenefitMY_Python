@@ -58,25 +58,29 @@ benefitmyService.factory('TimePunchCardService',
                 'timeRangeOn': true,
                 'includedInTotalHours': true,
                 'sanitizeViewModel': sanitizeViewModel,
-                'countAsNegative': false
+                'countAsNegative': false,
+                'showAsNegative': false
             },
             'PartialDayOff': {
                 'timeRangeOn': true,
                 'includedInTotalHours': true,
                 'sanitizeViewModel': sanitizeViewModel,
-                'countAsNegative': false
+                'countAsNegative': false,
+                'showAsNegative': false
             },
             'FullDayOff': {
                 'timeRangeOn': false,
                 'includedInTotalHours': false,
                 'sanitizeViewModel': sanitizeViewModel,
-                'countAsNegative': false
+                'countAsNegative': false,
+                'showAsNegative': false
             },
             'BreakTime': {
                 'timeRangeOn': true,
                 'includedInTotalHours': true,
                 'sanitizeViewModel': sanitizeViewModel,
-                'countAsNegative': true
+                'countAsNegative': true,
+                'showAsNegative': true
             }
         };
 
@@ -145,7 +149,11 @@ benefitmyService.factory('TimePunchCardService',
             // Attach utility functions
             viewModel.getTimeRangeDisplayText = function() {
                 if(this.inHours){
-                    return NumberService.ToLimitDecimals(this.hours, 2) + ' hours';
+                    var hours = this.hours;
+                    if(this.recordType.behavior.showAsNegative){
+                        hours = -1 * hours;
+                    }
+                    return NumberService.ToLimitDecimals(hours, 2) + ' hours';
                 }
 
                 if (this.start && !this.end){
