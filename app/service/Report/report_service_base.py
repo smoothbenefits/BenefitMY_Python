@@ -73,3 +73,12 @@ class ReportServiceBase(object):
                 return ''
         else:
             return ''
+
+    def _get_date_time_string(self, date):
+        if date:
+            try:
+                return date.strftime("%m/%d/%Y %H:%M:%S")
+            except:
+                return ''
+        else:
+            return ''
