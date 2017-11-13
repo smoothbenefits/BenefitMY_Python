@@ -50,6 +50,15 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       }
     });
 
+    $scope.$watch('punchCard.inProgress', function(inProgress){
+      if(inProgress){
+        $scope.punchCard.end = null;
+      }
+      else{
+        $scope.punchCard.end = moment($scope.punchCard.start);
+      }
+    });
+
     ProjectService.GetProjectsByCompany(companyId).then(function(projects) {
         $scope.allProjects = projects;
     });
@@ -142,6 +151,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       }
 
       if ($scope.isTimeVisisble()
+            && $scope.punchCard.end != null
             && !moment($scope.punchCard.start).isBefore(moment($scope.punchCard.end))) {
         return false;
       }
@@ -153,10 +163,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
       return true;
     };
-
-    $scope.endTimeUpdated = function(){
-      $scope.punchCard.inProgress = false;
-    }
 
     $scope.save = function() {
         // Perform card type based sanitization first
