@@ -34,6 +34,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     $scope.adminView = adminView;
 
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
+    $scope.punchCard.recordType = $scope.cardTypes[0];
     $scope.allStates = UsStateService.GetAllStates();
     $scope.cardCheckedIn = true;
     $scope.cardCheckedOut = false;
@@ -147,6 +148,10 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     $scope.isValidToSave = function() {
       if ($scope.form.$invalid) {
+        return false;
+      }
+
+      if(_.isUndefined($scope.punchCard.inProgress)){
         return false;
       }
 
