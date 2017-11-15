@@ -62,7 +62,7 @@ class TriggerNotCompleteEnrollmentBase(TriggerCompanyUserBase):
 
             # Now check for whether the user has completed enrollment
             enroll_service = UserEnrollmentSummaryService(company.id, user.id, person.id) 
-            if (not enroll_service.get_enrollment_status() == COMPLETED):
+            if (enroll_service.get_enrollment_status() not in [NO_BENEFITS, COMPLETED]):
                 self._cache_company_user(company.id, user.id)
 
         return (not self._is_cached_data_empty())
