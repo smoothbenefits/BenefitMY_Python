@@ -142,10 +142,13 @@ class TimePunchCardService(object):
                         # Holiday hours should be counted as such
                         # except when app feature HolidaysAsWorkingHours is on
                         holiday_default_hours = WEEKLY_REGULAR_HOURS_LIMIT / 5
+                        holiday_hours = holiday_default_hours
+                        if card.start and card.end:
+                            holiday_hours = card.get_punch_card_hours()
                         if company_feature_list[APP_FEATURE_HOLIDAYSASWORKINGHOURS]:
-                            self._add_paid_hours_to_week_hours(week_aggregate['hours'], holiday_default_hours)
+                            self._add_paid_hours_to_week_hours(week_aggregate['hours'], holiday_hours)
 
-                        week_aggregate['hours'].holiday_hours += holiday_default_hours
+                        week_aggregate['hours'].holiday_hours += holiday_hours
                     else:
                         self._add_paid_hours_to_week_hours(week_aggregate['hours'], card.get_punch_card_hours())
 
@@ -161,12 +164,6 @@ class TimePunchCardService(object):
                 user_hours.paid_time_off_hours += week_aggregate['hours'].paid_time_off_hours
                 user_hours.sick_time_hours += week_aggregate['hours'].sick_time_hours
                 user_hours.holiday_hours += week_aggregate['hours'].holiday_hours
-            
-            if company_feature_list[APP_FEATURE_HOLIDAYSASWORKINGHOURS]:
-                # If we have this feature on, we should make sure the paid hours are 
-                # adjusted without the holiday hours. This is because, on the card
-                # aggregate logic above, we double counted already
-                user_hours.paid_hours -= user_hours.holiday_hours
 
             result_dict[user_id] = user_hours
         return result_dict

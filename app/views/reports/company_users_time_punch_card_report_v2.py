@@ -31,7 +31,7 @@ CARD_TYPES = OrderedDict([
     (PUNCH_CARD_TYPE_WORK_TIME, {'name': 'Worked Hours', 'NoHours': False, 'PrePopulate': True}),
     (PUNCH_CARD_TYPE_SICK_TIME, {'name': 'Sick Time', 'NoHours': False, 'PrePopulate': True}),
     (PUNCH_CARD_TYPE_PAID_TIME_OFF, {'name': 'PTO', 'NoHours': False, 'PrePopulate': True}),
-    (PUNCH_CARD_TYPE_COMPANY_HOLIDAY, {'name': 'Company Holiday', 'NoHours': True, 'PrePopulate': True}),
+    (PUNCH_CARD_TYPE_COMPANY_HOLIDAY, {'name': 'Company Holiday', 'NoHours': False, 'PrePopulate': True}),
     (PUNCH_CARD_TYPE_PERSONAL_LEAVE, {'name': 'Personal Leave (unpaid)', 'NoHours': False, 'PrePopulate': False}),
     (PUNCH_CARD_TYPE_BREAK_TIME, 
         {
@@ -175,7 +175,7 @@ class CompanyUsersTimePunchCardWeeklyReportV2View(ExcelExportViewBase):
                     self._get_employee_weekly_blank_data())
             employee_weekly_data = card_type_data[punch_card.user_id]
             card_weekday_iso = punch_card.get_card_day_of_week_iso()
-            if (CARD_TYPES[card_type].get('NoHours', True)):
+            if (CARD_TYPES[card_type].get('NoHours', True) or not punch_card.start or not punch_card.end):
                 # Even if an employee filed 2 of such cards in one slot
                 # Only count hours once
                 if (employee_weekly_data[card_weekday_iso] <= 0):

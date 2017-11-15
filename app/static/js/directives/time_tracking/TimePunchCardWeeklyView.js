@@ -130,12 +130,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
                     CompanyFeatureService.AppFeatureNames.ProjectManagement);
     };
 
-    $scope.isTimeVisisble = function() {
-        return $scope.punchCard.recordType
-            && $scope.punchCard.recordType.behavior.timeRangeOn;
-    };
-
-
     $scope.isHourlyRateAttributeVisible = function() {
         // First, check whether the current user needs to
         // have salary data hidden
@@ -148,15 +142,29 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
             && isAttributeVisible(punchCard.attributes.hourlyRate);
     };
 
+    $scope.isInProgressConfigurable = function(){
+      return $scope.punchCard.recordType
+        && $scope.punchCard.recordType.behavior.inProgressConfigurable;
+    };
+
+    $scope.allowMultipleTimeFormat = function(){
+      return $scope.punchCard.recordType
+        && $scope.punchCard.recordType.behavior.multipleTimeFormat;
+    };
+    
+    $scope.recordTypeUpdated = function(){
+      if(!$scope.allowMultipleTimeFormat()){
+        $scope.punchCard.inHours = true;
+      }
+    };
+
     $scope.isValidToSave = function() {
       if ($scope.form.$invalid) {
         return false;
       }
 
-      if ($scope.isTimeVisisble()
-            && (_.isUndefined($scope.punchCard.inProgress)
-              || ($scope.punchCard.end != null
-                && !moment($scope.punchCard.start).isBefore(moment($scope.punchCard.end))))) {
+      if ($scope.punchCard.end != null
+                && !moment($scope.punchCard.start).isBefore(moment($scope.punchCard.end))) {
         return false;
       }
 

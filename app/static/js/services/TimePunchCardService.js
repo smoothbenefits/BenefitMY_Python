@@ -41,11 +41,6 @@ benefitmyService.factory('TimePunchCardService',
         };
 
         var sanitizeViewModel = function(punchCard) {
-            if (!this.timeRangeOn) {
-                punchCard.start = null;
-                punchCard.end = null;
-            }
-
             if (punchCard.end && punchCard.date){
                 // Make sure the end date is within the same date of the punchCard date
                 var updatedTime = moment(punchCard.end);
@@ -55,32 +50,36 @@ benefitmyService.factory('TimePunchCardService',
 
         var PunchCardTypeBehaviors = {
             'WorkTime': {
-                'timeRangeOn': true,
                 'includedInTotalHours': true,
                 'sanitizeViewModel': sanitizeViewModel,
                 'countAsNegative': false,
-                'showAsNegative': false
+                'showAsNegative': false,
+                'inProgressConfigurable': true,
+                'multipleTimeFormat': true
             },
-            'PartialDayOff': {
-                'timeRangeOn': true,
+            'PaidTimeOff': {
                 'includedInTotalHours': true,
                 'sanitizeViewModel': sanitizeViewModel,
                 'countAsNegative': false,
-                'showAsNegative': false
+                'showAsNegative': false,
+                'inProgressConfigurable': false,
+                'multipleTimeFormat': false
             },
-            'FullDayOff': {
-                'timeRangeOn': false,
+            'Holiday': {
                 'includedInTotalHours': false,
                 'sanitizeViewModel': sanitizeViewModel,
                 'countAsNegative': false,
-                'showAsNegative': false
+                'showAsNegative': false,
+                'inProgressConfigurable': false,
+                'multipleTimeFormat': false
             },
             'BreakTime': {
-                'timeRangeOn': true,
                 'includedInTotalHours': true,
                 'sanitizeViewModel': sanitizeViewModel,
                 'countAsNegative': true,
-                'showAsNegative': true
+                'showAsNegative': true,
+                'inProgressConfigurable': false,
+                'multipleTimeFormat': false
             }
         };
 
@@ -91,19 +90,19 @@ benefitmyService.factory('TimePunchCardService',
             },
             'CompanyHoliday': {
                 'name': 'Company Holiday',
-                'behavior': PunchCardTypeBehaviors.FullDayOff
+                'behavior': PunchCardTypeBehaviors.Holiday
             },
             'PaidTimeOff': {
                 'name': 'Paid Time Off',
-                'behavior': PunchCardTypeBehaviors.PartialDayOff
+                'behavior': PunchCardTypeBehaviors.PaidTimeOff
             },
             'SickTime': {
                 'name': 'Sick Time',
-                'behavior': PunchCardTypeBehaviors.PartialDayOff
+                'behavior': PunchCardTypeBehaviors.PaidTimeOff
             },
             'PersonalLeave': {
                 'name': 'Personal Leave',
-                'behavior': PunchCardTypeBehaviors.PartialDayOff
+                'behavior': PunchCardTypeBehaviors.PaidTimeOff
             },
             'BreakTime': {
                 'name': 'Break Time',
@@ -163,9 +162,6 @@ benefitmyService.factory('TimePunchCardService',
                     return moment(this.start).format('hh:mm A')
                         + ' - '
                         + moment(this.end).format('hh:mm A');
-                }
-                else if (this.recordType.name === PunchCardTypes['CompanyHoliday']['name']){
-                    return '8 hours';
                 }
                 else{
                     return 'N/A';
