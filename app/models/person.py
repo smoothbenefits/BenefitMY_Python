@@ -54,6 +54,9 @@ class Person(models.Model):
         super(Person, self).save(*args, **kwargs)
 
     def __normalize_ssn(self, ssn):
+        if not ssn:
+            return ssn
+
         normalized = re.sub('[^0-9]','', ssn)
         if len(normalized) < 9:
             return ssn.zfill(9)
