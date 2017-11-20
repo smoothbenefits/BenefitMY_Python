@@ -809,7 +809,11 @@ urlpatterns = patterns('app.views',
     url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api"),
 
     # Admin APIs
+
+    ## API to generate a list of passwords with proper randomization
     url(r'^%s/password_generator/(?P<num_passwords>\d+)/?$' % ADMIN_PREFIX, PasswordGeneratorView.as_view(), name="password_generator_api"),
+    
+    ## API to correct SSN format for all persons on record. This only affect SSNs that are not in valid format. i.e. 9-digits
     url(r'^%s/ssn_format_correction/?$' % ADMIN_PREFIX, SsnFormatCorrectionForAllView.as_view(), name="ssn_format_correction_for_all_api")
 )
 
