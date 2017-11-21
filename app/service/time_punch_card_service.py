@@ -37,8 +37,8 @@ class TimePunchCardService(object):
             week_hours.overtime_hours += hours_number
             if week_hours.overtime_hours <= 0:
                 # if our overtime hours becomes negative, we should adjust paid hours accordingly
-                week_hour.paid_hours = WEEKLY_REGULAR_HOURS_LIMIT + week_hours.overtime_hours
-                week_hour.overtime_hours = 0
+                week_hours.paid_hours = WEEKLY_REGULAR_HOURS_LIMIT + week_hours.overtime_hours
+                week_hours.overtime_hours = 0
         else:
             # If we are in regular time scenario, add to regular hours
             week_hours.paid_hours += hours_number

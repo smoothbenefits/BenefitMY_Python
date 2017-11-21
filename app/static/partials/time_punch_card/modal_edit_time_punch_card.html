@@ -37,37 +37,6 @@
                 </div>
               </div>
             </div>
-            <div class="panel">
-                <div class="panel-body">
-                    <div class="col-sm-10 col-sm-offset-1" ng-if="!punchCard.inHours">
-                        <timepicker
-                          style="float:left;"
-                          hour-step="'1'"
-                          minute-step="'1'"
-                          show-spinners="false"
-                          ng-model="punchCard.start">
-                        </timepicker>
-                        <timepicker
-                          style="float:right;"
-                          hour-step="'1'"
-                          minute-step="'1'"
-                          show-spinners="false"
-                          ng-model="punchCard.end"
-                          ng-change="endTimeUpdated()">
-                        </timepicker>
-                    </div>
-                    <div class="col-sm-8 col-sm-offset-2" ng-if="punchCard.inHours">
-                        <input
-                          type="number"
-                          ng-model="punchCard.hours"
-                          min="0"
-                          step="any" />
-                        <span style="margin-left:20px;">Hours</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div ng-if="isTimeVisisble()">
             <div class="form-label">Status</div>
             <div class="panel">
               <div class="panel-body">
@@ -89,13 +58,42 @@
                 </div>
               </div>
             </div>
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="col-sm-10 col-sm-offset-1" ng-if="!punchCard.inHours">
+                        <timepicker
+                          style="float:left;"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="false"
+                          ng-model="punchCard.start">
+                        </timepicker>
+                        <timepicker
+                          style="float:right;"
+                          hour-step="'1'"
+                          minute-step="'1'"
+                          show-spinners="false"
+                          ng-if = "!punchCard.inProgress"
+                          ng-model="punchCard.end">
+                        </timepicker>
+                    </div>
+                    <div class="col-sm-8 col-sm-offset-2" ng-if="punchCard.inHours">
+                        <input
+                          type="number"
+                          ng-model="punchCard.hours"
+                          min="0"
+                          step="any" />
+                        <span style="margin-left:20px;">Hours</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <div>
-            <div class="form-label">State</div>
-            <select name="state" ng-model="punchCard.attributes.state.value" ng-required="true" class="form-control">
-                <option style="display:none" value="">select a state</option>
-                <option ng-repeat="state in allStates">{{state}}</option>
-            </select>
+          <div class="form-label">State</div>
+          <select name="state" ng-model="punchCard.attributes.state.value" ng-required="true" class="form-control">
+              <option style="display:none" value="">select a state</option>
+              <option ng-repeat="state in allStates">{{state}}</option>
+          </select>
         </div>
 
         <div>

@@ -123,3 +123,13 @@ class PersonInfo(object):
             self.ssn[3:5],
             self.ssn[5:]
         ]
+
+    def get_zipcode_and_extension(self):
+        if (not self.zipcode):
+            return ['', '']
+
+        tokens = self.zipcode.split('-')
+        if (len(tokens) == 1):
+            return [tokens[0], '']
+
+        return tokens

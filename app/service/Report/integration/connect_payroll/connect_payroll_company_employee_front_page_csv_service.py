@@ -136,7 +136,7 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
 
         # Employee HR Info
         self._write_cell('Email')
-        self._write_cell('Birthdate')
+        self._write_cell('BirthDate')
 
         # Salary Data
         self._write_cell('Salary')
@@ -149,7 +149,6 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
         self._write_cell('Seasonal')
         self._write_cell('HireDate')
         self._write_cell('Gender')
-        self._write_cell('Primary Phone')
         self._write_cell('J1F1Visa')
         self._write_cell('VisaDate')
         self._write_cell('Status')
@@ -260,10 +259,10 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
         self._write_cell(person_info.address2)
         self._write_cell(person_info.city)
         self._write_cell(person_info.state)
-        self._write_cell(person_info.zipcode)
 
-        # Skip the zip extension, not supported
-        self._skip_cells(1)
+        zip_and_ext = person_info.get_zipcode_and_extension()
+        self._write_cell(zip_and_ext[0])
+        self._write_cell(zip_and_ext[1])
 
     def _write_employment_type(self, employee_data_context):
         # [Remark]: We only support W2 employee (?)
@@ -357,12 +356,6 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
         self._skip_cells(1)
         self._write_cell(self._get_date_string(employee_profile_info.hire_date))
         self._write_cell(person_info.gender)
-
-        if (len(person_info.phones) > 0):
-            phone = person_info.phones[0]
-            self._write_cell(phone['number'])
-        else:
-            self._skip_cells(1)
 
         # [Remark]: Skip all J1/F1 Visa 
         self._skip_cells(2)
