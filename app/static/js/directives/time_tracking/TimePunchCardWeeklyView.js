@@ -34,6 +34,9 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     $scope.adminView = adminView;
 
     $scope.cardTypes = TimePunchCardService.GetAvailablePunchCardTypes();
+    if (!$scope.punchCard.recordType){ 
+      $scope.punchCard.recordType = $scope.cardTypes[0];
+    }
     $scope.allStates = UsStateService.GetAllStates();
     $scope.cardCheckedIn = true;
     $scope.cardCheckedOut = false;
@@ -47,6 +50,15 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       if(hours){
         $scope.punchCard.start = TimePunchCardService.getDefaultStartTime($scope.punchCard.date);
         $scope.punchCard.end = moment($scope.punchCard.start).add(hours, 'h');
+      }
+    });
+
+    $scope.$watch('punchCard.inProgress', function(inProgress){
+      if(inProgress){
+        $scope.punchCard.end = null;
+      }
+      else{
+        $scope.punchCard.end = moment($scope.punchCard.start);
       }
     });
 
@@ -142,7 +154,9 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       }
 
       if ($scope.isTimeVisisble()
-            && !moment($scope.punchCard.start).isBefore(moment($scope.punchCard.end))) {
+            && (_.isUndefined($scope.punchCard.inProgress)
+              || ($scope.punchCard.end != null
+                && !moment($scope.punchCard.start).isBefore(moment($scope.punchCard.end))))) {
         return false;
       }
 
@@ -153,10 +167,6 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
       return true;
     };
-
-    $scope.endTimeUpdated = function(){
-      $scope.punchCard.inProgress = false;
-    }
 
     $scope.save = function() {
         // Perform card type based sanitization first
