@@ -50,6 +50,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       if(hours){
         $scope.punchCard.start = TimePunchCardService.getDefaultStartTime($scope.punchCard.date);
         $scope.punchCard.end = moment($scope.punchCard.start).add(hours, 'h');
+        $scope.inProgress = false;
       }
     });
 
@@ -57,7 +58,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       if(inProgress){
         $scope.punchCard.end = null;
       }
-      else{
+      else if(!$scope.punchCard.end){
         $scope.punchCard.end = moment($scope.punchCard.start);
       }
     });
@@ -144,7 +145,8 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
 
     $scope.isInProgressConfigurable = function(){
       return $scope.punchCard.recordType
-        && $scope.punchCard.recordType.behavior.inProgressConfigurable;
+        && $scope.punchCard.recordType.behavior.inProgressConfigurable
+        && !$scope.punchCard.inHours;
     };
 
     $scope.allowMultipleTimeFormat = function(){
@@ -156,6 +158,10 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
       if(!$scope.allowMultipleTimeFormat()){
         $scope.punchCard.inHours = true;
       }
+    };
+
+    $scope.endTimeUpdated = function(){
+      $scope.punchCard.inProgress = false;
     };
 
     $scope.isValidToSave = function() {

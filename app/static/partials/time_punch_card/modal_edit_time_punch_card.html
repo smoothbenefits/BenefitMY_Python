@@ -76,6 +76,7 @@
                       hour-step="'1'"
                       minute-step="'1'"
                       show-spinners="false"
+                      ng-change="endTimeUpdated()"
                       ng-if = "!punchCard.inProgress"
                       ng-model="punchCard.end">
                     </timepicker>

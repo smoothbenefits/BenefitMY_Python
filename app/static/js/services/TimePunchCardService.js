@@ -141,13 +141,13 @@ benefitmyService.factory('TimePunchCardService',
                 return cardType.name == domainModel.recordType;
             });
 
-            if(viewModel.inHours){
+            if(viewModel.inHours && viewModel.end){
                 viewModel.hours = moment(viewModel.end).diff(moment(viewModel.start), 'hours', true);
             }
 
             // Attach utility functions
             viewModel.getTimeRangeDisplayText = function() {
-                if(this.inHours){
+                if(this.inHours && this.hours){
                     var hours = this.hours;
                     if(this.recordType.behavior.showAsNegative){
                         hours = -1 * hours;
