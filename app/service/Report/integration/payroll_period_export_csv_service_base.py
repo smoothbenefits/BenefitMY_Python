@@ -92,7 +92,6 @@ class PayrollPeriodExportCsvServiceBase(CsvReportServiceBase):
         client_id = self._get_client_number(company_id)
         if (not client_id):
             raise ValueError('The company is not properly configured to integrate with Payroll service!')
-        self.week_days = self._get_week_day_number(period_start, period_end)
 
         if (self._needs_write_header_row()):
             self._write_headers()
@@ -131,7 +130,16 @@ class PayrollPeriodExportCsvServiceBase(CsvReportServiceBase):
                 employee_profile_info.is_employee_active_anytime_in_time_period(period_start, period_end)):
                 
                 person_info = self.view_model_factory.get_employee_person_info(employee_user_id)
-                self._write_employee(employee_user_id, person_info, company_info, company_payroll_id, employee_profile_info, employees_reported_hours)
+                self._write_employee(
+                    employee_user_id,
+                    person_info,
+                    company_info,
+                    company_payroll_id,
+                    employee_profile_info,
+                    employees_reported_hours,
+                    period_start,
+                    period_end
+                )
 
     def _write_employee(
         self,
@@ -140,8 +148,12 @@ class PayrollPeriodExportCsvServiceBase(CsvReportServiceBase):
         company_info,
         company_payroll_id,
         employee_profile_info,
-        employees_reported_hours
+        employees_reported_hours,
+        period_start,
+        period_end
     ):
+
+        self.week_days = self._get_week_day_number(period_start, period_end, employee_profile_info)
         rows = self._get_employee_data_rows(
             employee_user_id,
             person_info,
@@ -191,11 +203,17 @@ class PayrollPeriodExportCsvServiceBase(CsvReportServiceBase):
             result = "{:.2f}".format(float(decimal_number))
         return result
 
-    def _get_week_day_number(self, start, end):
+    def _get_week_day_number(self, start, end, profile_info):
         # The solution below comes from 
         # http://coding.derkeiler.com/Archive/Python/comp.lang.python/2004-09/3758.html
+        dates_start = start
+        if profile_info.hire_date:
+            dates_start = max(start, profile_info.hire_date)
+        dates_end = end
+        if profile_info.end_date:
+            dates_end = min(end, profile_info.end_date)
         dates=rrule.rruleset() # create an rrule.rruleset instance 
-        dates.rrule(rrule.rrule(rrule.DAILY, dtstart=start, until=end)) 
+        dates.rrule(rrule.rrule(rrule.DAILY, dtstart=dates_start, until=dates_end)) 
                      # this set is INCLUSIVE of alpha and omega 
         dates.exrule(rrule.rrule(rrule.DAILY, 
                                 byweekday=(rrule.SA, rrule.SU), 
