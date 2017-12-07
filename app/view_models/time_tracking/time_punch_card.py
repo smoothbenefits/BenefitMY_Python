@@ -46,21 +46,21 @@ class TimePunchCard(object):
             self.user_info = UserInfo(user_model)
 
         # Parse card type
-        self.card_type = punch_card_domain_model['recordType']
+        self.card_type = punch_card_domain_model.get('recordType')
 
         # Parse all dates and times to objects
         self.date = self.date_time_service.parse_date_time(punch_card_domain_model['date'])
 
-        start_str = punch_card_domain_model['start']
+        start_str = punch_card_domain_model.get('start')
         if (start_str):
             self.start = self.date_time_service.parse_date_time(start_str)
 
-        end_str = punch_card_domain_model['end']
+        end_str = punch_card_domain_model.get('end')
         if (end_str):
             self.end = self.date_time_service.parse_date_time(end_str)
 
         # Parse attributes
-        attributes = punch_card_domain_model['attributes']
+        attributes = punch_card_domain_model.get('attributes')
         if (attributes):
             for attribute in attributes:
                 # For now only cares about state
@@ -68,10 +68,9 @@ class TimePunchCard(object):
                     self.state = attribute['value']
                     break
 
-        if ('inProgress' in punch_card_domain_model):
-            in_progress_str = punch_card_domain_model['inProgress']
-            if (in_progress_str):
-                self.in_progress = bool(in_progress_str)
+        in_progress_str = punch_card_domain_model.get('inProgress')
+        if (in_progress_str):
+            self.in_progress = bool(in_progress_str)
 
         # Support lasy-evaluated validation
         self._validation_issues = None
