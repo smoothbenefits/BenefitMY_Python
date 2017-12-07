@@ -304,6 +304,7 @@ from app.views.reports.integration.connect_payroll.connect_payroll_employee_fron
     import ConnectPayrollEmployeeFrontPageCsvView
 
 from app.views.admin.password_generator_view import PasswordGeneratorView
+from app.views.admin.ssn_format_correction_view import SsnFormatCorrectionForAllView
 
 PREFIX = "api/v1"
 PREFIX_V2 = "api/v2"
@@ -808,7 +809,12 @@ urlpatterns = patterns('app.views',
     url(r'^%s/log/level/(?P<level>\w+)/?$' % PREFIX, LoggingServiceView.as_view(), name="logging_api"),
 
     # Admin APIs
-    url(r'^%s/password_generator/(?P<num_passwords>\d+)/?$' % ADMIN_PREFIX, PasswordGeneratorView.as_view(), name="password_generator_api")
+
+    ## API to generate a list of passwords with proper randomization
+    url(r'^%s/password_generator/(?P<num_passwords>\d+)/?$' % ADMIN_PREFIX, PasswordGeneratorView.as_view(), name="password_generator_api"),
+    
+    ## API to correct SSN format for all persons on record. This only affect SSNs that are not in valid format. i.e. 9-digits
+    url(r'^%s/ssn_format_correction/?$' % ADMIN_PREFIX, SsnFormatCorrectionForAllView.as_view(), name="ssn_format_correction_for_all_api")
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
