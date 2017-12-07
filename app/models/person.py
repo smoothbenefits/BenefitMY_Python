@@ -1,4 +1,5 @@
 import reversion
+import re
 
 from django.db import models
 from company import Company
@@ -47,3 +48,26 @@ class Person(models.Model):
                                 related_name="contacts",
                                 null=True,
                                 blank=True)
+
+    def save(self, *args, **kwargs):
+        self.ssn = self.__normalize_ssn(self.ssn)
+        super(Person, self).save(*args, **kwargs)
+
+    def __normalize_ssn(self, ssn):
+        if not ssn:
+            return ssn
+
+        normalized = re.sub('[^0-9]','', ssn)
+        if len(normalized) < 9:
+            return ssn.zfill(9)
+
+        return normalized
+
+    def is_ssn_format_valid(self):
+        # No SSN is not a concern of this check
+        if (not self.ssn):
+            return True
+
+        # But when ssn exists, the format needs to be right
+        digits_only = re.sub('[^0-9]','', self.ssn)
+        return len(digits_only) == 9
