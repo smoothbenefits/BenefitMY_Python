@@ -28,7 +28,7 @@ from app.service.integration.integration_provider_service import (
         INTEGRATION_SERVICE_TYPE_PAYROLL,
         INTEGRATION_PAYROLL_CONNECT_PAYROLL
     )
-from app.factory.report_view_model_factory import ReportViewModelFactory
+from app.factory.company_report_view_model_factory import CompanyReportViewModelFactory
 
 from app.service.Report.csv_report_service_base import CsvReportServiceBase
 from app.service.monitoring.logging_service import LoggingService
@@ -54,13 +54,13 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
 
     def __init__(self):
         super(ConnectPayrollCompanyEmployeeFrontPageCsvService, self).__init__()
-        self.view_model_factory = ReportViewModelFactory()
         self.integration_provider_service = IntegrationProviderService()
         self.logger = LoggingService()
         self._state_tax_election_adaptor_factory = ConnectPayrollStateTaxElectionAdaptorFactory()
 
     def get_report(self, company_id, outputStream):
         try:
+            self.view_model_factory = CompanyReportViewModelFactory(company_id)
             client_id = self._get_client_number(company_id)
             if (not client_id):
                 raise ValueError('The company is not properly configured to integrate with Connect Payroll service!')
@@ -176,7 +176,7 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
             self._write_employee(user_ids[i], company_id, client_id)
 
     def _write_employee(self, employee_user_id, company_id, client_id):
-        employee_data_context = _EmployeeDataContext(employee_user_id, company_id)
+        employee_data_context = _EmployeeDataContext(employee_user_id, company_id, self.view_model_factory)
 
         if not employee_data_context.user_completed_onboarding():
             self.logger.warn('Skipping employee "{0}": Onboarding not complete.'.format(employee_user_id))
@@ -399,18 +399,17 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
 
 
 class _EmployeeDataContext(object):
-    _view_model_factory = ReportViewModelFactory()
     _integration_provider_service = IntegrationProviderService()
 
-    def __init__(self, employee_user_id, company_id):
+    def __init__(self, employee_user_id, company_id, view_model_factory):
         self.employee_user_id = employee_user_id
         self.company_id = company_id
 
-        self.w4_info = self._view_model_factory.get_employee_w4_data(employee_user_id)
-        self.state_tax_info = self._view_model_factory.get_employee_state_tax_data(employee_user_id)
-        self.company_info = self._view_model_factory.get_company_info(company_id)
-        self.person_info = self._view_model_factory.get_employee_person_info(employee_user_id)
-        self.employee_profile_info = self._view_model_factory.get_employee_employment_profile_data(
+        self.w4_info = view_model_factory.get_employee_w4_data(employee_user_id)
+        self.state_tax_info = view_model_factory.get_employee_state_tax_data(employee_user_id)
+        self.company_info = view_model_factory.get_company_info()
+        self.person_info = view_model_factory.get_employee_person_info(employee_user_id)
+        self.employee_profile_info = view_model_factory.get_employee_employment_profile_data(
                                         employee_user_id,
                                         company_id)
 
@@ -419,10 +418,6 @@ class _EmployeeDataContext(object):
             employee_user_id,
             INTEGRATION_SERVICE_TYPE_PAYROLL,
             INTEGRATION_PAYROLL_CONNECT_PAYROLL)
-
-        # Get the is new flag to help judging on data completeness 
-        comp_user = CompanyUser.objects.get(user=self.employee_user_id, company_user_type=USER_TYPE_EMPLOYEE, company=self.company_id)
-        self.is_new_employee = comp_user.new_employee
 
     def user_completed_onboarding(self):
         if not self.w4_info or not self.w4_info.total_points: 
@@ -436,3 +431,7 @@ class _EmployeeDataContext(object):
             and self.company_info \
             and self.person_info \
             and self.employee_profile_info
+
+    @property
+    def is_new_employee(self):
+        return self.employee_profile_info and self.employee_profile_info.new_employee
