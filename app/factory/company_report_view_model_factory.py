@@ -36,18 +36,18 @@ class CompanyReportViewModelFactory(object):
 
         self._company_model = Company.objects.get(pk=company_id)
 
-        person_models = Person.objects.filter(user__in=self._company_employee_user_ids, relationship=SELF)
+        person_models = Person.objects.select_related().filter(user__in=self._company_employee_user_ids, relationship=SELF)
         self._company_employee_persons = {p.user.id: p for p in person_models} 
 
-        i9_models = EmploymentAuthorization.objects.filter(user__in=self._company_employee_user_ids)
+        i9_models = EmploymentAuthorization.objects.select_related().filter(user__in=self._company_employee_user_ids)
         self._company_i9s = {ea.user.id: ea for ea in i9_models}
 
-        w4_models = W4.objects.filter(user__in=self._company_employee_user_ids)
+        w4_models = W4.objects.select_related().filter(user__in=self._company_employee_user_ids)
         self._company_w4s = {w4.user.id: w4 for w4 in w4_models}
 
-        self._state_tax_models = EmployeeStateTaxElection.objects.filter(user__in=self._company_employee_user_ids)
+        self._state_tax_models = EmployeeStateTaxElection.objects.select_related().filter(user__in=self._company_employee_user_ids)
 
-        employee_profile_models = EmployeeProfile.objects.filter(company=company_id)
+        employee_profile_models = EmployeeProfile.objects.select_related().filter(company=company_id)
         self._company_employee_profiles = {profile.person.user.id: profile for profile in employee_profile_models}
 
     def get_employee_person_info(self, employee_user_id):
