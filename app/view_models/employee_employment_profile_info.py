@@ -16,13 +16,16 @@ from app.service.compensation_service import (
 
 class EmployeeEmploymentProfileInfo(object):
 
-    def __init__(self, person_model, company_id, employee_user_id):
+    def __init__(self, person_model, company_id, employee_user_id, profile_model=None):
         self._employee_profile_model = None
         self._compensation_service = None
 
         if (person_model):
             try:
-                self._employee_profile_model = EmployeeProfile.objects.get(
+                if (profile_model):
+                    self._employee_profile_model = profile_model
+                else:
+                    self._employee_profile_model = EmployeeProfile.objects.get(
                                                 company=company_id,
                                                 person=person_model.id)
                 self._compensation_service = CompensationService(
