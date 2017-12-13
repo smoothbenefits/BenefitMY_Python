@@ -76,12 +76,15 @@ class TimePunchCard(object):
         self._validation_issues = None
 
     def get_punch_card_hours(self):
+        raw_hours = self.__get_raw_card_hours()
+        if self.card_type == PUNCH_CARD_TYPE_BREAK_TIME:
+            return -raw_hours
+        return raw_hours
+
+    def __get_raw_card_hours(self):
         if (self.start is not None and self.end is not None):
             card_hours = self.date_time_service.get_time_diff_in_hours(self.start, self.end, 2)
-            if self.card_type == PUNCH_CARD_TYPE_BREAK_TIME:
-                return -card_hours
-            else:
-                return card_hours 
+            return card_hours 
         return 0.0
 
     def get_card_day_of_week_iso(self):
@@ -104,7 +107,7 @@ class TimePunchCard(object):
     def _validate(self):
         validation_issues = []
 
-        card_hours = self.get_punch_card_hours()
+        card_hours = self.__get_raw_card_hours()
 
         # 1. Unclosed timecard (clocked in, but not out)
         if ((self.start is not None and self.end is None)
