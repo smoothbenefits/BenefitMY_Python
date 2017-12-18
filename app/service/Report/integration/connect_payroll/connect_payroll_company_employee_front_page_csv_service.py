@@ -71,7 +71,6 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
         except Exception as e:
             self.logger.error('Failed to produce Connect Payroll Employee Front Page export for company "{0}"'.format(company_id))
             self.logger.error(traceback.format_exc())
-            print traceback.format_exc()
             raise e
 
     def _get_client_number(self, company_id):

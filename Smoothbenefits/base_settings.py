@@ -176,10 +176,6 @@ LOGGING = {
             'propagate':True,
             'filters': ['correlation']
         },
-        'django.db': {
-            'handlers': ['console'],
-            'level': 'DEBUG'
-        },
     },
 }
 

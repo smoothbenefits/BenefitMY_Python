@@ -33,7 +33,6 @@ from app.view_models.employee_state_tax_info import EmployeeStateTaxInfo
 '''
 class CompanyReportViewModelFactory(object):
     def __init__(self, company_id):
-        print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
         self._company_employee_user_ids = self._get_all_employee_user_ids_for_company(company_id)
 
         # I honest don't like the deep optimization of indirect relationships
@@ -86,13 +85,8 @@ class CompanyReportViewModelFactory(object):
             .filter(company=company_id)
         self._company_employee_profiles = {profile.person.user.id: profile for profile in employee_profile_models}
 
-        print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
-
     def get_employee_person_info(self, employee_user_id):
-        print '################### in get_employee_person_info'
         person_info = PersonInfo(self._company_employee_persons.get(employee_user_id))
-        print '################### out get_employee_person_info'
-
         return person_info
 
     def get_company_info(self):
@@ -102,25 +96,19 @@ class CompanyReportViewModelFactory(object):
         i9_model = self._company_i9s.get(user_id)
         if (not i9_model):
             return None
-        print '################### in get_employee_i9_data'
         i9_info = EmployeeI9Data(i9_model)
-        print '################### out get_employee_i9_data'
         return i9_info
 
     def get_employee_w4_data(self, user_id):
         w4_model = self._company_w4s.get(user_id)
         if (not w4_model):
             return None
-        print '################### in get_employee_w4_data'
         w4_info = EmployeeW4Data(w4_model)
-        print '################### out get_employee_w4_data'
         return w4_info
 
     def get_employee_state_tax_data(self, user_id):
-        print '################### in get_employee_state_tax_data'
         election_models = [election for election in self._state_tax_models if election.user.id == user_id]
         state_tax_info = EmployeeStateTaxInfo(election_models)
-        print '################### out get_employee_state_tax_data'
         return state_tax_info
 
     def get_employee_employment_profile_data(self, employee_user_id):
@@ -131,9 +119,7 @@ class CompanyReportViewModelFactory(object):
 
         profile_model = self._company_employee_profiles.get(employee_user_id)
 
-        print '################### in get_employee_employment_profile_data'
         profile_info = EmployeeEmploymentProfileInfo(person_model, self._company_model, employee_user_id, profile_model)
-        print '################### out get_employee_employment_profile_data'
         return profile_info
 
     def _get_all_employee_user_ids_for_company(self, company_id):
