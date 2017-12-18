@@ -158,6 +158,11 @@ LOGGING = {
             'class': 'logentries.LogentriesHandler',
             'formatter': 'key-value-pair'
         },
+        'console': {
+            # logging handler that outputs log messages to terminal
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG', # message level to be written to console
+        },
     },
     'filters': {
         'correlation': {
@@ -170,6 +175,10 @@ LOGGING = {
             'level': 'INFO',
             'propagate':True,
             'filters': ['correlation']
+        },
+        'django.db': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
         },
     },
 }

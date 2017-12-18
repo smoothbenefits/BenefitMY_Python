@@ -2,6 +2,7 @@ from django.utils import timezone
 from datetime import datetime, date
 from app.models.employee_compensation import EmployeeCompensation
 from app.models.employee_profile import EmployeeProfile, FULL_TIME
+from app.models.person import Person
 from app.dtos.compensation_info import CompensationInfo
 
 DEFAULT_COMPENSATION_HOURS_IN_YEAR = 40 * 52
@@ -14,9 +15,19 @@ This is the service to provide compensation information to who ever needs it.
 The service only needs the person_id where compensation is needed
 '''
 class CompensationService(object):
-    def __init__(self, person_id, profile=None):
-        self.person_id = person_id
-        self.profile = profile
+    def __init__(self, person_id=None, profile=None, person_model=None):
+        if (not person_model):
+            self.person = Person.objects.get(pk=person_id)
+        else:
+            self.person = person_model
+
+        if (not profile):
+            profiles = self.person.employee_profile_person.all()
+            if (len(profiles) > 0):
+                self.profile = profiles[0]
+        else:
+            self.profile = profile
+
         self.current_compensation = self._get_current_compensation()
 
     def _get_current_compensation(self):
@@ -32,14 +43,13 @@ class CompensationService(object):
                 break
         return current_comp
 
-    def _get_compensation_records_order_by_effective_date(self, ascending=True):
-        order = 'effective_date'
-        if not ascending:
-            order = '-' + order
-        try:
-            return EmployeeCompensation.objects.filter(person_id=self.person_id).order_by(order, 'id')
-        except EmployeeCompensation.DoesNotExist:
-            return None
+    def _get_compensation_records_order_by_effective_date(self):
+        if (hasattr(self.person, 'all_compensations_ordered_by_effective_date')):
+            return self.person.all_compensations_ordered_by_effective_date
+        else:
+            return self.person.employee_compensation_person \
+                .select_related('reason') \
+                .order_by('effective_date', 'id')
 
     def get_all_compensation_ordered(self):
         comps = self._get_compensation_records_order_by_effective_date()
@@ -84,11 +94,6 @@ class CompensationService(object):
         return info_list
 
     def _is_fulltime_employee(self):
-        if not self.profile:
-            profiles = EmployeeProfile.objects.filter(person_id=self.person_id)
-            if profiles and len(profiles) > 0:
-                self.profile = profiles[0]
-
         if self.profile:
             return self.profile.employment_type == FULL_TIME
         return False

@@ -71,6 +71,7 @@ class ConnectPayrollCompanyEmployeeFrontPageCsvService(CsvReportServiceBase):
         except Exception as e:
             self.logger.error('Failed to produce Connect Payroll Employee Front Page export for company "{0}"'.format(company_id))
             self.logger.error(traceback.format_exc())
+            print traceback.format_exc()
             raise e
 
     def _get_client_number(self, company_id):
@@ -409,9 +410,7 @@ class _EmployeeDataContext(object):
         self.state_tax_info = view_model_factory.get_employee_state_tax_data(employee_user_id)
         self.company_info = view_model_factory.get_company_info()
         self.person_info = view_model_factory.get_employee_person_info(employee_user_id)
-        self.employee_profile_info = view_model_factory.get_employee_employment_profile_data(
-                                        employee_user_id,
-                                        company_id)
+        self.employee_profile_info = view_model_factory.get_employee_employment_profile_data(employee_user_id)
 
         # Employee Number, this comes from the CP system.
         self.employee_number = self._integration_provider_service.get_employee_integration_provider_external_id(

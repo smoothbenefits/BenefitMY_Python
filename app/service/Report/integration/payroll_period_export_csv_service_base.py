@@ -13,7 +13,7 @@ from app.service.compensation_service import (
     PAY_TYPE_SALARY
 )
 
-from app.factory.report_view_model_factory import ReportViewModelFactory
+from app.factory.company_report_view_model_factory import CompanyReportViewModelFactory
 
 from app.service.time_punch_card_service import TimePunchCardService
 from app.service.integration.integration_provider_service import (
@@ -48,7 +48,6 @@ class PayrollPeriodExportCsvServiceBase(CsvReportServiceBase):
 
     def __init__(self):
         super(PayrollPeriodExportCsvServiceBase, self).__init__()
-        self.view_model_factory = ReportViewModelFactory()
         self.time_punch_card_service = TimePunchCardService()
         self.integration_provider_service = IntegrationProviderService()
         self.week_days = 0
@@ -114,22 +113,23 @@ class PayrollPeriodExportCsvServiceBase(CsvReportServiceBase):
         employees_reported_hours = self.time_punch_card_service.get_company_users_reported_hours_by_date_range(
             company_id, period_start, period_end)
 
-        company_info = self.view_model_factory.get_company_info(company_id)
+        # Construct the company specific view model factory
+        view_model_factory = CompanyReportViewModelFactory(company_id)
+
+        company_info = view_model_factory.get_company_info()
         company_payroll_id = self._get_client_number(company_id)
 
         # For each of them, write out his/her information
         for i in range(len(user_ids)):
             employee_user_id = user_ids[i]
-            employee_profile_info = self.view_model_factory.get_employee_employment_profile_data(
-                                    employee_user_id,
-                                    company_id)
+            employee_profile_info = view_model_factory.get_employee_employment_profile_data(employee_user_id)
 
             # Only report if the employee was, at least partially, active during the 
             # report period.
             if (employee_profile_info and 
                 employee_profile_info.is_employee_active_anytime_in_time_period(period_start, period_end)):
                 
-                person_info = self.view_model_factory.get_employee_person_info(employee_user_id)
+                person_info = view_model_factory.get_employee_person_info(employee_user_id)
                 self._write_employee(
                     employee_user_id,
                     person_info,
