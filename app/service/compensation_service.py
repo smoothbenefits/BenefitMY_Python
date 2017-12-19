@@ -16,15 +16,25 @@ The service only needs the person_id where compensation is needed
 '''
 class CompensationService(object):
     def __init__(self, person_id=None, profile=None, person_model=None):
+        self.person = None
+        self.profile = None
+        self.current_compensation = None
+
         if (not person_model):
-            self.person = Person.objects.get(pk=person_id)
+            try:
+                self.person = Person.objects.get(pk=person_id)
+            except Person.DoesNotExist:
+                # Swallow the exception here to be backward compatible to 
+                # original behavior
+                pass
         else:
             self.person = person_model
 
         if (not profile):
-            profiles = self.person.employee_profile_person.all()
-            if (len(profiles) > 0):
-                self.profile = profiles[0]
+            if (self.person):
+                profiles = self.person.employee_profile_person.all()
+                if (len(profiles) > 0):
+                    self.profile = profiles[0]
         else:
             self.profile = profile
 
@@ -44,6 +54,9 @@ class CompensationService(object):
         return current_comp
 
     def _get_compensation_records_order_by_effective_date(self):
+        if (not self.person):
+            return []
+            
         if (hasattr(self.person, 'all_compensations_ordered_by_effective_date')):
             return self.person.all_compensations_ordered_by_effective_date
         else:

@@ -58,7 +58,7 @@ class ReportViewModelFactory(object):
         try:
             return Company.objects.get(pk=company_id)
         except Company.DoesNotExist:
-            raise RuntimeError('Specified company ID does not exist in database.')
+            raise Http404
 
     def _get_person_by_user(self, user_id):
         person_model = None
