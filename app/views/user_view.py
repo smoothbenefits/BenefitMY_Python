@@ -30,6 +30,7 @@ from app.service.application_feature_service import (
     APP_FEATURE_PROJECTMANAGEMENT,
     APP_FEATURE_MOBILEPROJECTMANAGEMENT)
 from app.service.project_service import ProjectService
+from app.service.compensation_service import CompensationService
 from app.view_models.person_info import PersonInfo
 
 User = get_user_model()
@@ -204,10 +205,16 @@ class UserByCredentialView(APIView):
         ## Person and Compensation Info
         persons = Person.objects.filter(user=user.id, relationship='self')
         if (len(persons) > 0):
-            person_data = PersonInfo(persons[0])
+            person_model = persons[0]
+            person_data = PersonInfo(person_model)
             user_info['first_name'] = person_data.first_name
             user_info['last_name'] = person_data.last_name
-            user_info['hourly_rate'] = person_data.get_current_hourly_rate()
+
+            compensation_info = CompensationService(person_model=person_model)
+            hourly_rate = compensation_info.get_current_hourly_rate()
+            if (hourly_rate):
+                hourly_rate = round(hourly_rate, 2)
+            user_info['hourly_rate'] = hourly_rate
 
         result['user_info'] = user_info
 
