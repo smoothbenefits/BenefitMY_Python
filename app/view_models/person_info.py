@@ -52,17 +52,15 @@ class PersonInfo(object):
                     'type': phone.phone_type,
                     'number': phone.number})
 
-            addresses = person_model.addresses.filter(address_type='home')
-            if (len(addresses) > 0):
-                address = addresses[0]
+            addresses = list(person_model.addresses.all())
+            home_addresses = [a for a in addresses if a.address_type == 'home']
+            if (len(home_addresses) > 0):
+                address = home_addresses[0]
                 self.address1 = address.street_1
                 self.address2 = address.street_2
                 self.city = address.city
                 self.state = address.state
                 self.zipcode = address.zipcode
-
-            # initialize compensation service for use later
-            self.compensation_service = CompensationService(person_model.id)
 
     def get_full_name(self, include_middle_name=True):
         result = ''
@@ -95,19 +93,6 @@ class PersonInfo(object):
             result = self.country
             if (self.zipcode is not None):
                 result = result + ' ' + self.zipcode
-        return result
-
-    def get_current_compensation(self):
-        result = ''
-        curr_salary = self.compensation_service.get_current_annual_salary()
-        if (curr_salary):
-            result = "$%.2f" % curr_salary
-        return result
-
-    def get_current_hourly_rate(self):
-        result = self.compensation_service.get_current_hourly_rate()
-        if (result):
-            result = round(result, 2)
         return result
 
     def get_ssn_tokenized(self):
