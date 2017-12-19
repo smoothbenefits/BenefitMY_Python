@@ -25,22 +25,19 @@ class ReportViewModelFactory(object):
         return PersonInfo(self._get_person_by_user(employee_user_id))
 
     def get_company_info(self, company_id):
-        try:
-            company_model = Company.objects.get(pk=company_id)
-            return CompanyInfo(company_model)
-        except Company.DoesNotExist:
-            raise Http404
+        return CompanyInfo(self._get_company(company_id))
 
     def get_employee_company_info(self, employee_user_id):
         return CompanyInfo(self._get_company_by_user(employee_user_id))
 
     def get_employee_employment_profile_data(self, employee_user_id, company_id):
         person_model = self._get_person_by_user(employee_user_id)
-
         if (not person_model): 
             return None
 
-        return EmployeeEmploymentProfileInfo(person_model, company_id, employee_user_id)
+        company_model = self._get_company(company_id)
+
+        return EmployeeEmploymentProfileInfo(person_model, company_model, employee_user_id)
 
     def get_employee_1095_c_data(self, employee_user_id, company_id):
         return self._get_employee_1095_c_data_collection(employee_user_id, company_id)
@@ -56,6 +53,12 @@ class ReportViewModelFactory(object):
 
     def get_employee_state_tax_data(self, user_id):
         return self._get_employee_state_tax_info(user_id)
+
+    def _get_company(self, company_id):
+        try:
+            return Company.objects.get(pk=company_id)
+        except Company.DoesNotExist:
+            raise Http404
 
     def _get_person_by_user(self, user_id):
         person_model = None

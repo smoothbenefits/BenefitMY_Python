@@ -16,9 +16,12 @@ from app.service.compensation_service import (
 
 class EmployeeEmploymentProfileInfo(object):
 
-    def __init__(self, person_model, company_id, employee_user_id, profile_model=None):
+    def __init__(self, person_model, company_model, employee_user_id, profile_model=None):
         self._employee_profile_model = None
         self._compensation_service = None
+        self._employee_user_id = employee_user_id
+        self._company_model = company_model
+        self._is_new_employee = None
 
         if (person_model):
             try:
@@ -26,20 +29,14 @@ class EmployeeEmploymentProfileInfo(object):
                     self._employee_profile_model = profile_model
                 else:
                     self._employee_profile_model = EmployeeProfile.objects.get(
-                                                company=company_id,
+                                                company=company_model.id,
                                                 person=person_model.id)
                 self._compensation_service = CompensationService(
-                    person_model.id,
-                    self._employee_profile_model)
+                    person_model=person_model,
+                    profile=self._employee_profile_model)
             except EmployeeProfile.DoesNotExist:
                 pass
 
-        self._company_user_model = CompanyUser.objects.get(
-            user=employee_user_id,
-            company_user_type=USER_TYPE_EMPLOYEE,
-            company=company_id)
-
-        self.new_employee = self._company_user_model.new_employee
         self.job_title = ''
         self.employee_number = ''
         self.hire_date = ''
@@ -63,7 +60,7 @@ class EmployeeEmploymentProfileInfo(object):
             self.employee_number = self._employee_profile_model.employee_number
             self.hire_date = self._employee_profile_model.start_date
             self.end_date = self._employee_profile_model.end_date
-            self.pay_cycle = self._employee_profile_model.company.pay_period_definition.name
+            self.pay_cycle = company_model.pay_period_definition.name
             self.employment_status = self._employee_profile_model.employment_status
             self.employment_type = self._employee_profile_model.employment_type
 
@@ -88,7 +85,7 @@ class EmployeeEmploymentProfileInfo(object):
                 if (current_compensation):
                     projected_hours_cycle = self._get_projected_hours_per_pay_cycle(
                         current_compensation,
-                        self._employee_profile_model.company.pay_period_definition
+                        company_model.pay_period_definition
                     )
                     if (projected_hours_cycle):
                         self.projected_hours_per_pay_cycle = projected_hours_cycle
@@ -111,8 +108,19 @@ class EmployeeEmploymentProfileInfo(object):
                         self.annual_salary = self._compensation_service.get_current_annual_salary()
                         self.current_pay_period_salary = self._get_pay_period_salary(
                             self.annual_salary,
-                            self._employee_profile_model.company.pay_period_definition
+                            company_model.pay_period_definition
                         )
+
+    @property
+    def new_employee(self):
+        if (self._is_new_employee is None):
+            company_user = CompanyUser.objects.get(
+                user=self._employee_user_id,
+                company_user_type=USER_TYPE_EMPLOYEE,
+                company=self._company_model.id)
+
+            self._is_new_employee = company_user.new_employee
+        return self._is_new_employee
 
     def _get_projected_hours_per_pay_cycle(self, compensation_info, pay_period_definition):
         if (compensation_info.projected_hour_per_month):
