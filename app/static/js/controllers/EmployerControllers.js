@@ -1201,6 +1201,15 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
         $scope.employee.email = employeeDetail.email;
         var selfInfo = _.findWhere(employeeDetail.family, {relationship:'self'});
         if(selfInfo){
+          if(selfInfo.first_name){
+            $scope.employee.first_name = selfInfo.first_name;
+          }
+          if(selfInfo.last_name){
+            $scope.employee.last_name = selfInfo.last_name;
+          }
+          if(selfInfo.email){
+            $scope.employee.email = selfInfo.email;
+          }
           $scope.employee.birth_date = selfInfo.birth_date;
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
