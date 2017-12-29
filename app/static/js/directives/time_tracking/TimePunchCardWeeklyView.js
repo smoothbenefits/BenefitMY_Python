@@ -28,7 +28,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     adminView,
     companyId,
     TimePunchCardDetectionConfigurations){
-    $scope.headerText = punchCard ? 'Edit Punch Card' : 'Create Punch Card';
+    $scope.headerText = 'Punch Card For ' + punchCard.employee.firstName + ' ' + punchCard.employee.lastName;
 
     $scope.punchCard = punchCard;
     $scope.adminView = adminView;
