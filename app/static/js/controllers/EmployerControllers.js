@@ -255,7 +255,11 @@ var employerUser = employersController.controller('employerUser',
       $scope.getEmployeeCollection = function(profileId){
         return CompanyPersonnelsService.getCompanyEmployees($scope.compId)
         .then(function(employeeCollection){
-          var list = employeeCollection.filterByTimeRangeStatus($scope.currentStatus);
+          var list = employeeCollection.filterByTimeRangeStatus(
+            $scope.currentStatus,
+            null,
+            moment(),
+            moment("3000-01-01"));
           if(profileId){
             list = list.filterByProfileId(profileId);
           }
