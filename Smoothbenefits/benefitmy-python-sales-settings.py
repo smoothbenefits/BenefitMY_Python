@@ -36,6 +36,7 @@ DATABASES = {
         'PASSWORD': 'moRMX-g_xak1u2jPTno-oS-82N',
         'HOST': 'ec2-23-21-193-140.compute-1.amazonaws.com',
         'PORT': '5432',
+        'CONN_MAX_AGE': 60
     }
 }
 
