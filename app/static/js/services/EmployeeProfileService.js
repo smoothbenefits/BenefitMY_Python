@@ -177,13 +177,13 @@ benefitmyService.factory('EmployeeProfileService',
             var rangeStart = moment(timeRangeStart);
             var rangeEnd = moment(timeRangeEnd);
             var employmentStart = moment(employeeProfile.start_date);
-            var employmentEnd = employeeProfile.end_date ? moment(employeeProfile.end_date) : moment("2100-01-01");
+            var employmentEnd = employeeProfile.end_date ? moment(employeeProfile.end_date) : null;
 
             if (employmentStart > rangeEnd) {
                 result = [EmploymentStatuses.Prospective];
-            } else if (employmentEnd < rangeStart) {
+            } else if (employmentEnd && employmentEnd < rangeStart) {
                 result = [EmploymentStatuses.Terminated];
-            } else if (employmentStart <= rangeStart && employmentEnd >= rangeEnd) {
+            } else if (employmentStart <= rangeStart && (!employmentEnd || employmentEnd >= rangeEnd)) {
                 result = [EmploymentStatuses.Active];
             }
 
@@ -192,7 +192,7 @@ benefitmyService.factory('EmployeeProfileService',
                 _ensureValueInList(result, EmploymentStatuses.Prospective);
             }
 
-            if (employmentEnd >= rangeStart && employmentEnd <= rangeEnd) {
+            if (employmentEnd && employmentEnd >= rangeStart && employmentEnd <= rangeEnd) {
                 _ensureValueInList(result, EmploymentStatuses.Active);
                 _ensureValueInList(result, EmploymentStatuses.Terminated);
             }

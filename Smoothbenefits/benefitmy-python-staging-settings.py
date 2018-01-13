@@ -37,6 +37,7 @@ DATABASES = {
         'PASSWORD': '931efa9aaabbbb97b2ac5180084fd4bb51735213210db28b9c55757d28871a4e',
         'HOST': 'ec2-23-23-192-242.compute-1.amazonaws.com',
         'PORT': '5432',
+        'CONN_MAX_AGE': 60
     }
 }
 
