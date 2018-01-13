@@ -70,10 +70,29 @@ class CompanyPersonnelService(object):
         employees are of the specified employment status
     '''
     def get_company_employee_user_ids_currently_with_status(self, company_id, employment_status):
+        return get_company_employee_user_ids_with_status_in_time_range(
+            company_id,
+            employment_status,
+            datetime.date.today(),
+            datetime.date.today()
+        )
+
+    ''' Get all employees who are part of the specified employment status as of the
+        specified time range.
+        This is to serve a common use case of where we want to know which
+        employees are of the specified employment status within the time range defined
+    '''
+    def get_company_employee_user_ids_with_status_in_time_range(
+        self,
+        company_id,
+        employment_status,
+        time_range_start,
+        time_range_end):
+
         all_employee_mappings = self._get_company_employee_user_ids_to_employment_statuses_map(
             company_id,
-            datetime.date.today(),
-            datetime.date.today())
+            time_range_start,
+            time_range_end)
         
         employees_with_status = []
         for user_id in all_employee_mappings:

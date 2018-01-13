@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.response import Response
@@ -32,9 +34,11 @@ class CompanyEmployeeCountView(APIView):
         employee_count = len(employees)
         if filter_status:
             comp_personnel_service = CompanyPersonnelService()
-            users_in_status = comp_personnel_service.get_company_employee_user_ids_currently_with_status(
+            users_in_status = comp_personnel_service.get_company_employee_user_ids_with_status_in_time_range(
                 pk,
-                filter_status)
+                filter_status,
+                datetime.date.today(),
+                datetime.date.max)
             employee_count = len(users_in_status)
 
         return Response({'employees_count':
