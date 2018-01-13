@@ -145,6 +145,7 @@ class TimePunchCardService(object):
                         holiday_hours = holiday_default_hours
                         if card.start and card.end:
                             holiday_hours = card.get_punch_card_hours()
+                        
                         if company_feature_list[APP_FEATURE_HOLIDAYSASWORKINGHOURS]:
                             self._add_paid_hours_to_week_hours(week_aggregate['hours'], holiday_hours)
 
@@ -164,6 +165,15 @@ class TimePunchCardService(object):
                 user_hours.paid_time_off_hours += week_aggregate['hours'].paid_time_off_hours
                 user_hours.sick_time_hours += week_aggregate['hours'].sick_time_hours
                 user_hours.holiday_hours += week_aggregate['hours'].holiday_hours
+                if company_feature_list[APP_FEATURE_HOLIDAYSASWORKINGHOURS] and week_aggregate['hours'].holiday_hours:
+                    # The feature APP_FEATURE_HOLIDAYSASWORKINGHOURS is only meant for the following example scenario:
+                    # The company have 1 day of holiday in the week. The employee's normal paid hours are 40 hours.
+                    # However, the employee had 35 hours of work time in addition to the 8 hours of holiday hours.
+                    # With the flag above on, the employee should be paid 3 hours of overtime.
+                    # The reason we are minus the holiday_hours here is because we added the holiday hours to the paid hours 
+                    # on statements above. That is to calculate the overtime correctly. We now need to minus the holiday hours
+                    # so we can save the proper paid hours.
+                    user_hours.paid_hours -= week_aggregate['hours'].holiday_hours
 
             result_dict[user_id] = user_hours
         return result_dict
