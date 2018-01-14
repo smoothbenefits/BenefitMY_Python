@@ -75,5 +75,3 @@ Please follow the following steps to start the app on your local machine
 6. Again, if the test db needs to be regenerated, you can do
 
           $ py.test -n <num_of_threads> --create-db app/
-
- 
