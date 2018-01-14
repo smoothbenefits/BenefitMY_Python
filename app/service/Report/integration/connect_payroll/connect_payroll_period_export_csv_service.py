@@ -10,7 +10,8 @@ from app.service.Report.integration.payroll_period_export_csv_service_base impor
         EARNING_TYPE_SALARY,
         EARNING_TYPE_OVERTIME,
         EARNING_TYPE_PTO,
-        EARNING_TYPE_SICK_TIME
+        EARNING_TYPE_SICK_TIME,
+        EARNING_TYPE_HOLIDAY
     )
 from app.service.integration.integration_provider_service import (
         INTEGRATION_SERVICE_TYPE_PAYROLL,
@@ -78,6 +79,8 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
             return 'SICK'
         elif (earning_type == EARNING_TYPE_OVERTIME):
             return 'OT'
+        elif (earning_type == EARNING_TYPE_HOLIDAY):
+            return 'HOL'
         else:
             raise ValueError('Unexpected earning type encountered')
 
@@ -95,6 +98,8 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
             return 'Sick'
         elif (earning_type == EARNING_TYPE_OVERTIME):
             return 'Overtime'
+        elif (earning_type == EARNING_TYPE_HOLIDAY):
+            return 'Holiday'
         else:
             raise ValueError('Unexpected earning type encountered')
 
@@ -165,6 +170,9 @@ class ConnectPayrollPeriodExportCsvService(PayrollPeriodExportCsvServiceBase):
 
             # Write the hours took off for sick
             self._append_earning_type_row(base_row_data, EARNING_TYPE_SICK_TIME, user_hours, rows)
+
+            # Write the hours for Holiday
+            self._append_earning_type_row(base_row_data, EARNING_TYPE_HOLIDAY, user_hours, rows)
 
         return rows
 

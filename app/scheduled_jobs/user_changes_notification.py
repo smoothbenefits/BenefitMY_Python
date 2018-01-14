@@ -19,8 +19,5 @@ class UserChangeNotifications(CronJobBase):
     def do(self):
         mod_service = DataModificationService()
 
-        # Notify employers
-        mod_service.employee_modifications_notify_employer_for_all_companies(settings.DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES)
-
         # Notify brokers
         mod_service.employee_modifications_notify_all_brokers(settings.DEFAULT_DATA_CHANGE_LOOKBACK_IN_MINUTES)

@@ -255,7 +255,11 @@ var employerUser = employersController.controller('employerUser',
       $scope.getEmployeeCollection = function(profileId){
         return CompanyPersonnelsService.getCompanyEmployees($scope.compId)
         .then(function(employeeCollection){
-          var list = employeeCollection.filterByTimeRangeStatus($scope.currentStatus);
+          var list = employeeCollection.filterByTimeRangeStatus(
+            $scope.currentStatus,
+            null,
+            moment(),
+            moment("3000-01-01"));
           if(profileId){
             list = list.filterByProfileId(profileId);
           }
@@ -1201,6 +1205,15 @@ var employerViewEmployeeDetail = employersController.controller('employerViewEmp
         $scope.employee.email = employeeDetail.email;
         var selfInfo = _.findWhere(employeeDetail.family, {relationship:'self'});
         if(selfInfo){
+          if(selfInfo.first_name){
+            $scope.employee.first_name = selfInfo.first_name;
+          }
+          if(selfInfo.last_name){
+            $scope.employee.last_name = selfInfo.last_name;
+          }
+          if(selfInfo.email){
+            $scope.employee.email = selfInfo.email;
+          }
           $scope.employee.birth_date = selfInfo.birth_date;
           $scope.employee.phones = selfInfo.phones;
           $scope.employee.addresses = selfInfo.addresses;
