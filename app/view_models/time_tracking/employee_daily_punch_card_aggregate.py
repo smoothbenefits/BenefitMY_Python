@@ -16,16 +16,22 @@ class EmployeeDailyPunchCardAggregate(object):
 
         # List out instance variables
         self.user_id = employee_user_id
-        self.user_info = None
+        self._user_info = None
+        self._user_info_initialized = False
         self.date = date
         self._time_punch_cards = []
 
-        if (self.user_id):
-            user_model = User.objects.get(pk=self.user_id)
-            self.user_info = UserInfo(user_model)
-
         # Support lasy-evaluated validation
         self._validation_issues = None
+
+    @property
+    def user_info(self):
+        if (not self._user_info_initialized):
+            if (self.user_id):
+                user_model = User.objects.get(pk=self.user_id)
+                self._user_info = UserInfo(user_model)
+            self._user_info_initialized = True
+        return self._user_info
 
     @property
     def validation_issues(self):
