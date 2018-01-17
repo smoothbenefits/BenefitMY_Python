@@ -1,10 +1,6 @@
-from django.contrib.auth import get_user_model
 from app.service.hash_key_service import HashKeyService
 from app.service.date_time_service import DateTimeService
 from .time_card_validation_issue import TimeCardValidationIssue
-from ..user_info import UserInfo
-
-User = get_user_model()
 
 # Time Punch Card Attribute Types
 PUNCH_CARD_ATTRIBUTE_TYPE_STATE = 'State'
@@ -41,9 +37,6 @@ class TimePunchCard(object):
         # Parse out user ID
         user_descriptor = punch_card_domain_model['employee']['personDescriptor']
         self.user_id = int(self.hash_key_service.decode_key_with_environment(user_descriptor))
-        if (self.user_id):
-            user_model = User.objects.get(pk=self.user_id)
-            self.user_info = UserInfo(user_model)
 
         # Parse card type
         self.card_type = punch_card_domain_model.get('recordType')
@@ -129,9 +122,3 @@ class TimePunchCard(object):
                 '[Unusual Card Balance] Card with more than 10 hours.'))
         
         return validation_issues
-
-    @property
-    def employee_full_name(self):
-        if (self.user_info is None):
-            return None
-        return self.user_info.full_name
