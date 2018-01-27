@@ -22,7 +22,12 @@ class EmployeeStateTaxElectionView(APIView):
 
     def get(self, request, user_id, state, format=None):
         record = self._get_object(user_id, state)
-        serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_serializer(state)(record)
+
+        # Below is to handle the case where the tax record was imported, and hence
+        # requires the special serializer to handle
+        imported = (record.tax_election_data and record.tax_election_data.is_imported)
+        
+        serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_serializer(state, imported)(record)
         return Response(serializer.data)
 
     def delete(self, request, user_id, state, format=None):
@@ -71,6 +76,10 @@ class EmployeeStateTaxElectionByEmployeeView(APIView):
         records = self._get_object_collection(user_id)
         result = []
         for record in records:
-            serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_serializer(record.state)(record)
+            # Below is to handle the case where the tax record was imported, and hence
+            # requires the special serializer to handle
+            imported = (record.tax_election_data and record.tax_election_data.is_imported)
+
+            serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_serializer(record.state, imported)(record)
             result.append(serializer.data)
         return Response(result)
