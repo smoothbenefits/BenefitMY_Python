@@ -60,8 +60,10 @@ class EmployeeStateTaxElectionView(APIView):
     def post(self, request, user_id, state, format=None):
         record = self._get_object(user_id, state, require_exist=False)
 
+        # Allow the case where client is doing a POST, but that is because client
+        # does not have visibility of imported records. 
         serializer = None
-        if (record):
+        if (record and record.tax_election_data and record.tax_election_data.is_imported):
             serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_post_serializer(state)(record, data=request.DATA)
         else:
             serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_post_serializer(state)(data=request.DATA)
