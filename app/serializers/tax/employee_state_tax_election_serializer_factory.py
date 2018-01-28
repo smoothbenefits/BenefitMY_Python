@@ -6,9 +6,6 @@ from RI_employee_state_tax_election_serializer import (
     RIEmployeeStateTaxElectionSerializer,
     RIEmployeeStateTaxElectionPostSerializer,
 )
-from import_employee_state_tax_election_serializer import (
-    ImportEmployeeStateTaxElectionSerializer
-)
 
 
 ''' Factory to provide the proper employee state tax election serializer (class)
@@ -32,13 +29,7 @@ class EmployeeStateTaxElectionSerializerFactory(object):
         'RI': RIEmployeeStateTaxElectionPostSerializer
     }
 
-    def get_employee_state_tax_election_serializer(self, state, imported=False):
-        # For the GET serializer, we need to support the case where consumer
-        # is facing a state tax election record that was imported. And here
-        # we return the specialized serializer to handle that.
-        if (imported):
-            return ImportEmployeeStateTaxElectionSerializer
-
+    def get_employee_state_tax_election_serializer(self, state):
         if (state not in self._employee_state_serializer_map):
             raise ValueError('Given state "{0}" is not supported!'.format(state))
         return self._employee_state_serializer_map[state]
