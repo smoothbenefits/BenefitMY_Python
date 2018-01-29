@@ -26,8 +26,9 @@ class EmployeeStateTaxElectionView(APIView):
     def get(self, request, user_id, state, format=None):
         record = self._get_object(user_id, state)
 
-        # Below is to handle the case where the tax record was imported, and hence
-        # requires the special serializer to handle
+        # Below is to handle the case where the tax record was imported
+        # for not the treatment is to ignore such record, so that to clients,
+        # these records would be just non-existent.
         imported = (record.tax_election_data and record.tax_election_data.is_imported)
         if (imported):
             raise Http404
