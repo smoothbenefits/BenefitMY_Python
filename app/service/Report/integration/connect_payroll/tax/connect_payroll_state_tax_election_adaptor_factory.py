@@ -1,5 +1,6 @@
 from .connect_payroll_state_tax_election_adaptor_MA import ConnectPayrollStateTaxElectionAdaptorMA
 from .connect_payroll_state_tax_election_adaptor_RI import ConnectPayrollStateTaxElectionAdaptorRI
+from .connect_payroll_state_tax_election_adaptor_import import ConnectPayrollStateTaxElectionAdaptorImport
 
 
 class ConnectPayrollStateTaxElectionAdaptorFactory(object):
@@ -18,4 +19,8 @@ class ConnectPayrollStateTaxElectionAdaptorFactory(object):
     def get_adaptor(self, state, state_tax_election_data):
         if (state not in self._state_adaptor_class_map):
             return None
-        return self._state_adaptor_class_map[state](state, state_tax_election_data)
+
+        adaptor = self._state_adaptor_class_map[state]
+        if (state_tax_election_data.is_imported):
+            adaptor = ConnectPayrollStateTaxElectionAdaptorImport
+        return adaptor(state, state_tax_election_data)

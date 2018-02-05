@@ -1,3 +1,7 @@
+STATE_TAX_DATA_SOURCE_USER = 'User'
+STATE_TAX_DATA_SOURCE_IMPORT = 'Import'
+
+
 class StateTaxElectionBase(object):
     
     ''' As much that I don't like this, this is the simplest
@@ -14,3 +18,11 @@ class StateTaxElectionBase(object):
     '''
     def save(self):
         pass
+
+    @property
+    def data_source(self):
+        return STATE_TAX_DATA_SOURCE_USER
+
+    @property
+    def is_imported(self):
+        return self.data_source == STATE_TAX_DATA_SOURCE_IMPORT
