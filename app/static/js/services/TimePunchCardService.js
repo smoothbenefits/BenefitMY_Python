@@ -501,6 +501,12 @@ benefitmyService.factory('TimePunchCardService',
           });
         };
 
+        var HasSystemStoppedPunchCards = function(punchCards) {
+          return _.some(punchCards, function(card) {
+            return card.systemStopped;
+          });
+        };
+
         var OrderPunchCardsByTime = function(punchCards) {
             return _.sortBy(punchCards, function(card) {
                 return card.start;
@@ -521,6 +527,7 @@ benefitmyService.factory('TimePunchCardService',
           DeletePunchCard: DeletePunchCard,
           CalculateTotalHours: CalculateTotalHours,
           HasInProgressPunchCards: HasInProgressPunchCards,
+          HasSystemStopped: HasSystemStoppedPunchCards,
           GetWeeklyPunchCardsByEmployeeUser: GetWeeklyPunchCardsByEmployeeUser,
           GetPunchCardsByCompanyTimeRange: GetPunchCardsByCompanyTimeRange,
           GetAllPunchCardsByCompany: GetAllPunchCardsByCompany,

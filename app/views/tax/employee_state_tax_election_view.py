@@ -14,14 +14,25 @@ class EmployeeStateTaxElectionView(APIView):
     _aws_event_bus_service = AwsEventBusService()
     _state_tax_election_serializer_factory = EmployeeStateTaxElectionSerializerFactory()
 
-    def _get_object(self, user_id, state):
+    def _get_object(self, user_id, state, require_exist=True):
         try:
             return EmployeeStateTaxElection.objects.get(user=user_id, state=state)
         except EmployeeStateTaxElection.DoesNotExist:
-            raise Http404
+            if (require_exist):
+                raise Http404
+            else:
+                return None
 
     def get(self, request, user_id, state, format=None):
         record = self._get_object(user_id, state)
+
+        # Below is to handle the case where the tax record was imported
+        # for not the treatment is to ignore such record, so that to clients,
+        # these records would be just non-existent.
+        imported = (record.tax_election_data and record.tax_election_data.is_imported)
+        if (imported):
+            raise Http404
+
         serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_serializer(state)(record)
         return Response(serializer.data)
 
@@ -48,7 +59,16 @@ class EmployeeStateTaxElectionView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, user_id, state, format=None):
-        serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_post_serializer(state)(data=request.DATA)
+        record = self._get_object(user_id, state, require_exist=False)
+
+        # Allow the case where client is doing a POST, but that is because client
+        # does not have visibility of imported records. 
+        serializer = None
+        if (record and record.tax_election_data and record.tax_election_data.is_imported):
+            serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_post_serializer(state)(record, data=request.DATA)
+        else:
+            serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_post_serializer(state)(data=request.DATA)
+        
         if serializer.is_valid():
             serializer.save()
             record = serializer.object
@@ -71,6 +91,13 @@ class EmployeeStateTaxElectionByEmployeeView(APIView):
         records = self._get_object_collection(user_id)
         result = []
         for record in records:
+            # Below is to handle the case where the tax record was imported
+            # for not the treatment is to ignore such record, so that to clients,
+            # these records would be just non-existent.
+            imported = (record.tax_election_data and record.tax_election_data.is_imported)
+            if imported:
+                continue
+
             serializer = self._state_tax_election_serializer_factory.get_employee_state_tax_election_serializer(record.state)(record)
             result.append(serializer.data)
         return Response(result)
