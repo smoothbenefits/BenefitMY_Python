@@ -17,4 +17,4 @@ class DailyUnclosedTimeCardHandler(EventHandlerBase):
         if handled:
             self._logger.info('System closed {} unclosed time cards'.format(handled.get('handled_count', '-1')))
         else:
-            self._logger.info('System encountered error when trying to handle unclosed time cards!')
+            self._logger.error('System encountered error when trying to handle unclosed time cards!')
