@@ -212,4 +212,12 @@ class TimePunchCardService(object):
     def clear_time_tracking_setting_cache(self):
         self.time_tracking_settings_dictionary = {}
 
+    def handle_unclosed_time_cards(self):
+        api_url = '{0}api/v1/time_punch_cards/unclosed_handle'.format(
+            settings.TIME_TRACKING_SERVICE_URL)
+        r = self.request_service.post(api_url, {})
+        if r.status_code != 200:
+            return None
+        return r.json()
+
 

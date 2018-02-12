@@ -15,7 +15,8 @@
                 <div class="header-row">
                   <b>{{punchCard.getTimeRangeDisplayText()}}</b>
                 </div>
-                <div class="info-row" ng-class="{'in-progress': punchCard.inProgress}">
+                <div ng-class="{'system-stopped': punchCard.systemStopped, 'in-progress': punchCard.inProgress, 'info-row':!punchCard.systemStopped && !punchCard.inProgress}">
+                    <div ng-if="punchCard.systemStopped">Status: <b>Review Required</b></div>
                     <div ng-if="punchCard.inProgress">Status: <b>Checked In</b></div>
                     <div>Card Type: <b>{{punchCard.recordType.name}}</b></div>
                     <div ng-if="isLowConfidenceDetection(punchCard.checkInAssets.imageDetectionAsset.confidence)">
