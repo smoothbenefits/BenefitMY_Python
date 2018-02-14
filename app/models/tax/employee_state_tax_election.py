@@ -6,6 +6,7 @@ from django.db import models
 from app.custom_authentication import AuthUser
 from ..address import STATES_CHOICES
 from app.serializers.tax.state_tax_election_serializer_factory import StateTaxElectionSerializerFactory
+from app.dtos.tax.import_state_tax_election import ImportStateTaxElection
 
 
 @reversion.register
@@ -36,7 +37,17 @@ class EmployeeStateTaxElection(models.Model):
         if (not self.data):
             return None
         json_data = json.loads(self.data)
-        serializer = self._state_tax_election_serializer_factory.get_state_tax_election_serializer(self.state)(data=json_data)
+
+        # Below is to handle the case of imported tax election record
+        # The expectation is that all imported election record would have
+        # a 'metadata' property that has a 'data_source' member with value
+        # 'import'
+        imported = False
+        if ('metadata' in json_data):
+            if ('data_source' in json_data['metadata']):
+                imported = json_data['metadata']['data_source'] == 'import'
+
+        serializer = self._state_tax_election_serializer_factory.get_state_tax_election_serializer(self.state, imported)(data=json_data)
         if (not serializer.is_valid()):
             raise RuntimeError('Failed to deserialize state tax election data for user "{0}" and state "{1}": '.format(self.user.id, self.state), serializer.errors)
         return serializer.object
@@ -45,7 +56,10 @@ class EmployeeStateTaxElection(models.Model):
     def tax_election_data(self, value):
         if (not value):
             self.data = None
-        serializer = self._state_tax_election_serializer_factory.get_state_tax_election_serializer(self.state)(value)
+
+        imported = isinstance(value, ImportStateTaxElection)
+
+        serializer = self._state_tax_election_serializer_factory.get_state_tax_election_serializer(self.state, imported)(value)
         self.data = json.dumps(serializer.data, cls=DecimalEncoder)
 
 

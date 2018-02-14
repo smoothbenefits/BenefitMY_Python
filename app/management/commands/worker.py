@@ -21,6 +21,7 @@ from app.service.event_bus.event_handlers.daily_time_card_audit_report_handler i
 from app.service.event_bus.event_handlers.company_daily_time_card_audit_event_handler import CompanyDailyTimeCardAuditEventHandler
 from app.service.event_bus.event_handlers.daily_employee_data_change_report_handler import DailyEmployeeDataChangeReportHandler
 from app.service.event_bus.event_handlers.company_daily_employee_data_change_report_event_handler import CompanyDailyEmployeeDataChangeReportEventHandler
+from app.service.event_bus.event_handlers.daily_unclosed_time_card_handler import DailyUnclosedTimeCardHandler
 
 from app.service.event_bus.events.environment_test_event import EnvironmentTestEvent
 from app.service.event_bus.aws_message_queue_config import AwsMessageQueueConfig
@@ -59,6 +60,7 @@ class Command(BaseCommand):
         message_pump.register_event_message_handler(CompanyDailyTimeCardAuditEventHandler, common_sqs_config)
         message_pump.register_event_message_handler(DailyEmployeeDataChangeReportHandler, common_sqs_config)
         message_pump.register_event_message_handler(CompanyDailyEmployeeDataChangeReportEventHandler, common_sqs_config)
+        message_pump.register_event_message_handler(DailyUnclosedTimeCardHandler, common_sqs_config)
 
         # Now start the pump, which will start pumping and handling
         # with all registered event handlers above

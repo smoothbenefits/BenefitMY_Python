@@ -185,7 +185,7 @@ BenefitMyApp.controller('TimePunchCardEditModalController', [
     $scope.save = function() {
         // Perform card type based sanitization first
         $scope.punchCard.recordType.behavior.sanitizeViewModel($scope.punchCard);
-
+        $scope.punchCard.systemStopped = false;
         // Now save
         TimePunchCardService.SavePunchCard($scope.punchCard).then(
             function(successResponse) {
