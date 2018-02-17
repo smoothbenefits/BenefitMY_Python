@@ -173,3 +173,6 @@ class UserEnrollmentSummaryService(object):
              (std_enrollment is None or len(std_enrollment) > 0):
             status = COMPLETED
         return status
+
+    def has_no_benefits(self):
+        return self.get_enrollment_status() == NO_BENEFITS

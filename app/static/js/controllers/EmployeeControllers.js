@@ -537,15 +537,13 @@ var onboardBasicInfo = employeeControllers.controller('onboardBasicInfo',
    'PersonService',
    'currentUser',
    'EmployeePreDashboardValidationService',
-   'UserOnboardingStepStateService',
   function($scope,
            $state,
            $stateParams,
            $location,
            PersonService,
            currentUser,
-           EmployeePreDashboardValidationService,
-           UserOnboardingStepStateService){
+           EmployeePreDashboardValidationService){
 
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
@@ -574,12 +572,6 @@ var onboardBasicInfo = employeeControllers.controller('onboardBasicInfo',
       $scope.employee.birth_date = moment(birthDate).format('YYYY-MM-DD');
       PersonService.savePersonInfo($scope.employeeId, $scope.employee)
       .then(function(successResponse){
-        // Mark onboarding step state
-        UserOnboardingStepStateService.updateStateByUserAndStep(
-            $scope.employeeId,
-            UserOnboardingStepStateService.Steps.BasicInfo,
-            UserOnboardingStepStateService.States.Completed
-        );
         $state.go('employee_onboard.employment', { employee_id: $scope.employeeId });
       }, function(errorResponse){
           alert('Failed to add the new user. The error is: ' + JSON.stringify(errorResponse.data) +'\n and the http status is: ' + errorResponse.status);
@@ -595,15 +587,13 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
    '$window',
    'EmploymentProfileService',
    'EmployeePreDashboardValidationService',
-   'UserOnboardingStepStateService',
   function($scope,
            $state,
            $stateParams,
            $location,
            $window,
            EmploymentProfileService,
-           EmployeePreDashboardValidationService,
-           UserOnboardingStepStateService){
+           EmployeePreDashboardValidationService){
     $scope.employeeId = $stateParams.employee_id;
 
     $scope.employee = {
@@ -651,12 +641,6 @@ var onboardEmployment = employeeControllers.controller('onboardEmployment',
 
         EmploymentProfileService.saveEmploymentAuthByUserId($scope.employee, signature.id)
         .then(function(response){
-          // Mark onboarding step state
-          UserOnboardingStepStateService.updateStateByUserAndStep(
-            $scope.employeeId,
-            UserOnboardingStepStateService.Steps.EmploymentAuthorization,
-            UserOnboardingStepStateService.States.Completed
-          );
           $state.go('employee_onboard.tax', { employee_id: $scope.employeeId });
         }, function(error){
           alert('Failed to add employment information');
@@ -672,7 +656,6 @@ var onboardTax = employeeControllers.controller('onboardTax',
    '$window',
    'employeePayrollService',
    'EmployeePreDashboardValidationService',
-   'UserOnboardingStepStateService',
   function(
     $scope,
     $state,
@@ -680,8 +663,7 @@ var onboardTax = employeeControllers.controller('onboardTax',
     $location,
     $window,
     employeePayrollService,
-    EmployeePreDashboardValidationService,
-    UserOnboardingStepStateService){
+    EmployeePreDashboardValidationService){
 
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
@@ -738,12 +720,6 @@ var onboardTax = employeeControllers.controller('onboardTax',
       var empAuth = employeePayrollService.mapW4ViewToDto($scope.employee);
       employeePayrollService.saveEmployeeTaxByUserId($scope.employeeId, empAuth)
       .then(function(response){
-        // Mark onboarding step state
-        UserOnboardingStepStateService.updateStateByUserAndStep(
-            $scope.employeeId,
-            UserOnboardingStepStateService.Steps.W4Info,
-            UserOnboardingStepStateService.States.Completed
-        );
         $state.go('employee_onboard.state_tax', { employee_id: $scope.employeeId });
       });
     };
@@ -756,15 +732,13 @@ var onboardStateTax = employeeControllers.controller('onboardStateTax',
    '$location',
    '$window',
    'EmployeePreDashboardValidationService',
-   'UserOnboardingStepStateService',
   function(
     $scope,
     $state,
     $stateParams,
     $location,
     $window,
-    EmployeePreDashboardValidationService,
-    UserOnboardingStepStateService){
+    EmployeePreDashboardValidationService){
 
     $scope.employeeId = $stateParams.employee_id;
 
@@ -783,14 +757,6 @@ var onboardStateTax = employeeControllers.controller('onboardStateTax',
     $('body').addClass('onboarding-page');
 
     $scope.onFinish = function(){
-
-      // Mark onboarding step state
-      UserOnboardingStepStateService.updateStateByUserAndStep(
-        $scope.employeeId,
-        UserOnboardingStepStateService.Steps.StateTaxInfo,
-        UserOnboardingStepStateService.States.Completed
-      );
-
       $state.go('employee_onboard.direct_deposit', { employee_id: $scope.employeeId });
     };
 }]);
@@ -802,15 +768,13 @@ var onboardDirectDeposit = employeeControllers.controller('onboardDirectDeposit'
    '$location',
    '$window',
    'EmployeePreDashboardValidationService',
-   'UserOnboardingStepStateService',
   function(
     $scope,
     $state,
     $stateParams,
     $location,
     $window,
-    EmployeePreDashboardValidationService,
-    UserOnboardingStepStateService){
+    EmployeePreDashboardValidationService){
 
     $scope.employee = {};
     $scope.userId = $stateParams.employee_id;
@@ -818,14 +782,6 @@ var onboardDirectDeposit = employeeControllers.controller('onboardDirectDeposit'
     // Direct Deposit directive configurations
     $scope.headerText = 'Add Direct Deposit Account(s) Information';
     $scope.proceed = function(){
-
-      // Mark onboarding step state
-      UserOnboardingStepStateService.updateStateByUserAndStep(
-        $scope.userId,
-        UserOnboardingStepStateService.Steps.DirectDeposit,
-        UserOnboardingStepStateService.States.Completed
-      );
-
       $state.go('employee_onboard.document', { employee_id: $scope.userId });
     };
 
@@ -851,15 +807,13 @@ var onboardDocument = employeeControllers.controller('onboardDocument',
    '$location',
    '$window',
    'EmployeePreDashboardValidationService',
-   'UserOnboardingStepStateService',
   function(
     $scope,
     $state,
     $stateParams,
     $location,
     $window,
-    EmployeePreDashboardValidationService,
-    UserOnboardingStepStateService){
+    EmployeePreDashboardValidationService){
 
     $scope.employee = {};
     $scope.employeeId = $stateParams.employee_id;
@@ -883,12 +837,6 @@ var onboardDocument = employeeControllers.controller('onboardDocument',
     $('body').addClass('onboarding-page');
 
     $scope.documentsSigned = function(){
-      // Mark onboarding step state
-      UserOnboardingStepStateService.updateStateByUserAndStep(
-        $scope.employeeId,
-        UserOnboardingStepStateService.Steps.Documents,
-        UserOnboardingStepStateService.States.Completed
-      );
       checkForOnboardingStep();
     };
 }]);

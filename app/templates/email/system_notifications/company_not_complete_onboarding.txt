@@ -1,0 +1,14 @@
+Company: {{context_data.company.name}}
+
+[The employee(s) below have been notified by our system several times, but still don't have their on-boarding process completed. Please follow up with them directly. The system will stop sending notifications to the mentioned employees directly.]
+
+Employee(s) Information
+
+{% for user in context_data.users %}
+{{user.first_name}} {{user.last_name}} ({{user.email}})
+{% endfor %}
+
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}

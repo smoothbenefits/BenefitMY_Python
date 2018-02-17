@@ -1,0 +1,11 @@
+Your benefit enrollment has not been completed
+
+Company: {{context_data.company.name}}
+
+According to our records, your have not completed the on-boarding process. Please log onto our website, and complete your on-boarding.
+
+Thank you and best regards.
+
+---------------------------------------------------------------------------
+
+Visit the site: {{site_url}}
