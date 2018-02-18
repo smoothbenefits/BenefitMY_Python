@@ -1,4 +1,4 @@
-Your benefit enrollment has not been completed
+Your on-boarding has not been completed
 
 Company: {{context_data.company.name}}
 

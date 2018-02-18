@@ -7,7 +7,13 @@
   <h4>Users made changes in the last 24 hours:</h4>
   <ul>
     {% for mod_summary in company_users.mod_summary_list %}
-    <li>{{ mod_summary.person.first_name }} {{mod_summary.person.last_name}} ( {{mod_summary.person.birth_date}} ). Benefit Enrollment Status: {{mod_summary.enrollmentStatus}}</li>
+    <li>{{ mod_summary.person.first_name }} {{mod_summary.person.last_name}} ( {{mod_summary.person.birth_date}} ).
+    {% if mod_summary.hasBenefits %}
+    Benefit Enrollment Status: {{mod_summary.enrollmentStatus}}
+    {% else %}
+    Onboarding Status: {{mod_summary.onboardingStatus}}
+    {% endif %}
+    </li>
     {% endfor %}
   </ul>
   <br/>

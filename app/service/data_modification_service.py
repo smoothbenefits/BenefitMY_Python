@@ -12,7 +12,11 @@ from app.models.person import Person
 from app.models.phone import Phone
 from app.models.address import Address
 from app.service.send_email_service import SendEmailService
-from app.service.user_enrollment_summary_service import UserEnrollmentSummaryService
+from app.service.user_enrollment_summary_service import (
+    UserEnrollmentSummaryService,
+    NO_BENEFITS
+)
+from app.service.user_onboarding_state_service import UserOnboardingStateService
 from reversion.models import Revision
 
 User = get_user_model()
@@ -115,7 +119,12 @@ class DataModificationService(object):
             persons = Person.objects.filter(user=user_id, relationship='self')
             if persons:
                 mod_summary['person'] = persons[0]
-                mod_summary['enrollmentStatus'] = self._get_enrollment_status(user_id, persons[0], company_id)
+                enrollment_status = self._get_enrollment_status(user_id, persons[0], company_id)
+                mod_summary['enrollmentStatus'] = enrollment_status
+                mod_summary['hasBenefits'] = (not enrollment_status == NO_BENEFITS) 
+                mod_summary['onboardingStatus'] = 'INCOMPLETE'
+                if self._has_user_completed_onboarding(user_id):
+                    mod_summary['onboardingStatus'] = 'COMPLETE'
                 mod_summary_list.append(mod_summary)
         return mod_summary_list
 
@@ -141,5 +150,6 @@ class DataModificationService(object):
         enrollment_status_service = UserEnrollmentSummaryService(company_id, user_id, person.id)
         return enrollment_status_service.get_enrollment_status()
 
-
-
+    def _has_user_completed_onboarding(self, user_id):
+        onboarding_state_service = UserOnboardingStateService()
+        return onboarding_state_service.has_onboarding_process_completed_by_user(user_id)
