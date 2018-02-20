@@ -33,6 +33,7 @@ class TimePunchCard(object):
         self.state = None
         self.card_type = None
         self.in_progress = None
+        self.system_stopped = None
 
         # Parse out user ID
         user_descriptor = punch_card_domain_model['employee']['personDescriptor']
@@ -64,6 +65,10 @@ class TimePunchCard(object):
         in_progress_str = punch_card_domain_model.get('inProgress')
         if (in_progress_str):
             self.in_progress = bool(in_progress_str)
+
+        system_stopped_str = punch_card_domain_model.get('systemStopped')
+        if(system_stopped_str):
+            self.system_stopped = bool(system_stopped_str)
 
         # Support lasy-evaluated validation
         self._validation_issues = None
@@ -120,5 +125,10 @@ class TimePunchCard(object):
             validation_issues.append(TimeCardValidationIssue(
                 TimeCardValidationIssue.LEVEL_WARNING,
                 '[Unusual Card Balance] Card with more than 10 hours.'))
+
+        if (self.system_stopped):
+            validation_issues.append(TimeCardValidationIssue(
+                TimeCardValidationIssue.LEVEL_ERROR,
+                '[System Closed Card] Card stopped accruing hours by system. Please validate!'))
         
         return validation_issues
