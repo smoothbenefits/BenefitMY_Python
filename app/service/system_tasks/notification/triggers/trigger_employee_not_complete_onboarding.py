@@ -18,9 +18,9 @@ class TriggerEmployeeNotCompleteOnboarding(TriggerNotCompleteOnboardingBase):
         date_diff = (date.today() - start_date).days
 
         # Current schedule settings:
-        #  - between 23 days after and 30 days after benefit start date, send daily
-        #  - prior to 23 days after benefit start date, send one every 5 days
-        #  - post 30 days after benefit start date, stop notification
+        #  - between 23 days after and 30 days after start date, send daily
+        #  - prior to 23 days after start date, send one every 5 days
+        #  - post 30 days after start date, stop notification
         if ((date_diff >= DAILY_EMAIL_START_DAY and date_diff <= TERMINATE_NOTIFICATION_DAY)
             or (date_diff < DAILY_EMAIL_START_DAY and date_diff % NOTIFICATION_INTERVAL == 0)):
             return True

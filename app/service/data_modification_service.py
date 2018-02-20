@@ -122,7 +122,7 @@ class DataModificationService(object):
                 enrollment_status = self._get_enrollment_status(user_id, persons[0], company_id)
                 mod_summary['enrollmentStatus'] = enrollment_status
                 mod_summary['hasBenefits'] = (not enrollment_status == NO_BENEFITS) 
-                mod_summary['onboardingStatus'] = 'INCOMPLETE'
+                mod_summary['onboardingStatus'] = 'NOT_COMPLETE'
                 if self._has_user_completed_onboarding(user_id):
                     mod_summary['onboardingStatus'] = 'COMPLETE'
                 mod_summary_list.append(mod_summary)

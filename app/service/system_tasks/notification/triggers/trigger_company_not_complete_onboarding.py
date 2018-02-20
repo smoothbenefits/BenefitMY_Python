@@ -17,7 +17,7 @@ class TriggerCompanyNotCompleteOnboarding(TriggerNotCompleteOnboardingBase):
         date_diff = (date.today() - start_date).days
 
         # Current schedule settings:
-        #  - 30 days after benefit start date, send notification to employer
+        #  - 30 days after employment start date, send notification to employer
         if (date_diff == TERMINATE_NOTIFICATION_DAY):
             return True
 

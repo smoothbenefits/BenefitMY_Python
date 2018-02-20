@@ -768,13 +768,15 @@ var onboardDirectDeposit = employeeControllers.controller('onboardDirectDeposit'
    '$location',
    '$window',
    'EmployeePreDashboardValidationService',
+   'UserOnboardingStepStateService',
   function(
     $scope,
     $state,
     $stateParams,
     $location,
     $window,
-    EmployeePreDashboardValidationService){
+    EmployeePreDashboardValidationService,
+    UserOnboardingStepStateService){
 
     $scope.employee = {};
     $scope.userId = $stateParams.employee_id;
@@ -782,6 +784,14 @@ var onboardDirectDeposit = employeeControllers.controller('onboardDirectDeposit'
     // Direct Deposit directive configurations
     $scope.headerText = 'Add Direct Deposit Account(s) Information';
     $scope.proceed = function(){
+
+      // Mark onboarding step state
+      UserOnboardingStepStateService.updateStateByUserAndStep(
+        $scope.userId,
+        UserOnboardingStepStateService.Steps.DirectDeposit,
+        UserOnboardingStepStateService.States.Completed
+      );
+
       $state.go('employee_onboard.document', { employee_id: $scope.userId });
     };
 

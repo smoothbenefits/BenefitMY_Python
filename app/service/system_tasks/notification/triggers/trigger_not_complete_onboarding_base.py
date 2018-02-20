@@ -62,7 +62,7 @@ class TriggerNotCompleteOnboardingBase(TriggerCompanyUserBase):
             # does not have benefit. Otherwise, we would send the
             # enrollment notification
             enroll_service = UserEnrollmentSummaryService(company.id, user.id, person.id) 
-            if (not nroll_service.get_enrollment_status() == NO_BENEFITS):
+            if (not enroll_service.get_enrollment_status() == NO_BENEFITS):
                 continue
 
             # Now check for whether the user has completed onboarding

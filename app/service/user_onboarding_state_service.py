@@ -44,9 +44,9 @@ class UserOnboardingStateService(object):
         return any(self._is_last_step(step) for step in user_completed_steps)
 
     def _is_last_step(self, step):
-        return (step in self._onboarding_step_sequence
-            and self._onboarding_step_sequence[step] >= self._last_step_index)
+        step_index = self._onboarding_step_sequence.get(step)
+        return step_index is not None and step_index >= self._last_step_index
 
     def _get_steps_with_states_by_user(self, user_id, state_list):
-        return UserOnboardingStepState.objects.filter(user=user_id, state__in=state_list).values('step')
+        return UserOnboardingStepState.objects.filter(user=user_id, state__in=state_list).values_list('step', flat=True)
     
