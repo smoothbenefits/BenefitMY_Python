@@ -61,6 +61,32 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
       return getUrlFromState('employee_family', { employeeId: employeeId });
     };
 
+    var precheck_onboarding_step_completion = function(
+        employeeId,
+        onboardingStep,
+        completeCallback,
+        nonCompleteCallback,
+        errorCallback) {
+
+        UserOnboardingStepStateService.checkUserFinishedStep(
+            employeeId,
+            onboardingStep).then(
+                function(stepFinishedAlreadyFlag) {
+                    if (stepFinishedAlreadyFlag) {
+                        completeCallback();
+                    }
+                    else {
+                        nonCompleteCallback();
+                    }
+                },
+                function(errors) {
+                    if (errorCallback) {
+                        errorCallback(errors);
+                    }
+                }
+            );
+    }
+
     var validatePersonInfo = function(person){
       //make sure we get all the basic information of this person correctly.
       if(!person)
@@ -81,159 +107,238 @@ benefitmyService.factory('EmployeePreDashboardValidationService',
     };
 
     var validateBasicInfo = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
-      //step one (basic info) validation
-      PersonService.getSelfPersonInfo(employeeId)
-        .then(function(self){
-          if(self){
-            //We need to validate this self
-            if(!validatePersonInfo(self)){
+      precheck_onboarding_step_completion(
+        employeeId, 
+        UserOnboardingStepStateService.Steps.BasicInfo,
+        succeeded,
+        function() {
+          //step one (basic info) validation
+          PersonService.getSelfPersonInfo(employeeId)
+            .then(function(self){
+              if(self){
+                //We need to validate this self
+                if(!validatePersonInfo(self)){
+                  failed();
+                }
+                else{
+                  // Mark onboarding step state
+                  UserOnboardingStepStateService.updateStateByUserAndStep(
+                    employeeId,
+                    UserOnboardingStepStateService.Steps.BasicInfo,
+                    UserOnboardingStepStateService.States.Completed
+                  );
+                  succeeded();
+                }
+              }
+              else{
+                failed();
+              }
+            }, function(){
               failed();
-            }
-            else{
-              succeeded();
-            }
-          }
-          else{
-            failed();
-          }
-        }, function(){
-          failed();
-        });
+            });
+        },
+        failed);
     };
 
     var validateEmploymentAuth = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
-      if (!isNewEmployee 
-        || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.I9)) {
-        // Skip I-9 validation if this is not a new employee
-        succeeded();
-      } 
-      else {
-        //step two (employment auth) validation
-        //get the sigature for employment auth document
-        employmentAuthRepository.get({userId:employeeId})
-        .$promise.then(function(response){
-           if(!(response && response.signature && response.signature.signature)){
-            failed();
-           }
-           else{
+      precheck_onboarding_step_completion(
+        employeeId, 
+        UserOnboardingStepStateService.Steps.EmploymentAuthorization,
+        succeeded,
+        function() {
+          if (!isNewEmployee 
+            || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.I9)) {
+            // Skip I-9 validation if this is not a new employee
+            // Mark onboarding step state
+            UserOnboardingStepStateService.updateStateByUserAndStep(
+                employeeId,
+                UserOnboardingStepStateService.Steps.EmploymentAuthorization,
+                UserOnboardingStepStateService.States.Skipped
+            );
             succeeded();
-           }
-        },function(error){
-          if(failed){
-            failed();
+          } 
+          else {
+            //step two (employment auth) validation
+            //get the sigature for employment auth document
+            employmentAuthRepository.get({userId:employeeId})
+            .$promise.then(function(response){
+               if(!(response && response.signature && response.signature.signature)){
+                failed();
+               }
+               else{
+                // Mark onboarding step state
+                UserOnboardingStepStateService.updateStateByUserAndStep(
+                    employeeId,
+                    UserOnboardingStepStateService.Steps.EmploymentAuthorization,
+                    UserOnboardingStepStateService.States.Completed
+                );
+                succeeded();
+               }
+            },function(error){
+              if(failed){
+                failed();
+              }
+            });
           }
-        });
-      } 
+        },
+        failed); 
     };
 
     var validateW4Info = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
-      if (!isNewEmployee 
-        || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
-        // Skip W-4 validation if this is not a new employee
-        succeeded();
-      } 
-      else {
-        employeeTaxRepository.get({userId:employeeId})
-        .$promise.then(function(response){
-          if(!response ||
-             (_.isNumber(response.user_defined_points) && response.user_defined_points < 0) ||
-             (_.isNumber(response.total_points) && response.total_points < 0)){
-            //For backwards compatibility, we need to check both fields.
-            failed(response);
+      precheck_onboarding_step_completion(
+        employeeId, 
+        UserOnboardingStepStateService.Steps.W4Info,
+        succeeded,
+        function() {
+          if (!isNewEmployee 
+            || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
+            // Skip W-4 validation if this is not a new employee
+            // Mark onboarding step state
+            UserOnboardingStepStateService.updateStateByUserAndStep(
+                employeeId,
+                UserOnboardingStepStateService.Steps.W4Info,
+                UserOnboardingStepStateService.States.Skipped
+            );
+            succeeded();
+          } 
+          else {
+            employeeTaxRepository.get({userId:employeeId})
+            .$promise.then(function(response){
+              if(!response ||
+                 (_.isNumber(response.user_defined_points) && response.user_defined_points < 0) ||
+                 (_.isNumber(response.total_points) && response.total_points < 0)){
+                //For backwards compatibility, we need to check both fields.
+                failed(response);
+              }
+              else{
+                // Mark onboarding step state
+                UserOnboardingStepStateService.updateStateByUserAndStep(
+                    employeeId,
+                    UserOnboardingStepStateService.Steps.W4Info,
+                    UserOnboardingStepStateService.States.Completed
+                );
+                succeeded(response);
+              }
+            }, function(err){
+              failed(err);
+            });
           }
-          else{
-            succeeded(response);
-          }
-        }, function(err){
-          failed(err);
-        });
-      }
+        },
+        failed);
     };
 
     var validateStateTaxInfo = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
-      if (!isNewEmployee 
-        || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
-        // Skip State Tax validation if this is not a new employee, or if the feature switch is off
-        succeeded();
-      } 
-      else {
-        UserOnboardingStepStateService.checkUserFinishedStep(
-            employeeId,
-            UserOnboardingStepStateService.Steps.StateTaxInfo).then(
-            function(stepFinishedAlreadyFlag) {
-                if (stepFinishedAlreadyFlag) {
-                    succeeded();
-                }
-                else {
-                    EmployeeTaxElectionService.getTaxElectionsByEmployee(employeeId).then(
-                        function(elections) {
-                            if (elections && elections.length > 0) {
-                                succeeded();
-                            } else {
-                                failed();
-                            }
-                        },
-                        function(errors) {
+      precheck_onboarding_step_completion(
+        employeeId, 
+        UserOnboardingStepStateService.Steps.StateTaxInfo,
+        succeeded,
+        function() {
+            if (!isNewEmployee 
+                || !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.W4)) {
+                // Skip State Tax validation if this is not a new employee, or if the feature switch is off
+                // Mark onboarding step state
+                UserOnboardingStepStateService.updateStateByUserAndStep(
+                    employeeId,
+                    UserOnboardingStepStateService.Steps.StateTaxInfo,
+                    UserOnboardingStepStateService.States.Skipped
+                );
+                succeeded();
+            } 
+            else {
+                EmployeeTaxElectionService.getTaxElectionsByEmployee(employeeId).then(
+                    function(elections) {
+                        if (elections && elections.length > 0) {
+                            // Mark onboarding step state
+                            UserOnboardingStepStateService.updateStateByUserAndStep(
+                                employeeId,
+                                UserOnboardingStepStateService.Steps.StateTaxInfo,
+                                UserOnboardingStepStateService.States.Completed
+                            );
+                            succeeded();
+                        } else {
                             failed();
                         }
-                    );
-                }
-            },
-            function(errors) {
-                failed();
+                    },
+                    function(errors) {
+                        failed();
+                    }
+                );
             }
-        );
-      }
+        },
+        failed
+      );
     };
 
     var validateDirectDeposit = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed){
-      if (!isNewEmployee ||
-          !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.DD)) {
-        // Skip if the feature is disabled or it's an existing employee
-        succeeded();
-      } 
-      else {
-        UserOnboardingStepStateService.checkUserFinishedStep(
-            employeeId,
-            UserOnboardingStepStateService.Steps.DirectDeposit).then(
-            function(stepFinishedAlreadyFlag) {
-                if (stepFinishedAlreadyFlag) {
-                    succeeded();
+      precheck_onboarding_step_completion(
+        employeeId, 
+        UserOnboardingStepStateService.Steps.DirectDeposit,
+        succeeded,
+        function() {
+          if (!isNewEmployee ||
+              !allFeatureStatus.isFeatureEnabled(CompanyFeatureService.AppFeatureNames.DD)) {
+            // Skip if the feature is disabled or it's an existing employee
+            // Mark onboarding step state
+            UserOnboardingStepStateService.updateStateByUserAndStep(
+                employeeId,
+                UserOnboardingStepStateService.Steps.DirectDeposit,
+                UserOnboardingStepStateService.States.Skipped
+            );
+            succeeded();
+          } 
+          else {
+            DirectDepositService.getDirectDepositByUserId(employeeId).then(
+                function(accounts) {
+                    if (accounts && accounts.length > 0) {
+                        // Mark onboarding step state
+                        UserOnboardingStepStateService.updateStateByUserAndStep(
+                            employeeId,
+                            UserOnboardingStepStateService.Steps.DirectDeposit,
+                            UserOnboardingStepStateService.States.Completed
+                        );
+                        succeeded();
+                    }
+                    else {
+                        failed();
+                    }
+                },
+                function(errors) {
+                    failed();
                 }
-                else {
-                    DirectDepositService.getDirectDepositByUserId(employeeId).then(
-                        function(accounts) {
-                            if (accounts && accounts.length > 0) {
-                                succeeded();
-                            }
-                            else {
-                                failed();
-                            }
-                        },
-                        function(errors) {
-                            failed();
-                        }
-                    );
-                }
-            },
-            function(errors) {
-                failed();
-            } 
-        );
-      }
+            );
+          }
+        },
+        failed
+      );
     };
 
     var validateDocuments = function(employeeId, isNewEmployee, allFeatureStatus, succeeded, failed) {
+        // For document step, since we expect users to be redirected back here if there 
+        // are newly created documents, even if the users completed this step during
+        // onboarding steps previously, so we do not short-circuit here based on 
+        // user onboarding step state.
         DocumentService.getAllDocumentsForUser(employeeId).then(
             function(documents) {
                 if (!documents || documents.length <= 0) {
                     // No documents assumes success
+                    // Mark onboarding step state
+                    UserOnboardingStepStateService.updateStateByUserAndStep(
+                        employeeId,
+                        UserOnboardingStepStateService.Steps.Documents,
+                        UserOnboardingStepStateService.States.Skipped
+                    );
                     succeeded();
                 } else {
                     var notSigned = _.find(documents, function(doc) {
                         return !doc.signature;
                     });
                     if (!notSigned) {
+                        // Mark onboarding step state
+                        UserOnboardingStepStateService.updateStateByUserAndStep(
+                            employeeId,
+                            UserOnboardingStepStateService.Steps.Documents,
+                            UserOnboardingStepStateService.States.Completed
+                        );
                         succeeded();
                     } else {
                         failed();

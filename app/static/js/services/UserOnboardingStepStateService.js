@@ -80,7 +80,6 @@ benefitmyService.factory('UserOnboardingStepStateService',
         };
 
         return {
-
             Steps: Steps,
             States: States,
             getStateByUserAndStep: getStateByUserAndStep,

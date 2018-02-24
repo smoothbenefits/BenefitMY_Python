@@ -4,7 +4,12 @@ Company: {{company_users.company.name}}
 
 Users made changes in the last 24 hours::
     {% for mod_summary in company_users.mod_summary_list %}
-    - {{ mod_summary.person.first_name }} {{mod_summary.person.last_name}} ( {{mod_summary.person.birth_date}} ). Benefit Enrollment Status: {{mod_summary.enrollmentStatus}}
+    - {{ mod_summary.person.first_name }} {{mod_summary.person.last_name}} ( {{mod_summary.person.birth_date}} ).
+    {% if mod_summary.hasBenefits %}
+    Benefit Enrollment Status: {{mod_summary.enrollmentStatus}}
+    {% else %}
+    Onboarding Status: {{mod_summary.onboardingStatus}}
+    {% endif %}
     {% endfor %}
 
 ---------------------------------------------------------------------------
