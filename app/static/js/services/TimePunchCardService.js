@@ -102,7 +102,7 @@ benefitmyService.factory('TimePunchCardService',
             },
             'PersonalLeave': {
                 'name': 'Personal Leave',
-                'behavior': PunchCardTypeBehaviors.PaidTimeOff
+                'behavior': PunchCardTypeBehaviors.Holiday
             },
             'BreakTime': {
                 'name': 'Break Time',
