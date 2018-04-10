@@ -521,6 +521,26 @@ benefitmyService.factory('TimePunchCardService',
             });
         };
 
+        var GenerateHolidayCardsForEmployees = function(holidayDate, companyId, employeeList){
+            var cardsToGenerate = [];
+            var envAwareCompanyId = utilityService.getEnvAwareId(companyId)
+            _.each(employeeList, function(employee) {
+              // Convert to environment aware user id for employee comparison
+              cardsToGenerate.push({
+                companyDescriptor: envAwareCompanyId,
+                personDescriptor: utilityService.getEnvAwareId(employee.user.id),
+                firstName: _.defaults(employee.profile.first_name, employee.user.first_name),
+                lastName: _.defaults(employee.profile.last_name, employee.user.last_name),
+                email: _.defaults(employee.profile.person.email, employee.user.email),
+                date: holidayDate
+              });
+            });
+            return TimePunchCardRepository.GenerateHolidayCards.save(cardsToGenerate)
+            .$promise.then(function(generatedCards){
+                return generatedCards;
+            });
+        };
+
         return {
           GetAvailablePunchCardTypes: GetAvailablePunchCardTypes,
           SavePunchCard: SavePunchCard,
@@ -533,7 +553,8 @@ benefitmyService.factory('TimePunchCardService',
           GetAllPunchCardsByCompany: GetAllPunchCardsByCompany,
           GetBlankPunchCardForEmployeeUser: GetBlankPunchCardForEmployeeUser,
           FilteredCardsForTotalHours: FilteredCardsForTotalHours,
-          getDefaultStartTime: getDefaultStartTime
+          getDefaultStartTime: getDefaultStartTime,
+          GenerateHolidayCardsForEmployees: GenerateHolidayCardsForEmployees
         };
     }
 ]);
