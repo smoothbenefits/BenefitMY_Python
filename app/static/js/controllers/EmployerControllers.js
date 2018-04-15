@@ -132,7 +132,7 @@ var employerHome = employersController.controller('employerHome',
       $state.go('admin_timepunchcards');
     };
 
-    $scope.viewTimePunchCards = function(){
+    $scope.viewTimePunchCardSettings = function(){
       $state.go('admin_timepunchcardsettings');
     };
 

@@ -1,11 +1,18 @@
 BenefitMyApp.controller('ConfigureModalController', [
-  '$scope', '$modalInstance', 'employeeRecord',
-  function($scope, $modalInstance, employeeRecord){
+  '$scope', '$modalInstance', 'employeeRecord', 'TimePunchCardSettingsService',
+  function($scope, $modalInstance, employeeRecord, TimePunchCardSettingsService){
     $scope.employeeRecord = employeeRecord;
 
-    if (!$scope.employeeRecord) {
-        // Get blank record
-    }
+    TimePunchCardSettingsService.GetEmployeeTimeCardSetting(
+        employeeRecord.company.id,
+        employeeRecord.employee.id)
+    .then(
+        function(employeeSettingsRecord) {
+            $scope.employeeSettingsRecord = employeeSettingsRecord;
+        },
+        function(errors){
+            $modalInstance.close(false);
+        });
 
     $scope.cancel = function() {
         $modalInstance.dismiss();
@@ -13,7 +20,15 @@ BenefitMyApp.controller('ConfigureModalController', [
 
     $scope.save = function() {
         // Save the updates
-        $modalInstance.close(true);
+        TimePunchCardSettingsService.SaveEmployeeTimeCardSetting($scope.employeeSettingsRecord)
+        .then(
+            function(savedRecord) {
+                $modalInstance.close(true);
+            },
+            function(errors) {
+                $modalInstance.close(false);
+            }
+        );
     };
   }
 ]).controller('EmployeesTimePunchCardSettingsListController', [
@@ -48,6 +63,12 @@ BenefitMyApp.controller('ConfigureModalController', [
                         "first_name": "Alibaba",
                         "last_name": "hahaha"
                     }
+                });
+                _.each(employees.list, function(employee) {
+                    $scope.employeeRecords.push({
+                        employee: employee.user,
+                        company: company,
+                    });
                 });
             });
         });

@@ -4,12 +4,10 @@ benefitmyService.factory('TimeOffService',
   ['$q',
    'utilityService',
    'TimeOffRepository',
-   'EmployeeProfileService',
    function TimeOffService(
     $q,
     utilityService,
-    TimeOffRepository,
-    EmployeeProfileService){
+    TimeOffRepository){
 
         // The enum listing out all supported timeoff types
         // This should be the only connonical source of truth

@@ -374,6 +374,7 @@ PIPELINE_JS = {
             'js/services/WorkersCompService.js',
             'js/services/ProjectService.js',
             'js/services/TimePunchCardService.js',
+            'js/services/TimePunchCardSettingsService.js',
             'js/services/common/DateTimeService.js',
             'js/services/common/NumberService.js',
             'js/services/OpenEnrollmentDefinitionService.js',
