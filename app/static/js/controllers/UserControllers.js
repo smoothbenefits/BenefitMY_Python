@@ -359,6 +359,10 @@ var userController = userControllers.controller('userController',
     $scope.viewTimePunchCards = function(){
       $state.go('admin_timepunchcards');
     };
+
+    $scope.viewTimePunchCardSettings = function(){
+      $state.go('admin_timepunchcardsettings');
+    };
 }]);
 
 var preBenefitSelectionModalController = userControllers.controller('preBenefitSelectionModalController',

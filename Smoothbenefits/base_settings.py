@@ -297,6 +297,7 @@ PIPELINE_JS = {
             'js/directives/time_tracking/TimePunchCardAdmin.js',
             'js/directives/time_tracking/TimePunchCardWeeklyView.js',
             'js/directives/time_tracking/TimePunchCardAdminIndividual.js',
+            'js/directives/time_tracking/EmployeesTimePunchCardSettingsList.js',
             'js/directives/OpenEnrollmentDefinition.js',
             'js/directives/payroll/AdvantagePayrollView.js',
             'js/directives/payroll/ConnectPayrollView.js',
