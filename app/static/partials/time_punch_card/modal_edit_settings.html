@@ -4,11 +4,58 @@
 <div class="modal-body col-md-12">
   <div class="form-holder col-md-12">
     <form name="form">
+        <div ng-if="supportAutoReportFullWeek()">
+          <div class="form-label" style="margin-top: 10px;">Force Salary-Based Time Tracking</div>
+          <div class="panel">
+            <div class="panel-body">
+              <div class="col-sm-3 col-sm-offset-1">
+                <input
+                  type="radio"
+                  name="autoReportFullWeek_type"
+                  ng-model="employeeSettingsRecord.setting.autoReportFullWeek.active"
+                  ng-value="true">
+                <span>On</span>
+              </div>
+              <div class="col-sm-3 col-sm-offset-1">
+                <input
+                  type="radio"
+                  name="autoReportFullWeek_type"
+                  ng-model="employeeSettingsRecord.setting.autoReportFullWeek.active"
+                  ng-value="false">
+                <span>Off</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div ng-if="supportAutoReportBreakTime()">
+          <div class="form-label" style="margin-top: 10px;">Auto Accounting for (Lunch) Break Time</div>
+          <div class="panel">
+            <div class="panel-body">
+              <div class="col-sm-3 col-sm-offset-1">
+                <input
+                  type="radio"
+                  name="autoReportBreakTime_type"
+                  ng-model="employeeSettingsRecord.setting.autoReportBreakTime.active"
+                  ng-value="true">
+                <span>On</span>
+              </div>
+              <div class="col-sm-3 col-sm-offset-1">
+                <input
+                  type="radio"
+                  name="autoReportBreakTime_type"
+                  ng-model="employeeSettingsRecord.setting.autoReportBreakTime.active"
+                  ng-value="false">
+                <span>Off</span>
+              </div>
+            </div>
+          </div>
+        </div>
     </form>
   </div>
 </div>
 
 <div class="modal-footer">
+  <button ng-click="resetToCompanyDefaults()" class="btn left red" ng-if="allowReset()" style="width:40%">Reset To Company Defaults</button>
   <div class="button-group">
     <button class="btn btn-info" ng-click="save()" ng-disabled="form.$invalid" style="width: 20%">Save</button>
     <button class="btn btn-primary" ng-click="cancel()" style="width: 20%">Cancel</button>

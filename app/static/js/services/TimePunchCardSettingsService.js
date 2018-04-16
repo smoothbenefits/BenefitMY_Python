@@ -22,7 +22,7 @@ benefitmyService.factory('TimePunchCardSettingsService',
         var SaveEmployeeTimeCardSetting = function(settingsModel){
             if (settingsModel._id) {
                 // Update
-                return TimePunchCardSettingsRepository.EmployeeSettingById.update({id:settingsModel._id}, quotaModel)
+                return TimePunchCardSettingsRepository.EmployeeSettingById.update({id:settingsModel._id}, settingsModel)
                 .$promise.then(function(updatedModel){
                     return updatedModel;
                 });
@@ -36,9 +36,16 @@ benefitmyService.factory('TimePunchCardSettingsService',
             
         };
 
+        var DeleteEmployeeTimeCardSetting = function(settingsModel){
+            if (settingsModel._id) {
+                return TimePunchCardSettingsRepository.EmployeeSettingById.delete({id:settingsModel._id}).$promise;
+            } 
+        };
+
         return {
             GetEmployeeTimeCardSetting: GetEmployeeTimeCardSetting,
-            SaveEmployeeTimeCardSetting: SaveEmployeeTimeCardSetting
+            SaveEmployeeTimeCardSetting: SaveEmployeeTimeCardSetting,
+            DeleteEmployeeTimeCardSetting: DeleteEmployeeTimeCardSetting
         };
    }
 ]);

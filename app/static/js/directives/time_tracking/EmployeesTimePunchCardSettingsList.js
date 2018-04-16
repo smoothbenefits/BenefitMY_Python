@@ -18,6 +18,43 @@ BenefitMyApp.controller('ConfigureModalController', [
         $modalInstance.dismiss();
     };
 
+    $scope.supportAutoReportFullWeek = function() {
+        return $scope.employeeSettingsRecord
+            && $scope.employeeSettingsRecord.setting
+            && $scope.employeeSettingsRecord.setting.autoReportFullWeek;
+    };
+
+    $scope.supportAutoReportBreakTime = function() {
+        return $scope.employeeSettingsRecord
+            && $scope.employeeSettingsRecord.setting
+            && $scope.employeeSettingsRecord.setting.autoReportBreakTime;
+    };
+
+    $scope.allowReset = function() {
+        // Allow reset to company defaults, if this record is persisted
+        // with user, and we can delete it to return to the company
+        // defaults.
+        return $scope.employeeSettingsRecord
+            && $scope.employeeSettingsRecord._id;
+    };
+
+    $scope.resetToCompanyDefaults = function() {
+        // Here, reset to company defaults simply means that we delete the 
+        // employee specific settings record, since we rely on the server
+        // side service to "flatten" company and user records, the next
+        // time we retrieve the settings for the user, we would automatically
+        // get the company defaults
+        TimePunchCardSettingsService.DeleteEmployeeTimeCardSetting($scope.employeeSettingsRecord)
+        .then(
+            function() {
+                $modalInstance.close(true);
+            },
+            function(errors) {
+                $modalInstance.close(false);
+            }
+        );
+    };
+
     $scope.save = function() {
         // Save the updates
         TimePunchCardSettingsService.SaveEmployeeTimeCardSetting($scope.employeeSettingsRecord)
@@ -86,16 +123,14 @@ BenefitMyApp.controller('ConfigureModalController', [
                 }
             });
 
-            modalInstance.result.then(function(success){
+            modalInstance.result.then(function(success) {
                 if (success){
-                  var successMessage = "Employee time tracking settings have been saved successfully!";
+                  var successMessage = "Employee time tracking settings have been updated successfully!";
                   $scope.showMessageWithOkayOnly('Success', successMessage);
                 } else{
-                  var message = 'Failed to save employee time tracking settings. Please try again later.';
+                  var message = 'Failed to update employee time tracking settings. Please try again later.';
                   $scope.showMessageWithOkayOnly('Error', message);
                 }
-
-                $state.reload();
             });
         };
 
