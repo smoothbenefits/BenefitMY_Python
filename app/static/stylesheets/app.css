@@ -292,6 +292,11 @@ table.benefit-table input.full-width{
     float:right;
     margin-bottom:10px;
 }
+.cta-above-table .utility-button{
+    float:right;
+    margin-left:10px;
+}
+
 .time-punch-card .in-progress{
     background-color: #ffffcc;
 }
