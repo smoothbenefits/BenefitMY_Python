@@ -49,7 +49,10 @@ benefitmyTimeTrackingModelFactories.factory('TimePunchCardRepository', [
       ById: $resource(_hostName + 'api/v1/time_punch_cards/:id', {id:'@id'}, {
         update: { method: 'PUT', isArray: true }
       }),
-      ByCompany: $resource(_hostName + 'api/v1/company/:id/time_punch_cards', {companyId: '@id'})
+      ByCompany: $resource(_hostName + 'api/v1/company/:id/time_punch_cards', {companyId: '@id'}),
+      GenerateHolidayCards: $resource(_hostName + 'api/v1/time_punch_cards/generate_holidays', {}, {
+        'save': {method:'POST', isArray: true}
+      }),
     };
   }
 ]);

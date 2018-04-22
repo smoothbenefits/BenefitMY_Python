@@ -22,6 +22,48 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
         $modalInstance.close();
     };
   }
+]).controller('TimePunchCardGenerateHolidayCardsModalController', [
+  '$scope',
+  '$modalInstance',
+  'companyId',
+  'TimePunchCardService',
+  'CompanyPersonnelsService',
+  'EmployeeProfileService',
+  function(
+    $scope,
+    $modalInstance,
+    companyId,
+    TimePunchCardService,
+    CompanyPersonnelsService,
+    EmployeeProfileService){
+      $scope.companyId = companyId;
+      $scope.generate = function(){
+        var dateToCreate = moment($scope.holidayDate).add(2, 'hours');
+        CompanyPersonnelsService.getCompanyEmployees($scope.companyId).then(
+          function(employeeListBuilder) {
+            employeeListBuilder.filterByTimeRangeStatus(
+              null,
+              EmployeeProfileService.EmploymentStatuses.Terminated,
+              dateToCreate,
+              moment(dateToCreate).add(1, 'days')
+            );
+            TimePunchCardService.GenerateHolidayCardsForEmployees(
+              dateToCreate,
+              $scope.companyId,
+              employeeListBuilder.list).then(
+              function(response){
+                $modalInstance.close(response);
+              });
+        });
+
+      };
+      $scope.isValidToGenerate = function(){
+        return $scope.holidayDate && moment($scope.holidayDate);
+      };
+      $scope.cancel = function(){
+        $modalInstance.dismiss();
+      }
+  }
 ]).controller('TimePunchCardAdminController', [
     '$scope',
     '$state',
@@ -151,6 +193,24 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
             $scope.selectedDisplayWeek.weekStartDate);
 
             location.href = link;
+        };
+
+        $scope.generateHolidayCards = function(){
+          var modalInstance = $modal.open({
+            templateUrl:'/static/partials/time_punch_card/modal_generate_holiday_cards.html',
+            controller: 'TimePunchCardGenerateHolidayCardsModalController',
+            size: 'md',
+            backdrop: 'static',
+            resolve:{
+              'companyId': function(){
+                return $scope.company.id;
+              }
+            }
+          });
+          modalInstance.result.then(function() {
+            $scope.reloadTimePunchCard();
+            alert('Holiday Cards got generated successfully!');
+          });
         };
 
         $scope.editTimeCard = function(employee, weekSelected) {
