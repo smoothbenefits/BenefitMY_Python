@@ -36,7 +36,7 @@
         <div class="cta utility-button">
           <span class="btn green" ng-click="editIndividual()">Edit Per Employee</span>
         </div>
-        <div class="cta utility-button">
+        <div class="cta utility-button" ng-if="allowGenerateHolidays()">
           <span class="btn green" ng-click="generateHolidayCards()">Generate Holidays</span>
         </div>
       </div>

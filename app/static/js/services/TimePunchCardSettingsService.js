@@ -42,10 +42,20 @@ benefitmyService.factory('TimePunchCardSettingsService',
             } 
         };
 
+        var GetAllEmployeesTimeCardSetting = function(companyId) {
+            var compDesc = utilityService.getEnvAwareId(companyId);
+            return TimePunchCardSettingsRepository.AllEmployeeSettings.get(
+                {companyDesc: compDesc})
+                .$promise.then(function(allEmployeesSetting){
+                    return allEmployeesSetting;
+                });
+        };
+
         return {
             GetEmployeeTimeCardSetting: GetEmployeeTimeCardSetting,
             SaveEmployeeTimeCardSetting: SaveEmployeeTimeCardSetting,
-            DeleteEmployeeTimeCardSetting: DeleteEmployeeTimeCardSetting
+            DeleteEmployeeTimeCardSetting: DeleteEmployeeTimeCardSetting,
+            GetAllEmployeesTimeCardSetting: GetAllEmployeesTimeCardSetting
         };
    }
 ]);

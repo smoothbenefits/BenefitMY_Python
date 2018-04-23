@@ -50,6 +50,29 @@
             </div>
           </div>
         </div>
+        <div ng-if="supportAutoHolidayCardGeneration()">
+          <div class="form-label" style="margin-top: 10px;">Include This Employee When Generate Time Cards for Company Holidays</div>
+          <div class="panel">
+            <div class="panel-body">
+              <div class="col-sm-3 col-sm-offset-1">
+                <input
+                  type="radio"
+                  name="autoHolidayCardGeneration_type"
+                  ng-model="employeeSettingsRecord.setting.autoHolidayCardGeneration.active"
+                  ng-value="true">
+                <span>On</span>
+              </div>
+              <div class="col-sm-3 col-sm-offset-1">
+                <input
+                  type="radio"
+                  name="autoHolidayCardGeneration_type"
+                  ng-model="employeeSettingsRecord.setting.autoHolidayCardGeneration.active"
+                  ng-value="false">
+                <span>Off</span>
+              </div>
+            </div>
+          </div>
+        </div>
     </form>
   </div>
 </div>

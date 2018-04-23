@@ -30,12 +30,19 @@ BenefitMyApp.controller('ConfigureModalController', [
             && $scope.employeeSettingsRecord.setting.autoReportBreakTime;
     };
 
+    $scope.supportAutoHolidayCardGeneration = function() {
+        return $scope.employeeSettingsRecord
+            && $scope.employeeSettingsRecord.setting
+            && $scope.employeeSettingsRecord.setting.autoHolidayCardGeneration;
+    };
+
     $scope.allowReset = function() {
         // Allow reset to company defaults, if this record is persisted
         // with user, and we can delete it to return to the company
         // defaults.
-        return $scope.employeeSettingsRecord
-            && $scope.employeeSettingsRecord._id;
+        // return $scope.employeeSettingsRecord
+        //     && $scope.employeeSettingsRecord._id;
+        return false;
     };
 
     $scope.resetToCompanyDefaults = function() {
