@@ -99,15 +99,7 @@ BenefitMyApp.controller('ConfigureModalController', [
             }
             CompanyPersonnelsService.getCompanyEmployees(company.id)
             .then(function(employees){
-                // $scope.employeeRecords = employees;
                 $scope.employeeRecords = [];
-                $scope.employeeRecords.push(
-                {
-                    "employee": {
-                        "first_name": "Alibaba",
-                        "last_name": "hahaha"
-                    }
-                });
                 _.each(employees.list, function(employee) {
                     $scope.employeeRecords.push({
                         employee: employee.user,
