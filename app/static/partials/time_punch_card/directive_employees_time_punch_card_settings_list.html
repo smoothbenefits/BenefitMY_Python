@@ -1,0 +1,24 @@
+<div class="content-header"></div>
+<div class="content-body">
+  <div class="table-responsive">
+    <div class="table-title">
+      Time Tracking Settings for Employees
+    </div>
+    <table class="table table-striped" >
+      <thead>
+        <th><span>Employee</span></th>
+        <th><span>Actions</span></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="employeeRecord in employeeRecords | orderBy: 'employee.last_name'">
+          <td>
+            {{employeeRecord.employee.first_name}} {{employeeRecord.employee.last_name}}
+          </td>
+          <td>
+            <span class="btn inline" ng-click="configEmployeeSettings(employeeRecord)">Configure</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div><!-- TimeOff Limit Table -->
+</div>

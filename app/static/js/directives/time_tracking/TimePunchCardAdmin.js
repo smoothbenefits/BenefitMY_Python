@@ -74,6 +74,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
     'utilityService',
     'DateTimeService',
     'TimePunchCardService',
+    'TimePunchCardSettingsService',
     'CompanyEmployeeSummaryService',
     'CompanyPersonnelsService',
     'EmployeeProfileService',
@@ -87,6 +88,7 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
       utilityService,
       DateTimeService,
       TimePunchCardService,
+      TimePunchCardSettingsService,
       CompanyEmployeeSummaryService,
       CompanyPersonnelsService,
       EmployeeProfileService) {
@@ -107,6 +109,14 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
           });
 
           $scope.reloadTimePunchCard();
+
+          // Populate the company time card settings
+          if ($scope.company) {
+            TimePunchCardSettingsService.GetAllEmployeesTimeCardSetting($scope.company.id)
+              .then(function(allEmployeesSetting) {
+                $scope.companySettings = allEmployeesSetting.company;
+              });
+          }
           
         });
 
@@ -193,6 +203,11 @@ BenefitMyApp.controller('TimePunchCardWeeklyViewModalController', [
             $scope.selectedDisplayWeek.weekStartDate);
 
             location.href = link;
+        };
+
+        $scope.allowGenerateHolidays = function() {
+            return $scope.companySettings 
+                && $scope.companySettings.setting.autoHolidayCardGeneration;
         };
 
         $scope.generateHolidayCards = function(){

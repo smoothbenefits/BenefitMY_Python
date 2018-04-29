@@ -56,3 +56,19 @@ benefitmyTimeTrackingModelFactories.factory('TimePunchCardRepository', [
     };
   }
 ]);
+
+benefitmyTimeTrackingModelFactories.factory('TimePunchCardSettingsRepository', [
+  '$resource',
+  'envService',
+  function ($resource, envService) {
+    var _hostName = envService.read('timeTrackingUrl');
+    return {
+        AllEmployeeSettings: $resource(_hostName + 'api/v1/company/:companyDesc/person/all_time_punch_card_setting', {companyDesc: '@companyDesc'}),
+        EmployeeSetting: $resource(_hostName + 'api/v1/company/:companyDesc/person/:personDesc/time_punch_card_setting', {companyDesc: '@companyDesc', personDesc: '@personDesc'}),
+        EmployeeSettingById: $resource(_hostName + 'api/v1/person/time_punch_card_setting/:id', {id:'@id'}, {
+            update: { method: 'PUT' }
+        }),
+        EmployeeSettingCollection: $resource(_hostName + 'api/v1/person/time_punch_card_setting')
+    };
+  }
+]);

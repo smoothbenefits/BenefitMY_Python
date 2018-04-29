@@ -132,6 +132,10 @@ var employerHome = employersController.controller('employerHome',
       $state.go('admin_timepunchcards');
     };
 
+    $scope.viewTimePunchCardSettings = function(){
+      $state.go('admin_timepunchcardsettings');
+    };
+
     $scope.viewVendors = function(){
       $state.go('admin_service_provider');
     }
@@ -2010,6 +2014,17 @@ var employerViewTimePunchCards = employersController.controller('employerViewTim
           });
       };
     }
+]);
+
+var employerTimePunchCardSettings = employersController.controller('employerTimePunchCardSettings', [
+  '$scope', 'UserService',
+  function($scope, UserService) {
+    UserService.getCurUserInfo().then(function(userInfo) {
+      $scope.user = userInfo.user;
+      $scope.user.role = userInfo.currentRole.company_user_type;
+      $scope.company = userInfo.currentRole.company;
+    });
+  }
 ]);
 
 var employerAdminIndividualTimePunchCards = employersController.controller('employerAdminIndividualTimePunchCards', [
